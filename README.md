@@ -2,7 +2,7 @@
 
 Turn your own lecture PDFs, slides and notes into **flash cards, a summary, the key information and a quiz** — built in your browser. Nothing is uploaded anywhere: your files are read on your own device and never leave it.
 
-**Live app:** https://YOUR-USERNAME.github.io/uni-made-ez/
+**Live app:** https://thepastor.github.io/uni-made-ez/
 *(replace with your real address once GitHub Pages is switched on)*
 
 ---
