@@ -232,7 +232,9 @@ main { flex: 1; width: 100%; }
 .hero .mint ol { margin: auto 0 0; padding: 0; list-style: none; display: grid; gap: 8px; font-size: .9rem; }
 .hero .mint li { display: grid; grid-template-columns: 28px 1fr; gap: 8px; align-items: baseline; }
 .hero .mint li b { font-family: var(--font-mono); font-weight: 500; font-size: .7rem; letter-spacing: .08em; }
-.subjects-head { display: grid; grid-template-columns: 1fr auto; align-items: stretch; border-bottom: 1px solid var(--line); }
+.subjects-head { display: grid; grid-template-columns: 1fr auto auto; align-items: stretch; border-bottom: 1px solid var(--line); }
+.subjects-head .btn.cell.ghost { background: none; color: var(--ink-2); }
+.subjects-head .btn.cell.ghost:hover { background: var(--accent-soft); color: var(--ink); }
 .subjects-head > * { padding: 18px 32px; display: flex; align-items: center; }
 .subjects-head h2 { font-weight: 500; }
 .subjects-head .btn.cell { border-left: 1px solid var(--line); }
@@ -283,6 +285,12 @@ main { flex: 1; width: 100%; }
 .mat.busy .info { color: var(--mint-deep); }
 .mat.error { background: var(--bad-soft); }
 .mat.error .info { color: var(--bad); font-family: var(--font-body); text-transform: none; letter-spacing: 0; white-space: normal; }
+.mat.scan { background: var(--tint-2); opacity: 1; }
+.mat.scan .name { color: var(--ink); }
+.mat.scan .info { color: var(--ink-2); }
+.mat.busy .info { text-transform: none; letter-spacing: 0; font-family: var(--font-body); white-space: normal; }
+.scan-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin-top: 8px; font-size: .8rem; color: var(--ink-2); line-height: 1.4; }
+.scan-row a { color: inherit; }
 .progress { height: 3px; background: var(--surface-3); margin-top: 6px; overflow: hidden; }
 .progress i { display: block; height: 100%; background: var(--accent); width: 0; transition: width .2s; }
 .scan-stat { display: flex; gap: 18px; flex-wrap: wrap; font-family: var(--font-mono); font-size: .7rem; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); }
@@ -310,6 +318,7 @@ main { flex: 1; width: 100%; }
 .tile.disabled:hover { background: var(--surface-2); color: inherit; }
 .tile.disabled:hover p { color: var(--ink-2); }
 .tile .lock { display: inline-flex; align-items: center; gap: 6px; }
+.tool .lock { display: inline-flex; align-items: center; gap: 4px; font-family: var(--font-mono); font-size: .68rem; font-weight: 400; letter-spacing: .06em; color: var(--ink-3); margin-left: 6px; vertical-align: middle; }
 
 /* ---------- section pages ---------- */
 .section-bar { display: grid; grid-template-columns: auto 1fr auto; align-items: stretch; border-bottom: 1px solid var(--line); background: var(--surface); position: sticky; top: 0; z-index: 20; min-height: 56px; }
@@ -723,6 +732,45 @@ button.term-chip.k-row { cursor: pointer; }
 #print-sheet { color: #000; }
 #print-sheet .ps-q { font-family: var(--font-display); font-size: 1rem; font-weight: 600; line-height: 1.25; color: #000; }
 #print-sheet .ps-a { font-size: .85rem; line-height: 1.4; border-top: 1px dashed #999; padding-top: 3mm; margin-top: auto; color: #222; }
+/* the revision pack — a plain black-on-white document */
+#print-sheet .pk { font-size: 10.5pt; line-height: 1.4; color: #000; }
+#print-sheet .pk-head { border-bottom: 2px solid #000; padding-bottom: 4mm; margin-bottom: 6mm; }
+#print-sheet .pk-kicker, #print-sheet .pk-files { font-family: var(--font-mono); font-size: .68rem; text-transform: uppercase; letter-spacing: .1em; color: #555; }
+#print-sheet .pk-files { text-transform: none; letter-spacing: 0; margin: 2mm 0 0; }
+#print-sheet .pk-code { font-family: var(--font-mono); font-weight: 400; font-size: .8em; color: #444; margin-left: 6px; }
+#print-sheet .pk-sec { margin: 0 0 6mm; break-inside: auto; }
+#print-sheet .pk-break { break-before: page; page-break-before: always; }
+#print-sheet .pk-h { font-family: var(--font-display); font-size: 1.05rem; font-weight: 600; margin: 0 0 2.5mm; padding-bottom: 1mm; border-bottom: 1px solid #000; break-after: avoid; page-break-after: avoid; }
+#print-sheet .pk-brief { font-size: 1rem; margin: 0; }
+#print-sheet .pk-defs { margin: 0; display: grid; gap: 2mm; }
+#print-sheet .pk-defs.two { grid-template-columns: 1fr 1fr; column-gap: 8mm; }
+#print-sheet .pk-defs > div { break-inside: avoid; page-break-inside: avoid; }
+#print-sheet .pk-defs dt { font-weight: 700; display: inline; }
+#print-sheet .pk-defs dt::after { content: " — "; font-weight: 400; }
+#print-sheet .pk-defs dd { display: inline; margin: 0; }
+#print-sheet .pk-part { margin: 0 0 3.5mm; break-inside: avoid; page-break-inside: avoid; }
+#print-sheet .pk-part h3 { font-size: .95rem; font-weight: 600; margin: 0 0 1mm; }
+#print-sheet .pk-part ul, #print-sheet .pk-part ol, #print-sheet .pk-list, #print-sheet .pk-take { margin: 0; padding-left: 5mm; }
+#print-sheet .pk-part li, #print-sheet .pk-list li, #print-sheet .pk-take li { margin: 0 0 1mm; }
+#print-sheet .pk-terms { font-family: var(--font-mono); font-size: .72rem; color: #444; margin: 1mm 0 0; }
+#print-sheet .pk-terms.big { font-size: .85rem; color: #000; line-height: 1.7; }
+#print-sheet .pk-fx { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm 6mm; margin-bottom: 4mm; }
+#print-sheet .pk-f { border: 1px solid #000; padding: 3mm; break-inside: avoid; page-break-inside: avoid; }
+#print-sheet .pk-f .formula { font-family: var(--font-mono); font-size: 1.05rem; margin: 1mm 0 2mm; white-space: pre-wrap; overflow-wrap: anywhere; }
+#print-sheet .pk-f .formula math { font-size: 1.25rem; }
+#print-sheet .pk-f p { margin: 0; font-size: .8rem; color: #333; }
+#print-sheet .pk-cards { width: 100%; border-collapse: collapse; font-size: .85rem; }
+#print-sheet .pk-cards th { text-align: left; font-family: var(--font-mono); font-size: .65rem; text-transform: uppercase; letter-spacing: .1em; color: #555; border-bottom: 1px solid #000; padding: 1mm 2mm; }
+#print-sheet .pk-cards td { vertical-align: top; padding: 1.6mm 2mm; border-bottom: 1px solid #bbb; break-inside: avoid; page-break-inside: avoid; }
+#print-sheet .pk-cards td:first-child { width: 8mm; }
+#print-sheet .pk-cards td:nth-child(2) { width: 42%; font-weight: 600; }
+#print-sheet .pk-cards tr { break-inside: avoid; page-break-inside: avoid; }
+#print-sheet .pk-cards thead { display: table-header-group; }
+#print-sheet .pk-test { margin: 0; padding-left: 5mm; }
+#print-sheet .pk-test li { margin: 0 0 2mm; break-inside: avoid; page-break-inside: avoid; }
+#print-sheet .pk-test li b { display: block; }
+#print-sheet .pk-test li span { display: block; color: #333; border-left: 2px solid #000; padding-left: 2mm; margin-top: .5mm; }
+#print-sheet .pk-foot { margin-top: 8mm; border-top: 1px solid #000; padding-top: 2mm; font-family: var(--font-mono); font-size: .65rem; color: #555; }
 @media (max-width: 900px) { .subject-stats { grid-template-columns: 1fr 1fr; } .subject-stats > .stat:nth-child(2) { border-right: 0; } .subject-stats > .stat:nth-child(-n+2) { border-bottom: 1px solid var(--line); } }
 
 /* ---------- study tools row ---------- */
@@ -736,6 +784,17 @@ button.term-chip.k-row { cursor: pointer; }
 .tool .t span { font-size: .82rem; color: var(--ink-2); line-height: 1.4; }
 .tool .arr { color: var(--accent); align-self: center; }
 .tool.disabled { opacity: .45; pointer-events: none; }
+/* the export row is buttons, not links — same look */
+button.tool { font: inherit; text-align: left; background: none; border: 0; border-right: 1px solid var(--line); cursor: pointer; width: 100%; color: inherit; }
+button.tool:last-child { border-right: 0; }
+button.tool:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.panel-head.slim { padding: 10px 26px; border-top: 1px solid var(--line); }
+.panel-head.slim h2 { font-size: .9rem; }
+.restore-btn { display: inline-flex; cursor: pointer; width: max-content; max-width: 100%; align-self: flex-start; justify-self: start; }
+.restore-btn:focus-within { outline: 2px solid var(--accent); outline-offset: 2px; }
+.pack-stats { margin: 12px 0; }
+textarea.input.mono { font-family: var(--font-mono); font-size: .78rem; line-height: 1.45; white-space: pre; overflow: auto; }
+.modal-body code { font-family: var(--font-mono); font-size: .85em; background: var(--surface-2); padding: 1px 4px; border: 1px solid var(--line-soft); }
 
 /* ---------- quiz: order, exam, history ---------- */
 .order-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); }
@@ -800,7 +859,7 @@ button.term-chip.k-row { cursor: pointer; }
 .map-legend .line { width: 22px; height: 3px; background: var(--accent); opacity: .5; display: inline-block; }
 @media (max-width: 900px) {
   .tools-row { grid-template-columns: 1fr; }
-  .tool { border-right: 0; border-bottom: 1px solid var(--line); }
+  .tool, button.tool { border-right: 0; border-bottom: 1px solid var(--line); }
   .match-board { grid-template-columns: 1fr; }
   .mcol + .mcol { margin-top: 10px; }
   .sheet-grid { grid-template-columns: 1fr; gap: 24px; }
@@ -939,6 +998,25 @@ body.modal-open { overflow: hidden; }
 .qnum .answered { font-family: var(--font-mono); font-size: .62rem; letter-spacing: .1em; text-transform: uppercase; color: var(--accent-deep); }
 @media (max-width: 700px) { .q-nav { gap: 6px; } .q-nav .spacer { display: none; } .q-nav .btn.primary { flex: 1 1 100%; justify-content: center; margin-top: 4px; } }
 @media print { .q-nav { display: none !important; } }
+/* ---------- citations ---------- */
+.cite { display: inline-block; font-family: var(--font-mono); font-size: .64rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent-deep); background: var(--accent-soft); padding: 2px 7px; margin-left: 8px; vertical-align: middle; white-space: nowrap; }
+.card .src .cite { display: block; margin: 6px 0 0; width: max-content; }
+.feedback .cite { margin-left: 8px; }
+.detail-block .cite { margin: 6px 0 0; }
+/* ---------- typeset maths ---------- */
+math { font-family: "STIX Two Math", "Latin Modern Math", "Cambria Math", "Noto Sans Math", serif; font-size: 1.12em; line-height: 1.3; }
+.frow .formula math { font-size: 1.45rem; }
+.big-formula math { font-size: 1.5rem; }
+.k-row.formula math { font-size: 1.05rem; }
+math mi[mathvariant="normal"] { font-style: normal; }
+/* maths cannot wrap: on a phone it shrinks a little and, if still too wide, scrolls inside its own box — never the page */
+@media (max-width: 600px) {
+  .frow .formula math { font-size: 1.2rem; }
+  .big-formula math { font-size: 1.25rem; }
+  .frow .formula, .big-formula, .k-row.formula, .empty-page .formula { overflow-x: auto; max-width: 100%; }
+}
+.frow .formula, .big-formula, .k-row.formula { min-width: 0; }
+@media print { math { font-size: 1.2em; } }
 
 </style>
 </head>
@@ -1016,6 +1094,7 @@ const Parsers = (() => {
   function blocksToText(blocks) {
     const out = [];
     for (const b of blocks) {
+      if (b.t === 'pg') { out.push(`[[${b.kind === 'slide' ? 's' : 'p'}:${b.n}]]`); continue; }
       const s = clean(b.s);
       if (!s) continue;
       if (b.t === 'h') out.push('## ' + s.replace(/^#+\s*/, ''));
@@ -1026,7 +1105,8 @@ const Parsers = (() => {
   }
 
   /* ---------- plain text / markdown ---------- */
-  function plainToBlocks(text) {
+  function plainToBlocks(text, keepVocab) {
+    if (!keepVocab) setVocab(text);
     const lines = text.replace(/\r\n?/g, '\n').split('\n');
     const blocks = [];
     let para = [];
@@ -1037,7 +1117,7 @@ const Parsers = (() => {
       if (!trimmed) { flush(); continue; }
       const h = trimmed.match(/^#{1,6}\s+(.+)$/);
       if (h) { flush(); blocks.push({ t: 'h', s: h[1] }); continue; }
-      if (/^([-*•·▪◦]|\d{1,3}[.)])\s+/.test(trimmed)) { flush(); blocks.push({ t: 'li', s: trimmed.replace(/^([-*•·▪◦]|\d{1,3}[.)])\s+/, '') }); continue; }
+      if (/^([-*•·▪◦]|\d{1,3}[.)])\s+/.test(trimmed)) { flush(); blocks.push({ t: 'li', s: trimmed.replace(/^[-*•·▪◦]\s+/, '') }); continue; }
       if (/^(=+|-+|_+|\*+)$/.test(trimmed) && blocks.length && blocks[blocks.length - 1].t === 'p' && !para.length) {
         // setext-style underline: promote previous paragraph to heading if short
         const prev = blocks[blocks.length - 1];
@@ -1067,11 +1147,27 @@ const Parsers = (() => {
     return words.length >= 2 && caps / words.length >= 0.75 && !/\b(the|a|an|of|and|in|on|to|for|with)\b.*\b(the|a|an|of|and|in|on|to|for|with)\b.*\b(the|a|an|of|and|in|on|to|for|with)\b/i.test(line);
   }
 
+  // vocabulary of the whole document, used to decide whether a line-end hyphen is a real hyphen
+  let VOCAB = null;
+  function setVocab(text) {
+    VOCAB = new Set();
+    for (const w of (text.match(/[A-Za-z][A-Za-z'’\-]*/g) || [])) VOCAB.add(w.toLowerCase());
+  }
+  function joinHyphen(prev, next) {
+    // prev ends with "-", next starts lowercase. Decide: "enzyme-catalysed" (keep) vs "phos-phorylation" (join)
+    const m1 = prev.match(/([A-Za-z]+)-$/); const m2 = next.match(/^([a-z]+)/);
+    if (!m1 || !m2 || !VOCAB) return prev.slice(0, -1) + next;
+    const a = m1[1].toLowerCase(), b = m2[1].toLowerCase();
+    if (VOCAB.has(a + b)) return prev.slice(0, -1) + next;           // joined word exists elsewhere
+    if (VOCAB.has(a + '-' + b)) return prev + next;                     // hyphenated form exists elsewhere
+    if (a.length >= 4 && b.length >= 4 && VOCAB.has(a) && VOCAB.has(b)) return prev + next; // both halves are real words → compound
+    return prev.slice(0, -1) + next;
+  }
   function joinLines(lines) {
     let s = '';
     for (const l of lines) {
       if (!s) { s = l; continue; }
-      if (/[A-Za-z]-$/.test(s) && /^[a-z]/.test(l)) s = s.slice(0, -1) + l;
+      if (/[A-Za-z]-$/.test(s) && /^[a-z]/.test(l)) s = joinHyphen(s, l);
       else s += ' ' + l;
     }
     return s;
@@ -1104,7 +1200,8 @@ const Parsers = (() => {
           const hasBlockChild = Array.from(node.children).some(c => BLOCK.has(c.tagName.toUpperCase()) || /^H[1-6]$/.test(c.tagName));
           if (hasBlockChild) { walk(node); flushInline(); }
           else {
-            const s = clean(node.textContent);
+            let s = clean(node.textContent);
+            if (s && tag === 'LI' && node.parentElement && node.parentElement.tagName.toUpperCase() === 'OL' && !/^\d{1,3}[.)]\s/.test(s)) s = (Array.from(node.parentElement.children).indexOf(node) + 1) + '. ' + s;
             if (s) blocks.push({ t: tag === 'LI' || tag === 'DT' ? 'li' : 'p', s });
           }
           continue;
@@ -1236,6 +1333,7 @@ const Parsers = (() => {
     let n = 0;
     for (const path of slides) {
       n++;
+      blocks.push({ t: 'pg', n, kind: 'slide' });
       const doc = new DOMParser().parseFromString(await zip.file(path).async('string'), 'application/xml');
       const shapes = Array.from(doc.getElementsByTagNameNS(P, 'sp'));
       let titleDone = false;
@@ -1258,11 +1356,37 @@ const Parsers = (() => {
     return blocks;
   }
 
+  /* ---------- OCR output: pages of text from the scan reader ---------- */
+  // a line of OCR is noise when most of it is not letters or digits — rules, dots, stray marks, page numbers
+  function cleanOcrLine(raw) {
+    const l = raw.replace(/\s+/g, ' ').trim();
+    if (!l) return '';
+    const chars = l.replace(/\s/g, '').length;
+    const alnum = (l.match(/[A-Za-z0-9]/g) || []).length;
+    if (alnum < 2 || alnum < chars * 0.5) return null;
+    if (/^\d{1,4}$/.test(l) || /^(page\s*)?\d{1,4}(\s*(of|\/)\s*\d{1,4})?$/i.test(l)) return null;
+    return l;
+  }
+  // pages: [{ n, text }] as the OCR engine returned them; keeps the page numbers for citations
+  function ocrPagesToBlocks(pages) {
+    setVocab(pages.map(p => p.text || '').join('\n'));
+    const blocks = [];
+    for (const p of pages) {
+      const lines = String(p.text || '').replace(/\r\n?/g, '\n').split('\n').map(cleanOcrLine).filter(l => l !== null);
+      if (!lines.some(Boolean)) continue;
+      blocks.push({ t: 'pg', n: p.n });
+      for (const b of plainToBlocks(lines.join('\n'), true)) blocks.push(b);
+    }
+    return blocks;
+  }
+
   /* ---------- PDF ---------- */
+  let lastPdfPages = 0;
   async function parsePdf(buf, onProgress) {
     const lib = window.pdfjsLib || window['pdfjs-dist/build/pdf'];
     if (!lib) throw new Error('PDF reader did not load');
     const pdf = await lib.getDocument({ data: buf, useSystemFonts: true, isEvalSupported: false }).promise;
+    lastPdfPages = pdf.numPages;
     const pages = [];
     for (let p = 1; p <= pdf.numPages; p++) {
       const page = await pdf.getPage(p);
@@ -1295,6 +1419,7 @@ const Parsers = (() => {
   }
 
   function pdfLinesToBlocks(pages) {
+    setVocab(pages.map(ls => ls.map(l => l.text).join(' ')).join(' '));
     // running headers/footers: identical (digit-normalised) lines on many pages
     const seen = new Map();
     for (const lines of pages) {
@@ -1312,20 +1437,24 @@ const Parsers = (() => {
     const blocks = [];
     let para = [];
     let paraH = 0;
+    let paraPage = 1, lastPage = 0, pageNo = 0;
     const flush = () => {
       if (!para.length) return;
+      if (paraPage !== lastPage) { blocks.push({ t: 'pg', n: paraPage }); lastPage = paraPage; }
       const s = joinLines(para);
       const single = para.length === 1;
       const isH = single && (paraH >= medianH * 1.12 || looksLikeHeading(s)) && s.length < 100 && !/[.!?;,:]$/.test(s) && s.split(/\s+/).length <= 14;
       if (isH) blocks.push({ t: 'h', s });
-      else if (/^([-•·▪◦*]|\d{1,3}[.)])\s+/.test(s) && s.length < 300) blocks.push({ t: 'li', s: s.replace(/^([-•·▪◦*]|\d{1,3}[.)])\s+/, '') });
+      else if (/^([-•·▪◦*]|\d{1,3}[.)])\s+/.test(s) && s.length < 300) blocks.push({ t: 'li', s: s.replace(/^[-•·▪◦*]\s+/, '') });
       else blocks.push({ t: 'p', s });
       para = []; paraH = 0;
     };
     for (const lines of pages) {
+      pageNo++;
       let prev = null;
       for (const l of lines) {
         if (/^\d{1,4}$/.test(l.text) || isRepeat(l.text)) continue;
+        if (!para.length) paraPage = pageNo;
         const bullet = /^([-•·▪◦*]|\d{1,3}[.)])\s+/.test(l.text);
         const gap = prev ? prev.y - l.y : 0;
         const bigGap = prev && (gap > Math.max(prev.h, l.h) * 1.7 || gap < -medianH * 3);
@@ -1354,12 +1483,14 @@ const Parsers = (() => {
   }
 
   /* ---------- entry point ---------- */
-  const EXT_LABEL = { pdf: 'PDF', epub: 'EPUB', docx: 'Word', pptx: 'Slides', txt: 'Text', md: 'Markdown', html: 'Web page', htm: 'Web page', rtf: 'RTF', csv: 'CSV', json: 'JSON', xml: 'XML' };
+  const EXT_LABEL = { pdf: 'PDF', epub: 'EPUB', docx: 'Word', pptx: 'Slides', txt: 'Text', md: 'Markdown', html: 'Web page', htm: 'Web page', rtf: 'RTF', csv: 'CSV', json: 'JSON', xml: 'XML', jpg: 'Photo', jpeg: 'Photo', png: 'Photo', webp: 'Photo' };
+  const IMAGE_EXT = ['jpg', 'jpeg', 'png', 'webp'];
   const SUPPORTED = Object.keys(EXT_LABEL);
 
   async function parseFile(file, onProgress) {
     const ext = (file.name.split('.').pop() || '').toLowerCase();
     let blocks;
+    if (IMAGE_EXT.includes(ext)) { const e = new Error('A photo has no text to read until it goes through the scan reader.'); e.code = 'NEEDS_OCR'; throw e; }
     if (ext === 'pdf') blocks = await parsePdf(await file.arrayBuffer(), onProgress);
     else if (ext === 'epub') blocks = await parseEpub(await file.arrayBuffer(), onProgress);
     else if (ext === 'docx') blocks = await parseDocx(await file.arrayBuffer());
@@ -1370,12 +1501,16 @@ const Parsers = (() => {
     else blocks = plainToBlocks(await file.text());
     const text = blocksToText(blocks);
     if (!text || text.replace(/\W/g, '').length < 40) {
-      throw new Error(ext === 'pdf' ? 'No readable text found. This PDF looks like scanned images; run it through OCR first (e.g. Preview or Adobe) and upload the result.' : 'No readable text found in this file.');
+      const e = new Error(ext === 'pdf' ? 'No text layer — this PDF is scanned images.' : 'No readable text found in this file.');
+      if (ext === 'pdf') e.code = 'NEEDS_OCR';
+      throw e;
     }
-    return { text, ext, label: EXT_LABEL[ext] || ext.toUpperCase() };
+    const out = { text, ext, label: EXT_LABEL[ext] || ext.toUpperCase() };
+    if (ext === 'pdf') out.pages = lastPdfPages;
+    return out;
   }
 
-  return { parseFile, SUPPORTED, EXT_LABEL, plainToBlocks, blocksToText };
+  return { parseFile, SUPPORTED, EXT_LABEL, IMAGE_EXT, plainToBlocks, blocksToText, ocrPagesToBlocks };
 })();
 
 </script>
@@ -1469,7 +1604,16 @@ const GENERIC = new Set('information data process system method result results s
       while (j < blocks.length && blocks[j].li && items.length < 12) { items.push(blocks[j].text.replace(/^\d{1,3}[.)]\s+/, '').replace(/[.;,]\s*$/, '')); j++; }
       if (items.length) b.text = b.text.replace(/[:：]\s*$/, '') + ': ' + items.join('; ') + '.';
     }
+    // provenance markers written by the parsers: [[f:File name]], [[p:14]] (page), [[s:4]] (slide)
+    let curFile = null, curPage = null, curSlide = null;
     for (const b of blocks) {
+      const mk = !b.h && !b.li && b.text.match(/^\[\[([fps]):(.+?)\]\]$/);
+      if (mk) {
+        if (mk[1] === 'f') { curFile = mk[2]; curPage = null; curSlide = null; }
+        else if (mk[1] === 'p') { curPage = +mk[2]; curSlide = null; }
+        else { curSlide = +mk[2]; curPage = null; }
+        continue;
+      }
       if (b.h) {
         if (cur.sentences.length || cur.title) sections.push(cur);
         cur = { title: b.text, sentences: [], paraCount: 0 };
@@ -1481,7 +1625,7 @@ const GENERIC = new Set('information data process system method result results s
       ss.forEach((raw, i) => {
         let s = raw, ord = null;
         if (isLi) { const om = raw.match(/^(\d{1,3})[.)]\s+(.*)$/); if (om) { ord = +om[1]; s = om[2]; } }
-        const sent = { id: sid++, s, first: i === 0, li: isLi, ord, section: sections.length, len: s.length, words: wordsOf(s), dangling: isDangling(s) };
+        const sent = { id: sid++, s, first: i === 0, li: isLi, ord, section: sections.length, len: s.length, words: wordsOf(s), dangling: isDangling(s), file: curFile, page: curPage, slide: curSlide };
         sentences.push(sent);
         cur.sentences.push(sent);
       });
@@ -1850,6 +1994,117 @@ const GENERIC = new Set('information data process system method result results s
     const rank = { symbolic: 0, reaction: 1, words: 2 };
     out.sort((x, y) => (rank[x.kind] ?? 3) - (rank[y.kind] ?? 3));
     return out.slice(0, 24);
+  }
+
+  /* ---------- formulas as MathML ----------
+     Turns "SE = s / sqrt(n)" or "t = (xbar - mu) / SE" into real typeset maths — fractions, roots,
+     powers, subscripts, Greek letters, chemical subscripts — which every current browser renders with no
+     library. Returns null when the expression cannot be parsed, so the caller falls back to plain text. */
+  const GREEK = { alpha: 'α', beta: 'β', gamma: 'γ', delta: 'δ', epsilon: 'ε', theta: 'θ', lambda: 'λ', mu: 'μ', nu: 'ν', pi: 'π', rho: 'ρ', sigma: 'σ', tau: 'τ', phi: 'φ', chi: 'χ', psi: 'ψ', omega: 'ω', Delta: 'Δ', Sigma: 'Σ', Omega: 'Ω', Pi: 'Π', Theta: 'Θ', Lambda: 'Λ', infinity: '∞', inf: '∞' };
+  const MATH_FNS = new Set(['sqrt', 'log', 'ln', 'exp', 'sin', 'cos', 'tan', 'sum', 'max', 'min', 'abs', 'mod']);
+  const mesc = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  function mathTokens(expr) {
+    const out = [];
+    const re = /\s+|(\d+(?:\.\d+)?)|([A-Za-z][A-Za-z0-9]*(?:_[A-Za-z0-9]+)?)|(->|<=|>=|[=+\-*/×÷·^_()≈∝≤≥<>→,|])/g;
+    let m, last = 0;
+    while ((m = re.exec(expr))) {
+      if (m.index !== last) return null;                 // something we don't understand
+      last = re.lastIndex;
+      if (m[1]) out.push({ t: 'num', v: m[1] });
+      else if (m[2]) out.push({ t: 'id', v: m[2] });
+      else if (m[3]) out.push({ t: 'op', v: m[3] === '->' ? '→' : m[3] });
+    }
+    return last === expr.length ? out : null;
+  }
+  function mathAtomIdent(v) {
+    // x_1, x_i → subscript; xbar → x with a bar; H2O / C6H12O6 → chemical subscripts; Greek names
+    const sub = v.match(/^([A-Za-z]+)_([A-Za-z0-9]+)$/);
+    if (sub) return `<msub>${mathAtomIdent(sub[1])}<mi>${mesc(sub[2])}</mi></msub>`;
+    if (GREEK[v]) return `<mi>${GREEK[v]}</mi>`;
+    const bar = v.match(/^([A-Za-z])bar$/); if (bar) return `<mover accent="true"><mi>${bar[1]}</mi><mo>¯</mo></mover>`;
+    const hat = v.match(/^([A-Za-z])hat$/); if (hat) return `<mover accent="true"><mi>${hat[1]}</mi><mo>^</mo></mover>`;
+    if (/^(?:[A-Z][a-z]?\d*){1,6}$/.test(v) && /\d/.test(v) && /^[A-Z]/.test(v)) {   // a chemical formula
+      return '<mrow>' + v.replace(/([A-Z][a-z]?)(\d*)/g, (_, el, n) => n ? `<msub><mi mathvariant="normal">${el}</mi><mn>${n}</mn></msub>` : `<mi mathvariant="normal">${el}</mi>`) + '</mrow>';
+    }
+    const trail = v.match(/^([A-Za-z]+?)(\d+)$/);        // x1, y2 → subscript
+    if (trail && trail[1].length <= 2) return `<msub><mi>${mesc(trail[1])}</mi><mn>${trail[2]}</mn></msub>`;
+    return `<mi${v.length > 1 && !/^[A-Z]{2,}$/.test(v) ? ' mathvariant="italic"' : ''}>${mesc(v)}</mi>`;
+  }
+  function mathml(expr) {
+    const toks = mathTokens(String(expr).trim());
+    if (!toks || !toks.length) return null;
+    let i = 0;
+    const peek = () => toks[i], take = () => toks[i++];
+    const isOp = (...vs) => peek() && peek().t === 'op' && vs.includes(peek().v);
+    const strip = n => n.paren ? n.html.replace(/^<mrow><mo>\(<\/mo>/, '<mrow>').replace(/<mo>\)<\/mo><\/mrow>$/, '</mrow>') : n.html;
+    function atom() {
+      const t = peek(); if (!t) throw 0;
+      if (t.t === 'num') { take(); return { html: `<mn>${t.v}</mn>` }; }
+      if (t.t === 'id') {
+        take();
+        if (MATH_FNS.has(t.v) && isOp('(')) {
+          take(); const inner = relation(); if (!isOp(')')) throw 0; take();
+          if (t.v === 'sqrt') return { html: `<msqrt>${strip(inner)}</msqrt>` };
+          if (t.v === 'abs') return { html: `<mrow><mo>|</mo>${strip(inner)}<mo>|</mo></mrow>` };
+          return { html: `<mrow><mi>${t.v}</mi><mo>&#x2061;</mo><mrow><mo>(</mo>${strip(inner)}<mo>)</mo></mrow></mrow>` };
+        }
+        return { html: mathAtomIdent(t.v) };
+      }
+      if (t.t === 'op' && t.v === '(') {
+        take(); const inner = relation(); if (!isOp(')')) throw 0; take();
+        return { html: `<mrow><mo>(</mo>${inner.html}<mo>)</mo></mrow>`, paren: true };
+      }
+      if (t.t === 'op' && t.v === '|') {
+        take(); const inner = relation(); if (!isOp('|')) throw 0; take();
+        return { html: `<mrow><mo>|</mo>${inner.html}<mo>|</mo></mrow>` };
+      }
+      if (t.t === 'op' && t.v === '-') { take(); const a = power(); return { html: `<mrow><mo>−</mo>${a.html}</mrow>` }; }
+      throw 0;
+    }
+    function power() {
+      let base = atom();
+      while (isOp('^', '_')) {
+        const op = take().v; const e = atom();
+        base = { html: op === '^' ? `<msup>${base.html}${strip(e)}</msup>` : `<msub>${base.html}${strip(e)}</msub>` };
+      }
+      return base;
+    }
+    function term() {
+      let left = power();
+      for (;;) {
+        if (isOp('*', '×', '·', '÷', '/')) {
+          const op = take().v; const right = power();
+          if (op === '/' || op === '÷') left = { html: `<mfrac>${strip(left)}${strip(right)}</mfrac>` };
+          else left = { html: `<mrow>${left.html}<mo>${op === '×' ? '×' : '⋅'}</mo>${right.html}</mrow>` };
+        } else if (peek() && (peek().t !== 'op' || peek().v === '(') && !isOp(')')) {   // implicit multiplication: 2 SE, z SE
+          const right = power();
+          left = { html: `<mrow>${left.html}<mo>&#x2062;</mo>${right.html}</mrow>` };
+        } else break;
+      }
+      return left;
+    }
+    function additive() {
+      let left = term();
+      while (isOp('+', '-')) { const op = take().v; const right = term(); left = { html: `<mrow>${left.html}<mo>${op === '-' ? '−' : '+'}</mo>${right.html}</mrow>` }; }
+      return left;
+    }
+    function relation() {
+      let left = additive();
+      while (isOp('=', '≈', '∝', '≤', '≥', '<', '>', '→', '<=', '>=')) {
+        const op = take().v; const right = additive();
+        const shown = op === '<=' ? '≤' : op === '>=' ? '≥' : op;
+        left = { html: `<mrow>${left.html}<mo>${mesc(shown)}</mo>${right.html}</mrow>` };
+      }
+      return left;
+    }
+    try {
+      const parts = [];
+      parts.push(relation());
+      while (isOp(',')) { take(); parts.push(relation()); }
+      if (i !== toks.length) return null;
+      const body = parts.length === 1 ? parts[0].html : parts.map(p => p.html).join('<mo>,</mo>');
+      return `<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow>${body}</mrow></math>`;
+    } catch (e) { return null; }
   }
 
   /* ---------- sentence scoring ---------- */
@@ -2359,7 +2614,7 @@ const GENERIC = new Set('information data process system method result results s
     return lev(g, t) <= tol;
   }
 
-  return { analyze, summary, keyInfo, flashcards, quiz, checkAnswer, splitSentences, splitCause, termsIn, cardKey, termGraph, extractSymbols };
+  return { analyze, summary, keyInfo, flashcards, quiz, checkAnswer, splitSentences, splitCause, termsIn, cardKey, termGraph, extractSymbols, mathml };
 })();
 
 </script>
@@ -2368,7 +2623,7 @@ const GENERIC = new Set('information data process system method result results s
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '1.4', date: '1 September 2026' };
+  const BUILD = { v: '1.5', date: '1 September 2026' };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonandy242', ['gmail', 'com'].join('.')].join('@');
   const OWNER_HASH = 'f2d29d4fd8c98b4205c0ffa7628eeeccfc3f2647ed0430748eac0d775cbc562d';
@@ -2489,21 +2744,53 @@ const GENERIC = new Set('information data process system method result results s
     p.srs = p.srs || {}; p.terms = p.terms || {}; p.quizzes = p.quizzes || []; p.pool = p.pool || 0;
     return p;
   }
-  // SM-2 lite: Again → 10 min, Good → 1d, 3d, 7d then ×ease; Easy jumps further ahead
+  /* ---------- FSRS: the scheduler ----------
+     Free Spaced Repetition Scheduler (the algorithm Anki adopted), FSRS-5 formulas with the published
+     default parameters. Each card carries a stability S (days until recall probability falls to 90%)
+     and a difficulty D (1–10). The interval is whatever brings the card back at 90% retrievability.
+     Cards scheduled by the old SM-2-lite are migrated in place the first time they are reviewed. */
+  const FSRS = (() => {
+    const W = [0.4072, 1.1829, 3.1262, 15.4722, 7.2102, 0.5316, 1.0651, 0.0234, 1.616, 0.1544, 1.0824, 1.9813, 0.0953, 0.2975, 2.2042, 0.2407, 2.9466, 0.5034, 0.6567];
+    const DECAY = -0.5, FACTOR = 19 / 81, RETENTION = 0.9, MAX_IVL = 365;
+    const clampD = d => Math.min(10, Math.max(1, d));
+    const d0 = g => clampD(W[4] - Math.exp(W[5] * (g - 1)) + 1);
+    const s0 = g => W[g - 1];
+    const retrievability = (days, s) => Math.pow(1 + FACTOR * days / s, DECAY);
+    const interval = s => Math.max(1, Math.min(MAX_IVL, Math.round(s / FACTOR * (Math.pow(RETENTION, 1 / DECAY) - 1))));
+    // g: 1 Again · 2 Hard · 3 Good · 4 Easy — returns the card's new state without writing it
+    function next(card, g, now) {
+      let s, d;
+      if (!card || !(card.s > 0)) { s = s0(g); d = d0(g); }
+      else {
+        const days = card.last ? Math.max(0, (now - card.last) / DAY) : (card.ivl || 0);
+        const r = retrievability(days, card.s);
+        d = clampD(W[7] * d0(4) + (1 - W[7]) * (card.d + (-W[6] * (g - 3)) * (10 - card.d) / 9));
+        if (days < 1 && card.reps > 0) s = card.s * Math.exp(W[17] * (g - 3 + W[18]));                       // same-day review
+        else if (g === 1) s = Math.min(card.s, W[11] * Math.pow(d, -W[12]) * (Math.pow(card.s + 1, W[13]) - 1) * Math.exp(W[14] * (1 - r)));
+        else s = card.s * (Math.exp(W[8]) * (11 - d) * Math.pow(card.s, -W[9]) * (Math.exp(W[10] * (1 - r)) - 1) * (g === 2 ? W[15] : 1) * (g === 4 ? W[16] : 1) + 1);
+      }
+      s = Math.max(0.1, Math.min(36500, s));
+      return { s, d, ivl: g === 1 ? 0 : interval(s), r: card && card.s > 0 && card.last ? retrievability(Math.max(0, (now - card.last) / DAY), card.s) : null };
+    }
+    // a card from the SM-2-lite days: turn its interval and ease into a stability and difficulty
+    function migrate(c) {
+      if (!c || c.s > 0) return c;
+      c.s = Math.max(0.4, c.ivl || (c.reps ? 1 : 0.4));
+      c.d = clampD(5.3 - ((c.ease || 2.3) - 2.3) * 4);
+      delete c.ease;
+      return c;
+    }
+    const grade = rating => rating === 'again' ? 1 : rating === 'hard' ? 2 : rating === 'easy' ? 4 : 3;
+    return { next, migrate, grade, interval, retrievability, RETENTION };
+  })();
   function schedule(sid, key, rating) {
     const p = prog(sid), now = Date.now();
-    const c = p.srs[key] || { ivl: 0, ease: 2.3, reps: 0, lapses: 0 };
-    if (rating === 'again') {
-      c.lapses++; c.reps = 0; c.ivl = 0; c.ease = Math.max(1.4, c.ease - 0.2); c.due = now + 10 * 60000;
-    } else {
-      const easy = rating === 'easy';
-      if (easy) c.ease = Math.min(3, c.ease + 0.15);
-      if (c.reps === 0) c.ivl = easy ? 3 : 1;
-      else if (c.reps === 1) c.ivl = easy ? 6 : 3;
-      else if (c.reps === 2) c.ivl = easy ? 12 : 7;
-      else c.ivl = Math.min(180, Math.round(c.ivl * c.ease * (easy ? 1.3 : 1)));
-      c.reps++; c.due = now + c.ivl * DAY;
-    }
+    const c = FSRS.migrate(p.srs[key]) || { s: 0, d: 0, ivl: 0, reps: 0, lapses: 0 };
+    const g = FSRS.grade(rating);
+    const n = FSRS.next(c.s > 0 ? c : null, g, now);
+    c.s = n.s; c.d = n.d; c.ivl = n.ivl; c.reps = (c.reps || 0) + 1;
+    if (g === 1) { c.lapses = (c.lapses || 0) + 1; c.due = now + 10 * 60000; }
+    else c.due = now + n.ivl * DAY;
     c.last = now; p.srs[key] = c; saveProgress();
     return c;
   }
@@ -2651,10 +2938,10 @@ const GENERIC = new Set('information data process system method result results s
 
   /* ---------- state ---------- */
   const state = { subjects: loadIndex().subjects, unlock: loadUnlock(), modal: null, busy: {}, ui: {}, analysis: null, analysisKey: null, pendingSignup: null, timer: null, searchQ: '' };
-  let downloadsNS = null;
-  if (window.claude && typeof window.claude.use === 'function') {
-    Promise.resolve(window.claude.use('downloads')).then(ns => { downloadsNS = ns; if (ns) document.querySelectorAll('[data-needs-downloads]').forEach(el => el.hidden = false); }).catch(() => {});
-  }
+  // Where is this page running? Inside the Claude artifact frame a page cannot start a download of its own,
+  // so every "save" there hands the text over to copy instead. The live site and the standalone file save real files.
+  const IN_ARTIFACT = !!(window.__FRAME_PREAMBLE || (window.claude && typeof window.claude.use === 'function'));
+  const LIVE_URL = 'https://thepastor.github.io/uni-made-ez/';
 
   const subjectById = id => state.subjects.find(s => s.id === id);
   const isUnlocked = () => !!state.unlock;
@@ -2689,7 +2976,10 @@ const GENERIC = new Set('information data process system method result results s
     map: '<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="7" r="2.5"/><circle cx="18" cy="6" r="2.2"/><circle cx="12" cy="17" r="2.8"/><path d="M8.2 8.6 10.4 15M16.6 8 13.4 14.8M8.4 6.6l7.2-.4"/></svg>',
     search: '<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" width="14" height="14"><circle cx="11" cy="11" r="6"/><path d="M15.5 15.5L20 20"/></svg>',
     speak: '<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M4 9.5v5h3.5L12 18V6L7.5 9.5H4z"/><path d="M15.5 9a4 4 0 0 1 0 6"/><path d="M18 6.5a7.5 7.5 0 0 1 0 11"/></svg>',
-    x: '<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="14" height="14"><path d="M6 6l12 12M18 6L6 18"/></svg>'
+    x: '<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="14" height="14"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+    pack: '<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h10l4 4v12H5z"/><path d="M15 4v4h4"/><path d="M8 12h8M8 16h8"/><path d="M8 20v1M12 20v1M16 20v1"/></svg>',
+    deck: '<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="13" height="11" rx="2"/><path d="M7 5h11a2 2 0 0 1 2 2v9"/><path d="M9.5 16v-4M9.5 12l-2 2M9.5 12l2 2"/></svg>',
+    backup: '<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="6" rx="7" ry="2.6"/><path d="M5 6v12c0 1.4 3.1 2.6 7 2.6s7-1.2 7-2.6V6"/><path d="M5 12c0 1.4 3.1 2.6 7 2.6s7-1.2 7-2.6"/></svg>'
   };
 
   /* ---------- pick up where you left off ---------- */
@@ -2847,7 +3137,7 @@ const GENERIC = new Set('information data process system method result results s
           <span class="arr">→</span>
         </a>`;
       })()}
-      <div class="subjects-head"><h2>${subs.length ? 'Your subjects' : 'No subjects yet'}</h2><button class="btn cell" data-act="new-subject">Add subject <span class="arr">→</span></button></div>
+      <div class="subjects-head"><h2>${subs.length ? 'Your subjects' : 'No subjects yet'}</h2><button class="btn cell ghost" data-act="backup-open" title="Back up every subject to a file, or restore one">Backup &amp; restore</button><button class="btn cell" data-act="new-subject">Add subject <span class="arr">→</span></button></div>
       <div class="subject-grid">
         ${subs.map(s => `<div class="subject-slot"><a class="subject-card" href="#/s/${s.id}" style="--tab:${s.color}">
           <div class="code">${esc(s.code || 'Subject')}</div>
@@ -2922,6 +3212,7 @@ const GENERIC = new Set('information data process system method result results s
           </div>
           <div class="field"><label>Where you are with it</label><div class="seg">${[['', 'Not read'], ['read', 'Read'], ['review', 'Needs review']].map(([v, l]) => `<button type="button" class="${(f.status || '') === v ? 'on' : ''}" data-act="file-status" data-v="${v}">${l}</button>`).join('')}</div><input type="hidden" name="status" value="${esc(f.status || '')}"></div>
           <label class="check"><input type="checkbox" name="include" ${f.include !== false ? 'checked' : ''}> Include in the study set</label>
+          ${f.ocr ? `<p class="small muted">Its text was read by the scan reader (OCR)${f.pages ? ` from ${plural(f.pages, 'page')}` : ''}. Scans read well when the print is sharp; check important figures and names against the original.</p>` : ''}
         </div>
         <div class="modal-foot"><button type="button" class="btn sm danger" data-act="remove-mat" data-id="${esc(f.id)}">Remove file</button><span class="spacer" style="flex:1"></span><button type="button" class="btn sm" data-act="close-modal">Cancel</button><button class="btn sm primary" type="submit">Save <span class="arr">→</span></button></div>
       </form></div>`;
@@ -2969,6 +3260,52 @@ const GENERIC = new Set('information data process system method result results s
           ${grp('Lists', [['↑ / ↓', 'Move between items in a column or list'], ['← / →', 'Move along a row of buttons'], ['Home / End', 'First / last item'], ['Enter / Space', 'Open the item']])}
         </div>
         <div class="modal-foot"><span class="mono muted">Every action also has a button — nothing needs a shortcut</span><span class="spacer" style="flex:1"></span><button class="btn sm" data-act="close-modal">Close</button></div>
+      </div></div>`;
+    }
+    if (m.type === 'export') {
+      const kb = Math.max(1, Math.round((m.data || '').length / 1024));
+      return `<div class="modal-bg" data-act="close-modal"><div class="modal wide info" role="dialog" aria-modal="true" aria-label="${esc(m.what)}">
+        <div class="modal-head"><div><span class="label">Ready to copy · ${esc(m.filename)} · ${kb} KB</span><h2>${esc(m.what)}</h2></div><button class="btn ghost icon" data-act="close-modal" aria-label="Close">${I.x}</button></div>
+        <div class="modal-body">
+          <p class="small muted">${IN_ARTIFACT ? `Pages inside Claude can't save files, so here is the text instead. Copy it and paste it into a file named <code>${esc(m.filename)}</code> — or open the <a href="${LIVE_URL}" target="_blank" rel="noopener">live site</a>, where the same button downloads the file.` : `Your browser blocked the download, so here is the text instead. Copy it and paste it into a file named <code>${esc(m.filename)}</code>.`}</p>
+          <div class="field"><label for="x-text">File contents</label><textarea class="input mono" id="x-text" rows="12" readonly spellcheck="false">${esc(m.data || '')}</textarea></div>
+        </div>
+        <div class="modal-foot"><button class="btn sm primary" data-act="export-copy">Copy it all <span class="arr">⧉</span></button><span class="spacer" style="flex:1"></span><button class="btn sm" data-act="close-modal">Close</button></div>
+      </div></div>`;
+    }
+    if (m.type === 'backup') {
+      const subs = state.subjects; const files = subs.reduce((n, s) => n + s.materials.length, 0);
+      return `<div class="modal-bg" data-act="close-modal"><div class="modal wide info" role="dialog" aria-modal="true" aria-label="Backup and restore">
+        <div class="modal-head"><div><span class="label">Your subjects live in this browser only</span><h2>Backup &amp; restore</h2></div><button class="btn ghost icon" data-act="close-modal" aria-label="Close">${I.x}</button></div>
+        <div class="modal-body">
+          <div class="detail-block"><span class="label">Back up</span>
+            <p>One <code>.json</code> file with every subject, the text of every file and all your progress — card schedules, quiz history, weak spots, stars, notes and your own cards. Keep it somewhere safe, or move it to another device.</p>
+            <div class="btn-row"><button class="btn sm primary" data-act="backup-all" ${subs.length ? '' : 'disabled'}>Back up everything <span class="arr">↓</span></button><span class="mono muted">${plural(subs.length, 'subject')} · ${plural(files, 'file')}</span></div>
+            ${IN_ARTIFACT ? `<p class="small muted">Inside Claude the backup opens as text to copy; on the <a href="${LIVE_URL}" target="_blank" rel="noopener">live site</a> it downloads.</p>` : ''}
+          </div>
+          <div class="detail-block"><span class="label">Restore</span>
+            <p>Choose a backup file. Subjects in it are added here; a subject that is already here is replaced by the backup copy. You get an Undo afterwards.</p>
+            <label class="btn sm restore-btn">Restore from a backup file… <input type="file" accept=".json,application/json" data-restore hidden></label>
+          </div>
+        </div>
+        <div class="modal-foot"><span class="mono muted">Nothing is sent anywhere — the file is written and read on your device</span><span class="spacer" style="flex:1"></span><button class="btn sm" data-act="close-modal">Close</button></div>
+      </div></div>`;
+    }
+    if (m.type === 'pack') {
+      const p = m.pack;
+      return `<div class="modal-bg" data-act="close-modal"><div class="modal wide info" role="dialog" aria-modal="true" aria-label="Revision pack">
+        <div class="modal-head"><div><span class="label">${esc(p.s.name)}</span><h2>Revision pack</h2></div><button class="btn ghost icon" data-act="close-modal" aria-label="Close">${I.x}</button></div>
+        <div class="modal-body">
+          <p>Everything from this subject in one document: the summary, key definitions and acronyms, the formula sheet, processes, timeline and figures, your notes, every flash card as a question-and-answer list, and a test-yourself section.</p>
+          <div class="sum-stats pack-stats"><div><b>${p.defs.length + p.acronyms.length}</b><span>definitions</span></div><div><b>${p.formulas.length}</b><span>formulas</span></div><div><b>${p.cards.length}</b><span>flash cards</span></div><div><b>${p.sum.sections.length}</b><span>sections</span></div></div>
+          <div class="btn-row">
+            <button class="btn sm primary" data-act="pack-print">Print or save as PDF <span class="arr">⎙</span></button>
+            <button class="btn sm" data-act="pack-md">Download .md <span class="arr">↓</span></button>
+            <button class="btn sm" data-act="pack-copy">Copy as text <span class="arr">⧉</span></button>
+          </div>
+          <p class="small muted">Print gives you a clean black-on-white document; pick “Save as PDF” in the print dialog to keep a file. The Markdown version opens in Notion, Obsidian, Word or any text editor.</p>
+        </div>
+        <div class="modal-foot"><span class="mono muted">Hidden items stay out; your own and edited cards are in</span><span class="spacer" style="flex:1"></span><button class="btn sm" data-act="close-modal">Close</button></div>
       </div></div>`;
     }
     if (m.type === 'display') {
@@ -3067,15 +3404,15 @@ const GENERIC = new Set('information data process system method result results s
           <div class="panel-head"><h2>Class materials</h2>${s.materials.length ? `<button class="btn sm ghost" data-act="clear-mats">Remove all files ${I.x}</button>` : `<span class="label">this session</span>`}</div>
           <div class="panel-body">
             <label class="dropzone" id="dropzone">
-              <input type="file" id="file-input" multiple accept=".pdf,.epub,.docx,.pptx,.txt,.md,.html,.htm,.rtf,.csv,.json,.xml">
+              <input type="file" id="file-input" multiple accept=".pdf,.epub,.docx,.pptx,.txt,.md,.html,.htm,.rtf,.csv,.json,.xml,.jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp">
               ${I.upload}
               <strong>Drop files here or click to choose</strong>
-              <span class="types">PDF · EPUB · DOCX · PPTX · TXT · MD · HTML</span>
+              <span class="types">PDF · EPUB · DOCX · PPTX · TXT · MD · HTML · photos of notes</span>
             </label>
             ${matFilters}
             ${s.materials.length ? `<div class="mat-list">${s.materials.map(m => materialHtml(m)).join('')}</div>` : `<div class="empty small">No materials yet. Upload a lecture, chapter or your own notes to begin.</div>`}
             ${s.materials.length ? `<div class="scan-stat"><span><b>${included.length}</b> of ${s.materials.length} included</span><span><b>${fmt(words)}</b> words scanned</span>${readN ? `<span><b>${readN}</b> of ${s.materials.length} read</span>` : ''}${reviewN ? `<span class="warn"><b>${reviewN}</b> to review</span>` : ''}</div>` : ''}
-            <p class="small muted">Tick a file to include it in the study set. Tap ⋯ to label it (lecture, week 3), or the badge to mark it read. Scanned PDFs (photos of pages) have no text to read — OCR them first.</p>
+            <p class="small muted">Tick a file to include it in the study set. Tap ⋯ to label it (lecture, week 3), or the badge to mark it read. ${OCR.available() ? 'Scanned PDFs and photos of printed notes are read with the built-in scan reader (OCR) — on your device, nothing uploaded.' : `Scanned PDFs and photos of notes need the scan reader, which runs on the <a href="${LIVE_URL}" target="_blank" rel="noopener">live site</a>.`}</p>
           </div>
         </section>
         <section>
@@ -3099,6 +3436,13 @@ const GENERIC = new Set('information data process system method result results s
                ['map', 'Concept map', 'See which terms the material keeps mentioning together.', I.map]
               ].map(([kind, title, desc, icon]) => `<a class="tool${ready ? '' : ' disabled'}" href="${ready ? `#/s/${s.id}/${kind}` : '#'}" ${ready ? '' : 'aria-disabled="true" tabindex="-1"'}><span class="ic">${icon}</span><span class="t"><b>${title}</b><span>${desc}</span></span><span class="arr">→</span></a>`).join('')}
           </div>
+          <div class="panel-head slim"><h2>Take it with you</h2><span class="label">${IN_ARTIFACT ? 'copy here · download on the live site' : 'files you keep'}</span></div>
+          <div class="tools-row export-row">
+            ${[['pack-open', 'Revision pack', 'Summary, key information, formula sheet and every card in one document — print it, save it as a PDF or as Markdown.', I.pack, ready],
+               ['export-anki', 'Anki deck', 'The flash cards as a .txt file Anki imports straight into a deck named after this subject. Quizlet takes a copy.', I.deck, ready],
+               ['backup-subject', 'Back up this subject', 'One .json file with its files, their text and your progress. Restore it on another device from the home page.', I.backup, s.materials.length > 0]
+              ].map(([act, title, desc, icon, on]) => { const lk = act === 'pack-open' && LOCKED.summary && !isUnlocked(); return `<button type="button" class="tool${on ? '' : ' disabled'}${lk ? ' locked' : ''}" data-act="${act}" ${on ? '' : 'disabled'}><span class="ic">${icon}</span><span class="t"><b>${title}${lk ? ` <span class="lock">${I.lock} Sign-up</span>` : ''}</b><span>${desc}</span></span><span class="arr">${act === 'pack-open' ? '→' : '↓'}</span></button>`; }).join('')}
+          </div>
           ${weak.length ? `<div class="panel-body weak-panel">
             <div class="row between"><span class="label">Weak spots</span><span class="mono muted">${plural(weak.length, 'term')}</span></div>
             <div class="term-chips">${weak.map(w => `<span class="term-chip weak">${esc(w.label)} <span class="mono">${w.w}✗${w.r ? ' ' + w.r + '✓' : ''}</span></span>`).join('')}</div>
@@ -3116,13 +3460,22 @@ const GENERIC = new Set('information data process system method result results s
   const FILE_TAGS = ['Lecture', 'Reading', 'Slides', 'Lab', 'Past paper', 'My notes', 'Textbook'];
   const STATUS_META = { '': ['To read', 'none'], read: ['Read', 'read'], review: ['Review', 'review'] };
   function materialHtml(m) {
-    const cls = ['mat', m.busy ? 'busy' : '', m.err ? 'error' : '', m.include === false ? 'off' : ''].filter(Boolean).join(' ');
-    const info = m.busy ? `Scanning${m.progress != null ? ` · ${m.progress}%` : '…'}` : m.err ? esc(m.err) : `${fmt(m.words)} words · ${esc(m.label || m.ext)}`;
+    const cls = ['mat', m.busy ? 'busy' : '', m.err ? 'error' : '', m.include === false ? 'off' : '', m.scan && !m.busy ? 'scan' : ''].filter(Boolean).join(' ');
+    const info = m.busy ? (m.stage ? `${esc(m.stage)}${m.progress ? ` · ${m.progress}%` : ''}` : `Scanning${m.progress != null ? ` · ${m.progress}%` : '…'}`) : m.err ? esc(m.err) : `${fmt(m.words)} words · ${esc(m.label || m.ext)}${m.ocr ? ' · read by OCR' : ''}`;
     const st = STATUS_META[m.status || ''] || STATUS_META[''];
     const chips = `${m.tag ? `<span class="fchip">${esc(m.tag)}</span>` : ''}${m.week ? `<span class="fchip wk">Week ${esc(m.week)}</span>` : ''}`;
+    // a scan (or a photo) that has not been read yet: the reader, or where to find it
+    let scanRow = '';
+    if (m.scan && !m.busy) {
+      if (!OCR.available()) scanRow = `<div class="scan-row"><span>Photos and scans are read on the <a href="${LIVE_URL}" target="_blank" rel="noopener">live site</a>${IN_ARTIFACT ? ' — pages inside Claude can\'t fetch the reader' : ''}.</span></div>`;
+      else if (pendingScans.has(m.id)) scanRow = `<div class="scan-row"><button type="button" class="btn sm primary" data-act="ocr" data-id="${m.id}">Read this scan <span class="arr">→</span></button><span>Text is read on your device — nothing is uploaded. Printed or typed text works best.</span></div>`;
+      else scanRow = `<div class="scan-row"><span>Upload it again to read it with the scan reader.</span></div>`;
+    } else if (m.thin && !m.busy && !m.err && OCR.available() && pendingScans.has(m.id)) {
+      scanRow = `<div class="scan-row"><span>Only ${fmt(m.words)} words on ${plural(m.pages, 'page')} — mostly scans?</span><button type="button" class="btn sm" data-act="ocr" data-id="${m.id}">Read it with OCR <span class="arr">→</span></button></div>`;
+    }
     return `<div class="${cls}" data-mid="${m.id}">
       <input type="checkbox" class="check" data-act="toggle-mat" data-id="${m.id}" ${m.include !== false ? 'checked' : ''} ${m.busy || m.err ? 'disabled' : ''} aria-label="Include ${esc(m.name)}">
-      <div style="min-width:0"><div class="name">${esc(m.name)}</div><div class="info">${info}</div>${chips ? `<div class="fchips">${chips}</div>` : ''}${m.busy ? `<div class="progress"><i style="width:${m.progress || 3}%"></i></div>` : ''}</div>
+      <div style="min-width:0"><div class="name">${esc(m.name)}</div><div class="info">${info}</div>${chips ? `<div class="fchips">${chips}</div>` : ''}${m.busy ? `<div class="progress"><i style="width:${m.progress || 3}%"></i></div>` : ''}${scanRow}</div>
       ${m.busy || m.err ? '' : `<button type="button" class="fstat ${st[1]}" data-act="mat-status" data-id="${m.id}" aria-label="${st[0]} — tap to change">${st[0]}</button>`}
       <button type="button" class="btn sm ghost more-btn" data-act="mat-open" data-id="${m.id}" aria-label="Options for ${esc(m.name)}">⋯</button>
     </div>`;
@@ -3137,29 +3490,130 @@ const GENERIC = new Set('information data process system method result results s
     dz.addEventListener('drop', e => addFiles(s, Array.from(e.dataTransfer.files || [])));
   }
 
+  /* ---------- the scan reader (OCR) ----------
+     Scanned PDFs and photos of notes have no text layer. Tesseract is fetched from a CDN the first time it is
+     needed (the reader, its engine and the English model — about 15 MB once, then cached by the browser) and
+     runs in a worker on the device; nothing is uploaded. The artifact frame blocks those fetches, so inside
+     Claude the reader is unavailable and the row says so and points at the live site. */
+  const OCR = (() => {
+    const VER = '6.0.1', CORE = '6.0.0';
+    const CDN = `https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/${VER}/`;
+    const available = () => !IN_ARTIFACT && typeof Worker !== 'undefined' && typeof WebAssembly !== 'undefined' && !!document.createElement('canvas').getContext;
+    let libP = null, workerP = null, statusCb = null;
+    function lib() {
+      if (window.Tesseract) return Promise.resolve(window.Tesseract);
+      if (!libP) libP = new Promise((res, rej) => {
+        const sc = document.createElement('script'); sc.src = CDN + 'tesseract.min.js'; sc.async = true;
+        sc.onload = () => window.Tesseract ? res(window.Tesseract) : rej(new Error('The scan reader did not load.'));
+        sc.onerror = () => { libP = null; sc.remove(); rej(new Error('Could not download the scan reader — check the connection and try again.')); };
+        document.head.appendChild(sc);
+      });
+      return libP;
+    }
+    const STAGE = { 'loading tesseract core': 'Downloading the reader (once)…', 'initializing tesseract': 'Starting the reader…', 'loading language traineddata': 'Downloading the English model (11 MB, once)…', 'initializing api': 'Starting the reader…', 'recognizing text': 'Reading' };
+    async function worker(onStatus) {
+      statusCb = onStatus || null;
+      const T = await lib();
+      if (!workerP) workerP = T.createWorker('eng', 1, { workerPath: CDN + 'worker.min.js', corePath: `https://cdn.jsdelivr.net/npm/tesseract.js-core@${CORE}`, langPath: 'https://tessdata.projectnaptha.com/4.0.0',
+        logger: msg => { if (statusCb && msg && msg.status) statusCb(STAGE[msg.status] || msg.status, msg.status === 'recognizing text' ? msg.progress : null); } })
+        .catch(e => { workerP = null; throw new Error('The scan reader could not start' + (e && e.message ? ` (${e.message})` : '') + '.'); });
+      return workerP;
+    }
+    // every page of a PDF drawn to a canvas at roughly 200 dpi, one at a time to keep memory down
+    async function pdfPages(buf, onPage) {
+      const pdfjs = window.pdfjsLib || window['pdfjs-dist/build/pdf'];
+      const pdf = await pdfjs.getDocument({ data: buf, useSystemFonts: true, isEvalSupported: false }).promise;
+      for (let p = 1; p <= pdf.numPages; p++) {
+        const page = await pdf.getPage(p);
+        const v0 = page.getViewport({ scale: 1 });
+        const scale = Math.min(3, Math.max(1.4, 2000 / Math.max(v0.width, v0.height)));
+        const vp = page.getViewport({ scale });
+        const canvas = document.createElement('canvas'); canvas.width = Math.ceil(vp.width); canvas.height = Math.ceil(vp.height);
+        await page.render({ canvasContext: canvas.getContext('2d', { willReadFrequently: true }), viewport: vp }).promise;
+        await onPage(canvas, p, pdf.numPages);
+        page.cleanup?.(); canvas.width = 0; canvas.height = 0;
+      }
+    }
+    // file → [{ n, text }]; onProgress(stage, fraction 0..1)
+    async function read(file, onProgress) {
+      const ext = (file.name.split('.').pop() || '').toLowerCase();
+      const pages = [];
+      let cur = 0, total = 1;
+      const w = await worker((stage, frac) => onProgress(stage, frac == null ? null : (cur + frac) / total));
+      if (ext === 'pdf') {
+        await pdfPages(await file.arrayBuffer(), async (canvas, p, n) => {
+          cur = p - 1; total = n; onProgress(`Reading page ${p} of ${n}`, cur / total);
+          const { data } = await w.recognize(canvas);
+          pages.push({ n: p, text: data.text || '' });
+        });
+      } else {
+        onProgress('Reading the photo', 0);
+        const { data } = await w.recognize(file);
+        pages.push({ n: 1, text: data.text || '' });
+      }
+      return pages;
+    }
+    return { available, read, ready: () => !!workerP };
+  })();
+  // files that turned out to be scans, kept for this visit so "Read this scan" needs no second upload
+  const pendingScans = new Map();
+  const isImageExt = ext => Parsers.IMAGE_EXT.includes(ext);
+  async function ocrMaterial(s, m) {
+    const f = pendingScans.get(m.id);
+    if (!f) { toast('That file is not open any more — upload it again to read it.'); return; }
+    if (!OCR.available()) { toast('The scan reader is not available here.'); return; }
+    m.busy = true; m.progress = 0; m.stage = 'Loading the scan reader…'; delete m.err; m.scan = true;
+    updateMaterialRow(m); say(`Reading ${m.name}.`);
+    try {
+      const pages = await OCR.read(f, (stage, frac) => { m.stage = stage; if (frac != null) m.progress = Math.max(m.progress || 0, Math.min(99, Math.round(frac * 100))); updateMaterialRow(m); });
+      const text = Parsers.blocksToText(Parsers.ocrPagesToBlocks(pages));
+      if (!text || text.replace(/\W/g, '').length < 40) throw new Error(isImageExt(m.ext) ? 'The reader found no text in this photo. It needs printed or typed text that is sharp, well lit and the right way up.' : 'The reader found no text on these pages. It needs printed or typed text that is sharp and the right way up.');
+      m.words = text.replace(/\[\[[fps]:[^\]]*\]\]/g, '').split(/\s+/).filter(Boolean).length;
+      m.chars = text.length; m.ocr = true; m.include = true; delete m.scan; m.pages = pages.length;
+      const ok = await IDB.put(m.id, text);
+      if (!ok) toast('Text kept for this visit only — browser storage is unavailable.');
+      pendingScans.delete(m.id);
+      toast(`Read ${m.name} — ${fmt(m.words)} words from ${plural(pages.length, 'page')}. Check important figures against the original.`);
+    } catch (e) {
+      m.err = e && e.message ? e.message : 'The scan reader failed on this file.';
+      m.include = false; m.scan = true;
+    }
+    m.busy = false; delete m.progress; delete m.stage;
+    saveIndex(); invalidateAnalysis(); renderIfSubject(s);
+  }
+  function offerScan(s, m) {
+    if (OCR.available()) toast(`${m.name} has no text to read — it is a scan.`, { label: 'Read it', act: () => ocrMaterial(s, m) });
+  }
+
   async function addFiles(s, files) {
     for (const f of files) {
       const ext = (f.name.split('.').pop() || '').toLowerCase();
       const m = { id: uid(), name: f.name, ext, label: Parsers.EXT_LABEL[ext] || ext.toUpperCase(), words: 0, chars: 0, include: true, addedAt: Date.now(), busy: true, progress: 0 };
-      if (!Parsers.SUPPORTED.includes(ext)) { m.busy = false; m.err = `.${ext || '?'} files are not supported yet. Try PDF, EPUB, DOCX, PPTX or plain text.`; }
+      if (!Parsers.SUPPORTED.includes(ext)) { m.busy = false; m.err = `.${ext || '?'} files are not supported yet. Try PDF, EPUB, DOCX, PPTX, plain text or a photo (JPG, PNG).`; }
       else if (f.size > MAX_FILE_MB * 1024 * 1024) { m.busy = false; m.err = `Too large (over ${MAX_FILE_MB} MB). Split it up and try again.`; }
       s.materials.push(m);
       saveIndex();
       if (m.err) continue;
       renderIfSubject(s);
+      let needsOcr = false;
       try {
         const res = await Parsers.parseFile(f, (done, total) => { m.progress = Math.round(done / total * 100); updateMaterialRow(m); });
-        m.words = res.text.split(/\s+/).filter(Boolean).length;
+        m.words = res.text.replace(/\[\[[fps]:[^\]]*\]\]/g, '').split(/\s+/).filter(Boolean).length;
         m.chars = res.text.length;
+        if (res.pages) m.pages = res.pages;
         const ok = await IDB.put(m.id, res.text);
         if (!ok) toast('Text kept for this visit only — browser storage is unavailable.');
+        // a PDF with a text layer on a few pages only is mostly scans: offer the reader for it too
+        if (ext === 'pdf' && res.pages >= 2 && m.words / res.pages < 25 && OCR.available()) { pendingScans.set(m.id, f); m.thin = true; }
       } catch (e) {
-        m.err = e && e.message ? e.message : 'Could not read this file.';
         m.include = false;
+        if (e && e.code === 'NEEDS_OCR') { needsOcr = true; m.scan = true; pendingScans.set(m.id, f); m.err = isImageExt(ext) ? 'A photo — run it through the scan reader to get its text.' : 'No text layer — this PDF is scanned images.'; }
+        else m.err = e && e.message ? e.message : 'Could not read this file.';
       }
       m.busy = false; delete m.progress;
       saveIndex();
       renderIfSubject(s);
+      if (needsOcr) { if (isImageExt(ext) && OCR.available()) ocrMaterial(s, m); else offerScan(s, m); }
     }
     invalidateAnalysis();
   }
@@ -3168,6 +3622,30 @@ const GENERIC = new Set('information data process system method result results s
     if (row) row.outerHTML = materialHtml(m);
   }
   function renderIfSubject(s) { const r = parseRoute(); if (r.name === 'subject' && r.id === s.id) renderSubject(s); }
+
+  /* ---------- citations: where a sentence came from ---------- */
+  // "Lecture 6 · p. 14", "Week 3 slides · slide 4", or just the file name for text files
+  function cite(sent) {
+    if (!sent) return '';
+    const bits = [];
+    if (sent.file) bits.push(sent.file);
+    if (sent.page) bits.push('p. ' + sent.page);
+    else if (sent.slide) bits.push('slide ' + sent.slide);
+    return bits.join(' · ');
+  }
+  // most callers only have the sentence text; find it in the analysis
+  function citeText(text) {
+    const a = state.analysis; if (!a || !text) return '';
+    const t = String(text).trim();
+    const st = a.sentences.find(x => x.s === t) || a.sentences.find(x => t.length > 40 && (x.s.startsWith(t.slice(0, 60)) || t.startsWith(x.s.slice(0, 60))));
+    return cite(st);
+  }
+  const citeTag = text => { const c = citeText(text); return c ? `<span class="cite">${esc(c)}</span>` : ''; };
+  // a formula as typeset maths (MathML, no library needed); the plain expression is kept as alttext and as the fallback
+  function fxHtml(expr, kind) {
+    const m = kind === 'words' ? null : Engine.mathml(expr);
+    return m ? m.replace('<math ', `<math alttext="${esc(expr)}" `) : esc(expr);
+  }
 
   /* ---------- analysis (shared by all four sections) ---------- */
   function invalidateAnalysis() { state.analysis = null; state.analysisKey = null; }
@@ -3182,7 +3660,7 @@ const GENERIC = new Set('information data process system method result results s
       if (!t) { m.err = 'Text is no longer stored in this browser — upload the file again.'; m.include = false; saveIndex(); continue; }
       if (total + t.length > MAX_ANALYZE_CHARS) { t = t.slice(0, Math.max(0, MAX_ANALYZE_CHARS - total)); truncated = true; }
       total += t.length;
-      parts.push(`## ${m.name.replace(/\.[^.]+$/, '')}\n\n${t}`);
+      parts.push(`[[f:${m.name.replace(/\.[^.]+$/, '').replace(/[\[\]]/g, '')}]]\n\n## ${m.name.replace(/\.[^.]+$/, '')}\n\n${t}`);
       if (truncated) break;
     }
     await sleep(30); // let the spinner paint
@@ -3260,7 +3738,7 @@ const GENERIC = new Set('information data process system method result results s
     const bar = `<div class="seg" role="group" aria-label="Summary length">${['short', 'medium', 'long'].map(l => `<button type="button" class="${ui.level === l ? 'on' : ''}" data-act="sum-level" data-level="${l}">${l[0].toUpperCase() + l.slice(1)}</button>`).join('')}</div>
       <button class="btn sm" data-act="print-page" title="Print this summary">Print <span class="arr">⎙</span></button>
       <button class="btn sm" data-act="copy-summary" title="Copy the summary as Markdown">Copy <span class="arr">⧉</span></button>
-      <button class="btn sm" data-act="export-summary" data-needs-downloads ${downloadsNS ? '' : 'hidden'}>Save .md <span class="arr">↓</span></button>`;
+      <button class="btn sm" data-act="export-summary" title="Save the summary as a Markdown file">Save .md <span class="arr">↓</span></button>`;
     const st = sum.stats;
     const pct = Math.max(1, Math.round(st.summaryWords / Math.max(1, st.words) * 100));
     const inner = `<div class="summary">
@@ -3328,7 +3806,7 @@ const GENERIC = new Set('information data process system method result results s
     switch (kind) {
       case 'defs': return `<div class="def k-row"${flat}><dt>${esc(item.term)}${item.section ? `<span class="where">${esc(item.section)}</span>` : ''}</dt><dd class="clamp">${esc(defText(item))}${rowBtn(`Open the definition of ${item.term}`)}</dd></div>`;
       case 'acronyms': return `<div class="def k-row"${flat}><dt>${esc(item.acr)}</dt><dd class="clamp">${esc(item.expansion)}${rowBtn(`Open the acronym ${item.acr}`)}</dd></div>`;
-      case 'formulas': return `<div class="formula k-row" ${open}>${esc(item.expr)}</div>`;
+      case 'formulas': return `<div class="formula k-row" ${open} aria-label="Open the formula ${esc(item.expr)}">${fxHtml(item.expr, item.kind)}</div>`;
       case 'processes': if (item.steps) return `<div class="k-row proc"${flat}>${item.title ? `<span class="label">${esc(item.title)}</span>` : ''}<ol class="steps">${item.steps.slice(0, 6).map(x => `<li>${esc(x.s)}</li>`).join('')}${item.steps.length > 6 ? `<li class="muted">… ${item.steps.length - 6} more steps</li>` : ''}</ol>${rowBtn(`Open the ${item.steps.length}-step process${item.title ? ': ' + item.title : ''}`)}</div>`;
         return `<div class="fact k-row clamp" ${open}>${hlNeedles(item.sent.s, [item.cue])}</div>`;
       case 'causes': { const sp = Engine.splitCause(item.sent.s); return sp ? `<div class="k-row ce" ${open}><div><span class="tag">Cause</span><span class="clamp">${esc(sp.cause)}</span></div><div><span class="tag">Effect</span><span class="clamp">${esc(sp.effect)}</span></div></div>` : `<div class="fact k-row clamp" ${open}>${hlNeedles(item.sent.s, [item.cue])}</div>`; }
@@ -3380,7 +3858,7 @@ const GENERIC = new Set('information data process system method result results s
     const block = (label, html) => `<div class="detail-block"><span class="label">${label}</span>${html}</div>`;
     const ctxList = (term, skip) => { const c = ctx(term).filter(x => x !== skip); return c.length ? block('Where it appears', `<div class="fact-list">${c.map(x => `<div class="fact">${hlNeedles(x, [term])}</div>`).join('')}</div>`) : ''; };
     switch (kind) {
-      case 'defs': return { title: item.term, kicker: `Definition${item.section ? ' · ' + item.section : ''}`, copy: `${item.term} — ${defText(item)}`, body: block('Definition', `<p class="big">${hlNeedles(defText(item), [item.term])}</p>`) + (defText(item) !== item.sent ? block('From the material', `<p>${esc(item.sent)}</p>`) : '') + ctxList(item.term, item.sent) };
+      case 'defs': return { title: item.term, kicker: `Definition${item.section ? ' · ' + item.section : ''}`, copy: `${item.term} — ${defText(item)}`, body: block('Definition', `<p class="big">${hlNeedles(defText(item), [item.term])}</p>${defText(item) === item.sent ? citeTag(item.sent) : ''}`) + (defText(item) !== item.sent ? block('From the material', `<p>${esc(item.sent)}</p>${citeTag(item.sent)}`) : '') + ctxList(item.term, item.sent) };
       case 'terms': {
         const d = defFor(k, item.display);
         const expl = !d ? bestExplanation(item.display) : null;
@@ -3393,12 +3871,12 @@ const GENERIC = new Set('information data process system method result results s
             (related.length ? block('Related terms', `<div class="term-chips">${related.map(t => `<button type="button" class="term-chip" data-act="term-jump" data-key="${esc(t.key)}">${esc(t.display)}</button>`).join('')}</div>`) : '') +
             (secNames.length ? block('Sections', `<div class="term-chips">${secNames.map(n => `<span class="term-chip">${esc(n)}</span>`).join('')}</div>`) : '') };
       }
-      case 'acronyms': return { title: item.acr, kicker: 'Acronym', copy: `${item.acr} — ${item.expansion}`, body: block('Stands for', `<p class="big">${esc(item.expansion)}</p>`) + block('From the material', `<p>${esc(item.sent)}</p>`) };
-      case 'formulas': return { title: item.expr, kicker: secOf(item.sent) || 'Formula', copy: item.expr, body: `<div class="formula big-formula">${esc(item.expr)}</div>` + block('From the material', `<p>${esc(item.sent)}</p>`) + (a ? (() => { const syms = Engine.extractSymbols(a).filter(x => new RegExp('(^|[^A-Za-z])' + x.sym.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '([^A-Za-z]|$)').test(item.expr)); return syms.length ? block('Symbols', `<dl class="def-list">${syms.map(x => `<div class="def"><dt>${esc(x.sym)}</dt><dd>${esc(x.meaning)}</dd></div>`).join('')}</dl>`) : ''; })() : '') };
+      case 'acronyms': return { title: item.acr, kicker: 'Acronym', copy: `${item.acr} — ${item.expansion}`, body: block('Stands for', `<p class="big">${esc(item.expansion)}</p>`) + block('From the material', `<p>${esc(item.sent)}</p>${citeTag(item.sent)}`) };
+      case 'formulas': return { title: item.expr, kicker: secOf(item.sent) || 'Formula', copy: item.expr, body: `<div class="formula big-formula">${fxHtml(item.expr, item.kind)}</div>` + block('From the material', `<p>${esc(item.sent)}</p>${citeTag(item.sent)}`) + (a ? (() => { const syms = Engine.extractSymbols(a).filter(x => new RegExp('(^|[^A-Za-z])' + x.sym.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '([^A-Za-z]|$)').test(item.expr)); return syms.length ? block('Symbols', `<dl class="def-list">${syms.map(x => `<div class="def"><dt>${esc(x.sym)}</dt><dd>${esc(x.meaning)}</dd></div>`).join('')}</dl>`) : ''; })() : '') };
       case 'processes': {
         if (item.steps) return { title: item.title || 'Steps', kicker: `Process · ${plural(item.steps.length, 'step')}`, copy: item.steps.map((x, i) => `${i + 1}. ${x.s}`).join('\n'), body: block('Steps in order', `<ol class="steps big-steps">${item.steps.map(x => `<li>${esc(x.s)}</li>`).join('')}</ol>`) };
         const nb = neighbours(item.sent); const rd = relatedDefs(k, item.sent);
-        return { title: 'Process step', kicker: secOf(item.sent.s) || KIND_META.processes, copy: item.sent.s, body: block('From the material', `<p class="big">${hlNeedles(item.sent.s, [item.cue])}</p>`) + ((nb.prev || nb.next.length) ? block('Surrounding text', `<div class="fact-list">${[nb.prev, ...nb.next].filter(Boolean).map(x => `<div class="fact${x.id === item.sent.id ? ' on' : ''}">${esc(x.s)}</div>`).join('')}</div>`) : '') + (rd.length ? block('Related definitions', `<dl class="def-list">${rd.map(d => `<div class="def"><dt>${esc(d.term)}</dt><dd>${esc(defText(d))}</dd></div>`).join('')}</dl>`) : '') };
+        return { title: 'Process step', kicker: secOf(item.sent.s) || KIND_META.processes, copy: item.sent.s, body: block('From the material', `<p class="big">${hlNeedles(item.sent.s, [item.cue])}</p>${citeTag(item.sent.s)}`) + ((nb.prev || nb.next.length) ? block('Surrounding text', `<div class="fact-list">${[nb.prev, ...nb.next].filter(Boolean).map(x => `<div class="fact${x.id === item.sent.id ? ' on' : ''}">${esc(x.s)}</div>`).join('')}</div>`) : '') + (rd.length ? block('Related definitions', `<dl class="def-list">${rd.map(d => `<div class="def"><dt>${esc(d.term)}</dt><dd>${esc(defText(d))}</dd></div>`).join('')}</dl>`) : '') };
       }
       case 'causes': {
         const sp = Engine.splitCause(item.sent.s); const nb = neighbours(item.sent); const rd = relatedDefs(k, item.sent);
@@ -3407,7 +3885,7 @@ const GENERIC = new Set('information data process system method result results s
       }
       case 'comparisons': {
         const nb = neighbours(item.sent); const rd = relatedDefs(k, item.sent);
-        return { title: KIND_META.comparisons, kicker: secOf(item.sent.s) || KIND_META.comparisons, copy: item.sent.s, body: block('From the material', `<p class="big">${hlNeedles(item.sent.s, [item.cue])}</p>`) + ((nb.prev || nb.next.length) ? block('Surrounding text', `<div class="fact-list">${[nb.prev, ...nb.next].filter(Boolean).map(x => `<div class="fact">${esc(x.s)}</div>`).join('')}</div>`) : '') + (rd.length ? block('Related definitions', `<dl class="def-list">${rd.map(d => `<div class="def"><dt>${esc(d.term)}</dt><dd>${esc(defText(d))}</dd></div>`).join('')}</dl>`) : '') };
+        return { title: KIND_META.comparisons, kicker: secOf(item.sent.s) || KIND_META.comparisons, copy: item.sent.s, body: block('From the material', `<p class="big">${hlNeedles(item.sent.s, [item.cue])}</p>${citeTag(item.sent.s)}`) + ((nb.prev || nb.next.length) ? block('Surrounding text', `<div class="fact-list">${[nb.prev, ...nb.next].filter(Boolean).map(x => `<div class="fact">${esc(x.s)}</div>`).join('')}</div>`) : '') + (rd.length ? block('Related definitions', `<dl class="def-list">${rd.map(d => `<div class="def"><dt>${esc(d.term)}</dt><dd>${esc(defText(d))}</dd></div>`).join('')}</dl>`) : '') };
       }
       case 'examples': {
         const t = exampleConcept(item); const d = t ? defFor(k, t.display) : null; const nb = neighbours(item.sent);
@@ -3415,8 +3893,8 @@ const GENERIC = new Set('information data process system method result results s
         return { title: t ? `Example of ${t.display}` : 'Example', kicker: secOf(item.sent.s) || KIND_META.examples, copy: item.sent.s + (listed.length ? '\n' + listed.map(x => '- ' + x.s).join('\n') : ''),
           body: (d ? block(`What “${esc(d.term)}” means`, `<p>${esc(defText(d))}</p>`) : '') + block('The example', `<p class="big">${hlNeedles(item.sent.s, [item.cue])}</p>`) + (listed.length ? block('Examples listed in the material', `<ul class="detail-list">${listed.map(x => `<li>${esc(x.s)}</li>`).join('')}</ul>`) : (nb.next.length ? block('What follows', `<div class="fact-list">${nb.next.map(x => `<div class="fact">${esc(x.s)}</div>`).join('')}</div>`) : '')) };
       }
-      case 'dates': return { title: item.year, kicker: secOf(item.sent.s) || 'Timeline', copy: item.sent.s, body: block('From the material', `<p class="big">${hlNeedles(item.sent.s, item.nums)}</p>`) };
-      case 'figures': return { title: item.nums.join(' · '), kicker: secOf(item.sent.s) || 'Figures & stats', copy: item.sent.s, body: block('From the material', `<p class="big">${hlNeedles(item.sent.s, item.nums)}</p>`) };
+      case 'dates': return { title: item.year, kicker: secOf(item.sent.s) || 'Timeline', copy: item.sent.s, body: block('From the material', `<p class="big">${hlNeedles(item.sent.s, item.nums)}</p>${citeTag(item.sent.s)}`) };
+      case 'figures': return { title: item.nums.join(' · '), kicker: secOf(item.sent.s) || 'Figures & stats', copy: item.sent.s, body: block('From the material', `<p class="big">${hlNeedles(item.sent.s, item.nums)}</p>${citeTag(item.sent.s)}`) };
       case 'map': return { title: item.title, kicker: `Section · ${plural(item.n, 'sentence')} · ${fmt(item.words)} words`, copy: `${item.title}\n${item.lead || ''}`, body: (item.lead ? block('Key sentence', `<p class="big">${esc(item.lead)}</p>`) : '') + (item.terms.length ? block('Terms in this section', `<div class="term-chips">${item.terms.map(t => `<span class="term-chip">${esc(t.display)}</span>`).join('')}</div>`) : '') };
       case 'entities': return { title: item.name, kicker: `Name · ${item.count}×`, copy: item.name, body: block('In context', `<div class="fact-list">${(item.sents.length ? item.sents : ctx(item.name)).map(x => `<div class="fact">${hlNeedles(x, [item.name])}</div>`).join('')}</div>`) };
       case 'lists': return { title: item.title || 'List', kicker: `List · ${plural(item.items.length, 'item')}`, copy: item.items.map(x => `- ${x}`).join('\n'), body: `<ul class="detail-list">${item.items.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` };
@@ -3535,8 +4013,8 @@ const GENERIC = new Set('information data process system method result results s
       <button class="btn sm" data-act="card-add">+ Card</button>
       <button class="btn sm" data-act="deck-shuffle">Shuffle</button>
       <button class="btn sm" data-act="print-cards" title="Print the deck as cut-out cards">Print <span class="arr">⎙</span></button>
-      <button class="btn sm" data-act="copy-cards" title="Copy all cards as tab-separated text (paste into Anki, Quizlet or a spreadsheet)">Copy <span class="arr">⧉</span></button>
-      <button class="btn sm" data-act="export-cards" data-needs-downloads ${downloadsNS ? '' : 'hidden'}>Anki <span class="arr">↓</span></button>`;
+      <button class="btn sm" data-act="copy-cards" title="Copy every card as tab-separated text (paste into Quizlet or a spreadsheet)">Copy <span class="arr">⧉</span></button>
+      <button class="btn sm" data-act="export-cards" title="Save the deck as a text file Anki imports directly">Anki <span class="arr">↓</span></button>`;
     if (!ui.pool.length) { app.innerHTML = sectionShell(s, 'cards', `${note}<div class="empty" style="margin-top:16px">Not enough structured text to make cards from. Try adding more material.</div>`, bar); return; }
     let body;
     if (!cards.length) {
@@ -3563,14 +4041,14 @@ const GENERIC = new Set('information data process system method result results s
       const c = cards[ui.order[ui.i]];
       const isCloze = c.type === 'Fill the gap' || c.type === 'Number';
       const sr = prog(s.id).srs[c.key];
-      const state5 = sr ? (sr.ivl >= 21 ? 'Mastered' : sr.reps ? `Seen ${plural(sr.reps, 'time')}` : 'New again') : 'New';
+      const state5 = sr ? (sr.ivl >= 21 ? 'Mastered' : sr.ivl === 0 && sr.lapses ? 'Relearning' : sr.reps ? `Seen ${plural(sr.reps, 'time')}` : 'New') : 'New';
       const cid = ID.card(c.key);
       const cnote = noteOf(s.id, cid) || (c.term ? noteOf(s.id, ID.term(c.term)) : '');
       const starred = isStar(s.id, cid);
       body = `<div class="scene"><div class="fcard${ui.flipped ? ' flipped' : ''}" data-act="flip" role="button" tabindex="0" aria-expanded="${ui.flipped ? 'true' : 'false'}" aria-label="Card ${ui.i + 1} of ${ui.order.length}, ${esc(c.type)}. ${ui.flipped ? 'Showing the answer' : 'Showing the question'}. Space flips it.">
         <div class="face front"><div class="kind"><span>${esc(c.type)} · ${state5}</span><span>${ui.i + 1} / ${ui.order.length}</span></div><div class="txt">${esc(c.front)}</div><div class="hint">Click or press space to flip</div></div>
         <div class="face back"><div class="kind"><span>Answer</span><span>${ui.i + 1} / ${ui.order.length}</span></div>
-          ${isCloze ? `<div class="txt answer">${esc(c.back)}</div>${c.source ? `<div class="src">${esc(c.source)}</div>` : ''}` : `<div class="txt">${esc(c.back)}</div>${c.source && c.back !== c.source ? `<div class="src">${esc(c.source)}</div>` : ''}`}
+          ${isCloze ? `<div class="txt answer">${esc(c.back)}</div>${c.source ? `<div class="src">${esc(c.source)}${citeTag(c.source)}</div>` : ''}` : `<div class="txt">${esc(c.back)}</div>${c.source && c.back !== c.source ? `<div class="src">${esc(c.source)}${citeTag(c.source)}</div>` : c.source ? `<div class="src">${citeTag(c.source)}</div>` : ''}`}
           ${cnote ? `<div class="own-note"><span class="label">Your note</span>${esc(cnote)}</div>` : ''}
         </div>
       </div></div>
@@ -3598,18 +4076,26 @@ const GENERIC = new Set('information data process system method result results s
   }
   // what pressing this button would schedule, without writing anything
   function nextIvlText(sid, key, rating) {
-    const c = prog(sid).srs[key] || { ivl: 0, ease: 2.3, reps: 0 };
-    const easy = rating === 'easy';
-    let ivl;
-    if (c.reps === 0) ivl = easy ? 3 : 1;
-    else if (c.reps === 1) ivl = easy ? 6 : 3;
-    else if (c.reps === 2) ivl = easy ? 12 : 7;
-    else ivl = Math.min(180, Math.round(c.ivl * (easy ? Math.min(3, c.ease + 0.15) * 1.3 : c.ease)));
-    return ivl === 1 ? '1 day' : ivl < 30 ? `${ivl} days` : `${Math.round(ivl / 30)} mo`;
+    const cur = prog(sid).srs[key];
+    const c = cur ? FSRS.migrate({ ...cur }) : null;
+    const ivl = FSRS.next(c && c.s > 0 ? c : null, FSRS.grade(rating), Date.now()).ivl;
+    return ivl <= 1 ? '1 day' : ivl < 30 ? `${ivl} days` : ivl < 365 ? `${Math.round(ivl / 30)} mo` : '1 yr';
   }
-  function cardsAsAnki(cards) {
-    const clean = t => String(t).replace(/\t/g, ' ').replace(/\n/g, ' ');
+  // Plain tab-separated rows: front, back, card type. Quizlet's import and any spreadsheet take this as-is.
+  function cardsAsRows(cards) {
+    const clean = t => String(t ?? '').replace(/\t/g, ' ').replace(/\r?\n/g, ' ').trim();
     return cards.map(c => `${clean(c.front)}\t${clean(c.back)}\t${clean(c.type)}`).join('\n') + '\n';
+  }
+  // The same rows as a file Anki imports directly (File → Import). The # lines are Anki's own file headers
+  // (2.1.54 and later): tab-separated, plain text, a deck named after the subject, column 3 holds the tags.
+  // Older Anki versions skip the # lines and still read the rows. Tags: unimadeez, the card type, the subject.
+  const ankiTag = t => String(t || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'card';
+  function cardsAsAnki(cards, s) {
+    const clean = t => String(t ?? '').replace(/\t/g, ' ').replace(/\r?\n/g, ' ').trim();
+    const subjectTag = ankiTag(s.code || s.name);
+    const rows = cards.map(c => `${clean(c.front)}\t${clean(c.back)}\tunimadeez ${ankiTag(c.type)} ${subjectTag}`);
+    const deck = `UNI Made EZ::${String(s.code || s.name).replace(/::/g, ':').trim()}`;
+    return ['#separator:tab', '#html:false', `#deck:${deck}`, '#tags column:3', ...rows].join('\n') + '\n';
   }
 
   /* ---------- quiz ---------- */
@@ -3679,7 +4165,7 @@ const GENERIC = new Set('information data process system method result results s
           <div class="btn-row" style="justify-content:space-between">${an ? '' : `<button class="btn sm ghost" data-act="q-clear">Clear</button><button class="btn primary" data-act="q-submit-order" ${pick.length === q.items.length ? '' : 'disabled'}>${ui.exam ? 'Lock in' : 'Check order'} <span class="arr">→</span></button>`}</div>`;
       }
       else input = an && !ui.exam ? '' : `<form class="fill-row" data-form="fill"><input class="input" name="v" autocomplete="off" autocapitalize="off" placeholder="Type your answer" value="${an ? esc(an.given) : ''}" ${an ? '' : 'autofocus'} required><button class="btn primary" type="submit">${ui.exam ? 'Save' : 'Check'}</button></form>${q.hint && !ui.exam ? `<p class="small muted">Hint: ${esc(q.hint)}</p>` : ''}`;
-      const fb = showFb ? `<div class="feedback ${an.ok ? 'ok' : 'bad'}"><strong>${an.ok ? 'Correct.' : `Not quite — the answer is “${esc(Array.isArray(q.answer) ? q.answer.map((x, n) => (n + 1) + '. ' + x).join('  ') : q.answer)}”.`}</strong>${q.explain && !an.ok ? `<span>${esc(q.explain)}</span>` : ''}<span class="src">From the material: ${esc(q.source)}</span></div>` : '';
+      const fb = showFb ? `<div class="feedback ${an.ok ? 'ok' : 'bad'}"><strong>${an.ok ? 'Correct.' : `Not quite — the answer is “${esc(Array.isArray(q.answer) ? q.answer.map((x, n) => (n + 1) + '. ' + x).join('  ') : q.answer)}”.`}</strong>${q.explain && !an.ok ? `<span>${esc(q.explain)}</span>` : ''}<span class="src">From the material: ${esc(q.source)}${citeTag(q.source)}</span></div>` : '';
       // One control row for both modes: go back over what you have done, start the same set again,
       // swap the question types, or move on. In practice, a question you have already answered is
       // read-only when you come back to it — the marking stands.
@@ -3834,13 +4320,13 @@ const GENERIC = new Set('information data process system method result results s
     const syms = k.symbols || [];
     const figures = (k.figures || []).slice(0, 12);
     const secOf = sent => { const st = a.sentences.find(x => x.s === sent); const sec = st && a.sections[st.section]; return sec && sec.title ? sec.title : null; };
-    const bar = `<button class="btn sm" data-act="print-page" title="Print this sheet">Print <span class="arr">⎙</span></button><button class="btn sm" data-act="copy-formulas">Copy <span class="arr">⧉</span></button>`;
+    const bar = `<button class="btn sm" data-act="print-page" title="Print this sheet">Print <span class="arr">⎙</span></button><button class="btn sm" data-act="copy-formulas">Copy <span class="arr">⧉</span></button><button class="btn sm" data-act="export-formulas" title="Save the sheet as a text file">Save .txt <span class="arr">↓</span></button>`;
     if (!a.formulas.length && !syms.length && !figures.length) {
       const defs = (k.defs || []).slice(0, 6);
       app.innerHTML = sectionShell(s, 'formulas', `${note}<div class="page"><div class="empty-page">
         <h2>Nothing to put on a cram sheet yet</h2>
         <p>This sheet collects the equations, the symbols the text defines (“where n is the sample size”) and the numbers worth remembering. Your material doesn't have any — which is normal for essay-based subjects, and for slides or scans with little running text.</p>
-        <p class="muted">It picks up equations written in symbols (<span class="formula">SE = s / sqrt(n)</span>), reactions (<span class="formula">6 CO2 + 6 H2O → C6H12O6 + 6 O2</span>) and relationships written in words (“power is work divided by time”).</p>
+        <p class="muted">It picks up equations written in symbols (<span class="formula">${fxHtml('SE = s / sqrt(n)')}</span>), reactions (<span class="formula">${fxHtml('6 CO2 + 6 H2O → C6H12O6 + 6 O2')}</span>) and relationships written in words (“power is work divided by time”).</p>
         ${defs.length ? `<div class="detail-block"><span class="label">What it did find instead</span><dl class="def-list">${defs.map(d => `<div class="def"><dt>${esc(d.term)}</dt><dd class="clamp">${esc(defText(d))}</dd></div>`).join('')}</dl></div>` : ''}
         <div class="btn-row"><a class="btn" href="#/s/${s.id}/keys">Key information <span class="arr">→</span></a><a class="btn ghost" href="#/s/${s.id}/summary">Summary <span class="arr">→</span></a></div>
       </div></div>`, bar);
@@ -3855,8 +4341,8 @@ const GENERIC = new Set('information data process system method result results s
         <section>
           <h3>Formulas <span class="count">${a.formulas.length}</span></h3>
           ${a.formulas.length ? `<div class="fsheet">${a.formulas.map((f, i) => `<div class="frow${f.kind === 'words' ? ' words' : ''}">
-            <div class="fmeta"><span class="fnum">${String(i + 1).padStart(2, '0')}</span>${f.kind === 'words' ? `<span class="tag soft">from the wording</span>` : f.kind === 'reaction' ? `<span class="tag soft">reaction</span>` : ''}${secOf(f.sent) ? `<span class="tag">${esc(secOf(f.sent))}</span>` : ''}</div>
-            <div class="formula">${esc(f.expr)}</div>
+            <div class="fmeta"><span class="fnum">${String(i + 1).padStart(2, '0')}</span>${f.kind === 'words' ? `<span class="tag soft">from the wording</span>` : f.kind === 'reaction' ? `<span class="tag soft">reaction</span>` : ''}${secOf(f.sent) ? `<span class="tag">${esc(secOf(f.sent))}</span>` : ''}${citeTag(f.sent)}</div>
+            <div class="formula">${fxHtml(f.expr, f.kind)}</div>
             <div class="fsrc">${fsrcHtml(f)}</div>
           </div>`).join('')}</div>` : `<p class="muted small">No equations in this material — the symbols and figures beside this are what it did define.</p>`}
         </section>
@@ -4043,7 +4529,7 @@ const GENERIC = new Set('information data process system method result results s
     const secTitle = i => { const sec = a.sections[i]; return sec && sec.title ? sec.title : null; };
     return `<p class="label">${plural(hits.length, 'mention')}${defs.length ? ` · ${plural(defs.length, 'definition')}` : ''} · ${plural(groups.size, 'file')}</p>
       ${defs.length ? `<div class="detail-block"><span class="label">Definitions</span><dl class="def-list">${defs.map(d => `<div class="def s-hit" data-act="search-open" data-i="${d.id}" role="button" tabindex="0"><dt>${hlWords(d.term, words)}</dt><dd>${hlWords(d.kind === 'is' || d.kind === 'weak' || d.kind === 'inverse' ? d.sent : d.def, words)}</dd></div>`).join('')}</dl></div>` : ''}
-      ${Array.from(groups.entries()).map(([file, list]) => `<div class="detail-block"><span class="label">${esc(file)} · ${plural(list.length, 'mention')}</span><div class="fact-list">${list.slice(0, 8).map(h => `<div class="fact s-hit" data-act="search-open" data-i="${h.id}" role="button" tabindex="0">${secTitle(h.section) ? `<span class="tag">${esc(secTitle(h.section))}</span>` : ''}<span>${hlWords(h.s, words)}</span></div>`).join('')}${list.length > 8 ? `<p class="muted small">… ${list.length - 8} more in this file — narrow the search to see them.</p>` : ''}</div></div>`).join('')}`;
+      ${Array.from(groups.entries()).map(([file, list]) => `<div class="detail-block"><span class="label">${esc(file)} · ${plural(list.length, 'mention')}</span><div class="fact-list">${list.slice(0, 8).map(h => `<div class="fact s-hit" data-act="search-open" data-i="${h.id}" role="button" tabindex="0">${secTitle(h.section) ? `<span class="tag">${esc(secTitle(h.section))}</span>` : ''}<span>${hlWords(h.s, words)}</span>${h.page ? `<span class="cite">p. ${h.page}</span>` : h.slide ? `<span class="cite">slide ${h.slide}</span>` : ''}</div>`).join('')}${list.length > 8 ? `<p class="muted small">… ${list.length - 8} more in this file — narrow the search to see them.</p>` : ''}</div></div>`).join('')}`;
   }
   async function openSearch(s) {
     state.modal = { type: 'search' }; syncModal();
@@ -4098,11 +4584,146 @@ const GENERIC = new Set('information data process system method result results s
     }
   }
 
-  /* ---------- downloads ---------- */
-  async function saveFile(filename, data) {
-    if (!downloadsNS) { toast('Saving files is not available here.'); return; }
-    try { await downloadsNS.save({ filename, data }); toast('Saved.'); }
-    catch (e) { if (e && e.code === 'declined') return; toast(e && e.code === 'rate_limited' ? 'One save at a time — try again in a moment.' : 'Could not save the file.'); }
+  /* ---------- files out: a real download on the live site, the text to copy inside Claude ---------- */
+  const fileStem = s => String(s || 'unimadeez').normalize('NFKD').replace(/[^\w.-]+/g, '_').replace(/^_+|_+$/g, '').slice(0, 60) || 'unimadeez';
+  const today = () => new Date().toISOString().slice(0, 10);
+  // returns true when a download was started; false when the text was shown to copy instead
+  function saveFile(filename, data, mime, what) {
+    const fallback = () => { state.modal = { type: 'export', filename, data, what: what || filename }; syncModal(); return false; };
+    if (IN_ARTIFACT || typeof Blob === 'undefined' || !window.URL || !URL.createObjectURL) return fallback();
+    try {
+      const blob = new Blob([data], { type: `${mime || 'text/plain'};charset=utf-8` });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = filename; a.rel = 'noopener'; a.hidden = true;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 5000);
+      toast(`Saved ${filename}`);
+      return true;
+    } catch (e) { return fallback(); }
+  }
+
+  /* ---------- the revision pack: summary, key information, cram sheet and every card, in one printable go ---------- */
+  function buildPack(s, a) {
+    const sid = s.id;
+    const sum = Engine.summary(a, 'medium');
+    const k = Engine.keyInfo(a);
+    const vis = (kind, list) => (list || []).filter(it => !isHidden(sid, itemId(kind, it)));
+    const cards = fullPool(sid, a, (state.ui && state.ui.key === sid + '/cards' && state.ui.seed) || 1);
+    const notes = Object.entries(marks(sid)).filter(([, v]) => v.note).map(([id, v]) => ({ label: v.label || id.slice(2), note: v.note }));
+    const files = s.materials.filter(m => m.include !== false && !m.err && !m.busy).map(m => m.name);
+    return { s, a, sum, k, cards, notes, files, ex: examInfo(s),
+      defs: vis('defs', k.defs), acronyms: vis('acronyms', k.acronyms), formulas: a.formulas || [],
+      processes: vis('processes', (k.patterns || {}).processes).filter(p => p.steps && p.steps.length >= 2),
+      dates: vis('dates', k.dates), figures: vis('figures', k.figures).slice(0, 12), symbols: k.symbols || [] };
+  }
+  function packHtml(p) {
+    const { s, sum, cards } = p;
+    const sec = (title, inner, cls = '') => inner ? `<section class="pk-sec ${cls}"><h2 class="pk-h">${esc(title)}</h2>${inner}</section>` : '';
+    const head = `<header class="pk-head"><span class="pk-kicker">Revision pack · UNI Made EZ</span><h1 class="ps-title">${esc(s.name)}${s.code ? ` <span class="pk-code">${esc(s.code)}</span>` : ''}</h1>
+      <p class="ps-sub">${p.ex ? `${esc(p.ex.label)} · ${esc(p.ex.pretty)} · ` : ''}${plural(p.files.length, 'file')} · ${fmt(sum.stats.words)} words · made ${esc(new Date().toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' }))}</p>
+      ${p.files.length ? `<p class="pk-files">${p.files.map(esc).join(' · ')}</p>` : ''}</header>`;
+    const brief = sum.brief.length ? `<p class="pk-brief">${sum.brief.map(x => esc(x.s)).join(' ')}</p>` : '';
+    const defs = p.defs.length ? `<dl class="pk-defs">${p.defs.map(d => `<div><dt>${esc(d.term)}</dt><dd>${esc(defText(d))}</dd></div>`).join('')}</dl>` : '';
+    const acr = p.acronyms.length ? `<dl class="pk-defs two">${p.acronyms.map(x => `<div><dt>${esc(x.acr)}</dt><dd>${esc(x.expansion)}</dd></div>`).join('')}</dl>` : '';
+    const sections = sum.sections.length ? sum.sections.map(x => `<div class="pk-part"><h3>${esc(x.title || 'Untitled')}</h3><ul>${x.sentences.map(y => `<li>${esc(y.s)}</li>`).join('')}</ul>${x.terms.length ? `<p class="pk-terms">${x.terms.map(t => esc(t.display)).join(' · ')}</p>` : ''}</div>`).join('') : '';
+    const take = sum.takeaways.length ? `<ol class="pk-take">${sum.takeaways.map(x => `<li>${esc(x.s)}</li>`).join('')}</ol>` : '';
+    const formulas = p.formulas.length ? `<div class="pk-fx">${p.formulas.map((f, i) => `<div class="pk-f"><span class="ps-n">${String(i + 1).padStart(2, '0')}</span><div class="formula">${fxHtml(f.expr, f.kind)}</div>${f.sent ? `<p>${esc(f.sent)}</p>` : ''}</div>`).join('')}</div>${p.symbols.length ? `<dl class="pk-defs two">${p.symbols.map(x => `<div><dt>${esc(x.sym)}</dt><dd>${esc(x.meaning)}</dd></div>`).join('')}</dl>` : ''}` : '';
+    const procs = p.processes.length ? p.processes.map(x => `<div class="pk-part"><h3>${esc(x.title || 'Steps')}</h3><ol>${x.steps.map(y => `<li>${esc(y.s)}</li>`).join('')}</ol></div>`).join('') : '';
+    const dates = p.dates.length ? `<dl class="pk-defs">${p.dates.map(x => `<div><dt>${esc(x.year)}</dt><dd>${esc(x.sent.s)}</dd></div>`).join('')}</dl>` : '';
+    const figs = p.figures.length ? `<ul class="pk-list">${p.figures.map(x => `<li>${esc(x.sent.s)}</li>`).join('')}</ul>` : '';
+    const notes = p.notes.length ? `<dl class="pk-defs">${p.notes.map(x => `<div><dt>${esc(x.label)}</dt><dd>${esc(x.note)}</dd></div>`).join('')}</dl>` : '';
+    const deck = cards.length ? `<table class="pk-cards"><thead><tr><th>#</th><th>Question</th><th>Answer</th></tr></thead><tbody>${cards.map((c, i) => `<tr><td class="ps-n">${i + 1}</td><td>${esc(c.front)}</td><td>${esc(c.back).replace(/\n/g, '<br>')}</td></tr>`).join('')}</tbody></table>` : '';
+    const test = sum.selfTest.length ? `<ol class="pk-test">${sum.selfTest.map(c => `<li><b>${esc(c.front)}</b><span>${esc(c.back)}</span></li>`).join('')}</ol>` : '';
+    const terms = sum.terms.length ? `<p class="pk-terms big">${sum.terms.map(t => esc(t.display)).join(' · ')}</p>` : '';
+    return `<div class="pk">${head}${sec('In brief', brief)}${sec('Key definitions', defs)}${sec('Acronyms', acr)}${sec('Section by section', sections)}${sec('Takeaways', take)}
+      ${sec('Formula sheet', formulas, 'pk-break')}${sec('Processes and steps', procs)}${sec('Timeline', dates)}${sec('Figures worth knowing', figs)}${sec('Your notes', notes)}
+      ${sec('Terms to know', terms)}${sec(`Flash cards · ${cards.length}`, deck, 'pk-break')}${sec('Test yourself', test)}
+      <footer class="pk-foot">Built on your device by UNI Made EZ from your own course files · check it against your notes</footer></div>`;
+  }
+  function packMarkdown(p) {
+    const { s, sum, cards } = p;
+    const H = (t, body) => body ? `## ${t}\n\n${body}\n\n` : '';
+    return `# ${s.name}${s.code ? ` (${s.code})` : ''} — revision pack\n\n_${p.ex ? `${p.ex.label} · ${p.ex.pretty} · ` : ''}${plural(p.files.length, 'file')} · ${fmt(sum.stats.words)} words · made ${today()} with UNI Made EZ_\n\n` +
+      (p.files.length ? `Files: ${p.files.join(', ')}\n\n` : '') +
+      H('In brief', sum.brief.map(x => x.s).join(' ')) +
+      H('Key definitions', p.defs.map(d => `- **${d.term}** — ${defText(d)}`).join('\n')) +
+      H('Acronyms', p.acronyms.map(x => `- **${x.acr}** — ${x.expansion}`).join('\n')) +
+      (sum.sections.length ? `## Section by section\n\n${sum.sections.map(x => `### ${x.title || 'Untitled'}\n\n${x.sentences.map(y => `- ${y.s}`).join('\n')}${x.terms.length ? `\n\n_Terms: ${x.terms.map(t => t.display).join(', ')}_` : ''}`).join('\n\n')}\n\n` : '') +
+      H('Takeaways', sum.takeaways.map((x, i) => `${i + 1}. ${x.s}`).join('\n')) +
+      H('Formula sheet', p.formulas.map((f, i) => `${i + 1}. \`${f.expr}\`${f.sent ? `  \n   ${f.sent}` : ''}`).join('\n') + (p.symbols.length ? `\n\n${p.symbols.map(x => `- **${x.sym}** = ${x.meaning}`).join('\n')}` : '')) +
+      H('Processes and steps', p.processes.map(x => `**${x.title || 'Steps'}**\n\n${x.steps.map((y, i) => `${i + 1}. ${y.s}`).join('\n')}`).join('\n\n')) +
+      H('Timeline', p.dates.map(x => `- **${x.year}** — ${x.sent.s}`).join('\n')) +
+      H('Figures worth knowing', p.figures.map(x => `- ${x.sent.s}`).join('\n')) +
+      H('Your notes', p.notes.map(x => `- **${x.label}** — ${x.note}`).join('\n')) +
+      H('Terms to know', sum.terms.map(t => t.display).join(', ')) +
+      H(`Flash cards (${cards.length})`, cards.map((c, i) => `${i + 1}. **Q:** ${c.front}  \n   **A:** ${String(c.back).replace(/\n/g, ' / ')}`).join('\n')) +
+      H('Test yourself', sum.selfTest.map(c => `- **Q:** ${c.front}  \n  **A:** ${c.back}`).join('\n'));
+  }
+  // the pack needs the analysis; build it here so the subject page can offer it without opening a section first
+  async function withAnalysis(s, fn) {
+    if (!s.materials.some(m => m.include !== false && !m.err && !m.busy)) { toast('Add a file to this subject first.'); return; }
+    const had = state.analysis && state.analysisKey && state.analysisKey.startsWith(s.id + ':');
+    if (!had) toast('Reading the files…');
+    let a;
+    try { a = await getAnalysis(s); } catch (e) { toast('Could not read the files.'); return; }
+    if (!a || !a.sentences.length) { toast('No readable text in the included files.'); return; }
+    return fn(a);
+  }
+
+  /* ---------- backup and restore: one JSON file holds the subjects, their scanned text and your progress ---------- */
+  async function makeBackup(subjects) {
+    const texts = {};
+    for (const s of subjects) for (const m of s.materials) { if (m.err || m.busy) continue; try { const t = await IDB.get(m.id); if (t) texts[m.id] = t; } catch (e) { /* skip */ } }
+    const prg = {};
+    subjects.forEach(s => { if (progress[s.id]) prg[s.id] = progress[s.id]; });
+    return { app: 'UNI Made EZ', kind: 'backup', v: 1, build: BUILD.v, at: new Date().toISOString(), subjects: JSON.parse(JSON.stringify(subjects)), texts, progress: prg };
+  }
+  async function saveBackup(subjects, label) {
+    const b = await makeBackup(subjects);
+    const name = `unimadeez-${fileStem(label || 'backup')}-${today()}.json`;
+    const n = b.subjects.reduce((x, s) => x + s.materials.length, 0);
+    saveFile(name, JSON.stringify(b), 'application/json', `Backup · ${plural(b.subjects.length, 'subject')} · ${plural(n, 'file')}`);
+  }
+  // what a backup file holds, or an error the user can act on
+  function readBackup(text) {
+    let b;
+    try { b = JSON.parse(text); } catch (e) { throw new Error('That file is not a UNI Made EZ backup (it is not JSON).'); }
+    if (!b || b.kind !== 'backup' || !Array.isArray(b.subjects)) throw new Error('That file is not a UNI Made EZ backup.');
+    const subjects = b.subjects.filter(s => s && typeof s === 'object' && s.id && s.name).map(s => ({ ...s, materials: (Array.isArray(s.materials) ? s.materials : []).filter(m => m && m.id && m.name).map(m => ({ ...m, busy: false, progress: undefined })) }));
+    if (!subjects.length) throw new Error('That backup has no subjects in it.');
+    const texts = b.texts && typeof b.texts === 'object' ? b.texts : {};
+    const prg = b.progress && typeof b.progress === 'object' ? b.progress : {};
+    subjects.forEach(s => s.materials.forEach(m => { if (!texts[m.id]) { m.err = 'Text was not in the backup — upload the file again.'; m.include = false; } }));
+    return { subjects, texts, progress: prg, at: b.at, build: b.build, files: subjects.reduce((n, s) => n + s.materials.length, 0) };
+  }
+  async function restoreBackup(b) {
+    const replaced = b.subjects.map(s => state.subjects.find(x => x.id === s.id)).filter(Boolean);
+    const before = { subjects: state.subjects.slice(), progress: {}, texts: await snapshotTexts(replaced.flatMap(s => s.materials)) };
+    replaced.forEach(s => { before.progress[s.id] = progress[s.id]; });
+    for (const s of b.subjects) {
+      const at = state.subjects.findIndex(x => x.id === s.id);
+      if (at >= 0) state.subjects[at] = s; else state.subjects.push(s);
+      if (b.progress[s.id]) progress[s.id] = b.progress[s.id];
+      for (const m of s.materials) if (b.texts[m.id]) await IDB.put(m.id, b.texts[m.id]);
+    }
+    saveIndex(); saveProgress(); invalidateAnalysis(); render();
+    toast(`Restored ${plural(b.subjects.length, 'subject')}${replaced.length ? ` (${replaced.length} replaced)` : ''}.`, { label: 'Undo', act: async () => {
+      state.subjects = before.subjects; Object.keys(before.progress).forEach(id => { if (before.progress[id]) progress[id] = before.progress[id]; else delete progress[id]; });
+      for (const s of b.subjects) if (!before.subjects.some(x => x.id === s.id)) { delete progress[s.id]; for (const m of s.materials) await IDB.del(m.id); }
+      await restoreTexts(before.texts);
+      saveIndex(); saveProgress(); invalidateAnalysis(); render(); toast('Restore undone.');
+    } });
+  }
+  async function restoreFromFile(file) {
+    if (!file) return;
+    let b;
+    try { b = readBackup(await file.text()); } catch (e) { toast(e.message || 'Could not read that file.'); return; }
+    const replaced = b.subjects.filter(s => state.subjects.some(x => x.id === s.id)).map(s => s.name);
+    const when = b.at ? new Date(b.at).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' }) : 'an unknown date';
+    state.modal = { type: 'confirm', title: `Restore ${plural(b.subjects.length, 'subject')}?`, yes: 'Restore',
+      body: `${b.subjects.map(s => s.name).join(', ')} — ${plural(b.files, 'file')} with their text and your progress, backed up ${when}.${replaced.length ? ` ${replaced.join(', ')} ${replaced.length === 1 ? 'is' : 'are'} already here and will be replaced by the backup copy.` : ''} You can undo it from the message that follows.`,
+      onYes: () => restoreBackup(b) };
+    syncModal();
   }
 
   /* ---------- events ---------- */
@@ -4159,6 +4780,7 @@ const GENERIC = new Set('information data process system method result results s
       case 'keys-filter': ui.starOnly = !ui.starOnly; renderSection(s, 'keys'); break;
       case 'keys-hidden': ui.showHidden = !ui.showHidden; renderSection(s, 'keys'); break;
       case 'mat-open': { const f = s.materials.find(x => x.id === el.dataset.id); if (f) { state.modal = { type: 'file', file: f }; syncModal(); } break; }
+      case 'ocr': { const f = s.materials.find(x => x.id === el.dataset.id); if (f && !f.busy) ocrMaterial(s, f); break; }
       case 'mat-status': { const f = s.materials.find(x => x.id === el.dataset.id); if (f) { f.status = f.status === 'read' ? 'review' : f.status === 'review' ? '' : 'read'; saveIndex(); renderSubject(s); } break; }
       case 'file-status': { const box = el.closest('.field'); box.querySelectorAll('.seg button').forEach(b => b.classList.toggle('on', b === el)); box.querySelector('input[name=status]').value = el.dataset.v; break; }
       case 'mat-filter': {
@@ -4194,11 +4816,21 @@ const GENERIC = new Set('information data process system method result results s
       case 'signup-back': state.pendingSignup = null; render(); break;
       case 'copy-signup': { const p = state.pendingSignup; copyText(`To: ${OWNER_EMAIL}\nSubject: UNI Made EZ sign-up: ${p.name}\n\nName: ${p.name}\nEmail: ${p.email}`, 'Copied.'); break; }
       case 'copy-summary': copyText(ui.summaryText || '', 'Summary copied as Markdown.'); break;
-      case 'copy-cards': { const list = ui.pool || ui.cards || []; copyText(cardsAsAnki(list), `${list.length} cards copied — paste into Anki (Import → tab-separated).`); break; }
+      case 'copy-cards': { const list = ui.pool || ui.cards || []; copyText(cardsAsRows(list), `${list.length} cards copied — paste into Quizlet (Import) or a spreadsheet.`); break; }
       case 'sum-level': ui.level = el.dataset.level; renderSection(s, 'summary'); break;
       case 'term-focus': ui.termFocus = ui.termFocus === el.dataset.key ? null : el.dataset.key; renderSection(s, r.kind); if (r.kind === 'summary' && ui.termFocus) openTermPopup(ui.termFocus); break;
-      case 'export-summary': saveFile(`${(s.code || s.name).replace(/[^\w]+/g, '_')}_summary.md`, ui.summaryText || ''); break;
-      case 'export-cards': saveFile(`${(s.code || s.name).replace(/[^\w]+/g, '_')}_flashcards.txt`, cardsAsAnki(ui.pool || ui.cards || [])); break;
+      case 'export-summary': saveFile(`${fileStem(s.code || s.name)}-summary.md`, ui.summaryText || '', 'text/markdown', 'Summary (Markdown)'); break;
+      case 'export-formulas': saveFile(`${fileStem(s.code || s.name)}-formula-sheet.txt`, ui.sheetText || '', 'text/plain', 'Formula sheet'); break;
+      case 'export-cards': { const list = ui.pool || ui.cards || []; if (!list.length) { toast('No cards to save yet.'); break; } saveFile(`${fileStem(s.code || s.name)}-anki.txt`, cardsAsAnki(list, s), 'text/plain', `Anki deck · ${plural(list.length, 'card')}`); break; }
+      case 'export-anki': withAnalysis(s, a => { const list = fullPool(s.id, a, 1); if (!list.length) { toast('Not enough structured text to make cards from yet.'); return; } saveFile(`${fileStem(s.code || s.name)}-anki.txt`, cardsAsAnki(list, s), 'text/plain', `Anki deck · ${plural(list.length, 'card')}`); }); break;
+      case 'export-copy': { const ta = $('#x-text'); if (ta) { ta.focus(); ta.select(); } copyText(state.modal?.data || '', 'Copied — paste it into a file.'); break; }
+      case 'pack-open': if (LOCKED.summary && !isUnlocked()) { go(`/signup?next=${encodeURIComponent(`/s/${s.id}`)}`); break; } withAnalysis(s, a => { state.modal = { type: 'pack', pack: buildPack(s, a) }; syncModal(); }); break;
+      case 'pack-print': { const p = state.modal?.pack; if (!p) break; state.modal = null; syncModal(); printSheet(packHtml(p)); break; }
+      case 'pack-md': { const p = state.modal?.pack; if (!p) break; const md = packMarkdown(p); state.modal = null; syncModal(); saveFile(`${fileStem(s.code || s.name)}-revision-pack.md`, md, 'text/markdown', 'Revision pack (Markdown)'); break; }
+      case 'pack-copy': { const p = state.modal?.pack; if (p) copyText(packMarkdown(p), 'Revision pack copied as Markdown.'); break; }
+      case 'backup-open': state.modal = { type: 'backup' }; syncModal(); break;
+      case 'backup-all': state.modal = null; syncModal(); saveBackup(state.subjects, 'all-subjects'); break;
+      case 'backup-subject': if (s) saveBackup([s], s.code || s.name); break;
       case 'flip': ui.flipped = !ui.flipped; ui.refocusCard = document.activeElement === el; renderSection(s, 'cards'); break;
       case 'rate': rateCard(s, el.dataset.v); break;
       case 'deck-mode': ui.mode = el.dataset.m; ui.cards = null; renderSection(s, 'cards'); break;
@@ -4279,6 +4911,7 @@ const GENERIC = new Set('information data process system method result results s
   });
   document.addEventListener('change', e => {
     const el = e.target;
+    if (el.matches && el.matches('[data-restore]')) { const f = el.files && el.files[0]; el.value = ''; restoreFromFile(f); return; }
     if (el.dataset.act === 'q-weak') { state.ui.weakOnly = el.checked; return; }
     if (el.dataset.act === 'q-type') {
       const ui = state.ui; ui.types = ui.types || [];
@@ -4357,6 +4990,7 @@ const GENERIC = new Set('information data process system method result results s
     const at = s.materials.indexOf(m);
     const texts = await snapshotTexts([m]);
     s.materials = s.materials.filter(x => x.id !== m.id);
+    pendingScans.delete(m.id);
     await IDB.del(m.id);
     saveIndex(); invalidateAnalysis(); renderSubject(s);
     toast(`Removed ${m.name}.`, { label: 'Undo', act: async () => {
