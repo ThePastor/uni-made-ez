@@ -365,6 +365,7 @@ main { flex: 1; width: 100%; }
 .tile .foot .arr { transition: transform .18s; }
 .tile:hover { background: var(--ink); color: var(--bg); }
 .tile:hover p, .tile:hover .num, .tile:hover .foot { color: var(--bg); }
+.tile:hover .num > span:first-child { color: inherit; }
 .tile:hover .foot .arr { transform: translateX(6px); }
 .tile.locked .foot { color: var(--ink-3); }
 .tile.locked:hover { background: var(--accent); color: var(--accent-ink); }
@@ -1120,6 +1121,109 @@ math mi[mathvariant="normal"] { font-style: normal; }
 .checklist li .needles { display: block; margin-top: 3px; }
 @media (max-width: 800px) { .recall-cols, .essay-cols { grid-template-columns: 1fr; } .tools-row .tool:nth-child(3n) { border-right: 0; } }
 @media print { .recall-box, .essay-box, .recall-rate { display: none !important; } }
+/* ---------- deadlines, study log, week revise ---------- */
+.dl-list { list-style: none; margin: 0 0 10px; padding: 0; display: grid; gap: 6px; }
+.dl { display: flex; align-items: flex-start; gap: 10px; padding: 8px 10px; border: 1px solid var(--line-soft); background: var(--surface); }
+.dl .check { margin-top: 2px; }
+.dl-open { display: grid; gap: 1px; text-align: left; font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; flex: 1; min-width: 0; }
+.dl-open strong { font-weight: 500; }
+.dl-open:hover strong, .dl-open:focus-visible strong { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+.dl-open .small { color: var(--ink-2); }
+.dl.soon { border-left: 4px solid var(--warn); }
+.dl.soon .small b { color: var(--warn); }
+.dl.late { border-left: 4px solid var(--bad); }
+.dl.late .small b { color: var(--bad); }
+.dl.done { opacity: .45; }
+.dl.done .dl-open strong { text-decoration: line-through; }
+.log-strip { display: flex; align-items: flex-end; gap: 4px; height: 56px; margin-bottom: 10px; }
+.log-day { flex: 1; max-width: 26px; height: 100%; display: flex; align-items: flex-end; background: var(--surface-2); }
+.log-day i { display: block; width: 100%; background: var(--line-soft); min-height: 3px; }
+.log-day.on i { background: var(--accent); }
+.week-row { display: flex; flex-direction: row; flex-wrap: wrap; align-items: center; gap: 8px; border-bottom: 1px solid var(--line); }
+.week-row .label { margin-right: 4px; }
+.week-row .fchip { font-size: .68rem; padding: 6px 10px; }
+.week-row .fchip.on { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.week-row .small.muted { flex-basis: 100%; }
+@media print { .week-row, .log-strip + p + .btn-row, .dl .check { display: none !important; } }
+/* ---------- semester view ---------- */
+.tp-btns { display: flex; flex-direction: column; gap: 8px; align-items: stretch; }
+.sem-hero { display: grid; grid-template-columns: 380px 1fr; border-bottom: 1px solid var(--line); }
+.sem-hero .t { padding: 34px 26px; border-right: 1px solid var(--line); display: grid; gap: 8px; align-content: center; }
+.sem-hero h1 { font-family: var(--font-display); font-size: clamp(2rem, 4.5vw, 3.2rem); font-weight: 600; letter-spacing: -0.04em; line-height: 0.95; }
+.sem-agg { grid-template-columns: repeat(3, 1fr); border-bottom: 0; }
+.sem-agg .stat b .of { font-style: normal; font-size: 1rem; color: var(--ink-2); }
+.sem-layout { display: grid; grid-template-columns: 1fr 380px; }
+.sem-layout > section { min-width: 0; border-right: 1px solid var(--line); }
+.sem-layout > aside { min-width: 0; }
+.sem-list { display: grid; }
+.sem-row { display: grid; grid-template-columns: minmax(220px, 1.2fr) 2fr; gap: 4px 18px; align-items: center; padding: 16px 26px; border-bottom: 1px solid var(--line); position: relative; }
+.sem-row.behind { box-shadow: inset 4px 0 0 var(--warn); }
+.sem-name { display: grid; gap: 3px; text-decoration: none; color: inherit; min-width: 0; }
+.sem-name .code { font-family: var(--font-mono); font-size: .62rem; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); display: flex; align-items: center; gap: 6px; }
+.sem-name .code i { width: 10px; height: 10px; background: var(--tab, var(--accent)); }
+.sem-name strong { font-family: var(--font-display); font-weight: 500; font-size: 1.15rem; letter-spacing: -0.02em; }
+.sem-name:hover strong { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+.sem-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.sem-stats .ss { position: relative; display: grid; gap: 2px; align-content: start; padding: 6px 10px 8px; background: var(--surface-2); text-decoration: none; color: inherit; min-width: 0; }
+.sem-stats a.ss:hover { background: var(--accent-soft); }
+.sem-stats .ss b { font-family: var(--font-display); font-size: 1.35rem; font-weight: 600; letter-spacing: -0.03em; line-height: 1; color: var(--accent-deep); }
+.sem-stats .ss > span { font-family: var(--font-mono); font-size: .58rem; letter-spacing: .07em; text-transform: uppercase; color: var(--ink-2); line-height: 1.4; }
+.sem-stats .ss .bar { position: absolute; left: 0; bottom: 0; height: 3px; width: var(--pct, 0%); background: var(--accent); }
+.sem-flags { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 6px; }
+.sem-flags .flag { font-family: var(--font-mono); font-size: .62rem; letter-spacing: .05em; text-transform: uppercase; padding: 3px 8px; background: var(--warn-soft); color: var(--ink); }
+.sem-note { padding: 14px 26px; }
+.sem-tl { list-style: none; margin: 0; padding: 8px 0; display: grid; }
+.sem-tl .tl { display: flex; gap: 14px; align-items: flex-start; padding: 10px 26px; }
+.sem-tl .tl + .tl { border-top: 1px solid var(--line-soft); }
+.sem-tl .d { display: grid; gap: 1px; min-width: 52px; text-align: center; padding: 5px 4px; background: var(--surface-2); }
+.sem-tl .d b { font-family: var(--font-display); font-size: 1.1rem; font-weight: 600; line-height: 1; }
+.sem-tl .d > span { font-family: var(--font-mono); font-size: .55rem; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2); }
+.sem-tl .soon .d { background: var(--warn-soft); } .sem-tl .soon .d b { color: var(--warn); }
+.sem-tl .late .d { background: var(--bad); } .sem-tl .late .d b, .sem-tl .late .d > span { color: var(--surface); }
+.sem-tl .exam .d { background: var(--ink); } .sem-tl .exam .d b, .sem-tl .exam .d > span { color: var(--surface); }
+.sem-tl .what { display: grid; gap: 2px; min-width: 0; }
+.sem-tl .what a { font-family: var(--font-mono); font-size: .6rem; letter-spacing: .07em; text-transform: uppercase; color: var(--ink-2); text-decoration: none; display: flex; align-items: center; gap: 6px; width: max-content; }
+.sem-tl .what a:hover { color: var(--accent); text-decoration: underline; }
+.sem-tl .what a i { width: 8px; height: 8px; background: var(--tab, var(--accent)); }
+.sem-tl .what strong { font-weight: 500; }
+@media (max-width: 1000px) { .sem-layout { grid-template-columns: 1fr; } .sem-layout > section { border-right: 0; border-bottom: 1px solid var(--line); } }
+@media (max-width: 860px) { .sem-hero { grid-template-columns: 1fr; } .sem-hero .t { border-right: 0; border-bottom: 1px solid var(--line); } .sem-row { grid-template-columns: 1fr; } .sem-agg { grid-template-columns: 1fr; } .sem-agg .stat { border-right: 0; border-bottom: 1px solid var(--line); } }
+@media print { .sem-agg a.stat .arr { display: none; } }
+/* ---------- outcome mapping ---------- */
+.oc-intro { max-width: 620px; margin: 30px auto; display: grid; gap: 14px; justify-items: start; padding: 30px; border: 1px solid var(--line); background: var(--surface); }
+.oc-intro h2 { font-family: var(--font-display); font-size: 1.6rem; font-weight: 600; letter-spacing: -0.03em; }
+.oc-sum { display: grid; gap: 10px; margin: 4px 0 18px; }
+.oc-meter { display: flex; height: 12px; background: var(--surface-2); overflow: hidden; }
+.oc-meter i { display: block; height: 100%; }
+.oc-meter .c { background: var(--ok); }
+.oc-meter .t { background: var(--warn); }
+.oc-meter .g { background: var(--bad); }
+.oc-counts { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: baseline; font-size: .9rem; }
+.oc-counts b { font-family: var(--font-display); font-size: 1.2rem; font-weight: 600; }
+.oc-counts .c b { color: var(--ok); } .oc-counts .t b { color: var(--warn); } .oc-counts .g b { color: var(--bad); }
+.oc-list { list-style: none; margin: 0 0 16px; padding: 0; display: grid; gap: 10px; }
+.oc { display: flex; gap: 14px; align-items: flex-start; padding: 14px 16px; border: 1px solid var(--line-soft); border-left-width: 4px; background: var(--surface); }
+.oc.covered { border-left-color: var(--ok); }
+.oc.thin { border-left-color: var(--warn); }
+.oc.gap { border-left-color: var(--bad); background: var(--bad-soft); }
+.oc-badge { font-family: var(--font-mono); font-size: .6rem; letter-spacing: .07em; text-transform: uppercase; padding: 3px 8px; white-space: nowrap; margin-top: 2px; background: var(--surface-2); color: var(--ink-2); }
+.oc.covered .oc-badge { background: var(--ok); color: var(--surface); }
+.oc.thin .oc-badge { background: var(--warn); color: var(--surface); }
+.oc.gap .oc-badge { background: var(--bad); color: var(--surface); }
+.oc-body { display: grid; gap: 6px; min-width: 0; }
+.oc-body strong { font-weight: 500; line-height: 1.45; }
+.oc-gapline { color: var(--ink); }
+.oc-ev summary { cursor: pointer; font-size: .85rem; color: var(--accent); width: max-content; }
+.oc-ev summary:hover { text-decoration: underline; text-underline-offset: 3px; }
+.oc-ev[open] summary { margin-bottom: 8px; }
+.oc-ev .fact-list { display: grid; gap: 8px; }
+@media print { .oc-ev summary { display: none; } .oc-ev .fact-list { display: grid !important; } }
+/* ---------- confidence flags ---------- */
+.conf-chip { font-family: var(--font-mono); font-size: .55rem; letter-spacing: .08em; text-transform: uppercase; padding: 2px 6px; background: var(--warn-soft); color: var(--warn); margin-left: 8px; white-space: nowrap; vertical-align: middle; cursor: help; }
+.conf-note { display: flex; align-items: baseline; gap: 10px; padding: 8px 12px; background: var(--warn-soft); font-size: .82rem; margin: 10px 0 0; text-align: left; }
+.conf-note .conf-chip { margin-left: 0; }
+.detail-block .conf-note, .modal .conf-note { margin: 0 0 12px; }
+@media print { .conf-chip { border: 1px solid var(--warn); } }
 
 </style>
 </head>
@@ -2952,7 +3056,7 @@ const GENERIC = new Set('information data process system method result results s
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '1.7', date: '1 September 2026' };
+  const BUILD = { v: '1.8', date: '1 September 2026' };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonandy242', ['gmail', 'com'].join('.')].join('@');
   const OWNER_HASH = 'f2d29d4fd8c98b4205c0ffa7628eeeccfc3f2647ed0430748eac0d775cbc562d';
@@ -3130,6 +3234,42 @@ const GENERIC = new Set('information data process system method result results s
   function leechCount(sid) { const p = prog(sid); let n = 0; for (const k in p.srs) if (p.srs[k].leech) n++; return n; }
   // rewording a card is the cure: the lapses that made it a leech are forgiven and its schedule starts over
   function clearLeech(sid, key) { const c = prog(sid).srs[key]; if (c && c.leech) { delete c.leech; delete c.newLeech; c.lapses = 0; c.s = 0; c.d = 0; c.ivl = 0; c.due = Date.now(); saveProgress(); } }
+  /* ---------- the study log: what you studied, when, and how it went ----------
+     Written automatically as you study — one entry per subject per day. Minutes are estimated from what was
+     done (a card ≈ 10s, a quiz question ≈ 30s, a recall prompt ≈ 90s, a long answer ≈ 6 min, a match round
+     ≈ 90s) and say so wherever they are shown. The log can be downloaded as a CSV — a real record of the term. */
+  const dayKey = ts => new Date(ts || Date.now()).toISOString().slice(0, 10);
+  const LOG_MIN = { cards: 1 / 6, quiz: 0.5, recall: 1.5, essays: 6, match: 1.5 };
+  function logStudy(sid, field, n, right) {
+    if (!sid || !n) return;
+    const p = prog(sid); p.log = p.log || [];
+    const d = dayKey();
+    let e = p.log[p.log.length - 1];
+    if (!e || e.d !== d) { e = { d, cards: 0, again: 0, quiz: 0, right: 0, recall: 0, got: 0, essays: 0, match: 0 }; p.log.push(e); }
+    e[field] = (e[field] || 0) + n;
+    if (field === 'quiz' && right) e.right += right;
+    if (field === 'cards' && right === false) e.again = (e.again || 0) + 1;
+    if (field === 'recall' && right) e.got = (e.got || 0) + 1;
+    p.log = p.log.slice(-200);
+    saveProgress();
+  }
+  const logMinutes = e => Math.max(1, Math.round((e.cards || 0) * LOG_MIN.cards + (e.quiz || 0) * LOG_MIN.quiz + (e.recall || 0) * LOG_MIN.recall + (e.essays || 0) * LOG_MIN.essays + (e.match || 0) * LOG_MIN.match));
+  function logOf(sid) { const p = progress[sid]; return (p && p.log) || []; }
+  function lastStudied(sid) { const l = logOf(sid); return l.length ? l[l.length - 1].d : null; }
+  // days studied out of the last n, across one subject or all
+  function studiedDays(sids, n) {
+    const days = new Set();
+    for (const sid of sids) for (const e of logOf(sid)) days.add(e.d);
+    let count = 0;
+    for (let i = 0; i < n; i++) { const d = dayKey(Date.now() - i * DAY); if (days.has(d)) count++; }
+    return count;
+  }
+  function logCsv(subjects) {
+    const rows = [['date', 'subject', 'cards reviewed', 'rated again', 'quiz questions', 'quiz correct', 'recall prompts', 'recalled well', 'long answers', 'match rounds', 'estimated minutes']];
+    for (const s of subjects) for (const e of logOf(s.id)) rows.push([e.d, s.code || s.name, e.cards || 0, e.again || 0, e.quiz || 0, e.right || 0, e.recall || 0, e.got || 0, e.essays || 0, e.match || 0, logMinutes(e)]);
+    rows.sort((a, b) => a === rows[0] ? -1 : b === rows[0] ? 1 : String(a[0]).localeCompare(String(b[0])) || String(a[1]).localeCompare(String(b[1])));
+    return rows.map(r => r.map(x => /[",\n]/.test(String(x)) ? '"' + String(x).replace(/"/g, '""') + '"' : x).join(',')).join('\n') + '\n';
+  }
   function srsStats(sid) {
     const p = prog(sid), now = Date.now();
     let due = 0, seen = 0, mastered = 0, next = Infinity;
@@ -3296,6 +3436,7 @@ const GENERIC = new Set('information data process system method result results s
     if (parts[0] === 'signup') return { name: 'signup', q };
     if (parts[0] === 'owner') return { name: 'owner', q };
     if (parts[0] === 'today') return { name: 'today', q };
+    if (parts[0] === 'semester') return { name: 'semester', q };
     if (parts[0] === 's' && parts[1]) return { name: parts[2] ? 'section' : 'subject', id: parts[1], kind: parts[2], q };
     return { name: 'home', q };
   }
@@ -3303,6 +3444,7 @@ const GENERIC = new Set('information data process system method result results s
 
   /* ---------- icons ---------- */
   const I = {
+    outcomes: '<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/></svg>',
     cards: '<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="14" height="12" rx="2"/><path d="M7 4h12a2 2 0 0 1 2 2v10"/><path d="M7 11h6M7 14h4"/></svg>',
     summary: '<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4"/><path d="M9 12h7M9 16h7M9 8h2"/></svg>',
     keys: '<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4.5"/><path d="M11.5 12.5 20 4M17 7l2.5 2.5M14 10l2.5 2.5"/></svg>',
@@ -3397,10 +3539,11 @@ const GENERIC = new Set('information data process system method result results s
     if (r.name === 'signup') return renderSignup(r.q);
     if (r.name === 'owner') return renderOwner(r.q);
     if (r.name === 'today') return renderToday(true);
+    if (r.name === 'semester') return renderSemester();
     const s = subjectById(r.id);
     if (!s) { go('/'); return; }
     if (r.name === 'subject') { noteVisit(s.id, ''); return renderSubject(s); }
-    if (!['cards', 'summary', 'keys', 'quiz', 'match', 'formulas', 'map', 'recall', 'essay'].includes(r.kind)) { go(`/s/${s.id}`); return; }
+    if (!['cards', 'summary', 'keys', 'quiz', 'match', 'formulas', 'map', 'recall', 'essay', 'outcomes'].includes(r.kind)) { go(`/s/${s.id}`); return; }
     if (LOCKED[r.kind] && !isUnlocked()) { go(`/signup?next=${encodeURIComponent(`/s/${s.id}/${r.kind}`)}`); return; }
     noteVisit(s.id, r.kind);
     return renderSection(s, r.kind);
@@ -3475,7 +3618,7 @@ const GENERIC = new Set('information data process system method result results s
         if (!tc.subjects) return '';
         return `<section class="today-panel" aria-label="Today's deck">
           <div class="tp-text"><span class="label">Today · every subject, interleaved</span><strong>${tc.due ? `${plural(tc.due, 'card')} due across ${plural(tc.subs, 'subject')}` : 'Nothing due yet — deal a mixed deck of new cards'}</strong><span class="muted small">Mixing subjects beats studying one course in a block. ${tc.due ? 'Due cards first, then a few new from each subject.' : 'A few new cards from each subject, dealt round-robin.'}</span></div>
-          <a class="btn primary" href="#/today">Study today's deck <span class="arr">→</span></a>
+          <div class="tp-btns"><a class="btn primary" href="#/today">Study today's deck <span class="arr">→</span></a><a class="btn ghost" href="#/semester">Semester view <span class="arr">→</span></a></div>
         </section>`;
       })()}
       ${(() => {
@@ -3492,7 +3635,7 @@ const GENERIC = new Set('information data process system method result results s
           <span class="arr">→</span>
         </a>`;
       })()}
-      <div class="subjects-head"><h2>${subs.length ? 'Your subjects' : 'No subjects yet'}</h2><button class="btn cell ghost" data-act="backup-open" title="Back up every subject to a file, or restore one">Backup &amp; restore</button><button class="btn cell" data-act="new-subject">Add subject <span class="arr">→</span></button></div>
+      <div class="subjects-head"><h2>${subs.length ? 'Your subjects' : 'No subjects yet'}</h2>${subs.length ? `<a class="btn cell ghost" href="#/semester" title="Every subject, exam and deadline on one screen">Semester view</a>` : ''}<button class="btn cell ghost" data-act="backup-open" title="Back up every subject to a file, or restore one">Backup &amp; restore</button><button class="btn cell" data-act="new-subject">Add subject <span class="arr">→</span></button></div>
       <div class="subject-grid">
         ${subs.map(s => `<div class="subject-slot"><a class="subject-card" href="#/s/${s.id}" style="--tab:${s.color}">
           <div class="code">${esc(s.code || 'Subject')}</div>
@@ -3500,6 +3643,99 @@ const GENERIC = new Set('information data process system method result results s
           <div class="meta"><span>${plural(s.materials.length, 'file')}${(() => { const d = srsStats(s.id).due; return d ? ` · ${d} due` : ''; })()}${(() => { const e = examInfo(s); return e && e.days >= 0 ? ` · ${e.days}d to exam` : ''; })()}</span><span class="arr">→</span></div>
         </a><button type="button" class="card-remove" data-act="delete-subject" data-id="${s.id}" aria-label="Remove ${esc(s.name)}" title="Remove subject">${I.x}</button></div>`).join('')}
         <button class="subject-card new" data-act="new-subject">+ ${subs.length ? 'Add another subject' : 'Add your first subject'}</button>
+      </div>
+    </main>${foot()}`);
+    syncModal();
+  }
+
+
+  /* ---------- semester view ---------- */
+  function semFlags(s) {
+    const f = [];
+    const ex = examInfo(s), st = srsStats(s.id);
+    const pct = st.pool ? Math.round(st.mastered / st.pool * 100) : 0;
+    const hasMat = s.materials.some(m => m.include !== false && !m.err && !m.busy);
+    if (ex && ex.days >= 0 && ex.days <= 14) {
+      const when = ex.days === 0 ? 'exam today' : ex.days === 1 ? 'exam tomorrow' : `exam in ${ex.days} days`;
+      if (st.pool && pct < 50) f.push(`${when} · only ${pct}% mastered`);
+      else if (!st.pool && hasMat) f.push(`${when} · cards not started`);
+    }
+    if (st.due > 30) f.push(`${st.due} cards piled up`);
+    if (ex && ex.days >= 0 && hasMat) {
+      const last = lastStudied(s.id);
+      if (!last) f.push('not studied yet');
+      else { const ago = -dlDays(last); if (ago >= 7) f.push(`not studied in ${ago} days`); }
+    }
+    const od = deadlines(s).filter(d => !d.done && dlDays(d.date) != null && dlDays(d.date) < 0).length;
+    if (od) f.push(od === 1 ? 'a deadline overdue' : `${od} deadlines overdue`);
+    return f;
+  }
+  function semTimeline(subs) {
+    const ev = [];
+    for (const s of subs) {
+      const ex = examInfo(s);
+      if (ex && ex.days >= -1) ev.push({ date: s.exam, days: ex.days, s, title: `Exam · ${s.code || s.name}`, kind: 'Exam' });
+      for (const d of deadlines(s)) { if (d.done) continue; const days = dlDays(d.date); if (days != null && days >= -28) ev.push({ date: d.date, days, s, title: d.title, kind: d.kind || 'Other' }); }
+    }
+    ev.sort((a, b) => String(a.date).localeCompare(String(b.date)));
+    return ev;
+  }
+  function renderSemester() {
+    const subs = state.subjects;
+    if (!subs.length) { go('/'); return; }
+    const tc = todayCounts();
+    const sd = studiedDays(subs.map(s => s.id), 7);
+    const weekMins = subs.reduce((n, s) => n + logOf(s.id).filter(e => e.d >= dayKey(Date.now() - 6 * DAY)).reduce((m, e) => m + logMinutes(e), 0), 0);
+    const anyLog = subs.some(s => logOf(s.id).length);
+    const ev = semTimeline(subs);
+    const behindN = subs.filter(s => semFlags(s).length).length;
+    const rows = subs.map(s => {
+      const ex = examInfo(s), st = srsStats(s.id);
+      const pct = st.pool ? Math.round(st.mastered / st.pool * 100) : 0;
+      const toRead = s.materials.filter(m => !m.err && !m.busy && m.status !== 'read').length;
+      const next = dlSorted(s).find(d => !d.done);
+      const flags = semFlags(s);
+      const last = lastStudied(s.id);
+      const ago = last ? -dlDays(last) : null;
+      return `<div class="sem-row${flags.length ? ' behind' : ''}" style="--tab:${s.color}">
+        <a class="sem-name" href="#/s/${s.id}"><span class="code"><i></i>${esc(s.code || 'Subject')}</span><strong>${esc(s.name)}</strong><span class="small muted">${plural(s.materials.length, 'file')}${toRead && s.materials.length ? ` · ${toRead} to read` : ''}${(() => { const oc = (progress[s.id] || {}).ocSum; return oc && oc.n ? ` · outcomes ${oc.cov}/${oc.n} covered${oc.gap ? `, <b class="warn-ink">${oc.gap} not</b>` : ''}` : ''; })()}${next ? ` · next: ${esc(next.title)} <b>${dlWhen(dlDays(next.date))}</b>` : ''}</span></a>
+        <div class="sem-stats">
+          <span class="ss"><b>${ex ? (ex.days >= 0 ? fmt(ex.days) : '—') : '—'}</b><span>${ex ? (ex.days >= 0 ? 'days to exam' : 'exam passed') : 'no exam set'}</span></span>
+          <a class="ss" href="#/s/${s.id}/cards"><b>${fmt(st.due)}</b><span>due now</span></a>
+          <span class="ss"><b>${st.pool ? pct + '%' : '—'}</b><span>mastered</span><i class="bar" style="--pct:${pct}%"></i></span>
+          <span class="ss"><b>${ago == null ? '—' : ago <= 0 ? 'today' : ago === 1 ? '1d' : ago + 'd'}</b><span>${ago == null ? 'not studied yet' : 'since studied'}</span></span>
+        </div>
+        ${flags.length ? `<div class="sem-flags">${flags.map(f => `<span class="flag">${esc(f)}</span>`).join('')}</div>` : ''}
+      </div>`;
+    }).join('');
+    app.innerHTML = frame(`${topbar(`<a href="#/">Subjects</a><span class="sep">/</span><strong>Semester</strong>`)}
+    <main id="main" tabindex="-1">
+      <div class="sem-hero">
+        <div class="t"><span class="label">Every subject on one screen</span><h1>The semester</h1></div>
+        <div class="subject-stats sem-agg">
+          <a class="stat" href="#/today"><b>${fmt(tc.due)}</b><span>${tc.due ? `cards due · ${plural(tc.subs, 'subject')} — study today's deck` : "due now — deal today's deck anyway"}</span></a>
+          <div class="stat"><b>${sd}<i class="of">/7</i></b><span>days studied this week${weekMins ? ` · ~${fmt(weekMins)} min` : ''}</span></div>
+          <div class="stat"><b>${behindN || '—'}</b><span>${behindN ? plural(behindN, 'subject') + ' behind' : 'nothing flagged behind'}</span></div>
+        </div>
+      </div>
+      <div class="sem-layout">
+        <section>
+          <div class="panel-head"><h2>Subjects</h2><span class="label">${plural(subs.length, 'subject')}</span></div>
+          <div class="sem-list">${rows}</div>
+          <p class="small muted sem-note">A subject is flagged when the numbers say you're behind — an exam near with low mastery, a pile of due cards, a week untouched, an overdue deadline.</p>
+        </section>
+        <aside>
+          <div class="panel-head"><h2>What's coming</h2><span class="label">exams &amp; deadlines</span></div>
+          ${ev.length ? `<ul class="sem-tl">${ev.map(e => `<li class="tl${e.kind === 'Exam' ? ' exam' : ''}${e.days < 0 ? ' late' : e.days <= 3 ? ' soon' : ''}">
+            <span class="d"><b>${e.days < 0 ? `${-e.days}d` : e.days === 0 ? 'now' : `${e.days}d`}</b><span>${e.days < 0 ? 'overdue' : e.days === 0 ? 'today' : 'away'}</span></span>
+            <span class="what"><a href="#/s/${e.s.id}" style="--tab:${e.s.color}"><i></i>${esc(e.s.code || e.s.name)}</a><strong>${esc(e.title)}</strong><span class="small muted">${esc(e.kind)} · ${esc(new Date(e.date + 'T00:00:00').toLocaleDateString(undefined, { day: 'numeric', month: 'short' }))}</span></span>
+          </li>`).join('')}</ul>` : `<p class="small muted sem-note">Nothing dated yet. Set each subject's exam date, and add deadlines and readings on the subject page — they all line up here.</p>`}
+          <div class="panel-head slim"><h2>The term on paper</h2></div>
+          <div class="panel-body">
+            <p class="small muted">Every study session, dated and counted — real evidence of the work if you ever apply for accommodations or a scholarship.</p>
+            <div class="btn-row"><button class="btn sm ghost" data-act="log-export-all"${anyLog ? '' : ' disabled'}>Download the term log (.csv) <span class="arr">↓</span></button>${anyLog ? '' : '<span class="small muted">starts writing when you study</span>'}</div>
+          </div>
+        </aside>
       </div>
     </main>${foot()}`);
     syncModal();
@@ -3643,6 +3879,37 @@ const GENERIC = new Set('information data process system method result results s
         <div class="modal-foot"><span class="mono muted">Tip: press ⌘V / Ctrl V on the subject page to open this</span><span class="spacer" style="flex:1"></span><button type="button" class="btn sm" data-act="close-modal">Cancel</button><button class="btn sm primary" type="submit">Add to subject <span class="arr">→</span></button></div>
       </form></div>`;
     }
+    if (m.type === 'deadline') {
+      const d = m.deadline || { title: '', date: '', kind: 'Assignment' };
+      return `<div class="modal-bg" data-act="close-modal"><form class="modal" data-form="deadline">
+        <h2>${m.deadline ? 'Edit deadline' : 'Add a deadline or reading'}</h2>
+        <input type="hidden" name="id" value="${esc(d.id || '')}">
+        <div class="field"><label for="dl-title">What</label><input class="input" id="dl-title" name="title" required maxlength="90" placeholder="e.g. Essay 1 · Chapter 5 reading · Lab report" value="${esc(d.title)}"></div>
+        <div class="form-grid two">
+          <div class="field"><label for="dl-date">Due</label><input class="input" id="dl-date" name="date" type="date" required value="${esc(d.date)}"></div>
+          <div class="field"><label for="dl-kind">Kind</label><select class="input" id="dl-kind" name="kind">${DL_KINDS.map(k => `<option ${d.kind === k ? 'selected' : ''}>${k}</option>`).join('')}</select></div>
+        </div>
+        <div class="btn-row" style="justify-content:flex-end">
+          ${m.deadline ? `<button type="button" class="btn ghost danger" data-act="dl-delete" data-id="${esc(d.id)}">Delete</button><span class="spacer" style="flex:1"></span>` : ''}
+          <button type="button" class="btn ghost" data-act="close-modal">Cancel</button>
+          <button type="submit" class="btn primary">${m.deadline ? 'Save' : 'Add'} <span class="arr">→</span></button>
+        </div>
+      </form></div>`;
+    }
+    if (m.type === 'outcomes') {
+      const subj = curSubject();
+      const cur = ((subj && subj.outcomes) || []).map(o => o.text).join('\n');
+      return `<div class="modal-bg" data-act="close-modal"><form class="modal" data-form="outcomes">
+        <h2>${cur ? 'Edit the learning outcomes' : 'Paste the learning outcomes'}</h2>
+        <p class="small muted">From the course outline or syllabus — one outcome per line. Numbering and bullets are fine; they're stripped.</p>
+        <div class="field"><label for="oc-text">Outcomes</label><textarea class="input" id="oc-text" name="text" rows="9" placeholder="1. Describe the stages of cellular respiration&#10;2. Assess the validity of an experimental design&#10;3. …">${esc(cur)}</textarea></div>
+        <div class="btn-row" style="justify-content:flex-end">
+          ${cur ? `<button type="button" class="btn ghost danger" data-act="oc-clear">Remove all</button><span class="spacer" style="flex:1"></span>` : ''}
+          <button type="button" class="btn ghost" data-act="close-modal">Cancel</button>
+          <button type="submit" class="btn primary">Map them <span class="arr">→</span></button>
+        </div>
+      </form></div>`;
+    }
     if (m.type === 'backup') {
       const subs = state.subjects; const files = subs.reduce((n, s) => n + s.materials.length, 0);
       return `<div class="modal-bg" data-act="close-modal"><div class="modal wide info" role="dialog" aria-modal="true" aria-label="Backup and restore">
@@ -3734,6 +4001,35 @@ const GENERIC = new Set('information data process system method result results s
   }
 
   /* ---------- subject page ---------- */
+  /* ---------- deadlines and readings ---------- */
+  const DL_KINDS = ['Assignment', 'Reading', 'Quiz', 'Midterm', 'Lab', 'Presentation', 'Other'];
+  function deadlines(s) { s.deadlines = s.deadlines || []; return s.deadlines; }
+  function dlDays(d) { const t = new Date(d + 'T00:00:00'); return isNaN(t) ? null : Math.ceil((t - new Date(new Date().toDateString())) / DAY); }
+  const dlWhen = days => days == null ? '' : days < -1 ? `${-days} days overdue` : days === -1 ? '1 day overdue' : days === 0 ? 'today' : days === 1 ? 'tomorrow' : `in ${days} days`;
+  function dlSorted(s) { return deadlines(s).slice().sort((a, b) => (a.done ? 1 : 0) - (b.done ? 1 : 0) || String(a.date).localeCompare(String(b.date))); }
+  function deadlineListHtml(s) {
+    const list = dlSorted(s);
+    if (!list.length) return `<p class="small muted">Nothing tracked yet. Add the assignment due dates, the weekly readings, the lab reports — everything with a date that isn't the exam.</p>`;
+    return `<ul class="dl-list">${list.map(d => { const days = d.done ? null : dlDays(d.date); return `<li class="dl${d.done ? ' done' : days != null && days < 0 ? ' late' : days != null && days <= 3 ? ' soon' : ''}">
+      <label class="check"><input type="checkbox" data-act="dl-done" data-id="${d.id}" ${d.done ? 'checked' : ''} aria-label="Mark ${esc(d.title)} done"></label>
+      <button type="button" class="dl-open" data-act="dl-edit" data-id="${d.id}"><strong>${esc(d.title)}</strong><span class="small">${esc(d.kind || 'Other')} · ${esc(new Date(d.date + 'T00:00:00').toLocaleDateString(undefined, { day: 'numeric', month: 'short' }))}${d.done ? ' · done' : days != null ? ` · <b>${dlWhen(days)}</b>` : ''}</span></button>
+    </li>`; }).join('')}</ul>`;
+  }
+  /* the study-log panel: the last two weeks at a glance, and the term as a file */
+  function studyLogHtml(s) {
+    const log = logOf(s.id);
+    if (!log.length) return `<p class="small muted">Written automatically as you study — cards, quiz questions, recall, long answers. Your first session writes the first entry.</p>`;
+    const byDay = new Map(log.map(e => [e.d, e]));
+    const days = []; for (let i = 13; i >= 0; i--) days.push(dayKey(Date.now() - i * DAY));
+    const maxMin = Math.max(1, ...days.map(d => byDay.has(d) ? logMinutes(byDay.get(d)) : 0));
+    const week = log.filter(e => e.d >= dayKey(Date.now() - 6 * DAY));
+    const sum = f => week.reduce((n, e) => n + (e[f] || 0), 0);
+    const mins = week.reduce((n, e) => n + logMinutes(e), 0);
+    const bits = [sum('cards') ? plural(sum('cards'), 'card') : '', sum('quiz') ? `${sum('right')}/${sum('quiz')} quiz` : '', sum('recall') ? plural(sum('recall'), 'recall prompt') : '', sum('essays') ? plural(sum('essays'), 'long answer') : '', sum('match') ? plural(sum('match'), 'match round') : ''].filter(Boolean);
+    return `<div class="log-strip" role="img" aria-label="Study minutes over the last 14 days">${days.map(d => { const e = byDay.get(d); const m = e ? logMinutes(e) : 0; return `<span class="log-day${m ? ' on' : ''}" title="${d}${m ? ` · ~${m} min` : ' · —'}"><i style="height:${m ? Math.max(14, Math.round(m / maxMin * 100)) : 4}%"></i></span>`; }).join('')}</div>
+      <p class="small">${bits.length ? `This week: ${bits.join(' · ')} · ~${mins} min (estimated) · studied ${studiedDays([s.id], 7)} of the last 7 days.` : `Nothing this week yet — last studied ${lastStudied(s.id)}.`}</p>
+      <div class="btn-row"><button class="btn sm ghost" data-act="log-export">Download the term log (.csv) <span class="arr">↓</span></button><span class="small muted">${plural(log.length, 'day')} on record</span></div>`;
+  }
   function renderSubject(s) {
     const included = s.materials.filter(m => m.include !== false && !m.err && !m.busy);
     const words = included.reduce((n, m) => n + (m.words || 0), 0);
@@ -3785,10 +4081,27 @@ const GENERIC = new Set('information data process system method result results s
             ${s.materials.length ? `<div class="scan-stat"><span><b>${included.length}</b> of ${s.materials.length} included</span><span><b>${fmt(words)}</b> words scanned</span>${readN ? `<span><b>${readN}</b> of ${s.materials.length} read</span>` : ''}${reviewN ? `<span class="warn"><b>${reviewN}</b> to review</span>` : ''}</div>` : ''}
             <p class="small muted">Tick a file to include it in the study set. Tap ⋯ to label it (lecture, week 3), or the badge to mark it read. ${OCR.available() ? 'Scanned PDFs and photos of printed notes are read with the built-in scan reader (OCR) — on your device, nothing uploaded.' : `Scanned PDFs and photos of notes need the scan reader, which runs on the <a href="${LIVE_URL}" target="_blank" rel="noopener">live site</a>.`}</p>
           </div>
+          <div class="panel-head slim"><h2>Deadlines &amp; readings</h2><button class="btn sm ghost" data-act="dl-add">+ Add</button></div>
+          <div class="panel-body">
+            ${deadlineListHtml(s)}
+            ${(() => { const toRead = s.materials.filter(m => !m.err && !m.busy && m.status !== 'read').length; return toRead && s.materials.length > 1 ? `<p class="small muted">${plural(toRead, 'file')} still to read — the badge on each file marks it off.</p>` : ''; })()}
+          </div>
+          <div class="panel-head slim"><h2>Study log</h2><span class="label">written as you study</span></div>
+          <div class="panel-body">${studyLogHtml(s)}</div>
         </section>
         <section>
           <div class="panel-head"><h2>Study</h2>${ready ? `<button class="btn sm ghost" data-act="search" title="Search every file in this subject (press /)">${I.search} Search</button>` : `<span class="label">add a file to begin</span>`}</div>
           ${stats}
+          ${(() => {
+            if (!ready || weeks.length < 2) return '';
+            const inc = s.materials.filter(m => !m.err && !m.busy);
+            const activeWeek = weeks.find(w => inc.every(m => (m.include !== false) === (String(m.week || '') === String(w))));
+            const allOn = inc.every(m => m.include !== false);
+            return `<div class="panel-body week-row"><span class="label">Revise a week</span>
+              ${weeks.map(w => { const files = inc.filter(m => String(m.week || '') === String(w)); return `<button type="button" class="fchip pick wk${String(activeWeek) === String(w) ? ' on' : ''}" data-act="week-revise" data-w="${esc(w)}" title="${plural(files.length, 'file')} · ${fmt(files.reduce((n, m) => n + (m.words || 0), 0))} words">Week ${esc(w)} <span class="arr">→</span></button>`; }).join('')}
+              <button type="button" class="fchip pick${allOn ? ' on' : ''}" data-act="mat-filter" data-k="all">Everything</button>
+              <span class="small muted">One tap filters the study set to that week and opens its cards.</span></div>`;
+          })()}
           <div class="tiles">
             ${tiles.map((t, i) => {
               const locked = LOCKED[t.kind] && !isUnlocked();
@@ -3806,7 +4119,8 @@ const GENERIC = new Set('information data process system method result results s
                ['essay', 'Long answer', 'Write an exam-style answer and mark it against the key points.', I.essay],
                ['match', 'Match game', 'Race the clock pairing terms with their definitions.', I.match],
                ['formulas', 'Formula sheet', 'Every formula, its symbols and the key figures — one printable page.', I.formula],
-               ['map', 'Concept map', 'See which terms the material keeps mentioning together.', I.map]
+               ['map', 'Concept map', 'See which terms the material keeps mentioning together.', I.map],
+               ['outcomes', 'Outcome map', (() => { const oc = (progress[s.id] || {}).ocSum; return oc && oc.n ? `${oc.cov} of ${oc.n} outcomes covered${oc.gap ? ` · ${oc.gap} not covered yet` : ' — fully mapped'}.` : 'Paste the course learning outcomes and see which your material covers — and where the gaps are.'; })(), I.outcomes]
               ].map(([kind, title, desc, icon]) => { const lk = LOCKED[kind] && !isUnlocked(); return `<a class="tool${ready ? '' : ' disabled'}${lk ? ' locked' : ''}" href="${ready ? `#/s/${s.id}/${kind}` : '#'}" ${ready ? '' : 'aria-disabled="true" tabindex="-1"'}><span class="ic">${icon}</span><span class="t"><b>${title}${lk ? ` <span class="lock">${I.lock} Sign-up</span>` : ''}</b><span>${desc}</span></span><span class="arr">→</span></a>`; }).join('')}
           </div>
           <div class="panel-head slim"><h2>Take it with you</h2><span class="label">${IN_ARTIFACT ? 'copy here · download on the live site' : 'files you keep'}</span></div>
@@ -4101,6 +4415,31 @@ const GENERIC = new Set('information data process system method result results s
     return cite(st);
   }
   const citeTag = text => { const c = citeText(text); return c ? `<span class="cite">${esc(c)}</span>` : ''; };
+  /* ---------- confidence flags on extracted content ---------- */
+  // the honest "check this one" marks: extraction shapes the engine is less sure of, and anything read by OCR
+  function confWhy(d) {
+    if (!d || !d.kind) return null;
+    if (d.kind === 'weak' || d.kind === 'inverse') return 'the phrasing is unusual for a definition — check it reads the right way round';
+    if ((d.kind === 'dash' || d.kind === 'colon') && String(d.term).trim().split(/\s+/).length >= 5) return 'a long heading was read as a term — check it names one real thing';
+    return null;
+  }
+  function confOcr(sentId) {
+    const a = state.analysis;
+    if (!a || !a.ocrFiles || !a.ocrFiles.size || sentId == null) return null;
+    const st = a.sentences[sentId];
+    return st && a.ocrFiles.has(st.file) ? 'read by the scan reader (OCR) — check it against the original' : null;
+  }
+  function confOf(d) {
+    const bits = [confWhy(d), confOcr(d && d.id)].filter(Boolean);
+    return bits.length ? bits : null;
+  }
+  function defById(sentId) {
+    const a = state.analysis; if (!a || sentId == null) return null;
+    if (!a._defById) { a._defById = new Map(); for (const d of (a.defs || [])) if (!a._defById.has(d.id)) a._defById.set(d.id, d); }
+    return a._defById.get(sentId) || null;
+  }
+  const confChip = why => why ? `<span class="conf-chip" title="Check this one: ${esc(why.join('; '))}">check</span>` : '';
+  const confNote = why => why ? `<div class="conf-note speak-skip"><span class="conf-chip">check</span><span>${esc(why.map(w => w[0].toUpperCase() + w.slice(1)).join('. '))}.</span></div>` : '';
   // a formula as typeset maths (MathML, no library needed); the plain expression is kept as alttext and as the fallback
   function fxHtml(expr, kind) {
     const m = kind === 'words' ? null : Engine.mathml(expr);
@@ -4177,6 +4516,7 @@ const GENERIC = new Set('information data process system method result results s
     a.truncated = truncated;
     const used = included.filter(m => m.include !== false && !m.err);
     a.fileCount = used.length;
+    a.ocrFiles = new Set(used.filter(m => m.ocr).map(m => m.name.replace(/\.[^.]+$/, '')));
     a.figures = await loadFigures(used);
     const names = used.map(m => m.name.replace(/\.[^.]+$/, ''));
     const nameSet = new Set(names);
@@ -4196,7 +4536,8 @@ const GENERIC = new Set('information data process system method result results s
     formulas: { title: 'Formula sheet', icon: I.formula },
     map: { title: 'Concept map', icon: I.map },
     recall: { title: 'Free recall', icon: I.recall },
-    essay: { title: 'Long answer', icon: I.essay }
+    essay: { title: 'Long answer', icon: I.essay },
+    outcomes: { title: 'Outcome map', icon: I.outcomes }
   };
 
   function sectionShell(s, kind, inner, extraBar = '') {
@@ -4234,6 +4575,82 @@ const GENERIC = new Set('information data process system method result results s
     if (kind === 'map') return renderMap(s, a, ui, note);
     if (kind === 'recall') return renderRecall(s, a, ui, note);
     if (kind === 'essay') return renderEssay(s, a, ui, note);
+    if (kind === 'outcomes') return renderOutcomes(s, a, ui, note);
+  }
+
+
+  /* ---------- learning-outcome mapping ---------- */
+  // instruction verbs and syllabus filler — not content, so never evidence
+  const OC_SKIP = new Set(['describe', 'explain', 'identify', 'define', 'compare', 'contrast', 'analyse', 'analyze', 'assess', 'evaluate', 'apply', 'discuss', 'demonstrate', 'understand', 'outline', 'list', 'recognise', 'recognize', 'interpret', 'summarise', 'summarize', 'distinguish', 'classify', 'calculate', 'solve', 'use', 'know', 'state', 'name', 'recall', 'justify', 'critique', 'examine', 'illustrate', 'relate', 'predict', 'appreciate', 'perform', 'conduct', 'formulate', 'determine', 'differentiate', 'construct', 'develop', 'design', 'communicate', 'articulate', 'student', 'students', 'learner', 'learners', 'able', 'will', 'upon', 'completion', 'successful', 'course', 'unit', 'module', 'end', 'term', 'basic', 'key', 'various', 'different', 'importance', 'concepts', 'concept', 'principles', 'principle', 'knowledge', 'skills', 'ability', 'including']);
+  function outcomeNeedles(text) {
+    const seen = new Set(); const out = [];
+    for (const w of String(text).toLowerCase().match(/[a-z][a-z'-]{2,}/g) || []) {
+      const st = stemOf(w);
+      if (!st || STOP_STEMS.has(st) || OC_SKIP.has(w) || seen.has(st)) continue;
+      seen.add(st); out.push(w);
+    }
+    return out.slice(0, 10);
+  }
+  // map every outcome against the material's sentences and the card pool
+  function mapOutcomes(s, a) {
+    const usable = a.sentences.map(x => (x.dangling || x.len < 30) ? null : stemSet(x.s));
+    const nUse = usable.filter(Boolean).length || 1;
+    const pool = fullPool(s.id, a, 1).map(c => ({ c, set: stemSet(c.front + ' ' + c.back) }));
+    return (s.outcomes || []).map(o => {
+      let needles = outcomeNeedles(o.text);
+      if (needles.length > 2) { // a term the whole course repeats is the topic, not this outcome's point
+        const kept = needles.filter(nd => { const st = stemOf(nd); let n = 0; for (const set of usable) if (set && set.has(st)) n++; return n / nUse <= 0.35; });
+        if (kept.length >= 2) needles = kept;
+      }
+      const need = needles.length >= 2 ? 2 : 1;
+      const evidence = []; const hitTerms = new Set();
+      a.sentences.forEach((st, i) => {
+        const set = usable[i]; if (!set) return;
+        const hits = needles.filter(nd => set.has(stemOf(nd)));
+        if (hits.length >= need) { evidence.push({ st, hits }); hits.forEach(h => hitTerms.add(h)); }
+      });
+      evidence.sort((x, y) => y.hits.length - x.hits.length || x.st.len - y.st.len);
+      const cards = pool.filter(p => needles.filter(nd => p.set.has(stemOf(nd))).length >= need).length;
+      const status = evidence.length >= 2 ? 'covered' : (evidence.length || cards) ? 'thin' : 'gap';
+      return { o, needles, evidence: evidence.slice(0, 3), evTotal: evidence.length, cards, hitTerms: Array.from(hitTerms), status };
+    });
+  }
+  const OC_LABEL = { covered: 'Covered', thin: 'Thin', gap: 'Not covered' };
+  function renderOutcomes(s, a, ui, note) {
+    const bar = `<button class="btn sm" data-act="oc-edit">${(s.outcomes || []).length ? 'Edit the outcomes' : 'Paste the outcomes'} <span class="arr">→</span></button>
+      ${(s.outcomes || []).length ? `<button class="btn sm" data-act="print-page" title="Print the outcome map">Print <span class="arr">⎙</span></button>` : ''}`;
+    if (!(s.outcomes || []).length) {
+      app.innerHTML = sectionShell(s, 'outcomes', `${note}<div class="page narrow">
+        <div class="oc-intro">
+          <h2>From "I studied" to "I'm covered."</h2>
+          <p>Every course outline lists what you're supposed to be able to do by the exam. Paste those learning outcomes here and they're checked against your uploaded material and your cards — outcome by outcome — so the gaps show up now, not in the exam hall.</p>
+          <button class="btn primary" data-act="oc-edit">Paste the learning outcomes <span class="arr">→</span></button>
+          <p class="small muted">They're in the course outline or syllabus, usually under "learning outcomes" or "objectives". One per line.</p>
+        </div></div>`, bar);
+      return;
+    }
+    const rows = mapOutcomes(s, a);
+    const cov = rows.filter(r => r.status === 'covered').length, thin = rows.filter(r => r.status === 'thin').length, gap = rows.length - cov - thin;
+    const p = prog(s.id); const sum = { n: rows.length, cov, thin, gap };
+    if (!p.ocSum || p.ocSum.n !== sum.n || p.ocSum.cov !== sum.cov || p.ocSum.thin !== sum.thin || p.ocSum.gap !== sum.gap) { p.ocSum = sum; saveProgress(); }
+    const pctW = k => Math.round(k / rows.length * 100) + '%';
+    const inner = `${note}<div class="page narrow">
+      <div class="oc-sum" role="img" aria-label="${cov} of ${rows.length} outcomes covered, ${thin} thin, ${gap} not covered">
+        <div class="oc-meter">${cov ? `<i class="c" style="width:${pctW(cov)}"></i>` : ''}${thin ? `<i class="t" style="width:${pctW(thin)}"></i>` : ''}${gap ? `<i class="g" style="width:${pctW(gap)}"></i>` : ''}</div>
+        <div class="oc-counts"><span class="c"><b>${cov}</b> covered</span><span class="t"><b>${thin}</b> thin</span><span class="g"><b>${gap}</b> not covered</span><span class="muted small">of ${plural(rows.length, 'outcome')} · checked against ${plural(a.fileCount, 'file')} and your cards</span></div>
+      </div>
+      <ol class="oc-list">${rows.map((r, i) => `<li class="oc ${r.status}">
+        <span class="oc-badge">${OC_LABEL[r.status]}</span>
+        <div class="oc-body">
+          <strong>Outcome ${i + 1}: ${esc(r.o.text)}</strong>
+          ${r.status === 'gap'
+            ? `<p class="small oc-gapline">No cards, no material covering this. Bring in the lecture, chapter or notes that teach it${r.needles.length ? ` — nothing here mentions ${esc(r.needles.slice(0, 3).map(n => '\u201C' + n + '\u201D').join(', '))}` : ''}.</p>`
+            : `<p class="small muted">${plural(r.evTotal, 'passage')} in your material${r.cards ? ` · ${plural(r.cards, 'card')} practise it` : ` · <b class="warn-ink">no cards practise it yet</b>`}${r.hitTerms.length ? ` · matched on ${esc(r.hitTerms.slice(0, 4).join(', '))}` : ''}</p>
+            <details class="oc-ev"><summary>See the evidence</summary><ul class="fact-list">${r.evidence.map(e => `<li class="fact"><span>${esc(e.st.s)}</span>${cite(e.st) ? `<span class="cite">${esc(cite(e.st))}</span>` : ''}</li>`).join('')}</ul>${r.evTotal > r.evidence.length ? `<p class="small muted">…and ${r.evTotal - r.evidence.length} more.</p>` : ''}</details>`}
+        </div>
+      </li>`).join('')}</ol>
+      <p class="small muted">Honest by design: an outcome only counts as covered when at least two passages of your own material speak to it. "Thin" means one passage or only cards — worth checking against the course notes.</p></div>`;
+    app.innerHTML = sectionShell(s, 'outcomes', inner, bar);
   }
 
   /* ---------- summary ---------- */
@@ -4319,12 +4736,12 @@ const GENERIC = new Set('information data process system method result results s
     const flat = `${marks_}`;
     const rowBtn = label => `<button type="button" class="row-open" data-act="keys-item" data-kind="${kind}" data-i="${i}" aria-label="${esc(label)}"></button>`;
     switch (kind) {
-      case 'defs': return `<div class="def k-row"${flat}><dt>${esc(item.term)}${item.section ? `<span class="where">${esc(item.section)}</span>` : ''}</dt><dd class="clamp">${esc(defText(item))}${rowBtn(`Open the definition of ${item.term}`)}</dd></div>`;
-      case 'acronyms': return `<div class="def k-row"${flat}><dt>${esc(item.acr)}</dt><dd class="clamp">${esc(item.expansion)}${rowBtn(`Open the acronym ${item.acr}`)}</dd></div>`;
+      case 'defs': return `<div class="def k-row"${flat}><dt>${esc(item.term)}${confChip(confOf(item))}${item.section ? `<span class="where">${esc(item.section)}</span>` : ''}</dt><dd class="clamp">${esc(defText(item))}${rowBtn(`Open the definition of ${item.term}`)}</dd></div>`;
+      case 'acronyms': return `<div class="def k-row"${flat}><dt>${esc(item.acr)}${confChip(confOf(item))}</dt><dd class="clamp">${esc(item.expansion)}${rowBtn(`Open the acronym ${item.acr}`)}</dd></div>`;
       case 'formulas': return `<div class="formula k-row" ${open} aria-label="Open the formula ${esc(item.expr)}">${fxHtml(item.expr, item.kind)}</div>`;
       case 'diagrams': return `<div class="k-row figrow" ${open} aria-label="Open ${esc(figNumber(item))}${figTitle(item) ? ': ' + esc(figTitle(item)) : ''}"><img src="${item.src}" alt="" loading="lazy"><div class="figmeta"><strong>${esc(figNumber(item))}</strong><span class="clamp">${esc(figTitle(item) || 'No caption found near it')}</span><span class="cite">${esc(item.file)} · p. ${item.page}</span></div></div>`;
       case 'processes': if (item.steps) return `<div class="k-row proc"${flat}>${item.title ? `<span class="label">${esc(item.title)}</span>` : ''}<ol class="steps">${item.steps.slice(0, 6).map(x => `<li>${esc(x.s)}</li>`).join('')}${item.steps.length > 6 ? `<li class="muted">… ${item.steps.length - 6} more steps</li>` : ''}</ol>${rowBtn(`Open the ${item.steps.length}-step process${item.title ? ': ' + item.title : ''}`)}</div>`;
-        return `<div class="fact k-row clamp" ${open}>${hlNeedles(item.sent.s, [item.cue])}</div>`;
+        return `<div class="fact k-row clamp" ${open}>${hlNeedles(item.sent.s, [item.cue])}${confChip(confOf({ id: item.sent.id }))}</div>`;
       case 'causes': { const sp = Engine.splitCause(item.sent.s); return sp ? `<div class="k-row ce" ${open}><div><span class="tag">Cause</span><span class="clamp">${esc(sp.cause)}</span></div><div><span class="tag">Effect</span><span class="clamp">${esc(sp.effect)}</span></div></div>` : `<div class="fact k-row clamp" ${open}>${hlNeedles(item.sent.s, [item.cue])}</div>`; }
       case 'comparisons': return `<div class="fact k-row clamp" ${open}>${hlNeedles(item.sent.s, [item.cue])}</div>`;
       case 'examples': { const t = exampleConcept(item); return `<div class="fact k-row" ${open}>${t ? `<span class="tag">${esc(t.display)}</span>` : ''}<span class="clamp">${hlNeedles(item.sent.s, [item.cue])}</span></div>`; }
@@ -4374,7 +4791,7 @@ const GENERIC = new Set('information data process system method result results s
     const block = (label, html) => `<div class="detail-block"><span class="label">${label}</span>${html}</div>`;
     const ctxList = (term, skip) => { const c = ctx(term).filter(x => x !== skip); return c.length ? block('Where it appears', `<div class="fact-list">${c.map(x => `<div class="fact">${hlNeedles(x, [term])}</div>`).join('')}</div>`) : ''; };
     switch (kind) {
-      case 'defs': return { title: item.term, kicker: `Definition${item.section ? ' · ' + item.section : ''}`, copy: `${item.term} — ${defText(item)}`, body: block('Definition', `<p class="big">${hlNeedles(defText(item), [item.term])}</p>${defText(item) === item.sent ? citeTag(item.sent) : ''}`) + (defText(item) !== item.sent ? block('From the material', `<p>${esc(item.sent)}</p>${citeTag(item.sent)}`) : '') + ctxList(item.term, item.sent) };
+      case 'defs': return { title: item.term, kicker: `Definition${item.section ? ' · ' + item.section : ''}`, copy: `${item.term} — ${defText(item)}`, body: confNote(confOf(item)) + block('Definition', `<p class="big">${hlNeedles(defText(item), [item.term])}</p>${defText(item) === item.sent ? citeTag(item.sent) : ''}`) + (defText(item) !== item.sent ? block('From the material', `<p>${esc(item.sent)}</p>${citeTag(item.sent)}`) : '') + ctxList(item.term, item.sent) };
       case 'terms': {
         const d = defFor(k, item.display);
         const expl = !d ? bestExplanation(item.display) : null;
@@ -4578,7 +4995,8 @@ const GENERIC = new Set('information data process system method result results s
     else if (grade === 'partly') { r.streak = 0; r.due = Date.now() + DAY; }
     else { r.streak = 0; r.due = Date.now() + 10 * 60000; }
     rs[pr.key] = r; saveProgress();
-    if (pr.term) noteTerm(sid, pr.term, grade !== 'missed', grade === 'missed' ? 1 : 1);
+    logStudy(sid, 'recall', 1, grade === 'got');
+    if (pr.term) noteTerm(sid, pr.term, grade !== 'missed');
   }
   function renderRecall(s, a, ui, note) {
     if (!ui.prompts) { ui.seed = ui.seed || 1; ui.prompts = orderRecall(s.id, recallPrompts(a, s.id), ui.seed); ui.i = 0; ui.done = 0; ui.grades = { got: 0, partly: 0, missed: 0 }; }
@@ -4838,6 +5256,7 @@ const GENERIC = new Set('information data process system method result results s
         <div class="face front"><div class="kind"><span>${esc(c.type)} · ${state5}</span><span>${ui.i + 1} / ${ui.order.length}</span></div>${c.img ? `<img class="fig" src="${c.img}" alt="${esc(c.type === 'Figure' ? 'A figure from the material' : 'A labelled diagram from the material')}">` : ''}<div class="txt${c.img ? ' with-fig' : ''}">${esc(c.front)}</div>${leechNote}<div class="hint">Click or press space to flip</div></div>
         <div class="face back"><div class="kind"><span>Answer</span><span>${ui.i + 1} / ${ui.order.length}</span></div>${c.img && c.type !== 'Figure' ? `<img class="fig small" src="${c.img}" alt="">` : ''}
           ${isCloze ? `<div class="txt answer">${esc(c.back)}</div>${c.source ? `<div class="src">${esc(c.source)}${c.citeText != null ? (c.citeText ? `<span class="cite">${esc(c.citeText)}</span>` : '') : citeTag(c.source)}</div>` : ''}` : `<div class="txt">${esc(c.back)}</div>${c.source && c.back !== c.source ? `<div class="src">${esc(c.source)}${c.citeText != null ? (c.citeText ? `<span class="cite">${esc(c.citeText)}</span>` : '') : citeTag(c.source)}</div>` : c.source ? `<div class="src">${c.citeText != null ? (c.citeText ? `<span class="cite">${esc(c.citeText)}</span>` : '') : citeTag(c.source)}</div>` : ''}`}
+          ${(() => { const cs = c.sid || sid; if (c.mine || c.sourceId == null || !state.analysisKey || !state.analysisKey.startsWith(cs + ':')) return ''; return confNote(confOf(defById(c.sourceId) || { id: c.sourceId })); })()}
           ${cnote ? `<div class="own-note"><span class="label">Your note</span>${esc(cnote)}</div>` : ''}
         </div>
       </div></div>
@@ -5023,6 +5442,7 @@ const GENERIC = new Set('information data process system method result results s
     const p = prog(s.id);
     const cal = calibration(ui);
     p.quizzes.push({ at: Date.now(), right, total: ui.qs.length, exam: !!ui.exam, weak: !!ui.weakOnly, sw: cal.sureWrong, ur: cal.unsureRight, rated: cal.rated });
+    logStudy(s.id, 'quiz', ui.qs.length, right);
     p.quizzes = p.quizzes.slice(-40); saveProgress();
     if (timedOut) toast('Time — exam submitted.');
     renderSection(s, 'quiz');
@@ -5094,6 +5514,7 @@ const GENERIC = new Set('information data process system method result results s
       noteTerm(s.id, ui.pairs[i].term, true);
       if (ui.matched.size === ui.pairs.length) {
         ui.finished = Date.now();
+        logStudy(s.id, 'match', 1);
         const secs = Math.round((ui.finished - ui.start) / 1000);
         const p = prog(s.id);
         if (!p.matchBest || secs < p.matchBest) { p.matchBest = secs; saveProgress(); }
@@ -5640,6 +6061,14 @@ const GENERIC = new Set('information data process system method result results s
       case 'pack-md': { const p = state.modal?.pack; if (!p) break; const md = packMarkdown(p); state.modal = null; syncModal(); saveFile(`${fileStem(s.code || s.name)}-revision-pack.md`, md, 'text/markdown', 'Revision pack (Markdown)'); break; }
       case 'pack-copy': { const p = state.modal?.pack; if (p) copyText(packMarkdown(p), 'Revision pack copied as Markdown.'); break; }
       case 'backup-open': state.modal = { type: 'backup' }; syncModal(); break;
+      case 'dl-add': state.modal = { type: 'deadline' }; syncModal(); $('#dl-title')?.focus(); break;
+      case 'dl-edit': { const d = deadlines(s).find(x => x.id === el.dataset.id); if (d) { state.modal = { type: 'deadline', deadline: d }; syncModal(); } break; }
+      case 'dl-delete': { const before = deadlines(s).slice(); s.deadlines = deadlines(s).filter(x => x.id !== el.dataset.id); saveIndex(); state.modal = null; syncModal(); renderSubject(s); toast('Deadline removed.', { label: 'Undo', act: () => { s.deadlines = before; saveIndex(); refreshAfterMark(s); } }); break; }
+      case 'oc-edit': state.modal = { type: 'outcomes' }; syncModal(); $('#oc-text')?.focus(); break;
+      case 'oc-clear': { const s2 = curSubject(); if (!s2) break; const old = s2.outcomes || []; s2.outcomes = []; if (progress[s2.id]) delete progress[s2.id].ocSum; saveIndex(); saveProgress(); state.modal = null; syncModal(); renderSection(s2, 'outcomes'); toast('Outcomes removed.', { label: 'Undo', act: () => { s2.outcomes = old; saveIndex(); renderSection(s2, 'outcomes'); } }); break; }
+      case 'log-export': { const csv = logCsv([s]); if (!logOf(s.id).length) { toast('Nothing logged yet — study something first.'); break; } saveFile(`${fileStem(s.code || s.name)}-study-log.csv`, csv, 'text/csv', 'Study log'); break; }
+      case 'log-export-all': { const subs = state.subjects.filter(x => logOf(x.id).length); if (!subs.length) { toast('Nothing logged yet — study something first.'); break; } saveFile(`unimadeez-study-log-${today()}.csv`, logCsv(subs), 'text/csv', 'Study log · all subjects'); break; }
+      case 'week-revise': { const w = el.dataset.w; s.materials.forEach(m => { if (m.err) return; m.include = String(m.week || '') === String(w); if (m.include && m.dup) m.dupOk = true; }); saveIndex(); invalidateAnalysis(); state.ui = {}; toast(`Studying week ${w} only.`); go(`/s/${s.id}/cards`); break; }
       case 'backup-all': state.modal = null; syncModal(); saveBackup(state.subjects, 'all-subjects'); break;
       case 'backup-subject': if (s) saveBackup([s], s.code || s.name); break;
       case 'flip': ui.flipped = !ui.flipped; ui.refocusCard = document.activeElement === el; redeck(); break;
@@ -5653,7 +6082,7 @@ const GENERIC = new Set('information data process system method result results s
       case 'es-back': ui.i = null; ui.marked = false; ui.answer = ''; renderSection(s, 'essay'); break;
       case 'es-mark': { const ta = $('#es-answer'); if (ta) ui.answer = ta.value; if (!(ui.answer || '').trim()) { toast('Write something first — even a few lines.'); break; } const pr = ui.prompts[ui.i]; ui.cov = coverage(ui.answer, pr.points).map(c => ({ ...c, self: false })); ui.marked = true; renderSection(s, 'essay'); say(`Marked: ${ui.cov.filter(c => c.hit).length} of ${ui.cov.length} key points found.`); break; }
       case 'es-edit': ui.marked = false; renderSection(s, 'essay'); break;
-      case 'es-save': { const pr = ui.prompts[ui.i]; const es = essayState(s.id); const cov = ui.cov || []; const score = cov.filter(c => c.hit || c.self).length; const list = es[pr.key] || []; list.push({ at: Date.now(), score, total: cov.length, words: (ui.answer || '').trim().split(/\s+/).filter(Boolean).length }); es[pr.key] = list.slice(-10); saveProgress(); cov.forEach(c => { for (const nd of c.needles) if (!/^\d/.test(nd)) noteTerm(s.id, nd, c.hit || c.self); }); toast(`Saved — ${score} of ${cov.length} key points.`); ui.i = null; ui.marked = false; ui.answer = ''; renderSection(s, 'essay'); break; }
+      case 'es-save': { const pr = ui.prompts[ui.i]; const es = essayState(s.id); const cov = ui.cov || []; const score = cov.filter(c => c.hit || c.self).length; const list = es[pr.key] || []; list.push({ at: Date.now(), score, total: cov.length, words: (ui.answer || '').trim().split(/\s+/).filter(Boolean).length }); es[pr.key] = list.slice(-10); saveProgress(); logStudy(s.id, 'essays', 1); cov.forEach(c => { for (const nd of c.needles) if (!/^\d/.test(nd)) noteTerm(s.id, nd, c.hit || c.self); }); toast(`Saved — ${score} of ${cov.length} key points.`); ui.i = null; ui.marked = false; ui.answer = ''; renderSection(s, 'essay'); break; }
       case 'deck-mode': ui.mode = el.dataset.m; ui.cards = null; renderSection(s, 'cards'); break;
       case 'print-cards': printCards(s); break;
       case 'print-page': (async () => {
@@ -5789,6 +6218,7 @@ const GENERIC = new Set('information data process system method result results s
   document.addEventListener('change', e => {
     const el = e.target;
     if (el.matches && el.matches('[data-restore]')) { const f = el.files && el.files[0]; el.value = ''; restoreFromFile(f); return; }
+    if (el.dataset.act === 'dl-done') { const r = parseRoute(); const subj = r.id && subjectById(r.id); if (subj) { const d = deadlines(subj).find(x => x.id === el.dataset.id); if (d) { d.done = el.checked; saveIndex(); renderSubject(subj); if (el.checked) say(`${d.title} marked done.`); } } return; }
     if (el.dataset.act === 'q-weak') { state.ui.weakOnly = el.checked; return; }
     if (el.dataset.act === 'es-tick') { const c = state.ui.cov && state.ui.cov[+el.dataset.i]; if (c) { c.self = el.checked; const li = el.closest('li'); if (li) li.className = c.hit ? 'hit' : c.self ? 'self' : 'miss'; const n = state.ui.cov.filter(x => x.hit || x.self).length; const sc = $('.essay-score .score'); if (sc) sc.textContent = Math.round(n / state.ui.cov.length * 100) + '%'; const st = $('.essay-score strong'); if (st) st.textContent = `${n} of ${state.ui.cov.length} key points covered`; const qt = $('.essay-card .qtype'); if (qt) qt.textContent = `${n} of ${state.ui.cov.length} key points`; } return; }
     if (el.dataset.act === 'q-type') {
@@ -5849,6 +6279,24 @@ const GENERIC = new Set('information data process system method result results s
       const subj = subjectById(r.id); if (!subj) return;
       state.modal = null; syncModal();
       addPasted(subj, data.title, data.text);
+    } else if (form.dataset.form === 'deadline') {
+      const subj = subjectById(r.id); if (!subj) return;
+      if (!(data.title || '').trim() || !data.date) return;
+      const list = deadlines(subj);
+      const d = data.id ? list.find(x => x.id === data.id) : null;
+      if (d) { d.title = data.title.trim(); d.date = data.date; d.kind = data.kind; }
+      else list.push({ id: uid(), title: data.title.trim(), date: data.date, kind: data.kind, done: false });
+      saveIndex(); state.modal = null; syncModal(); renderSubject(subj);
+      toast(data.id ? 'Deadline saved.' : `Added — ${dlWhen(dlDays(data.date))}.`);
+    } else if (form.dataset.form === 'outcomes') {
+      const subj = subjectById(r.id); if (!subj) return;
+      const lines = String(data.text || '').split(/\n+/).map(t => t.replace(/^\s*(?:\d+\s*[.):]|[-\u2022*])\s*/, '').trim()).filter(t => t.length >= 3);
+      const old = subj.outcomes || [];
+      subj.outcomes = lines.map(t => ({ id: (old.find(o => o.text === t) || {}).id || uid(), text: t }));
+      if (progress[subj.id]) delete progress[subj.id].ocSum;
+      saveIndex(); state.modal = null; syncModal();
+      toast(lines.length ? `${plural(lines.length, 'outcome')} mapped against your material.` : 'Outcomes cleared.');
+      if (parseRoute().kind === 'outcomes') renderSection(subj, 'outcomes'); else go(`/s/${subj.id}/outcomes`);
     } else if (form.dataset.form === 'file') {
       const subj = subjectById(r.id); if (!subj) return;
       const f = subj.materials.find(x => x.id === data.id);
@@ -5917,7 +6365,7 @@ const GENERIC = new Set('information data process system method result results s
     const card = ui.cards[idx];
     let newLeech = null;
     const sid = card ? (card.sid || (s && s.id)) : null;
-    if (card && sid) { const c = schedule(sid, card.key, v); noteTerm(sid, card.term, v !== 'again'); if (c.newLeech) { delete c.newLeech; saveProgress(); newLeech = card; } }
+    if (card && sid) { const c = schedule(sid, card.key, v); noteTerm(sid, card.term, v !== 'again'); logStudy(sid, 'cards', 1, v !== 'again'); if (c.newLeech) { delete c.newLeech; saveProgress(); newLeech = card; } }
     if (v === 'again') { ui.missed.add(idx); ui.got.delete(idx); } else { ui.got.add(idx); ui.missed.delete(idx); }
     ui.reviewed = (ui.reviewed || 0) + 1;
     ui.i++; ui.flipped = false; ui.refocusCard = true;
