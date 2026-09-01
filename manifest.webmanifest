@@ -1,0 +1,38 @@
+{
+  "name": "UNI Made EZ",
+  "short_name": "UNI Made EZ",
+  "description": "Turn your own lecture PDFs, slides and notes into flash cards, a summary, the key information and a quiz — built in your browser, nothing uploaded anywhere.",
+  "lang": "en",
+  "dir": "ltr",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0E2A3A",
+  "theme_color": "#0E2A3A",
+  "categories": [
+    "education",
+    "productivity"
+  ],
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

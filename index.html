@@ -10,7 +10,12 @@
 <meta name="theme-color" content="#0C0C0D" media="(prefers-color-scheme: dark)">
 <meta name="referrer" content="no-referrer">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20fill%3D%22%230E2A3A%22%2F%3E%3Ctext%20x%3D%2232%22%20y%3D%2243%22%20font-family%3D%22Helvetica%2CArial%2Csans-serif%22%20font-size%3D%2230%22%20font-weight%3D%22700%22%20text-anchor%3D%22middle%22%20fill%3D%22%23D9F56B%22%3EEZ%3C%2Ftext%3E%3C%2Fsvg%3E">
-<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20fill%3D%22%230E2A3A%22%2F%3E%3Ctext%20x%3D%2232%22%20y%3D%2243%22%20font-family%3D%22Helvetica%2CArial%2Csans-serif%22%20font-size%3D%2230%22%20font-weight%3D%22700%22%20text-anchor%3D%22middle%22%20fill%3D%22%23D9F56B%22%3EEZ%3C%2Ftext%3E%3C%2Fsvg%3E">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="UNI Made EZ">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta property="og:type" content="website">
 <meta property="og:title" content="UNI Made EZ">
 <meta property="og:description" content="Turn your own lecture PDFs, slides and notes into flash cards, a summary, the key information and a quiz — built in your browser, nothing uploaded anywhere.">
@@ -1224,6 +1229,20 @@ math mi[mathvariant="normal"] { font-style: normal; }
 .conf-note .conf-chip { margin-left: 0; }
 .detail-block .conf-note, .modal .conf-note { margin: 0 0 12px; }
 @media print { .conf-chip { border: 1px solid var(--warn); } }
+
+/* ---------- installable app ---------- */
+.disp-btn.install { width: auto; padding: 0 9px; display: inline-flex; align-items: center; gap: 6px; text-transform: uppercase; letter-spacing: .06em; }
+.disp-btn.install svg { width: 13px; height: 13px; display: block; }
+@media (max-width: 900px) { .disp-btn.install .lbl { display: none; } .disp-btn.install { padding: 0 7px; } }
+.install-steps { display: grid; gap: 12px; margin: 16px 0; padding: 0; list-style: none; }
+.install-steps li { display: grid; grid-template-columns: 26px 1fr; gap: 12px; align-items: baseline; }
+.install-steps li b { font-family: var(--font-mono); font-size: .72rem; color: var(--ink-3); font-weight: 400; }
+.install-steps li span b { font-family: inherit; font-size: inherit; color: var(--ink); font-weight: 600; }
+@media (max-width: 560px) {
+  .topbar > * { padding: 0 12px; }
+  .toggle-cell { gap: 8px; }
+  .toggle-cell [data-act="keys-help"] { display: none; }
+}
 
 </style>
 </head>
@@ -3056,7 +3075,7 @@ const GENERIC = new Set('information data process system method result results s
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '1.8', date: '1 September 2026' };
+  const BUILD = { v: '1.7', date: '1 September 2026' };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonandy242', ['gmail', 'com'].join('.')].join('@');
   const OWNER_HASH = 'f2d29d4fd8c98b4205c0ffa7628eeeccfc3f2647ed0430748eac0d775cbc562d';
@@ -3423,6 +3442,72 @@ const GENERIC = new Set('information data process system method result results s
   const IN_ARTIFACT = !!(window.__FRAME_PREAMBLE || (window.claude && typeof window.claude.use === 'function'));
   const LIVE_URL = 'https://thepastor.github.io/uni-made-ez/';
 
+  /* ---------- installable app ----------
+     On the live https site a service worker keeps a copy of the page, so it opens with no
+     connection and can be installed to a phone's home screen. There is nothing to register
+     inside the Claude artifact frame or from a file:// copy, so all of this stays inert there. */
+  const SW_HOST = !IN_ARTIFACT && 'serviceWorker' in navigator &&
+    (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1');
+  const standalone = () => (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone === true;
+  const IS_IOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const installable = () => SW_HOST && !standalone();
+  let installPrompt = null;   // Chrome, Edge and Android hand the real prompt over; Safari never does
+  let swWaiting = null;
+  let swReloading = false;
+
+  function registerSW() {
+    if (!SW_HOST) return;
+    // a build newer than the one showing has finished downloading in the background
+    const offer = w => {
+      if (!w || !navigator.serviceWorker.controller) return;
+      swWaiting = w;
+      toast('A newer version is ready.', { label: 'Reload', act: applyUpdate });
+    };
+    navigator.serviceWorker.register('sw.js').then(reg => {
+      if (reg.waiting) offer(reg.waiting);
+      reg.addEventListener('updatefound', () => {
+        const w = reg.installing;
+        if (w) w.addEventListener('statechange', () => { if (w.state === 'installed') offer(reg.waiting || w); });
+      });
+    }).catch(() => { /* no offline copy this time — the page itself is unaffected */ });
+    // The very first worker claims this page as part of installing; that is not an update,
+    // so only reload when a worker replaces one that was already in charge.
+    const hadController = !!navigator.serviceWorker.controller;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (!hadController || swReloading) return; swReloading = true; location.reload();
+    });
+  }
+  function applyUpdate() {
+    if (swWaiting) { swReloading = false; swWaiting.postMessage({ type: 'skip-waiting' }); }
+    else location.reload();
+  }
+
+  window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault(); installPrompt = e;
+    document.querySelectorAll('[data-act="install"]').forEach(b => { b.hidden = false; });
+  });
+  window.addEventListener('appinstalled', () => {
+    installPrompt = null;
+    document.querySelectorAll('[data-act="install"]').forEach(b => { b.hidden = true; });
+    toast('Installed. UNI Made EZ is on your home screen.');
+  });
+
+  const installCell = () => installable()
+    ? `<button type="button" class="disp-btn install" data-act="install" aria-label="Install UNI Made EZ as an app">${I.install}<span class="lbl">Install</span></button>`
+    : '';
+
+  async function doInstall() {
+    if (installPrompt) {
+      const p = installPrompt; installPrompt = null;
+      p.prompt();
+      const res = await p.userChoice.catch(() => ({ outcome: 'dismissed' }));
+      if (res && res.outcome === 'accepted') return;   // the appinstalled handler tidies up
+      installPrompt = p;                               // "not now" — leave the button working
+      return;
+    }
+    state.modal = { type: 'install' }; syncModal();
+  }
+
   const subjectById = id => state.subjects.find(s => s.id === id);
   const isUnlocked = () => !!state.unlock;
 
@@ -3444,6 +3529,7 @@ const GENERIC = new Set('information data process system method result results s
 
   /* ---------- icons ---------- */
   const I = {
+    install: '<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M12 7.5v7"/><path d="M9 11.5 12 14.5 15 11.5"/></svg>',
     outcomes: '<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/></svg>',
     cards: '<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="14" height="12" rx="2"/><path d="M7 4h12a2 2 0 0 1 2 2v10"/><path d="M7 11h6M7 14h4"/></svg>',
     summary: '<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4"/><path d="M9 12h7M9 16h7M9 8h2"/></svg>',
@@ -3571,7 +3657,7 @@ const GENERIC = new Set('information data process system method result results s
       <a class="wordmark" href="#/">UNI Made <span class="ez">EZ</span></a>
       <div class="clock" data-clock>${clockText()}</div>
       <div class="crumb">${crumbs}</div>
-      <div class="toggle-cell"><button type="button" class="disp-btn" data-act="display" aria-label="Display settings — text size, reading comfort, theme">Aa</button><button type="button" class="disp-btn" data-act="keys-help" aria-label="Keyboard shortcuts">?</button>${themeToggle()}${accountCell()}</div>
+      <div class="toggle-cell"><button type="button" class="disp-btn" data-act="display" aria-label="Display settings — text size, reading comfort, theme">Aa</button><button type="button" class="disp-btn" data-act="keys-help" aria-label="Keyboard shortcuts">?</button>${installCell()}${themeToggle()}${accountCell()}</div>
       ${ctaCell()}
     </header>`;
   }
@@ -3943,6 +4029,26 @@ const GENERIC = new Set('information data process system method result results s
           <p class="small muted">Print gives you a clean black-on-white document; pick “Save as PDF” in the print dialog to keep a file. The Markdown version opens in Notion, Obsidian, Word or any text editor.</p>
         </div>
         <div class="modal-foot"><span class="mono muted">Hidden items stay out; your own and edited cards are in</span><span class="spacer" style="flex:1"></span><button class="btn sm" data-act="close-modal">Close</button></div>
+      </div></div>`;
+    }
+    if (m.type === 'install') {
+      const steps = IS_IOS
+        ? [['01', 'Tap the <b>Share</b> button at the bottom of Safari — the square with an arrow coming out of it.'],
+           ['02', 'Scroll down the list and tap <b>Add to Home Screen</b>.'],
+           ['03', 'Tap <b>Add</b>. UNI Made EZ appears on your home screen with its own icon.']]
+        : [['01', 'Open your browser’s menu — the three dots, top right.'],
+           ['02', 'Choose <b>Install app</b>, or <b>Add to Home screen</b>.'],
+           ['03', 'Confirm. It opens in its own window, with no address bar.']];
+      return `<div class="modal-bg" data-act="close-modal"><div class="modal wide info" role="dialog" aria-modal="true" aria-label="Install UNI Made EZ">
+        <div class="modal-head"><div><span class="label">Takes about ten seconds</span><h2>Install UNI Made EZ</h2></div><button class="btn ghost icon" data-act="close-modal" aria-label="Close">${I.x}</button></div>
+        <div class="modal-body">
+          <p>Installed, it sits on your home screen like any other app, opens straight into the study screen with no browser bar, and works with no connection at all — on the bus, in a basement lecture hall, on a plane.</p>
+          <ol class="install-steps">${steps.map(([n, t]) => `<li><b>${n}</b><span>${t}</span></li>`).join('')}</ol>
+          <p class="small muted">Your subjects and progress live in this browser${IS_IOS ? ', and iPhone keeps the installed app’s storage separate from Safari’s — so add your subjects again once inside the app, or use <b>Backup &amp; restore</b> to carry them across' : ''}. Nothing is uploaded either way.</p>
+          <p class="small muted">Offline covers everything built into the page: your files, cards, summaries, quizzes and exports. Reading a web address and the scan reader both need a connection the first time.</p>
+          <p class="small muted">Already installed? Open it from your home screen rather than from here.</p>
+        </div>
+        <div class="modal-foot"><span class="spacer" style="flex:1"></span><button class="btn sm primary" data-act="close-modal">Got it</button></div>
       </div></div>`;
     }
     if (m.type === 'display') {
@@ -5973,6 +6079,7 @@ const GENERIC = new Set('information data process system method result results s
       case 'keys-item': openKeysItem(el.dataset.kind, +el.dataset.i); break;
       case 'term-jump': openTermPopup(el.dataset.key); break;
       case 'search': if (s) openSearch(s); break;
+      case 'install': doInstall(); break;
       case 'display': state.modal = { type: 'display' }; syncModal(); break;
       case 'keys-help': state.modal = { type: 'keys-help' }; syncModal(); break;
       case 'speak': speakFrom(el.dataset.speak, el); break;
@@ -6447,6 +6554,7 @@ const GENERIC = new Set('information data process system method result results s
 
   window.addEventListener('hashchange', render);
   render();
+  registerSW();
 })();
 
 </script>
