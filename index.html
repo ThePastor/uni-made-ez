@@ -742,7 +742,6 @@ button.term-chip.k-row { cursor: pointer; }
 .order-list .opt.order { width: 100%; }
 .opt.picked { background: var(--accent-soft); }
 .opt.picked .key { background: var(--accent); color: var(--accent-ink); border-radius: 50%; width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; }
-.exam-nav { border-top: 1px solid var(--line-soft); padding-top: 14px; }
 .timer { font-family: var(--font-mono); font-size: .8rem; letter-spacing: .06em; padding: 6px 10px; border: 1px solid var(--line); font-variant-numeric: tabular-nums; }
 .timer.low { background: var(--coral-soft); color: var(--bad); border-color: var(--bad); }
 .hist { display: flex; align-items: flex-end; gap: 4px; height: 74px; padding: 0 2px; border-bottom: 1px solid var(--line-soft); }
@@ -764,16 +763,25 @@ button.term-chip.k-row { cursor: pointer; }
 
 /* ---------- formula sheet ---------- */
 .sheet-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; border-bottom: 1px solid var(--line); padding-bottom: 14px; margin-bottom: 22px; }
-.sheet-grid { display: grid; grid-template-columns: 1.35fr 1fr; gap: 32px; align-items: start; }
+.sheet-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(240px, 300px); gap: 32px; align-items: start; }
+.sheet-grid > section, .sheet-grid > aside { min-width: 0; }
+@media (min-width: 1500px) { .fsheet { grid-template-columns: 1fr 1fr; } }
+.sheet .sym { font-family: var(--font-mono); font-size: 1rem; font-weight: 600; color: var(--accent-deep); }
+.sheet .def-list .def { gap: 4px 14px; }
+.sheet aside section { border: 1px solid var(--line-soft); padding: 16px 18px; background: var(--surface); }
 .sheet-grid h3 { display: flex; align-items: baseline; justify-content: space-between; font-size: 1.1rem; margin-bottom: 12px; }
 .sheet-grid h3 .count { font-family: var(--font-mono); font-size: .7rem; color: var(--accent); font-weight: 500; }
 .sheet-grid section + section { margin-top: 26px; }
-.fsheet { display: grid; gap: 14px; }
-.frow { display: grid; gap: 6px; padding-bottom: 14px; border-bottom: 1px solid var(--line-soft); break-inside: avoid; }
-.frow:last-child { border: 0; padding: 0; }
-.fmeta { font-size: .82rem; color: var(--ink-2); display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; }
+.fsheet { display: grid; gap: 16px; grid-template-columns: 1fr; }
+.frow { display: grid; gap: 10px; align-content: start; padding: 16px 18px; background: var(--surface); border: 1px solid var(--line-soft); border-left: 3px solid var(--accent); break-inside: avoid; }
+.frow .fnum { font-family: var(--font-mono); font-size: .64rem; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); }
+/* long expressions wrap instead of scrolling out of view — a cram sheet you cannot read is useless */
+.frow .formula { font-size: 1.2rem; line-height: 1.55; font-weight: 500; color: var(--ink); background: var(--surface-2); padding: 12px 14px; white-space: pre-wrap; overflow-wrap: anywhere; overflow-x: visible; }
+.frow.words .formula { font-family: var(--font-body); font-size: 1.05rem; }
+.frow .fsrc { font-size: .86rem; line-height: 1.6; color: var(--ink-2); overflow-wrap: anywhere; }
+.frow .fsrc mark { background: var(--mint); color: var(--mint-ink); }
+.fmeta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; }
 .fmeta .tag { flex: none; }
-.fmeta > span:last-child { flex: 1 1 100%; }
 .def dt.sym { font-family: var(--font-mono); font-size: 1rem; color: var(--accent); }
 
 /* ---------- concept map ---------- */
@@ -909,8 +917,6 @@ body.modal-open { overflow: hidden; }
 .empty-page .btn-row { margin-top: 6px; }
 .tag.soft { background: var(--surface-2); color: var(--ink-2); }
 .q-card .qnum { flex-wrap: wrap; gap: 10px; }
-.q-tools { display: inline-flex; flex-wrap: wrap; gap: 6px; margin-left: auto; }
-.q-tools .btn { font-size: .6rem; padding: 4px 8px; }
 .field label.check { font-family: var(--font-body); font-size: .92rem; text-transform: none; letter-spacing: 0; color: var(--ink); }
 .opts { display: grid; gap: 12px; }
 .opts .check { align-items: flex-start; gap: 10px; }
@@ -928,6 +934,11 @@ body.modal-open { overflow: hidden; }
 .jxc-logo .jxc-x { fill: var(--jxc-gold); }
 .foot .build { color: inherit; white-space: nowrap; }
 @media (max-width: 900px) { .foot .maker { justify-content: flex-start; } .foot .maker .by { display: none; } .jxc-logo { height: 15px; } }
+.q-nav { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 22px; padding-top: 16px; border-top: 1px solid var(--line-soft); }
+.q-nav .btn[disabled] { opacity: .4; cursor: not-allowed; }
+.qnum .answered { font-family: var(--font-mono); font-size: .62rem; letter-spacing: .1em; text-transform: uppercase; color: var(--accent-deep); }
+@media (max-width: 700px) { .q-nav { gap: 6px; } .q-nav .spacer { display: none; } .q-nav .btn.primary { flex: 1 1 100%; justify-content: center; margin-top: 4px; } }
+@media print { .q-nav { display: none !important; } }
 
 </style>
 </head>
@@ -2357,7 +2368,7 @@ const GENERIC = new Set('information data process system method result results s
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '1.3', date: '1 September 2026' };
+  const BUILD = { v: '1.4', date: '1 September 2026' };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonandy242', ['gmail', 'com'].join('.')].join('@');
   const OWNER_HASH = 'f2d29d4fd8c98b4205c0ffa7628eeeccfc3f2647ed0430748eac0d775cbc562d';
@@ -3668,13 +3679,27 @@ const GENERIC = new Set('information data process system method result results s
           <div class="btn-row" style="justify-content:space-between">${an ? '' : `<button class="btn sm ghost" data-act="q-clear">Clear</button><button class="btn primary" data-act="q-submit-order" ${pick.length === q.items.length ? '' : 'disabled'}>${ui.exam ? 'Lock in' : 'Check order'} <span class="arr">→</span></button>`}</div>`;
       }
       else input = an && !ui.exam ? '' : `<form class="fill-row" data-form="fill"><input class="input" name="v" autocomplete="off" autocapitalize="off" placeholder="Type your answer" value="${an ? esc(an.given) : ''}" ${an ? '' : 'autofocus'} required><button class="btn primary" type="submit">${ui.exam ? 'Save' : 'Check'}</button></form>${q.hint && !ui.exam ? `<p class="small muted">Hint: ${esc(q.hint)}</p>` : ''}`;
-      const fb = showFb ? `<div class="feedback ${an.ok ? 'ok' : 'bad'}"><strong>${an.ok ? 'Correct.' : `Not quite — the answer is “${esc(Array.isArray(q.answer) ? q.answer.map((x, n) => (n + 1) + '. ' + x).join('  ') : q.answer)}”.`}</strong>${q.explain && !an.ok ? `<span>${esc(q.explain)}</span>` : ''}<span class="src">From the material: ${esc(q.source)}</span></div><div class="btn-row" style="justify-content:flex-end"><button class="btn primary" data-act="q-next" autofocus>${ui.qi + 1 === ui.qs.length ? 'See results' : 'Next question'} <span class="arr">→</span></button></div>` : '';
-      const examNav = ui.exam ? `<div class="btn-row exam-nav"><button class="btn sm" data-act="q-back" ${ui.qi ? '' : 'disabled'}>← Back</button><span class="spacer" style="flex:1"></span><button class="btn ${ui.qi + 1 === ui.qs.length ? 'primary' : ''}" data-act="q-next">${ui.qi + 1 === ui.qs.length ? 'Submit exam' : 'Next'} <span class="arr">→</span></button></div>` : '';
+      const fb = showFb ? `<div class="feedback ${an.ok ? 'ok' : 'bad'}"><strong>${an.ok ? 'Correct.' : `Not quite — the answer is “${esc(Array.isArray(q.answer) ? q.answer.map((x, n) => (n + 1) + '. ' + x).join('  ') : q.answer)}”.`}</strong>${q.explain && !an.ok ? `<span>${esc(q.explain)}</span>` : ''}<span class="src">From the material: ${esc(q.source)}</span></div>` : '';
+      // One control row for both modes: go back over what you have done, start the same set again,
+      // swap the question types, or move on. In practice, a question you have already answered is
+      // read-only when you come back to it — the marking stands.
+      const last = ui.qi + 1 === ui.qs.length;
+      const fwd = ui.exam
+        ? `<button class="btn ${last ? 'primary' : ''}" data-act="q-next">${last ? 'Submit exam' : 'Next'} <span class="arr">→</span></button>`
+        : (an ? `<button class="btn primary" data-act="q-next" autofocus>${last ? 'See results' : 'Next question'} <span class="arr">→</span></button>` : '');
+      const qNav = `<div class="btn-row q-nav">
+        <button class="btn sm" data-act="q-back" ${ui.qi ? '' : 'disabled'} aria-label="Previous question">← Back</button>
+        <button class="btn sm" data-act="q-restart" aria-label="Restart this quiz from question 1">Restart <span class="arr">↻</span></button>
+        <button class="btn sm ghost" data-act="q-types">Question types</button>
+        <button class="btn sm ghost" data-act="q-setup">Settings</button>
+        <span class="spacer" style="flex:1"></span>
+        ${fwd}
+      </div>`;
       body = `<div class="q-card">
-        <div class="qnum"><span>Question ${ui.qi + 1} of ${ui.qs.length}</span><span class="qtype">${Q_NAMES[q.type]}</span><span class="q-tools"><button type="button" class="btn sm ghost" data-act="q-restart">Restart</button><button type="button" class="btn sm ghost" data-act="q-types">Question types</button><button type="button" class="btn sm ghost" data-act="q-setup">Settings</button></span></div>
+        <div class="qnum"><span>Question ${ui.qi + 1} of ${ui.qs.length}</span><span class="qtype">${Q_NAMES[q.type]}</span>${an && !ui.exam ? `<span class="answered">${an.ok ? 'Answered · correct' : 'Answered'}</span>` : ''}</div>
         <div class="prompt">${esc(q.prompt)}</div>
         ${q.body ? `<div class="body">${esc(q.body).replace(/______/g, '<b>______</b>')}</div>` : ''}
-        ${input}${fb}${examNav}
+        ${input}${fb}${qNav}
       </div>`;
       if (ui.exam) bar = `<span class="timer${ui.deadline && ui.deadline - Date.now() < 60000 ? ' low' : ''}" id="q-timer">${timeLeftText(ui)}</span><span class="mono muted">${ui.answers.filter(Boolean).length}/${ui.qs.length} answered</span>`;
     }
@@ -3793,6 +3818,17 @@ const GENERIC = new Set('information data process system method result results s
   }
 
   /* ---------- formula sheet ---------- */
+  // the sentence a formula came from, with the quantity it defines picked out — only on a whole-word
+  // match of two characters or more, or "E = z * SE" would highlight the e in "the"
+  function fsrcHtml(f) {
+    const lhs = String(f.expr).split(/\s*[=→∝≈≡]\s*/)[0].trim();
+    if (lhs.length >= 2 && /^[A-Za-z]/.test(lhs)) {
+      const re = new RegExp('(^|[^\\w-])(' + lhs.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')(?![\\w-])', 'i');
+      const out = esc(f.sent).replace(re, '$1<mark>$2</mark>');
+      if (out !== esc(f.sent)) return out;
+    }
+    return esc(f.sent);
+  }
   function renderFormulas(s, a, ui, note) {
     const k = Engine.keyInfo(a);
     const syms = k.symbols || [];
@@ -3818,7 +3854,11 @@ const GENERIC = new Set('information data process system method result results s
       <div class="sheet-grid">
         <section>
           <h3>Formulas <span class="count">${a.formulas.length}</span></h3>
-          ${a.formulas.length ? `<div class="fsheet">${a.formulas.map(f => `<div class="frow"><div class="formula big-formula">${esc(f.expr)}</div><div class="fmeta">${f.kind === 'words' ? `<span class="tag soft">from the wording</span>` : f.kind === 'reaction' ? `<span class="tag soft">reaction</span>` : ''}${secOf(f.sent) ? `<span class="tag">${esc(secOf(f.sent))}</span>` : ''}<span>${esc(f.sent)}</span></div></div>`).join('')}</div>` : `<p class="muted small">No equations in this material — the symbols and figures beside this are what it did define.</p>`}
+          ${a.formulas.length ? `<div class="fsheet">${a.formulas.map((f, i) => `<div class="frow${f.kind === 'words' ? ' words' : ''}">
+            <div class="fmeta"><span class="fnum">${String(i + 1).padStart(2, '0')}</span>${f.kind === 'words' ? `<span class="tag soft">from the wording</span>` : f.kind === 'reaction' ? `<span class="tag soft">reaction</span>` : ''}${secOf(f.sent) ? `<span class="tag">${esc(secOf(f.sent))}</span>` : ''}</div>
+            <div class="formula">${esc(f.expr)}</div>
+            <div class="fsrc">${fsrcHtml(f)}</div>
+          </div>`).join('')}</div>` : `<p class="muted small">No equations in this material — the symbols and figures beside this are what it did define.</p>`}
         </section>
         <aside>
           ${syms.length ? `<section><h3>Symbols <span class="count">${syms.length}</span></h3><dl class="def-list">${syms.map(x => `<div class="def"><dt class="sym">${esc(x.sym)}</dt><dd>${esc(x.meaning)}</dd></div>`).join('')}</dl></section>` : ''}
@@ -4179,7 +4219,14 @@ const GENERIC = new Set('information data process system method result results s
       case 'q-pick': { const pick = orderState(ui); const i = +el.dataset.i; const at = pick.indexOf(i); if (at >= 0) pick.splice(at, pick.length - at); else pick.push(i); renderSection(s, 'quiz'); break; }
       case 'q-clear': ui.pick = []; renderSection(s, 'quiz'); break;
       case 'q-submit-order': { const q = ui.qs[ui.qi]; const pick = orderState(ui); const given = pick.map(i => q.items[i]); answerQuiz(s, given); ui.pick = []; break; }
-      case 'q-back': if (ui.qi > 0) { ui.qi--; ui.pick = []; renderSection(s, 'quiz'); } break;
+      case 'q-back': {
+        if (ui.qi <= 0) break;
+        ui.qi--; ui.pick = [];
+        renderSection(s, 'quiz');
+        const a2 = ui.answers[ui.qi];
+        say(`Question ${ui.qi + 1} of ${ui.qs.length}.${a2 ? ` You answered ${a2.ok ? 'correctly' : 'incorrectly'}.` : ''}`);
+        break;
+      }
       case 'q-start': ui.seed = (ui.seed || 1) + 1; ui.qs = visQuiz(s.id, Engine.quiz(state.analysis, { count: ui.count, types: ui.types, seed: ui.seed, only: ui.weakOnly ? new Set(weakTerms(s.id, 25).map(w => w.key)) : null })); ui.qi = 0; ui.answers = []; if (!ui.qs.length) { ui.qs = null; toast('Could not build questions from this material — try adding more files.'); } ui.startedAt = Date.now(); ui.pick = []; ui.deadline = ui.exam && ui.qs ? Date.now() + ui.qs.length * 60000 : null; renderSection(s, 'quiz'); if (ui.exam && ui.qs) startQuizTimer(s); break;
       case 'q-answer': answerQuiz(s, el.dataset.v); break;
       case 'q-next': ui.pick = []; if (ui.qi + 1 >= ui.qs.length) { clearQuizRun(); finishQuiz(s); } else { ui.qi++; saveQuizRun(s.id, ui); renderSection(s, 'quiz'); } break;
