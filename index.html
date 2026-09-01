@@ -1243,6 +1243,9 @@ math mi[mathvariant="normal"] { font-style: normal; }
   .toggle-cell { gap: 8px; }
   .toggle-cell [data-act="keys-help"] { display: none; }
 }
+.disp-btn.update { width: auto; padding: 0 9px; display: inline-flex; align-items: center; gap: 6px; text-transform: uppercase; letter-spacing: .06em; background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.disp-btn.update svg { width: 13px; height: 13px; display: block; }
+@media (max-width: 900px) { .disp-btn.update .lbl { display: none; } .disp-btn.update { padding: 0 7px; } }
 
 </style>
 </head>
@@ -3075,7 +3078,7 @@ const GENERIC = new Set('information data process system method result results s
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '1.9', date: '1 September 2026' };
+  const BUILD = { v: '1.9.1', date: '1 September 2026' };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonandy242', ['gmail', 'com'].join('.')].join('@');
   const OWNER_HASH = 'f2d29d4fd8c98b4205c0ffa7628eeeccfc3f2647ed0430748eac0d775cbc562d';
@@ -3461,7 +3464,9 @@ const GENERIC = new Set('information data process system method result results s
     const offer = w => {
       if (!w || !navigator.serviceWorker.controller) return;
       swWaiting = w;
+      // the toast is the nudge; the top-bar button is what you can still find a minute later
       toast('A newer version is ready.', { label: 'Reload', act: applyUpdate });
+      showUpdateBtn();
     };
     navigator.serviceWorker.register('sw.js').then(reg => {
       if (reg.waiting) offer(reg.waiting);
@@ -3491,6 +3496,14 @@ const GENERIC = new Set('information data process system method result results s
     document.querySelectorAll('[data-act="install"]').forEach(b => { b.hidden = true; });
     toast('Installed. UNI Made EZ is on your home screen.');
   });
+
+  const updateCell = () => swWaiting
+    ? `<button type="button" class="disp-btn update" data-act="update" title="A newer version of UNI Made EZ is ready" aria-label="Update to the newer version">${I.update}<span class="lbl">Update</span></button>`
+    : '';
+  function showUpdateBtn() {
+    const cell = document.querySelector('.topbar .toggle-cell');
+    if (cell && !cell.querySelector('[data-act="update"]')) cell.insertAdjacentHTML('afterbegin', updateCell());
+  }
 
   const installCell = () => installable()
     ? `<button type="button" class="disp-btn install" data-act="install" aria-label="Install UNI Made EZ as an app">${I.install}<span class="lbl">Install</span></button>`
@@ -3529,6 +3542,7 @@ const GENERIC = new Set('information data process system method result results s
 
   /* ---------- icons ---------- */
   const I = {
+    update: '<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.6-5.9"/><path d="M20 3.5V8h-4.5"/></svg>',
     install: '<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M12 7.5v7"/><path d="M9 11.5 12 14.5 15 11.5"/></svg>',
     outcomes: '<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/></svg>',
     cards: '<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="14" height="12" rx="2"/><path d="M7 4h12a2 2 0 0 1 2 2v10"/><path d="M7 11h6M7 14h4"/></svg>',
@@ -3657,7 +3671,7 @@ const GENERIC = new Set('information data process system method result results s
       <a class="wordmark" href="#/">UNI Made <span class="ez">EZ</span></a>
       <div class="clock" data-clock>${clockText()}</div>
       <div class="crumb">${crumbs}</div>
-      <div class="toggle-cell"><button type="button" class="disp-btn" data-act="display" aria-label="Display settings — text size, reading comfort, theme">Aa</button><button type="button" class="disp-btn" data-act="keys-help" aria-label="Keyboard shortcuts">?</button>${installCell()}${themeToggle()}${accountCell()}</div>
+      <div class="toggle-cell"><button type="button" class="disp-btn" data-act="display" aria-label="Display settings — text size, reading comfort, theme">Aa</button><button type="button" class="disp-btn" data-act="keys-help" aria-label="Keyboard shortcuts">?</button>${updateCell()}${installCell()}${themeToggle()}${accountCell()}</div>
       ${ctaCell()}
     </header>`;
   }
@@ -6079,6 +6093,7 @@ const GENERIC = new Set('information data process system method result results s
       case 'keys-item': openKeysItem(el.dataset.kind, +el.dataset.i); break;
       case 'term-jump': openTermPopup(el.dataset.key); break;
       case 'search': if (s) openSearch(s); break;
+      case 'update': applyUpdate(); break;
       case 'install': doInstall(); break;
       case 'display': state.modal = { type: 'display' }; syncModal(); break;
       case 'keys-help': state.modal = { type: 'keys-help' }; syncModal(); break;
