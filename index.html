@@ -291,6 +291,29 @@ main { flex: 1; width: 100%; }
 .mat.busy .info { text-transform: none; letter-spacing: 0; font-family: var(--font-body); white-space: normal; }
 .scan-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin-top: 8px; font-size: .8rem; color: var(--ink-2); line-height: 1.4; }
 .scan-row a { color: inherit; }
+.paste-row { display: flex; align-items: center; gap: 10px; margin: 10px 0 2px; }
+/* ---------- figures and diagrams ---------- */
+.fig-list { display: grid; gap: 10px; }
+.figrow { display: grid; grid-template-columns: 96px 1fr; gap: 12px; align-items: start; padding: 8px; border: 1px solid var(--line-soft); background: var(--surface); cursor: pointer; }
+.figrow:hover, .figrow:focus-visible { border-color: var(--accent); }
+.figrow img { width: 96px; height: 72px; object-fit: cover; background: #fff; border: 1px solid var(--line-soft); }
+.figrow .figmeta { display: grid; gap: 3px; min-width: 0; font-size: .88rem; }
+.figrow .figmeta strong { font-weight: 600; }
+.figrow .figmeta .cite { margin: 2px 0 0; }
+.fig-big { margin: 0 0 12px; }
+.fig-big img { display: block; max-width: 100%; max-height: 60vh; margin: 0 auto; background: #fff; border: 1px solid var(--line-soft); }
+.fig-big figcaption { margin-top: 8px; font-size: .92rem; color: var(--ink-2); line-height: 1.45; }
+.fcard .fig { position: relative; z-index: 1; display: block; max-width: 100%; max-height: 34vh; margin: 8px auto 4px; object-fit: contain; background: #fff; border: 1px solid var(--line-soft); }
+.fcard .fig.small { max-height: 18vh; }
+.face .txt.with-fig { font-size: clamp(1.1rem, 2vw, 1.4rem); margin-top: 8px; }
+#print-sheet .ps-fig { display: block; max-width: 100%; max-height: 32mm; object-fit: contain; margin: 0 auto 2mm; }
+#print-sheet .pk-figs { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm 6mm; }
+#print-sheet .pk-figs figure { margin: 0; break-inside: avoid; page-break-inside: avoid; }
+#print-sheet .pk-figs img { display: block; max-width: 100%; max-height: 60mm; object-fit: contain; border: 1px solid #000; }
+#print-sheet .pk-figs figcaption { font-size: .8rem; margin-top: 1.5mm; line-height: 1.35; }
+#print-sheet .pk-thumb { max-width: 100%; max-height: 28mm; object-fit: contain; display: block; margin-bottom: 1mm; }
+@media (max-width: 600px) { .figrow { grid-template-columns: 72px 1fr; } .figrow img { width: 72px; height: 54px; } }
+.paste-row .btn svg { margin-right: 4px; }
 .progress { height: 3px; background: var(--surface-3); margin-top: 6px; overflow: hidden; }
 .progress i { display: block; height: 100%; background: var(--accent); width: 0; transition: width .2s; }
 .scan-stat { display: flex; gap: 18px; flex-wrap: wrap; font-family: var(--font-mono); font-size: .7rem; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); }
@@ -395,7 +418,7 @@ button.term-chip { cursor: pointer; }
 .face .kind { font-family: var(--font-mono); font-size: .66rem; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); display: flex; justify-content: space-between; }
 .face.back .kind { color: var(--mint-ink); opacity: .7; }
 .face .txt { font-family: var(--font-display); font-size: clamp(1.35rem, 2.6vw, 1.9rem); line-height: 1.2; font-weight: 500; letter-spacing: -0.03em; margin-top: 10px; position: relative; z-index: 1; overflow-wrap: anywhere; max-height: 60vh; overflow: auto; }
-.face.back .txt { font-family: var(--font-body); font-weight: 400; font-size: 1.1rem; letter-spacing: 0; line-height: 1.5; }
+.face.back .txt { font-family: var(--font-body); font-weight: 400; font-size: 1.1rem; letter-spacing: 0; line-height: 1.5; white-space: pre-line; }
 .face .txt.answer { font-family: var(--font-display); font-weight: 600; font-size: clamp(1.8rem, 4vw, 2.8rem); letter-spacing: -0.04em; }
 .face .src { margin-top: auto; font-size: .85rem; line-height: 1.45; opacity: .8; padding-top: 14px; overflow-wrap: anywhere; }
 .face .hint { margin-top: auto; font-family: var(--font-mono); font-size: .66rem; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
@@ -1214,6 +1237,26 @@ const Parsers = (() => {
     return blocks;
   }
 
+  /* ---------- a web page: the article, not the chrome around it ---------- */
+  const WEB_STRIP = 'nav, header, footer, aside, form, iframe, noscript, [role="navigation"], [role="banner"], [role="contentinfo"], [role="complementary"], .navbox, .infobox, .sidebar, .reflist, .references, .mw-editsection, .mw-jump-link, .toc, #toc, .hatnote, .metadata, .ambox, .catlinks, #catlinks, .noprint, sup.reference, .mw-cite-backlink, .printfooter, .mw-indicators, .navigation-not-searchable, [class*="cookie"], [id*="cookie"], [class*="share"], [class*="comment"], [class*="related"], [class*="newsletter"], [class*="advert"], .breadcrumb, .breadcrumbs';
+  const WEB_STOP = /^(references|notes|external links|see also|further reading|bibliography|footnotes|citations|sources|notes and references|related articles|comments)$/i;
+  function webToBlocks(doc) {
+    const main = doc.querySelector('#mw-content-text .mw-parser-output, #mw-content-text, main, article, [role="main"], #content, #main, .content, body') || doc.body;
+    if (!main) return [];
+    main.querySelectorAll(WEB_STRIP).forEach(el => { try { el.remove(); } catch (e) { /* ignore */ } });
+    // Wikipedia and friends: [1] markers and "[edit]" links inside the prose
+    const blocks = htmlToBlocks({ body: main }).map(b => ({ ...b, s: b.s.replace(/\[\d{1,3}\]/g, '').replace(/\[(edit|citation needed)\]/gi, '').trim() })).filter(b => b.s);
+    const stop = blocks.findIndex(b => b.t === 'h' && WEB_STOP.test(b.s.trim()));
+    return stop > 0 ? blocks.slice(0, stop) : blocks;
+  }
+  const webTitle = doc => { const h1 = doc.querySelector('h1'); const t = clean(h1 ? h1.textContent : ((doc.querySelector('title') || {}).textContent || '')); return t.replace(/\s*[-–—|]\s*Wikipedia$/i, '').trim(); };
+  // text pasted straight in: HTML if it looks like HTML, otherwise plain text / markdown
+  function pastedToBlocks(text) {
+    const t = String(text || '').trim();
+    if (/^\s*<(!doctype|html|body|div|p|h[1-6]|article|section|ul|ol|table)\b/i.test(t) && /<\/[a-z]+>/i.test(t)) return webToBlocks(parseHtmlString(t, false));
+    return plainToBlocks(t);
+  }
+
   function parseHtmlString(str, xhtml) {
     const parser = new DOMParser();
     let doc = null;
@@ -1331,29 +1374,88 @@ const Parsers = (() => {
     const A = 'http://schemas.openxmlformats.org/drawingml/2006/main';
     const P = 'http://schemas.openxmlformats.org/presentationml/2006/main';
     let n = 0;
+    const paraText = p => clean(Array.from(p.getElementsByTagNameNS(A, 't')).map(t => t.textContent).join(''));
+    const paraLevel = p => { const pr = p.getElementsByTagNameNS(A, 'pPr')[0]; return pr ? parseInt(pr.getAttribute('lvl') || '0', 10) || 0 : 0; };
     for (const path of slides) {
       n++;
       blocks.push({ t: 'pg', n, kind: 'slide' });
       const doc = new DOMParser().parseFromString(await zip.file(path).async('string'), 'application/xml');
-      const shapes = Array.from(doc.getElementsByTagNameNS(P, 'sp'));
-      let titleDone = false;
-      for (const sp of shapes) {
+      let title = '';
+      const bullets = [];   // { s, lvl }
+      for (const sp of Array.from(doc.getElementsByTagNameNS(P, 'sp'))) {
         const ph = sp.getElementsByTagNameNS(P, 'ph')[0];
-        const isTitle = ph && /title|ctrTitle/i.test(ph.getAttribute('type') || '');
-        const paras = Array.from(sp.getElementsByTagNameNS(A, 'p')).map(p => clean(Array.from(p.getElementsByTagNameNS(A, 't')).map(t => t.textContent).join(''))).filter(Boolean);
+        const phType = ph ? (ph.getAttribute('type') || '') : '';
+        if (/^(sldNum|ftr|dt|hdr)$/i.test(phType)) continue;                       // slide number, footer, date
+        const paras = Array.from(sp.getElementsByTagNameNS(A, 'p')).map(p => ({ s: paraText(p), lvl: paraLevel(p) })).filter(x => x.s);
         if (!paras.length) continue;
-        if (isTitle && !titleDone) { blocks.push({ t: 'h', s: `Slide ${n}: ${paras.join(' ')}` }); titleDone = true; }
-        else for (const s of paras) blocks.push({ t: paras.length > 1 ? 'li' : 'p', s });
+        if (/^(title|ctrTitle)$/i.test(phType) && !title) { title = paras.map(x => x.s).join(' '); continue; }
+        if (/^subTitle$/i.test(phType)) { for (const x of paras) bullets.push({ ...x, sub: true }); continue; }
+        for (const x of paras) bullets.push(x);
       }
-      // notes
-      const notesPath = `ppt/notesSlides/notesSlide${n}.xml`;
-      if (zip.file(notesPath)) {
+      // tables on the slide: each row as "cell — cell — cell"
+      for (const tbl of Array.from(doc.getElementsByTagNameNS(A, 'tbl'))) {
+        for (const tr of Array.from(tbl.getElementsByTagNameNS(A, 'tr'))) {
+          const cells = Array.from(tr.getElementsByTagNameNS(A, 'tc')).map(tc => clean(Array.from(tc.getElementsByTagNameNS(A, 't')).map(t => t.textContent).join(''))).filter(Boolean);
+          if (cells.length >= 2) bullets.push({ s: cells.join(' — '), lvl: 0, table: true });
+        }
+      }
+      if (title) blocks.push({ t: 'h', s: title });
+      slideBullets(blocks, title, bullets);
+      // speaker notes: usually the full sentences the slide only hints at — one paragraph per block.
+      // The notes file is found through the slide's relationships (notesSlide numbers do not follow slide numbers).
+      let notesPath = null;
+      const relsFile = zip.file(path.replace(/^ppt\/slides\/(slide\d+\.xml)$/, 'ppt/slides/_rels/$1.rels'));
+      if (relsFile) {
+        const rels = new DOMParser().parseFromString(await relsFile.async('string'), 'application/xml');
+        for (const rel of Array.from(rels.getElementsByTagName('Relationship'))) {
+          if (/\/notesSlide$/.test(rel.getAttribute('Type') || '')) { notesPath = 'ppt/slides/' + (rel.getAttribute('Target') || ''); notesPath = notesPath.replace(/\/slides\/\.\.\//, '/'); break; }
+        }
+      }
+      if (notesPath && zip.file(notesPath)) {
         const nd = new DOMParser().parseFromString(await zip.file(notesPath).async('string'), 'application/xml');
-        const txt = clean(Array.from(nd.getElementsByTagNameNS(A, 't')).map(t => t.textContent).join(' '));
-        if (txt && !/^\d+$/.test(txt)) blocks.push({ t: 'p', s: txt });
+        for (const sp of Array.from(nd.getElementsByTagNameNS(P, 'sp'))) {
+          const ph = sp.getElementsByTagNameNS(P, 'ph')[0];
+          if (ph && /^(sldNum|sldImg|hdr|ftr|dt)$/i.test(ph.getAttribute('type') || '')) continue;
+          for (const p of Array.from(sp.getElementsByTagNameNS(A, 'p'))) { const s = paraText(p); if (s && !/^\d+$/.test(s)) blocks.push({ t: 'p', s }); }
+        }
       }
     }
     return blocks;
+  }
+  // Slides say things in fragments: "Financial crisis", "Social inequality" under "Causes of the Revolution".
+  // Sub-bullets are folded into their parent ("Parent: child; child") and fragments are gathered into one
+  // sentence anchored on the slide title, so the engine has a real sentence to build a card from.
+  const wordsOf = s => String(s || '').split(/\s+/).filter(Boolean);
+  const isFragment = s => wordsOf(s).length <= 6 && !/[.!?;]$/.test(s) && !/\b(is|are|was|were|has|have|had|can|will|does|do|means|refers|causes|includes|involves|occurs|consists|requires|produces|allows|makes|uses)\b/i.test(s) && !/[:–—-]\s/.test(s);
+  const endStop = s => /[.!?]$/.test(s) ? s : s + '.';
+  // slide titles that are about the deck, not the subject — no sentence is built on them
+  const META_TITLE = /^(timeline|overview|summary|agenda|outline|objectives|learning (outcomes|objectives|goals)|key ?(terms|words|concepts)|questions?|thank you|thanks|references|recap|review|today|next (week|time|lecture)|introduction|contents|homework|readings?|announcements|discussion|activity|exercise|example|examples|q ?& ?a|any questions\??|the end)$/i;
+  function slideBullets(blocks, title, bullets) {
+    if (META_TITLE.test(String(title || '').trim())) title = '';
+    const groups = [];
+    for (const b of bullets) {
+      if (b.lvl > 0 && groups.length && !b.sub) groups[groups.length - 1].kids.push(b.s);
+      else groups.push({ s: b.s, kids: [], table: !!b.table, sub: !!b.sub });
+    }
+    const frags = [];
+    for (const g of groups) {
+      if (g.kids.length) {
+        const kids = g.kids.map(k => k.replace(/[.;]$/, ''));
+        const parent = g.s.replace(/[:.;]$/, '');
+        blocks.push({ t: 'li', s: `${parent}${/:\s/.test(parent) ? ' — ' : ': '}${kids.join('; ')}.` });
+      } else if (g.table || g.sub) blocks.push({ t: g.sub ? 'p' : 'li', s: g.s });
+      else if (title && isFragment(g.s)) { frags.push(g.s); blocks.push({ t: 'li', s: g.s }); }
+      else blocks.push({ t: groups.length > 1 ? 'li' : 'p', s: g.s });
+    }
+    // "Financial crisis" → "financial crisis" mid-sentence, but "Committee of Public Safety" keeps its capitals
+    const midCase = f => { const w = wordsOf(f); return w.length >= 2 && w.slice(1).every(x => x === x.toLowerCase()) && !/^[A-Z]{2,}/.test(w[0]) ? f[0].toLowerCase() + f.slice(1) : f; };
+    if (frags.length >= 2) {
+      const lead = title.replace(/[:.]$/, '');
+      const items = frags.map(f => midCase(f.replace(/[.;,]$/, '')));
+      blocks.push({ t: 'p', s: `${lead}: ${items.slice(0, -1).join(', ')}${items.length > 1 ? ' and ' : ''}${items[items.length - 1]}.` });
+    } else if (frags.length === 1 && title) {
+      blocks.push({ t: 'p', s: `${title.replace(/[:.]$/, '')}: ${endStop(frags[0])}` });
+    }
   }
 
   /* ---------- OCR output: pages of text from the scan reader ---------- */
@@ -1380,13 +1482,140 @@ const Parsers = (() => {
     return blocks;
   }
 
+  /* ---------- figures and diagrams in a PDF ----------
+     Pictures are image XObjects painted somewhere on the page: walking the page's operator list while tracking the
+     transform matrix gives each picture's box, which is then cropped from a rendering of the page. A diagram drawn
+     with lines (no picture) is found through its caption instead — the space between "Figure 3 …" and the paragraph
+     above it. Captions ("Figure 3: The nephron", "Fig. 2 …") are matched to the nearest box. */
+  const CAPTION_RE = /^(fig(ure|\.)?|diagram|chart|graph|illustration|plate|map|scheme|exhibit|image|photo)\s*\.?\s*(\d+[A-Za-z]?|[IVX]+)\b\s*[.:)\-–—]?\s*(.*)$/i;
+  // a caption line, or null — tolerating one short label from the drawing that landed on the same line ("I  Figure 2. …")
+  const capText = l => { const t = l.text; if (CAPTION_RE.test(t)) return t; const t2 = t.replace(/^\S{1,3}\s+/, ''); return CAPTION_RE.test(t2) ? t2 : null; };
+  const mul = (m, n) => [m[0] * n[0] + m[2] * n[1], m[1] * n[0] + m[3] * n[1], m[0] * n[2] + m[2] * n[3], m[1] * n[2] + m[3] * n[3], m[0] * n[4] + m[2] * n[5] + m[4], m[1] * n[4] + m[3] * n[5] + m[5]];
+  const apply = (m, x, y) => [m[0] * x + m[2] * y + m[4], m[1] * x + m[3] * y + m[5]];
+  function imageBoxes(ops, OPS) {
+    const boxes = []; const stack = []; let ctm = [1, 0, 0, 1, 0, 0];
+    for (let i = 0; i < ops.fnArray.length; i++) {
+      const fn = ops.fnArray[i], args = ops.argsArray[i];
+      if (fn === OPS.save) stack.push(ctm.slice());
+      else if (fn === OPS.restore) ctm = stack.pop() || ctm;
+      else if (fn === OPS.transform) ctm = mul(ctm, args);
+      else if (fn === OPS.paintFormXObjectBegin) { stack.push(ctm.slice()); if (args && args[0]) ctm = mul(ctm, args[0]); }
+      else if (fn === OPS.paintFormXObjectEnd) ctm = stack.pop() || ctm;
+      else if (fn === OPS.paintImageXObject || fn === OPS.paintImageXObjectRepeat || fn === OPS.paintJpegXObject || fn === OPS.paintInlineImageXObject) {
+        const pts = [[0, 0], [1, 0], [0, 1], [1, 1]].map(([x, y]) => apply(ctm, x, y));
+        const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]);
+        boxes.push({ x0: Math.min(...xs), x1: Math.max(...xs), y0: Math.min(...ys), y1: Math.max(...ys) });
+      }
+    }
+    return boxes;
+  }
+  // pictures are often tiled: boxes that touch or overlap become one figure
+  function mergeBoxes(boxes) {
+    let out = boxes.map(b => ({ ...b }));
+    let merged = true;
+    while (merged) {
+      merged = false;
+      for (let i = 0; i < out.length && !merged; i++) for (let j = i + 1; j < out.length; j++) {
+        const a = out[i], b = out[j], gap = 6;
+        if (a.x0 - gap < b.x1 && b.x0 - gap < a.x1 && a.y0 - gap < b.y1 && b.y0 - gap < a.y1) {
+          out[i] = { x0: Math.min(a.x0, b.x0), x1: Math.max(a.x1, b.x1), y0: Math.min(a.y0, b.y0), y1: Math.max(a.y1, b.y1) };
+          out.splice(j, 1); merged = true; break;
+        }
+      }
+    }
+    return out;
+  }
+  // the caption for a box: a "Figure N" line just below (or above) it, plus the lines that continue it
+  function captionFor(box, lines, used) {
+    let best = null, bestD = Infinity;
+    lines.forEach((l, i) => {
+      if (used.has(i) || !capText(l)) return;
+      const below = box.y0 - (l.y + l.h), above = l.y - box.y1;
+      const d = below >= -4 && below < 90 ? below : above >= -4 && above < 50 ? above + 30 : Infinity;
+      if (d < bestD) { bestD = d; best = i; }
+    });
+    if (best == null) return null;
+    used.add(best);
+    let text = capText(lines[best]); let prev = lines[best];
+    for (let i = best + 1; i < lines.length && text.length < 400; i++) {
+      const l = lines[i]; const gap = prev.y - l.y;
+      if (gap <= 0 || gap > Math.max(prev.h, l.h) * 1.8 || capText(l) || Math.abs(l.h - prev.h) > prev.h * 0.25) break;
+      text += ' ' + l.text; prev = l; used.add(i);
+    }
+    return text.replace(/\s+/g, ' ').trim();
+  }
+  // a drawn diagram has no picture: the region between its caption and the body text above it
+  function drawnRegion(capLine, lines, pageW, pageH) {
+    let top = capLine.y + capLine.h + 4, x0 = Math.max(0, capLine.x - 40), x1 = Math.min(pageW, capLine.x + Math.max(220, (capLine.xEnd || capLine.x) - capLine.x) + 40);
+    const above = lines.filter(l => l.y > capLine.y + capLine.h * 0.5).sort((a, b) => a.y - b.y);   // nearest first
+    for (let i = 0; i < above.length; i++) {
+      const l = above[i];
+      if (l.y - top > pageH * 0.6) break;
+      // body text ends the figure: a long line, or the short last line of a paragraph (a long line sits right above it)
+      const next = above[i + 1];
+      const paraTail = l.text.length <= 60 && next && next.y - l.y <= Math.max(l.h, next.h) * 1.8 && next.text.length > 60;
+      if (l.text.length > 60 || paraTail) { top = Math.max(top, l.y - l.h * 0.4); break; }
+      x0 = Math.min(x0, l.x - 10); x1 = Math.max(x1, (l.xEnd || l.x) + 10); top = l.y + l.h + 6;  // a label inside the drawing
+    }
+    const region = { x0: Math.max(0, x0), x1: Math.min(pageW, x1), y0: capLine.y + capLine.h + 2, y1: Math.min(pageH, top) };
+    return region.y1 - region.y0 >= 60 && region.x1 - region.x0 >= 120 ? region : null;
+  }
+  async function extractFigures(pdf, pages, onProgress) {
+    const lib = window.pdfjsLib || window['pdfjs-dist/build/pdf'];
+    if (!lib || !lib.OPS || typeof document === 'undefined') return [];
+    const figs = [];
+    for (let p = 1; p <= Math.min(pdf.numPages, 120) && figs.length < 40; p++) {
+      const page = await pdf.getPage(p);
+      const vp1 = page.getViewport({ scale: 1 });
+      const lines = pages[p - 1] || [];
+      let boxes;
+      try { boxes = mergeBoxes(imageBoxes(await page.getOperatorList(), lib.OPS)); } catch (e) { boxes = []; }
+      const pageArea = vp1.width * vp1.height;
+      boxes = boxes.filter(b => { const w = b.x1 - b.x0, h = b.y1 - b.y0; return w >= 60 && h >= 60 && w * h < pageArea * 0.85 && w / h < 8 && h / w < 8; });
+      const used = new Set();
+      const wanted = boxes.slice(0, 6).map(b => ({ box: b, caption: captionFor(b, lines, used), kind: 'picture' }));
+      // captions with no picture near them: a drawn diagram
+      lines.forEach((l, i) => { if (used.has(i) || !capText(l) || wanted.length >= 6) return; const r = drawnRegion(l, lines, vp1.width, vp1.height); if (r) { used.add(i); wanted.push({ box: r, caption: captionFor({ x0: r.x0, x1: r.x1, y0: r.y0, y1: r.y1 }, lines, new Set()) || capText(l), kind: 'drawing' }); } });
+      if (wanted.length) {
+        const scale = Math.min(2.5, Math.max(1.5, 1600 / Math.max(vp1.width, vp1.height)));
+        const vp = page.getViewport({ scale });
+        const canvas = document.createElement('canvas'); canvas.width = Math.ceil(vp.width); canvas.height = Math.ceil(vp.height);
+        await page.render({ canvasContext: canvas.getContext('2d', { willReadFrequently: true }), viewport: vp }).promise;
+        for (const w of wanted) {
+          const [ax, ay] = vp.convertToViewportPoint(w.box.x0, w.box.y1), [bx, by] = vp.convertToViewportPoint(w.box.x1, w.box.y0);
+          const sx = Math.max(0, Math.floor(Math.min(ax, bx))), sy = Math.max(0, Math.floor(Math.min(ay, by)));
+          const sw = Math.min(canvas.width - sx, Math.ceil(Math.abs(bx - ax))), sh = Math.min(canvas.height - sy, Math.ceil(Math.abs(by - ay)));
+          if (sw < 40 || sh < 40) continue;
+          const k = Math.min(1, 1000 / Math.max(sw, sh));
+          const c2 = document.createElement('canvas'); c2.width = Math.round(sw * k); c2.height = Math.round(sh * k);
+          const ctx = c2.getContext('2d'); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c2.width, c2.height);
+          ctx.drawImage(canvas, sx, sy, sw, sh, 0, 0, c2.width, c2.height);
+          if (blankish(ctx, c2.width, c2.height)) continue;
+          figs.push({ page: p, kind: w.kind, caption: w.caption || '', w: c2.width, h: c2.height, src: c2.toDataURL('image/jpeg', 0.82) });
+        }
+        canvas.width = canvas.height = 0;
+      }
+      page.cleanup?.();
+      onProgress?.(p, pdf.numPages);
+    }
+    return figs;
+  }
+  // a crop that is almost all one colour is a background, not a figure
+  function blankish(ctx, w, h) {
+    try {
+      const d = ctx.getImageData(0, 0, w, h).data; let dark = 0, n = 0;
+      for (let i = 0; i < d.length; i += 4 * 7) { n++; if (d[i] + d[i + 1] + d[i + 2] < 600) dark++; }
+      return dark / n < 0.004;
+    } catch (e) { return false; }
+  }
+
   /* ---------- PDF ---------- */
-  let lastPdfPages = 0;
+  let lastPdfPages = 0, lastFigures = [];
   async function parsePdf(buf, onProgress) {
     const lib = window.pdfjsLib || window['pdfjs-dist/build/pdf'];
     if (!lib) throw new Error('PDF reader did not load');
     const pdf = await lib.getDocument({ data: buf, useSystemFonts: true, isEvalSupported: false }).promise;
-    lastPdfPages = pdf.numPages;
+    lastPdfPages = pdf.numPages; lastFigures = [];
     const pages = [];
     for (let p = 1; p <= pdf.numPages; p++) {
       const page = await pdf.getPage(p);
@@ -1397,7 +1626,9 @@ const Parsers = (() => {
         if (typeof it.str !== 'string') continue;
         const x = it.transform[4], y = it.transform[5];
         const h = Math.abs(it.transform[3]) || it.height || 10;
-        if (cur && Math.abs(y - cur.y) <= Math.max(h, cur.h) * 0.45) {
+        // same baseline and to the right of what came before: same line. Text that jumps back to the left is a
+        // separate run (a label on a drawing, another column) and starts its own line.
+        if (cur && Math.abs(y - cur.y) <= Math.max(h, cur.h) * 0.45 && x >= cur.xEnd - Math.max(h, cur.h) * 0.6) {
           const gap = x - cur.xEnd;
           if (gap > h * 0.12 && !/^\s/.test(it.str) && !/\s$/.test(cur.text)) cur.text += ' ';
           else if (gap > h * 2.5) cur.text += ' ';
@@ -1413,8 +1644,10 @@ const Parsers = (() => {
       if (cur) lines.push(cur);
       pages.push(lines.map(l => ({ ...l, text: l.text.replace(/\s+/g, ' ').trim() })).filter(l => l.text));
       page.cleanup?.();
-      onProgress?.(p, pdf.numPages);
+      onProgress?.(p, pdf.numPages * 2);
     }
+    // second pass: the pictures and drawn diagrams, with their captions
+    try { lastFigures = await extractFigures(pdf, pages, (p, n) => onProgress?.(n + p, n * 2)); } catch (e) { lastFigures = []; }
     return pdfLinesToBlocks(pages);
   }
 
@@ -1506,11 +1739,11 @@ const Parsers = (() => {
       throw e;
     }
     const out = { text, ext, label: EXT_LABEL[ext] || ext.toUpperCase() };
-    if (ext === 'pdf') out.pages = lastPdfPages;
+    if (ext === 'pdf') { out.pages = lastPdfPages; out.figures = lastFigures; }
     return out;
   }
 
-  return { parseFile, SUPPORTED, EXT_LABEL, IMAGE_EXT, plainToBlocks, blocksToText, ocrPagesToBlocks };
+  return { parseFile, SUPPORTED, EXT_LABEL, IMAGE_EXT, plainToBlocks, blocksToText, ocrPagesToBlocks, pastedToBlocks, webToBlocks, webTitle, parseHtmlString };
 })();
 
 </script>
@@ -2393,6 +2626,16 @@ const GENERIC = new Set('information data process system method result results s
     return (h >>> 0).toString(36);
   }
 
+  const CATEGORY_RE = /^(causes|types|kinds|functions|stages|steps|features|characteristics|examples|components|parts|advantages|disadvantages|effects|factors|sources|symptoms|properties|principles|elements|methods|benefits|risks|uses|roles|forms|phases|layers|branches|reasons|consequences|goals|aims|limitations|assumptions|requirements|signs|categories|classes|levels|dimensions|drivers|barriers|outcomes|inputs|outputs|strengths|weaknesses|threats|opportunities|key (features|points|terms|ideas|factors))\b/i;
+  // "a, b, c and d" → the items, when a definition is really a short list of things to recall
+  function listItems(def) {
+    const s = String(def || '').replace(/[.]$/, '').trim();
+    if (!/[,;]/.test(s) && !/\band\b/.test(s)) return null;
+    const items = (/;/.test(s) ? s.split(/;\s+/) : s.split(/,\s+|\s+and\s+/)).map(x => x.trim()).filter(Boolean);
+    if (items.length < 3 || items.length > 12) return null;
+    if (!items.every(x => wordsOf(x).length <= 6 && !/[—:]/.test(x))) return null;
+    return items;
+  }
   function flashcards(a, { count = 30, seed = 1 } = {}) {
     const rand = rng(seed);
     const cards = [];
@@ -2400,6 +2643,12 @@ const GENERIC = new Set('information data process system method result results s
     for (const d of a.defs) {
       if (used.has(lc(d.term))) continue;
       used.add(lc(d.term));
+      // "Causes of the revolution: financial crisis, social inequality and poor harvests" is a list to recall, not a definition
+      const items = (d.kind === 'colon' || d.kind === 'dash') ? listItems(d.def) : null;
+      if (items && (CATEGORY_RE.test(d.term) || items.length >= 4)) {
+        cards.push({ type: 'List', front: CATEGORY_RE.test(d.term) ? `Name the ${items.length} ${d.term[0].toLowerCase() + d.term.slice(1)}` : `${d.term} — name all ${items.length}`, back: items.map(x => '• ' + x).join('\n'), term: d.term, source: d.sent, sourceId: d.id });
+        continue;
+      }
       const plural = /[a-z]s$/.test(d.term) && !/(sis|ss|us|is|ics|ous)$/.test(d.term) && !/^[A-Z0-9\-]+$/.test(d.term);
       cards.push({ type: 'Definition', front: `What ${plural ? 'are' : 'is'} ${d.term}?`, back: d.kind === 'is' || d.kind === 'weak' || d.kind === 'inverse' ? d.sent : d.def, term: d.term, source: d.sent, sourceId: d.id });
     }
@@ -2623,7 +2872,7 @@ const GENERIC = new Set('information data process system method result results s
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '1.5', date: '1 September 2026' };
+  const BUILD = { v: '1.6', date: '1 September 2026' };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonandy242', ['gmail', 'com'].join('.')].join('@');
   const OWNER_HASH = 'f2d29d4fd8c98b4205c0ffa7628eeeccfc3f2647ed0430748eac0d775cbc562d';
@@ -2843,8 +3092,9 @@ const GENERIC = new Set('information data process system method result results s
   }
   function fullPool(sid, a, seed) {
     const generated = applyEdits(sid, Engine.flashcards(a, { count: 120, seed: seed || 1 })).filter(c => !cardHidden(sid, c));
+    const figs = applyEdits(sid, figureCards(a)).filter(c => !cardHidden(sid, c) && !isHidden(sid, 'g:' + c.fig));
     const mine = userCards(sid).map(c => ({ ...c, type: c.type || 'Your card', mine: true })).filter(c => !cardHidden(sid, c));
-    return mine.concat(generated);
+    return mine.concat(figs, generated);
   }
   function layerCounts(sid) {
     const m = marks(sid);
@@ -2853,6 +3103,7 @@ const GENERIC = new Set('information data process system method result results s
     return { star, hide, note, cards: userCards(sid).length, edits: Object.keys(cardEdits(sid)).length };
   }
   function curSid() { const r = parseRoute(); return r.id || null; }
+  function curSubject() { const id = curSid(); return id ? subjectById(id) : null; }
   const shortLab = (t, n) => { t = String(t || '').replace(/\s+/g, ' ').trim(); n = n || 60; return t.length > n ? t.slice(0, n - 1) + '…' : t; };
   const visQuiz = (sid, qs) => (qs || []).filter(q => !q.term || !isHidden(sid, ID.term(q.term)));
   const visTerms = (sid, list) => sid ? list.filter(t => !isHidden(sid, ID.term(t.key || t.display))) : list;
@@ -2864,6 +3115,7 @@ const GENERIC = new Set('information data process system method result results s
       case 'acronyms': return 'a:' + String(item.acr).toLowerCase();
       case 'entities': return 'e:' + String(item.name).toLowerCase();
       case 'formulas': return 'f:' + Engine.cardKey('f', item.expr);
+      case 'diagrams': return 'g:' + item.key;
       case 'map': return 'm:' + String(item.title || '').toLowerCase();
       case 'lists': return 'l:' + Engine.cardKey('l', (item.items || []).join('|'));
       case 'processes': return 'p:' + Engine.cardKey('p', item.steps ? item.steps.map(x => x.s).join('|') : item.sent.s);
@@ -2877,6 +3129,7 @@ const GENERIC = new Set('information data process system method result results s
       case 'acronyms': return item.acr;
       case 'entities': return item.name;
       case 'formulas': return item.expr;
+      case 'diagrams': return `${figNumber(item)}${figTitle(item) ? ' — ' + shortLab(figTitle(item), 50) : ''}`;
       case 'map': return item.title || 'Section';
       case 'lists': return item.title || (item.items || [])[0] || 'List';
       case 'processes': return item.steps ? (item.title || 'Steps') : shortLab(item.sent.s);
@@ -2979,7 +3232,9 @@ const GENERIC = new Set('information data process system method result results s
     x: '<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="14" height="14"><path d="M6 6l12 12M18 6L6 18"/></svg>',
     pack: '<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h10l4 4v12H5z"/><path d="M15 4v4h4"/><path d="M8 12h8M8 16h8"/><path d="M8 20v1M12 20v1M16 20v1"/></svg>',
     deck: '<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="13" height="11" rx="2"/><path d="M7 5h11a2 2 0 0 1 2 2v9"/><path d="M9.5 16v-4M9.5 12l-2 2M9.5 12l2 2"/></svg>',
-    backup: '<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="6" rx="7" ry="2.6"/><path d="M5 6v12c0 1.4 3.1 2.6 7 2.6s7-1.2 7-2.6V6"/><path d="M5 12c0 1.4 3.1 2.6 7 2.6s7-1.2 7-2.6"/></svg>'
+    backup: '<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="6" rx="7" ry="2.6"/><path d="M5 6v12c0 1.4 3.1 2.6 7 2.6s7-1.2 7-2.6V6"/><path d="M5 12c0 1.4 3.1 2.6 7 2.6s7-1.2 7-2.6"/></svg>',
+    paste: '<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><rect x="6" y="5" width="12" height="16" rx="2"/><path d="M9 5V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1"/><path d="M9 11h6M9 15h4"/></svg>',
+    figure: '<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="1.5"/><path d="M3 16l5-5 4 4 3-3 6 6"/><circle cx="16" cy="9" r="1.6"/></svg>'
   };
 
   /* ---------- pick up where you left off ---------- */
@@ -3213,6 +3468,7 @@ const GENERIC = new Set('information data process system method result results s
           <div class="field"><label>Where you are with it</label><div class="seg">${[['', 'Not read'], ['read', 'Read'], ['review', 'Needs review']].map(([v, l]) => `<button type="button" class="${(f.status || '') === v ? 'on' : ''}" data-act="file-status" data-v="${v}">${l}</button>`).join('')}</div><input type="hidden" name="status" value="${esc(f.status || '')}"></div>
           <label class="check"><input type="checkbox" name="include" ${f.include !== false ? 'checked' : ''}> Include in the study set</label>
           ${f.ocr ? `<p class="small muted">Its text was read by the scan reader (OCR)${f.pages ? ` from ${plural(f.pages, 'page')}` : ''}. Scans read well when the print is sharp; check important figures and names against the original.</p>` : ''}
+          ${f.src ? `<p class="small muted">Source: <a href="${esc(f.src)}" target="_blank" rel="noopener">${esc(f.src)}</a>${f.via === 'reader' ? ' — read through the reader service' : f.via === 'wikipedia' ? ' — read from Wikipedia' : ''}</p>` : ''}
         </div>
         <div class="modal-foot"><button type="button" class="btn sm danger" data-act="remove-mat" data-id="${esc(f.id)}">Remove file</button><span class="spacer" style="flex:1"></span><button type="button" class="btn sm" data-act="close-modal">Cancel</button><button class="btn sm primary" type="submit">Save <span class="arr">→</span></button></div>
       </form></div>`;
@@ -3272,6 +3528,17 @@ const GENERIC = new Set('information data process system method result results s
         </div>
         <div class="modal-foot"><button class="btn sm primary" data-act="export-copy">Copy it all <span class="arr">⧉</span></button><span class="spacer" style="flex:1"></span><button class="btn sm" data-act="close-modal">Close</button></div>
       </div></div>`;
+    }
+    if (m.type === 'paste') {
+      return `<div class="modal-bg" data-act="close-modal"><form class="modal wide" data-form="paste">
+        <div class="modal-head"><div><span class="label">No file needed</span><h2>Paste text or a web address</h2></div><button type="button" class="btn ghost icon" data-act="close-modal" aria-label="Close">${I.x}</button></div>
+        <div class="modal-body">
+          <div class="field"><label for="p-title">Name <span class="muted">(optional)</span></label><input class="input" id="p-title" name="title" maxlength="80" placeholder="e.g. Lecture 6 transcript" value="${esc(m.title || '')}"></div>
+          <div class="field"><label for="p-text">Text, or one web address</label><textarea class="input" id="p-text" name="text" rows="9" required placeholder="Paste a lecture transcript, a reading, your notes — or a link such as https://en.wikipedia.org/wiki/Photosynthesis">${esc(m.text || '')}</textarea></div>
+          <p class="small muted">${IN_ARTIFACT ? 'Pasted text works here. Web addresses can only be fetched on the <a href="' + LIVE_URL + '" target="_blank" rel="noopener">live site</a> — or open the page, select all, copy and paste it in.' : 'Wikipedia articles are read from Wikipedia directly. Other pages are tried directly first and, if the site blocks that, through a public reader service (r.jina.ai) that only ever sees the address — never your files. If a page still can\'t be read, select all on it, copy, and paste the text here.'}</p>
+        </div>
+        <div class="modal-foot"><span class="mono muted">Tip: press ⌘V / Ctrl V on the subject page to open this</span><span class="spacer" style="flex:1"></span><button type="button" class="btn sm" data-act="close-modal">Cancel</button><button class="btn sm primary" type="submit">Add to subject <span class="arr">→</span></button></div>
+      </form></div>`;
     }
     if (m.type === 'backup') {
       const subs = state.subjects; const files = subs.reduce((n, s) => n + s.materials.length, 0);
@@ -3409,6 +3676,7 @@ const GENERIC = new Set('information data process system method result results s
               <strong>Drop files here or click to choose</strong>
               <span class="types">PDF · EPUB · DOCX · PPTX · TXT · MD · HTML · photos of notes</span>
             </label>
+            <div class="paste-row"><span class="muted small">or</span><button type="button" class="btn sm ghost" data-act="paste-open">${I.paste} Paste text or a web address</button></div>
             ${matFilters}
             ${s.materials.length ? `<div class="mat-list">${s.materials.map(m => materialHtml(m)).join('')}</div>` : `<div class="empty small">No materials yet. Upload a lecture, chapter or your own notes to begin.</div>`}
             ${s.materials.length ? `<div class="scan-stat"><span><b>${included.length}</b> of ${s.materials.length} included</span><span><b>${fmt(words)}</b> words scanned</span>${readN ? `<span><b>${readN}</b> of ${s.materials.length} read</span>` : ''}${reviewN ? `<span class="warn"><b>${reviewN}</b> to review</span>` : ''}</div>` : ''}
@@ -3461,7 +3729,7 @@ const GENERIC = new Set('information data process system method result results s
   const STATUS_META = { '': ['To read', 'none'], read: ['Read', 'read'], review: ['Review', 'review'] };
   function materialHtml(m) {
     const cls = ['mat', m.busy ? 'busy' : '', m.err ? 'error' : '', m.include === false ? 'off' : '', m.scan && !m.busy ? 'scan' : ''].filter(Boolean).join(' ');
-    const info = m.busy ? (m.stage ? `${esc(m.stage)}${m.progress ? ` · ${m.progress}%` : ''}` : `Scanning${m.progress != null ? ` · ${m.progress}%` : '…'}`) : m.err ? esc(m.err) : `${fmt(m.words)} words · ${esc(m.label || m.ext)}${m.ocr ? ' · read by OCR' : ''}`;
+    const info = m.busy ? (m.stage ? `${esc(m.stage)}${m.progress ? ` · ${m.progress}%` : ''}` : `Scanning${m.progress != null ? ` · ${m.progress}%` : '…'}`) : m.err ? esc(m.err) : `${fmt(m.words)} words · ${esc(m.label || m.ext)}${m.ocr ? ' · read by OCR' : ''}${m.figs ? ` · ${plural(m.figs, 'figure')}` : ''}`;
     const st = STATUS_META[m.status || ''] || STATUS_META[''];
     const chips = `${m.tag ? `<span class="fchip">${esc(m.tag)}</span>` : ''}${m.week ? `<span class="fchip wk">Week ${esc(m.week)}</span>` : ''}`;
     // a scan (or a photo) that has not been read yet: the reader, or where to find it
@@ -3472,6 +3740,9 @@ const GENERIC = new Set('information data process system method result results s
       else scanRow = `<div class="scan-row"><span>Upload it again to read it with the scan reader.</span></div>`;
     } else if (m.thin && !m.busy && !m.err && OCR.available() && pendingScans.has(m.id)) {
       scanRow = `<div class="scan-row"><span>Only ${fmt(m.words)} words on ${plural(m.pages, 'page')} — mostly scans?</span><button type="button" class="btn sm" data-act="ocr" data-id="${m.id}">Read it with OCR <span class="arr">→</span></button></div>`;
+    } else if (m.dup && m.include === false && !m.dupOk) {
+      const other = (curSubject() || { materials: [] }).materials.find(x => x.id === m.dup);
+      scanRow = `<div class="scan-row"><span>Same text as ${other ? esc(other.name) : 'another file here'} — left out so cards aren't doubled. Tick it to include it anyway.</span></div>`;
     }
     return `<div class="${cls}" data-mid="${m.id}">
       <input type="checkbox" class="check" data-act="toggle-mat" data-id="${m.id}" ${m.include !== false ? 'checked' : ''} ${m.busy || m.err ? 'disabled' : ''} aria-label="Include ${esc(m.name)}">
@@ -3570,9 +3841,11 @@ const GENERIC = new Set('information data process system method result results s
       if (!text || text.replace(/\W/g, '').length < 40) throw new Error(isImageExt(m.ext) ? 'The reader found no text in this photo. It needs printed or typed text that is sharp, well lit and the right way up.' : 'The reader found no text on these pages. It needs printed or typed text that is sharp and the right way up.');
       m.words = text.replace(/\[\[[fps]:[^\]]*\]\]/g, '').split(/\s+/).filter(Boolean).length;
       m.chars = text.length; m.ocr = true; m.include = true; delete m.scan; m.pages = pages.length;
+      m.hash = textHash(text);
+      m.busy = false; delete m.progress; delete m.stage; pendingScans.delete(m.id);
+      if (rejectIfDuplicate(s, m, text)) { invalidateAnalysis(); return; }
       const ok = await IDB.put(m.id, text);
       if (!ok) toast('Text kept for this visit only — browser storage is unavailable.');
-      pendingScans.delete(m.id);
       toast(`Read ${m.name} — ${fmt(m.words)} words from ${plural(pages.length, 'page')}. Check important figures against the original.`);
     } catch (e) {
       m.err = e && e.message ? e.message : 'The scan reader failed on this file.';
@@ -3583,6 +3856,84 @@ const GENERIC = new Set('information data process system method result results s
   }
   function offerScan(s, m) {
     if (OCR.available()) toast(`${m.name} has no text to read — it is a scan.`, { label: 'Read it', act: () => ocrMaterial(s, m) });
+  }
+
+  /* ---------- duplicates: the same reading twice would double every card ---------- */
+  // a hash of the words alone, so the same text as PDF and as Word, or re-exported with new page breaks, still matches
+  const textHash = t => hashKey(String(t || '').replace(/\[\[[fps]:[^\]]*\]\]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim()).toString(16);
+  const findDuplicate = (s, hash, exceptId) => hash ? s.materials.find(m => m.id !== exceptId && m.hash === hash && !m.err) || null : null;
+  // called once a material's text is known: drops it and offers to add it anyway when the subject already has that text
+  function rejectIfDuplicate(s, m, text) {
+    const dup = findDuplicate(s, m.hash, m.id);
+    if (!dup) return false;
+    s.materials = s.materials.filter(x => x.id !== m.id);
+    saveIndex(); renderIfSubject(s);
+    toast(`${m.name} is already here as ${dup.name} — not added again.`, { label: 'Add anyway', act: async () => {
+      m.dupOk = true; s.materials.push(m); await IDB.put(m.id, text); saveIndex(); invalidateAnalysis(); renderIfSubject(s); toast(`${m.name} added.`);
+    } });
+    return true;
+  }
+
+  /* ---------- paste text or a web address: no file needed ---------- */
+  const isUrl = t => /^https?:\/\/\S+$/i.test(String(t || '').trim());
+  const hostOf = url => { try { return new URL(url).hostname.replace(/^www\./, ''); } catch (e) { return url; } };
+  // a Wikipedia article comes from Wikipedia's own API (it allows browser reads); any other page is tried directly,
+  // then through a public reader service that only sees the address. Inside the artifact frame no page can be fetched.
+  async function fetchPage(url) {
+    const u = new URL(url);
+    const wiki = u.hostname.match(/^([a-z-]+)\.(?:m\.)?wikipedia\.org$/i);
+    if (wiki && /^\/wiki\//.test(u.pathname)) {
+      let title = u.pathname.replace(/^\/wiki\//, ''); try { title = decodeURIComponent(title); } catch (e) { /* keep as is */ } title = title.replace(/_/g, ' ');
+      const r = await fetch(`https://${wiki[1]}.wikipedia.org/api/rest_v1/page/html/${encodeURIComponent(title.replace(/ /g, '_'))}`, { headers: { accept: 'text/html' } });
+      if (!r.ok) throw new Error(r.status === 404 ? `Wikipedia has no article called “${title}”.` : `Wikipedia answered ${r.status}.`);
+      return { html: await r.text(), via: 'wikipedia' };
+    }
+    try {
+      const r = await fetch(url, { mode: 'cors', credentials: 'omit', headers: { accept: 'text/html,text/plain' } });
+      if (r.ok) { const t = await r.text(); if (t.trim()) return { html: t, via: 'direct', type: r.headers.get('content-type') || '' }; }
+    } catch (e) { /* most sites don't allow direct reads from another page — fall through */ }
+    const r2 = await fetch(`https://r.jina.ai/${url}`, { headers: { accept: 'text/plain' } }).catch(() => null);
+    if (r2 && r2.ok) { const t = await r2.text(); if (t.trim() && !/^\s*(Warning|Error)\b/i.test(t.slice(0, 40))) return { text: t, via: 'reader' }; }
+    throw new Error('That page cannot be read from here. Open it, select all, copy, and paste the text instead.');
+  }
+  function pageToText(res, url) {
+    if (res.text) {
+      // the reader returns "Title: … / URL Source: … / Markdown Content:" then markdown
+      const body = res.text.replace(/^Title:\s*(.*)$/m, '# $1').replace(/^(URL Source|Published Time|Warning):.*$/gm, '').replace(/^Markdown Content:\s*$/m, '')
+        .replace(/!\[[^\]]*\]\([^)]*\)/g, '').replace(/\[\[?\d{1,3}\]?\]\([^)]*\)/g, '').replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
+        .split('\n').filter(l => !/^\s*\|.*\|\s*$/.test(l)).join('\n');
+      const title = (res.text.match(/^Title:\s*(.*)$/m) || [])[1] || hostOf(url);
+      return { text: Parsers.blocksToText(Parsers.plainToBlocks(body)), title };
+    }
+    if (/^text\/plain/.test(res.type || '')) return { text: Parsers.blocksToText(Parsers.plainToBlocks(res.html)), title: hostOf(url) };
+    const doc = Parsers.parseHtmlString(res.html, false);
+    return { text: Parsers.blocksToText(Parsers.webToBlocks(doc)), title: Parsers.webTitle(doc) || hostOf(url) };
+  }
+  async function addPasted(s, title, raw) {
+    const t = String(raw || '').trim();
+    if (!t) { toast('Nothing to add — paste some text or a web address first.'); return; }
+    const url = isUrl(t) ? t : null;
+    const m = { id: uid(), name: (title || '').trim() || (url ? hostOf(url) : `Pasted notes · ${new Date().toLocaleDateString(undefined, { day: 'numeric', month: 'short' })}`), ext: url ? 'web' : 'paste', label: url ? 'Web page' : 'Pasted', words: 0, chars: 0, include: true, addedAt: Date.now(), busy: true, progress: 0 };
+    if (url) m.src = url;
+    s.materials.push(m); saveIndex(); renderIfSubject(s);
+    try {
+      let text, autoTitle = '';
+      if (url) {
+        if (IN_ARTIFACT) throw new Error('Pages inside Claude can\'t fetch websites. Paste the page\'s text here instead, or use the live site.');
+        m.stage = `Fetching ${hostOf(url)}…`; updateMaterialRow(m);
+        const res = await fetchPage(url); ({ text, title: autoTitle } = pageToText(res, url)); m.via = res.via;
+      } else text = Parsers.blocksToText(Parsers.pastedToBlocks(t));
+      if (!text || text.replace(/\W/g, '').length < 40) throw new Error(url ? 'That page has no readable text (it may need sign-in, or be all images).' : 'That is too short to study from — paste a bit more.');
+      if (!(title || '').trim() && autoTitle) m.name = autoTitle.slice(0, 80);
+      m.words = text.replace(/\[\[[fps]:[^\]]*\]\]/g, '').split(/\s+/).filter(Boolean).length; m.chars = text.length; m.hash = textHash(text);
+      m.busy = false; delete m.progress; delete m.stage;
+      if (rejectIfDuplicate(s, m, text)) { invalidateAnalysis(); return; }
+      const ok = await IDB.put(m.id, text);
+      if (!ok) toast('Text kept for this visit only — browser storage is unavailable.');
+      toast(`Added ${m.name} — ${fmt(m.words)} words${m.via === 'reader' ? ' (read through the reader service)' : ''}.`);
+    } catch (e) { m.err = e && e.message ? e.message : 'Could not read that.'; m.include = false; }
+    m.busy = false; delete m.progress; delete m.stage;
+    saveIndex(); invalidateAnalysis(); renderIfSubject(s);
   }
 
   async function addFiles(s, files) {
@@ -3601,8 +3952,12 @@ const GENERIC = new Set('information data process system method result results s
         m.words = res.text.replace(/\[\[[fps]:[^\]]*\]\]/g, '').split(/\s+/).filter(Boolean).length;
         m.chars = res.text.length;
         if (res.pages) m.pages = res.pages;
+        m.hash = textHash(res.text);
+        m.busy = false; delete m.progress;
+        if (rejectIfDuplicate(s, m, res.text)) continue;
         const ok = await IDB.put(m.id, res.text);
         if (!ok) toast('Text kept for this visit only — browser storage is unavailable.');
+        if (res.figures && res.figures.length) { m.figs = res.figures.length; await IDB.put(m.id + ':figs', JSON.stringify(res.figures)); }
         // a PDF with a text layer on a few pages only is mostly scans: offer the reader for it too
         if (ext === 'pdf' && res.pages >= 2 && m.words / res.pages < 25 && OCR.available()) { pendingScans.set(m.id, f); m.thin = true; }
       } catch (e) {
@@ -3647,6 +4002,49 @@ const GENERIC = new Set('information data process system method result results s
     return m ? m.replace('<math ', `<math alttext="${esc(expr)}" `) : esc(expr);
   }
 
+  /* ---------- figures and diagrams: pictures pulled out of the PDFs, with their captions ---------- */
+  async function loadFigures(mats) {
+    const out = [];
+    for (const m of mats) {
+      if (!m.figs) continue;
+      try {
+        const raw = await IDB.get(m.id + ':figs'); if (!raw) continue;
+        const list = JSON.parse(raw);
+        const file = m.name.replace(/\.[^.]+$/, '');
+        list.forEach((f, i) => out.push({ ...f, file, mid: m.id, key: 'g' + hashKey(file + '|' + f.page + '|' + i + '|' + (f.caption || '')).toString(36) }));
+      } catch (e) { /* a broken store is not worth a crash */ }
+    }
+    return out;
+  }
+  const figTitle = f => f.caption ? f.caption.replace(/^(fig(ure|\.)?|diagram|chart|graph|illustration|plate|map|scheme|exhibit|image|photo)\s*\.?\s*(\d+[A-Za-z]?|[IVX]+)\b\s*[.:)\-–—]?\s*/i, '').trim() || f.caption : '';
+  const figNumber = f => { const m = (f.caption || '').match(/^(fig(ure|\.)?|diagram|chart|graph|illustration|plate|map|scheme|exhibit|image|photo)\s*\.?\s*(\d+[A-Za-z]?|[IVX]+)/i); return m ? `${/^fig/i.test(m[1]) ? 'Figure' : m[1][0].toUpperCase() + m[1].slice(1).toLowerCase()} ${m[3]}` : `Figure on p. ${f.page}`; };
+  // "(A) glomerulus (B) proximal tubule" / "A, glomerulus; B, tubule" / "1 – cortex, 2 – medulla" → the labels a diagram card can ask about
+  function figLabels(caption) {
+    const c = String(caption || '');
+    const out = [];
+    const push = (k, v) => { v = v.replace(/[\s.;,]+$/, '').trim(); if (v && v.length <= 60 && !out.some(x => x.k === k)) out.push({ k, v }); };
+    let re = /\(([A-Za-z]|\d{1,2})\)\s*([^()]+?)(?=\s*\([A-Za-z0-9]{1,2}\)|[.;]|$)/g, m;
+    while ((m = re.exec(c))) push(m[1], m[2]);
+    if (out.length < 2) {
+      out.length = 0;
+      re = /(?:^|[;:.]\s*|,\s+)([A-Za-z]|\d{1,2})\s*[,:–—-]\s*([^;,.]+)/g;
+      while ((m = re.exec(c))) push(m[1], m[2]);
+    }
+    return out.length >= 2 ? out : [];
+  }
+  // one card per figure ("what does this show?") and one per label when the caption names the parts
+  function figureCards(a) {
+    const cards = [];
+    for (const f of (a && a.figures) || []) {
+      if (!f.caption) continue;
+      const title = figTitle(f);
+      cards.push({ key: f.key, type: 'Figure', front: `What does this figure show?`, back: title, img: f.src, term: '', source: f.caption, fig: f.key });
+      const labels = figLabels(f.caption);
+      for (const l of labels) cards.push({ key: f.key + 'l' + l.k.toLowerCase(), type: 'Label the diagram', front: `In this diagram, what is ${/^\d/.test(l.k) ? 'number' : 'label'} ${l.k}?`, back: l.v, img: f.src, term: l.v, source: f.caption, fig: f.key });
+    }
+    return cards;
+  }
+
   /* ---------- analysis (shared by all four sections) ---------- */
   function invalidateAnalysis() { state.analysis = null; state.analysisKey = null; }
   async function getAnalysis(s) {
@@ -3654,20 +4052,28 @@ const GENERIC = new Set('information data process system method result results s
     const key = s.id + ':' + included.map(m => m.id + ':' + m.chars).join(',');
     if (state.analysis && state.analysisKey === key) return state.analysis;
     const parts = [];
-    let total = 0, truncated = false;
+    let total = 0, truncated = false, dupsFound = 0;
+    const seenHash = new Map();
     for (const m of included) {
       let t = await IDB.get(m.id);
       if (!t) { m.err = 'Text is no longer stored in this browser — upload the file again.'; m.include = false; saveIndex(); continue; }
+      // files added before duplicate checking existed: hash them now and drop a second copy of the same text
+      if (!m.hash) { m.hash = textHash(t); saveIndex(); }
+      if (seenHash.has(m.hash) && !m.dupOk) { m.dup = seenHash.get(m.hash); m.include = false; dupsFound++; saveIndex(); continue; }
+      seenHash.set(m.hash, m.id);
       if (total + t.length > MAX_ANALYZE_CHARS) { t = t.slice(0, Math.max(0, MAX_ANALYZE_CHARS - total)); truncated = true; }
       total += t.length;
       parts.push(`[[f:${m.name.replace(/\.[^.]+$/, '').replace(/[\[\]]/g, '')}]]\n\n## ${m.name.replace(/\.[^.]+$/, '')}\n\n${t}`);
       if (truncated) break;
     }
+    if (dupsFound) toast(`${plural(dupsFound, 'duplicate file')} left out — the same text was already in the study set.`);
     await sleep(30); // let the spinner paint
     const a = Engine.analyze(parts.join('\n\n'));
     a.truncated = truncated;
-    a.fileCount = included.length;
-    const names = included.map(m => m.name.replace(/\.[^.]+$/, ''));
+    const used = included.filter(m => m.include !== false && !m.err);
+    a.fileCount = used.length;
+    a.figures = await loadFigures(used);
+    const names = used.map(m => m.name.replace(/\.[^.]+$/, ''));
     const nameSet = new Set(names);
     a.fileOfSection = []; let curFile = names[0] || 'Material';
     a.sections.forEach((sec, i) => { if (sec.title && nameSet.has(sec.title)) curFile = sec.title; a.fileOfSection[i] = curFile; });
@@ -3782,12 +4188,12 @@ const GENERIC = new Set('information data process system method result results s
   }
 
   /* ---------- key information ---------- */
-  const KIND_META = { defs: 'Definitions', terms: 'Terms to know', acronyms: 'Acronyms', formulas: 'Formulas', processes: 'Processes & steps', causes: 'Cause & effect', comparisons: 'Comparisons & contrasts', examples: 'Examples', map: 'Section map', dates: 'Timeline', figures: 'Figures & stats', entities: 'People, places & organisations', lists: 'Lists from the material' };
-  const LIMITS = { defs: 6, terms: 40, acronyms: 6, formulas: 4, processes: 4, causes: 4, comparisons: 4, examples: 4, map: 5, dates: 6, figures: 5, entities: 14, lists: 2 };
+  const KIND_META = { defs: 'Definitions', terms: 'Terms to know', acronyms: 'Acronyms', formulas: 'Formulas', processes: 'Processes & steps', causes: 'Cause & effect', comparisons: 'Comparisons & contrasts', examples: 'Examples', map: 'Section map', dates: 'Timeline', figures: 'Figures & stats', diagrams: 'Figures & diagrams', entities: 'People, places & organisations', lists: 'Lists from the material' };
+  const LIMITS = { defs: 6, terms: 40, acronyms: 6, formulas: 4, processes: 4, causes: 4, comparisons: 4, examples: 4, map: 5, dates: 6, figures: 5, diagrams: 3, entities: 14, lists: 2 };
   const hlNeedles = (text, needles) => { let out = esc(text); for (const n of needles || []) { if (!n) continue; const re = new RegExp('(' + String(n).replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'i'); out = out.replace(re, '<mark>$1</mark>'); } return out; };
   const defText = d => d.kind === 'is' || d.kind === 'weak' || d.kind === 'inverse' ? d.sent : d.def;
   function keysItems(k, kind) {
-    const raw = ['processes', 'causes', 'comparisons', 'examples'].includes(kind) ? k.patterns[kind] : (k[kind] || []);
+    const raw = kind === 'diagrams' ? ((state.analysis && state.analysis.figures) || []) : ['processes', 'causes', 'comparisons', 'examples'].includes(kind) ? k.patterns[kind] : (k[kind] || []);
     const sid = curSid(); if (!sid) return raw;
     const ui = state.ui || {};
     let list = ui.showHidden ? raw : raw.filter(it => !isHidden(sid, itemId(kind, it)));
@@ -3807,6 +4213,7 @@ const GENERIC = new Set('information data process system method result results s
       case 'defs': return `<div class="def k-row"${flat}><dt>${esc(item.term)}${item.section ? `<span class="where">${esc(item.section)}</span>` : ''}</dt><dd class="clamp">${esc(defText(item))}${rowBtn(`Open the definition of ${item.term}`)}</dd></div>`;
       case 'acronyms': return `<div class="def k-row"${flat}><dt>${esc(item.acr)}</dt><dd class="clamp">${esc(item.expansion)}${rowBtn(`Open the acronym ${item.acr}`)}</dd></div>`;
       case 'formulas': return `<div class="formula k-row" ${open} aria-label="Open the formula ${esc(item.expr)}">${fxHtml(item.expr, item.kind)}</div>`;
+      case 'diagrams': return `<div class="k-row figrow" ${open} aria-label="Open ${esc(figNumber(item))}${figTitle(item) ? ': ' + esc(figTitle(item)) : ''}"><img src="${item.src}" alt="" loading="lazy"><div class="figmeta"><strong>${esc(figNumber(item))}</strong><span class="clamp">${esc(figTitle(item) || 'No caption found near it')}</span><span class="cite">${esc(item.file)} · p. ${item.page}</span></div></div>`;
       case 'processes': if (item.steps) return `<div class="k-row proc"${flat}>${item.title ? `<span class="label">${esc(item.title)}</span>` : ''}<ol class="steps">${item.steps.slice(0, 6).map(x => `<li>${esc(x.s)}</li>`).join('')}${item.steps.length > 6 ? `<li class="muted">… ${item.steps.length - 6} more steps</li>` : ''}</ol>${rowBtn(`Open the ${item.steps.length}-step process${item.title ? ': ' + item.title : ''}`)}</div>`;
         return `<div class="fact k-row clamp" ${open}>${hlNeedles(item.sent.s, [item.cue])}</div>`;
       case 'causes': { const sp = Engine.splitCause(item.sent.s); return sp ? `<div class="k-row ce" ${open}><div><span class="tag">Cause</span><span class="clamp">${esc(sp.cause)}</span></div><div><span class="tag">Effect</span><span class="clamp">${esc(sp.effect)}</span></div></div>` : `<div class="fact k-row clamp" ${open}>${hlNeedles(item.sent.s, [item.cue])}</div>`; }
@@ -3895,6 +4302,8 @@ const GENERIC = new Set('information data process system method result results s
       }
       case 'dates': return { title: item.year, kicker: secOf(item.sent.s) || 'Timeline', copy: item.sent.s, body: block('From the material', `<p class="big">${hlNeedles(item.sent.s, item.nums)}</p>${citeTag(item.sent.s)}`) };
       case 'figures': return { title: item.nums.join(' · '), kicker: secOf(item.sent.s) || 'Figures & stats', copy: item.sent.s, body: block('From the material', `<p class="big">${hlNeedles(item.sent.s, item.nums)}</p>${citeTag(item.sent.s)}`) };
+      case 'diagrams': { const labels = figLabels(item.caption); return { title: figNumber(item), kicker: `${item.file} · p. ${item.page} · ${item.kind === 'drawing' ? 'drawn diagram' : 'picture'}`, copy: item.caption || figNumber(item),
+        body: `<figure class="fig-big"><img src="${item.src}" alt="${esc(item.caption || 'Figure from the material')}"><figcaption>${item.caption ? esc(item.caption) : '<span class="muted">No caption was found next to it.</span>'}</figcaption></figure>` + (labels.length ? block('Labels to learn', `<dl class="def-list">${labels.map(l => `<div class="def"><dt>${esc(l.k)}</dt><dd>${esc(l.v)}</dd></div>`).join('')}</dl>`) : '') + (item.caption ? `<p class="small muted">A “what does this show?” card${labels.length ? ` and ${plural(labels.length, 'label-the-diagram card')}` : ''} ${labels.length ? 'are' : 'is'} already in the deck.</p>` : '') }; }
       case 'map': return { title: item.title, kicker: `Section · ${plural(item.n, 'sentence')} · ${fmt(item.words)} words`, copy: `${item.title}\n${item.lead || ''}`, body: (item.lead ? block('Key sentence', `<p class="big">${esc(item.lead)}</p>`) : '') + (item.terms.length ? block('Terms in this section', `<div class="term-chips">${item.terms.map(t => `<span class="term-chip">${esc(t.display)}</span>`).join('')}</div>`) : '') };
       case 'entities': return { title: item.name, kicker: `Name · ${item.count}×`, copy: item.name, body: block('In context', `<div class="fact-list">${(item.sents.length ? item.sents : ctx(item.name)).map(x => `<div class="fact">${hlNeedles(x, [item.name])}</div>`).join('')}</div>`) };
       case 'lists': return { title: item.title || 'List', kicker: `List · ${plural(item.items.length, 'item')}`, copy: item.items.map(x => `- ${x}`).join('\n'), body: `<ul class="detail-list">${item.items.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` };
@@ -3928,7 +4337,7 @@ const GENERIC = new Set('information data process system method result results s
     const k = state.ui.keys; if (!k) return;
     const items = keysItems(k, kind);
     const wrap = kind === 'dates' || kind === 'map' ? 'ol' : kind === 'entities' ? 'div' : 'div';
-    const cls = kind === 'dates' ? 'timeline' : kind === 'map' ? 'sec-map' : kind === 'entities' ? 'ent-list' : kind === 'defs' || kind === 'acronyms' ? 'def-list' : 'fact-list';
+    const cls = kind === 'dates' ? 'timeline' : kind === 'map' ? 'sec-map' : kind === 'entities' ? 'ent-list' : kind === 'diagrams' ? 'fig-list' : kind === 'defs' || kind === 'acronyms' ? 'def-list' : 'fact-list';
     state.modal = { type: 'info', title: KIND_META[kind], kicker: `All ${plural(items.length, 'item')} · tap one for the full text`, filter: items.length > 8, body: `<${wrap} class="${cls} modal-list">${items.map((it, i) => keysRow(kind, it, i)).join('')}</${wrap}>` };
     syncModal();
   }
@@ -3969,6 +4378,7 @@ const GENERIC = new Set('information data process system method result results s
         ${cell('examples', '<div class="fact-list">', '</div>')}
       </div>
       <div class="stack">
+        ${cell('diagrams', '<div class="fig-list">', '</div>')}
         ${cell('map', '<ol class="sec-map">', '</ol>')}
         ${cell('dates', '<ol class="timeline">', '</ol>')}
         ${cell('figures', '<div class="fact-list">', '</div>')}
@@ -4046,8 +4456,8 @@ const GENERIC = new Set('information data process system method result results s
       const cnote = noteOf(s.id, cid) || (c.term ? noteOf(s.id, ID.term(c.term)) : '');
       const starred = isStar(s.id, cid);
       body = `<div class="scene"><div class="fcard${ui.flipped ? ' flipped' : ''}" data-act="flip" role="button" tabindex="0" aria-expanded="${ui.flipped ? 'true' : 'false'}" aria-label="Card ${ui.i + 1} of ${ui.order.length}, ${esc(c.type)}. ${ui.flipped ? 'Showing the answer' : 'Showing the question'}. Space flips it.">
-        <div class="face front"><div class="kind"><span>${esc(c.type)} · ${state5}</span><span>${ui.i + 1} / ${ui.order.length}</span></div><div class="txt">${esc(c.front)}</div><div class="hint">Click or press space to flip</div></div>
-        <div class="face back"><div class="kind"><span>Answer</span><span>${ui.i + 1} / ${ui.order.length}</span></div>
+        <div class="face front"><div class="kind"><span>${esc(c.type)} · ${state5}</span><span>${ui.i + 1} / ${ui.order.length}</span></div>${c.img ? `<img class="fig" src="${c.img}" alt="${esc(c.type === 'Figure' ? 'A figure from the material' : 'A labelled diagram from the material')}">` : ''}<div class="txt${c.img ? ' with-fig' : ''}">${esc(c.front)}</div><div class="hint">Click or press space to flip</div></div>
+        <div class="face back"><div class="kind"><span>Answer</span><span>${ui.i + 1} / ${ui.order.length}</span></div>${c.img && c.type !== 'Figure' ? `<img class="fig small" src="${c.img}" alt="">` : ''}
           ${isCloze ? `<div class="txt answer">${esc(c.back)}</div>${c.source ? `<div class="src">${esc(c.source)}${citeTag(c.source)}</div>` : ''}` : `<div class="txt">${esc(c.back)}</div>${c.source && c.back !== c.source ? `<div class="src">${esc(c.source)}${citeTag(c.source)}</div>` : c.source ? `<div class="src">${citeTag(c.source)}</div>` : ''}`}
           ${cnote ? `<div class="own-note"><span class="label">Your note</span>${esc(cnote)}</div>` : ''}
         </div>
@@ -4091,11 +4501,13 @@ const GENERIC = new Set('information data process system method result results s
   // Older Anki versions skip the # lines and still read the rows. Tags: unimadeez, the card type, the subject.
   const ankiTag = t => String(t || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'card';
   function cardsAsAnki(cards, s) {
-    const clean = t => String(t ?? '').replace(/\t/g, ' ').replace(/\r?\n/g, ' ').trim();
+    const hasImg = cards.some(c => c.img);
+    // with a figure in the deck the fields are HTML (Anki renders data: images); otherwise plain text
+    const clean = t => { t = String(t ?? '').replace(/\t/g, ' ').trim(); return hasImg ? esc(t).replace(/\r?\n/g, '<br>') : t.replace(/\r?\n/g, ' '); };
     const subjectTag = ankiTag(s.code || s.name);
-    const rows = cards.map(c => `${clean(c.front)}\t${clean(c.back)}\tunimadeez ${ankiTag(c.type)} ${subjectTag}`);
+    const rows = cards.map(c => `${c.img ? `<img src="${c.img}"><br>` : ''}${clean(c.front)}\t${clean(c.back)}\tunimadeez ${ankiTag(c.type)} ${subjectTag}`);
     const deck = `UNI Made EZ::${String(s.code || s.name).replace(/::/g, ':').trim()}`;
-    return ['#separator:tab', '#html:false', `#deck:${deck}`, '#tags column:3', ...rows].join('\n') + '\n';
+    return ['#separator:tab', `#html:${hasImg ? 'true' : 'false'}`, `#deck:${deck}`, '#tags column:3', ...rows].join('\n') + '\n';
   }
 
   /* ---------- quiz ---------- */
@@ -4564,7 +4976,7 @@ const GENERIC = new Set('information data process system method result results s
     const ui = state.ui; const list = ui.pool || ui.cards || [];
     if (!list.length) { toast('No cards to print yet.'); return; }
     printSheet(`<h1 class="ps-title">${esc(s.name)}${s.code ? ' · ' + esc(s.code) : ''}</h1><p class="ps-sub">${plural(list.length, 'flash card')} · UNI Made EZ</p>
-      <div class="ps-grid">${list.map((c, i) => `<div class="ps-card"><span class="ps-n">${i + 1} · ${esc(c.type)}</span><div class="ps-q">${esc(c.front)}</div><div class="ps-a">${esc(c.back)}</div></div>`).join('')}</div>`);
+      <div class="ps-grid">${list.map((c, i) => `<div class="ps-card"><span class="ps-n">${i + 1} · ${esc(c.type)}</span>${c.img ? `<img class="ps-fig" src="${c.img}" alt="">` : ''}<div class="ps-q">${esc(c.front)}</div><div class="ps-a">${esc(c.back)}</div></div>`).join('')}</div>`);
   }
 
   /* ---------- clipboard ---------- */
@@ -4614,7 +5026,8 @@ const GENERIC = new Set('information data process system method result results s
     return { s, a, sum, k, cards, notes, files, ex: examInfo(s),
       defs: vis('defs', k.defs), acronyms: vis('acronyms', k.acronyms), formulas: a.formulas || [],
       processes: vis('processes', (k.patterns || {}).processes).filter(p => p.steps && p.steps.length >= 2),
-      dates: vis('dates', k.dates), figures: vis('figures', k.figures).slice(0, 12), symbols: k.symbols || [] };
+      dates: vis('dates', k.dates), figures: vis('figures', k.figures).slice(0, 12), symbols: k.symbols || [],
+      diagrams: ((a.figures) || []).filter(f => !isHidden(sid, 'g:' + f.key)) };
   }
   function packHtml(p) {
     const { s, sum, cards } = p;
@@ -4632,11 +5045,12 @@ const GENERIC = new Set('information data process system method result results s
     const dates = p.dates.length ? `<dl class="pk-defs">${p.dates.map(x => `<div><dt>${esc(x.year)}</dt><dd>${esc(x.sent.s)}</dd></div>`).join('')}</dl>` : '';
     const figs = p.figures.length ? `<ul class="pk-list">${p.figures.map(x => `<li>${esc(x.sent.s)}</li>`).join('')}</ul>` : '';
     const notes = p.notes.length ? `<dl class="pk-defs">${p.notes.map(x => `<div><dt>${esc(x.label)}</dt><dd>${esc(x.note)}</dd></div>`).join('')}</dl>` : '';
-    const deck = cards.length ? `<table class="pk-cards"><thead><tr><th>#</th><th>Question</th><th>Answer</th></tr></thead><tbody>${cards.map((c, i) => `<tr><td class="ps-n">${i + 1}</td><td>${esc(c.front)}</td><td>${esc(c.back).replace(/\n/g, '<br>')}</td></tr>`).join('')}</tbody></table>` : '';
+    const deck = cards.length ? `<table class="pk-cards"><thead><tr><th>#</th><th>Question</th><th>Answer</th></tr></thead><tbody>${cards.map((c, i) => `<tr><td class="ps-n">${i + 1}</td><td>${c.img ? `<img class="pk-thumb" src="${c.img}" alt=""><br>` : ''}${esc(c.front)}</td><td>${esc(c.back).replace(/\n/g, '<br>')}</td></tr>`).join('')}</tbody></table>` : '';
+    const diag = (p.diagrams || []).length ? `<div class="pk-figs">${p.diagrams.map(f => `<figure><img src="${f.src}" alt=""><figcaption><b>${esc(figNumber(f))}</b> ${esc(figTitle(f))} <span class="ps-n">${esc(f.file)} · p. ${f.page}</span></figcaption></figure>`).join('')}</div>` : '';
     const test = sum.selfTest.length ? `<ol class="pk-test">${sum.selfTest.map(c => `<li><b>${esc(c.front)}</b><span>${esc(c.back)}</span></li>`).join('')}</ol>` : '';
     const terms = sum.terms.length ? `<p class="pk-terms big">${sum.terms.map(t => esc(t.display)).join(' · ')}</p>` : '';
     return `<div class="pk">${head}${sec('In brief', brief)}${sec('Key definitions', defs)}${sec('Acronyms', acr)}${sec('Section by section', sections)}${sec('Takeaways', take)}
-      ${sec('Formula sheet', formulas, 'pk-break')}${sec('Processes and steps', procs)}${sec('Timeline', dates)}${sec('Figures worth knowing', figs)}${sec('Your notes', notes)}
+      ${sec('Formula sheet', formulas, 'pk-break')}${sec('Figures and diagrams', diag)}${sec('Processes and steps', procs)}${sec('Timeline', dates)}${sec('Figures worth knowing', figs)}${sec('Your notes', notes)}
       ${sec('Terms to know', terms)}${sec(`Flash cards · ${cards.length}`, deck, 'pk-break')}${sec('Test yourself', test)}
       <footer class="pk-foot">Built on your device by UNI Made EZ from your own course files · check it against your notes</footer></div>`;
   }
@@ -4651,6 +5065,7 @@ const GENERIC = new Set('information data process system method result results s
       (sum.sections.length ? `## Section by section\n\n${sum.sections.map(x => `### ${x.title || 'Untitled'}\n\n${x.sentences.map(y => `- ${y.s}`).join('\n')}${x.terms.length ? `\n\n_Terms: ${x.terms.map(t => t.display).join(', ')}_` : ''}`).join('\n\n')}\n\n` : '') +
       H('Takeaways', sum.takeaways.map((x, i) => `${i + 1}. ${x.s}`).join('\n')) +
       H('Formula sheet', p.formulas.map((f, i) => `${i + 1}. \`${f.expr}\`${f.sent ? `  \n   ${f.sent}` : ''}`).join('\n') + (p.symbols.length ? `\n\n${p.symbols.map(x => `- **${x.sym}** = ${x.meaning}`).join('\n')}` : '')) +
+      H('Figures and diagrams', (p.diagrams || []).map(f => `- **${figNumber(f)}** — ${figTitle(f) || 'no caption'} (${f.file}, p. ${f.page})`).join('\n')) +
       H('Processes and steps', p.processes.map(x => `**${x.title || 'Steps'}**\n\n${x.steps.map((y, i) => `${i + 1}. ${y.s}`).join('\n')}`).join('\n\n')) +
       H('Timeline', p.dates.map(x => `- **${x.year}** — ${x.sent.s}`).join('\n')) +
       H('Figures worth knowing', p.figures.map(x => `- ${x.sent.s}`).join('\n')) +
@@ -4673,7 +5088,7 @@ const GENERIC = new Set('information data process system method result results s
   /* ---------- backup and restore: one JSON file holds the subjects, their scanned text and your progress ---------- */
   async function makeBackup(subjects) {
     const texts = {};
-    for (const s of subjects) for (const m of s.materials) { if (m.err || m.busy) continue; try { const t = await IDB.get(m.id); if (t) texts[m.id] = t; } catch (e) { /* skip */ } }
+    for (const s of subjects) for (const m of s.materials) { if (m.err || m.busy) continue; try { const t = await IDB.get(m.id); if (t) texts[m.id] = t; if (m.figs) { const g = await IDB.get(m.id + ':figs'); if (g) texts[m.id + ':figs'] = g; } } catch (e) { /* skip */ } }
     const prg = {};
     subjects.forEach(s => { if (progress[s.id]) prg[s.id] = progress[s.id]; });
     return { app: 'UNI Made EZ', kind: 'backup', v: 1, build: BUILD.v, at: new Date().toISOString(), subjects: JSON.parse(JSON.stringify(subjects)), texts, progress: prg };
@@ -4704,12 +5119,12 @@ const GENERIC = new Set('information data process system method result results s
       const at = state.subjects.findIndex(x => x.id === s.id);
       if (at >= 0) state.subjects[at] = s; else state.subjects.push(s);
       if (b.progress[s.id]) progress[s.id] = b.progress[s.id];
-      for (const m of s.materials) if (b.texts[m.id]) await IDB.put(m.id, b.texts[m.id]);
+      for (const m of s.materials) { if (b.texts[m.id]) await IDB.put(m.id, b.texts[m.id]); if (b.texts[m.id + ':figs']) await IDB.put(m.id + ':figs', b.texts[m.id + ':figs']); else if (m.figs) m.figs = 0; }
     }
     saveIndex(); saveProgress(); invalidateAnalysis(); render();
     toast(`Restored ${plural(b.subjects.length, 'subject')}${replaced.length ? ` (${replaced.length} replaced)` : ''}.`, { label: 'Undo', act: async () => {
       state.subjects = before.subjects; Object.keys(before.progress).forEach(id => { if (before.progress[id]) progress[id] = before.progress[id]; else delete progress[id]; });
-      for (const s of b.subjects) if (!before.subjects.some(x => x.id === s.id)) { delete progress[s.id]; for (const m of s.materials) await IDB.del(m.id); }
+      for (const s of b.subjects) if (!before.subjects.some(x => x.id === s.id)) { delete progress[s.id]; for (const m of s.materials) { await IDB.del(m.id); await IDB.del(m.id + ':figs'); } }
       await restoreTexts(before.texts);
       saveIndex(); saveProgress(); invalidateAnalysis(); render(); toast('Restore undone.');
     } });
@@ -4781,6 +5196,7 @@ const GENERIC = new Set('information data process system method result results s
       case 'keys-hidden': ui.showHidden = !ui.showHidden; renderSection(s, 'keys'); break;
       case 'mat-open': { const f = s.materials.find(x => x.id === el.dataset.id); if (f) { state.modal = { type: 'file', file: f }; syncModal(); } break; }
       case 'ocr': { const f = s.materials.find(x => x.id === el.dataset.id); if (f && !f.busy) ocrMaterial(s, f); break; }
+      case 'paste-open': state.modal = { type: 'paste' }; syncModal(); $('#p-text')?.focus(); break;
       case 'mat-status': { const f = s.materials.find(x => x.id === el.dataset.id); if (f) { f.status = f.status === 'read' ? 'review' : f.status === 'review' ? '' : 'read'; saveIndex(); renderSubject(s); } break; }
       case 'file-status': { const box = el.closest('.field'); box.querySelectorAll('.seg button').forEach(b => b.classList.toggle('on', b === el)); box.querySelector('input[name=status]').value = el.dataset.v; break; }
       case 'mat-filter': {
@@ -4795,11 +5211,11 @@ const GENERIC = new Set('information data process system method result results s
         state.modal = { type: 'confirm', title: `Remove ${sub.name}?`, body: `This removes the subject and its ${plural(sub.materials.length, 'file')} from this browser. You can undo it from the message that follows.`, yes: 'Remove subject', onYes: () => removeSubject(sub) };
         render(); break;
       }
-      case 'toggle-mat': { const m = s.materials.find(x => x.id === el.dataset.id); if (m) { m.include = el.checked; saveIndex(); invalidateAnalysis(); renderSubject(s); } break; }
+      case 'toggle-mat': { const m = s.materials.find(x => x.id === el.dataset.id); if (m) { m.include = el.checked; if (el.checked && m.dup) m.dupOk = true; saveIndex(); invalidateAnalysis(); renderSubject(s); } break; }
       case 'remove-mat': {
         const m = s.materials.find(x => x.id === el.dataset.id); if (!m) break;
         const doRemove = () => removeMaterial(s, m);
-        if (m.err || m.busy || e.shiftKey) { doRemove(); break; }
+        if (m.err || m.busy || e.shiftKey) { state.modal = null; doRemove(); break; }
         state.modal = { type: 'confirm', title: `Remove ${m.name}?`, body: 'It is taken out of this subject and its scanned text is deleted from this browser. You can undo it straight after, or upload it again any time.', yes: 'Remove file', onYes: doRemove };
         render(); break;
       }
@@ -4816,7 +5232,7 @@ const GENERIC = new Set('information data process system method result results s
       case 'signup-back': state.pendingSignup = null; render(); break;
       case 'copy-signup': { const p = state.pendingSignup; copyText(`To: ${OWNER_EMAIL}\nSubject: UNI Made EZ sign-up: ${p.name}\n\nName: ${p.name}\nEmail: ${p.email}`, 'Copied.'); break; }
       case 'copy-summary': copyText(ui.summaryText || '', 'Summary copied as Markdown.'); break;
-      case 'copy-cards': { const list = ui.pool || ui.cards || []; copyText(cardsAsRows(list), `${list.length} cards copied — paste into Quizlet (Import) or a spreadsheet.`); break; }
+      case 'copy-cards': { const all = ui.pool || ui.cards || []; const list = all.filter(c => !c.img); copyText(cardsAsRows(list), `${list.length} cards copied — paste into Quizlet (Import) or a spreadsheet.${all.length > list.length ? ` ${all.length - list.length} figure cards left out (no pictures in pasted text).` : ''}`); break; }
       case 'sum-level': ui.level = el.dataset.level; renderSection(s, 'summary'); break;
       case 'term-focus': ui.termFocus = ui.termFocus === el.dataset.key ? null : el.dataset.key; renderSection(s, r.kind); if (r.kind === 'summary' && ui.termFocus) openTermPopup(ui.termFocus); break;
       case 'export-summary': saveFile(`${fileStem(s.code || s.name)}-summary.md`, ui.summaryText || '', 'text/markdown', 'Summary (Markdown)'); break;
@@ -4902,6 +5318,15 @@ const GENERIC = new Set('information data process system method result results s
       case 'q-setup': ui.qs = null; ui.deadline = null; clearQuizRun(); clearInterval(state.timer); state.timer = null; renderSection(s, 'quiz'); break;
     }
   });
+  // ⌘V / Ctrl V on a subject page (not inside a field) opens the paste box with the clipboard text already in it
+  document.addEventListener('paste', e => {
+    const r = parseRoute(); if (r.name !== 'subject' || state.modal) return;
+    const t = e.target; if (t && t.matches && t.matches('input, textarea, [contenteditable]')) return;
+    const text = e.clipboardData ? e.clipboardData.getData('text/plain') : '';
+    if (!text || !text.trim()) return;
+    e.preventDefault();
+    state.modal = { type: 'paste', text }; syncModal(); $('#p-title')?.focus();
+  });
   document.addEventListener('input', e => {
     const sf = e.target.closest('[data-search]');
     if (sf) { state.searchQ = sf.value; const box = document.getElementById('s-res'); if (box) box.innerHTML = runSearch(sf.value); return; }
@@ -4964,10 +5389,14 @@ const GENERIC = new Set('information data process system method result results s
       state.modal = null; syncModal();
       const subj = subjectById(r.id); if (subj) refreshAfterMark(subj);
       toast('Note saved.');
+    } else if (form.dataset.form === 'paste') {
+      const subj = subjectById(r.id); if (!subj) return;
+      state.modal = null; syncModal();
+      addPasted(subj, data.title, data.text);
     } else if (form.dataset.form === 'file') {
       const subj = subjectById(r.id); if (!subj) return;
       const f = subj.materials.find(x => x.id === data.id);
-      if (f) { f.tag = data.tag || ''; f.week = data.week ? String(parseInt(data.week, 10) || '') : ''; f.status = data.status || ''; f.include = !!data.include; }
+      if (f) { f.tag = data.tag || ''; f.week = data.week ? String(parseInt(data.week, 10) || '') : ''; f.status = data.status || ''; f.include = !!data.include; if (f.include && f.dup) f.dupOk = true; }
       saveIndex(); invalidateAnalysis(); state.modal = null; syncModal(); renderSubject(subj);
     } else if (form.dataset.form === 'fill') {
       answerQuiz(subjectById(r.id), data.v || '');
@@ -4982,7 +5411,7 @@ const GENERIC = new Set('information data process system method result results s
   /* ---------- removals you can take back (the toast holds the data for 8 seconds) ---------- */
   async function snapshotTexts(mats) {
     const out = {};
-    for (const m of mats) { try { const t = await IDB.get(m.id); if (t) out[m.id] = t; } catch (e) { /* ignore */ } }
+    for (const m of mats) { try { const t = await IDB.get(m.id); if (t) out[m.id] = t; if (m.figs) { const g = await IDB.get(m.id + ':figs'); if (g) out[m.id + ':figs'] = g; } } catch (e) { /* ignore */ } }
     return out;
   }
   async function restoreTexts(texts) { for (const id of Object.keys(texts)) { try { await IDB.put(id, texts[id]); } catch (e) { /* ignore */ } } }
@@ -4991,7 +5420,7 @@ const GENERIC = new Set('information data process system method result results s
     const texts = await snapshotTexts([m]);
     s.materials = s.materials.filter(x => x.id !== m.id);
     pendingScans.delete(m.id);
-    await IDB.del(m.id);
+    await IDB.del(m.id); if (m.figs) await IDB.del(m.id + ':figs');
     saveIndex(); invalidateAnalysis(); renderSubject(s);
     toast(`Removed ${m.name}.`, { label: 'Undo', act: async () => {
       s.materials.splice(Math.max(0, Math.min(at, s.materials.length)), 0, m);
@@ -5002,7 +5431,7 @@ const GENERIC = new Set('information data process system method result results s
   async function removeAllMaterials(s) {
     const mats = s.materials.slice();
     const texts = await snapshotTexts(mats);
-    for (const m of mats) await IDB.del(m.id);
+    for (const m of mats) { await IDB.del(m.id); if (m.figs) await IDB.del(m.id + ':figs'); }
     s.materials = []; saveIndex(); invalidateAnalysis(); renderSubject(s);
     toast(`Removed ${plural(mats.length, 'file')}.`, { label: 'Undo', act: async () => {
       s.materials = mats; await restoreTexts(texts);
@@ -5012,7 +5441,7 @@ const GENERIC = new Set('information data process system method result results s
   async function removeSubject(sub) {
     const at = state.subjects.indexOf(sub);
     const texts = await snapshotTexts(sub.materials);
-    for (const m of sub.materials) await IDB.del(m.id);
+    for (const m of sub.materials) { await IDB.del(m.id); if (m.figs) await IDB.del(m.id + ':figs'); }
     state.subjects = state.subjects.filter(x => x.id !== sub.id);
     saveIndex(); invalidateAnalysis();
     if (location.hash.includes(sub.id)) go('/'); else render();
