@@ -53,6 +53,7 @@
   --inverse: #0E2A3A;
   --inverse-ink: #FFFFFF;
   --inverse-ink-2: #9DB6C2;
+  --jxc-gold: #EBB64E;
   --font-display: "Inter Tight", "Helvetica Neue", Helvetica, Arial, sans-serif;
   --font-body: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
   --font-mono: "JetBrains Mono", "SFMono-Regular", Menlo, Consolas, monospace;
@@ -68,7 +69,7 @@
     --tint-1: #101C22; --tint-2: #171E10; --tint-3: #0F1F17; --tint-4: #201512;
     --shape: #2A2A2E; --dot: #F4F4F2;
     --ok: #6FE0A4; --ok-soft: #123324; --bad: #FF8A78; --bad-soft: #3A1D18; --warn: #F2C94C; --warn-soft: #3A2F0E;
-    --inverse: #F4F4F2; --inverse-ink: #0C0C0D; --inverse-ink-2: #4B4B51;
+    --inverse: #F4F4F2; --inverse-ink: #0C0C0D; --inverse-ink-2: #4B4B51; --jxc-gold: #B8800E;
     --shadow: 0 24px 60px -30px rgba(0, 0, 0, .8);
     color-scheme: dark;
   }
@@ -81,7 +82,7 @@
   --tint-1: #101C22; --tint-2: #171E10; --tint-3: #0F1F17; --tint-4: #201512;
   --shape: #2A2A2E; --dot: #F4F4F2;
   --ok: #6FE0A4; --ok-soft: #123324; --bad: #FF8A78; --bad-soft: #3A1D18; --warn: #F2C94C; --warn-soft: #3A2F0E;
-  --inverse: #F4F4F2; --inverse-ink: #0C0C0D; --inverse-ink-2: #4B4B51;
+  --inverse: #F4F4F2; --inverse-ink: #0C0C0D; --inverse-ink-2: #4B4B51; --jxc-gold: #B8800E;
   --shadow: 0 24px 60px -30px rgba(0, 0, 0, .8);
   color-scheme: dark;
 }
@@ -770,7 +771,9 @@ button.term-chip.k-row { cursor: pointer; }
 .fsheet { display: grid; gap: 14px; }
 .frow { display: grid; gap: 6px; padding-bottom: 14px; border-bottom: 1px solid var(--line-soft); break-inside: avoid; }
 .frow:last-child { border: 0; padding: 0; }
-.fmeta { font-size: .82rem; color: var(--ink-2); display: grid; gap: 4px; }
+.fmeta { font-size: .82rem; color: var(--ink-2); display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; }
+.fmeta .tag { flex: none; }
+.fmeta > span:last-child { flex: 1 1 100%; }
 .def dt.sym { font-family: var(--font-mono); font-size: 1rem; color: var(--accent); }
 
 /* ---------- concept map ---------- */
@@ -899,6 +902,32 @@ body.modal-open { overflow: hidden; }
 .mono.dim { opacity: 1; font-weight: 500; }
 .brief { position: relative; }
 .brief .speak { position: absolute; top: 14px; right: 14px; }
+.empty-page { display: grid; gap: 16px; max-width: 720px; margin: 32px auto; padding: 34px; border: 1px solid var(--line); background: var(--surface); }
+.empty-page h2 { font-family: var(--font-display); font-size: 1.5rem; font-weight: 600; letter-spacing: -0.03em; margin: 0; }
+.empty-page p { margin: 0; color: var(--ink-2); }
+.empty-page .formula { font-size: .85em; padding: 1px 5px; }
+.empty-page .btn-row { margin-top: 6px; }
+.tag.soft { background: var(--surface-2); color: var(--ink-2); }
+.q-card .qnum { flex-wrap: wrap; gap: 10px; }
+.q-tools { display: inline-flex; flex-wrap: wrap; gap: 6px; margin-left: auto; }
+.q-tools .btn { font-size: .6rem; padding: 4px 8px; }
+.field label.check { font-family: var(--font-body); font-size: .92rem; text-transform: none; letter-spacing: 0; color: var(--ink); }
+.opts { display: grid; gap: 12px; }
+.opts .check { align-items: flex-start; gap: 10px; }
+.opts .check input { margin-top: 3px; flex: none; }
+.opts .check > span { display: grid; gap: 2px; }
+.opts .check b { font-weight: 600; }
+.q-setup .opts { display: flex; gap: 16px; flex-wrap: wrap; }
+@media (min-width: 640px) { #overlay .opts { grid-template-columns: 1fr 1fr; gap: 14px 24px; } }
+
+/* ---------- JohnsonXCorp: the maker's logo in the footer ---------- */
+.foot .maker { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 12px; justify-content: flex-end; }
+.foot .maker .by { text-transform: uppercase; letter-spacing: .1em; opacity: .8; }
+.jxc { display: inline-flex; align-items: center; color: var(--inverse-ink); }
+.jxc-logo { display: block; height: 17px; width: auto; }
+.jxc-logo .jxc-x { fill: var(--jxc-gold); }
+.foot .build { color: inherit; white-space: nowrap; }
+@media (max-width: 900px) { .foot .maker { justify-content: flex-start; } .foot .maker .by { display: none; } .jxc-logo { height: 15px; } }
 
 </style>
 </head>
@@ -1345,7 +1374,42 @@ const Engine = (() => {
   const STOP = new Set(`a about above across after again against all almost along already also although always am among an and another any anyone anything are around as at back be became because become becomes been before behind being below beside besides between beyond both but by came can cannot come could did do does doing done down during each either else enough etc even ever every everyone everything except far few for from further get gets give given go goes got had has have having he hence her here hers herself him himself his how however i if in indeed instead into is it its itself just keep last later least less let like likely made make makes many may me might more most mostly much must my myself namely neither never nevertheless next no nobody none nor not nothing now of off often on once one only onto or other others otherwise our ours ourselves out over own per perhaps put rather same say see seem seemed seems several shall she should since so some somehow someone something sometimes somewhere still such take than that the their theirs them themselves then there therefore these they this those though through thus to together too toward towards under until up upon us use used uses using usually very via was we well were what whatever when whenever where whereas wherever whether which while who whoever whole whom whose why will with within without would yet you your yours yourself yourselves
 e.g i.e vs ie eg fig figure figures table tables chapter chapters section sections page pages lecture lectures slide slides course courses week weeks note notes question questions answer answers example examples student students university following include includes including included called known based part parts number numbers thing things way ways called particular general important different various certain specific similar new old first second third also however overall according`.split(/\s+/));
 
-  const VERBS = new Set('requires uses produces makes takes gives includes contains provides occurs needs forms creates shows means allows helps causes becomes involves consists results leads refers describes represents indicates suggests depends generates releases converts yields receives described proposed worked called known used shown found required based defined considered developed introduced discovered explained increases decreases reduces affects determines explains measures moves works remains appears seems begins ends starts follows continues plays holds keeps sets puts brings comes gets goes turns runs pumps drives combines joins splits links blocks stops slows'.split(' '));
+  // Verb stems, expanded below into -s / -ed / -ing forms. Only words that are almost never nouns in
+  // course material belong here: a stem listed here can never start or end a key term, so "control group",
+  // "interquartile range" and "data set" would be lost if control / range / set were added.
+  const VERB_STEMS = ('require produce make take give include contain provide occur need create show allow help become involve consist ' +
+    'lead refer describe represent indicate suggest depend generate release convert yield receive know define consider develop introduce ' +
+    'discover explain determine remain appear seem begin follow continue bring come turn pump combine join split block obtain assume ' +
+    'compute calculate apply identify collect ensure perform conduct observe specify evaluate compare suppose discuss illustrate assign ' +
+    'choose divide repeat construct prove derive rearrange substitute select happen conform comply belong relate correspond differ vary ' +
+    'reflect reveal demonstrate argue claim propose predict expect assess examine investigate explore analyse analyze verify confirm ' +
+    'approximate summarise summarize outline highlight emphasise emphasize imply denote signify entail enable permit prevent avoid ' +
+    'restrict regulate maintain sustain preserve protect improve enhance strengthen weaken alter modify adjust adapt transform replace ' +
+    'remove eliminate insert attach detach separate isolate distinguish differentiate classify categorise categorize arrange organise ' +
+    'organize prepare implement execute operate serve behave respond react interact communicate interpret understand recognise recognize ' +
+    'remember recall forget learn teach memorise memorize describe cover exist depend consist arise emerge').split(' ');
+  // forms that have no useful stem here, plus the auxiliaries
+  const VERB_EXTRA = ('is are was were be been being has have had do does did can could will would shall should may might must let ' +
+    'means worked called used shown found required based considered developed described proposed increases decreases reduces affects ' +
+    'measures moves works plays holds keeps sets puts gets goes runs drives links stops slows notes reports presents records lists ' +
+    'checks writes reads finds solves adds subtracts multiplies returns continues sketches draws').split(' ');
+  const VERBS = (() => {
+    const out = new Set(VERB_EXTRA);
+    for (const v of VERB_STEMS) {
+      out.add(v);
+      out.add(/(s|h|x|z)$/.test(v) ? v + 'es' : /[^aeiou]y$/.test(v) ? v.slice(0, -1) + 'ies' : v + 's');
+      out.add(/e$/.test(v) ? v + 'd' : /[^aeiou]y$/.test(v) ? v.slice(0, -1) + 'ied' : v + 'ed');
+      out.add(/e$/.test(v) ? v.slice(0, -1) + 'ing' : v + 'ing');
+    }
+    return out;
+  })();
+  // a real term ends in a noun: a plural verb form ("covers", "applies") never ends one
+  const deplural = w => /ies$/.test(w) ? w.slice(0, -3) + 'y' : /(ses|xes|zes|ches|shes)$/.test(w) ? w.slice(0, -2) : /[^s]s$/.test(w) ? w.slice(0, -1) : w;
+  const verbLike = w => VERBS.has(w) || VERBS.has(deplural(w));
+  // words that can never open a key term
+  const PRON = new Set('people person persons they we you it he she someone anyone one ones others individuals things something everyone everybody nobody'.split(' '));
+  // bare adjectives are never the concept a student needs to learn
+  const ADJ = new Set('true false good bad high low large small great little same different similar common general specific main major minor other new old first second third final total overall smaller larger higher lower better worse likely unlikely possible important simple complex easy hard long short early late'.split(' '));
 const GENERIC = new Set('information data process system method result results study studies research analysis approach model models level levels type types form forms case cases term terms concept concepts idea ideas factor factors effect effects role value values point points area areas problem problems issue issues change changes group groups work works time times year years people person world life field fields theory theories'.split(' '));
 
   const ABBR = /\b(?:e\.g|i\.e|vs|etc|Dr|Mr|Mrs|Ms|Prof|Fig|No|St|Jr|Sr|al|approx|dept|Inc|Ltd|Co|cf|ca|p|pp|vol|ed|eds|ch|sec|min|max|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec|U\.S|U\.K)\.$/i;
@@ -1362,6 +1426,8 @@ const GENERIC = new Set('information data process system method result results s
   const singular = w => /ies$/.test(w) ? w.replace(/ies$/, 'y') : /(sh|ch|x|ss|z)es$/.test(w) ? w.replace(/es$/, '') : /[^s]s$/.test(w) && !/(is|us|ss)$/.test(w) ? w.slice(0, -1) : w;
 
   /* ---------- structure ---------- */
+  // a sentence that trails off ("... such as:", "... including", "... the following:") is not usable on its own
+  const isDangling = s => /[:：;,\-–—(]\s*$/.test(s) || /\b(such as|including|includes?|e\.g\.?|i\.e\.?|for example|for instance|as follows|the following|namely|like|are|is|of|to|and|or|with|by|from|in|on|at)\s*[:：]?\s*$/i.test(s) || wordsOf(s).length < 4;
   function splitSentences(text) {
     const out = [];
     const parts = text.split(/(?<=[.!?]["”’)\]]?)\s+(?=["“(\[]?[A-Z0-9])/);
@@ -1382,18 +1448,29 @@ const GENERIC = new Set('information data process system method result results s
     let cur = { title: null, sentences: [], paraCount: 0 };
     const sentences = [];
     let sid = 0;
-    for (const p of paragraphs) {
-      if (/^##\s+/.test(p)) {
+    // a paragraph that ends with ":" followed by list items is a lead-in — fold the items into one complete sentence
+    const blocks = paragraphs.map(p => ({ h: /^##\s+/.test(p), li: /^-\s+/.test(p), text: p.replace(/^##\s+/, '').replace(/^-\s+/, '') }));
+    for (let i = 0; i < blocks.length; i++) {
+      const b = blocks[i];
+      if (b.h || b.li || !/[:：]\s*$/.test(b.text)) continue;
+      const items = [];
+      let j = i + 1;
+      while (j < blocks.length && blocks[j].li && items.length < 12) { items.push(blocks[j].text.replace(/^\d{1,3}[.)]\s+/, '').replace(/[.;,]\s*$/, '')); j++; }
+      if (items.length) b.text = b.text.replace(/[:：]\s*$/, '') + ': ' + items.join('; ') + '.';
+    }
+    for (const b of blocks) {
+      if (b.h) {
         if (cur.sentences.length || cur.title) sections.push(cur);
-        cur = { title: p.replace(/^##\s+/, ''), sentences: [], paraCount: 0 };
+        cur = { title: b.text, sentences: [], paraCount: 0 };
         continue;
       }
-      const isLi = /^-\s+/.test(p);
-      const body = p.replace(/^-\s+/, '');
-      const ss = isLi ? [body] : splitSentences(body);
+      const isLi = b.li;
+      const ss = isLi ? [b.text] : splitSentences(b.text);
       cur.paraCount++;
-      ss.forEach((s, i) => {
-        const sent = { id: sid++, s, first: i === 0, li: isLi, section: sections.length, len: s.length, words: wordsOf(s) };
+      ss.forEach((raw, i) => {
+        let s = raw, ord = null;
+        if (isLi) { const om = raw.match(/^(\d{1,3})[.)]\s+(.*)$/); if (om) { ord = +om[1]; s = om[2]; } }
+        const sent = { id: sid++, s, first: i === 0, li: isLi, ord, section: sections.length, len: s.length, words: wordsOf(s), dangling: isDangling(s) };
         sentences.push(sent);
         cur.sentences.push(sent);
       });
@@ -1424,7 +1501,16 @@ const GENERIC = new Set('information data process system method result results s
     // boost terms that have definitions
     const defSet = new Set(a.defs.map(d => lc(d.term)));
     for (const t of a.terms) if (defSet.has(t.key)) t.score *= 1.5;
-    for (const d of a.defs) if (!a.terms.some(t => t.key === lc(d.term))) a.terms.push({ key: lc(d.term), display: d.term, count: 1, score: 0.9, n: d.term.split(/\s+/).length, cat: categorize(d.term, false), fromDef: true });
+    for (const d of a.defs) {
+      const key = lc(d.term);
+      if (a.terms.some(t => t.key === key)) continue;
+      const w = key.split(/\s+/);
+      // a definition's subject is only a term if it reads like one — "If the p-value" is a mis-parse, not a concept
+      if (w.length > 5 || key.length < 3) continue;
+      if (STOP.has(w[0]) || STOP.has(w[w.length - 1]) || verbLike(w[0]) || verbLike(w[w.length - 1]) || PRON.has(w[0])) continue;
+      if (w.length === 1 && (ADJ.has(w[0]) || GENERIC.has(w[0]) || w[0].length < 4)) continue;
+      a.terms.push({ key, display: d.term, count: 1, score: 0.9, n: w.length, cat: categorize(d.term, false), fromDef: true });
+    }
     a.terms.sort((x, y) => y.score - x.score);
     a.termWeight = new Map();
     const max = a.terms[0]?.score || 1;
@@ -1436,8 +1522,31 @@ const GENERIC = new Set('information data process system method result results s
   }
 
   /* ---------- key terms ---------- */
+  // How every word behaves in THIS document. A verb is followed by a determiner ("covers the"), preceded by
+  // "to"/a modal ("can conform") or by an adverb ("clearly shows"); a noun is preceded by a determiner or an
+  // adjective. Catches verbs no word list would have.
+  const DET = /^(the|a|an|this|that|these|those|their|its|our|your|his|her|my|some|any|each|every|all|both|no|another|such)$/;
+  const MODAL = /^(to|can|will|may|must|should|would|could|might|shall|also|then|thus|usually|often|always|never|generally|typically)$/;
+  function wordBehaviour(a) {
+    const m = new Map();
+    for (const sent of a.sentences) {
+      const t = sent.words;
+      for (let i = 0; i < t.length; i++) {
+        const w = lc(t[i]); if (w.length < 3) continue;
+        let r = m.get(w); if (!r) { r = { c: 0, v: 0, nn: 0 }; m.set(w, r); }
+        r.c++;
+        const nxt = i + 1 < t.length ? lc(t[i + 1]) : '';
+        const prv = i > 0 ? lc(t[i - 1]) : '';
+        if (DET.test(nxt) || MODAL.test(prv) || (/ly$/.test(prv) && prv.length > 4)) r.v++;
+        if (DET.test(prv)) r.nn++;
+      }
+    }
+    return m;
+  }
   function extractTerms(a) {
     const counts = new Map();
+    const behave = wordBehaviour(a);
+    const actsAsVerb = w => { const r = behave.get(w); return !!r && r.c >= 2 && r.nn === 0 && r.v / r.c >= 0.5; };
     const headingWords = new Set();
     for (const sec of a.sections) if (sec.title) for (const w of wordsOf(sec.title)) if (!STOP.has(lc(w))) headingWords.add(lc(w));
     for (const sent of a.sentences) {
@@ -1446,7 +1555,9 @@ const GENERIC = new Set('information data process system method result results s
         for (let i = 0; i + n <= toks.length; i++) {
           const gram = toks.slice(i, i + n);
           const low = gram.map(lc);
-          if (STOP.has(low[0]) || STOP.has(low[n - 1]) || VERBS.has(low[0]) || VERBS.has(low[n - 1])) continue;
+          if (STOP.has(low[0]) || STOP.has(low[n - 1]) || verbLike(low[0]) || verbLike(low[n - 1])) continue;
+          if (PRON.has(low[0]) || PRON.has(low[n - 1])) continue;
+          if (actsAsVerb(low[n - 1]) || (n > 1 && actsAsVerb(low[0]))) continue;
           if (n > 1 && /(ed|ing)$/.test(low[n - 1]) && low[n - 1].length > 5) continue;
           if (n === 3 && STOP.has(low[1]) && !/^(of|and)$/.test(low[1])) continue;
           if (n === 2 && STOP.has(low[1])) continue;
@@ -1460,8 +1571,13 @@ const GENERIC = new Set('information data process system method result results s
           }
           const key = low.join(' ');
           let rec = counts.get(key);
-          if (!rec) { rec = { key, n, count: 0, variants: new Map(), midCap: 0, mid: 0, sents: new Set() }; counts.set(key, rec); }
+          if (!rec) { rec = { key, n, count: 0, variants: new Map(), midCap: 0, mid: 0, sents: new Set(), verbish: 0, prevTo: 0 }; counts.set(key, rec); }
           rec.count++;
+          if (n === 1) { // verbs are followed by determiners ("provide the", "select a") or preceded by "to"
+            const nxt = toks[i + 1] ? lc(toks[i + 1]) : ''; const prv = i > 0 ? lc(toks[i - 1]) : '';
+            if (/^(the|a|an|this|these|those|their|its|our|your|his|her|some|any|each|every|all|both|such|one|two)$/.test(nxt)) rec.verbish++;
+            if (prv === 'to' || prv === 'can' || prv === 'will' || prv === 'may' || prv === 'should' || prv === 'must' || prv === 'would' || prv === 'could') rec.prevTo++;
+          }
           rec.sents.add(sent.id);
           const display = gram.join(' ');
           if (i > 0) { rec.mid++; if (/^[A-Z]/.test(gram[0])) rec.midCap++; }
@@ -1471,6 +1587,7 @@ const GENERIC = new Set('information data process system method result results s
     }
     const terms = [];
     for (const rec of counts.values()) {
+      if (rec.n === 1 && rec.count >= 2 && (rec.verbish + rec.prevTo) / rec.count > 0.45 && (rec.mid === 0 || !/^[A-Z]/.test(bestVariant(rec)))) continue; // behaves like a verb (capitals only count as a name if seen mid-sentence)
       const inHeading = rec.key.split(' ').every(w => headingWords.has(w));
       const cap = rec.mid > 0 && rec.midCap / rec.mid > 0.6;
       if (rec.count < 2 && !inHeading && !(cap && rec.n > 1)) continue;
@@ -1546,7 +1663,7 @@ const GENERIC = new Set('information data process system method result results s
       const key = lc(term);
       if (seen.has(key)) return;
       def = def.trim();
-      if (def.length < 20 || def.length > 400) return;
+      if (def.length < 20 || def.length > 850) return;
       if (/^(not|also|often|usually|then|therefore|thus|shown|given|used|found|seen|based)\b/i.test(def) && kind === 'is') return;
       const dkey = lc(def).replace(/\W+/g, ' ');
       if (seenDef.has(dkey)) return;
@@ -1555,7 +1672,7 @@ const GENERIC = new Set('information data process system method result results s
     };
     for (const sent of a.sentences) {
       const s = sent.s;
-      if (s.length > 450) continue;
+      if (s.length > 900 || sent.dangling) continue;
       let m;
       if ((m = s.match(DEF_RE))) add(m[1], s, sent, WEAK_VERB.test(s.slice(m[1].length, m[1].length + 60)) ? 'weak' : 'is');
       else if ((m = s.match(COLON_RE)) && wordsOf(m[1]).length <= 6) add(m[1], m[2], sent, 'colon');
@@ -1595,7 +1712,7 @@ const GENERIC = new Set('information data process system method result results s
   function extractFacts(a) {
     const facts = [];
     for (const sent of a.sentences) {
-      if (sent.len < 35 || sent.len > 300) continue;
+      if (sent.len < 35 || sent.len > 300 || sent.dangling) continue;
       const nums = sent.s.match(NUM_RE) || [];
       const real = nums.map(x => x.trim()).filter(x => !/^\d{1,2}$/.test(x) || /%|percent/.test(x));
       if (!real.length) continue;
@@ -1621,22 +1738,107 @@ const GENERIC = new Set('information data process system method result results s
         if (/^(The|In|On|At|For|From|With|This|That|These|Those|However|Figure|Table|Chapter|Section)\b/.test(e)) continue;
         const rec = counts.get(e) || { name: e, count: 0, sents: [] };
         rec.count++;
-        if (rec.sents.length < 3) rec.sents.push(sent.s);
+        if (rec.sents.length < 3 && !sent.dangling) rec.sents.push(sent.s);
         counts.set(e, rec);
       }
     }
     return Array.from(counts.values()).filter(r => r.count >= 2 || /^[A-Z][a-z]+\s[A-Z][a-z]+$/.test(r.name)).sort((x, y) => y.count - x.count).slice(0, 20);
   }
 
+  // pull the equation itself out of the sentence: "…is given by SE = s / sqrt(n), where n…" → "SE = s / sqrt(n)"
+  const MATH_STOP = new Set(('is are be was were by of the a an to and or given equals equal where when for from with in on at that this it we you they which so then thus can may will ' +
+    'as if but not all any its has had use new out only also such each both same less more most into over than while during under above below within about after before between very often ' +
+    'here there some many few both light heat water air time rate case form part unit step').split(' '));
+  const MATH_FN = /^(sqrt|log|ln|exp|sin|cos|tan|sum|prod|max|min|abs|mod|delta|sigma|mu|pi|alpha|beta)$/i;
+  function isMathTok(w) {
+    const t = w.replace(/^[(\[]+|[)\],;:.]+$/g, '');
+    if (!t) return false;
+    if (/^[+\-*/×÷·^√]$/.test(t)) return true;
+    if (MATH_STOP.has(t.toLowerCase())) return false;
+    if (/[()^√·×÷]/.test(t)) return true;                    // sqrt(n), (x - mu)
+    if (/[A-Za-z]\d|\d[A-Za-z]/.test(t)) return true;        // H2O, x2, 6CO2
+    if (MATH_FN.test(t.replace(/\(.*$/, ''))) return true;
+    return /\d/.test(t) || t.length <= 4;
+  }
+  // Formulas come in three shapes in real course material: symbolic (SE = s / sqrt(n)), a reaction
+  // (C6H12O6 + 6 O2 -> 6 CO2 + 6 H2O) and a relationship written out in words ("force is mass multiplied
+  // by acceleration"). All three belong on a cram sheet, so all three are pulled out.
+  const MATH_WORDS = /\b(divided by|multiplied by|times|per|square root|sum of|product of|difference between|ratio of|proportional to|raised to|minus|plus|over|percent(?:age)? of)\b/i;
+  const REL_RE = [
+    /^(?:the\s+)?([\w'’\-]+(?:\s+[\w'’\-]+){0,4}?)\s+(?:is|are)\s+(?:calculated|computed|found|obtained|given|defined|expressed|written|measured)\s+(?:as|by|using)\s+(.{4,140}?)\s*$/i,
+    /^(?:the\s+)?([\w'’\-]+(?:\s+[\w'’\-]+){0,4}?)\s+equals\s+(.{3,140}?)\s*$/i,
+    /^(?:the\s+)?([\w'’\-]+(?:\s+[\w'’\-]+){0,4}?)\s+(?:is|are)\s+(?:the\s+)?((?:ratio|product|sum|quotient|difference|number)\s+of\s+.{3,120}?)\s*$/i,
+    /^(?:the\s+)?([A-Za-z][\w'’\-]*(?:\s+[\w'’\-]+){0,3}?)\s+(?:is|are)\s+((?:the\s+)?[\w'’\-]+(?:\s+[\w'’\-]+){0,2}?\s+(?:per|divided by|multiplied by|times|over)\s+[\w'’\-]+(?:\s+[\w'’\-]+){0,3})\s*$/i
+  ];
   function extractFormulas(a) {
-    const out = [];
+    const out = []; const seen = new Set();
+    const add = (expr, sent, id, kind) => {
+      if (!expr || expr.length > 150) return;
+      const key = expr.toLowerCase().replace(/\s+/g, '');
+      if (seen.has(key)) return;
+      seen.add(key);
+      out.push({ expr, sent, id, kind });
+    };
     for (const sent of a.sentences) {
-      const s = sent.s;
-      if (s.length > 200) continue;
-      if (/[=]/.test(s) && /[a-zA-Z]\s*[=+\-×÷*/^]\s*[\w(]/.test(s) && !/^\s*[A-Z][a-z].{40,}\bis\b/.test(s)) out.push(s);
-      else if (/\b(formula|equation)\b/i.test(s) && /[=]/.test(s)) out.push(s);
+      if (sent.len > 320) continue;
+      const text = sent.s;
+      /* --- 1. symbolic: an operator with a math-ish expression on each side --- */
+      const OPS = [['=', '='], ['≈', '≈'], ['≡', '≡'], ['∝', '∝'], ['→', '→'], ['->', '→'], ['⟶', '→']];
+      for (const [tok, shown] of OPS) {
+        let from = 0;
+        for (let guard = 0; guard < 3; guard++) {
+          const eq = text.indexOf(tok, from);
+          if (eq < 0) break;
+          from = eq + tok.length;
+          if (tok === '=' && (/[<>!=]/.test(text[eq - 1] || '') || text[eq + 1] === '=')) continue;
+          const lw = text.slice(0, eq).trimEnd().split(/\s+/);
+          const left = [];
+          for (let i = lw.length - 1; i >= 0; i--) { if (isMathTok(lw[i])) left.unshift(lw[i]); else break; }
+          // "In symbols, a = F / m" — a lone letter is a variable here, even though "a" is normally an article
+          if (!left.length && /^[A-Za-zα-ωΑ-Ω]$/.test((lw[lw.length - 1] || '').replace(/[(),;:]/g, ''))) left.push(lw[lw.length - 1].replace(/[(),;:]/g, ''));
+          if (!left.length) continue;
+          const tail = text.slice(eq + tok.length).trim();
+          // walk the right side while it still looks like maths, so "… → C6H12O6 + 6 O2 in the presence of light"
+          // keeps the equation and drops the sentence around it
+          const rw = tail.split(/\s+/); const rightToks = [];
+          for (const w of rw) {
+            if (isMathTok(w)) { rightToks.push(w); continue; }
+            // "… + energy" — one plain word is allowed straight after an operator, then stop
+            if (rightToks.length && /^[+\-*/×÷·]$/.test(rightToks[rightToks.length - 1]) && /^[A-Za-z]+[.,;]?$/.test(w)) { rightToks.push(w.replace(/[.,;]$/, '')); }
+            break;
+          }
+          let right = rightToks.join(' ').replace(/[,;:]+$/, '').replace(/\.$/, '');
+          if (!right) {
+            right = tail.split(/[,;]|\.\s|\.$/)[0].trim().replace(/\s+(?:where|for|with|in which)\b.*$/i, '').trim();
+          }
+          if (!right || wordsOf(right).length > 12) continue;
+          if (!/[+\-*/×÷·^√()]|\d/.test(right) && !/^[A-Za-zα-ωΑ-Ω]{1,4}$/.test(right)) continue;
+          add(left.join(' ') + ' ' + shown + ' ' + right, text, sent.id, tok === '→' || tok === '->' || tok === '⟶' ? 'reaction' : 'symbolic');
+        }
+      }
+      /* --- 2. written out in words --- */
+      if (!/[=→]/.test(text)) {
+        const body = text.replace(/\s*[.;]\s*$/, '');
+        for (const re of REL_RE) {
+          const m = body.match(re);
+          if (!m) continue;
+          const lhs = m[1].trim(), rhs = m[2].trim().replace(/\s*[.,;]$/, '');
+          if (lhs.length < 3 || rhs.length < 3) continue;
+          if (!MATH_WORDS.test(rhs) && !/[+\-*/×÷·^√]|\d/.test(rhs)) continue;
+          if (wordsOf(rhs).length > 16) continue;
+          // a formula names a quantity and states how to get it — these shapes are facts wearing a formula's clothes
+          if (/\d/.test(lhs)) continue;                                            // "Roughly 26 to 28 ATP are …"
+          if (/^(?:roughly|approximately|about|nearly|around|almost|typically|usually|often|most|many|some|there)\b/i.test(lhs)) continue;
+          if (/^(?:\w+ed|been|being)\b/i.test(rhs) && !/^(?:defined|given|calculated|computed|expressed|obtained|found|written|measured)\b/i.test(rhs)) continue;
+          add(lhs.charAt(0).toUpperCase() + lhs.slice(1) + ' = ' + rhs, text, sent.id, 'words');
+          break;
+        }
+      }
     }
-    return Array.from(new Set(out)).slice(0, 15);
+    // symbolic first: they are what a student wants on a cram sheet
+    const rank = { symbolic: 0, reaction: 1, words: 2 };
+    out.sort((x, y) => (rank[x.kind] ?? 3) - (rank[y.kind] ?? 3));
+    return out.slice(0, 24);
   }
 
   /* ---------- sentence scoring ---------- */
@@ -1657,6 +1859,7 @@ const GENERIC = new Set('information data process system method result results s
     if ((sent.s.match(/\d/g) || []).length > sent.len * 0.15) w -= 0.3;
     if (/^(this|these|those|it|he|she|they|here|there)\b/i.test(sent.s)) w -= 0.15;
     if (/[?]$/.test(sent.s)) w -= 0.2;
+    if (sent.dangling) w -= 2;
     return w;
   }
 
@@ -1676,7 +1879,7 @@ const GENERIC = new Set('information data process system method result results s
     const ratio = { short: 0.06, medium: 0.14, long: 0.26 }[level] || 0.14;
     const seenTxt = new Set();
     const scored = a.sentences.map(s => ({ s, w: sentenceWeight(a, s) }));
-    const usable = scored.filter(x => { if (x.s.len < 40 || x.s.len > 340) return false; const k = lc(x.s.s).replace(/\W+/g, ' ').trim(); if (seenTxt.has(k)) return false; seenTxt.add(k); return true; });
+    const usable = scored.filter(x => { if (x.s.len < 40 || x.s.len > 340 || x.s.dangling) return false; const k = lc(x.s.s).replace(/\W+/g, ' ').trim(); if (seenTxt.has(k)) return false; seenTxt.add(k); return true; });
     const total = Math.max(5, Math.min(120, Math.round(usable.length * ratio) || 5));
     const brief = usable.filter(x => !x.s.li).slice().sort((x, y) => y.w - x.w).slice(0, level === 'short' ? 3 : 4).sort((x, y) => x.s.id - y.s.id).map(x => x.s);
     const sections = [];
@@ -1712,14 +1915,22 @@ const GENERIC = new Set('information data process system method result results s
     const out = { processes: [], causes: [], comparisons: [], examples: [] };
     const used = new Set();
     const seenTxt = new Set();
-    const cands = a.sentences.filter(s => { if (s.len < 45 || s.len > 320) return false; const k = lc(s.s).replace(/\W+/g, ' ').trim(); if (seenTxt.has(k)) return false; seenTxt.add(k); return true; }).map(s => ({ s, w: sentenceWeight(a, s) })).sort((x, y) => y.w - x.w);
+    // ordered lists in the material (1. 2. 3. …) are processes in their own right
+    for (const sec of a.sections) {
+      let run = [];
+      const flush = () => { if (run.length >= 2) { out.processes.push({ steps: run.slice(), title: sec.title, sent: run[0], cue: '' }); run.forEach(x => used.add(x.id)); } run = []; };
+      for (const x of sec.sentences) { if (x.li && x.ord != null) { if (run.length && x.ord !== run[run.length - 1].ord + 1) flush(); run.push(x); } else flush(); }
+      flush();
+    }
+    const cands = a.sentences.filter(s => { if (s.len < 45 || s.len > 320 || s.dangling) return false; const k = lc(s.s).replace(/\W+/g, ' ').trim(); if (seenTxt.has(k)) return false; seenTxt.add(k); return true; }).map(s => ({ s, w: sentenceWeight(a, s) })).sort((x, y) => y.w - x.w);
     for (const key of ['processes', 'causes', 'comparisons', 'examples']) {
       const re = PATTERNS[key];
       for (const c of cands) {
-        if (out[key].length >= 8) break;
+        if (out[key].length >= 20) break;
         if (used.has(c.s.id)) continue;
         const m = c.s.s.match(re);
         if (!m) continue;
+        if (key === 'examples') { const after = c.s.s.slice(m.index + m[0].length).replace(/^[\s:,]+/, ''); if (wordsOf(after).length < 3 && !(a.sentences[c.s.id + 1] && a.sentences[c.s.id + 1].li)) continue; }
         used.add(c.s.id);
         out[key].push({ sent: c.s, cue: m[0] });
       }
@@ -1728,9 +1939,131 @@ const GENERIC = new Set('information data process system method result results s
     return out;
   }
 
+  // split a cause/effect sentence into its two halves where the wording allows
+  function splitCause(sentence) {
+    const s = sentence.trim();
+    let m;
+    if ((m = s.match(/^(?:because|since|as|due to|owing to)\s+(.+?),\s+(.+)$/i))) return { cause: m[1], effect: m[2] };
+    if ((m = s.match(/^(.+?)\s+(?:because|since|due to|owing to|as a result of)\s+(.+)$/i))) return { cause: m[2].replace(/[.]$/, ''), effect: m[1] };
+    if ((m = s.match(/^(.+?)\s+(?:leads? to|led to|results? in|resulting in|causes?|caused|gives? rise to|triggers?|is responsible for|means that|which means|so that)\s+(.+)$/i))) return { cause: m[1], effect: m[2].replace(/[.]$/, '') };
+    if ((m = s.match(/^(.+?)[,;]\s*(?:therefore|consequently|as a result|hence|thus|so)\s+(.+)$/i))) return { cause: m[1], effect: m[2].replace(/[.]$/, '') };
+    if ((m = s.match(/^(.+?)\s+(?:depends on|is caused by)\s+(.+)$/i))) return { cause: m[2].replace(/[.]$/, ''), effect: m[1] };
+    if ((m = s.match(/^in order to\s+(.+?),\s+(.+)$/i))) return { cause: m[2].replace(/[.]$/, ''), effect: m[1] };
+    return null;
+  }
+
+  function patternsOf(a) { if (!a._patterns) a._patterns = extractPatterns(a); return a._patterns; }
+
+  /* ---------- symbols defined in the text: "where n is the sample size" ---------- */
+  const SYM_STOP = new Set('a an i it is as at in on of to or be we he so no if by up do id ok the and for'.split(' '));
+  function extractSymbols(a) {
+    const out = []; const seen = new Set();
+    const pats = [
+      /\b(?:where|with|let|here|in which)\s+([A-Za-z](?:[_\-]?[0-9A-Za-z])?|[\u03b1-\u03c9\u0391-\u03a9])\s+(?:is|are|denotes?|represents?|stands for|be|means)\s+([^.;:]{5,140})/gi,
+      /\b([A-Za-z](?:[_\-]?[0-9])?|[\u03b1-\u03c9\u0391-\u03a9])\s*=\s*(?:the\s+)?([a-z][^.;:=]{5,120})/g
+    ];
+    for (const sent of a.sentences) {
+      if (sent.len > 400) continue;
+      for (const re of pats) {
+        re.lastIndex = 0; let m;
+        while ((m = re.exec(sent.s))) {
+          const sym = m[1].trim();
+          let meaning = m[2].split(/\s*[,;]?\s*\b(?:where|and|with|while|whereas)\s+[A-Za-z](?:[_\-]?[0-9A-Za-z])?\s+(?:is|are|denotes?|represents?)\b/i)[0].trim().replace(/[,;\s]+$/, '');
+          if (sym.length > 3 || SYM_STOP.has(sym.toLowerCase())) continue;
+          if (wordsOf(meaning).length < 2 || /[*\/^=]/.test(meaning)) continue;
+          const key = sym.toLowerCase();
+          if (seen.has(key)) continue;
+          seen.add(key);
+          out.push({ sym, meaning, sent: sent.s, id: sent.id });
+        }
+      }
+    }
+    return out.slice(0, 30);
+  }
+
+  /* ---------- concept map: which key terms appear in the same sentence ---------- */
+  function termGraph(a, n = 22) {
+    // the concepts the material actually defines are the backbone of the map, whatever their frequency
+    const defined = new Set((a.defs || []).map(d => lc(d.term)));
+    const ranked = a.terms.slice();
+    const pick = ranked.slice(0, n);
+    if (pick.length < n) { /* nothing to add */ }
+    for (const t of ranked) { if (pick.length >= n) break; if (defined.has(t.key) && !pick.includes(t)) pick.push(t); }
+    // "Cognitive dissonance" and "dissonance" are the same circle twice — keep the fuller phrase
+    const trimmed = [];
+    for (const t of pick) {
+      const dup = trimmed.findIndex(o => {
+        const A = ' ' + o.key + ' ', B = ' ' + t.key + ' ';
+        return A.includes(B) || B.includes(A);
+      });
+      if (dup < 0) { trimmed.push(t); continue; }
+      const other = trimmed[dup];
+      const better = (x, y) => (defined.has(x.key) !== defined.has(y.key)) ? (defined.has(x.key) ? x : y)
+        : x.key.split(' ').length !== y.key.split(' ').length ? (x.key.split(' ').length > y.key.split(' ').length ? x : y)
+          : (x.score >= y.score ? x : y);
+      trimmed[dup] = better(other, t);
+    }
+    // one pass only merges the first collision it meets ("cognitive" absorbed "cognitive dissonance",
+    // leaving "dissonance" behind) — sweep again until nothing is a sub-phrase of anything kept
+    const contains = (o, t) => (' ' + o.key + ' ').includes(' ' + t.key + ' ') && o.key !== t.key;
+    const isBetter = (x, y) => defined.has(x.key) !== defined.has(y.key) ? defined.has(x.key)
+      : x.key.split(' ').length !== y.key.split(' ').length ? x.key.split(' ').length > y.key.split(' ').length
+        : x.score >= y.score;
+    const final = trimmed.filter(t => !trimmed.some(o => contains(o, t) && isBetter(o, t) && !(t.count >= 4 && t.count >= o.count * 1.5)));
+    const nodes = final.map(t => ({ key: t.key, label: t.display, count: t.count, score: t.score, cat: t.cat, defined: defined.has(t.key), degree: 0 }));
+    const idx = new Map(nodes.map((t, i) => [t.key, i]));
+    const edges = new Map();
+    for (const sent of a.sentences) {
+      const toks = sent.words.map(lc); const present = [];
+      for (let k = 1; k <= 3; k++) for (let i = 0; i + k <= toks.length; i++) {
+        const key = toks.slice(i, i + k).join(' ');
+        if (idx.has(key) && !present.includes(idx.get(key))) present.push(idx.get(key));
+      }
+      for (let i = 0; i < present.length; i++) for (let j = i + 1; j < present.length; j++) {
+        const k2 = Math.min(present[i], present[j]) + ':' + Math.max(present[i], present[j]);
+        edges.set(k2, (edges.get(k2) || 0) + 1);
+      }
+    }
+    // Short or plainly written material rarely puts two key terms in one sentence, which used to leave the map
+    // a scatter of unlinked circles. Fall back to terms that appear within three consecutive sentences of each
+    // other, at half weight — near enough to mean something, tight enough not to link everything to everything.
+    let nearby = false;
+    if (edges.size < nodes.length) {
+      nearby = true;
+      const per = a.sentences.map(sent => {
+        const toks = sent.words.map(lc); const set = new Set();
+        for (let k = 1; k <= 3; k++) for (let i = 0; i + k <= toks.length; i++) { const key = toks.slice(i, i + k).join(' '); if (idx.has(key)) set.add(idx.get(key)); }
+        return { set, section: sent.section };
+      });
+      for (let i = 0; i < per.length; i++) {
+        for (let j = i + 1; j <= i + 2 && j < per.length; j++) {
+          if (per[j].section !== per[i].section) break;
+          for (const x of per[i].set) for (const y of per[j].set) {
+            if (x === y) continue;
+            const k2 = Math.min(x, y) + ':' + Math.max(x, y);
+            if (!edges.has(k2)) edges.set(k2, 0.5);
+          }
+        }
+      }
+    }
+    let list = Array.from(edges.entries()).map(([k, w]) => { const [x, y] = k.split(':').map(Number); return { a: x, b: y, w }; }).sort((p, q) => q.w - p.w);
+    const strong = list.filter(e => e.w >= 2);
+    list = (strong.length >= Math.min(8, nodes.length) ? strong : list).slice(0, 48);
+    for (const e of list) { nodes[e.a].degree++; nodes[e.b].degree++; }
+    // a term with no links tells the student nothing on a map — keep them out and report the count
+    const keep = nodes.map((t, i) => (t.degree > 0 ? i : -1)).filter(i => i >= 0);
+    if (keep.length >= 3 && keep.length < nodes.length) {
+      const remap = new Map(keep.map((old, ni) => [old, ni]));
+      const kept = keep.map(i => nodes[i]);
+      const edges = list.filter(e => remap.has(e.a) && remap.has(e.b)).map(e => ({ a: remap.get(e.a), b: remap.get(e.b), w: e.w }));
+      return { nodes: kept, edges, maxW: edges.length ? Math.max(...edges.map(e => e.w)) : 1, dropped: nodes.length - kept.length, nearby };
+    }
+    return { nodes, edges: list, maxW: list.length ? list[0].w : 1, dropped: 0, nearby };
+  }
+
   function keyInfo(a) {
     const termContexts = a.terms.slice(0, 30).map(t => {
-      const ex = a.sentences.filter(s => s.len < 260 && new RegExp('\\b' + escRe(t.display) + '\\b', 'i').test(s.s)).slice(0, 2).map(s => s.s);
+      const ex = a.sentences.filter(s => s.len < 260 && !s.dangling && new RegExp('\\b' + escRe(t.display) + '\\b', 'i').test(s.s)).slice(0, 2).map(s => s.s);
       const secs = new Set(); for (const id of (t.sents || [])) { const st = a.sentences[id]; if (st) secs.add(st.section); }
       return { ...t, examples: ex, sections: secs.size };
     });
@@ -1750,7 +2083,7 @@ const GENERIC = new Set('information data process system method result results s
       if (items.length >= 2) lists.push({ title: sec.title, items: items.slice(0, 12).map(x => x.s) });
     }
     const map = a.sections.filter(s => s.title && s.sentences.length).map(sec => {
-      const best = sec.sentences.filter(x => x.len >= 40 && x.len <= 260).map(x => ({ x, w: sentenceWeight(a, x) })).sort((p, q) => q.w - p.w)[0];
+      const best = sec.sentences.filter(x => x.len >= 40 && x.len <= 260 && !x.dangling).map(x => ({ x, w: sentenceWeight(a, x) })).sort((p, q) => q.w - p.w)[0];
       return { title: sec.title, n: sec.sentences.length, words: sec.sentences.reduce((n, x) => n + x.words.length, 0), terms: termsIn(a, sec.sentences, 4), lead: best ? best.x.s : null };
     });
     return {
@@ -1761,7 +2094,8 @@ const GENERIC = new Set('information data process system method result results s
       dates, figures: stats,
       entities: a.entities,
       formulas: a.formulas,
-      patterns: extractPatterns(a),
+      symbols: extractSymbols(a),
+      patterns: patternsOf(a),
       lists,
       map,
       outline: a.sections.filter(s => s.title && s.sentences.length).map(s => ({ title: s.title, n: s.sentences.length })),
@@ -1773,7 +2107,7 @@ const GENERIC = new Set('information data process system method result results s
   function clozeFor(a, term, excludeIds = new Set()) {
     const re = new RegExp('(^|[^\\w-])(' + escRe(term) + ')(?![\\w-])', 'i');
     const longer = a.terms.filter(k => k.key !== lc(term) && (' ' + k.key + ' ').includes(' ' + lc(term) + ' ')).map(k => new RegExp('\\b' + escRe(k.display) + '\\b', 'i'));
-    const cands = a.sentences.filter(s => !excludeIds.has(s.id) && s.len >= 45 && s.len <= 230 && re.test(s.s) && !longer.some(L => L.test(s.s)));
+    const cands = a.sentences.filter(s => !excludeIds.has(s.id) && !s.dangling && s.len >= (s.li ? 70 : 45) && s.len <= 230 && re.test(s.s) && !longer.some(L => L.test(s.s)));
     if (!cands.length) return null;
     // prefer sentences where the term appears once and which read well
     cands.sort((x, y) => sentenceWeight(a, y) - sentenceWeight(a, x));
@@ -1785,6 +2119,14 @@ const GENERIC = new Set('information data process system method result results s
   }
 
   /* ---------- flashcards ---------- */
+  // stable identity for a card: survives re-analysis, deck resizing and new files
+  function cardKey(type, front) {
+    const str = type + '|' + lc(String(front)).replace(/\s+/g, ' ').trim().slice(0, 120);
+    let h = 2166136261;
+    for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); }
+    return (h >>> 0).toString(36);
+  }
+
   function flashcards(a, { count = 30, seed = 1 } = {}) {
     const rand = rng(seed);
     const cards = [];
@@ -1825,7 +2167,7 @@ const GENERIC = new Set('information data process system method result results s
     const defs = cards.filter(c => c.type === 'Definition' || c.type === 'Acronym');
     const rest = shuffle(cards.filter(c => c.type !== 'Definition' && c.type !== 'Acronym'), rand);
     const all = defs.concat(rest).slice(0, count);
-    return all.map((c, i) => ({ ...c, id: i + 1 }));
+    return all.map((c, i) => ({ ...c, id: i + 1, key: cardKey(c.type, c.front) }));
   }
 
   /* ---------- quiz ---------- */
@@ -1862,7 +2204,17 @@ const GENERIC = new Set('information data process system method result results s
     return out;
   }
 
-  function quiz(a, { count = 10, types = ['mc', 'tf', 'fill'], seed = 1 } = {}) {
+  function orderQuestions(a, rand, max) {
+    const procs = patternsOf(a).processes.filter(p => p.steps && p.steps.length >= 3 && p.steps.length <= 7);
+    return shuffle(procs, rand).slice(0, max).map(p => {
+      const correct = p.steps.map(x => x.s);
+      let mixed = shuffle(correct, rand);
+      if (mixed.join('|') === correct.join('|')) mixed = mixed.slice().reverse();
+      return { type: 'order', prompt: 'Put these steps in the right order.', body: p.title || '', items: mixed, answer: correct,
+        source: correct.map((x, i) => `${i + 1}. ${x}`).join('  '), sourceId: p.steps[0].id, term: p.title || correct[0] };
+    });
+  }
+  function quiz(a, { count = 10, types = ['mc', 'tf', 'fill'], seed = 1, only = null } = {}) {
     const rand = rng(seed);
     const qs = [];
     const usedSent = new Set();
@@ -1874,11 +2226,18 @@ const GENERIC = new Set('information data process system method result results s
     for (const ac of a.acronyms) items.push({ kind: 'acr', term: ac.acr, ac, cat: 'acr' });
     for (const t of a.terms.slice(0, 30)) if (!items.some(i => lc(i.term) === t.key) && !(t.cat === 'word' && (t.count < 4 || GENERIC.has(t.key) || a.terms.indexOf(t) > 15))) items.push({ kind: 'term', term: t.display, cat: t.cat });
     for (const f of a.facts) if (f.nums.length === 1) items.push({ kind: 'num', term: f.nums[0], fact: f, cat: 'num' });
-    const order = shuffle(items, rand);
-    const wanted = types.length ? types : ['mc'];
+    let pool = items;
+    if (only && only.size) {
+      const hit = items.filter(i => { const t = lc(i.term); for (const k of only) if (t === k || t.includes(k) || k.includes(t)) return true; return false; });
+      if (hit.length >= 3) pool = hit;
+    }
+    const order = shuffle(pool, rand);
+    const ordQ = types.includes('order') && !only ? orderQuestions(a, rand, Math.max(1, Math.round(count / 4))) : [];
+    const wanted = types.filter(t => t !== 'order').length ? types.filter(t => t !== 'order') : (ordQ.length ? [] : ['mc']);
+    const room = Math.max(0, count - ordQ.length);
     let ti = 0;
     for (const it of order) {
-      if (qs.length >= count) break;
+      if (!wanted.length || qs.length >= room) break;
       if (usedTerm.has(lc(it.term))) continue;
       const type = wanted[ti % wanted.length];
       let q = null;
@@ -1891,10 +2250,12 @@ const GENERIC = new Set('information data process system method result results s
       if (!q) continue;
       usedTerm.add(lc(it.term));
       usedSent.add(q.sourceId);
-      qs.push({ ...q, id: qs.length + 1 });
+      qs.push(q);
       ti++;
     }
-    return qs;
+    // drop the ordering questions in at random positions so a quiz doesn't front-load them
+    for (const oq of ordQ) qs.splice(Math.floor(rand() * (qs.length + 1)), 0, oq);
+    return qs.slice(0, count).map((q, i) => ({ ...q, id: i + 1 }));
   }
 
   function makeMC(a, it, rand, usedSent) {
@@ -1987,17 +2348,19 @@ const GENERIC = new Set('information data process system method result results s
     return lev(g, t) <= tol;
   }
 
-  return { analyze, summary, keyInfo, flashcards, quiz, checkAnswer, splitSentences };
+  return { analyze, summary, keyInfo, flashcards, quiz, checkAnswer, splitSentences, splitCause, termsIn, cardKey, termGraph, extractSymbols };
 })();
 
 </script>
 <script>
 /* ---------- UNI Made EZ — app ---------- */
 (() => {
+  // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
+  // opening the live site and reading the footer tells you which build you are actually looking at.
+  const BUILD = { v: '1.3', date: '1 September 2026' };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonandy242', ['gmail', 'com'].join('.')].join('@');
   const OWNER_HASH = 'f2d29d4fd8c98b4205c0ffa7628eeeccfc3f2647ed0430748eac0d775cbc562d';
-  const BUILD = { v: 'v1.0', date: '31 August 2026' };
   const LS_KEY = 'unimadeez:v1';
   const LS_UNLOCK = 'unimadeez:unlock';
   const COLORS = ['#2B52C4', '#C2410C', '#0F766E', '#7C3AED', '#BE185D', '#B45309', '#15803D', '#475569'];
@@ -2422,7 +2785,17 @@ const GENERIC = new Set('information data process system method result results s
       ${ctaCell()}
     </header>`;
   }
-  const foot = () => `<footer class="foot"><span>Study material is built on your device by the built-in study engine — nothing leaves your browser. Check it against your course notes.</span><span>UNI Made EZ · TRU · ${BUILD.v} · ${BUILD.date}</span></footer>`;
+  // JohnsonXCorp — the maker's logo, traced from the supplied artwork into two vector layers so it
+  // travels inside this single file, stays crisp at any size and can take the footer's own ink colour.
+  // The wordmark uses currentColor; the bracketed X keeps the brand gold (--jxc-gold), which deepens
+  // on the light-background footer so it still reads there.
+  const JXC_W = 648.0, JXC_H = 104.0;
+  const JXC_LOGO = `<svg class="jxc-logo" viewBox="0 0 ${JXC_W} ${JXC_H}" role="img" aria-label="JohnsonXCorp" focusable="false">
+      <path class="jxc-word" fill="currentColor" d="M99.2 17.4c-0.1 0.2 -0.1 14.8 -0.1 32.4l0.1 32 6.8 -0 6.8 -0 0.1 -13.2c0.1 -11.2 0.1 -13.3 0.6 -13.6 0.3 -0.2 0.5 -0.7 0.5 -1 0 -0.3 0.2 -0.8 0.5 -1 0.3 -0.2 0.5 -0.8 0.5 -1.2 0 -0.6 0.2 -0.8 0.8 -0.8 0.4 -0 1 -0.2 1.2 -0.5 0.3 -0.4 1.2 -0.5 3.5 -0.5l3.1 -0 2.2 2.3 2.2 2.2 0.1 13.7 0.1 13.7 6.8 -0 6.8 -0 0.1 -15.2c0.1 -13.2 0 -15.3 -0.4 -15.6 -0.3 -0.3 -0.5 -1 -0.5 -2 0 -1 -0.2 -1.7 -0.5 -2 -0.3 -0.2 -0.5 -0.7 -0.5 -1 0 -0.3 -0.4 -1 -1 -1.5 -0.5 -0.5 -1 -1.2 -1 -1.5 0 -0.7 -1.4 -2 -2 -2 -0.3 -0 -0.9 -0.5 -1.5 -1 -0.5 -0.6 -1.2 -1 -1.5 -1 -0.3 -0 -0.7 -0.2 -1 -0.5 -0.3 -0.3 -1.1 -0.5 -2.5 -0.5 -1.4 -0 -2.2 -0.2 -2.5 -0.5 -0.3 -0.3 -1 -0.5 -2 -0.5 -1 -0 -1.7 0.2 -2 0.5 -0.3 0.3 -1 0.5 -2 0.5 -1 -0 -1.7 0.2 -2 0.5 -0.2 0.3 -0.9 0.5 -1.5 0.5 -0.6 -0 -1.3 0.2 -1.5 0.5 -0.2 0.3 -0.7 0.5 -1.1 0.5 -0.3 -0 -0.7 0.2 -0.8 0.5 -0.1 0.3 -0.4 0.5 -0.7 0.5 -0.4 -0 -0.5 -2 -0.5 -11.9l-0.1 -11.9 -6.8 -0.1c-5.2 -0.1 -6.8 -0 -6.9 0.3zM485.9 17.5c-0.1 0.4 -0.9 0.5 -3.8 0.5 -2.8 -0 -3.7 0.1 -4.1 0.5 -0.2 0.3 -0.9 0.5 -1.5 0.5 -0.6 -0 -1.3 0.2 -1.5 0.5 -0.2 0.3 -0.9 0.5 -1.5 0.5 -0.6 -0 -1.3 0.2 -1.5 0.5 -0.2 0.3 -0.7 0.5 -1 0.5 -0.3 -0 -0.8 0.2 -1 0.5 -0.2 0.3 -0.7 0.5 -1 0.5 -0.3 -0 -0.8 0.2 -1 0.5 -0.2 0.3 -0.7 0.5 -1 0.5 -0.7 -0 -9 8.3 -9 9 0 0.3 -0.2 0.7 -0.5 1 -0.3 0.2 -0.5 0.7 -0.5 1 0 0.3 -0.2 0.8 -0.5 1 -0.3 0.2 -0.5 0.7 -0.5 1 0 0.3 -0.2 0.8 -0.5 1 -0.3 0.2 -0.5 0.9 -0.5 1.5 0 0.6 -0.2 1.3 -0.5 1.5 -0.3 0.2 -0.5 0.9 -0.5 1.5 0 0.6 -0.2 1.3 -0.5 1.5 -0.4 0.3 -0.5 1.6 -0.5 7 0 5.4 0.1 6.7 0.5 7 0.3 0.2 0.5 0.9 0.5 1.5 0 0.6 0.2 1.3 0.5 1.5 0.3 0.2 0.5 0.9 0.5 1.5 0 0.6 0.2 1.3 0.5 1.5 0.3 0.2 0.5 0.7 0.5 1 0 0.3 0.2 0.8 0.5 1 0.3 0.2 0.5 0.7 0.5 1 0 0.3 0.2 0.8 0.5 1 0.3 0.2 0.5 0.7 0.5 1 0 0.3 0.7 1.2 1.5 2 0.8 0.8 1.5 1.7 1.5 2 0 0.7 3.4 4 4 4 0.3 -0 1.2 0.7 2 1.5 0.8 0.8 1.7 1.5 2 1.5 0.3 -0 0.7 0.2 1 0.5 0.2 0.3 0.7 0.5 1 0.5 0.3 -0 0.8 0.2 1 0.5 0.2 0.3 0.9 0.5 1.5 0.5 0.6 -0 1.3 0.2 1.5 0.5 0.3 0.3 1 0.5 2 0.5 1 -0 1.7 0.2 2 0.5 0.3 0.4 1.6 0.5 7.5 0.5 5.9 -0 7.2 -0.1 7.5 -0.5 0.2 -0.3 0.9 -0.5 1.5 -0.5 0.6 -0 1.3 -0.2 1.5 -0.5 0.2 -0.3 0.9 -0.5 1.5 -0.5 0.6 -0 1.3 -0.2 1.5 -0.5 0.2 -0.3 0.7 -0.5 1 -0.5 0.3 -0 0.8 -0.2 1 -0.5 0.2 -0.3 0.7 -0.5 1 -0.5 0.3 -0 0.8 -0.2 1 -0.5 0.2 -0.3 0.7 -0.5 1 -0.5 0.3 -0 1 -0.4 1.5 -1 0.5 -0.5 1.2 -1 1.5 -1 0.7 -0 2 -1.4 2 -2 0 -0.3 -1.9 -2.4 -4.3 -4.7 -5 -5 -5.4 -5.1 -7.7 -2.7 -0.8 0.8 -1.7 1.5 -2 1.5 -0.3 -0 -0.7 0.2 -1 0.5 -0.2 0.3 -0.9 0.5 -1.5 0.5 -0.6 -0 -1.3 0.2 -1.5 0.5 -0.6 0.7 -9.4 0.7 -10 -0 -0.2 -0.3 -0.9 -0.5 -1.5 -0.5 -0.6 -0 -1.3 -0.2 -1.5 -0.5 -0.2 -0.3 -0.7 -0.5 -1 -0.5 -0.3 -0 -0.8 -0.2 -1 -0.5 -0.2 -0.3 -0.7 -0.5 -1 -0.5 -0.7 -0 -6 -5.3 -6 -6 0 -0.3 -0.2 -0.7 -0.5 -1 -0.3 -0.2 -0.5 -0.9 -0.5 -1.5 0 -0.6 -0.2 -1.3 -0.5 -1.5 -0.4 -0.3 -0.5 -1.5 -0.5 -6.5 0 -5 0.1 -6.2 0.5 -6.5 0.3 -0.2 0.5 -0.9 0.5 -1.5 0 -0.6 0.2 -1.3 0.5 -1.5 0.3 -0.2 0.5 -0.7 0.5 -1 0 -0.3 0.5 -1 1 -1.5 0.6 -0.5 1 -1.2 1 -1.5 0 -0.7 2.4 -3 3 -3 0.3 -0 0.9 -0.5 1.5 -1 0.7 -0.7 1.3 -1 2 -1 0.6 -0 1.2 -0.2 1.5 -0.5 0.3 -0.4 1.4 -0.5 6 -0.5 4.6 -0 5.7 0.1 6 0.5 0.2 0.3 0.9 0.5 1.5 0.5 0.6 -0 1.3 0.2 1.5 0.5 0.2 0.3 0.7 0.5 1 0.5 0.3 -0 1.2 0.7 2 1.5 0.9 0.9 1.7 1.5 2.1 1.4 0.5 -0.1 9.9 -9.1 9.9 -9.5 0 -0.3 -2.6 -2.4 -3 -2.4 -0.3 -0 -0.9 -0.5 -1.5 -1 -0.5 -0.6 -1.2 -1 -1.5 -1 -0.3 -0 -0.7 -0.2 -1 -0.5 -0.2 -0.3 -0.7 -0.5 -1 -0.5 -0.3 -0 -0.8 -0.2 -1 -0.5 -0.2 -0.3 -0.7 -0.5 -1 -0.5 -0.3 -0 -0.8 -0.2 -1 -0.5 -0.3 -0.3 -1 -0.5 -2 -0.5 -1 -0 -1.7 -0.2 -2 -0.5 -0.3 -0.4 -1.2 -0.5 -4.1 -0.5 -2.9 -0 -3.7 -0.1 -3.8 -0.5 -0.1 -0.3 -0.4 -0.5 -0.6 -0.5 -0.2 -0 -0.5 0.2 -0.6 0.5zM30.2 18.2c-0.1 0.1 -0.2 10.2 -0.2 22.3 0 19.2 -0.1 22.1 -0.5 22.5 -0.3 0.2 -0.5 0.9 -0.5 1.5 0 0.9 -0.4 1.5 -2.3 3.3l-2.3 2.2 -3 -0c-2.3 -0 -3.1 -0.1 -3.4 -0.5 -0.2 -0.3 -0.7 -0.5 -1 -0.5 -0.3 -0 -0.8 -0.2 -1 -0.5 -0.2 -0.3 -0.7 -0.5 -1 -0.5 -0.3 -0 -1 -0.5 -1.5 -1 -0.5 -0.5 -1.2 -1 -1.5 -1 -0.7 -0 -9 8.3 -9 9 0 0.7 3.4 4 4 4 0.3 -0 0.9 0.5 1.5 1 0.5 0.5 1.2 1 1.5 1 0.3 -0 0.7 0.2 1 0.5 0.2 0.3 0.9 0.5 1.5 0.5 0.6 -0 1.3 0.2 1.5 0.5 0.6 0.7 12.4 0.7 13 -0 0.2 -0.3 0.9 -0.5 1.5 -0.5 0.6 -0 1.3 -0.2 1.5 -0.5 0.2 -0.3 0.7 -0.5 1 -0.5 0.3 -0 0.8 -0.2 1 -0.5 0.2 -0.3 0.7 -0.5 1 -0.5 0.3 -0 0.8 -0.2 1 -0.5 0.2 -0.3 0.7 -0.5 1 -0.5 0.7 -0 6 -5.3 6 -6 0 -0.3 0.2 -0.7 0.5 -1 0.3 -0.2 0.5 -0.7 0.5 -1 0 -0.3 0.2 -0.8 0.5 -1 0.3 -0.2 0.5 -0.9 0.5 -1.5 0 -0.6 0.2 -1.3 0.5 -1.5 0.4 -0.4 0.5 -3.4 0.4 -24.6l-0.1 -24.2 -6.7 -0.1c-3.7 -0 -6.8 0 -6.9 0.1zM70 37.5c-0.3 0.4 -1.1 0.5 -3 0.5 -1.9 -0 -2.7 0.1 -3 0.5 -0.2 0.3 -0.7 0.5 -1 0.5 -0.3 -0 -0.8 0.2 -1 0.5 -0.2 0.3 -0.9 0.5 -1.5 0.5 -0.8 -0 -1.4 0.3 -2 1 -0.5 0.5 -1.2 1 -1.5 1 -0.7 -0 -5 4.3 -5 5 0 0.3 -0.4 0.9 -1 1.5 -0.5 0.5 -1 1.2 -1 1.5 0 0.3 -0.2 0.7 -0.5 1 -0.3 0.2 -0.5 0.9 -0.5 1.5 0 0.6 -0.2 1.3 -0.5 1.5 -0.7 0.6 -0.7 11.4 0 12 0.3 0.2 0.5 0.7 0.5 1 0 0.3 0.2 0.8 0.5 1 0.3 0.2 0.5 0.9 0.5 1.5 0 0.6 0.2 1.3 0.5 1.5 0.3 0.2 0.5 0.7 0.5 1 0 0.7 7.3 8 8 8 0.3 -0 0.7 0.2 1 0.5 0.2 0.3 0.9 0.5 1.5 0.5 0.6 -0 1.3 0.2 1.5 0.5 0.2 0.3 0.7 0.5 1 0.5 0.3 -0 0.8 0.2 1 0.5 0.6 0.7 11.4 0.7 12 -0 0.2 -0.3 0.9 -0.5 1.5 -0.5 0.6 -0 1.3 -0.2 1.5 -0.5 0.2 -0.3 0.9 -0.5 1.5 -0.5 0.6 -0 1.3 -0.2 1.5 -0.5 0.2 -0.3 0.7 -0.5 1 -0.5 0.3 -0 1 -0.5 1.5 -1 0.5 -0.6 1.2 -1 1.5 -1 0.7 -0 5 -4.4 5 -5.1 0 -0.3 0.2 -0.7 0.5 -0.9 0.3 -0.2 0.5 -0.7 0.5 -1 0 -0.3 0.2 -0.8 0.5 -1 0.3 -0.2 0.5 -0.7 0.5 -1 0 -0.3 0.2 -0.8 0.5 -1 0.3 -0.3 0.5 -1.1 0.5 -2.5 0 -1.4 0.2 -2.2 0.5 -2.5 0.3 -0.3 0.5 -1.1 0.5 -2.5 0 -1.4 -0.2 -2.2 -0.5 -2.5 -0.3 -0.3 -0.5 -1.1 -0.5 -2.5 0 -1.4 -0.2 -2.2 -0.5 -2.5 -0.3 -0.2 -0.5 -0.9 -0.5 -1.5 0 -0.6 -0.2 -1.3 -0.5 -1.5 -0.3 -0.2 -0.5 -0.7 -0.5 -1 0 -0.3 -0.7 -1.2 -1.5 -2 -0.8 -0.8 -1.5 -1.7 -1.5 -2 0 -0.7 -1.4 -2 -2 -2 -0.3 -0 -1.2 -0.7 -2 -1.5 -0.8 -0.8 -1.7 -1.5 -2 -1.5 -0.3 -0 -0.7 -0.2 -1 -0.5 -0.2 -0.3 -0.9 -0.5 -1.5 -0.5 -0.6 -0 -1.3 -0.2 -1.5 -0.5 -0.3 -0.3 -1.1 -0.5 -2.5 -0.5 -1.4 -0 -2.2 -0.2 -2.5 -0.5 -0.3 -0.3 -1.1 -0.5 -2.5 -0.5 -1.4 -0 -2.2 0.2 -2.5 0.5zm5 13c0.2 0.3 0.7 0.5 0.9 0.5 0.3 -0 1.6 1 2.8 2.2 2.2 2.1 2.3 2.3 2.3 3.8 0 1 0.2 1.7 0.5 2 0.3 0.2 0.5 0.7 0.5 1 0 0.3 -0.2 0.8 -0.5 1 -0.3 0.3 -0.5 1 -0.5 2 0 1 -0.2 1.7 -0.5 2 -0.3 0.2 -0.5 0.7 -0.5 0.9 0 0.7 -2.3 3.1 -3 3.1 -0.3 -0 -0.7 0.2 -1 0.5 -0.6 0.7 -7.4 0.7 -8 -0 -0.2 -0.3 -0.7 -0.5 -0.9 -0.5 -0.7 -0 -4.1 -3.3 -4.1 -4 0 -0.3 -0.2 -0.7 -0.5 -1 -0.4 -0.3 -0.5 -1.2 -0.5 -3.5 0 -2.3 0.1 -3.2 0.5 -3.5 0.3 -0.2 0.5 -0.7 0.5 -1 0 -0.3 0.2 -0.8 0.5 -1 0.3 -0.2 0.5 -0.7 0.5 -0.9 0 -0.7 2.3 -3.1 3 -3.1 0.3 -0 0.7 -0.2 1 -0.5 0.3 -0.4 1.2 -0.5 3.5 -0.5 2.3 -0 3.2 0.1 3.5 0.5zM172 37.5c-0.3 0.3 -1.1 0.5 -2.5 0.5 -1.4 -0 -2.2 0.2 -2.5 0.5 -0.2 0.3 -0.9 0.5 -1.5 0.5 -0.8 -0 -1.4 0.3 -2 1 -1.4 1.4 -2.3 1.2 -2.5 -0.5l-0.2 -1.3 -6.8 -0 -6.8 -0 0 21.8 0 21.8 6.8 -0 6.8 -0 0.1 -13.2c0.1 -11.2 0.1 -13.3 0.6 -13.6 0.3 -0.2 0.5 -0.7 0.5 -1 0 -0.3 0.2 -0.8 0.5 -1 0.3 -0.2 0.5 -0.8 0.5 -1.2 0 -0.6 0.2 -0.8 0.8 -0.8 0.4 -0 1 -0.2 1.2 -0.5 0.3 -0.4 1.2 -0.5 3.5 -0.5l3.1 -0 2.2 2.3 2.2 2.2 0.1 13.7 0.1 13.7 6.8 -0 6.8 -0 0.1 -15.2c0.1 -13.2 0 -15.3 -0.4 -15.6 -0.3 -0.2 -0.5 -0.9 -0.5 -1.5 0 -0.6 -0.2 -1.3 -0.5 -1.5 -0.3 -0.2 -0.5 -0.9 -0.5 -1.5 0 -0.9 -0.5 -1.6 -3.3 -4.3 -1.8 -1.8 -3.5 -3.2 -3.8 -3.2 -0.3 -0 -0.7 -0.2 -1 -0.5 -0.3 -0.3 -1.1 -0.5 -2.5 -0.5 -1.4 -0 -2.2 -0.2 -2.5 -0.5 -0.2 -0.3 -0.9 -0.5 -1.5 -0.5 -0.6 -0 -1.3 0.2 -1.5 0.5zM207 37.5c-0.2 0.3 -0.9 0.5 -1.5 0.5 -0.6 -0 -1.3 0.2 -1.5 0.5 -0.2 0.3 -0.9 0.5 -1.5 0.5 -0.8 -0 -1.4 0.3 -2 1 -0.5 0.5 -1.2 1 -1.5 1 -0.7 -0 -3 2.4 -3 3.1 0 0.3 -0.2 0.7 -0.5 0.9 -0.3 0.2 -0.5 0.9 -0.5 1.5 0 0.6 -0.2 1.3 -0.5 1.5 -0.4 0.3 -0.5 1.1 -0.5 3 0 1.9 0.1 2.7 0.5 3 0.3 0.2 0.5 0.9 0.5 1.5 0 0.6 0.2 1.3 0.5 1.5 0.3 0.2 0.5 0.7 0.5 1 0 0.7 3.3 4 4.1 4 0.3 -0 0.7 0.2 0.9 0.5 0.2 0.3 0.7 0.5 1 0.5 0.3 -0 0.8 0.2 1 0.5 0.2 0.3 0.9 0.5 1.5 0.5 0.6 -0 1.3 0.2 1.5 0.5 0.3 0.3 1 0.5 2 0.5 1 -0 1.7 0.2 2 0.5 0.2 0.3 0.7 0.5 1 0.5 0.3 -0 0.8 0.2 1 0.5 0.2 0.3 0.7 0.5 1 0.5 0.9 -0 2 1.4 2 2.5 0 0.6 -0.3 1.3 -0.8 1.7 -0.7 0.6 -1.2 0.7 -3.8 0.7 -2.3 -0 -3.1 -0.1 -3.4 -0.5 -0.2 -0.3 -0.9 -0.5 -1.5 -0.5 -0.6 -0 -1.3 -0.2 -1.5 -0.5 -0.2 -0.3 -0.7 -0.5 -1 -0.5 -0.3 -0 -1.2 -0.7 -2 -1.5 -0.8 -0.8 -1.7 -1.5 -2 -1.5 -0.7 -0 -8 7.3 -8 8 0 0.6 2.4 3 3 3 0.3 -0 0.9 0.5 1.5 1 0.5 0.6 1.2 1 1.5 1 0.3 -0 0.7 0.2 1 0.5 0.2 0.3 0.9 0.5 1.5 0.5 0.6 -0 1.3 0.2 1.5 0.5 0.3 0.3 1 0.5 2 0.5 1 -0 1.7 0.2 2 0.5 0.6 0.7 11.4 0.7 12 -0 0.2 -0.3 0.9 -0.5 1.5 -0.5 0.6 -0 1.3 -0.2 1.5 -0.5 0.2 -0.3 0.9 -0.5 1.5 -0.5 0.9 -0 1.5 -0.5 3.8 -2.8 2.2 -2.3 2.7 -2.9 2.7 -3.8 0 -0.6 0.2 -1.2 0.5 -1.5 0.4 -0.3 0.5 -1.2 0.5 -4.1 0 -2.9 -0.1 -3.7 -0.5 -3.8 -0.3 -0.1 -0.5 -0.6 -0.5 -1.1 0 -0.5 -0.2 -1 -0.5 -1.1 -0.3 -0.1 -0.5 -0.5 -0.5 -0.8 0 -0.7 -3.3 -4.1 -4.1 -4.1 -0.3 -0 -0.7 -0.2 -0.9 -0.5 -0.2 -0.3 -0.7 -0.5 -1 -0.5 -0.3 -0 -0.8 -0.2 -1 -0.5 -0.2 -0.3 -0.9 -0.5 -1.5 -0.5 -0.6 -0 -1.3 -0.2 -1.5 -0.5 -0.2 -0.3 -0.9 -0.5 -1.5 -0.5 -0.6 -0 -1.3 -0.2 -1.5 -0.5 -0.2 -0.3 -0.9 -0.5 -1.5 -0.5 -0.6 -0 -1.3 -0.2 -1.5 -0.5 -0.2 -0.3 -0.7 -0.5 -1 -0.5 -0.3 -0 -0.9 -0.4 -1.3 -0.8 -1 -1.1 -0.9 -3 0.2 -3.1 0.4 -0.1 0.9 -0.3 1.1 -0.6 0.5 -0.6 2.5 -0.6 3 0 0.3 0.3 1 0.5 2 0.5 1 -0 1.7 0.2 2 0.5 0.2 0.3 0.7 0.5 1 0.5 0.3 -0 0.8 0.2 1 0.5 0.2 0.3 0.7 0.5 1 0.5 0.3 -0 0.8 0.2 1 0.5 0.2 0.3 0.7 0.5 1 0.4 0.5 -0.1 8 -7.1 8 -7.5 0 -0.3 -3.6 -3.5 -4 -3.5 -0.3 -0 -0.9 -0.5 -1.5 -1 -0.7 -0.7 -1.3 -1 -2 -1 -0.6 -0 -1.2 -0.2 -1.5 -0.5 -0.2 -0.3 -0.9 -0.5 -1.5 -0.5 -0.6 -0 -1.3 -0.2 -1.5 -0.5 -0.3 -0.4 -1.4 -0.5 -5.5 -0.5 -4.1 -0 -5.2 0.1 -5.5 0.5zM252 37.5c-0.3 0.4 -1.1 0.5 -3 0.5 -1.9 -0 -2.7 0.1 -3 0.5 -0.2 0.3 -0.7 0.5 -1 0.5 -0.3 -0 -0.8 0.2 -1 0.5 -0.2 0.3 -0.9 0.5 -1.5 0.5 -0.8 -0 -1.4 0.3 -2.5 1.5 -0.8 0.8 -1.7 1.5 -2 1.5 -0.7 -0 -3 2.4 -3 3 0 0.3 -0.4 0.9 -1 1.5 -0.5 0.5 -1 1.2 -1 1.5 0 0.3 -0.2 0.7 -0.5 1 -0.3 0.2 -0.5 0.7 -0.5 1 0 0.3 -0.2 0.8 -0.5 1 -0.3 0.2 -0.5 0.9 -0.5 1.5 0 0.6 -0.2 1.3 -0.5 1.5 -0.4 0.3 -0.5 1.3 -0.5 4.5 0 3.2 0.1 4.2 0.5 4.5 0.3 0.3 0.5 1 0.5 2 0 1 0.2 1.7 0.5 2 0.3 0.2 0.5 0.7 0.5 1 0 0.3 0.2 0.8 0.5 1 0.3 0.2 0.5 0.7 0.5 1 0 0.3 0.2 0.8 0.5 1 0.3 0.2 0.5 0.7 0.5 1 0 0.7 5.3 6 6 6 0.3 -0 0.9 0.5 1.5 1 0.7 0.7 1.3 1 2 1 0.6 -0 1.2 0.2 1.5 0.5 0.2 0.3 0.9 0.5 1.5 0.5 0.6 -0 1.3 0.2 1.5 0.5 0.3 0.4 1.4 0.5 6 0.5 4.6 -0 5.7 -0.1 6 -0.5 0.2 -0.3 0.9 -0.5 1.5 -0.5 0.6 -0 1.3 -0.2 1.5 -0.5 0.2 -0.3 0.7 -0.5 1 -0.5 0.3 -0 0.8 -0.2 1 -0.5 0.2 -0.3 0.7 -0.5 1 -0.5 0.3 -0 0.8 -0.2 1 -0.5 0.2 -0.3 0.7 -0.5 1 -0.5 0.7 -0 7 -6.3 7 -7 0 -0.3 0.2 -0.7 0.5 -1 0.3 -0.2 0.5 -0.7 0.5 -1 0 -0.3 0.2 -0.8 0.5 -1 0.3 -0.3 0.5 -1 0.5 -2 0 -1 0.2 -1.7 0.5 -2 0.4 -0.3 0.5 -1.3 0.5 -4.5 0 -3.2 -0.1 -4.2 -0.5 -4.5 -0.3 -0.3 -0.5 -1 -0.5 -2 0 -1 -0.2 -1.7 -0.5 -2 -0.3 -0.2 -0.5 -0.7 -0.5 -1 0 -0.3 -0.2 -0.8 -0.5 -1 -0.3 -0.2 -0.5 -0.7 -0.5 -1 0 -0.3 -0.4 -1 -1 -1.5 -0.5 -0.5 -1 -1.2 -1 -1.5 0 -0.7 -3.4 -4 -4 -4 -0.3 -0 -0.9 -0.5 -1.5 -1 -0.5 -0.6 -1.2 -1 -1.5 -1 -0.3 -0 -0.7 -0.2 -1 -0.5 -0.2 -0.3 -0.9 -0.5 -1.5 -0.5 -0.6 -0 -1.3 -0.2 -1.5 -0.5 -0.3 -0.3 -1.1 -0.5 -2.5 -0.5 -1.4 -0 -2.2 -0.2 -2.5 -0.5 -0.3 -0.3 -1.1 -0.5 -2.5 -0.5 -1.4 -0 -2.2 0.2 -2.5 0.5zm5 13c0.2 0.3 0.7 0.5 1 0.5 0.3 -0 0.8 0.2 1 0.5 0.2 0.3 0.6 0.5 0.9 0.5 0.7 -0 2.1 1.3 2.1 2 0 0.3 0.2 0.7 0.5 1 0.3 0.2 0.5 0.7 0.5 1 0 0.3 0.2 0.8 0.5 1 0.3 0.3 0.5 1.1 0.5 2.5 0 1.4 -0.2 2.2 -0.5 2.5 -0.3 0.2 -0.5 0.9 -0.5 1.5 0 0.6 -0.2 1.3 -0.5 1.5 -0.3 0.2 -0.5 0.7 -0.5 0.9 0 0.3 -0.8 1.3 -1.7 2.3l-1.7 1.8 -4.1 -0c-3.2 -0 -4.1 -0.1 -4.5 -0.5 -0.2 -0.3 -0.7 -0.5 -0.9 -0.5 -0.3 -0 -1.3 -0.8 -2.3 -1.7 -1.4 -1.4 -1.8 -2 -1.8 -2.8 0 -0.6 -0.2 -1.2 -0.5 -1.5 -0.3 -0.3 -0.5 -1.1 -0.5 -2.5 0 -1.4 0.2 -2.2 0.5 -2.5 0.3 -0.2 0.5 -0.9 0.5 -1.5 0 -0.8 0.3 -1.4 1 -2 0.6 -0.5 1 -1.3 1 -1.7 0 -0.6 0.2 -0.8 0.8 -0.8 0.4 -0 1 -0.2 1.2 -0.5 0.2 -0.3 0.7 -0.5 1 -0.5 0.3 -0 0.8 -0.2 1 -0.5 0.3 -0.4 1.1 -0.5 3 -0.5 1.9 -0 2.7 0.1 3 0.5zM306 37.5c-0.3 0.3 -1.1 0.5 -2.5 0.5 -1.4 -0 -2.2 0.2 -2.5 0.5 -0.2 0.3 -0.9 0.5 -1.5 0.5 -0.8 -0 -1.4 0.3 -2 1 -1.4 1.4 -2.3 1.2 -2.5 -0.5l-0.2 -1.3 -6.8 -0 -6.8 -0 0 21.8 0 21.8 6.8 -0 6.8 -0 0.1 -13.2c0.1 -11.2 0.1 -13.3 0.6 -13.6 0.3 -0.2 0.5 -0.7 0.5 -1 0 -0.3 0.8 -1.3 1.8 -2.3l1.8 -1.7 3 -0c2.9 -0 3 0 4 1 0.5 0.5 1.3 1 1.7 1 0.6 -0 0.8 0.2 0.8 0.8 0 0.4 0.2 1 0.5 1.2 0.4 0.3 0.5 2.5 0.6 14.1l0.1 13.7 6.8 -0 6.8 -0 0.1 -15.7c0.1 -13.7 0 -15.8 -0.4 -16.1 -0.3 -0.2 -0.5 -0.9 -0.5 -1.5 0 -0.6 -0.2 -1.3 -0.5 -1.5 -0.3 -0.2 -0.5 -0.7 -0.5 -1 0 -0.3 -0.4 -1 -1 -1.5 -0.5 -0.5 -1 -1.3 -1 -1.7 0 -0.6 -0.2 -0.8 -0.8 -0.8 -0.5 -0 -1.3 -0.6 -2.2 -1.5 -0.8 -0.8 -1.7 -1.5 -2 -1.5 -0.3 -0 -0.7 -0.2 -1 -0.5 -0.3 -0.3 -1.1 -0.5 -2.5 -0.5 -1.4 -0 -2.2 -0.2 -2.5 -0.5 -0.2 -0.3 -0.9 -0.5 -1.5 -0.5 -0.6 -0 -1.3 0.2 -1.5 0.5zM533 37.5c-0.3 0.4 -1.1 0.5 -3 0.5 -1.9 -0 -2.7 0.1 -3 0.5 -0.2 0.3 -0.9 0.5 -1.5 0.5 -0.6 -0 -1.3 0.2 -1.5 0.5 -0.2 0.3 -0.7 0.5 -1 0.5 -0.3 -0 -0.8 0.2 -1 0.5 -0.2 0.3 -0.7 0.5 -1 0.5 -0.3 -0 -2.2 1.7 -4.3 3.8 -3.2 3.2 -3.7 3.9 -3.7 4.8 0 0.6 -0.2 1.2 -0.5 1.5 -0.3 0.2 -0.5 0.7 -0.5 1 0 0.3 -0.2 0.8 -0.5 1 -0.4 0.3 -0.5 1.1 -0.5 3.1 0 2 -0.1 2.7 -0.5 2.8 -0.3 0.1 -0.5 0.4 -0.5 0.6 0 0.2 0.2 0.5 0.5 0.6 0.4 0.1 0.5 0.8 0.5 3.3 0 2.4 0.1 3.3 0.5 3.6 0.3 0.2 0.5 0.7 0.5 1 0 0.3 0.2 0.8 0.5 1 0.3 0.2 0.5 0.7 0.5 1 0 0.3 0.2 0.8 0.5 1 0.3 0.2 0.5 0.7 0.5 1 0 0.3 0.5 1 1 1.5 0.6 0.5 1 1.2 1 1.5 0 0.7 2.4 3 3 3 0.3 -0 0.9 0.5 1.5 1 0.5 0.6 1.2 1 1.5 1 0.3 -0 0.7 0.2 1 0.5 0.2 0.3 0.7 0.5 1 0.5 0.3 -0 0.8 0.2 1 0.5 0.2 0.3 0.9 0.5 1.5 0.5 0.6 -0 1.3 0.2 1.5 0.5 0.6 0.7 11.4 0.7 12 -0 0.2 -0.3 0.9 -0.5 1.5 -0.5 0.6 -0 1.3 -0.2 1.5 -0.5 0.2 -0.3 0.9 -0.5 1.5 -0.5 0.6 -0 1.3 -0.2 1.5 -0.5 0.2 -0.3 0.7 -0.5 1 -0.5 0.3 -0 1.2 -0.7 2 -1.5 0.8 -0.8 1.7 -1.5 2 -1.5 0.7 -0 2 -1.4 2 -2 0 -0.3 0.7 -1.2 1.5 -2 0.8 -0.8 1.5 -1.7 1.5 -2 0 -0.3 0.2 -0.7 0.5 -1 0.3 -0.2 0.5 -0.9 0.5 -1.5 0 -0.6 0.2 -1.3 0.5 -1.5 0.4 -0.3 0.5 -1.1 0.5 -3.1 0 -2 0.1 -2.7 0.5 -2.8 0.3 -0.1 0.5 -0.4 0.5 -0.6 0 -0.2 -0.2 -0.5 -0.5 -0.6 -0.4 -0.1 -0.5 -0.8 -0.5 -2.8 0 -2 -0.1 -2.8 -0.5 -3.1 -0.3 -0.2 -0.5 -0.9 -0.5 -1.5 0 -0.6 -0.2 -1.3 -0.5 -1.5 -0.3 -0.2 -0.5 -0.7 -0.5 -1 0 -0.3 -0.2 -0.8 -0.5 -1 -0.3 -0.2 -0.5 -0.7 -0.5 -1 0 -0.7 -6.3 -7 -7 -7 -0.3 -0 -0.7 -0.2 -1 -0.5 -0.2 -0.3 -0.7 -0.5 -1 -0.5 -0.3 -0 -0.8 -0.2 -1 -0.5 -0.2 -0.3 -0.7 -0.5 -1 -0.5 -0.3 -0 -0.8 -0.2 -1 -0.5 -0.3 -0.4 -1.1 -0.5 -3 -0.5 -1.9 -0 -2.7 -0.1 -3 -0.5 -0.3 -0.3 -1 -0.5 -2 -0.5 -1 -0 -1.7 0.2 -2 0.5zm4 13c0.2 0.3 0.9 0.5 1.4 0.5 0.8 -0 1.4 0.4 2.8 1.7 1 1 1.8 2 1.8 2.3 0 0.3 0.2 0.7 0.5 1 0.4 0.3 0.5 1.2 0.5 4 0 2.8 -0.1 3.7 -0.5 4 -0.3 0.2 -0.5 0.7 -0.5 1 0 0.3 -0.2 0.8 -0.5 1 -0.3 0.2 -0.5 0.8 -0.5 1.2 0 0.6 -0.2 0.8 -0.8 0.8 -0.4 -0 -1.2 0.4 -1.7 1 -0.9 1 -1 1 -4.5 1 -2.7 -0 -3.6 -0.1 -4 -0.5 -0.2 -0.3 -0.7 -0.5 -1 -0.5 -0.3 -0 -0.8 -0.2 -1 -0.5 -0.2 -0.3 -0.8 -0.5 -1.2 -0.5 -0.6 -0 -0.8 -0.2 -0.8 -0.8 0 -0.4 -0.4 -1.2 -1 -1.7l-1 -1 0 -4.1c0 -3.2 0.1 -4.1 0.5 -4.5 0.3 -0.2 0.5 -0.7 0.5 -0.9 0 -0.7 3.3 -4.1 4 -4.1 0.3 -0 0.7 -0.2 1 -0.5 0.3 -0.4 1.1 -0.5 3 -0.5 1.9 -0 2.7 0.1 3 0.5zM585 37.5c-0.3 0.3 -1 0.5 -2 0.5 -1 -0 -1.7 0.2 -2 0.5 -0.2 0.3 -0.9 0.5 -1.5 0.5 -0.8 -0 -1.3 0.3 -1.9 1 -1.1 1.2 -1.6 1.3 -1.6 0.1 -0 -0.6 -0.3 -1.1 -0.8 -1.5 -0.7 -0.5 -1.5 -0.6 -6.9 -0.5l-6.1 0.1 0 21.8 0 21.8 6.8 -0 6.8 -0 0.1 -13.7c0.1 -11.7 0.1 -13.8 0.6 -14.1 0.3 -0.2 0.5 -0.7 0.5 -1 0 -0.7 1.4 -2 2.1 -2 0.3 -0 0.7 -0.2 0.9 -0.5 0.6 -0.7 5.4 -0.7 6 -0 0.3 0.4 0.9 0.5 2.1 0.4 1.4 -0.1 1.7 -0.2 1.8 -0.8 0.1 -0.4 1 -1.6 2.1 -2.6 1.1 -1.1 2 -2.2 2 -2.5 0 -0.3 0.5 -1 1 -1.5 1.3 -1.2 1.3 -2.7 0.2 -3.8 -0.4 -0.4 -1 -0.7 -1.3 -0.7 -0.3 -0 -0.7 -0.2 -0.9 -0.5 -0.3 -0.3 -1 -0.5 -2 -0.5 -1 -0 -1.7 -0.2 -2 -0.5 -0.3 -0.3 -1 -0.5 -2 -0.5 -1 -0 -1.7 0.2 -2 0.5zM622 37.5c-0.3 0.3 -1 0.5 -2 0.5 -1 -0 -1.7 0.2 -2 0.5 -0.2 0.3 -0.9 0.5 -1.5 0.5 -0.6 -0 -1.3 0.2 -1.5 0.5 -0.2 0.3 -0.7 0.5 -1.1 0.5 -0.3 -0 -0.7 0.2 -0.8 0.5 -0.4 1 -1.1 0.5 -1.2 -0.9l-0.1 -1.4 -6.8 -0 -6.8 -0 0 31.3 0 31.3 6.8 -0 6.8 -0 0.2 -10.3c0.2 -10.1 0.2 -10.3 0.8 -10.4 0.4 -0.1 1.1 0.3 1.7 0.9 0.7 0.7 1.3 1 2 1 0.6 -0 1.2 0.2 1.5 0.5 0.6 0.7 9.4 0.7 10 -0 0.2 -0.3 0.9 -0.5 1.5 -0.5 0.6 -0 1.3 -0.2 1.5 -0.5 0.2 -0.3 0.7 -0.5 1 -0.5 0.3 -0 0.8 -0.2 1 -0.5 0.2 -0.3 0.7 -0.5 1 -0.5 0.3 -0 0.8 -0.2 1 -0.5 0.2 -0.3 0.7 -0.5 1 -0.5 0.7 -0 5 -4.3 5 -5 0 -0.3 0.5 -0.9 1 -1.5 0.7 -0.7 1 -1.3 1 -2 0 -0.6 0.2 -1.2 0.5 -1.5 0.3 -0.3 0.5 -1 0.5 -2 0 -1 0.2 -1.7 0.5 -2 0.4 -0.3 0.5 -1.3 0.5 -4.5 0 -3.2 -0.1 -4.2 -0.5 -4.5 -0.3 -0.3 -0.5 -1 -0.5 -2 0 -1 -0.2 -1.7 -0.5 -2 -0.3 -0.2 -0.5 -0.7 -0.5 -1 0 -0.3 -0.2 -0.8 -0.5 -1 -0.3 -0.2 -0.5 -0.9 -0.5 -1.5 0 -0.8 -0.3 -1.4 -1.5 -2.5 -0.9 -0.9 -1.5 -1.8 -1.5 -2.2 0 -0.6 -0.2 -0.8 -0.8 -0.8 -0.5 -0 -1.3 -0.6 -2.2 -1.5 -0.8 -0.8 -1.7 -1.5 -2 -1.5 -0.3 -0 -0.7 -0.2 -1 -0.5 -0.2 -0.3 -0.7 -0.5 -1 -0.5 -0.3 -0 -0.8 -0.2 -1 -0.5 -0.3 -0.4 -1.1 -0.5 -3 -0.5 -1.9 -0 -2.7 -0.1 -3 -0.5 -0.2 -0.3 -0.9 -0.5 -1.5 -0.5 -0.6 -0 -1.3 0.2 -1.5 0.5zm2 13c0.2 0.3 0.7 0.5 1 0.5 0.3 -0 1 0.4 1.5 1 0.5 0.5 1.3 1 1.7 1 0.6 -0 0.8 0.2 0.8 0.8 0 0.4 0.2 1 0.5 1.2 0.3 0.2 0.5 0.7 0.5 1 0 0.3 0.2 0.8 0.5 1 0.3 0.3 0.5 1.1 0.5 2.5 0 1.4 -0.2 2.2 -0.5 2.5 -0.3 0.2 -0.5 0.9 -0.5 1.5 0 0.6 -0.2 1.3 -0.5 1.5 -0.3 0.2 -0.5 0.7 -0.5 0.9 0 0.7 -2.3 3.1 -3 3.1 -0.3 -0 -0.7 0.2 -1 0.5 -0.3 0.4 -1.2 0.5 -4 0.5 -2.8 -0 -3.7 -0.1 -4 -0.5 -0.2 -0.3 -0.7 -0.5 -0.9 -0.5 -0.7 -0 -3.1 -2.3 -3.1 -3 0 -0.3 -0.2 -0.7 -0.5 -1 -0.3 -0.2 -0.5 -0.9 -0.5 -1.5 0 -0.6 -0.2 -1.3 -0.5 -1.5 -0.3 -0.2 -0.5 -0.7 -0.5 -1 0 -0.3 0.2 -0.8 0.5 -1 0.3 -0.3 0.5 -1 0.5 -2 0 -1 0.2 -1.7 0.5 -2 0.3 -0.2 0.5 -0.7 0.5 -0.9 0 -0.7 3.3 -4.1 4 -4.1 0.3 -0 0.7 -0.2 1 -0.5 0.3 -0.4 1.1 -0.5 3 -0.5 1.9 -0 2.7 0.1 3 0.5z"/>
+      <path class="jxc-x" d="M335.2 3.4c-0.1 0.2 -0.1 21.4 -0.1 46.9l0.1 46.5 13.8 -0 13.8 -0 0 -6.8 0 -6.8 -6.8 -0.2 -6.8 -0.2 0 -32.8 0 -32.8 6.9 -0.1 6.9 -0.1 0 -6.3c0 -6.1 -0 -6.3 -0.8 -7 -0.8 -0.7 -0.9 -0.7 -13.8 -0.7 -10.2 -0 -13.1 0.1 -13.2 0.4zM419.1 3.4c-0.1 0.2 -0.1 3.3 -0.1 6.9l0.1 6.5 6.2 0.1c6 0.1 6.2 0.1 6.9 0.8l0.7 0.8 -0.1 32.2 -0.1 32.1 -6.8 0.2 -6.8 0.2 0 6.8 0 6.8 13.8 -0 13.8 -0 0.1 -46.1 0.1 -46.2 -0.7 -0.8 -0.7 -0.8 -13.1 -0c-10.4 -0 -13.2 0.1 -13.3 0.4zM360 19.4c0 0.2 0.5 0.7 1 1.1 0.6 0.4 1 1 1 1.4 0 0.4 0.5 1.1 1 1.6 0.6 0.5 1 1.2 1 1.5 0 0.3 0.5 1 1 1.5 0.6 0.5 1 1.2 1 1.5 0 0.3 0.5 1 1 1.5 0.6 0.5 1 1.2 1 1.5 0 0.3 0.7 1.2 1.5 2 0.8 0.8 1.5 1.7 1.5 2 0 0.3 0.5 1 1 1.5 0.6 0.5 1 1.2 1 1.5 0 0.3 0.5 1 1 1.5 0.6 0.5 1 1.2 1 1.5 0 0.3 0.7 1.2 1.5 2 0.8 0.8 1.5 1.7 1.5 2 0 0.3 0.5 1 1 1.5 0.6 0.5 1 1.2 1 1.6 0 0.3 0.2 0.7 0.5 0.8 0.3 0.1 0.5 0.4 0.5 0.6 0 0.2 -0.2 0.5 -0.5 0.6 -0.3 0.1 -0.5 0.5 -0.5 0.8 0 0.3 -0.7 1.3 -1.5 2.1 -0.8 0.8 -1.5 1.7 -1.5 2 0 0.3 -0.4 1 -1 1.5 -0.5 0.5 -1 1.2 -1 1.5 0 0.3 -0.4 1 -1 1.5 -0.5 0.5 -1 1.2 -1 1.5 0 0.3 -0.4 1 -1 1.5 -0.5 0.5 -1 1.2 -1 1.5 0 0.3 -0.4 1 -1 1.5 -0.5 0.5 -1 1.2 -1 1.5 0 0.3 -0.7 1.2 -1.5 2 -0.8 0.8 -1.5 1.7 -1.5 2 0 0.3 -0.4 1 -1 1.5 -0.5 0.5 -1 1.2 -1 1.5 0 0.3 -0.4 1 -1 1.5 -0.5 0.5 -1 1.2 -1 1.5 0 0.3 -0.4 1 -1 1.5 -0.5 0.5 -1 1.2 -1 1.5 0 0.3 -0.2 0.7 -0.5 0.9 -0.3 0.2 -0.5 0.5 -0.3 0.7 0.2 0.3 2.4 0.4 7.3 0.4l7.1 -0 1.2 -1.3c0.7 -0.7 1.2 -1.5 1.2 -1.8 0 -0.3 0.5 -0.9 1 -1.5 0.6 -0.5 1 -1.2 1 -1.5 0 -0.3 0.5 -1 1 -1.5 0.6 -0.5 1 -1.2 1 -1.5 0 -0.3 0.5 -1 1 -1.5 0.6 -0.5 1 -1.2 1 -1.5 0 -0.3 0.5 -1 1 -1.5 0.6 -0.5 1 -1.2 1 -1.5 0 -0.3 0.2 -0.7 0.5 -1 0.3 -0.2 0.5 -0.7 0.5 -1 0 -0.3 0.5 -1 1 -1.5 0.6 -0.5 1 -1.2 1 -1.5 0 -0.8 1.5 -2.1 2.2 -1.9 0.3 0.1 0.6 0.4 0.7 0.8 0.1 0.4 0.5 1.1 1.1 1.6 0.5 0.5 1 1.2 1 1.5 0 0.3 0.5 1 1 1.5 0.6 0.5 1 1.2 1 1.5 0 0.3 0.2 0.7 0.5 1 0.3 0.2 0.5 0.7 0.5 1 0 0.3 0.5 1 1 1.5 0.6 0.5 1 1.2 1 1.5 0 0.3 0.5 1 1 1.5 0.6 0.5 1 1.2 1 1.5 0 0.3 0.2 0.7 0.5 1 0.3 0.2 0.5 0.7 0.5 1 0 0.3 0.5 1 1 1.5 0.6 0.5 1 1.2 1 1.5 0 0.3 0.4 0.9 0.8 1.3 0.8 0.7 1 0.7 8.4 0.7 7.4 -0.1 7.6 -0.1 7.7 -0.8 0.1 -0.4 -0.3 -1.1 -0.9 -1.7 -0.5 -0.5 -1 -1.2 -1 -1.5 0 -0.3 -0.4 -1 -1 -1.5 -0.5 -0.5 -1 -1.2 -1 -1.5 0 -0.3 -0.4 -1 -1 -1.5 -0.5 -0.5 -1 -1.2 -1 -1.5 0 -0.3 -0.4 -1 -1 -1.5 -0.5 -0.5 -1 -1.2 -1 -1.5 0 -0.3 -0.4 -1 -1 -1.5 -0.5 -0.5 -1 -1.2 -1 -1.5 0 -0.3 -0.4 -1 -1 -1.5 -0.5 -0.5 -1 -1.2 -1 -1.5 0 -0.3 -0.4 -1 -1 -1.5 -0.5 -0.5 -1 -1.2 -1 -1.5 0 -0.3 -0.4 -1 -1 -1.5 -0.5 -0.5 -1 -1.2 -1 -1.5 0 -0.3 -0.4 -1 -1 -1.5 -0.5 -0.5 -1 -1.2 -1 -1.5 0 -0.3 -0.4 -1 -1 -1.5 -0.5 -0.5 -1 -1.3 -1 -1.7 0 -0.4 -0.2 -0.8 -0.5 -0.9 -0.3 -0.1 -0.5 -0.5 -0.5 -0.9 0 -0.4 0.2 -0.8 0.5 -0.9 0.3 -0.1 0.5 -0.5 0.5 -0.9 0 -0.4 0.5 -1.2 1 -1.7 0.6 -0.5 1 -1.2 1 -1.5 0 -0.3 0.5 -1 1 -1.5 0.6 -0.5 1 -1.2 1 -1.5 0 -0.3 0.7 -1.2 1.5 -2 0.8 -0.8 1.5 -1.7 1.5 -2 0 -0.3 0.5 -1 1 -1.5 0.6 -0.5 1 -1.2 1 -1.5 0 -0.3 0.5 -1 1 -1.5 0.6 -0.5 1 -1.2 1 -1.5 0 -0.3 0.5 -1 1 -1.5 0.6 -0.5 1 -1.2 1 -1.5 0 -0.3 0.5 -1 1 -1.5 0.6 -0.5 1 -1.2 1 -1.5 0 -0.3 0.5 -1 1 -1.5 0.6 -0.5 1 -1.3 1 -1.6 0 -0.4 0.4 -1 1 -1.4 2.1 -1.4 1.5 -1.5 -6.9 -1.4 -7.8 0.1 -7.9 0.1 -8 0.8 -0.1 0.4 -0.5 1.1 -1.1 1.6 -0.5 0.5 -1 1.2 -1 1.5 0 0.3 -0.4 1 -1 1.5 -0.5 0.5 -1 1.2 -1 1.5 0 0.3 -0.2 0.7 -0.5 1 -0.3 0.2 -0.5 0.7 -0.5 1 0 0.3 -0.4 1 -1 1.5 -0.5 0.5 -1 1.2 -1 1.5 0 0.3 -0.4 1 -1 1.5 -0.5 0.5 -1 1.2 -1 1.5 0 0.3 -0.4 1 -1 1.5 -0.6 0.5 -1 1.2 -1.1 1.6 -0.1 0.6 -0.3 0.7 -1.4 0.7 -1.1 -0 -1.4 -0.1 -1.4 -0.7 -0.1 -0.4 -0.5 -1.1 -1.1 -1.6 -0.5 -0.5 -1 -1.2 -1 -1.5 0 -0.3 -0.2 -0.7 -0.5 -1 -0.3 -0.2 -0.5 -0.7 -0.5 -1 0 -0.3 -0.4 -1 -1 -1.5 -0.5 -0.5 -1 -1.2 -1 -1.5 0 -0.3 -0.4 -1 -1 -1.5 -0.5 -0.5 -1 -1.2 -1 -1.5 0 -0.3 -0.4 -1 -1 -1.5 -0.5 -0.5 -1 -1.2 -1 -1.5 0 -0.3 -0.4 -1 -1 -1.5 -0.6 -0.5 -1 -1.2 -1.1 -1.6 -0.1 -0.7 -0.2 -0.7 -8.5 -0.8 -6.6 -0.1 -8.4 -0 -8.4 0.3z"/>
+    </svg>`;
+  const makerMark = () => `<span class="jxc">${JXC_LOGO}</span>`;
+  const foot = () => `<footer class="foot"><span>Study material is built on your device by the built-in study engine — nothing leaves your browser. Check it against your course notes.</span><span class="maker"><span class="by">Built by</span>${makerMark()}<span class="build">v${BUILD.v} · ${BUILD.date}</span></span></footer>`;
   const frame = html => `<div class="frame">${html}</div>`;
 
   /* ---------- home ---------- */
@@ -2557,6 +2930,21 @@ const GENERIC = new Set('information data process system method result results s
           <div class="detail-block"><span class="label">Hidden</span><div class="term-chips">${rows(v => v.hide, (id, v) => `<span class="term-chip">${esc(nameOf(id, v))} <button class="x" data-act="unmark" data-id="${esc(id)}" data-f="hide" aria-label="Unhide">×</button></span>`)}</div></div>
         </div>
         <div class="modal-foot"><span class="mono muted">Stars, notes and cards live in this browser only</span><span class="spacer" style="flex:1"></span><button class="btn sm" data-act="close-modal">Close</button></div>
+      </div></div>`;
+    }
+    if (m.type === 'q-types') {
+      const ui = state.ui, types = ui.types || [];
+      const all = [['mc', 'Multiple choice', 'Four options, one right.'], ['tf', 'True / false', 'A statement to judge.'], ['fill', 'Fill in the blank', 'Type the missing term.']]
+        .concat(m.hasSteps ? [['order', 'Order the steps', 'Put a procedure back in order.']] : []);
+      const counts = ui.exam ? [15, 20, 30, 40] : [5, 10, 15, 20];
+      return `<div class="modal-bg" data-act="close-modal"><div class="modal wide info" role="dialog" aria-modal="true" aria-label="Question types">
+        <div class="modal-head"><div><span class="label">Builds a fresh set</span><h2>Question types</h2></div><button class="btn ghost icon" data-act="close-modal" aria-label="Close">${I.x}</button></div>
+        <div class="modal-body">
+          <div class="field"><label id="qt-l">Include</label><div class="opts" role="group" aria-labelledby="qt-l">${all.map(([k, l, d]) => `<label class="check"><input type="checkbox" data-act="q-type" data-k="${k}" ${types.includes(k) ? 'checked' : ''}> <span><b>${l}</b><span class="small muted" style="display:block">${d}</span></span></label>`).join('')}</div>${m.hasSteps ? '' : '<p class="small muted">Ordering questions appear when your material has numbered steps.</p>'}</div>
+          <div class="field"><label id="qt-n">How many</label><div role="group" aria-labelledby="qt-n"><div class="seg wrap">${counts.map(n => `<button type="button" class="${ui.count === n ? 'on' : ''}" data-act="q-count" data-n="${n}">${n}</button>`).join('')}</div></div></div>
+          <div class="field"><label id="qt-m">Mode</label><div role="group" aria-labelledby="qt-m"><div class="seg wrap"><button type="button" class="${ui.exam ? '' : 'on'}" data-act="q-mode" data-m="practice">Practice</button><button type="button" class="${ui.exam ? 'on' : ''}" data-act="q-mode" data-m="exam">Exam</button></div></div><p class="small muted">${ui.exam ? 'Timed, one minute a question, no feedback until you submit.' : 'Marked as you go, with the answer and its source after each question.'}</p></div>
+        </div>
+        <div class="modal-foot"><span class="mono muted">This replaces the questions you are on</span><span class="spacer" style="flex:1"></span><button class="btn sm" data-act="close-modal">Cancel</button><button class="btn sm primary" data-act="q-rebuild">Build new questions <span class="arr">→</span></button></div>
       </div></div>`;
     }
     if (m.type === 'keys-help') {
@@ -3264,7 +3652,7 @@ const GENERIC = new Set('information data process system method result results s
         <span class="label">${ui.exam ? 'Exam complete' : 'Quiz complete'}${took ? ` · ${Math.floor(took / 60)}m ${took % 60}s` : ''}</span>
         <div class="score">${pct}%<br><small>${right} of ${total} correct${best != null ? ` · previous best ${best}%${pct > best ? ' — new best' : ''}` : ''}</small></div>
         <div class="breakdown">${Object.entries(by).map(([t, v]) => `<span class="chip">${Q_NAMES[t]}: ${v.ok}/${v.n}</span>`).join('')}</div>
-        <div class="btn-row" style="justify-content:center"><button class="btn primary" data-act="q-again">New ${ui.exam ? 'exam' : 'quiz'} <span class="arr">→</span></button><button class="btn" data-act="q-setup">Change settings</button>${right < total ? `<button class="btn" data-act="weak-cards">Practise what I missed <span class="arr">→</span></button>` : ''}</div>
+        <div class="btn-row" style="justify-content:center"><button class="btn primary" data-act="q-again">New ${ui.exam ? 'exam' : 'quiz'} <span class="arr">→</span></button><button class="btn" data-act="q-restart">Retake these ${ui.qs.length} <span class="arr">↻</span></button><button class="btn" data-act="q-types">Question types <span class="arr">→</span></button><button class="btn" data-act="q-setup">Change settings</button>${right < total ? `<button class="btn" data-act="weak-cards">Practise what I missed <span class="arr">→</span></button>` : ''}</div>
         <div class="review">${ui.qs.map((q, i) => { const an = ui.answers[i] || { given: '—', ok: false }; return `<div class="item ${an.ok ? 'ok' : 'bad'}"><div><strong>${i + 1}.</strong> ${esc(q.type === 'order' ? (q.body || q.prompt) : (q.body || q.prompt))}</div><div class="small">${an.ok ? 'Correct' : `You said “${esc(Array.isArray(an.given) ? an.given.map((x, n) => (n + 1) + '. ' + x).join('  ') : an.given)}”`} · Answer: <strong>${esc(Array.isArray(q.answer) ? q.answer.map((x, n) => (n + 1) + '. ' + x).join('  ') : q.answer)}</strong></div></div>`; }).join('')}</div>
       </div>`;
     } else {
@@ -3283,7 +3671,7 @@ const GENERIC = new Set('information data process system method result results s
       const fb = showFb ? `<div class="feedback ${an.ok ? 'ok' : 'bad'}"><strong>${an.ok ? 'Correct.' : `Not quite — the answer is “${esc(Array.isArray(q.answer) ? q.answer.map((x, n) => (n + 1) + '. ' + x).join('  ') : q.answer)}”.`}</strong>${q.explain && !an.ok ? `<span>${esc(q.explain)}</span>` : ''}<span class="src">From the material: ${esc(q.source)}</span></div><div class="btn-row" style="justify-content:flex-end"><button class="btn primary" data-act="q-next" autofocus>${ui.qi + 1 === ui.qs.length ? 'See results' : 'Next question'} <span class="arr">→</span></button></div>` : '';
       const examNav = ui.exam ? `<div class="btn-row exam-nav"><button class="btn sm" data-act="q-back" ${ui.qi ? '' : 'disabled'}>← Back</button><span class="spacer" style="flex:1"></span><button class="btn ${ui.qi + 1 === ui.qs.length ? 'primary' : ''}" data-act="q-next">${ui.qi + 1 === ui.qs.length ? 'Submit exam' : 'Next'} <span class="arr">→</span></button></div>` : '';
       body = `<div class="q-card">
-        <div class="qnum"><span>Question ${ui.qi + 1} of ${ui.qs.length}</span><span>${Q_NAMES[q.type]}</span></div>
+        <div class="qnum"><span>Question ${ui.qi + 1} of ${ui.qs.length}</span><span class="qtype">${Q_NAMES[q.type]}</span><span class="q-tools"><button type="button" class="btn sm ghost" data-act="q-restart">Restart</button><button type="button" class="btn sm ghost" data-act="q-types">Question types</button><button type="button" class="btn sm ghost" data-act="q-setup">Settings</button></span></div>
         <div class="prompt">${esc(q.prompt)}</div>
         ${q.body ? `<div class="body">${esc(q.body).replace(/______/g, '<b>______</b>')}</div>` : ''}
         ${input}${fb}${examNav}
@@ -3412,7 +3800,14 @@ const GENERIC = new Set('information data process system method result results s
     const secOf = sent => { const st = a.sentences.find(x => x.s === sent); const sec = st && a.sections[st.section]; return sec && sec.title ? sec.title : null; };
     const bar = `<button class="btn sm" data-act="print-page" title="Print this sheet">Print <span class="arr">⎙</span></button><button class="btn sm" data-act="copy-formulas">Copy <span class="arr">⧉</span></button>`;
     if (!a.formulas.length && !syms.length && !figures.length) {
-      app.innerHTML = sectionShell(s, 'formulas', `${note}<div class="empty" style="margin:24px">No formulas, symbols or figures found. This sheet is built for material with equations — stats, physics, chemistry, economics.</div>`, bar);
+      const defs = (k.defs || []).slice(0, 6);
+      app.innerHTML = sectionShell(s, 'formulas', `${note}<div class="page"><div class="empty-page">
+        <h2>Nothing to put on a cram sheet yet</h2>
+        <p>This sheet collects the equations, the symbols the text defines (“where n is the sample size”) and the numbers worth remembering. Your material doesn't have any — which is normal for essay-based subjects, and for slides or scans with little running text.</p>
+        <p class="muted">It picks up equations written in symbols (<span class="formula">SE = s / sqrt(n)</span>), reactions (<span class="formula">6 CO2 + 6 H2O → C6H12O6 + 6 O2</span>) and relationships written in words (“power is work divided by time”).</p>
+        ${defs.length ? `<div class="detail-block"><span class="label">What it did find instead</span><dl class="def-list">${defs.map(d => `<div class="def"><dt>${esc(d.term)}</dt><dd class="clamp">${esc(defText(d))}</dd></div>`).join('')}</dl></div>` : ''}
+        <div class="btn-row"><a class="btn" href="#/s/${s.id}/keys">Key information <span class="arr">→</span></a><a class="btn ghost" href="#/s/${s.id}/summary">Summary <span class="arr">→</span></a></div>
+      </div></div>`, bar);
       return;
     }
     ui.sheetText = [`${s.name} — formula sheet`, '', ...a.formulas.map(f => `${f.expr}    (${secOf(f.sent) || 'material'})`), '',
@@ -3423,7 +3818,7 @@ const GENERIC = new Set('information data process system method result results s
       <div class="sheet-grid">
         <section>
           <h3>Formulas <span class="count">${a.formulas.length}</span></h3>
-          ${a.formulas.length ? `<div class="fsheet">${a.formulas.map(f => `<div class="frow"><div class="formula big-formula">${esc(f.expr)}</div><div class="fmeta">${secOf(f.sent) ? `<span class="tag">${esc(secOf(f.sent))}</span>` : ''}<span>${esc(f.sent)}</span></div></div>`).join('')}</div>` : `<p class="muted small">No equations found in this material.</p>`}
+          ${a.formulas.length ? `<div class="fsheet">${a.formulas.map(f => `<div class="frow"><div class="formula big-formula">${esc(f.expr)}</div><div class="fmeta">${f.kind === 'words' ? `<span class="tag soft">from the wording</span>` : f.kind === 'reaction' ? `<span class="tag soft">reaction</span>` : ''}${secOf(f.sent) ? `<span class="tag">${esc(secOf(f.sent))}</span>` : ''}<span>${esc(f.sent)}</span></div></div>`).join('')}</div>` : `<p class="muted small">No equations in this material — the symbols and figures beside this are what it did define.</p>`}
         </section>
         <aside>
           ${syms.length ? `<section><h3>Symbols <span class="count">${syms.length}</span></h3><dl class="def-list">${syms.map(x => `<div class="def"><dt class="sym">${esc(x.sym)}</dt><dd>${esc(x.meaning)}</dd></div>`).join('')}</dl></section>` : ''}
@@ -3462,6 +3857,19 @@ const GENERIC = new Set('information data process system method result results s
         p.x = Math.max(95, Math.min(w - 95, p.x)); p.y = Math.max(46, Math.min(h - 40, p.y));
       }
     }
+    // the simulation often settles in one corner; stretch what it produced to fill the frame
+    const pad = { x: 100, y: 52 };
+    const xs = pos.map(p => p.x), ys = pos.map(p => p.y);
+    const x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
+    const sx = (x1 - x0) > 1 ? Math.min(1.8, (w - pad.x * 2) / (x1 - x0)) : 1;
+    const sy = (y1 - y0) > 1 ? Math.min(1.8, (h - pad.y * 2) / (y1 - y0)) : 1;
+    if (sx > 1.02 || sy > 1.02) {
+      const cx = (x0 + x1) / 2, cy = (y0 + y1) / 2;
+      for (const p of pos) {
+        p.x = Math.max(pad.x, Math.min(w - pad.x, w / 2 + (p.x - cx) * sx));
+        p.y = Math.max(pad.y, Math.min(h - pad.y, h / 2 + (p.y - cy) * sy));
+      }
+    }
     return pos;
   }
   function renderMap(s, a, ui, note) {
@@ -3469,7 +3877,14 @@ const GENERIC = new Set('information data process system method result results s
     const g = Engine.termGraph(a, ui.mapN);
     const bar = `<div class="seg" role="group" aria-label="How many terms">${[12, 22, 32].map(n => `<button type="button" class="${ui.mapN === n ? 'on' : ''}" data-act="map-n" data-n="${n}">${n}</button>`).join('')}</div><button class="btn sm" data-act="print-page">Print <span class="arr">⎙</span></button>`;
     if (g.nodes.length < 3 || !g.edges.length) {
-      app.innerHTML = sectionShell(s, 'map', `${note}<div class="empty" style="margin:24px">Not enough repeated terms to draw a map yet. Add more material from the same course.</div>`, bar);
+      const top = (a.terms || []).slice(0, 14);
+      app.innerHTML = sectionShell(s, 'map', `${note}<div class="page"><div class="empty-page">
+        <h2>Not enough to map yet</h2>
+        <p>The map draws a line between two terms when the material mentions them together. This subject doesn't repeat its terms often enough yet — usually a short file, a slide deck of fragments, or a scan with little text.</p>
+        <p class="muted">Add another reading or lecture from the same course and it will fill in.</p>
+        ${top.length ? `<div class="detail-block"><span class="label">The terms it did find</span><div class="term-chips">${top.map(t => `<button type="button" class="term-chip" data-act="term-jump" data-key="${esc(t.key)}">${esc(t.display)}</button>`).join('')}</div></div>` : ''}
+        <div class="btn-row"><a class="btn" href="#/s/${s.id}/keys">Key information <span class="arr">→</span></a><a class="btn ghost" href="#/s/${s.id}">Add a file <span class="arr">→</span></a></div>
+      </div></div>`, bar);
       return;
     }
     const W = 940, H = 620;
@@ -3501,7 +3916,7 @@ const GENERIC = new Set('information data process system method result results s
       </div>
       <div class="map-legend">
         <span><i class="dot big"></i> bigger circle = mentioned more often</span>
-        <span><i class="line"></i> line = the two terms appear in the same sentence, thicker = more often</span>
+        <span><i class="line"></i> line = ${g.nearby ? 'the two terms appear close together, thicker = in the same sentence' : 'the two terms appear in the same sentence, thicker = more often'}</span>
         <span class="muted">Tap a term for its definition and context.${g.dropped ? ` ${plural(g.dropped, 'term')} with no links left out.` : ''}</span>
       </div>
     </div>`;
@@ -3759,8 +4174,8 @@ const GENERIC = new Set('information data process system method result results s
       case 'deck-new': ui.seed = (ui.seed || 1) + 1; ui.cards = null; renderSection(s, 'cards'); break;
       case 'weak-cards': state.ui = { key: s.id + '/cards', mode: 'weak' }; go(`/s/${s.id}/cards`); break;
       case 'weak-quiz': state.ui = { key: s.id + '/quiz', weakOnly: true }; go(`/s/${s.id}/quiz`); break;
-      case 'q-count': ui.count = parseInt(el.dataset.n, 10); renderSection(s, 'quiz'); break;
-      case 'q-mode': ui.exam = el.dataset.m === 'exam'; ui.count = ui.exam ? 20 : 10; renderSection(s, 'quiz'); break;
+      case 'q-count': ui.count = parseInt(el.dataset.n, 10); if (state.modal && state.modal.type === 'q-types') syncModal(); else renderSection(s, 'quiz'); break;
+      case 'q-mode': ui.exam = el.dataset.m === 'exam'; ui.count = ui.exam ? 20 : 10; if (state.modal && state.modal.type === 'q-types') syncModal(); else renderSection(s, 'quiz'); break;
       case 'q-pick': { const pick = orderState(ui); const i = +el.dataset.i; const at = pick.indexOf(i); if (at >= 0) pick.splice(at, pick.length - at); else pick.push(i); renderSection(s, 'quiz'); break; }
       case 'q-clear': ui.pick = []; renderSection(s, 'quiz'); break;
       case 'q-submit-order': { const q = ui.qs[ui.qi]; const pick = orderState(ui); const given = pick.map(i => q.items[i]); answerQuiz(s, given); ui.pick = []; break; }
@@ -3777,6 +4192,33 @@ const GENERIC = new Set('information data process system method result results s
         break;
       }
       case 'q-discard': clearQuizRun(); ui.qs = null; renderSection(s, 'quiz'); toast('Started fresh.'); break;
+      case 'q-restart': {
+        if (!ui.qs || !ui.qs.length) { renderSection(s, 'quiz'); break; }
+        ui.qi = 0; ui.answers = []; ui.pick = []; ui.startedAt = Date.now();
+        ui.deadline = ui.exam ? Date.now() + ui.qs.length * 60000 : null;
+        clearInterval(state.timer); state.timer = null;
+        state.modal = null; syncModal();
+        saveQuizRun(s.id, ui); renderSection(s, 'quiz'); if (ui.exam) startQuizTimer(s);
+        say(`Restarted. Question 1 of ${ui.qs.length}.`); toast('Back to question 1 — same questions.');
+        break;
+      }
+      case 'q-types': {
+        const hasSteps = ((Engine.keyInfo(state.analysis).patterns || {}).processes || []).some(p => p.steps && p.steps.length >= 3);
+        state.modal = { type: 'q-types', hasSteps }; syncModal(); break;
+      }
+      case 'q-rebuild': {
+        if (!ui.types || !ui.types.length) { toast('Pick at least one question type.'); break; }
+        state.modal = null; syncModal();
+        clearInterval(state.timer); state.timer = null;
+        ui.seed = (ui.seed || 1) + 1;
+        ui.qs = visQuiz(s.id, Engine.quiz(state.analysis, { count: ui.count, types: ui.types, seed: ui.seed, only: ui.weakOnly ? new Set(weakTerms(s.id, 25).map(w => w.key)) : null }));
+        ui.qi = 0; ui.answers = []; ui.pick = []; ui.startedAt = Date.now();
+        if (!ui.qs.length) { ui.qs = null; clearQuizRun(); toast('No questions of those types could be built from this material.'); renderSection(s, 'quiz'); break; }
+        ui.deadline = ui.exam ? Date.now() + ui.qs.length * 60000 : null;
+        saveQuizRun(s.id, ui); renderSection(s, 'quiz'); if (ui.exam) startQuizTimer(s);
+        toast(`New ${ui.qs.length}-question ${ui.exam ? 'exam' : 'quiz'}.`);
+        break;
+      }
       case 'q-again': ui.seed++; ui.qs = visQuiz(s.id, Engine.quiz(state.analysis, { count: ui.count, types: ui.types, seed: ui.seed, only: ui.weakOnly ? new Set(weakTerms(s.id, 25).map(w => w.key)) : null })); ui.qi = 0; ui.answers = []; ui.pick = []; ui.startedAt = Date.now(); ui.deadline = ui.exam ? Date.now() + ui.qs.length * 60000 : null; renderSection(s, 'quiz'); if (ui.exam) startQuizTimer(s); break;
       case 'q-setup': ui.qs = null; ui.deadline = null; clearQuizRun(); clearInterval(state.timer); state.timer = null; renderSection(s, 'quiz'); break;
     }
@@ -3791,7 +4233,12 @@ const GENERIC = new Set('information data process system method result results s
   document.addEventListener('change', e => {
     const el = e.target;
     if (el.dataset.act === 'q-weak') { state.ui.weakOnly = el.checked; return; }
-    if (el.dataset.act === 'q-type') { const ui = state.ui; ui.types = ui.types || []; if (el.checked) { if (!ui.types.includes(el.dataset.k)) ui.types.push(el.dataset.k); } else ui.types = ui.types.filter(k => k !== el.dataset.k); $('[data-act="q-start"]').disabled = !ui.types.length; }
+    if (el.dataset.act === 'q-type') {
+      const ui = state.ui; ui.types = ui.types || [];
+      if (el.checked) { if (!ui.types.includes(el.dataset.k)) ui.types.push(el.dataset.k); } else ui.types = ui.types.filter(k => k !== el.dataset.k);
+      const start = $('[data-act="q-start"]'); if (start) start.disabled = !ui.types.length;
+      const build = $('[data-act="q-rebuild"]'); if (build) build.disabled = !ui.types.length;
+    }
   });
   document.addEventListener('click', e => {
     const sw = e.target.closest('.swatch');
