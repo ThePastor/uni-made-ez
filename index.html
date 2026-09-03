@@ -2996,6 +2996,101 @@ const GENERIC = new Set('information data process system method result results s
     if (!text) return false;
     try { return new RegExp('(^|[^\\w-])' + escRe(option) + '(?![\\w-])', 'i').test(text); } catch (e) { return false; }
   }
+  /* ---------- what makes one term a fair stand-in for another ----------
+     Two extra tests the first pass did not make. A sibling — another item from the same list the
+     material itself draws up ("the stages are glycolysis, the citric acid cycle and oxidative
+     phosphorylation") — is the ideal wrong answer: the same kind of thing, from the same lesson.
+     And an option is disqualified when the material would make the sentence true with it in place,
+     because then the "wrong" answer is not wrong and the student is marked down for being right. */
+  const contentWords = s => wordsOf(String(s || '')).map(lc).filter(w => w.length > 2 && !STOP.has(w)).map(w => w.replace(/(ies)$/, 'y').replace(/([^s])s$/, '$1'));
+
+  // every set of things the material lists together, as a term -> siblings map
+  function siblings(a) {
+    if (a._sibs) return a._sibs;
+    const m = new Map();
+    const pair = items => {
+      const keep = items.map(x => String(x).replace(/^(the|a|an)\s+/i, '').trim()).filter(x => x && wordsOf(x).length <= 6);
+      if (keep.length < 2) return;
+      for (const x of keep) {
+        const k = lc(x);
+        if (!m.has(k)) m.set(k, new Set());
+        for (const y of keep) if (lc(y) !== k) m.get(k).add(lc(y));
+      }
+    };
+    // "The stages of X are a, b and c" / "Types of X: a, b, c" — the engine already spots these
+    for (const d of a.defs) {
+      if (!CATEGORY_RE.test(d.term)) continue;
+      const items = listItems(d.def);
+      if (items) pair(items);
+    }
+    // and any sentence that names a category and then lists it
+    for (const st of a.sentences) {
+      if (st.dangling || st.len > 320) continue;
+      const mm = st.s.match(/\b(?:the\s+)?(?:\w+\s+)?(causes|types|kinds|functions|stages|steps|features|components|parts|effects|factors|categories|classes|phases|forms|methods|examples)\b[^:]{0,40}(?::|\bare\b|\binclude[s]?\b)\s+(.{10,240})$/i);
+      if (!mm) continue;
+      const items = listItems(mm[2]);
+      if (items) pair(items);
+    }
+    a._sibs = m;
+    return m;
+  }
+
+  // "Rubisco is the enzyme that…" -> enzyme. Two terms defined as the same kind of thing belong together.
+  function defHead(a, term) {
+    if (!a._heads) a._heads = new Map();
+    const key = lc(term);
+    if (a._heads.has(key)) return a._heads.get(key);
+    let head = null;
+    const d = a.defs.find(x => lc(x.term) === key);
+    if (d) {
+      const body = d.kind === 'is' || d.kind === 'weak' || d.kind === 'inverse'
+        ? String(d.sent).slice(String(d.sent).toLowerCase().indexOf(key) + key.length)
+        : String(d.def);
+      const m = body.match(/\b(?:is|are|was|were)\s+(?:a|an|the)\s+([a-z][a-z-]{2,})/i) || body.match(/^\s*(?:a|an|the)\s+([a-z][a-z-]{2,})/i);
+      if (m) head = lc(m[1]).replace(/([^s])s$/, '$1');
+    }
+    a._heads.set(key, head);
+    return head;
+  }
+
+  // Would the material make this sentence true with the option in the blank? If some other
+  // sentence mentions the option and repeats most of the same content words, it very likely would.
+  // how many sentences use this word at all — the rare ones are what a sentence is really about
+  function docFreq(a) {
+    if (a._df) return a._df;
+    const m = new Map();
+    for (const st of a.sentences) for (const w of new Set(contentWords(st.s))) m.set(w, (m.get(w) || 0) + 1);
+    a._df = m;
+    return m;
+  }
+  function alsoTrue(a, ctx, option, correct) {
+    if (!ctx || ctx.sentId == null) return false;
+    const src = a.sentences[ctx.sentId];
+    if (!src) return false;
+    // Compare the two sentences as claims, both ways. A sentence that says the same thing about
+    // the option is disqualifying; one that merely shares the verb frame is not, because what
+    // makes it a different claim is the distinctive content it adds — "the citric acid cycle
+    // takes place in the mitochondrial MATRIX" is not an answer to a question about the cytoplasm,
+    // and it is exactly the near-miss worth offering. Counting the extra words is what tells them
+    // apart, so this is a symmetric overlap, not a one-way one.
+    const own = new Set(contentWords(option).concat(contentWords(correct || '')));
+    const A = new Set(contentWords(String(ctx.text || src.s)).filter(w => !own.has(w)));
+    if (A.size < 4) return false;
+    let re;
+    try { re = new RegExp('(^|[^\\w-])' + escRe(option) + '(?![\\w-])', 'i'); } catch (e) { return false; }
+    for (const st of a.sentences) {
+      if (st.id === src.id || st.dangling || st.len < 30) continue;
+      if (!re.test(st.s)) continue;
+      const B = new Set(contentWords(st.s).filter(w => !own.has(w)));
+      if (!B.size) continue;
+      let both = 0;
+      for (const w of A) if (B.has(w)) both++;
+      const union = A.size + B.size - both;
+      if (union && both / union >= 0.6) return true;   // the material really does say this, about the option
+    }
+    return false;
+  }
+
   function distractors(a, correct, cat, rand, k = 3, ctx = null) {
     if (cat === 'num') return numberVariants(correct, rand, a).slice(0, k);
     const lcCorrect = lc(correct);
@@ -3005,6 +3100,8 @@ const GENERIC = new Set('information data process system method result results s
       ? { secs: new Set([a.sentences[ctx.sentId].section]), files: new Set([a.sentences[ctx.sentId].file].filter(Boolean)) }
       : termWhere(a, correct);
     const defined = new Set(a.defs.map(d => lc(d.term)));
+    const sibs = siblings(a).get(lcCorrect) || null;
+    const head = defHead(a, correct);
     const seen = new Set([lcCorrect]);
     const scored = [];
     const consider = (display, dcat) => {
@@ -3022,6 +3119,10 @@ const GENERIC = new Set('information data process system method result results s
       else { for (const f of w.files) if (home.files.has(f)) { score += 1; break; } }
       if (dcat && dcat === cat) score += 2;
       if (defined.has(key)) score += 1;
+      // a sibling from the material's own list is the best wrong answer there is
+      if (sibs && sibs.has(key)) score += 4;
+      // failing that, something the material defines as the same kind of thing
+      else if (head && defHead(a, display) === head) score += 2;
       score += Math.min(1, (w.count || 0) / 5) * 0.5;
       // shape: a student should not be able to pick the answer by its length alone
       score -= Math.abs(wordCount(display) - cw) * 1.2;
@@ -3031,7 +3132,14 @@ const GENERIC = new Set('information data process system method result results s
     for (const t of a.terms) consider(t.display, t.cat);
     for (const d of a.defs) consider(d.term, null);
     scored.sort((x, y) => y.score - x.score);
-    return scored.slice(0, k).map(x => x.display);
+    // the also-true test reads the whole material, so it is spent only on the options that won
+    const out = [];
+    for (const c of scored) {
+      if (out.length >= k) break;
+      if (alsoTrue(a, ctx, c.display, correct)) continue;
+      out.push(c.display);
+    }
+    return out;
   }
   // the classic tell: the right answer is the only long one, or the only short one
   function shapeOk(correct, wrong) {
@@ -3381,7 +3489,7 @@ const GENERIC = new Set('information data process system method result results s
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.0', date: '3 September 2026' };
+  const BUILD = { v: '2.1', date: '3 September 2026' };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonandy242', ['gmail', 'com'].join('.')].join('@');
   const OWNER_HASH = 'f2d29d4fd8c98b4205c0ffa7628eeeccfc3f2647ed0430748eac0d775cbc562d';
