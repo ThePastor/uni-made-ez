@@ -54,6 +54,6 @@ runs the tests and leaves the new `github/index.html` ready to publish.
 - Bump `const BUILD = { v, date }` at the top of `src/app.js` in the same change,
   so the footer proves the upload worked.
 - Run the test suites before handing the file over: `fixes`, `mine`, `e2e`,
-  `study`, `tools`, `keys2`, `a11y`, `exports`, `ocr`, `input`, `learn`, `structure`, `five`, `pwa`, `update`, `print`, `mobile`, `debug`, `longcard`.
+  `study`, `tools`, `keys2`, `a11y`, `exports`, `ocr`, `input`, `learn`, `structure`, `five`, `accuracy`, `pwa`, `update`, `print`, `mobile`, `debug`, `longcard`.
 - Publish the Claude artifact from `dist/unimadeez.html` too, so the artifact and
   the live site stay on the same build.
