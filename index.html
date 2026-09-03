@@ -1276,6 +1276,24 @@ math mi[mathvariant="normal"] { font-style: normal; }
 .ol-row input { margin-top: 3px; flex: 0 0 auto; }
 @media print { .cram-row, .ass-targets, .ass-mark input { display: none !important; } }
 
+/* ---------- reading load, pace and today's lecture ---------- */
+.read-load { display: grid; gap: 4px; padding: 12px 14px; background: var(--accent-soft); border-bottom: 1px solid var(--line); }
+.read-load strong { font-family: var(--font-display); font-weight: 500; font-size: 1.05rem; letter-spacing: -0.01em; }
+.read-load > span { font-size: .9rem; color: var(--ink-2); }
+.read-load .small { font-size: .78rem; }
+.read-load .label { color: var(--ink); margin-right: 2px; }
+.pace-row { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; margin-top: 4px; }
+.pace-row .fchip.on { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.mat-time { font-family: var(--font-mono); font-size: .62rem; letter-spacing: .06em; text-transform: uppercase; padding: 4px 7px; border: 1px solid var(--line-soft); background: var(--surface); color: var(--ink-2); cursor: pointer; white-space: nowrap; }
+.mat-time:hover { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.lecture { display: grid; gap: 8px; padding: 14px; }
+.lec-box { font-size: .95rem; line-height: 1.5; resize: vertical; min-height: 96px; }
+.lec-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.lec-row .spacer { flex: 1 1 auto; }
+.lec-row .btn.on { background: var(--bad-soft); color: var(--bad); border-color: var(--bad); }
+.lecture .warn-ink { font-size: .8rem; line-height: 1.45; }
+@media print { .lecture, .pace-row, .mat-time { display: none !important; } }
+
 </style>
 </head>
 <body>
@@ -3689,7 +3707,7 @@ const GENERIC = new Set('information data process system method result results s
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.2', date: '3 September 2026' };
+  const BUILD = { v: '2.3', date: '3 September 2026' };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonandy242', ['gmail', 'com'].join('.')].join('@');
   const OWNER_HASH = 'f2d29d4fd8c98b4205c0ffa7628eeeccfc3f2647ed0430748eac0d775cbc562d';
@@ -4422,7 +4440,7 @@ const GENERIC = new Set('information data process system method result results s
         <a class="sem-name" href="#/s/${s.id}"><span class="code"><i></i>${esc(s.code || 'Subject')}</span><strong>${esc(s.name)}</strong><span class="small muted">${plural(s.materials.length, 'file')}${toRead && s.materials.length ? ` · ${toRead} to read` : ''}${(() => { const oc = (progress[s.id] || {}).ocSum; return oc && oc.n ? ` · outcomes ${oc.cov}/${oc.n} covered${oc.gap ? `, <b class="warn-ink">${oc.gap} not</b>` : ''}` : ''; })()}${next ? ` · next: ${esc(next.title)} <b>${dlWhen(dlDays(next.date))}</b>` : ''}</span></a>
         <div class="sem-stats">
           <span class="ss"><b>${ex ? (ex.days >= 0 ? fmt(ex.days) : '—') : '—'}</b><span>${ex ? (ex.days >= 0 ? `days to exam${s.cram ? ' · exam mode' : ''}` : 'exam passed') : 'no exam set'}</span></span>
-          ${(() => { const mk = marksSummary(s); return `<span class="ss"><b>${mk.marked ? round1(mk.standing) + '%' : '—'}</b><span>${mk.marked ? `standing · ${round1(mk.earned)}% secured` : mk.n ? 'nothing marked yet' : 'no marks set up'}</span></span>`; })()}
+          ${(() => { const mk = marksSummary(s); return `<span class="ss"><b>${mk.marked ? round1(mk.standing) + '%' : '—'}</b><span>${mk.marked ? `standing · ${round1(mk.earned)}% secured` : mk.n ? 'nothing marked yet' : 'no marks set up'}</span>${mk.marked ? `<i class="bar" style="--pct:${Math.max(0, Math.min(100, round1(mk.standing)))}%"></i>` : ''}</span>`; })()}
           <a class="ss" href="#/s/${s.id}/cards"><b>${fmt(st.due)}</b><span>due now</span></a>
           <span class="ss"><b>${st.pool ? pct + '%' : '—'}</b><span>mastered</span><i class="bar" style="--pct:${pct}%"></i></span>
           <span class="ss"><b>${ago == null ? '—' : ago <= 0 ? 'today' : ago === 1 ? '1d' : ago + 'd'}</b><span>${ago == null ? 'not studied yet' : 'since studied'}</span></span>
@@ -4649,6 +4667,10 @@ const GENERIC = new Set('information data process system method result results s
           ${group('Learning outcomes', o.outcomes.length ? 'These fill the outcome map, which then checks them against your material.' : '', o.outcomes.map((t, i) => box('outcome:' + i, `${esc(t)}${existingOutcomes.includes(lc0(t)) ? '<span class="small muted">already in the map</span>' : ''}`, !existingOutcomes.includes(lc0(t)))).join(''), 'outcome')}
           ${group('What each piece of work is worth', o.assessments.length ? `They add up to <b>${wt}%</b>${Math.abs(wt - 100) > 0.5 ? ' — worth a check against the outline' : ''}.` : '', o.assessments.map((x, i) => box('assess:' + i, `<b>${esc(x.name)}</b> — ${esc(String(x.weight))}%`, true)).join(''), 'assess')}
           ${group('Dated work', o.deadlines.length ? 'These become items in Deadlines &amp; readings.' : '', o.deadlines.map((d, i) => box('deadline:' + i, `<b>${esc(d.title)}</b><span class="small muted">${esc(d.kind)} · ${esc(new Date(d.date + 'T00:00:00').toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' }))}${dlKeys.has(d.date + '|' + lc0(d.title)) ? ' · already tracked' : ''}</span>`, !dlKeys.has(d.date + '|' + lc0(d.title)))).join(''), 'deadline')}
+          ${(() => { const subj2 = curSubject(); const pre = subj2 ? matchFilesToWeeks({ ...subj2, syllabus: o.weeks }) : [];
+            m.matches = pre;
+            return group('Label your files by week', pre.length ? 'Only files you have not labelled yourself, and only where the match is unambiguous.' : '',
+              pre.map((x, i) => box('week:' + i, `<b>${esc(x.name)}</b> \u2192 Week ${esc(String(x.week))}${x.topic ? ' · ' + esc(x.topic) : ''}<span class="small muted">${esc(x.why)}</span>`, true)).join(''), 'week'); })()}
           ${group('The weekly schedule', o.weeks.length ? 'Kept as the course schedule, so the week chips on this subject carry their topic. Labelling a file with a week stays your call.' : '', o.weeks.length ? box('weeks', `Keep the schedule for <b>${plural(o.weeks.length, 'week')}</b><span class="small muted">${esc(o.weeks.slice(0, 3).map(w => 'Week ' + w.n + ': ' + w.topic).join(' · '))}${o.weeks.length > 3 ? ' …' : ''}</span>`, true) + (o.weeks.some(w => w.readings && w.date) ? box('readings', `Also add <b>${plural(o.weeks.filter(w => w.readings && w.date).length, 'weekly reading')}</b> as dated items`, false) : '') : '', 'weeks')}
         </div>
         <div class="modal-foot btn-row" style="justify-content:flex-end"><button type="button" class="btn ghost" data-act="close-modal">Cancel</button><button type="submit" class="btn primary">Add what is ticked <span class="arr">→</span></button></div>
@@ -4786,6 +4808,19 @@ const GENERIC = new Set('information data process system method result results s
         </div>
       </form></div>`;
     }
+    if (m.type === 'pace') {
+      const f = m.file || {};
+      const est = readMins(f.words || 0, paceOf(m.subject));
+      return `<div class="modal-bg" data-act="close-modal"><form class="modal" data-form="pace">
+        <div class="modal-head"><div><span class="label">How long did it take?</span><h2>${esc(f.name || 'This file')}</h2></div><button type="button" class="btn ghost icon" data-act="close-modal" aria-label="Close">${I.x}</button></div>
+        <div class="modal-body">
+          <input type="hidden" name="id" value="${esc(f.id || '')}">
+          <p class="muted small">${fmt(f.words || 0)} words. The app guessed ${hhmm(est)}. Tell it the truth and every other estimate on this subject gets better.</p>
+          <div class="field"><label for="p-mins">Minutes you spent reading it</label><input class="input" id="p-mins" name="mins" type="number" min="1" max="600" step="1" inputmode="numeric" value="${est}" required></div>
+        </div>
+        <div class="modal-foot"><span class="spacer" style="flex:1"></span><button type="button" class="btn sm" data-act="close-modal">Cancel</button><button class="btn sm primary" type="submit">Save <span class="arr">\u2192</span></button></div>
+      </form></div>`;
+    }
     if (m.type === 'confirm') {
       return `<div class="modal-bg" data-act="close-modal"><div class="modal">
         <h2>${esc(m.title)}</h2><p class="muted">${esc(m.body)}</p>
@@ -4796,6 +4831,136 @@ const GENERIC = new Set('information data process system method result results s
   }
 
   /* ---------- subject page ---------- */
+  /* ---------- today's lecture ----------
+     Typed or pasted while the lecture is happening, kept as you go, and turned into material at the
+     end with the week already on it. Dictation is offered where the browser has it, but it is the
+     one thing in this app that leaves the device — the browser sends the audio away to be turned
+     into text — so it is off until it is explicitly turned on, and it says so plainly. */
+  const SPEECH_REC = typeof window !== 'undefined' && (window.SpeechRecognition || window.webkitSpeechRecognition);
+  let dictation = null;
+  function lectureTitle(s) {
+    const wk = currentWeek(s);
+    const w = (s.syllabus || []).find(x => String(x.n) === String(wk));
+    const when = new Date().toLocaleDateString(undefined, { day: 'numeric', month: 'short' });
+    return `Lecture ${when}${wk ? ` · Week ${wk}` : ''}${w && w.topic ? ` · ${w.topic}` : ''}`;
+  }
+  function lectureHtml(s) {
+    const draft = s.lectureDraft || '';
+    const words = draft.trim() ? draft.trim().split(/\s+/).length : 0;
+    const wk = currentWeek(s);
+    return `<div class="lecture">
+      <label class="sr-only" for="lec-text">Notes from today's lecture</label>
+      <textarea class="input lec-box" id="lec-text" rows="5" data-act="lec-type" placeholder="Type or paste as the lecture goes. It is kept as you type, and stays here until you add it.">${esc(draft)}</textarea>
+      <div class="lec-row">
+        <span class="small muted">${words ? `${fmt(words)} words kept${wk ? ` · will be filed as week ${wk}` : ''}` : 'Nothing yet'}</span>
+        <span class="spacer"></span>
+        ${SPEECH_REC ? `<button type="button" class="btn sm ghost${dictation ? ' on' : ''}" data-act="lec-dictate">${dictation ? '\u25A0 Stop dictation' : '\u25CF Dictate'}</button>` : ''}
+        <button type="button" class="btn sm ghost" data-act="lec-clear" ${words ? '' : 'disabled'}>Clear</button>
+        <button type="button" class="btn sm primary" data-act="lec-add" ${words ? '' : 'disabled'}>Add to this subject <span class="arr">\u2192</span></button>
+      </div>
+      ${dictation ? `<p class="small warn-ink">Listening. Your voice is being sent to your browser\u2019s speech service to be turned into text — nothing else in this app leaves your device.</p>` : ''}
+    </div>`;
+  }
+  function startDictation(s) {
+    if (!SPEECH_REC) return;
+    const rec = new SPEECH_REC();
+    rec.continuous = true; rec.interimResults = false;
+    try { rec.lang = navigator.language || 'en-US'; } catch (e) { /* default */ }
+    rec.onresult = e => {
+      let add = '';
+      for (let i = e.resultIndex; i < e.results.length; i++) if (e.results[i].isFinal) add += e.results[i][0].transcript;
+      if (!add.trim()) return;
+      const subj = curSubject(); if (!subj) return;
+      subj.lectureDraft = ((subj.lectureDraft || '') + ' ' + add.trim()).trim();
+      saveIndex();
+      const box = $('#lec-text'); if (box) { box.value = subj.lectureDraft; }
+    };
+    rec.onerror = ev => { dictation = null; toast(ev && ev.error === 'not-allowed' ? 'The microphone was refused.' : 'Dictation stopped.'); renderIfSubject(s); };
+    rec.onend = () => { if (dictation) { dictation = null; renderIfSubject(s); } };
+    try { rec.start(); dictation = rec; } catch (e) { dictation = null; toast('Dictation could not start.'); }
+  }
+
+  /* ---------- reading load, and matching files to the weeks ----------
+     The outline gives the term its shape; these two make it useful. A file whose name says
+     "week 3", or whose name echoes week 3's topic, can be labelled without the student doing it
+     by hand — but only after they have seen the match, because a wrong label sends them to the
+     wrong revision. And the app knows how many words each file holds, so it can say what this
+     week's reading actually costs in minutes at a pace the student sets or measures. */
+  const fileStemWords = name => String(name || '').replace(/\.[^.]+$/, '').split(/[^A-Za-z0-9]+/).filter(Boolean);
+  function matchFilesToWeeks(s) {
+    const weeks = s.syllabus || [];
+    if (!weeks.length) return [];
+    const out = [];
+    for (const m of s.materials) {
+      if (m.err || m.busy || m.week) continue;                    // never overwrite a label they set
+      const words = fileStemWords(m.name);
+      const joined = words.join(' ').toLowerCase();
+      // the file says which week it is
+      const named = String(m.name).match(/\b(?:week|wk|w)[\s_-]*(\d{1,2})\b/i);
+      if (named) {
+        const w = weeks.find(x => String(x.n) === String(+named[1]));
+        if (w) { out.push({ id: m.id, name: m.name, week: w.n, topic: w.topic || '', why: 'the file name says so' }); continue; }
+      }
+      // or its name echoes a week's topic
+      let best = null;
+      for (const w of weeks) {
+        const topic = contentish(w.topic || '');
+        if (topic.length < 2) continue;
+        const hit = topic.filter(t => joined.includes(t)).length;
+        if (hit >= 2 && (!best || hit > best.hit)) best = { w, hit };
+        else if (hit >= 2 && best && hit === best.hit) best.tie = true;
+      }
+      if (best && !best.tie) out.push({ id: m.id, name: m.name, week: best.w.n, topic: best.w.topic || '', why: 'the topic matches' });
+    }
+    return out;
+  }
+  const contentish = t => String(t || '').toLowerCase().split(/[^a-z0-9]+/).filter(w => w.length > 3);
+
+  /* ---------- how long the reading actually takes ---------- */
+  const WPM_DEFAULT = 180;                       // textbook prose, not a novel
+  const paceOf = s => Math.max(60, Math.min(500, Math.round(+s.wpm || WPM_DEFAULT)));
+  const readMins = (words, wpm) => Math.max(1, Math.round((words || 0) / wpm));
+  const hhmm = mins => mins >= 60 ? `${Math.floor(mins / 60)} h${mins % 60 ? ' ' + (mins % 60) + ' min' : ''}` : `${mins} min`;
+  // which week the course is in today, from the schedule the outline gave us
+  function currentWeek(s) {
+    const syl = s.syllabus || [];
+    const today = dayKey();
+    let best = null;
+    for (const w of syl) if (w.date && w.date <= today) best = w;
+    return best ? best.n : null;
+  }
+  // a pace the student measured beats a pace they guessed
+  function recordPace(s, words, mins) {
+    if (!words || !mins || mins <= 0) return;
+    s.paceSamples = (s.paceSamples || []).concat([{ words, mins }]).slice(-8);
+    const w = s.paceSamples.reduce((n, x) => n + x.words, 0);
+    const t = s.paceSamples.reduce((n, x) => n + x.mins, 0);
+    if (t > 0) s.wpm = Math.max(60, Math.min(500, Math.round(w / t)));
+  }
+  function readingLoad(s) {
+    const wpm = paceOf(s);
+    const usable = s.materials.filter(m => !m.err && !m.busy && m.words);
+    const unread = usable.filter(m => m.status !== 'read');
+    const wk = currentWeek(s);
+    const thisWeek = wk ? unread.filter(m => String(m.week || '') === String(wk)) : [];
+    const sum = list => list.reduce((n, m) => n + (m.words || 0), 0);
+    return { wpm, unread, words: sum(unread), wk, thisWeek, thisWeekWords: sum(thisWeek), samples: (s.paceSamples || []).length };
+  }
+  const PACES = [120, 150, 180, 220, 260];
+  function readingLoadHtml(s) {
+    const r = readingLoad(s);
+    if (!r.unread.length) return s.materials.length ? `<p class="small muted">Everything uploaded is marked read. Tap a file's badge to put it back on the list.</p>` : '';
+    const pace = r.samples
+      ? `your measured pace, <b>${r.wpm}</b> words a minute from ${plural(r.samples, 'reading')} you timed`
+      : `<b>${r.wpm}</b> words a minute — an estimate, not a measurement`;
+    return `<div class="read-load">
+      <strong>${plural(r.unread.length, 'file')} still to read · about ${hhmm(readMins(r.words, r.wpm))}</strong>
+      ${r.wk && r.thisWeek.length ? `<span>Week ${esc(String(r.wk))} on its own: about ${hhmm(readMins(r.thisWeekWords, r.wpm))}.</span>` : ''}
+      <span class="small muted">At ${pace}. Tap ⏱ on a file after you read it to correct this.</span>
+      <div class="pace-row"><span class="label">Pace</span>${PACES.map(p => `<button type="button" class="fchip pick${p === r.wpm ? ' on' : ''}" data-act="pace-set" data-v="${p}">${p}</button>`).join('')}<span class="small muted">words a minute</span></div>
+    </div>`;
+  }
+
   /* ---------- exam mode: fitting the deck to the date ---------- */
   function cramCap(sid, now, ivlDays) {
     const s = subjectById(sid);
@@ -4955,8 +5120,11 @@ const GENERIC = new Set('information data process system method result results s
           </div>
           <div class="panel-head slim"><h2>Marks</h2><span class="label">what you need</span></div>
           <div class="panel-body">${marksHtml(s)}</div>
+          <div class="panel-head slim"><h2>Today's lecture</h2><span class="label">kept as you type</span></div>
+          <div class="panel-body">${lectureHtml(s)}</div>
           <div class="panel-head slim"><h2>Deadlines &amp; readings</h2><button class="btn sm ghost" data-act="dl-add">+ Add</button></div>
           <div class="panel-body">
+            ${readingLoadHtml(s)}
             ${deadlineListHtml(s)}
             ${(() => { const toRead = s.materials.filter(m => !m.err && !m.busy && m.status !== 'read').length; return toRead && s.materials.length > 1 ? `<p class="small muted">${plural(toRead, 'file')} still to read — the badge on each file marks it off.</p>` : ''; })()}
           </div>
@@ -5035,6 +5203,8 @@ const GENERIC = new Set('information data process system method result results s
     const cls = ['mat', m.busy ? 'busy' : '', m.err ? 'error' : '', m.include === false ? 'off' : '', m.scan && !m.busy ? 'scan' : ''].filter(Boolean).join(' ');
     const info = m.busy ? (m.stage ? `${esc(m.stage)}${m.progress ? ` · ${m.progress}%` : ''}` : `Scanning${m.progress != null ? ` · ${m.progress}%` : '…'}`) : m.err ? esc(m.err) : `${fmt(m.words)} words · ${esc(m.label || m.ext)}${m.ocr ? ' · read by OCR' : ''}${m.figs ? ` · ${plural(m.figs, 'figure')}` : ''}`;
     const st = STATUS_META[m.status || ''] || STATUS_META[''];
+    const subjNow = curSubject();
+    const mins = !m.busy && !m.err && m.words && m.status !== 'read' && subjNow ? readMins(m.words, paceOf(subjNow)) : 0;
     const chips = `${m.tag ? `<span class="fchip">${esc(m.tag)}</span>` : ''}${m.week ? `<span class="fchip wk">Week ${esc(m.week)}</span>` : ''}`;
     // a scan (or a photo) that has not been read yet: the reader, or where to find it
     let scanRow = '';
@@ -5051,6 +5221,7 @@ const GENERIC = new Set('information data process system method result results s
     return `<div class="${cls}" data-mid="${m.id}">
       <input type="checkbox" class="check" data-act="toggle-mat" data-id="${m.id}" ${m.include !== false ? 'checked' : ''} ${m.busy || m.err ? 'disabled' : ''} aria-label="Include ${esc(m.name)}">
       <div style="min-width:0"><div class="name">${esc(m.name)}</div><div class="info">${info}</div>${chips ? `<div class="fchips">${chips}</div>` : ''}${m.busy ? `<div class="progress"><i style="width:${m.progress || 3}%"></i></div>` : ''}${scanRow}</div>
+      ${mins ? `<button type="button" class="mat-time" data-act="pace-time" data-id="${m.id}" title="About ${hhmm(mins)} to read — tap to say how long it really took">${hhmm(mins)} <span aria-hidden="true">\u23F1</span><span class="sr-only">, tell the app how long this took to read</span></button>` : ''}
       ${m.busy || m.err ? '' : `<button type="button" class="fstat ${st[1]}" data-act="mat-status" data-id="${m.id}" aria-label="${st[0]} — tap to change">${st[0]}</button>`}
       <button type="button" class="btn sm ghost more-btn" data-act="mat-open" data-id="${m.id}" aria-label="Options for ${esc(m.name)}">⋯</button>
     </div>`;
@@ -6967,6 +7138,54 @@ const GENERIC = new Set('information data process system method result results s
       case 'oc-clear': { const s2 = curSubject(); if (!s2) break; const old = s2.outcomes || []; s2.outcomes = []; if (progress[s2.id]) delete progress[s2.id].ocSum; saveIndex(); saveProgress(); state.modal = null; syncModal(); renderSection(s2, 'outcomes'); toast('Outcomes removed.', { label: 'Undo', act: () => { s2.outcomes = old; saveIndex(); renderSection(s2, 'outcomes'); } }); break; }
       case 'log-export': { const csv = logCsv([s]); if (!logOf(s.id).length) { toast('Nothing logged yet — study something first.'); break; } saveFile(`${fileStem(s.code || s.name)}-study-log.csv`, csv, 'text/csv', 'Study log'); break; }
       case 'log-export-all': { const subs = state.subjects.filter(x => logOf(x.id).length); if (!subs.length) { toast('Nothing logged yet — study something first.'); break; } saveFile(`unimadeez-study-log-${today()}.csv`, logCsv(subs), 'text/csv', 'Study log · all subjects'); break; }
+      case 'pace-set': {
+        if (!s) break;
+        s.wpm = Math.max(60, Math.min(500, parseInt(el.dataset.v, 10) || WPM_DEFAULT));
+        s.paceSamples = [];                       // a pace they chose replaces the ones they timed
+        saveIndex(); renderIfSubject(s);
+        say(`Reading pace set to ${s.wpm} words a minute.`);
+        break;
+      }
+      case 'pace-time': {
+        if (!s) break;
+        const f = s.materials.find(m => m.id === el.dataset.id);
+        if (f) { state.modal = { type: 'pace', subject: s, file: f }; syncModal(); $('#p-mins')?.select(); }
+        break;
+      }
+      case 'lec-dictate': {
+        if (!s) break;
+        if (dictation) { const rec = dictation; dictation = null; try { rec.stop(); } catch (err) { /* already stopped */ } renderIfSubject(s); say('Dictation stopped.'); break; }
+        if (!SPEECH_REC) { toast('This browser has no speech recognition.'); break; }
+        const go2 = () => { state.lecMicOk = true; startDictation(s); renderIfSubject(s); };
+        if (state.lecMicOk) { go2(); break; }
+        state.modal = { type: 'confirm', title: 'Turn on dictation?', yes: 'Turn it on',
+          body: 'Everything else in this app stays on your device. Dictation does not: your browser sends the audio of your voice to its own speech service — for most browsers that means a server owned by the people who made it — and sends text back. Nothing from your files or your progress goes with it. Turn it on only if you are content with that.',
+          onYes: go2 };
+        syncModal();
+        break;
+      }
+      case 'lec-clear': {
+        if (!s) break;
+        const had = s.lectureDraft || '';
+        if (!had.trim()) break;
+        s.lectureDraft = ''; saveIndex(); renderIfSubject(s);
+        toast('Lecture notes cleared.', { label: 'Undo', act: () => { s.lectureDraft = had; saveIndex(); renderIfSubject(s); } });
+        break;
+      }
+      case 'lec-add': {
+        if (!s) break;
+        const draft = (s.lectureDraft || '').trim();
+        if (!draft) break;
+        if (dictation) { const rec = dictation; dictation = null; try { rec.stop(); } catch (err) { /* already stopped */ } }
+        const title = lectureTitle(s), wk = currentWeek(s), n = s.materials.length;
+        s.lectureDraft = ''; saveIndex();
+        addPasted(s, title, draft).then(() => {
+          const m2 = s.materials[n];
+          if (m2 && !m2.err) { m2.tag = m2.tag || 'Lecture'; if (wk && !m2.week) m2.week = String(wk); saveIndex(); renderIfSubject(s); }
+          else if (m2 && m2.err) { s.lectureDraft = draft; saveIndex(); renderIfSubject(s); }   // give it back
+        });
+        break;
+      }
       case 'week-revise': { const w = el.dataset.w; s.materials.forEach(m => { if (m.err) return; m.include = String(m.week || '') === String(w); if (m.include && m.dup) m.dupOk = true; }); saveIndex(); invalidateAnalysis(); state.ui = {}; toast(`Studying week ${w} only.`); go(`/s/${s.id}/cards`); break; }
       case 'backup-all': state.modal = null; syncModal(); saveBackup(state.subjects, 'all-subjects'); break;
       case 'backup-subject': if (s) saveBackup([s], s.code || s.name); break;
@@ -7114,6 +7333,24 @@ const GENERIC = new Set('information data process system method result results s
     const q = f.value.trim().toLowerCase();
     document.querySelectorAll('#overlay .modal-list > *').forEach(el => { el.hidden = q && !el.textContent.toLowerCase().includes(q); });
   });
+  let lecSaveT = null;
+  document.addEventListener('input', e => {
+    const el = e.target;
+    if (!el || el.dataset.act !== 'lec-type') return;
+    const s = curSubject(); if (!s) return;
+    s.lectureDraft = el.value;
+    clearTimeout(lecSaveT);
+    lecSaveT = setTimeout(() => { saveIndex(); const row = $('.lecture .lec-row'); if (row) syncLecRow(s); }, 500);
+  });
+  // keep the word count and the buttons honest without pulling the textarea out from under the cursor
+  function syncLecRow(s) {
+    const draft = s.lectureDraft || '';
+    const words = draft.trim() ? draft.trim().split(/\s+/).length : 0;
+    const wk = currentWeek(s);
+    const lab = $('.lecture .lec-row .small');
+    if (lab) lab.textContent = words ? `${fmt(words)} words kept${wk ? ` \u00b7 will be filed as week ${wk}` : ''}` : 'Nothing yet';
+    document.querySelectorAll('.lecture [data-act="lec-clear"], .lecture [data-act="lec-add"]').forEach(b => { b.disabled = !words; });
+  }
   document.addEventListener('change', e => {
     const el = e.target;
     if (el.matches && el.matches('[data-restore]')) { const f = el.files && el.files[0]; el.value = ''; restoreFromFile(f); return; }
@@ -7207,6 +7444,16 @@ const GENERIC = new Set('information data process system method result results s
       else { const item = { id: uid(), name, weight }; if (mark != null) item.mark = mark; list.push(item); }
       saveIndex(); state.modal = null; syncModal(); renderSubject(subj);
       toast(data.id ? 'Saved.' : `Added — ${name} is worth ${weight}%.`);
+    } else if (form.dataset.form === 'pace') {
+      const subj = subjectById(r.id); if (!subj) return;
+      const f = subj.materials.find(m => m.id === data.id);
+      const mins = Math.max(1, Math.min(600, parseInt(data.mins, 10) || 0));
+      if (f && mins) {
+        recordPace(subj, f.words || 0, mins);
+        if (!f.status) f.status = 'read';
+        saveIndex(); state.modal = null; syncModal(); renderSubject(subj);
+        toast(`Noted \u2014 your pace is about ${paceOf(subj)} words a minute.`);
+      } else { state.modal = null; syncModal(); }
     } else if (form.dataset.form === 'outline') {
       const subj = subjectById(r.id); if (!subj) return;
       let text = String(data.text || '').trim();
@@ -7249,6 +7496,13 @@ const GENERIC = new Set('information data process system method result results s
         if (added) done.push(plural(added, 'dated item'));
       }
       if (picks.has('weeks') && o.weeks.length) { subj.syllabus = o.weeks; done.push(`the ${plural(o.weeks.length, 'week')} schedule`); }
+      const matches = (state.modal && state.modal.matches) || [];
+      const wantWeeks = matches.filter((x, i) => picks.has('week:' + i));
+      if (wantWeeks.length) {
+        let n = 0;
+        for (const x of wantWeeks) { const f = subj.materials.find(m2 => m2.id === x.id); if (f && !f.week) { f.week = String(x.week); n++; } }
+        if (n) done.push(`${n} ${n === 1 ? 'file labelled' : 'files labelled'} by week`);
+      }
       saveIndex(); saveProgress(); state.modal = null; syncModal(); renderSubject(subj);
       toast(done.length ? `Added ${done.join(', ')}.` : 'Nothing was ticked, so nothing was added.');
     } else if (form.dataset.form === 'deadline') {
