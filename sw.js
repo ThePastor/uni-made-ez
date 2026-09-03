@@ -1,8 +1,8 @@
-/* UNI Made EZ — service worker, build 1.9.1.
+/* UNI Made EZ — service worker, build 2.0.
    Keeps a copy of the page so it opens with no connection, and lets the browser install it
    to a home screen. The whole app is one file, so the "offline copy" really is just that file
    plus its icons; nothing here touches your subjects, which live in the browser's own storage. */
-const V = '1.9.1';
+const V = '2.0';
 const APP = 'umez-app-v' + V;      // the page and its icons, replaced whole on every build
 const RUNTIME = 'umez-runtime-v1'; // web fonts, kept across builds
 
@@ -24,6 +24,15 @@ self.addEventListener('activate', e => {
 // the page asks for the new build to take over when you press Reload on its toast
 self.addEventListener('message', e => { if (e.data && e.data.type === 'skip-waiting') self.skipWaiting(); });
 
+// A stalled connection is not the same as no connection. Without a deadline the worker can sit
+// waiting on a request that will never answer — and because the worker owns the response, the
+// page's load event never fires and the tab spins. Every network call it makes gets a deadline.
+function timedFetch(req, ms) {
+  const ctl = new AbortController();
+  const t = setTimeout(() => ctl.abort(), ms);
+  return fetch(req, { signal: ctl.signal }).finally(() => clearTimeout(t));
+}
+
 self.addEventListener('fetch', e => {
   const req = e.request;
   if (req.method !== 'GET') return;
@@ -34,7 +43,7 @@ self.addEventListener('fetch', e => {
   if (req.mode === 'navigate') {
     e.respondWith((async () => {
       try {
-        const fresh = await fetch(req);
+        const fresh = await timedFetch(req, 4000);
         if (fresh && fresh.ok) { const c = await caches.open(APP); await c.put('./index.html', fresh.clone()); }
         return fresh;
       } catch (err) {
@@ -49,10 +58,10 @@ self.addEventListener('fetch', e => {
 
   // Icons and the manifest: from the cache, which is where they were put at install.
   if (url.origin === location.origin) {
-    e.respondWith(caches.match(req).then(hit => hit || fetch(req).then(res => {
+    e.respondWith(caches.match(req).then(hit => hit || timedFetch(req, 6000).then(res => {
       if (res && res.ok) { const copy = res.clone(); caches.open(APP).then(c => c.put(req, copy)); }
       return res;
-    }).catch(() => hit)));
+    }).catch(() => hit || Response.error())));
     return;
   }
 
@@ -61,10 +70,10 @@ self.addEventListener('fetch', e => {
   if (url.hostname === 'fonts.googleapis.com' || url.hostname === 'fonts.gstatic.com') {
     e.respondWith(caches.open(RUNTIME).then(async c => {
       const hit = await c.match(req);
-      const net = fetch(req).then(res => {
+      const net = timedFetch(req, 5000).then(res => {
         if (res && (res.ok || res.type === 'opaque')) c.put(req, res.clone());
         return res;
-      }).catch(() => hit);
+      }).catch(() => hit || Response.error());
       return hit || net;
     }));
   }

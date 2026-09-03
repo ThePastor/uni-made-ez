@@ -1246,6 +1246,35 @@ math mi[mathvariant="normal"] { font-style: normal; }
 .disp-btn.update { width: auto; padding: 0 9px; display: inline-flex; align-items: center; gap: 6px; text-transform: uppercase; letter-spacing: .06em; background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
 .disp-btn.update svg { width: 13px; height: 13px; display: block; }
 @media (max-width: 900px) { .disp-btn.update .lbl { display: none; } .disp-btn.update { padding: 0 7px; } }
+/* ---------- marks, exam mode and the outline import ---------- */
+.ass-list { list-style: none; margin: 0 0 4px; padding: 0; display: grid; gap: 6px; }
+.ass { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border: 1px solid var(--line-soft); background: var(--surface); }
+.ass-open { flex: 1; min-width: 0; display: grid; gap: 1px; text-align: left; font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+.ass-open strong { font-weight: 500; }
+.ass-open .small { color: var(--ink-2); }
+.ass-open:hover strong, .ass-open:focus-visible strong { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+.ass.marked { background: var(--surface-2); }
+.ass-mark { display: inline-flex; align-items: center; gap: 3px; }
+.ass-mark input { width: 62px; font-family: var(--font-mono); font-size: .85rem; padding: 5px 6px; text-align: right; border: 1px solid var(--line-soft); background: var(--surface); color: var(--ink); }
+.ass-mark input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.ass-mark i { font-style: normal; font-family: var(--font-mono); font-size: .72rem; color: var(--ink-2); }
+.ass-verdict { display: grid; gap: 8px; padding: 12px 14px; background: var(--accent-soft); }
+.ass-verdict p { margin: 0; font-size: .95rem; }
+.ass-targets { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.ass-verdict .label { color: var(--ink); }
+.ass-targets .fchip.on { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.cram-row { display: flex; flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; border-bottom: 1px solid var(--line); background: var(--warn-soft); }
+.cram-row > div { display: grid; gap: 3px; min-width: 0; flex: 1 1 320px; }
+.cram-row strong { font-family: var(--font-display); font-weight: 500; font-size: 1.05rem; letter-spacing: -0.01em; }
+.cram-row.on { background: var(--accent-soft); }
+.ol-group { display: grid; gap: 6px; padding: 14px 0; border-top: 1px solid var(--line-soft); }
+.ol-group:first-of-type { border-top: 0; padding-top: 0; }
+.ol-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.ol-head h3 { font-family: var(--font-display); font-size: 1rem; font-weight: 500; letter-spacing: -0.01em; }
+.ol-row { align-items: flex-start; gap: 10px; padding: 7px 9px; background: var(--surface-2); font-size: .92rem; line-height: 1.45; }
+.ol-row .small { display: block; color: var(--ink-2); margin-top: 2px; }
+.ol-row input { margin-top: 3px; flex: 0 0 auto; }
+@media print { .cram-row, .ass-targets, .ass-mark input { display: none !important; } }
 
 </style>
 </head>
@@ -2233,6 +2262,14 @@ const GENERIC = new Set('information data process system method result results s
   const DEF_VERBS = '(?:is|are|was|were)\\s+(?:(?:a|an|the|any|one|some)\\s+|(?:defined|referred\\s+to|known|described|characterized|characterised)\\s+as\\s+|(?:called|termed)\\s+)?|refers?\\s+to\\s+|means\\s+|describes?\\s+|denotes?\\s+|consists?\\s+of\\s+|involves?\\s+|occurs?\\s+when\\s+|(?:is|are)\\s+(?:the|a)\\s+(?:process|study|ability|measure|set|amount|tendency|degree|rate|point|state)\\s+(?:of|by|in|at|which|that|whereby)\\s+';
   const DEF_RE = new RegExp('^(?:(?:The|A|An)\\s+)?([A-Z][\\w\'’\\-]*(?:\\s+[\\w\'’\\-]+){0,4}?)\\s+(?:\\([^)]{1,40}\\)\\s+)?(?:' + DEF_VERBS + ')(.{20,})$');
   const WEAK_VERB = /^\s*(?:\([^)]*\)\s*)?(?:consists?|involves?|occurs?|describes?|denotes?)\b/;
+  // Wording the engine must not treat as a plain statement of fact. A term swapped inside a
+  // negated or contrastive clause can come out accidentally TRUE — marking the student wrong
+  // for being right — and a hedged sentence ("may", "is thought to") makes a true/false
+  // question unanswerable, because almost anything "may" be so.
+  const NEG_RE = /\b(?:not|no|never|cannot|can't|won't|doesn't|does not|do not|don't|isn't|is not|aren't|are not|wasn't|weren't|without|except|neither|nor|nothing|none|fails? to|failed to|lacks?|lacking|absence of|rather than|instead of|other than)\b/i;
+  const CONTRAST_RE = /(^|[.;]\s*)(?:unlike|in contrast(?: to| with)?|as opposed to|whereas|while|although|though|by contrast|conversely|on the other hand)\b/i;
+  const HEDGE_RE = /\b(?:may|might|could|can be|appears? to|seems? to|is thought to|are thought to|is believed to|are believed to|is considered|are considered|suggests?|suggesting|likely|unlikely|possibly|probably|perhaps|approximately|roughly|about|around|generally|typically|usually|often|sometimes|in some cases|tends? to|is associated with|are associated with|has been proposed)\b/i;
+  const riskyToSwap = s => NEG_RE.test(s) || CONTRAST_RE.test(s);
   const COLON_RE = /^([A-Z][^:;,.]{1,60}?):\s+([^.]{20,}.*)$/;
   const DASH_RE = /^([A-Z][^—–:;,.]{1,60}?)\s+[—–]\s+(.{20,})$/;
   const INV_RE = /\b(?:is|are)\s+(?:called|known\s+as|termed|referred\s+to\s+as)\s+(?:a\s+|an\s+|the\s+)?["“]?([A-Za-z][\w'’\-]*(?:\s+[\w'’\-]+){0,3}?)["”]?[.,;:]/;
@@ -2262,7 +2299,11 @@ const GENERIC = new Set('information data process system method result results s
       const dkey = lc(def).replace(/\W+/g, ' ');
       if (seenDef.has(dkey)) return;
       seen.add(key); seenDef.add(dkey);
-      defs.push({ term, def, sent: sent.s, id: sent.id, kind });
+      const entry = { term, def, sent: sent.s, id: sent.id, kind };
+      if (HEDGE_RE.test(def)) entry.hedge = true;
+      if (CONTRAST_RE.test(sent.s)) entry.contrast = true;
+      if (NEG_RE.test(def)) entry.neg = true;
+      defs.push(entry);
     };
     for (const sent of a.sentences) {
       const s = sent.s;
@@ -2812,7 +2853,9 @@ const GENERIC = new Set('information data process system method result results s
   function clozeFor(a, term, excludeIds = new Set()) {
     const re = new RegExp('(^|[^\\w-])(' + escRe(term) + ')(?![\\w-])', 'i');
     const longer = a.terms.filter(k => k.key !== lc(term) && (' ' + k.key + ' ').includes(' ' + lc(term) + ' ')).map(k => new RegExp('\\b' + escRe(k.display) + '\\b', 'i'));
-    const cands = a.sentences.filter(s => !excludeIds.has(s.id) && !s.dangling && s.len >= (s.li ? 70 : 45) && s.len <= 230 && re.test(s.s) && !longer.some(L => L.test(s.s)));
+    const twice = new RegExp('(^|[^\\w-])' + escRe(term) + '(?![\\w-])', 'gi');
+    const cands = a.sentences.filter(s => !excludeIds.has(s.id) && !s.dangling && s.len >= (s.li ? 70 : 45) && s.len <= 230 && re.test(s.s) && !longer.some(L => L.test(s.s))
+      && (String(s.s).match(twice) || []).length === 1);
     if (!cands.length) return null;
     // prefer sentences where the term appears once and which read well
     cands.sort((x, y) => sentenceWeight(a, y) - sentenceWeight(a, x));
@@ -2892,7 +2935,7 @@ const GENERIC = new Set('information data process system method result results s
   }
 
   /* ---------- quiz ---------- */
-  function numberVariants(n, rand) {
+  function numberVariants(n, rand, a) {
     const m = n.match(/^([^\d]*)([\d,]+(?:\.\d+)?)(.*)$/);
     if (!m) return [];
     const raw = m[2].replace(/,/g, '');
@@ -2905,24 +2948,99 @@ const GENERIC = new Set('information data process system method result results s
       return m[1] + s + m[3];
     };
     const out = new Set();
+    // a percentage cannot exceed 100, and a step has to be visible at this magnitude:
+    // 50,001 beside 50,000 is not a choice, and 103 beside 3 is not a temptation
+    const isPct = /%/.test(m[3] || '') || /%/.test(m[1] || '');
+    const cap = isPct ? 100 : Infinity;
+    const step = Math.max(dec ? Math.pow(10, -dec) : 1, Math.pow(10, Math.floor(Math.log10(Math.abs(val) || 1)) - 1));
+    const push = v => { if (v > 0 && v <= cap && isFinite(v) && v !== val) out.add(fmt(v)); };
     if (isYear) { [-1, 1, -3, 3, -5, 5, -10, 10, -25, 25].forEach(d => out.add(fmt(val + d))); }
     else {
-      [0.5, 2, 1.5, 0.75, 1.25, 0.1, 10, 3].forEach(k => { const v = val * k; if (v !== val && v > 0) out.add(fmt(v)); });
-      [1, 2, 5, 10, 100].forEach(d => { if (val - d > 0) out.add(fmt(val - d)); out.add(fmt(val + d)); });
+      [0.5, 2, 1.5, 0.75, 1.25].forEach(k => push(val * k));
+      [1, 2, 5].forEach(d => { push(val - step * d); push(val + step * d); });
+      // a transposition — the mistake a reader actually makes
+      const digits = String(Math.round(val));
+      if (digits.length > 1 && !dec) { const t = digits.slice(0, -2) + digits.slice(-1) + digits.slice(-2, -1); if (t !== digits) push(parseFloat(t)); }
     }
     out.delete(n);
+    // a figure that appears elsewhere in the material is a real fact, not a wrong answer
+    if (a && a.facts) {
+      const real = new Set();
+      for (const f of a.facts) for (const x of (f.nums || [])) if (String(x) !== String(n)) real.add(String(x).replace(/,/g, ''));
+      for (const v of Array.from(out)) if (real.has(String(v).replace(/[^\d.]/g, ''))) out.delete(v);
+    }
     return shuffle(Array.from(out), rand);
   }
 
-  function distractors(a, correct, cat, rand, k = 3) {
-    if (cat === 'num') return numberVariants(correct, rand).slice(0, k);
-    const pool = a.terms.filter(t => t.cat === cat && lc(t.display) !== lc(correct)).map(t => t.display);
-    const pool2 = a.terms.filter(t => t.cat !== cat && lc(t.display) !== lc(correct) && (cat === 'phrase' ? t.display.includes(' ') : true)).map(t => t.display);
-    const defs = a.defs.map(d => d.term).filter(t => lc(t) !== lc(correct) && !pool.includes(t));
-    const merged = shuffle(pool.concat(cat === 'proper' || cat === 'acr' ? [] : defs), rand).concat(shuffle(pool2, rand));
-    const out = [];
-    for (const d of merged) { if (out.length >= k) break; if (!out.some(o => lc(o) === lc(d)) && lc(d) !== lc(correct) && !lc(correct).includes(lc(d)) && !lc(d).includes(lc(correct))) out.push(d); }
-    return out;
+  /* ---------- distractors ----------
+     A wrong option is only worth offering when it could plausibly be the answer: the same kind
+     of thing, roughly the same shape, out of the same part of the material. A distractor from
+     another chapter, or three one-word options beside a four-word answer, lets a student score
+     without knowing anything — which is worse than no question at all. */
+  const wordCount = s => String(s).trim().split(/\s+/).filter(Boolean).length;
+  function termWhere(a, display) {
+    if (!a._where) a._where = new Map();
+    const key = lc(display);
+    if (a._where.has(key)) return a._where.get(key);
+    const secs = new Set(), files = new Set();
+    let count = 0;
+    const t = a.terms.find(x => x.key === key);
+    if (t) { count = t.count || 0; for (const id of (t.sents || [])) { const st = a.sentences[id]; if (st) { secs.add(st.section); if (st.file) files.add(st.file); } } }
+    if (!secs.size) { const d = a.defs.find(x => lc(x.term) === key); const st = d && a.sentences[d.id]; if (st) { secs.add(st.section); if (st.file) files.add(st.file); } }
+    const w = { secs, files, count };
+    a._where.set(key, w);
+    return w;
+  }
+  // does this option already appear in the text the student is looking at?
+  function inText(text, option) {
+    if (!text) return false;
+    try { return new RegExp('(^|[^\\w-])' + escRe(option) + '(?![\\w-])', 'i').test(text); } catch (e) { return false; }
+  }
+  function distractors(a, correct, cat, rand, k = 3, ctx = null) {
+    if (cat === 'num') return numberVariants(correct, rand, a).slice(0, k);
+    const lcCorrect = lc(correct);
+    const cw = wordCount(correct), clen = String(correct).length;
+    const shown = ctx && ctx.text ? String(ctx.text) : '';
+    const home = ctx && ctx.sentId != null && a.sentences[ctx.sentId]
+      ? { secs: new Set([a.sentences[ctx.sentId].section]), files: new Set([a.sentences[ctx.sentId].file].filter(Boolean)) }
+      : termWhere(a, correct);
+    const defined = new Set(a.defs.map(d => lc(d.term)));
+    const seen = new Set([lcCorrect]);
+    const scored = [];
+    const consider = (display, dcat) => {
+      const key = lc(display);
+      if (!display || seen.has(key)) return;
+      // an option that contains the answer, or is contained by it, is not a choice
+      if (key.includes(lcCorrect) || lcCorrect.includes(key)) return;
+      // an option already printed in the question gives the answer away — or is true as well
+      if (inText(shown, display)) return;
+      seen.add(key);
+      const w = termWhere(a, display);
+      let score = 0;
+      let sameSec = false; for (const s of w.secs) if (home.secs.has(s)) { sameSec = true; break; }
+      if (sameSec) score += 3;
+      else { for (const f of w.files) if (home.files.has(f)) { score += 1; break; } }
+      if (dcat && dcat === cat) score += 2;
+      if (defined.has(key)) score += 1;
+      score += Math.min(1, (w.count || 0) / 5) * 0.5;
+      // shape: a student should not be able to pick the answer by its length alone
+      score -= Math.abs(wordCount(display) - cw) * 1.2;
+      score -= Math.min(2, Math.abs(String(display).length / Math.max(1, clen) - 1) * 1.5);
+      scored.push({ display, score: score + rand() * 0.4 });
+    };
+    for (const t of a.terms) consider(t.display, t.cat);
+    for (const d of a.defs) consider(d.term, null);
+    scored.sort((x, y) => y.score - x.score);
+    return scored.slice(0, k).map(x => x.display);
+  }
+  // the classic tell: the right answer is the only long one, or the only short one
+  function shapeOk(correct, wrong) {
+    if (wrong.length < 2) return false;
+    const cw = wordCount(correct), ws = wrong.map(wordCount);
+    if (cw > Math.max(...ws) + 2 || cw + 2 < Math.min(...ws)) return false;
+    const cl = String(correct).length, ls = wrong.map(x => String(x).length);
+    if (cl > Math.max(...ls) * 1.9 || cl * 1.9 < Math.min(...ls)) return false;
+    return true;
   }
 
   function orderQuestions(a, rand, max) {
@@ -2981,28 +3099,28 @@ const GENERIC = new Set('information data process system method result results s
 
   function makeMC(a, it, rand, usedSent) {
     if (it.kind === 'def' && (it.def.kind === 'colon' || it.def.kind === 'dash')) {
-      const wrong = distractors(a, it.term, it.cat, rand);
-      if (wrong.length < 2) return null;
+      const wrong = distractors(a, it.term, it.cat, rand, 3, { sentId: it.def.id, text: it.def.def });
+      if (wrong.length < 3 || !shapeOk(it.term, wrong)) return null;
       return { type: 'mc', prompt: `Which term matches this description?`, body: it.def.def, options: shuffle([it.term].concat(wrong), rand), answer: it.term, source: it.def.sent, sourceId: it.def.id };
     }
     if (it.kind === 'acr') {
       const wrong = a.acronyms.filter(x => x.acr !== it.ac.acr).map(x => x.expansion);
-      const more = distractors(a, it.ac.expansion, 'phrase', rand, 3 - Math.min(3, wrong.length));
-      const opts = shuffle(wrong, rand).slice(0, 3).concat(more);
-      if (opts.length < 2) return null;
+      const more = distractors(a, it.ac.expansion, 'phrase', rand, 3 - Math.min(3, wrong.length), { sentId: it.ac.id, text: '' });
+      const opts = shuffle(wrong, rand).slice(0, 3).concat(more).slice(0, 3);
+      if (opts.length < 3 || !shapeOk(it.ac.expansion, opts)) return null;
       return { type: 'mc', prompt: `What does ${it.ac.acr} stand for?`, options: shuffle([it.ac.expansion].concat(opts), rand), answer: it.ac.expansion, source: it.ac.sent, sourceId: it.ac.id };
     }
     if (it.kind === 'num') {
       if (usedSent.has(it.fact.sent.id)) return null;
       const s = it.fact.sent.s, n = it.term, idx = s.indexOf(n);
-      const wrong = numberVariants(n, rand).slice(0, 3);
-      if (wrong.length < 2) return null;
+      const wrong = numberVariants(n, rand, a).slice(0, 3);
+      if (wrong.length < 3) return null;
       return { type: 'mc', prompt: 'Fill in the missing figure.', body: s.slice(0, idx) + '______' + s.slice(idx + n.length), options: shuffle([n].concat(wrong), rand), answer: n, source: s, sourceId: it.fact.sent.id };
     }
     const cz = clozeFor(a, it.term, usedSent);
     if (!cz) return null;
-    const wrong = distractors(a, cz.answer, it.cat, rand);
-    if (wrong.length < 2) return null;
+    const wrong = distractors(a, cz.answer, it.cat, rand, 3, { sentId: cz.sent.id, text: cz.text });
+    if (wrong.length < 3 || !shapeOk(cz.answer, wrong)) return null;
     return { type: 'mc', prompt: 'Which term completes the sentence?', body: cz.text, options: shuffle([cz.answer].concat(wrong), rand), answer: cz.answer, source: cz.sent.s, sourceId: cz.sent.id };
   }
 
@@ -3011,8 +3129,12 @@ const GENERIC = new Set('information data process system method result results s
     if (it.kind === 'def') {
       if (usedSent.has(it.def.id)) return null;
       const sentence = it.def.kind === 'is' || it.def.kind === 'weak' || it.def.kind === 'inverse' ? it.def.sent : (/^[a-z]/.test(it.def.def) ? `${it.term} is ${it.def.def}` : `${it.term} — ${it.def.def}`);
+      // "X may be involved in Y" is neither true nor false to answer — don't ask it
+      if (HEDGE_RE.test(sentence)) return null;
+      // swapping a term inside "X is not Y" can produce a statement that is true after all
+      if (makeFalse && riskyToSwap(sentence)) return { type: 'tf', prompt: 'True or false?', body: sentence, answer: 'True', source: it.def.sent, sourceId: it.def.id };
       if (!makeFalse) return { type: 'tf', prompt: 'True or false?', body: sentence, answer: 'True', source: it.def.sent, sourceId: it.def.id };
-      const wrong = distractors(a, it.term, it.cat, rand, 1)[0];
+      const wrong = distractors(a, it.term, it.cat, rand, 1, { sentId: it.def.id, text: sentence })[0];
       if (!wrong) return null;
       const re = new RegExp('(^|[^\\w-])' + escRe(it.term) + '(?![\\w-])', 'i');
       if (!re.test(sentence)) return null;
@@ -3022,15 +3144,18 @@ const GENERIC = new Set('information data process system method result results s
     if (it.kind === 'num') {
       if (usedSent.has(it.fact.sent.id)) return null;
       const s = it.fact.sent.s;
+      if (HEDGE_RE.test(s)) return null;
       if (!makeFalse) return { type: 'tf', prompt: 'True or false?', body: s, answer: 'True', source: s, sourceId: it.fact.sent.id };
-      const wrong = numberVariants(it.term, rand)[0];
+      const wrong = numberVariants(it.term, rand, a)[0];
       if (!wrong) return null;
       return { type: 'tf', prompt: 'True or false?', body: s.replace(it.term, wrong), answer: 'False', explain: `The correct figure is ${it.term}.`, source: s, sourceId: it.fact.sent.id };
     }
     const cz = clozeFor(a, it.term, usedSent);
     if (!cz) return null;
+    if (HEDGE_RE.test(cz.sent.s)) return null;
+    if (makeFalse && riskyToSwap(cz.sent.s)) return { type: 'tf', prompt: 'True or false?', body: cz.sent.s, answer: 'True', source: cz.sent.s, sourceId: cz.sent.id };
     if (!makeFalse) return { type: 'tf', prompt: 'True or false?', body: cz.sent.s, answer: 'True', source: cz.sent.s, sourceId: cz.sent.id };
-    const wrong = distractors(a, cz.answer, it.cat, rand, 1)[0];
+    const wrong = distractors(a, cz.answer, it.cat, rand, 1, { sentId: cz.sent.id, text: cz.sent.s })[0];
     if (!wrong) return null;
     return { type: 'tf', prompt: 'True or false?', body: cz.before + wrong + cz.after, answer: 'False', explain: `It should say “${cz.answer}”.`, source: cz.sent.s, sourceId: cz.sent.id };
   }
@@ -3069,7 +3194,185 @@ const GENERIC = new Set('information data process system method result results s
     return lev(g, t) <= tol;
   }
 
-  return { analyze, summary, keyInfo, flashcards, quiz, checkAnswer, splitSentences, splitCause, termsIn, cardKey, termGraph, extractSymbols, mathml };
+
+  /* ---------- course outline ----------
+     Every course hands out one document that already holds what the app otherwise asks the
+     student to type: the learning outcomes, the assessment table with its weights, the final
+     exam date and the week-by-week schedule. This reads that document. It is deliberately
+     conservative — it would rather return nothing for a section than guess — because every row
+     it finds is shown for confirmation before anything is written. */
+  const MONTHS = { jan: 1, feb: 2, mar: 3, apr: 4, may: 5, jun: 6, jul: 7, aug: 8, sep: 9, sept: 9, oct: 10, nov: 11, dec: 12 };
+  const MONTH_RE = '(jan|feb|mar|apr|may|jun|jul|aug|sept|sep|oct|nov|dec)[a-z]*';
+  const iso = (y, m, d) => `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+  // a bare "Oct 14" belongs to whichever year keeps it near today — the confirmation screen can fix it
+  function yearFor(m, d, hint) {
+    const now = new Date();
+    const guess = hint || now.getFullYear();
+    const cand = new Date(guess, m - 1, d);
+    const diff = (cand - now) / 86400000;
+    if (diff < -240) return guess + 1;
+    if (diff > 300) return guess - 1;
+    return guess;
+  }
+  function parseDate(str, hint) {
+    if (!str) return null;
+    const s = String(str);
+    let m;
+    if ((m = s.match(/\b(20\d\d)-(\d{1,2})-(\d{1,2})\b/))) return iso(+m[1], +m[2], +m[3]);
+    if ((m = s.match(new RegExp('\\b' + MONTH_RE + '\\.?\\s+(\\d{1,2})(?:\\s*,)?(?:\\s+(20\\d\\d))?\\b', 'i')))) {
+      const mo = MONTHS[m[1].toLowerCase().slice(0, 4)] || MONTHS[m[1].toLowerCase().slice(0, 3)];
+      const d = +m[2]; if (!mo || d < 1 || d > 31) return null;
+      return iso(m[3] ? +m[3] : yearFor(mo, d, hint), mo, d);
+    }
+    if ((m = s.match(new RegExp('\\b(\\d{1,2})\\s+' + MONTH_RE + '\\.?(?:\\s+(20\\d\\d))?\\b', 'i')))) {
+      const mo = MONTHS[m[2].toLowerCase().slice(0, 4)] || MONTHS[m[2].toLowerCase().slice(0, 3)];
+      const d = +m[1]; if (!mo || d < 1 || d > 31) return null;
+      return iso(m[3] ? +m[3] : yearFor(mo, d, hint), mo, d);
+    }
+    // a slashed date is only used when one half cannot be a month — guessing d/m vs m/d invents facts
+    if ((m = s.match(/\b(\d{1,2})\/(\d{1,2})(?:\/(20\d\d|\d\d))?\b/))) {
+      const x = +m[1], y = +m[2];
+      let mo = null, d = null;
+      if (x > 12 && y <= 12) { d = x; mo = y; } else if (y > 12 && x <= 12) { mo = x; d = y; }
+      if (!mo || d < 1 || d > 31) return null;
+      let yr = m[3] ? +m[3] : null; if (yr && yr < 100) yr += 2000;
+      return iso(yr || yearFor(mo, d, hint), mo, d);
+    }
+    return null;
+  }
+  const OUTCOME_HEAD = /\b(?:course\s+)?learning\s+outcomes?\b|\blearning\s+objectives?\b|\bcourse\s+objectives?\b|\bupon\s+(?:successful\s+)?completion\b|\bby\s+the\s+end\s+of\s+this\s+course\b|\bstudents?\s+will\s+be\s+able\s+to\b/i;
+  const ASSESS_HEAD = /\b(?:evaluation|assessment|grading|grade\s+distribution|course\s+requirements|marks?\s+breakdown|weighting)\b/i;
+  const SCHED_HEAD = /\b(?:course\s+schedule|schedule|weekly\s+(?:schedule|topics|outline)|topics?\s+and\s+readings|calendar|lecture\s+schedule)\b/i;
+  const OTHER_HEAD = /\b(?:textbook|required\s+text|instructor|office\s+hours|academic\s+integrity|prerequisite|policies|policy|attendance|accessibility|contact|description|delivery|resources)\b/i;
+  const isHeadingish = l => l.length <= 90 && (/^#{1,6}\s/.test(l) || /^[A-Z0-9 ,'&()\/-]{4,}$/.test(l) || /:$/.test(l.trim()));
+  const stripBullet = l => l.replace(/^\s*(?:[-*•●▪·]|\(?[a-z]\)|\(?\d{1,2}\s*[.):]|\d{1,2}\.\d\b)\s*/i, '').trim();
+  const cleanLine = l => l.replace(/\[\[[a-z]:[^\]]*\]\]/g, ' ').replace(/\.{3,}|…/g, ' ').replace(/\s+/g, ' ').trim();
+
+  function outline(raw, opts) {
+    const hint = (opts && opts.year) || null;
+    const lines = String(raw || '').split(/\r?\n/).map(cleanLine);
+    const out = { outcomes: [], assessments: [], exam: null, weeks: [], deadlines: [] };
+
+    /* --- learning outcomes: the block under the heading that announces them --- */
+    for (let i = 0; i < lines.length && !out.outcomes.length; i++) {
+      if (!OUTCOME_HEAD.test(lines[i])) continue;
+      // the heading line can carry the first outcome after a colon
+      const inline = lines[i].split(/:\s*/).slice(1).join(': ');
+      const bucket = [];
+      const take = t => {
+        const c = stripBullet(t);
+        if (c.length < 12 || c.length > 300) return;
+        // the lead-in ("Upon completion students will be able to:") is not itself an outcome
+        if (OUTCOME_HEAD.test(c) || /:$/.test(c)) return;
+        if (OTHER_HEAD.test(c) && c.length < 60) return;
+        if (/^\s*$/.test(c)) return;
+        const words = c.split(/\s+/).length;
+        if (words < 3 || words > 45) return;
+        bucket.push(c.replace(/[;,]$/, ''));
+      };
+      if (inline && inline.split(/\s+/).length > 3) inline.split(/;\s*|\s(?=\(?[a-z]\)\s)/).forEach(take);
+      let blanks = 0;
+      for (let j = i + 1; j < lines.length && bucket.length < 25; j++) {
+        const l = lines[j];
+        if (!l) { if (++blanks >= 3 && bucket.length) break; continue; }
+        blanks = 0;
+        if (ASSESS_HEAD.test(l) || SCHED_HEAD.test(l) || (OTHER_HEAD.test(l) && isHeadingish(l))) break;
+        take(l);
+      }
+      if (bucket.length >= 2) out.outcomes = bucket;
+    }
+
+    /* --- the assessment table: a name and a percentage on one line --- */
+    const seenAss = new Set();
+    for (const l of lines) {
+      if (!l || l.length > 160) continue;
+      let m = l.match(/^(.{2,70}?)\s*[.:–—-]*\s*(\d{1,3}(?:\.\d)?)\s*%/);
+      if (!m) { const r = l.match(/^(\d{1,3})\s*%\s*[-–:]?\s*(.{2,70})$/); if (r) m = [l, r[2], r[1]]; }
+      if (!m) continue;
+      const name = stripBullet(m[1]).replace(/[\s.:,–—-]+$/, '').trim();
+      const weight = parseFloat(m[2]);
+      if (!name || name.length < 3 || weight <= 0 || weight > 100) continue;
+      if (name.split(/\s+/).length > 8) continue;
+      if (/\b(attendance is|must|minimum|at least|pass|penalt|late)\b/i.test(name)) continue;
+      const key = lc(name);
+      if (seenAss.has(key)) continue;
+      seenAss.add(key);
+      const due = parseDate(l.slice(m[0].length), hint) || null;
+      out.assessments.push(due ? { name, weight, due } : { name, weight });
+    }
+    const total = out.assessments.reduce((n, x) => n + x.weight, 0);
+    out.weightTotal = Math.round(total);
+    if (total > 130 || (out.assessments.length && total < 40)) { out.weightWarn = true; }
+
+    /* --- the final exam --- */
+    for (const l of lines) {
+      if (!/final\s+exam|final\s+examination|exam\s+period/i.test(l)) continue;
+      const d = parseDate(l, hint);
+      if (d) { out.exam = { date: d, text: l.slice(0, 140) }; break; }
+    }
+    if (!out.exam) for (const l of lines) {
+      if (!/\bexam(ination)?\b/i.test(l) || /midterm/i.test(l)) continue;
+      const d = parseDate(l, hint);
+      if (d) { out.exam = { date: d, text: l.slice(0, 140) }; break; }
+    }
+
+    /* --- the weekly schedule --- */
+    const seenWeek = new Set();
+    for (let i = 0; i < lines.length; i++) {
+      const l = lines[i];
+      if (!l) continue;
+      const m = l.match(/^\s*(?:week|wk)\s*#?\s*(\d{1,2})\b[\s:.–—|-]*(.*)$/i);
+      if (!m) continue;
+      const n = +m[1];
+      if (n < 1 || n > 20 || seenWeek.has(n)) continue;
+      seenWeek.add(n);
+      let rest = m[2].replace(/^[|\s]+/, '').trim();
+      const date = parseDate(rest, hint);
+      if (date) rest = rest.replace(new RegExp('^\\s*[^|]*?(?:' + MONTH_RE + '|\\d{1,2}/\\d{1,2})[^|]*\\|?\\s*', 'i'), '').trim();
+      const cells = rest.split(/\s*\|\s*|\s{3,}|\s+[–—]\s+/).map(x => x.trim()).filter(Boolean);
+      let topic = cells[0] || '';
+      const readings = [];
+      for (const c of cells.slice(1)) if (/\b(ch(apter)?\.?\s*\d|pp?\.\s*\d|read|pages?\s+\d)/i.test(c)) readings.push(c);
+      // a "Readings:" line directly under the week row belongs to it
+      for (let j = i + 1; j < Math.min(i + 3, lines.length); j++) {
+        const nx = lines[j];
+        if (!nx || /^\s*(?:week|wk)\s*\d/i.test(nx)) break;
+        const r = nx.match(/^\s*(?:readings?|read|text)\s*[:–-]\s*(.+)$/i);
+        if (r) readings.push(cleanLine(r[1]));
+      }
+      if (!topic && !readings.length) continue;
+      const w = { n, topic: topic.slice(0, 120) };
+      if (date) w.date = date;
+      if (readings.length) w.readings = readings.slice(0, 3).map(x => x.slice(0, 120));
+      out.weeks.push(w);
+      // anything due in that row becomes a dated item of its own
+      const dueM = rest.match(/([A-Za-z][\w\s'-]{2,40}?)\s*(?:is\s+)?due\b/i) || (/\bdue\b/i.test(rest) ? [null, cells[cells.length - 1] || 'Assignment'] : null);
+      if (dueM && date) out.deadlines.push({ title: String(dueM[1]).trim().slice(0, 70) || 'Due', date, kind: 'Assignment' });
+    }
+    out.weeks.sort((x, y) => x.n - y.n);
+
+    /* --- anything else with a date and the word due --- */
+    for (const l of lines) {
+      if (!/\bdue\b/i.test(l) || l.length > 160) continue;
+      const d = parseDate(l, hint);
+      if (!d) continue;
+      let title = stripBullet(l).replace(/\bdue\b.*$/i, '').replace(/[\s:.,–—-]+$/, '').trim();
+      if (title.length < 3 || title.length > 70) continue;
+      if (out.deadlines.some(x => x.date === d && lc(x.title) === lc(title))) continue;
+      out.deadlines.push({ title, date: d, kind: /read/i.test(l) ? 'Reading' : /quiz/i.test(l) ? 'Quiz' : /lab/i.test(l) ? 'Lab' : 'Assignment' });
+    }
+    // assessments that carried their own due date
+    for (const as of out.assessments) {
+      if (!as.due) continue;
+      if (out.deadlines.some(x => x.date === as.due && lc(x.title) === lc(as.name))) continue;
+      out.deadlines.push({ title: as.name, date: as.due, kind: /exam|midterm/i.test(as.name) ? 'Midterm' : /quiz/i.test(as.name) ? 'Quiz' : /lab/i.test(as.name) ? 'Lab' : /read/i.test(as.name) ? 'Reading' : 'Assignment' });
+    }
+    out.deadlines.sort((x, y) => x.date.localeCompare(y.date));
+    out.found = out.outcomes.length + out.assessments.length + out.weeks.length + out.deadlines.length + (out.exam ? 1 : 0);
+    return out;
+  }
+
+  return { analyze, summary, keyInfo, flashcards, quiz, checkAnswer, splitSentences, splitCause, termsIn, cardKey, termGraph, extractSymbols, mathml, outline };
 })();
 
 </script>
@@ -3078,7 +3381,7 @@ const GENERIC = new Set('information data process system method result results s
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '1.9.1', date: '1 September 2026' };
+  const BUILD = { v: '2.0', date: '3 September 2026' };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonandy242', ['gmail', 'com'].join('.')].join('@');
   const OWNER_HASH = 'f2d29d4fd8c98b4205c0ffa7628eeeccfc3f2647ed0430748eac0d775cbc562d';
@@ -3245,7 +3548,15 @@ const GENERIC = new Set('information data process system method result results s
     const n = FSRS.next(c.s > 0 ? c : null, g, now);
     c.s = n.s; c.d = n.d; c.ivl = n.ivl; c.reps = (c.reps || 0) + 1;
     if (g === 1) { c.lapses = (c.lapses || 0) + 1; c.due = now + 10 * 60000; }
-    else c.due = now + n.ivl * DAY;
+    else {
+      c.due = now + n.ivl * DAY;
+      // Exam mode: FSRS schedules for the long run and will happily send a card past the exam.
+      // Here the due date is pulled back so the card is seen again — twice, if there is room —
+      // before the date. Stability and difficulty are left exactly as FSRS set them, so turning
+      // exam mode off returns the deck to its ordinary schedule with nothing lost.
+      const cap = cramCap(sid, now, n.ivl);
+      if (cap != null) c.due = Math.min(c.due, cap);
+    }
     // a leech: failed six times — the card, not the student, is the problem. Flagged once, so it can be reworded.
     if (c.lapses >= LEECH_AT && !c.leech) { c.leech = true; c.leechAt = now; c.newLeech = true; }
     c.last = now; p.srs[key] = c; saveProgress();
@@ -3768,6 +4079,8 @@ const GENERIC = new Set('information data process system method result results s
     }
     const od = deadlines(s).filter(d => !d.done && dlDays(d.date) != null && dlDays(d.date) < 0).length;
     if (od) f.push(od === 1 ? 'a deadline overdue' : `${od} deadlines overdue`);
+    const mk = marksSummary(s);
+    if (mk.marked && mk.remaining) { const need = neededOn(s, +s.target || 80); if (need > 100) f.push(`${+s.target || 80}% no longer reachable`); else if (need > 90) f.push(`needs ${round1(need)}% on what is left`); }
     return f;
   }
   function semTimeline(subs) {
@@ -3800,7 +4113,8 @@ const GENERIC = new Set('information data process system method result results s
       return `<div class="sem-row${flags.length ? ' behind' : ''}" style="--tab:${s.color}">
         <a class="sem-name" href="#/s/${s.id}"><span class="code"><i></i>${esc(s.code || 'Subject')}</span><strong>${esc(s.name)}</strong><span class="small muted">${plural(s.materials.length, 'file')}${toRead && s.materials.length ? ` · ${toRead} to read` : ''}${(() => { const oc = (progress[s.id] || {}).ocSum; return oc && oc.n ? ` · outcomes ${oc.cov}/${oc.n} covered${oc.gap ? `, <b class="warn-ink">${oc.gap} not</b>` : ''}` : ''; })()}${next ? ` · next: ${esc(next.title)} <b>${dlWhen(dlDays(next.date))}</b>` : ''}</span></a>
         <div class="sem-stats">
-          <span class="ss"><b>${ex ? (ex.days >= 0 ? fmt(ex.days) : '—') : '—'}</b><span>${ex ? (ex.days >= 0 ? 'days to exam' : 'exam passed') : 'no exam set'}</span></span>
+          <span class="ss"><b>${ex ? (ex.days >= 0 ? fmt(ex.days) : '—') : '—'}</b><span>${ex ? (ex.days >= 0 ? `days to exam${s.cram ? ' · exam mode' : ''}` : 'exam passed') : 'no exam set'}</span></span>
+          ${(() => { const mk = marksSummary(s); return `<span class="ss"><b>${mk.marked ? round1(mk.standing) + '%' : '—'}</b><span>${mk.marked ? `standing · ${round1(mk.earned)}% secured` : mk.n ? 'nothing marked yet' : 'no marks set up'}</span></span>`; })()}
           <a class="ss" href="#/s/${s.id}/cards"><b>${fmt(st.due)}</b><span>due now</span></a>
           <span class="ss"><b>${st.pool ? pct + '%' : '—'}</b><span>mastered</span><i class="bar" style="--pct:${pct}%"></i></span>
           <span class="ss"><b>${ago == null ? '—' : ago <= 0 ? 'today' : ago === 1 ? '1d' : ago + 'd'}</b><span>${ago == null ? 'not studied yet' : 'since studied'}</span></span>
@@ -3979,6 +4293,59 @@ const GENERIC = new Set('information data process system method result results s
         <div class="modal-foot"><span class="mono muted">Tip: press ⌘V / Ctrl V on the subject page to open this</span><span class="spacer" style="flex:1"></span><button type="button" class="btn sm" data-act="close-modal">Cancel</button><button class="btn sm primary" type="submit">Add to subject <span class="arr">→</span></button></div>
       </form></div>`;
     }
+    if (m.type === 'assess') {
+      const a = m.assess || { name: '', weight: '', mark: '' };
+      return `<div class="modal-bg" data-act="close-modal"><form class="modal" data-form="assess">
+        <h2>${m.assess ? 'Edit this piece of work' : 'Add a piece of work'}</h2>
+        <input type="hidden" name="id" value="${esc(a.id || '')}">
+        <div class="field"><label for="as-name">What</label><input class="input" id="as-name" name="name" required maxlength="70" placeholder="e.g. Midterm examination · Lab reports" value="${esc(a.name)}"></div>
+        <div class="form-grid two">
+          <div class="field"><label for="as-weight">Worth (% of the course)</label><input class="input" id="as-weight" name="weight" type="number" min="0.5" max="100" step="0.5" required value="${esc(String(a.weight))}"></div>
+          <div class="field"><label for="as-mark">Your mark (%, if you have it)</label><input class="input" id="as-mark" name="mark" type="number" min="0" max="100" step="0.1" placeholder="—" value="${hasMark(a) ? esc(String(a.mark)) : ''}"></div>
+        </div>
+        <div class="btn-row" style="justify-content:flex-end">
+          ${m.assess ? `<button type="button" class="btn ghost danger" data-act="ass-delete" data-id="${esc(a.id)}">Delete</button><span class="spacer" style="flex:1"></span>` : ''}
+          <button type="button" class="btn ghost" data-act="close-modal">Cancel</button>
+          <button type="submit" class="btn primary">${m.assess ? 'Save' : 'Add'} <span class="arr">→</span></button>
+        </div>
+      </form></div>`;
+    }
+    if (m.type === 'outline') {
+      const subj = curSubject();
+      const files = subj ? subj.materials.filter(f => !f.err && !f.busy) : [];
+      return `<div class="modal-bg" data-act="close-modal"><form class="modal wide" data-form="outline">
+        <div class="modal-head"><div><span class="label">One document, most of the term</span><h2>Import a course outline</h2></div><button type="button" class="btn ghost icon" data-act="close-modal" aria-label="Close">${I.x}</button></div>
+        <div class="modal-body">
+          <p class="small muted">The outline your instructor handed out already lists the learning outcomes, what each piece of work is worth, the final exam date and the week-by-week schedule. Point at it and every one of those is read out. <b>Nothing is saved until you have seen it and confirmed it.</b></p>
+          ${files.length ? `<div class="field"><label for="ol-file">A file you have already uploaded</label>
+            <select class="input" id="ol-file" name="file"><option value="">— choose the outline —</option>${files.map(f => `<option value="${esc(f.id)}">${esc(f.name)}</option>`).join('')}</select></div>
+            <p class="small muted">or</p>` : ''}
+          <div class="field"><label for="ol-text">Paste the outline</label><textarea class="input" id="ol-text" name="text" rows="8" placeholder="Paste the whole outline — headings and all. Copy it out of the PDF with ⌘A, ⌘C."></textarea></div>
+          ${IN_ARTIFACT ? '' : `<p class="small muted">A scanned outline needs the scan reader first: upload it as a file, run the reader, then come back here and choose it.</p>`}
+        </div>
+        <div class="modal-foot btn-row" style="justify-content:flex-end"><button type="button" class="btn ghost" data-act="close-modal">Cancel</button><button type="submit" class="btn primary">Read it <span class="arr">→</span></button></div>
+      </form></div>`;
+    }
+    if (m.type === 'outline-review') {
+      const o = m.data, subj = curSubject();
+      const box = (val, label, on) => `<label class="check ol-row"><input type="checkbox" name="pick" value="${esc(val)}" ${on ? 'checked' : ''}>${label}</label>`;
+      const group = (title, note, body, key) => `<div class="ol-group"><div class="ol-head"><h3>${title}</h3>${body ? `<button type="button" class="btn sm ghost" data-act="ol-all" data-g="${key}">All / none</button>` : ''}</div>${note ? `<p class="small muted">${note}</p>` : ''}${body || `<p class="small muted">Nothing found for this — you can still add it by hand.</p>`}</div>`;
+      const existingOutcomes = ((subj && subj.outcomes) || []).map(x => lc0(x.text));
+      const dlKeys = new Set(((subj && subj.deadlines) || []).map(d => d.date + '|' + lc0(d.title)));
+      const wt = o.weightTotal;
+      return `<div class="modal-bg" data-act="close-modal"><form class="modal wide" data-form="outline-review">
+        <div class="modal-head"><div><span class="label">Found in the outline · nothing saved yet</span><h2>Check this before it goes in</h2></div><button type="button" class="btn ghost icon" data-act="close-modal" aria-label="Close">${I.x}</button></div>
+        <div class="modal-body">
+          ${!o.found ? `<div class="notice warn">Nothing recognisable was found. Outlines vary a lot — you can paste just the outcomes list, or the assessment table on its own, and try again. Everything here can also be entered by hand.</div>` : ''}
+          ${group('Final exam', '', o.exam ? box('exam', `Set the exam date to <b>${esc(new Date(o.exam.date + 'T00:00:00').toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' }))}</b><span class="small muted">${esc(o.exam.text)}</span>`, true) : '', 'exam')}
+          ${group('Learning outcomes', o.outcomes.length ? 'These fill the outcome map, which then checks them against your material.' : '', o.outcomes.map((t, i) => box('outcome:' + i, `${esc(t)}${existingOutcomes.includes(lc0(t)) ? '<span class="small muted">already in the map</span>' : ''}`, !existingOutcomes.includes(lc0(t)))).join(''), 'outcome')}
+          ${group('What each piece of work is worth', o.assessments.length ? `They add up to <b>${wt}%</b>${Math.abs(wt - 100) > 0.5 ? ' — worth a check against the outline' : ''}.` : '', o.assessments.map((x, i) => box('assess:' + i, `<b>${esc(x.name)}</b> — ${esc(String(x.weight))}%`, true)).join(''), 'assess')}
+          ${group('Dated work', o.deadlines.length ? 'These become items in Deadlines &amp; readings.' : '', o.deadlines.map((d, i) => box('deadline:' + i, `<b>${esc(d.title)}</b><span class="small muted">${esc(d.kind)} · ${esc(new Date(d.date + 'T00:00:00').toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' }))}${dlKeys.has(d.date + '|' + lc0(d.title)) ? ' · already tracked' : ''}</span>`, !dlKeys.has(d.date + '|' + lc0(d.title)))).join(''), 'deadline')}
+          ${group('The weekly schedule', o.weeks.length ? 'Kept as the course schedule, so the week chips on this subject carry their topic. Labelling a file with a week stays your call.' : '', o.weeks.length ? box('weeks', `Keep the schedule for <b>${plural(o.weeks.length, 'week')}</b><span class="small muted">${esc(o.weeks.slice(0, 3).map(w => 'Week ' + w.n + ': ' + w.topic).join(' · '))}${o.weeks.length > 3 ? ' …' : ''}</span>`, true) + (o.weeks.some(w => w.readings && w.date) ? box('readings', `Also add <b>${plural(o.weeks.filter(w => w.readings && w.date).length, 'weekly reading')}</b> as dated items`, false) : '') : '', 'weeks')}
+        </div>
+        <div class="modal-foot btn-row" style="justify-content:flex-end"><button type="button" class="btn ghost" data-act="close-modal">Cancel</button><button type="submit" class="btn primary">Add what is ticked <span class="arr">→</span></button></div>
+      </form></div>`;
+    }
     if (m.type === 'deadline') {
       const d = m.deadline || { title: '', date: '', kind: 'Assignment' };
       return `<div class="modal-bg" data-act="close-modal"><form class="modal" data-form="deadline">
@@ -4121,6 +4488,78 @@ const GENERIC = new Set('information data process system method result results s
   }
 
   /* ---------- subject page ---------- */
+  /* ---------- exam mode: fitting the deck to the date ---------- */
+  function cramCap(sid, now, ivlDays) {
+    const s = subjectById(sid);
+    if (!s || !s.cram) return null;
+    const ex = examInfo(s);
+    if (!ex || ex.days <= 0) return null;
+    const maxDays = Math.max(1, Math.floor(ex.days / 2));   // room to come back at least twice
+    return now + Math.min(ivlDays, maxDays) * DAY;
+  }
+  // the shakiest first when the exam is close: leeches, then never-seen, then shortest interval
+  const cramWeight = (sid, c) => { const r = prog(sid).srs[c.key]; if (!r) return 0; if (r.leech) return -1; return (r.ivl || 0) + 1; };
+  function cramPlan(s) {
+    const ex = examInfo(s), st = srsStats(s.id);
+    if (!ex || ex.days < 0) return null;
+    const days = Math.max(1, ex.days);
+    return { days: ex.days, pool: st.pool, perDay: st.pool ? Math.ceil(st.pool * 2 / days) : 0, on: !!s.cram, tight: st.pool ? st.pool * 2 / days > 120 : false };
+  }
+
+  /* ---------- marks: what the course is worth, and what is still to play for ----------
+     Plain weighted arithmetic, never a prediction: what you have secured out of 100, what you are
+     averaging on the work that has been marked, and what the work still outstanding has to average
+     for you to finish on a number you choose. The formula is shown so it can be checked. */
+  const lc0 = t => String(t || '').toLowerCase().replace(/\s+/g, ' ').trim();
+  const assessOf = s => { s.assess = s.assess || []; return s.assess; };
+  const hasMark = a => a && a.mark != null && a.mark !== '' && isFinite(+a.mark);
+  function marksSummary(s) {
+    const list = assessOf(s);
+    const total = list.reduce((n, a) => n + (+a.weight || 0), 0);
+    const marked = list.filter(hasMark);
+    const gw = marked.reduce((n, a) => n + (+a.weight || 0), 0);
+    const earned = marked.reduce((n, a) => n + (+a.weight || 0) * (+a.mark) / 100, 0);
+    return { list, n: list.length, marked: marked.length, total, gradedWeight: gw,
+      remaining: Math.max(0, total - gw), standing: gw ? earned / gw * 100 : null,
+      earned, best: earned + Math.max(0, total - gw) };
+  }
+  function neededOn(s, target) {
+    const m = marksSummary(s);
+    if (!m.remaining) return null;
+    return ((target - m.earned) / m.remaining) * 100;
+  }
+  const TARGETS = [90, 85, 80, 75, 70, 60];
+  const round1 = n => Math.round(n * 10) / 10;
+  function marksHtml(s) {
+    const m = marksSummary(s);
+    if (!m.n) return `<p class="small muted">Nothing here yet. Import the course outline above, or add each piece of work and what it is worth — then this can answer “what do I need on the final?”.</p>
+      <div class="btn-row"><button class="btn sm ghost" data-act="ass-add">+ Add a piece of work</button></div>`;
+    const target = +s.target || 80;
+    const need = neededOn(s, target);
+    const rows = m.list.map(a => `<li class="ass${hasMark(a) ? ' marked' : ''}">
+      <button type="button" class="ass-open" data-act="ass-edit" data-id="${a.id}"><strong>${esc(a.name)}</strong><span class="small">${esc(String(a.weight))}% of the course</span></button>
+      <span class="ass-mark"><input type="number" min="0" max="100" step="0.1" inputmode="decimal" value="${hasMark(a) ? esc(String(a.mark)) : ''}" placeholder="—" data-act="ass-mark" data-id="${a.id}" aria-label="Your mark for ${esc(a.name)}, as a percentage"><i>%</i></span>
+    </li>`).join('');
+    const line = m.marked
+      ? `<b>${round1(m.standing)}%</b> average on the ${round1(m.gradedWeight)}% marked so far · <b>${round1(m.earned)}%</b> of the course secured`
+      : `Nothing marked yet — enter a mark beside a piece of work as it comes back`;
+    let verdict;
+    if (!m.remaining) verdict = `Everything is marked. The course finishes at <b>${round1(m.earned)}%</b>.`;
+    else if (need <= 0) verdict = `Already there — even zero on the remaining ${round1(m.remaining)}% finishes at <b>${round1(m.earned)}%</b>.`;
+    else if (need > 100) verdict = `<b>${target}% is out of reach</b> — full marks on the remaining ${round1(m.remaining)}% would finish at ${round1(m.best)}%.`;
+    else verdict = `To finish at ${target}% you need <b>${round1(need)}%</b> on the remaining ${round1(m.remaining)}%.`;
+    return `<ul class="ass-list">${rows}</ul>
+      <p class="small">${line}.</p>
+      <div class="ass-verdict"><p>${verdict}</p>
+        <div class="ass-targets"><span class="label">Aiming for</span>${TARGETS.map(t => `<button type="button" class="fchip pick${t === target ? ' on' : ''}" data-act="ass-target" data-v="${t}">${t}%</button>`).join('')}</div>
+        ${m.remaining && need > 0 && need <= 100 ? `<p class="small muted">(${target} − ${round1(m.earned)}) ÷ ${round1(m.remaining)} × 100 — plain weighted arithmetic, not a prediction.</p>` : ''}
+      </div>
+      ${Math.abs(m.total - 100) > 0.5 ? `<p class="small warn-ink">The weights add up to ${round1(m.total)}%, not 100% — check the outline.</p>` : ''}
+      <div class="btn-row"><button class="btn sm ghost" data-act="ass-add">+ Add a piece of work</button></div>`;
+  }
+  // the week chips read better with the syllabus topic beside the number
+  const weekTopic = (s, n) => { const w = (s.syllabus || []).find(x => String(x.n) === String(n)); return w && w.topic ? w.topic : ''; };
+
   /* ---------- deadlines and readings ---------- */
   const DL_KINDS = ['Assignment', 'Reading', 'Quiz', 'Midterm', 'Lab', 'Presentation', 'Other'];
   function deadlines(s) { s.deadlines = s.deadlines || []; return s.deadlines; }
@@ -4201,6 +4640,13 @@ const GENERIC = new Set('information data process system method result results s
             ${s.materials.length ? `<div class="scan-stat"><span><b>${included.length}</b> of ${s.materials.length} included</span><span><b>${fmt(words)}</b> words scanned</span>${readN ? `<span><b>${readN}</b> of ${s.materials.length} read</span>` : ''}${reviewN ? `<span class="warn"><b>${reviewN}</b> to review</span>` : ''}</div>` : ''}
             <p class="small muted">Tick a file to include it in the study set. Tap ⋯ to label it (lecture, week 3), or the badge to mark it read. ${OCR.available() ? 'Scanned PDFs and photos of printed notes are read with the built-in scan reader (OCR) — on your device, nothing uploaded.' : `Scanned PDFs and photos of notes need the scan reader, which runs on the <a href="${LIVE_URL}" target="_blank" rel="noopener">live site</a>.`}</p>
           </div>
+          <div class="panel-head slim"><h2>Course outline</h2><span class="label">${(s.syllabus || []).length ? plural(s.syllabus.length, 'week') + ' mapped' : 'one import fills the term'}</span></div>
+          <div class="panel-body">
+            <div class="btn-row"><button class="btn sm" data-act="outline-open">${(s.syllabus || []).length || (s.assess || []).length ? 'Import it again' : 'Import a course outline'} <span class="arr">→</span></button></div>
+            <p class="small muted">${(s.syllabus || []).length ? `Week ${s.syllabus[0].n}–${s.syllabus[s.syllabus.length - 1].n} of the schedule is here, so the week chips carry their topics.` : 'The outline already lists the learning outcomes, what each piece of work is worth, the exam date and the weekly schedule. Read it in and nothing needs typing — every row is shown for confirmation first.'}</p>
+          </div>
+          <div class="panel-head slim"><h2>Marks</h2><span class="label">what you need</span></div>
+          <div class="panel-body">${marksHtml(s)}</div>
           <div class="panel-head slim"><h2>Deadlines &amp; readings</h2><button class="btn sm ghost" data-act="dl-add">+ Add</button></div>
           <div class="panel-body">
             ${deadlineListHtml(s)}
@@ -4213,12 +4659,23 @@ const GENERIC = new Set('information data process system method result results s
           <div class="panel-head"><h2>Study</h2>${ready ? `<button class="btn sm ghost" data-act="search" title="Search every file in this subject (press /)">${I.search} Search</button>` : `<span class="label">add a file to begin</span>`}</div>
           ${stats}
           ${(() => {
+            const cp = ready ? cramPlan(s) : null;
+            if (!cp || cp.days > 21 || cp.days < 0) return '';
+            return `<div class="panel-body cram-row${cp.on ? ' on' : ''}">
+              <div><span class="label">Exam mode</span><strong>${cp.days === 0 ? 'The exam is today' : cp.days === 1 ? 'The exam is tomorrow' : `${cp.days} days to the exam`}${cp.pool ? ` · ${plural(cp.pool, 'card')} in the deck` : ''}</strong>
+              <span class="small muted">${cp.on
+                ? `On: no card is scheduled past the exam, and the shakiest come first.${cp.perDay ? ` About ${fmt(cp.perDay)} cards a day sees everything twice.${cp.tight ? ' That is a lot — the deck may be bigger than the time left.' : ''}` : ' Open the deck to see how many cards a day that means.'}`
+                : `Normally cards are scheduled for long-term memory, which can put one past the exam. Exam mode pulls every card back inside the date — it changes when cards return, not what the app knows about you, so you can switch it off again.`}</span></div>
+              <button class="btn sm${cp.on ? ' ghost' : ' primary'}" data-act="cram-toggle">${cp.on ? 'Turn it off' : 'Fit the deck to the exam'} <span class="arr">→</span></button>
+            </div>`;
+          })()}
+          ${(() => {
             if (!ready || weeks.length < 2) return '';
             const inc = s.materials.filter(m => !m.err && !m.busy);
             const activeWeek = weeks.find(w => inc.every(m => (m.include !== false) === (String(m.week || '') === String(w))));
             const allOn = inc.every(m => m.include !== false);
             return `<div class="panel-body week-row"><span class="label">Revise a week</span>
-              ${weeks.map(w => { const files = inc.filter(m => String(m.week || '') === String(w)); return `<button type="button" class="fchip pick wk${String(activeWeek) === String(w) ? ' on' : ''}" data-act="week-revise" data-w="${esc(w)}" title="${plural(files.length, 'file')} · ${fmt(files.reduce((n, m) => n + (m.words || 0), 0))} words">Week ${esc(w)} <span class="arr">→</span></button>`; }).join('')}
+              ${weeks.map(w => { const files = inc.filter(m => String(m.week || '') === String(w)); const tp = weekTopic(s, w); return `<button type="button" class="fchip pick wk${String(activeWeek) === String(w) ? ' on' : ''}" data-act="week-revise" data-w="${esc(w)}" title="${plural(files.length, 'file')} · ${fmt(files.reduce((n, m) => n + (m.words || 0), 0))} words${tp ? ' · ' + esc(tp) : ''}">Week ${esc(w)}${tp ? ` · ${esc(shortLab(tp, 24))}` : ''} <span class="arr">→</span></button>`; }).join('')}
               <button type="button" class="fchip pick${allOn ? ' on' : ''}" data-act="mat-filter" data-k="all">Everything</button>
               <span class="small muted">One tap filters the study set to that week and opens its cards.</span></div>`;
           })()}
@@ -4538,7 +4995,11 @@ const GENERIC = new Set('information data process system method result results s
   /* ---------- confidence flags on extracted content ---------- */
   // the honest "check this one" marks: extraction shapes the engine is less sure of, and anything read by OCR
   function confWhy(d) {
-    if (!d || !d.kind) return null;
+    if (!d) return null;
+    if (d.contrast) return 'the sentence sets two things against each other (“unlike…”, “whereas…”) — check this is said about the right one';
+    if (d.hedge) return 'the material hedges this (“may”, “is thought to”) — it is not stated as settled fact';
+    if (d.neg) return 'the wording is negative (“not”, “without”) — check the sense has not been flipped';
+    if (!d.kind) return null;
     if (d.kind === 'weak' || d.kind === 'inverse') return 'the phrasing is unusual for a definition — check it reads the right way round';
     if ((d.kind === 'dash' || d.kind === 'colon') && String(d.term).trim().split(/\s+/).length >= 5) return 'a long heading was read as a term — check it names one real thing';
     return null;
@@ -5316,6 +5777,7 @@ const GENERIC = new Set('information data process system method result results s
       list = pool.filter(isDue).sort((x, y) => p.srs[x.key].due - p.srs[y.key].due);
       const room = Math.max(0, 15 - list.length);
       if (room) list = list.concat(pool.filter(isNew).slice(0, room));
+      if (s.cram) list = list.slice().sort((x, y) => cramWeight(s.id, x) - cramWeight(s.id, y));
     }
     ui.pool = pool; ui.cards = list;
     ui.i = 0; ui.flipped = false; ui.missed = new Set(); ui.got = new Set(); ui.order = list.map((_, i) => i); ui.round = 1; ui.reviewed = 0;
@@ -6186,6 +6648,13 @@ const GENERIC = new Set('information data process system method result results s
       case 'dl-add': state.modal = { type: 'deadline' }; syncModal(); $('#dl-title')?.focus(); break;
       case 'dl-edit': { const d = deadlines(s).find(x => x.id === el.dataset.id); if (d) { state.modal = { type: 'deadline', deadline: d }; syncModal(); } break; }
       case 'dl-delete': { const before = deadlines(s).slice(); s.deadlines = deadlines(s).filter(x => x.id !== el.dataset.id); saveIndex(); state.modal = null; syncModal(); renderSubject(s); toast('Deadline removed.', { label: 'Undo', act: () => { s.deadlines = before; saveIndex(); refreshAfterMark(s); } }); break; }
+      case 'outline-open': state.modal = { type: 'outline' }; syncModal(); break;
+      case 'ol-all': { const g = el.dataset.g; const boxes = Array.from(document.querySelectorAll(`form[data-form="outline-review"] input[name="pick"]`)).filter(b => b.value === g || b.value.startsWith(g + ':')); const anyOff = boxes.some(b => !b.checked); boxes.forEach(b => { b.checked = anyOff; }); break; }
+      case 'ass-add': state.modal = { type: 'assess' }; syncModal(); $('#as-name')?.focus(); break;
+      case 'ass-edit': { if (!s) break; const a = assessOf(s).find(x => x.id === el.dataset.id); if (a) { state.modal = { type: 'assess', assess: a }; syncModal(); } break; }
+      case 'ass-delete': { if (!s) break; const list = assessOf(s); const i = list.findIndex(x => x.id === el.dataset.id); if (i < 0) break; const gone = list[i]; list.splice(i, 1); saveIndex(); state.modal = null; syncModal(); renderSubject(s); toast(`Removed “${gone.name}”.`, { label: 'Undo', act: () => { assessOf(s).splice(i, 0, gone); saveIndex(); renderSubject(s); } }); break; }
+      case 'ass-target': { if (!s) break; s.target = +el.dataset.v || 80; saveIndex(); renderSubject(s); break; }
+      case 'cram-toggle': { if (!s) break; s.cram = !s.cram; saveIndex(); state.ui = {}; renderSubject(s); toast(s.cram ? 'Exam mode on — nothing is scheduled past the exam now.' : 'Exam mode off — back to the long-term schedule.'); break; }
       case 'oc-edit': state.modal = { type: 'outcomes' }; syncModal(); $('#oc-text')?.focus(); break;
       case 'oc-clear': { const s2 = curSubject(); if (!s2) break; const old = s2.outcomes || []; s2.outcomes = []; if (progress[s2.id]) delete progress[s2.id].ocSum; saveIndex(); saveProgress(); state.modal = null; syncModal(); renderSection(s2, 'outcomes'); toast('Outcomes removed.', { label: 'Undo', act: () => { s2.outcomes = old; saveIndex(); renderSection(s2, 'outcomes'); } }); break; }
       case 'log-export': { const csv = logCsv([s]); if (!logOf(s.id).length) { toast('Nothing logged yet — study something first.'); break; } saveFile(`${fileStem(s.code || s.name)}-study-log.csv`, csv, 'text/csv', 'Study log'); break; }
@@ -6340,6 +6809,24 @@ const GENERIC = new Set('information data process system method result results s
   document.addEventListener('change', e => {
     const el = e.target;
     if (el.matches && el.matches('[data-restore]')) { const f = el.files && el.files[0]; el.value = ''; restoreFromFile(f); return; }
+    if (el.dataset.act === 'ass-mark') {
+      const r2 = parseRoute(); const subj = r2.id && subjectById(r2.id);
+      if (subj) {
+        const a = assessOf(subj).find(x => x.id === el.dataset.id);
+        if (a) {
+          const v = String(el.value).trim();
+          if (v === '') delete a.mark;
+          else { const n = Math.max(0, Math.min(100, parseFloat(v))); if (isFinite(n)) a.mark = n; }
+          saveIndex();
+          // the change fires on blur — re-rendering the page inside that handler pulls the input
+          // out from under the browser, so let the event finish first
+          setTimeout(() => { if (parseRoute().name === 'subject') renderSubject(subj); }, 0);
+          const ms = marksSummary(subj);
+          say(ms.marked ? `Standing ${round1(ms.standing)} percent of the ${round1(ms.gradedWeight)} percent marked.` : 'Mark cleared.');
+        }
+      }
+      return;
+    }
     if (el.dataset.act === 'dl-done') { const r = parseRoute(); const subj = r.id && subjectById(r.id); if (subj) { const d = deadlines(subj).find(x => x.id === el.dataset.id); if (d) { d.done = el.checked; saveIndex(); renderSubject(subj); if (el.checked) say(`${d.title} marked done.`); } } return; }
     if (el.dataset.act === 'q-weak') { state.ui.weakOnly = el.checked; return; }
     if (el.dataset.act === 'es-tick') { const c = state.ui.cov && state.ui.cov[+el.dataset.i]; if (c) { c.self = el.checked; const li = el.closest('li'); if (li) li.className = c.hit ? 'hit' : c.self ? 'self' : 'miss'; const n = state.ui.cov.filter(x => x.hit || x.self).length; const sc = $('.essay-score .score'); if (sc) sc.textContent = Math.round(n / state.ui.cov.length * 100) + '%'; const st = $('.essay-score strong'); if (st) st.textContent = `${n} of ${state.ui.cov.length} key points covered`; const qt = $('.essay-card .qtype'); if (qt) qt.textContent = `${n} of ${state.ui.cov.length} key points`; } return; }
@@ -6401,6 +6888,61 @@ const GENERIC = new Set('information data process system method result results s
       const subj = subjectById(r.id); if (!subj) return;
       state.modal = null; syncModal();
       addPasted(subj, data.title, data.text);
+    } else if (form.dataset.form === 'assess') {
+      const subj = subjectById(r.id); if (!subj) return;
+      const name = (data.name || '').trim(); const weight = parseFloat(data.weight);
+      if (!name || !isFinite(weight) || weight <= 0) return;
+      const mark = String(data.mark || '').trim() === '' ? null : Math.max(0, Math.min(100, parseFloat(data.mark)));
+      const list = assessOf(subj);
+      const a = data.id ? list.find(x => x.id === data.id) : null;
+      if (a) { a.name = name; a.weight = weight; if (mark == null) delete a.mark; else a.mark = mark; }
+      else { const item = { id: uid(), name, weight }; if (mark != null) item.mark = mark; list.push(item); }
+      saveIndex(); state.modal = null; syncModal(); renderSubject(subj);
+      toast(data.id ? 'Saved.' : `Added — ${name} is worth ${weight}%.`);
+    } else if (form.dataset.form === 'outline') {
+      const subj = subjectById(r.id); if (!subj) return;
+      let text = String(data.text || '').trim();
+      if (!text && data.file) { try { text = (await IDB.get(data.file)) || ''; } catch (e) { text = ''; } }
+      if (!text) { toast('Choose a file or paste the outline first.'); return; }
+      const parsed = Engine.outline(text, { year: new Date().getFullYear() });
+      state.modal = { type: 'outline-review', data: parsed };
+      syncModal();
+      if (!parsed.found) say('Nothing recognisable was found in that outline.');
+    } else if (form.dataset.form === 'outline-review') {
+      const subj = subjectById(r.id); if (!subj) return;
+      const o = state.modal && state.modal.data; if (!o) return;
+      const picks = new Set(new FormData(form).getAll('pick').map(String));
+      const done = [];
+      if (picks.has('exam') && o.exam) { subj.exam = o.exam.date; done.push('the exam date'); }
+      const newOutcomes = o.outcomes.filter((t, i) => picks.has('outcome:' + i));
+      if (newOutcomes.length) {
+        subj.outcomes = subj.outcomes || [];
+        const have = new Set(subj.outcomes.map(x => lc0(x.text)));
+        let added = 0;
+        for (const t of newOutcomes) if (!have.has(lc0(t))) { subj.outcomes.push({ id: uid(), text: t }); have.add(lc0(t)); added++; }
+        if (added) { if (progress[subj.id]) delete progress[subj.id].ocSum; done.push(plural(added, 'outcome')); }
+      }
+      const newAss = o.assessments.filter((x, i) => picks.has('assess:' + i));
+      if (newAss.length) {
+        const list = assessOf(subj);
+        const have = new Set(list.map(x => lc0(x.name)));
+        let added = 0;
+        for (const x of newAss) if (!have.has(lc0(x.name))) { list.push({ id: uid(), name: x.name, weight: x.weight }); have.add(lc0(x.name)); added++; }
+        if (added) done.push(`${added} weighted ${added === 1 ? 'item' : 'items'}`);
+      }
+      const wantDl = o.deadlines.filter((d, i) => picks.has('deadline:' + i));
+      const readings = picks.has('readings') ? o.weeks.filter(w => w.readings && w.date).map(w => ({ title: `Week ${w.n} reading — ${w.readings[0]}`.slice(0, 80), date: w.date, kind: 'Reading' })) : [];
+      const allDl = wantDl.concat(readings);
+      if (allDl.length) {
+        const list = deadlines(subj);
+        const have = new Set(list.map(d => d.date + '|' + lc0(d.title)));
+        let added = 0;
+        for (const d of allDl) { const k = d.date + '|' + lc0(d.title); if (have.has(k)) continue; list.push({ id: uid(), title: d.title, date: d.date, kind: d.kind, done: false }); have.add(k); added++; }
+        if (added) done.push(plural(added, 'dated item'));
+      }
+      if (picks.has('weeks') && o.weeks.length) { subj.syllabus = o.weeks; done.push(`the ${plural(o.weeks.length, 'week')} schedule`); }
+      saveIndex(); saveProgress(); state.modal = null; syncModal(); renderSubject(subj);
+      toast(done.length ? `Added ${done.join(', ')}.` : 'Nothing was ticked, so nothing was added.');
     } else if (form.dataset.form === 'deadline') {
       const subj = subjectById(r.id); if (!subj) return;
       if (!(data.title || '').trim() || !data.date) return;
