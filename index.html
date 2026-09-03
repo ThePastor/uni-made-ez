@@ -237,7 +237,9 @@ main { flex: 1; width: 100%; }
 .hero .mint ol { margin: auto 0 0; padding: 0; list-style: none; display: grid; gap: 8px; font-size: .9rem; }
 .hero .mint li { display: grid; grid-template-columns: 28px 1fr; gap: 8px; align-items: baseline; }
 .hero .mint li b { font-family: var(--font-mono); font-weight: 500; font-size: .7rem; letter-spacing: .08em; }
-.subjects-head { display: grid; grid-template-columns: 1fr auto auto; align-items: stretch; border-bottom: 1px solid var(--line); }
+.subjects-head { display: flex; flex-wrap: wrap; align-items: stretch; border-bottom: 1px solid var(--line); }
+.subjects-head h2 { flex: 1 1 auto; min-width: 0; }
+.subjects-head .btn.cell { flex: 0 0 auto; }
 .subjects-head .btn.cell.ghost { background: none; color: var(--ink-2); }
 .subjects-head .btn.cell.ghost:hover { background: var(--accent-soft); color: var(--ink); }
 .subjects-head > * { padding: 18px 32px; display: flex; align-items: center; }
@@ -1293,6 +1295,47 @@ math mi[mathvariant="normal"] { font-style: normal; }
 .lec-row .btn.on { background: var(--bad-soft); color: var(--bad); border-color: var(--bad); }
 .lecture .warn-ink { font-size: .8rem; line-height: 1.45; }
 @media print { .lecture, .pace-row, .mat-time { display: none !important; } }
+
+/* ---------- readiness, the paper blueprint and the study plan ---------- */
+.ready { display: grid; gap: 4px; padding: 12px 14px; border-top: 1px solid var(--line); background: var(--surface-2); }
+.ready strong { font-size: .98rem; font-weight: 500; }
+.ready strong .n { font-family: var(--font-display); font-size: 1.25rem; font-weight: 600; letter-spacing: -0.02em; color: var(--accent-deep); }
+.ready .small { color: var(--ink-2); }
+.bp { display: grid; gap: 6px; }
+.bp-parts { display: flex; flex-wrap: wrap; gap: 5px; }
+.bp-part { display: inline-flex; align-items: baseline; gap: 5px; font-family: var(--font-mono); font-size: .62rem; letter-spacing: .06em; text-transform: uppercase; padding: 4px 8px; background: var(--surface-2); color: var(--ink-2); border: 1px solid var(--line-soft); }
+.bp-part b { font-family: var(--font-display); font-size: .9rem; letter-spacing: -0.02em; color: var(--ink); }
+.bp-result { display: grid; gap: 8px; padding: 14px; background: var(--surface-2); text-align: left; margin: 16px 0; }
+.bp-verdict { margin: 0; font-family: var(--font-display); font-size: 1.05rem; font-weight: 500; letter-spacing: -0.01em; }
+.bp-rows { list-style: none; display: grid; gap: 1px; background: var(--line-soft); border: 1px solid var(--line-soft); }
+.bp-row { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center; padding: 8px 10px; background: var(--surface); }
+.bp-lab { display: grid; gap: 1px; font-size: .9rem; font-weight: 500; min-width: 0; }
+.bp-lab .small { font-weight: 400; overflow-wrap: anywhere; }
+.bp-score { position: relative; display: grid; justify-items: end; gap: 3px; min-width: 74px; }
+.bp-score b { font-family: var(--font-display); font-size: 1rem; letter-spacing: -0.02em; }
+.bp-score .bar { display: block; width: 64px; height: 3px; background: var(--line-soft); }
+.bp-score .bar::after { content: ""; display: block; height: 100%; width: var(--pct, 0%); background: var(--accent); }
+.bp-row.good .bp-score .bar::after { background: var(--ok); }
+.bp-row.poor .bp-score .bar::after { background: var(--bad); }
+.bp-row.poor .bp-lab { color: var(--bad); }
+.bp-row.thin { opacity: .72; }
+.plan { list-style: none; display: flex; flex-direction: column; border-top: 1px solid var(--line); }
+.pday { display: grid; grid-template-columns: 120px 1fr auto; gap: 14px; align-items: start; padding: 12px 16px; border-bottom: 1px solid var(--line-soft); background: var(--surface); }
+.pday.today { background: var(--accent-soft); }
+.pday.has-fixed { border-left: 3px solid var(--accent); }
+.pd-when { display: grid; gap: 1px; }
+.pd-when b { font-family: var(--font-display); font-size: 1rem; font-weight: 600; letter-spacing: -0.02em; }
+.pd-when span { font-family: var(--font-mono); font-size: .62rem; letter-spacing: .07em; text-transform: uppercase; color: var(--ink-2); }
+.pd-body { display: grid; gap: 6px; min-width: 0; }
+.pd-fixed { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; font-size: .95rem; font-weight: 500; }
+.pd-fixed .fchip.exam { background: var(--coral); color: var(--ink); border-color: transparent; }
+.pd-items { list-style: none; display: grid; gap: 4px; }
+.pd-items li { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px; font-size: .92rem; }
+.pd-items a { text-decoration: none; color: inherit; }
+.pd-items a:hover { text-decoration: underline; }
+.pd-mins { text-align: right; font-family: var(--font-display); letter-spacing: -0.01em; display: grid; gap: 2px; justify-items: end; }
+.pday.full .pd-mins b { color: var(--warn); }
+@media (max-width: 700px) { .pday { grid-template-columns: 1fr auto; } .pd-when { grid-column: 1; } .pd-body { grid-column: 1 / -1; } }
 
 </style>
 </head>
@@ -3707,7 +3750,7 @@ const GENERIC = new Set('information data process system method result results s
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.3', date: '3 September 2026' };
+  const BUILD = { v: '2.4', date: '3 September 2026' };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonandy242', ['gmail', 'com'].join('.')].join('@');
   const OWNER_HASH = 'f2d29d4fd8c98b4205c0ffa7628eeeccfc3f2647ed0430748eac0d775cbc562d';
@@ -4069,10 +4112,27 @@ const GENERIC = new Set('information data process system method result results s
     return { date: d, days, label: days < 0 ? 'Exam passed' : days === 0 ? 'Exam today' : days === 1 ? 'Exam tomorrow' : `${days} days to exam`,
       pretty: d.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' }) };
   }
+  /* One daily number, not two. Until v2.3 the subject page said "6 cards a day to be ready" while
+     the exam-mode row beside it said "about 11 cards a day sees everything twice" — two different
+     sums, both true of different questions, printed side by side. Worse, the deck honoured neither:
+     it filled to a hard-coded fifteen whatever the number said. Now one function answers the
+     question the student is actually in, and buildDeck deals that many. */
+  const DECK_FILL = 15;        // no exam date: the ordinary daily deal
+  const DECK_MAX = 60;         // one honest sitting; past this the number is a warning, not a plan
   function dailyTarget(s) {
     const ex = examInfo(s); const st = srsStats(s.id);
     if (!ex || ex.days <= 0 || !st.pool) return null;
-    return Math.max(1, Math.ceil((st.pool - st.mastered) / ex.days));
+    const days = Math.max(1, ex.days);
+    return s.cram
+      ? Math.max(1, Math.ceil(st.pool * 2 / days))                       // exam mode: everything, twice
+      : Math.max(1, Math.ceil((st.pool - st.mastered) / days));          // ordinarily: everything once
+  }
+  const targetLabel = s => s.cram ? 'cards a day to see it all twice' : 'cards a day to be ready';
+  // how many new cards this deck will deal today — the target, floored at the ordinary fifteen and
+  // capped at what one sitting can hold
+  function deckSize(s) {
+    const t = dailyTarget(s);
+    return t ? Math.max(DECK_FILL, Math.min(t, DECK_MAX)) : DECK_FILL;
   }
 
   /* ---------- state ---------- */
@@ -4172,6 +4232,7 @@ const GENERIC = new Set('information data process system method result results s
     if (parts[0] === 'owner') return { name: 'owner', q };
     if (parts[0] === 'today') return { name: 'today', q };
     if (parts[0] === 'semester') return { name: 'semester', q };
+    if (parts[0] === 'plan') return { name: 'plan', q };
     if (parts[0] === 's' && parts[1]) return { name: parts[2] ? 'section' : 'subject', id: parts[1], kind: parts[2], q };
     return { name: 'home', q };
   }
@@ -4213,7 +4274,7 @@ const GENERIC = new Set('information data process system method result results s
   function saveQuizRun(sid, ui) {
     try {
       if (!ui || !ui.qs || ui.qi >= ui.qs.length) { localStorage.removeItem(LS_QUIZ); return; }
-      localStorage.setItem(LS_QUIZ, JSON.stringify({ sid, qs: ui.qs, qi: ui.qi, answers: ui.answers || [], exam: !!ui.exam, count: ui.count, types: ui.types, weakOnly: !!ui.weakOnly, startedAt: ui.startedAt, deadline: ui.deadline || null, at: Date.now() }));
+      localStorage.setItem(LS_QUIZ, JSON.stringify({ sid, qs: ui.qs, qi: ui.qi, answers: ui.answers || [], exam: !!ui.exam, count: ui.count, types: ui.types, weakOnly: !!ui.weakOnly, startedAt: ui.startedAt, deadline: ui.deadline || null, bp: ui.bp || null, short: (ui.short || []).map(x => ({ part: { label: x.part.label }, got: x.got })), at: Date.now() }));
     } catch (e) { /* quota or private mode — resuming is a convenience, not a promise */ }
   }
   function loadQuizRun(sid) {
@@ -4277,6 +4338,7 @@ const GENERIC = new Set('information data process system method result results s
     if (r.name === 'owner') return renderOwner(r.q);
     if (r.name === 'today') return renderToday(true);
     if (r.name === 'semester') return renderSemester();
+    if (r.name === 'plan') return renderPlan();
     const s = subjectById(r.id);
     if (!s) { go('/'); return; }
     if (r.name === 'subject') { noteVisit(s.id, ''); return renderSubject(s); }
@@ -4355,7 +4417,7 @@ const GENERIC = new Set('information data process system method result results s
         if (!tc.subjects) return '';
         return `<section class="today-panel" aria-label="Today's deck">
           <div class="tp-text"><span class="label">Today · every subject, interleaved</span><strong>${tc.due ? `${plural(tc.due, 'card')} due across ${plural(tc.subs, 'subject')}` : 'Nothing due yet — deal a mixed deck of new cards'}</strong><span class="muted small">Mixing subjects beats studying one course in a block. ${tc.due ? 'Due cards first, then a few new from each subject.' : 'A few new cards from each subject, dealt round-robin.'}</span></div>
-          <div class="tp-btns"><a class="btn primary" href="#/today">Study today's deck <span class="arr">→</span></a><a class="btn ghost" href="#/semester">Semester view <span class="arr">→</span></a></div>
+          <div class="tp-btns"><a class="btn primary" href="#/today">Study today's deck <span class="arr">→</span></a><a class="btn ghost" href="#/semester">Semester view <span class="arr">→</span></a><a class="btn ghost" href="#/plan">Study plan <span class="arr">→</span></a></div>
         </section>`;
       })()}
       ${(() => {
@@ -4372,7 +4434,7 @@ const GENERIC = new Set('information data process system method result results s
           <span class="arr">→</span>
         </a>`;
       })()}
-      <div class="subjects-head"><h2>${subs.length ? 'Your subjects' : 'No subjects yet'}</h2>${subs.length ? `<a class="btn cell ghost" href="#/semester" title="Every subject, exam and deadline on one screen">Semester view</a>` : ''}<button class="btn cell ghost" data-act="backup-open" title="Back up every subject to a file, or restore one">Backup &amp; restore</button><button class="btn cell" data-act="new-subject">Add subject <span class="arr">→</span></button></div>
+      <div class="subjects-head"><h2>${subs.length ? 'Your subjects' : 'No subjects yet'}</h2>${subs.length ? `<a class="btn cell ghost" href="#/plan" title="The next fortnight, worked backwards from your exams and deadlines">Study plan</a><a class="btn cell ghost" href="#/semester" title="Every subject, exam and deadline on one screen">Semester view</a>` : ''}<button class="btn cell ghost" data-act="backup-open" title="Back up every subject to a file, or restore one">Backup &amp; restore</button><button class="btn cell" data-act="new-subject">Add subject <span class="arr">→</span></button></div>
       <div class="subject-grid">
         ${subs.map(s => `<div class="subject-slot"><a class="subject-card" href="#/s/${s.id}" style="--tab:${s.color}">
           <div class="code">${esc(s.code || 'Subject')}</div>
@@ -4419,6 +4481,102 @@ const GENERIC = new Set('information data process system method result results s
     ev.sort((a, b) => String(a.date).localeCompare(String(b.date)));
     return ev;
   }
+  /* ---------- the plan: the days that are left, spent ----------
+     Every part of this is derived, and nothing in it is invented. The exams and the deadlines are
+     fixed points the student typed or imported; the cards on a given day are the cards whose due
+     date FALLS on that day, read straight out of the scheduler, plus — for a subject whose exam is
+     inside the fortnight — enough new ones to meet the daily number that subject already shows;
+     the reading is the files not yet marked read, costed in minutes at the student's own pace.
+
+     What it deliberately does not do is invent a study session out of nothing. A day with no
+     exam pressure, no card due and nothing left to read is shown empty, because an empty day is
+     the truth and filling it would teach the student to distrust the whole page. */
+  const PLAN_DAYS = 14;
+  const PLAN_FULL = 180;                 // minutes in a day before the plan says so
+  const dayList = n => { const out = []; const t = new Date(new Date().toDateString()); for (let i = 0; i < n; i++) { const d = new Date(t.getTime() + i * DAY); out.push({ i, date: d, key: dayKey(d.getTime()) }); } return out; };
+  // cards whose due date lands on each day — the scheduler's own answer, not an estimate
+  function dueByDay(sid, days) {
+    const p = prog(sid), out = {};
+    for (const k in p.srs) {
+      const c = p.srs[k]; if (!c || !c.due) continue;
+      const key = c.due <= Date.now() ? days[0].key : dayKey(c.due);
+      if (out[key] != null) out[key]++; else out[key] = 1;
+    }
+    return out;
+  }
+  function planFor(subs, n) {
+    const days = dayList(n || PLAN_DAYS);
+    const byKey = {}; days.forEach(d => { byKey[d.key] = { ...d, items: [], mins: 0, fixed: [] }; });
+    const add = (key, item) => { const d = byKey[key]; if (!d) return; d.items.push(item); d.mins += item.mins || 0; };
+    for (const s2 of subs) {
+      const ex = examInfo(s2);
+      const due = dueByDay(s2.id, days);
+      const target = dailyTarget(s2);
+      const st = srsStats(s2.id);
+      const inWindow = ex && ex.days >= 0 && ex.days < days.length;
+      // 1 · the fixed points: an exam and every deadline still to do
+      if (inWindow) { const d = byKey[dayKey(ex.date.getTime())]; if (d) d.fixed.push({ s: s2, kind: 'Exam', title: `${s2.code || s2.name} exam` }); }
+      for (const dl of deadlines(s2)) {
+        if (dl.done) continue;
+        const d = byKey[dl.date];
+        if (d) d.fixed.push({ s: s2, kind: dl.kind || 'Other', title: dl.title });
+      }
+      // 2 · the cards, worked backwards from the exam
+      const lastDay = inWindow ? ex.days : days.length;      // nothing is planned after the exam
+      let unseen = Math.max(0, (st.pool || 0) - st.seen);
+      for (const d of days) {
+        if (d.i >= lastDay) break;
+        let cards = due[d.key] || 0;
+        if (inWindow && target && unseen) {                  // top up to the number the subject asks for
+          const room = Math.max(0, Math.min(target, DECK_MAX) - cards);
+          const take = Math.min(room, unseen);
+          cards += take; unseen -= take;
+        }
+        if (cards) add(d.key, { s: s2, kind: 'cards', n: cards, mins: Math.max(1, Math.round(cards * LOG_MIN.cards)), why: due[d.key] && cards > due[d.key] ? `${due[d.key]} due, ${cards - due[d.key]} new` : due[d.key] ? 'due' : 'new' });
+      }
+      // 3 · the reading, at the pace this student actually reads
+      const wpm = paceOf(s2);
+      const unread = s2.materials.filter(m => !m.err && !m.busy && m.words && m.status !== 'read')
+        .sort((x, y) => (+x.week || 99) - (+y.week || 99) || String(x.name).localeCompare(String(y.name)));
+      const slots = days.filter(d => d.i < lastDay);
+      unread.forEach((m, k) => {
+        const d = slots[k % Math.max(1, slots.length)];
+        if (d) add(d.key, { s: s2, kind: 'read', name: m.name, week: m.week, mins: readMins(m.words, wpm) });
+      });
+    }
+    const list = days.map(d => byKey[d.key]);
+    return { days: list, total: list.reduce((n2, d) => n2 + d.mins, 0), busiest: list.reduce((a2, b) => b.mins > a2.mins ? b : a2, list[0]) };
+  }
+  const dayName = d => d.i === 0 ? 'Today' : d.i === 1 ? 'Tomorrow' : d.date.toLocaleDateString(undefined, { weekday: 'long' });
+  function renderPlan() {
+    const subs = state.subjects;
+    if (!subs.length) { go('/'); return; }
+    const plan = planFor(subs);
+    const anyFixed = plan.days.some(d => d.fixed.length);
+    const body = `<div class="page">
+      <div class="panel-head slim"><div><span class="label">The fortnight ahead</span><h2>Study plan</h2></div>
+        <div class="btn-row"><a class="btn sm ghost" href="#/semester">Semester view <span class="arr">→</span></a><button class="btn sm ghost" data-act="print-page">Print <span class="arr">⎙</span></button></div></div>
+      <div class="panel-body">
+        <p class="muted">Worked backwards from the dates you have given the app: ${plan.total ? `about ${hhmm(plan.total)} of work across the next ${PLAN_DAYS} days` : 'nothing is scheduled in the next fortnight'}${anyFixed ? ', with the exams and deadlines fixed where they fall' : ''}. Cards come from the scheduler's own due dates; reading is costed at your reading pace. Nothing here is invented to fill a day.</p>
+      </div>
+      <ol class="plan">${plan.days.map(d => `<li class="pday${d.fixed.length ? ' has-fixed' : ''}${d.mins > PLAN_FULL ? ' full' : ''}${d.i === 0 ? ' today' : ''}">
+        <div class="pd-when"><b>${dayName(d)}</b><span>${d.date.toLocaleDateString(undefined, { day: 'numeric', month: 'short' })}</span></div>
+        <div class="pd-body">
+          ${d.fixed.map(f => `<div class="pd-fixed"><span class="fchip ${f.kind === 'Exam' ? 'exam' : ''}">${esc(f.kind)}</span><a href="#/s/${f.s.id}">${esc(f.title)}</a></div>`).join('')}
+          ${d.items.length ? `<ul class="pd-items">${d.items.map(it => it.kind === 'cards'
+            ? `<li><a href="#/s/${it.s.id}/cards"><b>${fmt(it.n)} cards</b> · ${esc(it.s.code || it.s.name)}</a><span class="small muted">${esc(it.why)} · about ${hhmm(it.mins)}</span></li>`
+            : `<li><a href="#/s/${it.s.id}"><b>Read</b> ${esc(shortLab(it.name, 46))}</a><span class="small muted">${it.week ? `week ${esc(String(it.week))} · ` : ''}${esc(it.s.code || it.s.name)} · about ${hhmm(it.mins)}</span></li>`).join('')}</ul>` : ''}
+          ${!d.items.length && !d.fixed.length ? `<p class="small muted">Nothing scheduled.</p>` : ''}
+        </div>
+        <div class="pd-mins">${d.mins ? `<b>${hhmm(d.mins)}</b>${d.mins > PLAN_FULL ? `<span class="warn-ink small">a long day</span>` : ''}` : '<span class="small muted">—</span>'}</div>
+      </li>`).join('')}</ol>
+      <div class="panel-body"><p class="small muted">A day past a subject's exam carries none of that subject's work. ${plan.busiest && plan.busiest.mins > PLAN_FULL ? `${dayName(plan.busiest)} is the heavy one at ${hhmm(plan.busiest.mins)} — if that is not realistic, the honest fix is to start earlier, not to plan harder.` : 'No day here is over three hours.'} Minutes are estimates: cards at ten seconds each, reading at your own measured pace.</p></div>
+    </div>`;
+    app.innerHTML = frame(`${topbar(`<a href="#/">Subjects</a><span class="sep">/</span><strong>Plan</strong>`)}
+    <main id="main" tabindex="-1">${body}</main>${foot()}`);
+    syncModal();
+  }
+
   function renderSemester() {
     const subs = state.subjects;
     if (!subs.length) { go('/'); return; }
@@ -4442,7 +4600,9 @@ const GENERIC = new Set('information data process system method result results s
           <span class="ss"><b>${ex ? (ex.days >= 0 ? fmt(ex.days) : '—') : '—'}</b><span>${ex ? (ex.days >= 0 ? `days to exam${s.cram ? ' · exam mode' : ''}` : 'exam passed') : 'no exam set'}</span></span>
           ${(() => { const mk = marksSummary(s); return `<span class="ss"><b>${mk.marked ? round1(mk.standing) + '%' : '—'}</b><span>${mk.marked ? `standing · ${round1(mk.earned)}% secured` : mk.n ? 'nothing marked yet' : 'no marks set up'}</span>${mk.marked ? `<i class="bar" style="--pct:${Math.max(0, Math.min(100, round1(mk.standing)))}%"></i>` : ''}</span>`; })()}
           <a class="ss" href="#/s/${s.id}/cards"><b>${fmt(st.due)}</b><span>due now</span></a>
-          <span class="ss"><b>${st.pool ? pct + '%' : '—'}</b><span>mastered</span><i class="bar" style="--pct:${pct}%"></i></span>
+          ${(() => { const rd = readiness(s.id); return rd && rd.seen
+            ? `<span class="ss" title="The scheduler's forgetting curve averaged over all ${fmt(rd.pool)} cards${rd.unseen ? `, counting the ${fmt(rd.unseen)} you have never rated as not yet known` : ''}. Your recall of these cards, not a prediction of the exam."><b>${rd.pct}%</b><span>recall if tested today</span><i class="bar" style="--pct:${rd.pct}%"></i></span>`
+            : `<span class="ss"><b>${st.pool ? pct + '%' : '\u2014'}</b><span>${st.pool ? 'mastered · nothing rated yet' : 'mastered'}</span><i class="bar" style="--pct:${pct}%"></i></span>`; })()}
           <span class="ss"><b>${ago == null ? '—' : ago <= 0 ? 'today' : ago === 1 ? '1d' : ago + 'd'}</b><span>${ago == null ? 'not studied yet' : 'since studied'}</span></span>
         </div>
         ${flags.length ? `<div class="sem-flags">${flags.map(f => `<span class="flag">${esc(f)}</span>`).join('')}</div>` : ''}
@@ -4465,7 +4625,7 @@ const GENERIC = new Set('information data process system method result results s
           <p class="small muted sem-note">A subject is flagged when the numbers say you're behind — an exam near with low mastery, a pile of due cards, a week untouched, an overdue deadline.</p>
         </section>
         <aside>
-          <div class="panel-head"><h2>What's coming</h2><span class="label">exams &amp; deadlines</span></div>
+          <div class="panel-head"><h2>What's coming</h2><a class="label" href="#/plan">see the plan →</a></div>
           ${ev.length ? `<ul class="sem-tl">${ev.map(e => `<li class="tl${e.kind === 'Exam' ? ' exam' : ''}${e.days < 0 ? ' late' : e.days <= 3 ? ' soon' : ''}">
             <span class="d"><b>${e.days < 0 ? `${-e.days}d` : e.days === 0 ? 'now' : `${e.days}d`}</b><span>${e.days < 0 ? 'overdue' : e.days === 0 ? 'today' : 'away'}</span></span>
             <span class="what"><a href="#/s/${e.s.id}" style="--tab:${e.s.color}"><i></i>${esc(e.s.code || e.s.name)}</a><strong>${esc(e.title)}</strong><span class="small muted">${esc(e.kind)} · ${esc(new Date(e.date + 'T00:00:00').toLocaleDateString(undefined, { day: 'numeric', month: 'short' }))}</span></span>
@@ -4961,6 +5121,47 @@ const GENERIC = new Set('information data process system method result results s
     </div>`;
   }
 
+  /* ---------- how ready you actually are ----------
+     FSRS already carries, for every card, a stability S and the time since it was last seen; the
+     model's own forgetting curve turns those into a retrievability — the probability you would
+     recall that card right now. Averaging it over the pool gives a number that can be defended,
+     and the three things it is NOT are stated wherever it appears: it is about these cards, not
+     the exam; it only covers material that was uploaded; and a card never studied is counted as
+     not yet known rather than quietly left out, because leaving it out would flatter the number. */
+  function readiness(sid) {
+    const p = prog(sid), now = Date.now(), st = srsStats(sid);
+    const pool = st.pool || 0;
+    if (!pool) return null;
+    let sum = 0, seen = 0;
+    for (const k in p.srs) {
+      const c = p.srs[k];
+      if (!c || !(c.s > 0) || !c.last) continue;
+      sum += Math.max(0, Math.min(1, FSRS.retrievability(Math.max(0, (now - c.last) / DAY), c.s)));
+      seen++;
+    }
+    const studied = Math.min(seen, pool);
+    return {
+      pool, seen: studied, unseen: Math.max(0, pool - studied),
+      pct: Math.round(sum / pool * 100),                                   // over everything
+      ofSeen: studied ? Math.round(sum / studied * 100) : null,            // over what has been studied
+      sum: Math.round(sum * 10) / 10
+    };
+  }
+  const readyWord = pct => pct >= 80 ? 'strong' : pct >= 60 ? 'coming along' : pct >= 35 ? 'patchy' : 'early';
+  function readinessHtml(s) {
+    const r = readiness(s.id);
+    if (!r) return '';
+    if (!r.seen) return `<div class="ready"><strong>Nothing rated yet.</strong><span class="small muted">Work through the deck once and this becomes a real number \u2014 until then there is nothing honest to say.</span></div>`;
+    const ex = examInfo(s);
+    return `<div class="ready">
+      <strong>If the exam were today you would recall about <b class="n">${r.pct}%</b> of what is in your material.</strong>
+      <span class="small">${r.unseen
+        ? `That is ${r.sum} cards' worth of recall spread over ${fmt(r.pool)} cards \u2014 ${fmt(r.unseen)} of them you have never rated, and those count as not yet known.`
+        : `Every one of your ${fmt(r.pool)} cards has been rated at least once.`}${r.ofSeen != null && r.unseen ? ` Across only the ${fmt(r.seen)} you have studied it is ${r.ofSeen}%.` : ''}</span>
+      <span class="small muted">The scheduler's own forgetting curve, averaged over the deck${ex && ex.days > 0 ? ` \u2014 ${plural(ex.days, 'day')} to the exam` : ''}. It measures your recall of these cards, not the exam paper, and it can only speak for material you have uploaded.</span>
+    </div>`;
+  }
+
   /* ---------- exam mode: fitting the deck to the date ---------- */
   function cramCap(sid, now, ivlDays) {
     const s = subjectById(sid);
@@ -4975,8 +5176,9 @@ const GENERIC = new Set('information data process system method result results s
   function cramPlan(s) {
     const ex = examInfo(s), st = srsStats(s.id);
     if (!ex || ex.days < 0) return null;
-    const days = Math.max(1, ex.days);
-    return { days: ex.days, pool: st.pool, perDay: st.pool ? Math.ceil(st.pool * 2 / days) : 0, on: !!s.cram, tight: st.pool ? st.pool * 2 / days > 120 : false };
+    // the same number the subject page prints and the deck deals — asked once, answered once
+    const perDay = st.pool ? Math.max(1, Math.ceil(st.pool * 2 / Math.max(1, ex.days))) : 0;
+    return { days: ex.days, pool: st.pool, perDay, on: !!s.cram, dealt: Math.min(perDay, DECK_MAX), tight: perDay > DECK_MAX };
   }
 
   /* ---------- marks: what the course is worth, and what is still to play for ----------
@@ -5083,8 +5285,8 @@ const GENERIC = new Set('information data process system method result results s
         <button type="button" class="stat" data-act="edit-subject"><b>${ex ? (ex.days >= 0 ? fmt(ex.days) : '—') : '+'}</b><span>${ex ? (ex.days >= 0 ? `days to exam · ${esc(ex.pretty)}` : `exam was ${esc(ex.pretty)}`) : 'set an exam date'}</span></button>
         <a class="stat" href="#/s/${s.id}/cards"><b>${fmt(st.due)}</b><span>cards due now${st.next && !st.due ? ` · next ${whenText(st.next)}` : ''}</span></a>
         <div class="stat"><b>${pct}%</b><span>mastered · ${fmt(st.mastered)} of ${fmt(st.pool || 0)} cards</span><i class="bar" style="--pct:${pct}%"></i></div>
-        <div class="stat"><b>${target ? fmt(target) : '—'}</b><span>${target ? 'cards a day to be ready' : ex ? 'open the deck to plan' : 'no exam date set'}</span></div>
-      </div>` : '';
+        <a class="stat" href="#/s/${s.id}/cards"><b>${target ? fmt(target) : '—'}</b><span>${target ? `${targetLabel(s)}${target > DECK_MAX ? ` · ${DECK_MAX} a sitting` : ''}` : ex ? 'open the deck to plan' : 'no exam date set'}</span></a>
+      </div>${st.pool ? readinessHtml(s) : ''}` : '';
     const tiles = [
       { kind: 'cards', title: 'Flash cards', desc: 'Definitions, acronyms and fill-the-gap cards. Flip, rate yourself, repeat the ones you missed.' },
       { kind: 'summary', title: 'Summary', desc: 'The material condensed — a short brief, section by section, plus the takeaways.' },
@@ -5140,7 +5342,9 @@ const GENERIC = new Set('information data process system method result results s
             return `<div class="panel-body cram-row${cp.on ? ' on' : ''}">
               <div><span class="label">Exam mode</span><strong>${cp.days === 0 ? 'The exam is today' : cp.days === 1 ? 'The exam is tomorrow' : `${cp.days} days to the exam`}${cp.pool ? ` · ${plural(cp.pool, 'card')} in the deck` : ''}</strong>
               <span class="small muted">${cp.on
-                ? `On: no card is scheduled past the exam, and the shakiest come first.${cp.perDay ? ` About ${fmt(cp.perDay)} cards a day sees everything twice.${cp.tight ? ' That is a lot — the deck may be bigger than the time left.' : ''}` : ' Open the deck to see how many cards a day that means.'}`
+                ? `On: no card is scheduled past the exam and the shakiest come first.${cp.perDay
+                    ? ` Seeing everything twice by then takes ${fmt(cp.perDay)} a day, so the deck now deals ${fmt(cp.dealt)} instead of the usual ${DECK_FILL}.${cp.tight ? ` That is more than one sitting holds — at ${DECK_MAX} a day you will not get through it all twice, and it is better to know that now than on the morning.` : ''}`
+                    : ` Open the deck once and it can say how many cards a day that means.`}`
                 : `Normally cards are scheduled for long-term memory, which can put one past the exam. Exam mode pulls every card back inside the date — it changes when cards return, not what the app knows about you, so you can switch it off again.`}</span></div>
               <button class="btn sm${cp.on ? ' ghost' : ' primary'}" data-act="cram-toggle">${cp.on ? 'Turn it off' : 'Fit the deck to the exam'} <span class="arr">→</span></button>
             </div>`;
@@ -6249,12 +6453,13 @@ const GENERIC = new Set('information data process system method result results s
     if (!ui.mode) ui.mode = ui.counts.due ? 'due' : ui.counts.new ? 'new' : 'all';
     let list;
     if (ui.mode === 'mine') list = pool.filter(isMine);
-    else if (ui.mode === 'new') list = pool.filter(isNew).slice(0, 20);
+    else if (ui.mode === 'new') list = pool.filter(isNew).slice(0, dailyTarget(s) ? deckSize(s) : 20);
     else if (ui.mode === 'weak') list = pool.filter(isWeak);
     else if (ui.mode === 'all') list = pool;
     else {
       list = pool.filter(isDue).sort((x, y) => p.srs[x.key].due - p.srs[y.key].due);
-      const room = Math.max(0, 15 - list.length);
+      // every due card is always dealt; new cards fill the day up to the number the exam demands
+      const room = Math.max(0, deckSize(s) - list.length);
       if (room) list = list.concat(pool.filter(isNew).slice(0, room));
       if (s.cram) list = list.slice().sort((x, y) => cramWeight(s.id, x) - cramWeight(s.id, y));
     }
@@ -6297,7 +6502,7 @@ const GENERIC = new Set('information data process system method result results s
       body = cardStageHtml(s.id, cards[ui.order[ui.i]], ui);
     }
     const inner = `<div class="deck">
-      <div class="deck-head">${note}<div class="deck-progress" aria-hidden="true" role="presentation"><i style="width:${ui.order.length ? Math.round(ui.i / ui.order.length * 100) : 0}%"></i></div><span class="mono muted">${st.mastered} mastered · ${st.seen} seen · ${st.pool} total${leechCount(s.id) ? ` · <span class="warn-ink">${plural(leechCount(s.id), 'leech')}</span>` : ''}</span></div>
+      <div class="deck-head">${note}<div class="deck-progress" aria-hidden="true" role="presentation"><i style="width:${ui.order.length ? Math.round(ui.i / ui.order.length * 100) : 0}%"></i></div><span class="mono muted">${ui.order.length ? `${ui.order.length} in this session${dailyTarget(s) ? ' · ' + (s.cram ? 'sized to the exam' : 'sized to the days left') : ''} · ` : ''}${st.mastered} mastered · ${st.seen} seen · ${st.pool} total${leechCount(s.id) ? ` · <span class="warn-ink">${plural(leechCount(s.id), 'leech')}</span>` : ''}</span></div>
       ${body}
       <p class="small muted" style="text-align:center">Keys: <span class="kbd">space</span> flip · <span class="kbd">1</span> again · <span class="kbd">2</span> good · <span class="kbd">3</span> easy</p>
     </div>`;
@@ -6393,6 +6598,10 @@ const GENERIC = new Set('information data process system method result results s
           <button type="button" class="${ui.exam ? 'on' : ''}" data-act="q-mode" data-m="exam">Exam</button>
         </div><p class="small muted">${ui.exam ? 'Timed, one minute a question, no feedback until you submit — like the real thing.' : 'Marked as you go, with the answer and its source after each question.'}</p></div>
         <div class="field"><label>Number of questions</label><div class="seg">${counts.map(n => `<button type="button" class="${ui.count === n ? 'on' : ''}" data-act="q-count" data-n="${n}">${n}</button>`).join('')}</div></div>
+        ${ui.exam ? (() => { const bp = examBlueprint(s, a, ui.count);
+          return `<div class="field"><label>The paper</label>
+            <div class="bp">${bp.kind === 'flat' ? '' : `<div class="bp-parts">${bp.parts.map(x => `<span class="bp-part"><b>${fmt(x.want)}</b>${esc(x.label)}</span>`).join('')}</div>`}
+            <p class="small muted">${esc(bp.why)}${bp.kind === 'outcome' ? ' The assessment table is not used to shape it: "Midterm — 25%" is a name and a number, and nothing in the outline says which content the midterm covers, so weighting a paper by it would be a guess presented as a plan.' : ''}</p></div></div>`; })() : ''}
         <div class="field"><label>Question types</label><div class="opts">
           ${[['mc', 'Multiple choice'], ['tf', 'True / false'], ['fill', 'Fill in the blank']].concat(hasSteps ? [['order', 'Order the steps']] : []).map(([k, l]) => `<label class="check"><input type="checkbox" data-act="q-type" data-k="${k}" ${ui.types.includes(k) ? 'checked' : ''}> ${l}</label>`).join('')}
         </div>${hasSteps ? '' : '<p class="small muted">Ordering questions appear when your material has numbered steps.</p>'}</div>
@@ -6420,6 +6629,18 @@ const GENERIC = new Set('information data process system method result results s
         <span class="label">${ui.exam ? 'Exam complete' : 'Quiz complete'}${took ? ` · ${Math.floor(took / 60)}m ${took % 60}s` : ''}</span>
         <div class="score">${pct}%<br><small>${right} of ${total} correct${best != null ? ` · previous best ${best}%${pct > best ? ' — new best' : ''}` : ''}</small></div>
         <div class="breakdown">${Object.entries(by).map(([t, v]) => `<span class="chip">${Q_NAMES[t]}: ${v.ok}/${v.n}</span>`).join('')}</div>
+        ${(() => { const pr = paperResult(ui); if (!pr || !pr.rows.length) return '';
+          return `<div class="bp-result">
+            <span class="label">Where the marks went</span>
+            <p class="bp-verdict">${esc(paperVerdict(pr, ui.bp.kind))}</p>
+            <ul class="bp-rows">${pr.rows.map(r => `<li class="bp-row${r.n < BP_MIN ? ' thin' : r.pct >= 80 ? ' good' : r.pct < 60 ? ' poor' : ''}">
+              <span class="bp-lab">${esc(r.part.label)}${r.part.full ? `<span class="small muted">${esc(shortLab(r.part.full, 90))}</span>` : ''}</span>
+              <span class="bp-score"><b>${r.ok}/${r.n}</b><i class="bar" style="--pct:${r.pct}%"></i></span>
+            </li>`).join('')}</ul>
+            ${pr.thin.length ? `<p class="small muted">${pr.thin.length === 1 ? 'One part' : `${pr.thin.length} parts`} had fewer than ${BP_MIN} questions on this paper — too few to read anything into. A longer paper gives each part more to say.</p>` : ''}
+            ${pr.unassigned ? `<p class="small muted">${plural(pr.unassigned, 'question')} could not be tied to any ${ui.bp.kind === 'outcome' ? 'outcome' : 'section'} and ${pr.unassigned === 1 ? 'is' : 'are'} counted in the total but not above.</p>` : ''}
+            ${(ui.short || []).length ? `<p class="small muted">The blueprint asked for more than the material could answer in ${(ui.short || []).map(x => esc(x.part.label.toLowerCase())).join(', ')} — those parts are short, which is itself worth knowing before the real paper.</p>` : ''}
+          </div>`; })()}
         ${calHtml}
         <div class="btn-row" style="justify-content:center"><button class="btn primary" data-act="q-again">New ${ui.exam ? 'exam' : 'quiz'} <span class="arr">→</span></button><button class="btn" data-act="q-restart">Retake these ${ui.qs.length} <span class="arr">↻</span></button><button class="btn" data-act="q-types">Question types <span class="arr">→</span></button><button class="btn" data-act="q-setup">Change settings</button>${right < total ? `<button class="btn" data-act="weak-cards">Practise what I missed <span class="arr">→</span></button>` : ''}</div>
         <div class="review">${ui.qs.map((q, i) => ({ q, i, an: ui.answers[i] || { given: '—', ok: false } })).sort((x, y) => (y.an.conf === 'sure' && !y.an.ok ? 1 : 0) - (x.an.conf === 'sure' && !x.an.ok ? 1 : 0)).map(({ q, i, an }) => `<div class="item ${an.ok ? 'ok' : 'bad'}${an.conf === 'sure' && !an.ok ? ' sure-wrong' : ''}"><div><strong>${i + 1}.</strong> ${esc(q.type === 'order' ? (q.body || q.prompt) : (q.body || q.prompt))}${an.conf ? `<span class="tag ${an.conf === 'sure' && !an.ok ? 'warn' : 'soft'}">${an.conf === 'sure' ? (an.ok ? 'sure' : 'sure — and wrong') : (an.ok ? 'unsure — but right' : 'unsure')}</span>` : ''}</div><div class="small">${an.ok ? 'Correct' : `You said “${esc(Array.isArray(an.given) ? an.given.map((x, n) => (n + 1) + '. ' + x).join('  ') : an.given)}”`} · Answer: <strong>${esc(Array.isArray(q.answer) ? q.answer.map((x, n) => (n + 1) + '. ' + x).join('  ') : q.answer)}</strong></div></div>`).join('')}</div>
@@ -6507,6 +6728,129 @@ const GENERIC = new Set('information data process system method result results s
     p.quizzes = p.quizzes.slice(-40); saveProgress();
     if (timedOut) toast('Time — exam submitted.');
     renderSection(s, 'quiz');
+  }
+
+  /* ---------- the mock exam: a paper shaped like the course ----------
+     Practice mode deals questions in whatever order the material offers them. A paper does not
+     work like that: it is built to a blueprint, so that every part of the course is asked about
+     and the result can say WHERE the marks went, not just how many.
+
+     The blueprint comes from the outcome map. It is the only structure in this app that says what
+     the course is ABOUT. The assessment table is deliberately not used for it: "Midterm — 25%" is
+     a name and a number, and nothing anywhere says which content the midterm covers, so shaping a
+     paper by it would be an invention dressed up as a plan. Where a subject has no outcomes, the
+     paper is spread across the sections of the material by how much each one holds.
+
+     Questions are built once, over-drawn, then selected against the blueprint. Building each part
+     separately looked tidier but lied when a part ran dry — the engine quietly widened its pool
+     and the paper claimed a spread it did not have. Selecting from a tagged pool means a part that
+     cannot be filled is REPORTED as short instead. */
+  const BP_MIN = 2;                     // a part worth naming needs at least this many questions
+  function questionTags(q, a, ocRows) {
+    const sid = q.sourceId;
+    const sent = typeof sid === 'number' ? a.sentences[sid] : null;
+    const text = [q.body || '', q.source || '', q.answer || '', q.term || ''].join(' ');
+    const set = stemSet(text + ' ' + (sent ? sent.s : ''));
+    const outcomes = [];
+    (ocRows || []).forEach((r, i) => {
+      if (r.status === 'gap') return;
+      const need = r.needles.length >= 2 ? 2 : 1;
+      if (r.needles.filter(nd => set.has(stemOf(nd))).length >= need) outcomes.push(i);
+    });
+    return { outcomes, section: sent && typeof sent.section === 'number' ? sent.section : null };
+  }
+  // the parts of the paper, and how many questions each is owed
+  function examBlueprint(s, a, count) {
+    const ocRows = (s.outcomes || []).length ? mapOutcomes(s, a) : null;
+    const live = ocRows ? ocRows.map((r, i) => ({ r, i })).filter(x => x.r.status !== 'gap') : [];
+    if (live.length >= 2) {
+      const parts = live.map(({ r, i }) => ({ key: 'oc:' + i, label: `Outcome ${i + 1}`, full: r.o.text, want: 0 }));
+      shareOut(parts, count, live.map(x => x.r.evTotal + x.r.cards));
+      return { kind: 'outcome', parts, ocRows, why: `Spread across the ${plural(live.length, 'outcome')} your material actually covers${ocRows.length > live.length ? `; the ${ocRows.length - live.length} with no material behind them are left out` : ''}.` };
+    }
+    const secs = a.sections.map((sec, i) => ({ sec, i })).filter(x => x.sec.sentences.length >= 2);
+    if (secs.length >= 2) {
+      const parts = secs.map(({ sec, i }) => ({ key: 'sec:' + i, label: sec.title ? shortLab(sec.title, 28) : `Section ${i + 1}`, full: sec.title || '', want: 0 }));
+      shareOut(parts, count, secs.map(x => x.sec.sentences.length));
+      return { kind: 'section', parts, ocRows, why: `No learning outcomes here yet, so the paper is spread across the ${plural(secs.length, 'section')} of your material, by size. Paste the outcomes and it will follow those instead.` };
+    }
+    return { kind: 'flat', parts: [], ocRows, why: 'Not enough structure to shape a paper — questions are drawn evenly from everything.' };
+  }
+  // give every part at least one question, then hand out what is left in proportion to the material
+  function shareOut(parts, count, weights) {
+    const total = weights.reduce((n, w) => n + w, 0) || parts.length;
+    let left = Math.max(parts.length, count);
+    parts.forEach(p2 => { p2.want = 1; left--; });
+    const scored = parts.map((p2, i) => ({ p2, share: weights[i] / total }));
+    scored.sort((x, y) => y.share - x.share);
+    for (let n = 0; n < left; n++) scored[n % scored.length].p2.want++;
+  }
+  // draw a paper: over-build, tag, then fill each part in turn
+  function buildPaper(s, a, ui) {
+    const bp = examBlueprint(s, a, ui.count);
+    const drawn = visQuiz(s.id, Engine.quiz(a, { count: ui.count * 4, types: ui.types, seed: ui.seed }));
+    const tagged = drawn.map(q => ({ q, t: questionTags(q, a, bp.ocRows) }));
+    if (bp.kind === 'flat') return { qs: drawn.slice(0, ui.count).map(x => ({ ...x, part: null })), bp: { kind: 'flat', parts: [], why: bp.why }, short: [] };
+    const belongs = (x, part) => part.key.startsWith('oc:')
+      ? x.t.outcomes.includes(+part.key.slice(3))
+      : x.t.section === +part.key.slice(4);
+    const used = new Set(); const out = []; const short = [];
+    for (const part of bp.parts) {
+      let got = 0;
+      for (const x of tagged) {
+        if (got >= part.want) break;
+        if (used.has(x.q)) continue;
+        if (!belongs(x, part)) continue;
+        used.add(x.q); out.push({ ...x.q, part: part.key }); got++;
+      }
+      part.got = got;
+      if (got < part.want) short.push({ part, got });
+    }
+    // a paper short of its blueprint is still a paper — fill the gap, and say where it came from
+    for (const x of tagged) { if (out.length >= ui.count) break; if (used.has(x.q)) continue; used.add(x.q); out.push({ ...x.q, part: null }); }
+    return { qs: out.slice(0, ui.count), bp: { kind: bp.kind, parts: bp.parts, why: bp.why }, short };
+  }
+  // where the marks went
+  function paperResult(ui) {
+    const bp = ui.bp; if (!bp || bp.kind === 'flat') return null;
+    const rows = bp.parts.map(part => {
+      let n = 0, ok = 0;
+      ui.qs.forEach((q, i) => { if (q.part !== part.key) return; n++; if (ui.answers[i] && ui.answers[i].ok) ok++; });
+      return { part, n, ok, pct: n ? Math.round(ok / n * 100) : null };
+    }).filter(r => r.n);
+    const solid = rows.filter(r => r.n >= BP_MIN && r.pct >= 80);
+    const lost = rows.filter(r => r.n >= BP_MIN && r.pct < 60).sort((x, y) => x.pct - y.pct);
+    const thin = rows.filter(r => r.n < BP_MIN);
+    return { rows, solid, lost, thin, unassigned: ui.qs.filter(q => !q.part).length };
+  }
+  function paperVerdict(pr, kind) {
+    if (!pr || !pr.rows.length) return '';
+    const name = r => r.part.label.toLowerCase();
+    const list = arr => arr.map(name).join(arr.length === 2 ? ' and ' : ', ').replace(/, ([^,]*)$/, arr.length > 2 ? ' and $1' : ', $1');
+    if (pr.lost.length && pr.solid.length) return `Solid on ${list(pr.solid)}. ${cap(list(pr.lost))} ${pr.lost.length === 1 ? 'is' : 'are'} where the marks went.`;
+    if (pr.lost.length) return `${cap(list(pr.lost))} ${pr.lost.length === 1 ? 'is' : 'are'} where the marks went.`;
+    if (pr.solid.length === pr.rows.length) return `Even across every ${kind === 'outcome' ? 'outcome' : 'section'} asked about.`;
+    if (pr.solid.length) return `Solid on ${list(pr.solid)}; the rest sat in between.`;
+    return 'No part of the paper stood out either way.';
+  }
+  const cap = t => t ? t.charAt(0).toUpperCase() + t.slice(1) : t;
+
+  // Every route into a run — Start, New exam, changing the question types — comes through here, so
+  // an exam started any of those three ways is the same paper with the same blueprint. Wiring only
+  // the Start button would have left "New exam" quietly dealing an unshaped quiz that still called
+  // itself an exam.
+  function newRun(s, ui) {
+    ui.seed = (ui.seed || 1) + 1;
+    if (ui.exam && !ui.weakOnly) {
+      const pa = buildPaper(s, state.analysis, ui);
+      ui.qs = pa.qs; ui.bp = pa.bp; ui.short = pa.short;
+    } else {
+      ui.qs = visQuiz(s.id, Engine.quiz(state.analysis, { count: ui.count, types: ui.types, seed: ui.seed, only: ui.weakOnly ? new Set(weakTerms(s.id, 25).map(w => w.key)) : null }));
+      ui.bp = null; ui.short = [];
+    }
+    ui.qi = 0; ui.answers = []; ui.pick = []; ui.startedAt = Date.now();
+    ui.deadline = ui.exam && ui.qs.length ? Date.now() + ui.qs.length * 60000 : null;
+    return ui.qs.length;
   }
 
   /* ---------- match game ---------- */
@@ -7229,12 +7573,12 @@ const GENERIC = new Set('information data process system method result results s
         say(`Question ${ui.qi + 1} of ${ui.qs.length}.${a2 ? ` You answered ${a2.ok ? 'correctly' : 'incorrectly'}.` : ''}`);
         break;
       }
-      case 'q-start': ui.seed = (ui.seed || 1) + 1; ui.qs = visQuiz(s.id, Engine.quiz(state.analysis, { count: ui.count, types: ui.types, seed: ui.seed, only: ui.weakOnly ? new Set(weakTerms(s.id, 25).map(w => w.key)) : null })); ui.qi = 0; ui.answers = []; if (!ui.qs.length) { ui.qs = null; toast('Could not build questions from this material — try adding more files.'); } ui.startedAt = Date.now(); ui.pick = []; ui.deadline = ui.exam && ui.qs ? Date.now() + ui.qs.length * 60000 : null; renderSection(s, 'quiz'); if (ui.exam && ui.qs) startQuizTimer(s); break;
+      case 'q-start': if (!newRun(s, ui)) { ui.qs = null; toast('Could not build questions from this material — try adding more files.'); } renderSection(s, 'quiz'); if (ui.exam && ui.qs) startQuizTimer(s); break;
       case 'q-answer': answerQuiz(s, el.dataset.v, el.dataset.conf || null); break;
       case 'q-next': ui.pick = []; if (ui.qi + 1 >= ui.qs.length) { clearQuizRun(); finishQuiz(s); } else { ui.qi++; saveQuizRun(s.id, ui); renderSection(s, 'quiz'); } break;
       case 'q-resume': {
         const r2 = loadQuizRun(s.id); if (!r2) { renderSection(s, 'quiz'); break; }
-        Object.assign(ui, { qs: r2.qs, qi: r2.qi, answers: r2.answers, exam: r2.exam, count: r2.count, types: r2.types, weakOnly: r2.weakOnly, startedAt: r2.startedAt, deadline: r2.deadline, pick: [] });
+        Object.assign(ui, { qs: r2.qs, qi: r2.qi, answers: r2.answers, exam: r2.exam, count: r2.count, types: r2.types, weakOnly: r2.weakOnly, startedAt: r2.startedAt, deadline: r2.deadline, bp: r2.bp || null, short: r2.short || [], pick: [] });
         if (ui.exam && ui.deadline && ui.deadline <= Date.now()) { clearQuizRun(); finishQuiz(s); break; }
         renderSection(s, 'quiz'); if (ui.exam) startQuizTimer(s);
         say(`Resumed at question ${ui.qi + 1} of ${ui.qs.length}.`);
@@ -7259,16 +7603,12 @@ const GENERIC = new Set('information data process system method result results s
         if (!ui.types || !ui.types.length) { toast('Pick at least one question type.'); break; }
         state.modal = null; syncModal();
         clearInterval(state.timer); state.timer = null;
-        ui.seed = (ui.seed || 1) + 1;
-        ui.qs = visQuiz(s.id, Engine.quiz(state.analysis, { count: ui.count, types: ui.types, seed: ui.seed, only: ui.weakOnly ? new Set(weakTerms(s.id, 25).map(w => w.key)) : null }));
-        ui.qi = 0; ui.answers = []; ui.pick = []; ui.startedAt = Date.now();
-        if (!ui.qs.length) { ui.qs = null; clearQuizRun(); toast('No questions of those types could be built from this material.'); renderSection(s, 'quiz'); break; }
-        ui.deadline = ui.exam ? Date.now() + ui.qs.length * 60000 : null;
+        if (!newRun(s, ui)) { ui.qs = null; clearQuizRun(); toast('No questions of those types could be built from this material.'); renderSection(s, 'quiz'); break; }
         saveQuizRun(s.id, ui); renderSection(s, 'quiz'); if (ui.exam) startQuizTimer(s);
         toast(`New ${ui.qs.length}-question ${ui.exam ? 'exam' : 'quiz'}.`);
         break;
       }
-      case 'q-again': ui.seed++; ui.qs = visQuiz(s.id, Engine.quiz(state.analysis, { count: ui.count, types: ui.types, seed: ui.seed, only: ui.weakOnly ? new Set(weakTerms(s.id, 25).map(w => w.key)) : null })); ui.qi = 0; ui.answers = []; ui.pick = []; ui.startedAt = Date.now(); ui.deadline = ui.exam ? Date.now() + ui.qs.length * 60000 : null; renderSection(s, 'quiz'); if (ui.exam) startQuizTimer(s); break;
+      case 'q-again': newRun(s, ui); renderSection(s, 'quiz'); if (ui.exam) startQuizTimer(s); break;
       case 'q-setup': ui.qs = null; ui.deadline = null; clearQuizRun(); clearInterval(state.timer); state.timer = null; renderSection(s, 'quiz'); break;
     }
   });
