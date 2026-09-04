@@ -1337,6 +1337,31 @@ math mi[mathvariant="normal"] { font-style: normal; }
 .pday.full .pd-mins b { color: var(--warn); }
 @media (max-width: 700px) { .pday { grid-template-columns: 1fr auto; } .pd-when { grid-column: 1; } .pd-body { grid-column: 1 / -1; } }
 
+/* ---------- in the original, thin sections, term calibration, the limits line ---------- */
+.og-passage { display: grid; gap: 8px; padding: 14px; background: var(--surface-2); font-size: .96rem; line-height: 1.55; }
+.og-line { margin: 0; color: var(--ink-2); }
+.og-line.on { color: var(--ink); font-weight: 500; background: var(--accent-soft); padding: 8px 10px; margin: -2px -4px; }
+.og-page { margin: 14px 0 0; display: grid; gap: 6px; justify-items: center; }
+.og-page img { max-width: 100%; border: 1px solid var(--line); background: #fff; }
+.og-page.loading { padding: 40px 0; }
+.og-page figcaption { text-align: center; max-width: 52ch; }
+.thin-block .thin-panel { display: grid; gap: 10px; }
+.thin-list { list-style: none; display: grid; gap: 1px; background: var(--line-soft); border: 1px solid var(--line-soft); }
+.thin-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 12px; background: var(--surface); }
+.tl-main { display: grid; gap: 2px; min-width: 0; flex: 1 1 260px; }
+.tl-main strong { font-weight: 500; font-size: .96rem; }
+.tl-act { display: flex; gap: 6px; flex: 0 0 auto; }
+.calib-term { display: grid; gap: 8px; }
+.cw-list { list-style: none; display: grid; gap: 1px; background: var(--line-soft); border: 1px solid var(--line-soft); }
+.cw { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px; padding: 8px 12px; background: var(--surface); border-left: 3px solid var(--bad); }
+.cw-term { font-weight: 500; font-size: .96rem; }
+.limits { display: grid; gap: 6px; padding: 12px 14px; margin: 0 0 18px; border-left: 3px solid var(--line-soft); background: var(--surface-2); }
+.limits p { margin: 0; color: var(--ink-2); }
+.limits p b { color: var(--ink); }
+.limits .tag.warn { display: inline-block; }
+.q-setup .limits { margin: 0; }
+@media print { .limits, .thin-block, .calib-term { break-inside: avoid; } .tl-act { display: none !important; } }
+
 </style>
 </head>
 <body>
@@ -3750,7 +3775,7 @@ const GENERIC = new Set('information data process system method result results s
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.4', date: '3 September 2026' };
+  const BUILD = { v: '2.5', date: '3 September 2026' };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonandy242', ['gmail', 'com'].join('.')].join('@');
   const OWNER_HASH = 'f2d29d4fd8c98b4205c0ffa7628eeeccfc3f2647ed0430748eac0d775cbc562d';
@@ -3758,6 +3783,7 @@ const GENERIC = new Set('information data process system method result results s
   const LS_UNLOCK = 'unimadeez:unlock';
   const COLORS = ['#2B52C4', '#C2410C', '#0F766E', '#7C3AED', '#BE185D', '#B45309', '#15803D', '#475569'];
   const MAX_FILE_MB = 60;
+  const PAGE_KEEP_MB = 25;      // a PDF this size or smaller keeps its bytes, so its pages can be shown
   const MAX_ANALYZE_CHARS = 600000;
   const LOCKED = { summary: true, quiz: true, essay: true };
 
@@ -4091,13 +4117,61 @@ const GENERIC = new Set('information data process system method result results s
         <button type="button" class="btn sm ghost" data-act="item-hide" ${d}>Hide</button>
       </div>`;
   }
-  function noteTerm(sid, term, ok, weight) {
+  // The per-quiz 2x2 is thrown away when the quiz ends. Carrying the confident misses per TERM is
+  // what makes them a standing list — one attempt says nothing, three attempts in a term say a lot.
+  function noteTerm(sid, term, ok, weight, conf) {
     const k = String(term || '').toLowerCase().trim();
     if (!k || k.length > 60) return;
     const p = prog(sid);
     const t = p.terms[k] || { w: 0, r: 0, label: String(term) };
     if (ok) t.r++; else t.w += (weight || 1);
+    if (conf === 'sure' || conf === 'unsure') {
+      const f = conf === 'sure' ? (ok ? 'sr' : 'sw') : (ok ? 'ur' : 'uw');
+      t[f] = (t[f] || 0) + 1;
+      if (f === 'sw') t.swAt = Date.now();
+    }
     t.last = Date.now(); p.terms[k] = t; saveProgress();
+  }
+  /* A term you were sure about and got wrong is the most expensive kind of not-knowing: nothing in
+     your own experience of studying flags it, so it survives every revision session untouched. The
+     list only drops a term when a later CONFIDENT answer is right — being right while unsure is not
+     evidence the misconception is gone, it is evidence you guessed. */
+  function confidentlyWrong(sid, n) {
+    const p = prog(sid);
+    return Object.entries(p.terms)
+      .map(([key, v]) => ({ key, ...v, sw: v.sw || 0, sr: v.sr || 0, uw: v.uw || 0, ur: v.ur || 0 }))
+      .filter(x => x.sw > 0 && x.sw > x.sr)
+      .sort((x, y) => (y.sw - y.sr) - (x.sw - x.sr) || y.sw - x.sw || (y.swAt || 0) - (x.swAt || 0))
+      .slice(0, n || 8);
+  }
+  function termCalibration(sid) {
+    const p = prog(sid);
+    const c = { sr: 0, sw: 0, ur: 0, uw: 0, terms: 0 };
+    for (const k in p.terms) {
+      const t = p.terms[k];
+      const rated = (t.sr || 0) + (t.sw || 0) + (t.ur || 0) + (t.uw || 0);
+      if (!rated) continue;
+      c.terms++; c.sr += t.sr || 0; c.sw += t.sw || 0; c.ur += t.ur || 0; c.uw += t.uw || 0;
+    }
+    c.rated = c.sr + c.sw + c.ur + c.uw;
+    c.sureAcc = (c.sr + c.sw) ? Math.round(c.sr / (c.sr + c.sw) * 100) : null;
+    c.unsureAcc = (c.ur + c.uw) ? Math.round(c.ur / (c.ur + c.uw) * 100) : null;
+    return c;
+  }
+  function calibHtml(s2) {
+    const c = termCalibration(s2.id);
+    if (!c.rated) return '';
+    const list = confidentlyWrong(s2.id, 8);
+    const gap = c.sureAcc != null && c.unsureAcc != null ? c.sureAcc - c.unsureAcc : null;
+    return `<div class="calib-term">
+      <p class="small">Across the term you have answered ${plural(c.rated, 'question')} with a confidence attached.${c.sureAcc != null ? ` When you said <b>sure</b> you were right ${c.sureAcc}% of the time${c.unsureAcc != null ? `; when you said <b>unsure</b>, ${c.unsureAcc}%` : ''}.` : ''}${gap != null ? (gap >= 25 ? ' Your sense of what you know is working — that gap is what it should look like.' : gap >= 8 ? ' The two are closer than they should be: "sure" is not yet carrying much information.' : ' Those are almost the same number, which means the confidence you attach is not yet telling you anything — worth slowing down on it.') : ''}</p>
+      ${list.length ? `<ul class="cw-list">${list.map(x => `<li class="cw">
+        <span class="cw-term">${esc(x.label || x.key)}</span>
+        <span class="small muted">sure and wrong ${x.sw === 1 ? 'once' : x.sw + '×'}${x.sr ? ` · right while sure ${x.sr === 1 ? 'once' : x.sr + '×'} since` : ''}${x.swAt ? ` · last ${esc(whenAgo(x.swAt))}` : ''}</span>
+      </li>`).join('')}</ul>
+      <p class="small muted">These are the ones to look at first: you did not flag them for yourself, so nothing else will. A term leaves this list when you get it right <em>while sure</em> — being right while unsure is a guess, not a correction.</p>`
+      : `<p class="small muted">Nothing you have been confidently wrong about yet. This list fills itself from quiz answers you marked "sure".</p>`}
+    </div>`;
   }
   function weakTerms(sid, n = 8) {
     const p = prog(sid);
@@ -4674,7 +4748,7 @@ const GENERIC = new Set('information data process system method result results s
         <div class="modal-body">
           <input type="hidden" name="key" value="${esc(m.cardKey || '')}"><input type="hidden" name="term" value="${esc(m.term || '')}"><input type="hidden" name="ctype" value="${esc(m.ctype || '')}">
           ${m.leech ? `<div class="notice warn-note">Missed ${LEECH_AT} or more times. What helps: split it into two smaller cards, put a cue in the question (“in glycolysis, …”), make the answer one line, or write it in your own words. Saving resets its schedule.</div>` : ''}
-          ${m.source ? `<div class="detail-block"><span class="label">From the material</span><p class="small">${esc(m.source)}</p></div>` : ''}
+          ${m.source ? `<div class="detail-block"><span class="label">From the material${m.secTitle ? ' · ' + esc(shortLab(m.secTitle, 40)) : ''}</span><p class="small">${esc(m.source)}</p>${m.secTitle ? `<p class="small muted">The app got little out of this section, so this one is yours to write.</p>` : ''}</div>` : ''}
           <div class="field"><label for="c-front">Front — the question or prompt</label><textarea class="input" id="c-front" name="front" rows="3" required maxlength="600" placeholder="What is …?">${esc(m.front || '')}</textarea></div>
           <div class="field"><label for="c-back">Back — the answer</label><textarea class="input" id="c-back" name="back" rows="4" required maxlength="900">${esc(m.back || '')}</textarea></div>
           ${editing && !m.mine && !m.leech ? `<p class="small muted">This is a generated card. Your edit is kept even when the material is re-scanned, and its review schedule carries over.</p>` : ''}
@@ -4980,6 +5054,24 @@ const GENERIC = new Set('information data process system method result results s
         </div>
         <div class="modal-foot"><span class="spacer" style="flex:1"></span><button type="button" class="btn sm" data-act="close-modal">Cancel</button><button class="btn sm primary" type="submit">Save <span class="arr">\u2192</span></button></div>
       </form></div>`;
+    }
+    if (m.type === 'origin') {
+      const { sent, nb, sec } = m.o;
+      const why = originWhyNoPage(m.mat, sent);
+      const line = x => `<p class="og-line${x.id === sent.id ? ' on' : ''}">${esc(x.s)}</p>`;
+      return `<div class="modal-bg" data-act="close-modal"><div class="modal wide">
+        <div class="modal-head"><div><span class="label">In the original${sec && sec.title ? ' · ' + esc(shortLab(sec.title, 40)) : ''}</span><h2>${esc(sent.file || 'Your material')}${sent.page ? ` · page ${esc(String(sent.page))}` : sent.slide ? ` · slide ${esc(String(sent.slide))}` : ''}</h2></div><button type="button" class="btn ghost icon" data-act="close-modal" aria-label="Close">${I.x}</button></div>
+        <div class="modal-body">
+          <div class="og-passage">${nb.prev ? line(nb.prev) : ''}${line(sent)}${nb.next.map(line).join('')}</div>
+          <p class="small muted">The highlighted line is the one the card was built from; the rest is the paragraph around it, so you can see whether the app read it in context.</p>
+          ${m.img
+            ? `<figure class="og-page"><img src="${m.img}" alt="Page ${esc(String(m.page))} of ${esc(sent.file || '')}, as it appears in the original PDF"><figcaption class="small muted">Page ${esc(String(m.page))}, drawn from the PDF you uploaded — not from the app's reading of it. If the two disagree, the page is right.</figcaption></figure>`
+            : m.busy ? `<div class="og-page loading"><div class="spinner"></div><div class="small muted">Drawing page ${esc(String(m.page))}…</div></div>`
+            : m.pageErr ? `<p class="small warn-ink">${esc(m.pageErr)}</p>`
+            : why ? `<p class="small muted">${esc(why)}</p>` : ''}
+        </div>
+        <div class="modal-foot"><span class="mono muted">${esc(cite(sent) || 'your material')}</span><span class="spacer" style="flex:1"></span><button type="button" class="btn sm" data-act="close-modal">Close</button></div>
+      </div></div>`;
     }
     if (m.type === 'confirm') {
       return `<div class="modal-bg" data-act="close-modal"><div class="modal">
@@ -5392,6 +5484,8 @@ const GENERIC = new Set('information data process system method result results s
             <div class="term-chips">${weak.map(w => `<span class="term-chip weak">${esc(w.label)} <span class="mono">${w.w}✗${w.r ? ' ' + w.r + '✓' : ''}</span></span>`).join('')}</div>
             <div class="btn-row"><button class="btn sm" data-act="weak-cards">Practise these cards <span class="arr">→</span></button><button class="btn sm" data-act="weak-quiz">Quiz me on these <span class="arr">→</span></button></div>
           </div>` : ''}
+          ${(() => { const c = termCalibration(s.id); if (!c.rated) return ''; return `<div class="panel-head slim"><div><span class="label">Across the term</span><h2>Confident and wrong</h2></div><span class="mono muted">${c.sw ? plural(c.sw, 'confident miss') : 'none yet'}</span></div><div class="panel-body">${calibHtml(s)}</div>`; })()}
+
           ${layerLine}
           ${!isUnlocked() ? `<div class="panel-body"><div class="notice">Summary and Quiz open after a quick sign-up (name and email). Flash cards and Key information are free to use right away.</div></div>` : ''}
         </section>
@@ -5637,6 +5731,12 @@ const GENERIC = new Set('information data process system method result results s
         const ok = await IDB.put(m.id, res.text);
         if (!ok) toast('Text kept for this visit only — browser storage is unavailable.');
         if (res.figures && res.figures.length) { m.figs = res.figures.length; await IDB.put(m.id + ':figs', JSON.stringify(res.figures)); }
+        // "Show me this in the original" needs the original. Only a PDF has pages worth showing, and
+        // only its own bytes can show them truthfully — a re-rendered approximation would be a
+        // different document. Kept for PDFs up to PAGE_KEEP_MB; past that the app says why it cannot.
+        if (ext === 'pdf' && f.size <= PAGE_KEEP_MB * 1024 * 1024) {
+          if (await IDB.put(m.id + ':pdf', f)) m.hasPdf = 1;
+        }
         // a PDF with a text layer on a few pages only is mostly scans: offer the reader for it too
         if (ext === 'pdf' && res.pages >= 2 && m.words / res.pages < 25 && OCR.available()) { pendingScans.set(m.id, f); m.thin = true; }
       } catch (e) {
@@ -5879,6 +5979,90 @@ const GENERIC = new Set('information data process system method result results s
       return { o, needles, evidence: evidence.slice(0, 3), evTotal: evidence.length, cards, hitTerms: Array.from(hitTerms), status };
     });
   }
+  /* ---------- thin sections: where the engine failed, not the student ----------
+     The outcome map asks whether the course's demands are met by the material. This is the mirror:
+     which parts of the student's OWN material produced almost nothing. "§4.3 — 900 words, 1 card"
+     is rarely a thin section of a textbook; it is nearly always the extractor failing on a table,
+     a figure-heavy page, or prose that never states a definition outright.
+
+     That is worth saying out loud rather than hiding, because the student can fix it in a way the
+     app cannot: those are exactly the pages to write their own cards from. So the panel names the
+     section, its size, what it yielded, and links straight to writing a card for it. */
+  /* Picking the threshold by taste would have been guesswork, so it was measured: across the real
+     fixtures the engine yields a median of about 1.5 cards per hundred words, and the sections that
+     are obviously failures sit at nought. So a section is thin when it produced NO cards at all, or
+     when it produced less than half what the rest of this subject managed — relative, because the
+     yield from lecture slides and from a textbook chapter are not comparable, and floored by an
+     absolute ceiling so that a subject where everything is going well flags nothing. */
+  const THIN_MIN_WORDS = 100;        // below this a low yield is not evidence of anything
+  const THIN_CEILING = 1.0;          // never flag a section already producing this well
+  const secWords = sec => sec.sentences.reduce((n, x) => n + (x.words ? x.words.length : 0), 0);
+  function thinSections(s2, a) {
+    if (!a || !a.sections) return [];
+    const pool = fullPool(s2.id, a, 1);
+    const bySec = {};
+    for (const c of pool) {
+      const id = c.sourceId;
+      const sent = typeof id === 'number' ? a.sentences[id] : null;
+      if (!sent) continue;
+      bySec[sent.section] = (bySec[sent.section] || 0) + 1;
+    }
+    const rows = [];
+    a.sections.forEach((sec, i) => {
+      const words = secWords(sec);
+      if (words < THIN_MIN_WORDS) return;
+      const cards = bySec[i] || 0;
+      rows.push({ i, sec, words, cards, per100: cards / (words / 100) });
+    });
+    if (rows.length < 2) return [];
+    const sorted = rows.map(r => r.per100).sort((x, y) => x - y);
+    const median = sorted[Math.floor(sorted.length / 2)];
+    const cut = Math.min(THIN_CEILING, median * 0.5);
+    return rows
+      .filter(r => r.cards === 0 || r.per100 < cut)
+      .map(r => ({ i: r.i, title: r.sec.title || `Section ${r.i + 1}`, words: r.words, cards: r.cards, per100: r.per100,
+        file: (r.sec.sentences[0] || {}).file || '', page: (r.sec.sentences[0] || {}).page || null,
+        firstId: (r.sec.sentences[0] || {}).id, median, cut }))
+      .sort((x, y) => x.per100 - y.per100 || y.words - x.words)
+      .slice(0, 6);
+  }
+  function thinHtml(s2, a) {
+    const rows = thinSections(s2, a);
+    const total = (a.sections || []).length;
+    if (!rows.length) return `<p class="small muted">Every section of your material with more than ${THIN_MIN_WORDS} words produced cards at a normal rate. Nothing here needs writing by hand.</p>`;
+    return `<div class="thin-panel">
+      <p class="small">These ${rows.length === 1 ? 'section' : plural(rows.length, 'section')} of ${plural(total, 'section')} gave up far fewer cards than their length suggests they should. That usually means the extractor struggled there — a table, a figure, or prose that explains without ever defining — not that the section is unimportant. They are the best places to write your own cards.</p>
+      <p class="small muted">Measured against this subject, not a fixed rule: the rest of your material yields about ${round1(rows[0].median)} cards per hundred words, so anything under ${round1(rows[0].cut)} — or nothing at all — is flagged here.</p>
+      <ul class="thin-list">${rows.map(r => `<li class="thin-row">
+        <span class="tl-main"><strong>${esc(shortLab(r.title, 52))}</strong><span class="small muted">${fmt(r.words)} words · ${r.cards ? plural(r.cards, 'card') : '<b class="warn-ink">no cards</b>'}${r.file ? ` · ${esc(shortLab(r.file, 26))}${r.page ? ', p. ' + esc(String(r.page)) : ''}` : ''}</span></span>
+        <span class="tl-act">${r.firstId != null ? `<button type="button" class="btn sm ghost" data-act="card-origin" data-i="${r.firstId}" data-s="${esc(s2.id)}">Read it</button>` : ''}<button type="button" class="btn sm" data-act="card-add" data-sec="${r.i}">Write a card <span class="arr">→</span></button></span>
+      </li>`).join('')}</ul>
+    </div>`;
+  }
+
+  /* ---------- what the engine cannot do ----------
+     A footer disclaimer is a legal reflex, not honesty. What builds trust is being specific: which
+     operation the app performs, which mistakes that operation characteristically makes, and where
+     it has already told you it was unsure. So the line is permanent, it appears on the two pages
+     where the mistake would cost marks, and it names the check chip rather than gesturing at
+     "possible inaccuracies". The counts in it are this subject's real numbers, not a boilerplate. */
+  function limitsHtml(s2, a, where) {
+    const flagged = (a && a.defs || []).filter(d => confOf(d)).length;
+    const ocr = (a && a.ocrFiles || 0);
+    const merged = (a && a.repeatsMerged) || 0;
+    const risk = where === 'quiz'
+      ? 'A question is only as good as the sentence under it: a table read out of order, a negation carried into the wrong half of a sentence, or a definition that was never actually stated can all produce a question with a confident wrong answer.'
+      : 'It can run a table together into a sentence that says something the table does not, miss a "not" that changes a claim, and treat an aside as a definition.';
+    return `<aside class="limits">
+      <span class="label">What this is, and is not</span>
+      <p class="small">Everything here is <b>extracted, not understood</b>. The app finds sentences, definitions, figures and steps by pattern — it does not read for meaning, and it cannot tell you the material is right. ${risk}</p>
+      <p class="small">${flagged
+        ? `Where it is least sure it says so: <b>${plural(flagged, 'item')}</b> in this subject carr${flagged === 1 ? 'ies' : 'y'} a <span class="tag warn">check</span> chip, and tapping one shows the sentence it came from.`
+        : 'Where it is least sure it marks the item with a <span class="tag warn">check</span> chip — nothing in this subject is flagged at the moment.'}${ocr ? ` ${plural(ocr, 'file')} here ${ocr === 1 ? 'was' : 'were'} read by the scan reader, which makes its own mistakes on top of these.` : ''}${merged ? ` ${plural(merged, 'repeated passage')} ${merged === 1 ? 'was' : 'were'} merged so the same point is not asked twice.` : ''}</p>
+      <p class="small muted">The check that costs least is the one you can make: every card, question and definition carries the sentence and page it came from, and <b>In the original</b> opens that page.</p>
+    </aside>`;
+  }
+
   const OC_LABEL = { covered: 'Covered', thin: 'Thin', gap: 'Not covered' };
   function renderOutcomes(s, a, ui, note) {
     const bar = `<button class="btn sm" data-act="oc-edit">${(s.outcomes || []).length ? 'Edit the outcomes' : 'Paste the outcomes'} <span class="arr">→</span></button>
@@ -5946,6 +6130,7 @@ const GENERIC = new Set('information data process system method result results s
           <div><b>${st.sections}</b><span>sections covered</span></div>
           <div><b>${sum.keyDefs.length + a.acronyms.length}</b><span>definitions found</span></div>
         </div>
+        ${limitsHtml(s, a, 'summary')}
         <div class="brief" id="brief"><span class="label">In brief</span>${speakBtn('#brief p', 'the brief')}<p>${sum.brief.map(x => hl(x.s)).join(' ')}</p></div>
         ${sum.keyDefs.length ? `<section class="sum-block"><h3>Key definitions</h3><dl class="def-list compact">${sum.keyDefs.map(d => `<div class="def"><dt>${esc(d.term)}</dt><dd>${hl(d.kind === 'is' || d.kind === 'weak' || d.kind === 'inverse' ? d.sent : d.def)}</dd></div>`).join('')}</dl></section>` : ''}
         <div class="sum-sections-head"><h3>Section by section</h3><span class="label">${plural(sum.sections.length, 'section')}</span></div>
@@ -5954,6 +6139,7 @@ const GENERIC = new Set('information data process system method result results s
           <ul class="sum-points">${sec.sentences.map(x => `<li><span>${hl(x.s)}</span></li>`).join('')}</ul>
           ${visTerms(s.id, sec.terms).length ? `<div class="sum-terms"><span class="label">Terms</span>${visTerms(s.id, sec.terms).map(t => `<button type="button" class="term-chip${ui.termFocus === t.key ? ' on' : ''}" data-act="term-focus" data-key="${esc(t.key)}">${esc(t.display)}</button>`).join('')}</div>` : ''}
         </section>`).join('')}
+        <section class="sum-block thin-block"><h3>Thin sections</h3>${thinHtml(s, a)}</section>
         ${sum.selfTest.length ? `<section class="sum-block"><h3>Test yourself</h3><p class="muted small" style="margin-bottom:12px">Tap a question to reveal the answer. Full decks are on the Flash cards page.</p><div class="self-test">${sum.selfTest.map(c => `<details><summary>${esc(c.front)}</summary><div class="ans">${esc(c.back)}</div></details>`).join('')}</div></section>` : ''}
       </article>
       <aside class="side">
@@ -6030,6 +6216,70 @@ const GENERIC = new Set('information data process system method result results s
     for (let i = sent.id + 1; i < a.sentences.length && next.length < 4; i++) { const n = a.sentences[i]; if (n.section !== sent.section) break; next.push(n); if (!n.li && next.length >= 1 && !(a.sentences[i + 1] && a.sentences[i + 1].li)) break; }
     return { prev: prev && prev.section === sent.section && !prev.dangling ? prev : null, next };
   }
+  /* ---------- "show me this in the original" ----------
+     A citation that names a file and a page is a promise the student cannot check without leaving
+     the app. This makes checking cost one tap: the sentence in its own paragraph, with what came
+     before and after it, and — for a PDF whose bytes were small enough to keep — the actual page
+     it was lifted off, rendered from that file.
+
+     The page is rendered from the original bytes rather than reconstructed from the extracted
+     text, because the whole point of the feature is to show what the app might have got wrong.
+     A picture drawn from the app's own reading of the page could not do that. */
+  // the provenance marker carries the file's name WITHOUT its extension (see the pack builder), so
+  // matching on the raw name silently found nothing and every card claimed its file was gone
+  const stemOfName = n => String(n || '').replace(/\.[^.]+$/, '');
+  const matByFileName = (subj, name) => {
+    const list = (subj && subj.materials) || [];
+    return list.find(m => m.name === name) || list.find(m => stemOfName(m.name) === String(name || '')) || null;
+  };
+  function originOf(sourceId) {
+    const a = state.analysis; if (!a || sourceId == null) return null;
+    const sent = a.sentences[sourceId]; if (!sent) return null;
+    return { sent, nb: neighbours(sent), sec: a.sections[sent.section] };
+  }
+  function openOrigin(sid, sourceId) {
+    const o = originOf(sourceId);
+    if (!o) { toast('That card was written by you, or its material has been removed.'); return; }
+    const subj = subjectById(sid) || curSubject();
+    const mat = matByFileName(subj, o.sent.file);
+    state.modal = { type: 'origin', sid, o, mat, page: o.sent.page || null, img: null, busy: false };
+    syncModal();
+    if (mat && mat.hasPdf && o.sent.page) renderOriginPage(mat, o.sent.page);
+  }
+  // pdf.js is already loaded for parsing; the page is drawn once and kept on the modal
+  async function renderOriginPage(mat, page) {
+    const m = state.modal; if (!m || m.type !== 'origin') return;
+    m.busy = true; syncModal();
+    try {
+      const blob = await IDB.get(mat.id + ':pdf');
+      if (!blob) throw new Error('The pages of this file are not kept on this device.');
+      const lib = window.pdfjsLib || window['pdfjs-dist/build/pdf'];
+      if (!lib) throw new Error('The PDF reader did not load, so the page cannot be drawn.');
+      const buf = await blob.arrayBuffer();
+      const doc = await lib.getDocument({ data: buf, useSystemFonts: true, isEvalSupported: false }).promise;
+      const pg = await doc.getPage(Math.max(1, Math.min(doc.numPages, page)));
+      const vp0 = pg.getViewport({ scale: 1 });
+      const scale = Math.min(2, Math.max(1, 1000 / vp0.width));
+      const vp = pg.getViewport({ scale });
+      const cv = document.createElement('canvas');
+      cv.width = Math.round(vp.width); cv.height = Math.round(vp.height);
+      await pg.render({ canvasContext: cv.getContext('2d'), viewport: vp }).promise;
+      const cur = state.modal;
+      if (cur && cur.type === 'origin' && cur.mat === mat) { cur.img = cv.toDataURL('image/jpeg', 0.82); cur.busy = false; syncModal(); }
+      try { doc.destroy(); } catch (e) { /* nothing to clean */ }
+    } catch (e) {
+      const cur = state.modal;
+      if (cur && cur.type === 'origin') { cur.busy = false; cur.pageErr = e && e.message ? e.message : 'The page could not be drawn.'; syncModal(); }
+    }
+  }
+  function originWhyNoPage(mat, sent) {
+    if (!sent.page) return mat && mat.ext === 'pdf' ? 'This sentence has no page number on it.' : `${mat ? mat.label : 'This file'} has no pages to show — the passage above is the original.`;
+    if (!mat) return 'The file this came from is no longer in the subject.';
+    if (mat.ext !== 'pdf') return `Only PDFs can be shown as pages; this came from ${esc(mat.label || mat.ext)}.`;
+    if (!mat.hasPdf) return `This PDF was over ${PAGE_KEEP_MB} MB, so its pages were not kept — only the text was. The passage above is what the app actually read.`;
+    return '';
+  }
+
   function relatedDefs(k, sent, exclude) {
     const a = state.analysis; if (!a) return [];
     const terms = Engine.termsIn(a, [sent], 6).map(t => t.key);
@@ -6532,6 +6782,7 @@ const GENERIC = new Set('information data process system method result results s
         <button class="btn sm ghost" data-act="card-note">${cnote ? 'Edit note' : '+ Note'}</button>
         <button class="btn sm ghost" data-act="card-edit">Edit card</button>
         <button class="btn sm ghost" data-act="card-hide" title="Hide this card from the deck">Hide</button>
+        ${(() => { const cs = c.sid || sid; if (c.mine || c.sourceId == null || !state.analysisKey || !state.analysisKey.startsWith(cs + ':')) return ''; return `<button class="btn sm ghost" data-act="card-origin" data-i="${c.sourceId}" data-s="${esc(cs)}" title="The paragraph this came from, and the page it was on">In the original</button>`; })()}
         ${c.mine ? `<span class="tag">Yours</span>` : c.edited ? `<span class="tag">Edited</span>` : ''}
       </div>
       <div class="rate three">
@@ -6606,6 +6857,7 @@ const GENERIC = new Set('information data process system method result results s
           ${[['mc', 'Multiple choice'], ['tf', 'True / false'], ['fill', 'Fill in the blank']].concat(hasSteps ? [['order', 'Order the steps']] : []).map(([k, l]) => `<label class="check"><input type="checkbox" data-act="q-type" data-k="${k}" ${ui.types.includes(k) ? 'checked' : ''}> ${l}</label>`).join('')}
         </div>${hasSteps ? '' : '<p class="small muted">Ordering questions appear when your material has numbered steps.</p>'}</div>
         ${(() => { const w = weakTerms(s.id, 25); return w.length >= 2 ? `<div class="field"><label>Focus</label><label class="check"><input type="checkbox" data-act="q-weak" ${ui.weakOnly ? 'checked' : ''}> Weak spots only — ${plural(w.length, 'term')} you have missed</label></div>` : ''; })()}
+        ${limitsHtml(s, a, 'quiz')}
         ${quizHistoryHtml(s.id)}
         <div><button class="btn primary lg" data-act="q-start" ${ui.types.length ? '' : 'disabled'}>${ui.exam ? `Start ${ui.count}-question exam` : 'Start quiz'} <span class="arr">→</span></button></div>
       </div>`;
@@ -6661,7 +6913,7 @@ const GENERIC = new Set('information data process system method result results s
       }
       else input = an && !ui.exam ? '' : `<form class="fill-row" data-form="fill"><input class="input" name="v" autocomplete="off" autocapitalize="off" placeholder="Type your answer" value="${an ? esc(an.given) : ''}" ${an ? '' : 'autofocus'} required aria-describedby="conf-help"><div class="conf" role="group" aria-label="How sure are you?"><span class="label">${ui.exam ? 'Lock in' : 'Check'} as</span><button class="btn sm primary" type="submit" name="conf" value="sure">Sure</button><button class="btn sm" type="submit" name="conf" value="unsure">Unsure</button></div></form><p class="small muted" id="conf-help">${q.hint && !ui.exam ? `Hint: ${esc(q.hint)} · ` : ''}Enter checks as sure.</p>`;
       const confNote = an && an.conf ? (an.ok ? (an.conf === 'unsure' ? ' You were unsure — you knew more than you thought.' : '') : (an.conf === 'sure' ? ' You were sure of this one — worth a second look.' : ' You said unsure, and you were right to check.')) : '';
-      const fb = showFb ? `<div class="feedback ${an.ok ? 'ok' : 'bad'}${an.conf === 'sure' && !an.ok ? ' sure-wrong' : ''}"><strong>${an.ok ? 'Correct.' : `Not quite — the answer is “${esc(Array.isArray(q.answer) ? q.answer.map((x, n) => (n + 1) + '. ' + x).join('  ') : q.answer)}”.`}${esc(confNote)}</strong>${q.explain && !an.ok ? `<span>${esc(q.explain)}</span>` : ''}<span class="src">From the material: ${esc(q.source)}${citeTag(q.source)}</span></div>` : '';
+      const fb = showFb ? `<div class="feedback ${an.ok ? 'ok' : 'bad'}${an.conf === 'sure' && !an.ok ? ' sure-wrong' : ''}"><strong>${an.ok ? 'Correct.' : `Not quite — the answer is “${esc(Array.isArray(q.answer) ? q.answer.map((x, n) => (n + 1) + '. ' + x).join('  ') : q.answer)}”.`}${esc(confNote)}</strong>${q.explain && !an.ok ? `<span>${esc(q.explain)}</span>` : ''}<span class="src">From the material: ${esc(q.source)}${citeTag(q.source)}</span>${q.sourceId != null ? `<button type="button" class="btn sm ghost" data-act="card-origin" data-i="${q.sourceId}" data-s="${esc(s.id)}">In the original <span class="arr">\u2192</span></button>` : ''}</div>` : '';
       // One control row for both modes: go back over what you have done, start the same set again,
       // swap the question types, or move on. In practice, a question you have already answered is
       // read-only when you come back to it — the marking stands.
@@ -7343,7 +7595,7 @@ const GENERIC = new Set('information data process system method result results s
     saveIndex(); saveProgress(); invalidateAnalysis(); render();
     toast(`Restored ${plural(b.subjects.length, 'subject')}${replaced.length ? ` (${replaced.length} replaced)` : ''}.`, { label: 'Undo', act: async () => {
       state.subjects = before.subjects; Object.keys(before.progress).forEach(id => { if (before.progress[id]) progress[id] = before.progress[id]; else delete progress[id]; });
-      for (const s of b.subjects) if (!before.subjects.some(x => x.id === s.id)) { delete progress[s.id]; for (const m of s.materials) { await IDB.del(m.id); await IDB.del(m.id + ':figs'); } }
+      for (const s of b.subjects) if (!before.subjects.some(x => x.id === s.id)) { delete progress[s.id]; for (const m of s.materials) { await IDB.del(m.id); await IDB.del(m.id + ':figs'); await IDB.del(m.id + ':pdf'); } }
       await restoreTexts(before.texts);
       saveIndex(); saveProgress(); invalidateAnalysis(); render(); toast('Restore undone.');
     } });
@@ -7395,7 +7647,20 @@ const GENERIC = new Set('information data process system method result results s
       case 'match-new': ui.pairs = null; renderSection(s, 'match'); break;
       case 'map-n': ui.mapN = +el.dataset.n; renderSection(s, 'map'); break;
       case 'copy-formulas': copyText(ui.sheetText || '', 'Formula sheet copied.'); break;
-      case 'card-add': state.modal = { type: 'card' }; syncModal(); break;
+      case 'card-add': {
+        // from a thin section, the modal opens with that section's own text in front of the student —
+        // the point of the panel is that this is where they, not the app, have to do the reading
+        const secI = el.dataset.sec != null ? +el.dataset.sec : null;
+        const a2 = state.analysis;
+        let src = '', sec = null;
+        if (secI != null && a2 && a2.sections && a2.sections[secI]) {
+          sec = a2.sections[secI];
+          src = sec.sentences.slice(0, 3).map(x => x.s).join(' ');
+        }
+        state.modal = { type: 'card', source: src || undefined, secTitle: sec && sec.title || '' };
+        syncModal(); $('#c-front')?.focus();
+        break;
+      }
       case 'card-edit': { const c = curCard(); if (c) { state.modal = { type: 'card', cardKey: c.key, front: c.front, back: c.back, mine: !!c.mine, sid: c.sid || (s && s.id), leech: isLeech(c.sid || (s && s.id), c.key) }; syncModal(); } break; }
       case 'card-edit-key': { const c = userCards(s.id).find(x => x.key === el.dataset.key); if (c) { state.modal = { type: 'card', cardKey: c.key, front: c.front, back: c.back, mine: true }; syncModal(); } break; }
       case 'card-delete': {
@@ -7530,6 +7795,7 @@ const GENERIC = new Set('information data process system method result results s
         });
         break;
       }
+      case 'card-origin': openOrigin(el.dataset.s || (s && s.id), +el.dataset.i); break;
       case 'week-revise': { const w = el.dataset.w; s.materials.forEach(m => { if (m.err) return; m.include = String(m.week || '') === String(w); if (m.include && m.dup) m.dupOk = true; }); saveIndex(); invalidateAnalysis(); state.ui = {}; toast(`Studying week ${w} only.`); go(`/s/${s.id}/cards`); break; }
       case 'backup-all': state.modal = null; syncModal(); saveBackup(state.subjects, 'all-subjects'); break;
       case 'backup-subject': if (s) saveBackup([s], s.code || s.name); break;
@@ -7891,7 +8157,7 @@ const GENERIC = new Set('information data process system method result results s
     const texts = await snapshotTexts([m]);
     s.materials = s.materials.filter(x => x.id !== m.id);
     pendingScans.delete(m.id);
-    await IDB.del(m.id); if (m.figs) await IDB.del(m.id + ':figs');
+    await IDB.del(m.id); if (m.figs) await IDB.del(m.id + ':figs'); if (m.hasPdf) await IDB.del(m.id + ':pdf');
     saveIndex(); invalidateAnalysis(); renderSubject(s);
     toast(`Removed ${m.name}.`, { label: 'Undo', act: async () => {
       s.materials.splice(Math.max(0, Math.min(at, s.materials.length)), 0, m);
@@ -7902,7 +8168,7 @@ const GENERIC = new Set('information data process system method result results s
   async function removeAllMaterials(s) {
     const mats = s.materials.slice();
     const texts = await snapshotTexts(mats);
-    for (const m of mats) { await IDB.del(m.id); if (m.figs) await IDB.del(m.id + ':figs'); }
+    for (const m of mats) { await IDB.del(m.id); if (m.figs) await IDB.del(m.id + ':figs'); if (m.hasPdf) await IDB.del(m.id + ':pdf'); }
     s.materials = []; saveIndex(); invalidateAnalysis(); renderSubject(s);
     toast(`Removed ${plural(mats.length, 'file')}.`, { label: 'Undo', act: async () => {
       s.materials = mats; await restoreTexts(texts);
@@ -7912,7 +8178,7 @@ const GENERIC = new Set('information data process system method result results s
   async function removeSubject(sub) {
     const at = state.subjects.indexOf(sub);
     const texts = await snapshotTexts(sub.materials);
-    for (const m of sub.materials) { await IDB.del(m.id); if (m.figs) await IDB.del(m.id + ':figs'); }
+    for (const m of sub.materials) { await IDB.del(m.id); if (m.figs) await IDB.del(m.id + ':figs'); if (m.hasPdf) await IDB.del(m.id + ':pdf'); }
     state.subjects = state.subjects.filter(x => x.id !== sub.id);
     saveIndex(); invalidateAnalysis();
     if (location.hash.includes(sub.id)) go('/'); else render();
@@ -7947,10 +8213,10 @@ const GENERIC = new Set('information data process system method result results s
     ui.answers[ui.qi] = { given, ok, conf: conf || null };
     ui.pending = null; ui.pendQ = null;
     const weight = conf === 'sure' && !ok ? 2 : 1;
-    if (ui.exam) { saveQuizRun(s.id, ui); renderSection(s, 'quiz'); noteTerm(s.id, Array.isArray(q.answer) ? q.term : q.answer, ok, weight); say(`Answer saved. Question ${ui.qi + 1} of ${ui.qs.length}.`); return; }
+    if (ui.exam) { saveQuizRun(s.id, ui); renderSection(s, 'quiz'); noteTerm(s.id, Array.isArray(q.answer) ? q.term : q.answer, ok, weight, conf); say(`Answer saved. Question ${ui.qi + 1} of ${ui.qs.length}.`); return; }
     say(ok ? `Correct. Question ${ui.qi + 1} of ${ui.qs.length}.` : `Not quite. The answer is ${Array.isArray(q.answer) ? q.answer.join(', then ') : q.answer}.`);
     saveQuizRun(s.id, ui);
-    noteTerm(s.id, Array.isArray(q.answer) ? q.term : q.answer, ok, weight);
+    noteTerm(s.id, Array.isArray(q.answer) ? q.term : q.answer, ok, weight, conf);
     renderSection(s, 'quiz');
     setTimeout(() => $('[data-act="q-next"]')?.focus(), 30);
   }
