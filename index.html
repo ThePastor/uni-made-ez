@@ -205,12 +205,15 @@ main { flex: 1; width: 100%; }
    rows, the thin-section list, the leech list — and every one of them was still carrying the
    browser's default 40px list indent. Nothing looked broken; the rows just never lined up with
    the heading above them. A classed list is a component and sets its own structure; an unclassed
-   one inside prose is a list and keeps its bullets and its indent. */
-main ul[class], main ol[class] { margin: 0; padding: 0; }
+   one inside prose is a list and keeps its bullets and its indent. Modals count: the what's-new
+   list picked the same 40px up again in v2.11, because #overlay is not inside main. */
+main ul[class], main ol[class], #overlay ul[class], #overlay ol[class] { margin: 0; padding: 0; }
 .foot { border-top: 1px solid var(--line); background: var(--inverse); color: var(--inverse-ink-2); display: grid; grid-template-columns: 1fr auto; gap: 24px; padding: var(--band) var(--gut); font-size: .78rem; font-family: var(--font-mono); letter-spacing: .02em; }
 .foot span:last-child { text-transform: uppercase; letter-spacing: .1em; }
 .foot .rights { text-transform: none; letter-spacing: .02em; white-space: nowrap; color: inherit; text-decoration: none; border-bottom: 1px solid currentColor; padding-bottom: 1px; }
 .foot .rights:hover, .foot .rights:focus-visible { color: var(--inverse-ink); }
+.foot button.build { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; text-transform: uppercase; letter-spacing: .1em; }
+.foot button.build:hover, .foot button.build:focus-visible { color: var(--inverse-ink); }
 
 /* ---------- arrow buttons ---------- */
 .btn {
@@ -1568,6 +1571,36 @@ math mi[mathvariant="normal"] { font-style: normal; }
 .legal-foot { border-top: 1px solid var(--line); padding-top: var(--band); display: grid; gap: 14px; }
 @media (max-width: 640px) { .legal-sec h2 { font-size: 1.2rem; } }
 @media print { .legal-toc { display: none !important; } .legal-sec { break-inside: avoid; } }
+
+/* ---------- the update prompt ----------
+   An installed app is opened, put away and opened again for weeks. When a new build lands it has to
+   say so where it cannot be missed and cannot time out, and it must ask rather than refresh under
+   someone mid-card. Sits above the page and below a modal, so an open dialog still wins. */
+.update-pop {
+  position: fixed; z-index: 30; left: 50%; bottom: max(16px, env(safe-area-inset-bottom));
+  transform: translate(-50%, 16px); opacity: 0; transition: transform .22s ease, opacity .22s ease;
+  width: min(520px, calc(100vw - 24px));
+  display: grid; gap: 14px; padding: var(--band) var(--gut);
+  background: var(--surface); color: var(--ink);
+  border: 1px solid var(--line); box-shadow: var(--shadow);
+}
+.update-pop.show { transform: translate(-50%, 0); opacity: 1; }
+.update-pop .up-body { display: grid; gap: 6px; }
+.update-pop strong { font-family: var(--font-display); font-size: 1.08rem; font-weight: 600; letter-spacing: -0.02em; line-height: 1.3; }
+.update-pop p { color: var(--ink-2); line-height: 1.5; }
+.update-pop .up-acts { display: flex; gap: 8px; flex-wrap: wrap; }
+.update-pop .up-acts .btn { flex: 1 1 auto; justify-content: center; min-height: 44px; }
+.update-pop .up-acts .btn.ghost { border-color: var(--line-soft); color: var(--ink-2); }
+@media (max-width: 480px) { .update-pop .up-acts .btn { flex: 1 1 100%; } }
+@media print { .update-pop { display: none !important; } }
+
+/* what changed, since the version you were on */
+.wn-list { display: grid; gap: 1px; background: var(--line-soft); border: 1px solid var(--line-soft); }
+.wn-list li { display: grid; grid-template-columns: 62px 1fr; gap: 12px; align-items: baseline; padding: 12px var(--pad-in); background: var(--surface); font-size: .92rem; line-height: 1.5; }
+.wn-list li.now { background: var(--accent-soft); }
+.wn-list li b { font-family: var(--font-mono); font-size: .7rem; letter-spacing: .06em; color: var(--accent-deep); font-weight: 500; }
+.wn-list li.now b { color: var(--ink); }
+@media (max-width: 480px) { .wn-list li { grid-template-columns: 1fr; gap: 3px; } }
 
 </style>
 </head>
@@ -3991,11 +4024,26 @@ const GENERIC = new Set('information data process system method result results s
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.10', date: '4 September 2026', year: 2026 };
+  const BUILD = { v: '2.11', date: '4 September 2026', year: 2026 };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonandy242', ['gmail', 'com'].join('.')].join('@');
   const OWNER_NAME = 'JohnsonXCorp';   // who the app belongs to, wherever it is named to a user
   const REPO = 'https://github.com/ThePastor/uni-made-ez';
+  /* What each version changed, newest first. Kept in the app rather than in a file on a code host,
+     because the person who needs it is the one who just watched the app refresh itself and wants to
+     know what moved. Trim the tail when it gets past a dozen; nobody reads further back than that. */
+  const WHATS_NEW = [
+    ['2.11', 'An update that tells you it is there. The installed app checks for a new version when you open it, and asks before refreshing instead of changing under you.'],
+    ['2.10', 'An <b>All rights reserved</b> page, opened from the copyright line in the footer.'],
+    ['2.9', 'A licence, terms of use and third-party notices published with the project.'],
+    ['2.8', 'One spacing scale across the whole app, so every page lines up on the same edge on every device.'],
+    ['2.7', 'On a phone or tablet the four study sections come first, instead of three screens down.'],
+    ['2.6', 'Offline badge, swipe to rate a card, share a subject\'s cards, and the week as one page.'],
+    ['2.5', 'Every card and quiz answer can show you the original passage — and the real PDF page.'],
+    ['2.4', 'One daily number the deck actually honours, a mock exam with a blueprint, and a fortnight\'s study plan.']
+  ];
+  const verNum = v => v.split('.').map(Number);
+  const newerThan = (a, b) => { const x = verNum(a), y = verNum(b); for (let i = 0; i < 3; i++) { if ((x[i] || 0) !== (y[i] || 0)) return (x[i] || 0) > (y[i] || 0); } return false; };
   const OWNER_HASH = 'f2d29d4fd8c98b4205c0ffa7628eeeccfc3f2647ed0430748eac0d775cbc562d';
   const LS_KEY = 'unimadeez:v1';
   const LS_UNLOCK = 'unimadeez:unlock';
@@ -4524,6 +4572,10 @@ const GENERIC = new Set('information data process system method result results s
   let installPrompt = null;   // Chrome, Edge and Android hand the real prompt over; Safari never does
   let swWaiting = null;
   let swReloading = false;
+  let swReg = null;
+  let lastCheck = 0;
+  const CHECK_EVERY = 30 * 60 * 1000;   // while the app is sitting open
+  const CHECK_GAP = 60 * 1000;          // the most often a wake-up is allowed to ask the server
 
   function registerSW() {
     if (!SW_HOST) return;
@@ -4531,17 +4583,30 @@ const GENERIC = new Set('information data process system method result results s
     const offer = w => {
       if (!w || !navigator.serviceWorker.controller) return;
       swWaiting = w;
-      // the toast is the nudge; the top-bar button is what you can still find a minute later
-      toast('A newer version is ready.', { label: 'Reload', act: applyUpdate });
+      // the card is the ask; the top-bar button is what you can still find after saying "not now"
+      showUpdatePop();
       showUpdateBtn();
     };
-    navigator.serviceWorker.register('sw.js').then(reg => {
+    /* updateViaCache: 'none' is not optional. Without it the browser is allowed to answer the
+       check for a new sw.js out of its own HTTP cache for up to a day, so a build published this
+       morning can be invisible until tomorrow — the exact failure this whole path exists to avoid. */
+    navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' }).then(reg => {
+      swReg = reg;
       if (reg.waiting) offer(reg.waiting);
       reg.addEventListener('updatefound', () => {
         const w = reg.installing;
         if (w) w.addEventListener('statechange', () => { if (w.state === 'installed') offer(reg.waiting || w); });
       });
     }).catch(() => { /* no offline copy this time — the page itself is unaffected */ });
+
+    /* Registering checks once, at load. An app on a home screen is not reloaded for days: it is
+       opened, put away and opened again, and without these it would sit on an old build with a new
+       one published and never know. The moment that matters most is coming back to the front. */
+    setInterval(() => checkForUpdate(true), CHECK_EVERY);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) checkForUpdate(false); });
+    window.addEventListener('pageshow', e => { if (e.persisted) checkForUpdate(false); });
+    window.addEventListener('focus', () => checkForUpdate(false));
+    window.addEventListener('online', () => checkForUpdate(false));
     // The very first worker claims this page as part of installing; that is not an update,
     // so only reload when a worker replaces one that was already in charge.
     const hadController = !!navigator.serviceWorker.controller;
@@ -4549,9 +4614,57 @@ const GENERIC = new Set('information data process system method result results s
       if (!hadController || swReloading) return; swReloading = true; location.reload();
     });
   }
+  function checkForUpdate(force) {
+    if (!swReg || !navigator.onLine) return;
+    const now = Date.now();
+    if (!force && now - lastCheck < CHECK_GAP) return;
+    lastCheck = now;
+    try { swReg.update().catch(() => {}); } catch (e) { /* the registration went away */ }
+  }
   function applyUpdate() {
+    // leave a note for the page that comes back, so it can say what it landed on
+    try { sessionStorage.setItem('umez:from', BUILD.v); } catch (e) { /* private mode */ }
+    dismissUpdatePop();
     if (swWaiting) { swReloading = false; swWaiting.postMessage({ type: 'skip-waiting' }); }
     else location.reload();
+  }
+
+  /* ---------- the prompt ----------
+     A toast that fades after eight seconds is not a way to tell somebody their app has changed;
+     neither is an unlabelled icon in a top bar that is 12px wide on a phone. This is a card that
+     stays until it is answered, and answering it is the only thing that refreshes the app — an
+     installed app must never rearrange itself under someone mid-sentence. */
+  function showUpdatePop() {
+    if (document.getElementById('update-pop')) return;
+    const d = document.createElement('div');
+    d.id = 'update-pop';
+    d.className = 'update-pop';
+    d.setAttribute('role', 'region');
+    d.setAttribute('aria-label', 'A newer version is ready');
+    d.innerHTML = `<div class="up-body">
+        <span class="label">Update ready</span>
+        <strong>A newer version of UNI Made EZ has finished downloading.</strong>
+        <p class="small">Refreshing takes a second. Your subjects, files, cards and progress are kept on this device, not in the page — nothing is lost.</p>
+      </div>
+      <div class="up-acts">
+        <button type="button" class="btn sm primary" data-act="update">Refresh now <span class="arr">&rarr;</span></button>
+        <button type="button" class="btn sm ghost" data-act="update-later">Not now</button>
+      </div>`;
+    document.body.appendChild(d);
+    requestAnimationFrame(() => d.classList.add('show'));
+    say('A newer version of UNI Made EZ is ready. Refresh now, or not now.');
+  }
+  function dismissUpdatePop() {
+    const d = document.getElementById('update-pop');
+    if (d) d.remove();
+  }
+  /* After the reload: say what it landed on, and offer the list. Without this an update is a flicker
+     and a build number nobody was watching. */
+  function noteUpdated() {
+    let from = null;
+    try { from = sessionStorage.getItem('umez:from'); sessionStorage.removeItem('umez:from'); } catch (e) { return; }
+    if (!from || from === BUILD.v) return;
+    setTimeout(() => toast(`Updated to v${BUILD.v}.`, { label: 'What changed', act: () => { state.modal = { type: 'whatsnew', from }; syncModal(); } }), 700);
   }
 
   window.addEventListener('beforeinstallprompt', e => {
@@ -4788,7 +4901,7 @@ const GENERIC = new Set('information data process system method result results s
   /* The footer carries the copyright line on every page. A notice does not create the right — that
      exists from the moment the code is written — but it removes any argument that a copier did not
      know, and it is the one place a reader is certain to see it. */
-  const foot = () => `<footer class="foot"><span>Study material is built on your device by the built-in study engine — nothing leaves your browser. Check it against your course notes.</span><span class="maker"><span class="by">Built by</span>${makerMark()}<a class="rights" href="#/rights">&copy; ${BUILD.year} ${OWNER_NAME} &middot; All rights reserved</a><span class="build">&middot; v${BUILD.v} &middot; ${BUILD.date}</span></span></footer>`;
+  const foot = () => `<footer class="foot"><span>Study material is built on your device by the built-in study engine — nothing leaves your browser. Check it against your course notes.</span><span class="maker"><span class="by">Built by</span>${makerMark()}<a class="rights" href="#/rights">&copy; ${BUILD.year} ${OWNER_NAME} &middot; All rights reserved</a><button type="button" class="build" data-act="whats-new" title="What changed in this version">&middot; v${BUILD.v} &middot; ${BUILD.date}</button></span></footer>`;
   const frame = html => `<div class="frame">${html}</div>`;
 
   /* ---------- home ---------- */
@@ -5520,6 +5633,19 @@ const GENERIC = new Set('information data process system method result results s
           <p class="small muted">Your subjects and progress live in this browser${IS_IOS ? ', and iPhone keeps the installed app’s storage separate from Safari’s — so add your subjects again once inside the app, or use <b>Backup &amp; restore</b> to carry them across' : ''}. Nothing is uploaded either way.</p>
           <p class="small muted">Offline covers everything built into the page: your files, cards, summaries, quizzes and exports. Reading a web address and the scan reader both need a connection the first time.</p>
           <p class="small muted">Already installed? Open it from your home screen rather than from here.</p>
+        </div>
+        <div class="modal-foot"><span class="spacer" style="flex:1"></span><button class="btn sm primary" data-act="close-modal">Got it</button></div>
+      </div></div>`;
+    }
+    if (m.type === 'whatsnew') {
+      const rows = m.from ? WHATS_NEW.filter(([v]) => newerThan(v, m.from)) : WHATS_NEW;
+      const shown = rows.length ? rows : WHATS_NEW.slice(0, 1);
+      return `<div class="modal-bg" data-act="close-modal"><div class="modal wide info" role="dialog" aria-modal="true" aria-label="What changed">
+        <div class="modal-head"><div><span class="label">${m.from ? `You were on v${esc(m.from)}` : 'Version history'}</span><h2>What changed</h2></div><button class="btn ghost icon" data-act="close-modal" aria-label="Close">${I.x}</button></div>
+        <div class="modal-body">
+          ${m.from ? `<p class="small muted">${shown.length === 1 ? 'One release' : `${shown.length} releases`} since the copy you had.</p>` : ''}
+          <ol class="wn-list">${shown.map(([v, line]) => `<li${v === BUILD.v ? ' class="now"' : ''}><b>v${esc(v)}</b><span>${line}</span></li>`).join('')}</ol>
+          <p class="small muted">You are on <b>v${BUILD.v}</b>, built ${esc(BUILD.date)}. The version is always in the footer.</p>
         </div>
         <div class="modal-foot"><span class="spacer" style="flex:1"></span><button class="btn sm primary" data-act="close-modal">Got it</button></div>
       </div></div>`;
@@ -8497,6 +8623,8 @@ const GENERIC = new Set('information data process system method result results s
       case 'term-jump': openTermPopup(el.dataset.key); break;
       case 'search': if (s) openSearch(s); break;
       case 'update': applyUpdate(); break;
+      case 'update-later': dismissUpdatePop(); toast('Left as it is. The update button in the top bar takes it whenever you are ready.'); break;
+      case 'whats-new': state.modal = { type: 'whatsnew' }; syncModal(); break;
       case 'install': doInstall(); break;
       case 'display': state.modal = { type: 'display' }; syncModal(); break;
       case 'keys-help': state.modal = { type: 'keys-help' }; syncModal(); break;
@@ -9202,6 +9330,7 @@ const GENERIC = new Set('information data process system method result results s
   window.addEventListener('hashchange', render);
   render();
   registerSW();
+  noteUpdated();
 })();
 
 </script>
