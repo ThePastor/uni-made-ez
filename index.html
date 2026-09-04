@@ -443,15 +443,29 @@ main ul[class], main ol[class], #overlay ul[class], #overlay ol[class] { margin:
 .tool .lock { display: inline-flex; align-items: center; gap: 4px; font-family: var(--font-mono); font-size: .68rem; font-weight: 400; letter-spacing: .06em; color: var(--ink-3); margin-left: 6px; vertical-align: middle; }
 
 /* ---------- section pages ---------- */
-.section-bar { display: grid; grid-template-columns: auto 1fr auto; align-items: stretch; border-bottom: 1px solid var(--line); background: var(--surface); position: sticky; top: 0; z-index: 20; min-height: 56px; }
-.section-bar > * { display: flex; align-items: center; padding: 0 var(--gut-in); border-right: 1px solid var(--line); min-width: 0; gap: 12px; }
+.section-bar { display: grid; grid-template-columns: auto 1fr auto; align-items: stretch; border-bottom: 1px solid var(--line); background: var(--surface); position: sticky; top: 0; z-index: 20; min-height: 64px; }
+/* Every cell carries its own height. The bar's min-height only sizes it while it is ONE row; the
+   moment the tools wrap to their own row on a phone the first row is sized by its content, and the
+   way back collapsed to the 20px of its own text — measured, on every phone and both iPads. */
+.section-bar > * { display: flex; align-items: center; padding: 8px var(--gut-in); border-right: 1px solid var(--line); min-width: 0; min-height: 64px; gap: 12px; }
 .section-bar > *:first-child { padding-left: var(--gut); }
 .section-bar > *:last-child { padding-right: var(--gut); }
 .section-bar > *:last-child { border-right: 0; }
-.section-bar .back { text-decoration: none; color: var(--ink); font-family: var(--font-mono); font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; gap: 10px; }
-.section-bar .back:hover { background: var(--surface-2); }
-.section-bar h2 { font-size: 1.1rem; font-weight: 500; letter-spacing: -0.02em; display: inline-flex; align-items: center; gap: 10px; }
-.section-bar .tools { gap: 10px; flex-wrap: wrap; padding: 8px var(--gut-in); }
+/* The way back is the most-pressed control on a study page. It is tinted so it reads as a control
+   rather than a caption, and it fills its cell so the target is the whole corner of the screen. */
+.section-bar .back {
+  text-decoration: none; color: var(--ink); font-family: var(--font-mono); font-size: .78rem;
+  letter-spacing: .08em; text-transform: uppercase; gap: 10px; background: var(--surface-2);
+  transition: background .12s, color .12s;
+}
+.section-bar .back .back-ico { display: inline-flex; flex: none; margin-left: -4px; }
+.section-bar .back .back-txt { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.section-bar .back:hover, .section-bar .back:focus-visible { background: var(--accent); color: var(--accent-ink); }
+.section-bar .back:active { background: var(--accent-deep); color: #fff; }
+.section-bar .sec-title { flex: 1; min-width: 0; }
+.section-bar h2 { font-size: clamp(1.2rem, 2.2vw, 1.5rem); font-weight: 500; letter-spacing: -0.02em; display: inline-flex; align-items: center; gap: 12px; min-width: 0; }
+.section-bar h2 .sec-ico { width: 24px; height: 24px; display: inline-flex; flex: none; color: var(--accent-deep); }
+.section-bar .tools { gap: 8px; flex-wrap: wrap; padding: 8px var(--gut-in); }
 .gen-note { font-family: var(--font-mono); font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); display: flex; align-items: center; gap: 8px; }
 .gen-note i { width: 8px; height: 8px; background: var(--mint); display: inline-block; }
 .loading { display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 90px 24px; color: var(--ink-2); font-family: var(--font-mono); font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; }
@@ -618,9 +632,31 @@ button.term-chip { cursor: pointer; }
   .topbar .account > span:not(.dot) { display: none; }
   .topbar .toggle-cell { gap: 8px; }
   .section-bar { grid-template-columns: auto 1fr; }
+  .section-bar > * { min-height: 58px; }
   .section-bar > *:nth-child(2) { border-right: 0; }
-  .section-bar .tools { grid-column: 1 / -1; border-top: 1px solid var(--line); border-right: 0; justify-content: flex-start; min-height: 48px; }
-  .section-bar h2 { font-size: .95rem; }
+  /* One row that slides, rather than three rows of wrapped chips: the header is sticky, and every
+     row it grows is a row of the card the student came to read — measured at 160px on an iPhone
+     before this. The row scrolls inside itself, so the page still never scrolls sideways. */
+  .section-bar .tools {
+    grid-column: 1 / -1; border-top: 1px solid var(--line); border-right: 0;
+    justify-content: flex-start; min-height: 54px; flex-wrap: nowrap;
+    overflow-x: auto; overflow-y: hidden; scrollbar-width: none; -webkit-overflow-scrolling: touch;
+  }
+  .section-bar .tools::-webkit-scrollbar { display: none; }
+  /* the classic two-layer scroll shadow: the surface-coloured halves scroll WITH the content and
+     cover the shadows at each end, so the hint only shows on the side there is more to see */
+  .section-bar .tools {
+    background:
+      linear-gradient(to right, var(--surface), transparent) left / 22px 100% no-repeat local,
+      linear-gradient(to left, var(--surface), transparent) right / 22px 100% no-repeat local,
+      radial-gradient(farthest-side at 0 50%, var(--surface-3), transparent) left / 10px 100% no-repeat scroll,
+      radial-gradient(farthest-side at 100% 50%, var(--surface-3), transparent) right / 10px 100% no-repeat scroll,
+      var(--surface);
+  }
+  .section-bar .tools > * { flex: none; }
+  .section-bar .tools .btn { min-height: 40px; }
+  .section-bar h2 { font-size: 1.2rem; }
+  .section-bar .back .back-txt { max-width: 38vw; }
   .foot { grid-template-columns: 1fr; }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -4024,7 +4060,7 @@ const GENERIC = new Set('information data process system method result results s
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.11', date: '4 September 2026', year: 2026 };
+  const BUILD = { v: '2.12', date: '4 September 2026', year: 2026 };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonandy242', ['gmail', 'com'].join('.')].join('@');
   const OWNER_NAME = 'JohnsonXCorp';   // who the app belongs to, wherever it is named to a user
@@ -4033,6 +4069,7 @@ const GENERIC = new Set('information data process system method result results s
      because the person who needs it is the one who just watched the app refresh itself and wants to
      know what moved. Trim the tail when it gets past a dozen; nobody reads further back than that. */
   const WHATS_NEW = [
+    ['2.12', 'A bigger way back out of a study page, a bigger section heading, and a header that takes less of the screen while every control in it got easier to hit.'],
     ['2.11', 'An update that tells you it is there. The installed app checks for a new version when you open it, and asks before refreshing instead of changing under you.'],
     ['2.10', 'An <b>All rights reserved</b> page, opened from the copyright line in the footer.'],
     ['2.9', 'A licence, terms of use and third-party notices published with the project.'],
@@ -4761,7 +4798,7 @@ const GENERIC = new Set('information data process system method result results s
     quiz: '<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6.5l1.5 1.5L8 5.5M4 12.5l1.5 1.5L8 11.5M4 18.5l1.5 1.5L8 17.5"/><path d="M11 7h9M11 13h9M11 19h9"/></svg>',
     lock: '<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>',
     lockBig: '<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/><circle cx="12" cy="16" r="1.2" fill="currentColor"/></svg>',
-    back: '<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M15 6l-6 6 6 6"/></svg>',
+    back: '<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><path d="M15 6l-6 6 6 6"/></svg>',
     ext: '<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><path d="M14 5h5v5M19 5l-8 8"/><path d="M19 14v4a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h4"/></svg>',
     upload: '<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="28" height="28"><path d="M12 16V5M7 10l5-5 5 5"/><path d="M4 17v2a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-2"/></svg>',
     match: '<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="7" height="7" rx="1"/><rect x="14" y="4" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="6" rx="1"/><rect x="14" y="14" width="7" height="6" rx="1"/><path d="M10 7.5h4M10 17h4"/></svg>',
@@ -6626,8 +6663,8 @@ const GENERIC = new Set('information data process system method result results s
   function sectionShell(s, kind, inner, extraBar = '') {
     const meta = SECTION_META[kind];
     return frame(`<header class="section-bar">
-      <a class="back" href="#/s/${s.id}" title="Back to ${esc(s.name)}">${I.back}<span>${esc(s.code || s.name)}</span></a>
-      <div><h2><span style="width:20px;height:20px;display:inline-flex">${meta.icon}</span>${meta.title}</h2></div>
+      <a class="back" href="#/s/${s.id}" title="Back to ${esc(s.name)}" aria-label="Back to ${esc(s.name)}"><span class="back-ico">${I.back}</span><span class="back-txt">${esc(s.code || s.name)}</span></a>
+      <div class="sec-title"><h2><span class="sec-ico">${meta.icon}</span>${meta.title}</h2></div>
       <div class="tools">${offlineCell()}${extraBar}<button class="btn ghost icon" data-act="search" title="Search this subject (/)">${I.search}</button><a class="btn ghost icon" href="${esc(location.href)}" target="_blank" rel="noopener" title="Open this page in a new tab">${I.ext}</a></div>
     </header>
     <main id="main" tabindex="-1">${inner}</main>${foot()}`);
