@@ -1,8 +1,8 @@
-/* UNI Made EZ — service worker, build 2.9.
+/* UNI Made EZ — service worker, build 2.10.
    Keeps a copy of the page so it opens with no connection, and lets the browser install it
    to a home screen. The whole app is one file, so the "offline copy" really is just that file
    plus its icons; nothing here touches your subjects, which live in the browser's own storage. */
-const V = '2.9';
+const V = '2.10';
 const APP = 'umez-app-v' + V;      // the page and its icons, replaced whole on every build
 const RUNTIME = 'umez-runtime-v1'; // web fonts, kept across builds
 

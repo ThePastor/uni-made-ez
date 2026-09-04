@@ -209,7 +209,8 @@ main { flex: 1; width: 100%; }
 main ul[class], main ol[class] { margin: 0; padding: 0; }
 .foot { border-top: 1px solid var(--line); background: var(--inverse); color: var(--inverse-ink-2); display: grid; grid-template-columns: 1fr auto; gap: 24px; padding: var(--band) var(--gut); font-size: .78rem; font-family: var(--font-mono); letter-spacing: .02em; }
 .foot span:last-child { text-transform: uppercase; letter-spacing: .1em; }
-.foot .rights { text-transform: none; letter-spacing: .02em; white-space: nowrap; }
+.foot .rights { text-transform: none; letter-spacing: .02em; white-space: nowrap; color: inherit; text-decoration: none; border-bottom: 1px solid currentColor; padding-bottom: 1px; }
+.foot .rights:hover, .foot .rights:focus-visible { color: var(--inverse-ink); }
 
 /* ---------- arrow buttons ---------- */
 .btn {
@@ -1546,6 +1547,27 @@ math mi[mathvariant="normal"] { font-style: normal; }
   .tile h3 { margin-top: 2px; }
   .subject-hero .title h1 { font-size: clamp(1.7rem, 8vw, 2.4rem); }
 }
+
+/* ---------- the rights page: what "all rights reserved" means, in the app ---------- */
+.legal { max-width: 760px; }
+.legal-head { border-bottom: 1px solid var(--line); padding-bottom: var(--band); margin-bottom: var(--band); display: grid; gap: 10px; }
+.legal-head h1 { font-size: clamp(2rem, 5vw, 3.2rem); }
+.legal-lede { font-family: var(--font-display); font-size: clamp(1.05rem, 2vw, 1.3rem); font-weight: 500; letter-spacing: -0.02em; line-height: 1.35; color: var(--ink-2); max-width: 46ch; }
+.legal-toc { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: calc(var(--band-lg) - 4px); }
+.legal-toc .label { width: 100%; margin-bottom: 4px; }
+.legal-toc a { display: inline-flex; padding: 6px 11px; border: 1px solid var(--line-soft); background: var(--surface); color: var(--ink-2); text-decoration: none; font-size: .84rem; }
+.legal-toc a:hover, .legal-toc a:focus-visible { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.legal-sec { margin-bottom: var(--band-lg); scroll-margin-top: 76px; }
+.legal-sec h2 { font-size: 1.35rem; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--line-soft); }
+.legal-sec p { margin: 0 0 .85em; line-height: 1.65; max-width: 68ch; }
+.legal-sec p:last-child { margin-bottom: 0; }
+.legal-sec b { font-weight: 600; }
+.rights-list { display: grid; gap: 9px; margin: 0 0 .85em; max-width: 68ch; }
+.rights-list li { display: grid; grid-template-columns: 14px 1fr; gap: 12px; line-height: 1.6; }
+.rights-list li::before { content: ""; width: 8px; height: 8px; margin-top: 9px; background: var(--accent); }
+.legal-foot { border-top: 1px solid var(--line); padding-top: var(--band); display: grid; gap: 14px; }
+@media (max-width: 640px) { .legal-sec h2 { font-size: 1.2rem; } }
+@media print { .legal-toc { display: none !important; } .legal-sec { break-inside: avoid; } }
 
 </style>
 </head>
@@ -3969,10 +3991,11 @@ const GENERIC = new Set('information data process system method result results s
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.9', date: '4 September 2026', year: 2026 };
+  const BUILD = { v: '2.10', date: '4 September 2026', year: 2026 };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonandy242', ['gmail', 'com'].join('.')].join('@');
   const OWNER_NAME = 'JohnsonXCorp';   // who the app belongs to, wherever it is named to a user
+  const REPO = 'https://github.com/ThePastor/uni-made-ez';
   const OWNER_HASH = 'f2d29d4fd8c98b4205c0ffa7628eeeccfc3f2647ed0430748eac0d775cbc562d';
   const LS_KEY = 'unimadeez:v1';
   const LS_UNLOCK = 'unimadeez:unlock';
@@ -4607,6 +4630,7 @@ const GENERIC = new Set('information data process system method result results s
     if (parts[0] === 'semester') return { name: 'semester', q };
     if (parts[0] === 'plan') return { name: 'plan', q };
     if (parts[0] === 'leeches') return { name: 'leeches', q };
+    if (parts[0] === 'rights') return { name: 'rights', q };
     if (parts[0] === 's' && parts[1]) return { name: parts[2] ? 'section' : 'subject', id: parts[1], kind: parts[2], q };
     return { name: 'home', q };
   }
@@ -4715,6 +4739,7 @@ const GENERIC = new Set('information data process system method result results s
     if (r.name === 'semester') return renderSemester();
     if (r.name === 'plan') return renderPlan();
     if (r.name === 'leeches') return renderClinic();
+    if (r.name === 'rights') return renderRights();
     const s = subjectById(r.id);
     if (!s) { go('/'); return; }
     if (r.name === 'subject') { noteVisit(s.id, ''); return renderSubject(s); }
@@ -4763,7 +4788,7 @@ const GENERIC = new Set('information data process system method result results s
   /* The footer carries the copyright line on every page. A notice does not create the right — that
      exists from the moment the code is written — but it removes any argument that a copier did not
      know, and it is the one place a reader is certain to see it. */
-  const foot = () => `<footer class="foot"><span>Study material is built on your device by the built-in study engine — nothing leaves your browser. Check it against your course notes.</span><span class="maker"><span class="by">Built by</span>${makerMark()}<span class="rights">&copy; ${BUILD.year} ${OWNER_NAME} &middot; All rights reserved &middot;</span><span class="build">v${BUILD.v} &middot; ${BUILD.date}</span></span></footer>`;
+  const foot = () => `<footer class="foot"><span>Study material is built on your device by the built-in study engine — nothing leaves your browser. Check it against your course notes.</span><span class="maker"><span class="by">Built by</span>${makerMark()}<a class="rights" href="#/rights">&copy; ${BUILD.year} ${OWNER_NAME} &middot; All rights reserved</a><span class="build">&middot; v${BUILD.v} &middot; ${BUILD.date}</span></span></footer>`;
   const frame = html => `<div class="frame">${html}</div>`;
 
   /* ---------- home ---------- */
@@ -4974,6 +4999,152 @@ const GENERIC = new Set('information data process system method result results s
     }
     return out.sort((a, b) => b.lapses - a.lapses || (b.at || 0) - (a.at || 0));
   }
+  /* ---------- what "all rights reserved" actually means ----------
+     The footer says it on every page; this is where it is explained, in the app itself rather than
+     in a file on a code-hosting site the reader has no reason to visit. Everything here matches
+     LICENSE and TERMS.md in the repository, which are the operative documents if the two ever
+     disagree — this page is written to be read, those are written to be relied on. */
+  const RIGHTS = [
+    ['copyright', 'Copyright', `
+      <p>Every line of ${'UNI Made EZ'} was written by ${OWNER_NAME}: the study engine, the file readers, the scheduler,
+      the visual system, the test suites, and the words you are reading now. Under Canadian law that
+      copyright existed the moment each line was written — no registration, no fee and no notice were
+      needed to create it, and none is needed to keep it.</p>
+      <p>It covers more than the code. The interface text is a literary work in its own right; the
+      wordmark, the icons and the layout are artistic works; and the selection and arrangement of it
+      all is a protected compilation. Copied wording is usually the easiest kind of copying to prove,
+      because two people do not independently write the same sentence.</p>
+      <p class="small muted">First published 26 August 2026. Every release since is timestamped in
+      public and fingerprinted by the hash of the file that was served.</p>`],
+
+    ['moral', 'Moral rights', `
+      <p>Separate from copyright, and not transferable: the right to be associated with this work as
+      its author, and the right to object to it being distorted or modified in a way that harms its
+      reputation. Removing the attribution mark, the build stamp or this notice from a copy engages
+      those rights even where copyright alone might not.</p>`],
+
+    ['licence', 'The permission you have', `
+      <p>This is proprietary software offered free of charge. You may:</p>
+      <ul class="rights-list">
+        <li>use the app for your own study, on the web or installed to your device;</li>
+        <li>read the source — the whole page is downloaded to your browser, and that is deliberate:
+          it is how you can satisfy yourself that your files never leave your device;</li>
+        <li>keep everything the app makes from your own material. Your cards, your backups, your
+          revision packs and your Anki decks are yours, not ${OWNER_NAME}'s, and nothing here
+          restricts what you do with them.</li>
+      </ul>`],
+
+    ['replication', 'Replication and redistribution', `
+      <p>Everything else needs written permission. Without it you may not:</p>
+      <ul class="rights-list">
+        <li>copy, republish, rehost or mirror the app or any substantial part of it, under this name
+          or another;</li>
+        <li>sell it, rent it, licence it, or fold it into a product or service offered to anyone;</li>
+        <li>use the source, its structure or its wording as the basis of another application;</li>
+        <li>remove or obscure the copyright notice, the licence banner, the build stamp or the
+          attribution mark;</li>
+        <li>present it, or anything derived from it, as your own work.</li>
+      </ul>
+      <p>The source repository is public so the app can be served and so it can be checked. Publishing
+      something is not abandoning it, and a page being readable has never made it free to take.</p>`],
+
+    ['fork', 'Forking on GitHub', `
+      <p>The repository is hosted on GitHub, and GitHub's terms of service give every GitHub user a
+      licence to view a public repository and to fork it there. That is honoured, and this notice does
+      not pretend to override it.</p>
+      <p>It is a licence to fork <b>on GitHub</b> and nothing more. It grants no right to publish,
+      deploy, distribute or otherwise use this software anywhere else, and every restriction above
+      applies to a fork and to everything in it.</p>`],
+
+    ['name', 'The name and the mark', `
+      <p>"UNI Made EZ", "${OWNER_NAME}" and the ${OWNER_NAME} wordmark identify this publisher's work.
+      Rights in a trade mark in Canada arise from using it, not only from registering it, and using a
+      name or a mark confusingly similar to another's in a way that misleads people about who made
+      something is actionable as passing off, quite apart from copyright.</p>
+      <p>Do not use either name, or the mark, for anything not published by ${OWNER_NAME}.</p>`],
+
+    ['secret', 'What this is not', `
+      <p>Worth saying plainly, because it is where people get the law wrong: this is not a trade
+      secret and it is not confidential. The whole application is delivered to every visitor's
+      browser, and that is the design. Nothing here depends on the code being hidden.</p>
+      <p>The protection is copyright, which does not care whether a work is public. A published novel
+      is not a secret either, and it is not yours to reprint.</p>`],
+
+    ['third', "Other people's code", `
+      <p>The built page includes PDF.js (Apache&nbsp;2.0, © Mozilla Foundation) and JSZip (MIT, ©
+      Stuart Knightley), and loads Tesseract.js (Apache&nbsp;2.0) and four typefaces (SIL Open Font
+      Licence) when they are needed. Each is used under its own licence, those licences govern those
+      components rather than this notice, and their notices must travel with any copy of the page —
+      including copies made by ${OWNER_NAME}.</p>`],
+
+    ['yours', 'Your material, and your privacy', `
+      <p>Your files, the text taken from them, your cards, your ratings and your progress are held in
+      your own browser's storage on your own device. They are not uploaded, not collected and not
+      visible to ${OWNER_NAME}. Clearing your browser's site data deletes them; use
+      <b>Backup &amp; restore</b> to keep a copy.</p>
+      <p>Signing up for Summary and Quiz opens a message in your own mail app, addressed to the
+      publisher, which you choose to send or not — nothing is transmitted until you send it. An
+      address given that way is used to know who is using the app and to reach you about it. It is not
+      sold and not shared, and it will be deleted if you ask.</p>
+      <p>Upload only material you are entitled to use. Because your files never leave your device,
+      nobody else can check that for you.</p>`],
+
+    ['warranty', 'No warranty', `
+      <p>The app is provided as is, without warranty of any kind. The study material is
+      <b>extracted, not understood</b>: the engine finds definitions, figures, steps and terms by
+      pattern, and it makes characteristic mistakes — a table run together, a "not" carried into the
+      wrong half, an aside read as a definition. It flags what it is unsure of and shows you the
+      original passage. Check it.</p>
+      <p>It is a study aid, not a source, and no mark or academic outcome is promised. Work you submit
+      for credit is yours, including whether it meets your institution's rules. To the extent the law
+      allows, ${OWNER_NAME} is not liable for any loss arising from use of the app, including lost
+      study data.</p>`],
+
+    ['law', 'Governing law', `
+      <p>These terms are governed by the laws of the Province of British Columbia and the federal laws
+      of Canada that apply there.</p>`],
+
+    ['ask', 'Asking, and reporting', `
+      <p>Permission for anything this page does not allow is a conversation, not a refusal — teachers,
+      departments and student groups have asked before. Open an issue on the repository and ask.</p>
+      <p>If you find this app republished somewhere under another name, that is worth knowing about.
+      The same address reaches the publisher.</p>`]
+  ];
+
+  function renderRights() {
+    const body = `<div class="page narrow legal">
+      <div class="legal-head">
+        <span class="label">Legal &middot; UNI Made EZ</span>
+        <h1>All rights reserved</h1>
+        <p class="legal-lede">${'UNI Made EZ'} is free to use and open to read. It is not free to take.
+          This page says what that means, in the plainest words the subject allows.</p>
+        <p class="mono small muted">&copy; ${BUILD.year} ${OWNER_NAME} &middot; v${BUILD.v} &middot; ${BUILD.date}</p>
+      </div>
+      <nav class="legal-toc" aria-label="On this page">
+        <span class="label">On this page</span>
+        ${RIGHTS.map(([id, title]) => `<a href="#/rights" data-act="jump" data-target="lg-${id}">${esc(title)}</a>`).join('')}
+      </nav>
+      ${RIGHTS.map(([id, title, html]) => `<section class="legal-sec" id="lg-${id}">
+        <h2>${esc(title)}</h2>
+        ${html}
+      </section>`).join('')}
+      <div class="legal-foot">
+        <p class="small muted">The operative documents are the licence and the terms of use kept with
+          the source. If this page and those ever disagree, they govern.</p>
+        <div class="btn-row">
+          <a class="btn sm ghost" href="${REPO}/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">Licence <span class="arr">↗</span></a>
+          <a class="btn sm ghost" href="${REPO}/blob/main/TERMS.md" target="_blank" rel="noopener noreferrer">Terms of use <span class="arr">↗</span></a>
+          <a class="btn sm ghost" href="${REPO}/blob/main/THIRD-PARTY-NOTICES.md" target="_blank" rel="noopener noreferrer">Third-party notices <span class="arr">↗</span></a>
+        </div>
+        <p class="small muted">This page states the publisher's terms. It is a statement of rights,
+          not legal advice, and it is not a substitute for a lawyer.</p>
+      </div>
+    </div>`;
+    app.innerHTML = frame(`${topbar(`<a href="#/">Subjects</a><span class="sep">/</span><strong>All rights reserved</strong>`)}
+    <main id="main" tabindex="-1">${body}</main>${foot()}`);
+    syncModal();
+  }
+
   function renderClinic() {
     const rows = allLeeches();
     const bySub = {};
