@@ -61,12 +61,24 @@ To change it, edit the sources in the parent project (`src/app.js`, `src/engine.
 
 ## Version
 
-The footer of every page shows the build — `v1.8 · 1 September 2026` — so you can tell at a glance which version is actually live after an upload. Hard-reload with `Cmd Shift R` if it still shows the old one.
+The footer of every page shows the build — `v2.9 · 4 September 2026` — so you can tell at a glance which version is actually live after an upload. Hard-reload with `Cmd Shift R` if it still shows the old one.
 
 ## Who made it
 
 Built by **Johnson[X]Corp**. The logo and the build stamp sit in the footer of every page.
 
-## Licence
+## Licence — this is not open source
 
-Personal project — all rights reserved unless stated otherwise.
+**Copyright © 2026 JohnsonXCorp. All rights reserved.**
+
+The repository is public so the app can be served from GitHub Pages, and so that anyone can check for themselves what the page does with their files — that verifiability is the point of a study tool that promises nothing leaves your device. It is **not** published for reuse.
+
+You may use the app, install it, read the source, and keep everything it makes from your own material — those outputs are yours. You may not republish it, rehost it, redistribute it, sell it, strip its notices, or build another product out of it.
+
+- Full terms: **[LICENSE](LICENSE)**
+- Terms of use for the live app: **[TERMS.md](TERMS.md)**
+- Other people's code inside the build, and their licences: **[THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md)**
+
+GitHub's own terms let any GitHub user fork a public repository. That is a licence to fork here, and nothing more — every restriction above still applies to a fork.
+
+To ask for permission for anything the licence does not allow, open an issue.

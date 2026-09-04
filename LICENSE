@@ -1,0 +1,90 @@
+UNI Made EZ — Proprietary Software Licence
+Copyright © 2026 JohnsonXCorp. All rights reserved.
+
+"JohnsonXCorp" is the trade name under which the copyright owner publishes this
+software. Where this licence says "the Owner", it means that person or entity.
+
+
+1. THIS IS NOT OPEN SOURCE
+
+This repository is published so that the application can be served from GitHub
+Pages and so that anyone can verify what the page does with their files. It is
+NOT published for reuse. No permission is granted to any person to copy,
+reproduce, modify, adapt, translate, merge, publish, distribute, sublicense,
+sell, host, or create derivative works from this software or any part of it,
+whether or not for commercial purposes, except as expressly stated below.
+
+Reading the source in your browser, or on this repository page, is permitted.
+Everything beyond reading requires the Owner's prior written permission.
+
+
+2. WHAT YOU MAY DO
+
+You may:
+
+  (a) use the application at https://thepastor.github.io/uni-made-ez/ , or a
+      copy installed to your own device from that address, for your own
+      personal study;
+  (b) read the source code to satisfy yourself about what it does with your
+      files;
+  (c) keep the backup files, revision packs, Anki decks and other exports the
+      application produces from your own material, and use them freely — those
+      outputs are yours, not the Owner's.
+
+You may not:
+
+  (d) republish, rehost, mirror, or redistribute the application or any
+      substantial part of it, under this name or any other;
+  (e) remove, obscure, or alter any copyright notice, licence notice, build
+      stamp, or attribution mark;
+  (f) sell, rent, or licence the software, or include it in a product or
+      service offered to others;
+  (g) use the source code, its structure, or its written text as the basis for
+      another application;
+  (h) use the names "UNI Made EZ" or "JohnsonXCorp", or the JohnsonXCorp
+      wordmark, to identify any product not published by the Owner.
+
+
+3. GITHUB FORKING
+
+While this repository is public, GitHub's Terms of Service grant every GitHub
+user a licence to view it and to fork it within GitHub. That is a condition of
+hosting here and this licence does not attempt to override it. It is a licence
+to fork on GitHub — nothing more. It does not grant any right to publish,
+deploy, distribute, or otherwise use this software outside GitHub, and every
+restriction in section 2 continues to apply to a fork and to its contents.
+
+
+4. THIRD-PARTY COMPONENTS
+
+The built application includes and loads software written by others, each under
+its own licence. Those licences govern those components, not this one, and
+nothing here restricts your rights in them. They are listed, with their
+licences, in THIRD-PARTY-NOTICES.md.
+
+
+5. NO WARRANTY
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+OWNER BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+The application reads course material and produces study material from it by
+extraction, not by understanding. It can be wrong. It is not a substitute for
+the course material or for your own reading, and no academic outcome is
+warranted.
+
+
+6. GOVERNING LAW
+
+This licence is governed by the laws of the Province of British Columbia and
+the federal laws of Canada applicable therein.
+
+
+7. PERMISSIONS
+
+To ask for permission to do anything section 2 does not allow, open an issue on
+this repository.
