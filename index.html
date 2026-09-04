@@ -1362,6 +1362,63 @@ math mi[mathvariant="normal"] { font-style: normal; }
 .q-setup .limits { margin: 0; }
 @media print { .limits, .thin-block, .calib-term { break-inside: avoid; } .tl-act { display: none !important; } }
 
+/* ---------- offline, phone review, sharing, the week, the clinic ---------- */
+.offline-badge { color: var(--warn); cursor: default; }
+.net-note { margin: 0 0 8px; }
+.swipe-hint { display: none; text-align: center; margin-top: 8px; }
+.fcard.swiping-left .face.back { border-color: var(--coral); box-shadow: -6px 0 0 var(--coral); }
+.fcard.swiping-right .face.back { border-color: var(--accent); box-shadow: 6px 0 0 var(--accent); }
+.fcard { touch-action: pan-y; }
+.share-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line-soft); border: 1px solid var(--line-soft); margin: 12px 0; }
+.share-col { padding: 12px 14px; background: var(--surface); }
+.share-col ul { list-style: none; display: grid; gap: 4px; margin-top: 6px; font-size: .92rem; }
+.share-col li::before { content: "· "; color: var(--ink-3); }
+.share-col.keep li::before { content: "✓ "; color: var(--ok); }
+.share-col.drop li::before { content: "— "; color: var(--ink-3); }
+.share-col.drop { color: var(--ink-2); }
+.wk-nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+.wk-report { display: grid; gap: 12px; }
+.wk-head h2 { font-family: var(--font-display); font-size: 1.3rem; font-weight: 600; letter-spacing: -0.02em; }
+.wk-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; background: var(--line-soft); border: 1px solid var(--line-soft); }
+.wk-day { background: var(--surface); padding: 8px 4px; text-align: center; display: grid; gap: 2px; }
+.wk-day b { font-family: var(--font-mono); font-size: .62rem; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
+.wk-day span { font-family: var(--font-display); font-size: .92rem; letter-spacing: -0.01em; color: var(--ink-3); }
+.wk-day.on { background: var(--accent-soft); }
+.wk-day.on span { color: var(--ink); font-weight: 600; }
+.wk-table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+.wk-table th, .wk-table td { text-align: left; padding: 7px 9px; border-bottom: 1px solid var(--line-soft); vertical-align: top; }
+.wk-table thead th { font-family: var(--font-mono); font-size: .62rem; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
+.wk-table td .small { display: block; }
+.wk-table tfoot th { border-top: 1px solid var(--line); border-bottom: 0; }
+.wk-coming ul { list-style: none; display: grid; gap: 3px; margin-top: 6px; font-size: .92rem; }
+.wk-method { border-top: 1px solid var(--line-soft); padding-top: 8px; }
+.leech-list { list-style: none; display: flex; flex-direction: column; border-bottom: 1px solid var(--line); }
+.leech-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; padding: 11px 16px; background: var(--surface); border-bottom: 1px solid var(--line-soft); }
+.lr-main { display: grid; gap: 2px; min-width: 0; flex: 1 1 300px; }
+.lr-main strong { font-weight: 500; font-size: .95rem; }
+.sec-star { border: 0; background: none; cursor: pointer; font-size: 1rem; line-height: 1; padding: 2px 6px; color: var(--ink-3); }
+.sec-star:hover, .sec-star.on { color: var(--mint-deep); }
+.pk-oc { display: grid; gap: 4px; margin-left: 0; padding-left: 0; list-style: none; }
+.pk-oc-row { display: grid; grid-template-columns: auto 1fr; gap: 8px; align-items: baseline; font-size: .95rem; }
+.pk-oc-badge { font-family: var(--font-mono); font-size: .58rem; letter-spacing: .07em; text-transform: uppercase; padding: 2px 6px; border: 1px solid currentColor; white-space: nowrap; }
+.pk-oc-row.gap { color: #000; font-weight: 500; }
+.pk-oc-n { color: var(--ink-3); font-size: .85rem; }
+.subjects-head .btn.cell .n { font-family: var(--font-mono); font-size: .7rem; margin-left: 6px; color: var(--warn); }
+@media (max-width: 640px) {
+  /* the card takes the screen, and the ratings sit under the thumb */
+  .deck { padding: 0; }
+  .fcard, .fcard > .face { min-height: min(58vh, 460px); }
+  .face { padding: 20px 18px; }
+  .swipe-hint { display: block; }
+  .rate { position: sticky; bottom: 0; z-index: 5; }
+  .rate .btn { padding: 22px 8px; font-size: .95rem; }
+  .card-tools { flex-wrap: wrap; }
+  .share-cols { grid-template-columns: 1fr; }
+  .wk-days { grid-template-columns: repeat(4, 1fr); }
+  .wk-table { font-size: .82rem; }
+}
+@media print { .sec-star, .wk-nav, .swipe-hint { display: none !important; } .wk-table { font-size: .82rem; } }
+
 </style>
 </head>
 <body>
@@ -3775,7 +3832,7 @@ const GENERIC = new Set('information data process system method result results s
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.5', date: '3 September 2026' };
+  const BUILD = { v: '2.6', date: '4 September 2026' };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonandy242', ['gmail', 'com'].join('.')].join('@');
   const OWNER_HASH = 'f2d29d4fd8c98b4205c0ffa7628eeeccfc3f2647ed0430748eac0d775cbc562d';
@@ -3968,6 +4025,65 @@ const GENERIC = new Set('information data process system method result results s
      ≈ 90s) and say so wherever they are shown. The log can be downloaded as a CSV — a real record of the term. */
   const dayKey = ts => new Date(ts || Date.now()).toISOString().slice(0, 10);
   const LOG_MIN = { cards: 1 / 6, quiz: 0.5, recall: 1.5, essays: 6, match: 1.5 };
+  /* Time actually spent, rather than a price list. The per-item costs (a card ~10 s, an essay
+     ~6 min) were always a stand-in, and they are wrong in both directions: they charge nothing for
+     reading the answer and everything for a card you skipped past. Measuring the real thing is
+     better evidence — but only if it measures the right thing, and the obvious implementation does
+     not: a tab left open over lunch would book an hour of studying nobody did.
+
+     So the clock runs only while a study page is open AND the page is actually in front of you,
+     and it stops after IDLE_AFTER without a key, a tap, a scroll or a pointer move. Where a day
+     has measured minutes they are used; a day recorded before this shipped keeps its estimate, and
+     the study log and the weekly record both say which of the two they are showing. */
+  const TIME_ON_PAGE = true;
+  const IDLE_AFTER = 120000;            // two minutes without a sign of life ends the session
+  const TICK_MS = 15000;
+  let timeState = null;
+  function studyPageOf() {
+    const r = parseRoute();
+    if (r.name === 'today') return state.subjects.length === 1 ? state.subjects[0].id : 'today';
+    if (r.name === 'section' && r.id && ['cards', 'quiz', 'match', 'recall', 'essay', 'summary', 'keys', 'formulas', 'map', 'outcomes'].includes(r.kind)) return r.id;
+    return null;
+  }
+  function noteActive() { if (timeState) timeState.last = Date.now(); }
+  function bankTime() {
+    const t = timeState;
+    if (!t) return;
+    const now = Date.now();
+    const upto = Math.min(now, t.last + IDLE_AFTER);
+    // whole seconds only, and the remainder is carried rather than dropped: a student who moves
+    // between pages every few seconds was otherwise credited with none of it
+    const secs = Math.floor((upto - t.from) / 1000);
+    if (secs <= 0) return;
+    t.from += secs * 1000;
+    if (t.sid && t.sid !== 'today') addSeconds(t.sid, secs);
+  }
+  function addSeconds(sid, secs) {
+    const p = prog(sid); p.log = p.log || [];
+    const d = dayKey();
+    let e = p.log[p.log.length - 1];
+    if (!e || e.d !== d) { e = { d, cards: 0, again: 0, quiz: 0, right: 0, recall: 0, got: 0, essays: 0, match: 0 }; p.log.push(e); }
+    e.secs = (e.secs || 0) + secs;
+    p.log = p.log.slice(-200);
+    saveProgress();
+  }
+  function syncTimer() {
+    const sid = studyPageOf();
+    const visible = typeof document === 'undefined' || document.visibilityState !== 'hidden';
+    if (timeState && (timeState.sid !== sid || !visible)) { bankTime(); timeState = null; }
+    if (sid && visible && !timeState) timeState = { sid, from: Date.now(), last: Date.now() };
+    else if (timeState && Date.now() - timeState.last > IDLE_AFTER) { bankTime(); timeState.from = Date.now(); }
+    else bankTime();
+  }
+  if (typeof document !== 'undefined') {
+    ['keydown', 'pointerdown', 'pointermove', 'wheel', 'scroll', 'touchstart'].forEach(ev =>
+      document.addEventListener(ev, noteActive, { passive: true, capture: true }));
+    document.addEventListener('visibilitychange', syncTimer);
+    window.addEventListener('pagehide', () => { bankTime(); timeState = null; });
+    window.addEventListener('hashchange', syncTimer);
+    setInterval(syncTimer, TICK_MS);
+  }
+
   function logStudy(sid, field, n, right) {
     if (!sid || !n) return;
     const p = prog(sid); p.log = p.log || [];
@@ -3981,7 +4097,10 @@ const GENERIC = new Set('information data process system method result results s
     p.log = p.log.slice(-200);
     saveProgress();
   }
-  const logMinutes = e => Math.max(1, Math.round((e.cards || 0) * LOG_MIN.cards + (e.quiz || 0) * LOG_MIN.quiz + (e.recall || 0) * LOG_MIN.recall + (e.essays || 0) * LOG_MIN.essays + (e.match || 0) * LOG_MIN.match));
+  const estMinutes = e => Math.max(1, Math.round((e.cards || 0) * LOG_MIN.cards + (e.quiz || 0) * LOG_MIN.quiz + (e.recall || 0) * LOG_MIN.recall + (e.essays || 0) * LOG_MIN.essays + (e.match || 0) * LOG_MIN.match));
+  // a measured day reports what was measured; an older day keeps its estimate and says so
+  const logMinutes = e => (e && e.secs) ? Math.max(1, Math.round(e.secs / 60)) : estMinutes(e);
+  const logMeasured = e => !!(e && e.secs);
   function logOf(sid) { const p = progress[sid]; return (p && p.log) || []; }
   function lastStudied(sid) { const l = logOf(sid); return l.length ? l[l.length - 1].d : null; }
   // days studied out of the last n, across one subject or all
@@ -4023,7 +4142,10 @@ const GENERIC = new Set('information data process system method result results s
   }
   /* ---------- the personal layer: stars, hidden items, notes, your own cards ---------- */
   // one id shape for everything so star/hide/note share a code path
-  const ID = { term: t => 't:' + String(t).toLowerCase().trim(), def: t => 'd:' + String(t).toLowerCase().trim(), card: k => 'c:' + k };
+  const ID = { term: t => 't:' + String(t).toLowerCase().trim(), def: t => 'd:' + String(t).toLowerCase().trim(), card: k => 'c:' + k,
+    // a section is identified by its title where it has one, so a re-scan that shifts the indexes
+    // does not lose the star; an untitled section falls back to its position
+    sec: (sid, i, title) => 's:' + (String(title || '').toLowerCase().trim() || '#' + i) };
   function marks(sid) { const p = prog(sid); p.marks = p.marks || {}; return p.marks; }
   function mark(sid, id) { return marks(sid)[id] || null; }
   function setMark(sid, id, patch) {
@@ -4041,6 +4163,19 @@ const GENERIC = new Set('information data process system method result results s
   function cardHidden(sid, c) { return isHidden(sid, ID.card(c.key)) || (c.term && isHidden(sid, ID.term(c.term))); }
   function userCards(sid) { const p = prog(sid); p.cards = p.cards || []; return p.cards; }
   function cardEdits(sid) { const p = prog(sid); p.edits = p.edits || {}; return p.edits; }
+  // Undo covered removals but not edits, which are the easier thing to regret: a reword also wipes
+  // the card's lapse count and restarts its schedule, so "undo" has to put the schedule back too.
+  function undoableEdit(sid, key, wasEdit, wasSrs) {
+    return { label: 'Undo', act: () => {
+      const ed = cardEdits(sid);
+      if (wasEdit) ed[key] = wasEdit; else delete ed[key];
+      if (wasSrs) prog(sid).srs[key] = wasSrs;
+      saveProgress(); invalidateAnalysis();
+      const r = parseRoute(); const subj = subjectById(sid);
+      if (subj && r.name === 'section') renderSection(subj, r.kind); else if (r.name === 'today') renderToday(); else render();
+      toast('Edit undone.');
+    } };
+  }
   function applyEdits(sid, list) {
     const ed = cardEdits(sid);
     return list.map(c => ed[c.key] ? { ...c, front: ed[c.key].front, back: ed[c.key].back, edited: true } : c);
@@ -4268,6 +4403,32 @@ const GENERIC = new Set('information data process system method result results s
     toast('Installed. UNI Made EZ is on your home screen.');
   });
 
+  /* ---------- offline ----------
+     The subjects were never on a server: files, text, cards and progress live in this browser, so
+     a subject opens with the network gone whether or not it has ever been opened before — there is
+     nothing to "cache" because nothing was ever fetched. Two things do need a connection, and both
+     say so where they are, rather than failing at the moment of use: reading a web address, and
+     downloading the scan reader the first time. The badge exists so that when something is missing
+     the student knows why before they go looking for the fault. */
+  let isOffline = typeof navigator !== 'undefined' && navigator.onLine === false;
+  const offlineCell = () => isOffline
+    ? `<span class="disp-btn offline-badge" data-offline title="No connection — everything already in the app still works" role="status">${I.offline}<span class="lbl">Offline</span></span>`
+    : '';
+  function syncOffline() {
+    const cell = document.querySelector('.topbar .toggle-cell') || document.querySelector('.section-bar .tools');
+    if (!cell) return;
+    const have = document.querySelector('[data-offline]');
+    if (isOffline && !have) cell.insertAdjacentHTML('afterbegin', offlineCell());
+    else if (!isOffline && have) have.remove();
+    document.querySelectorAll('[data-net]').forEach(el => { el.hidden = !isOffline; });
+  }
+  if (typeof window !== 'undefined') {
+    window.addEventListener('offline', () => { isOffline = true; syncOffline(); say('No connection. Everything already in the app still works.'); });
+    window.addEventListener('online', () => { isOffline = false; syncOffline(); });
+  }
+  // said in the two places where a connection is actually required
+  const netNote = what => `<p class="small warn-ink net-note" data-net ${isOffline ? '' : 'hidden'}>No connection at the moment, so ${what} cannot be done. Everything already in the app — your files, cards, summaries and quizzes — still works.</p>`;
+
   const updateCell = () => swWaiting
     ? `<button type="button" class="disp-btn update" data-act="update" title="A newer version of UNI Made EZ is ready" aria-label="Update to the newer version">${I.update}<span class="lbl">Update</span></button>`
     : '';
@@ -4307,6 +4468,7 @@ const GENERIC = new Set('information data process system method result results s
     if (parts[0] === 'today') return { name: 'today', q };
     if (parts[0] === 'semester') return { name: 'semester', q };
     if (parts[0] === 'plan') return { name: 'plan', q };
+    if (parts[0] === 'leeches') return { name: 'leeches', q };
     if (parts[0] === 's' && parts[1]) return { name: parts[2] ? 'section' : 'subject', id: parts[1], kind: parts[2], q };
     return { name: 'home', q };
   }
@@ -4316,6 +4478,7 @@ const GENERIC = new Set('information data process system method result results s
   const I = {
     update: '<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.6-5.9"/><path d="M20 3.5V8h-4.5"/></svg>',
     install: '<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M12 7.5v7"/><path d="M9 11.5 12 14.5 15 11.5"/></svg>',
+    offline: '<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4l20 16"/><path d="M5 12.5a10 10 0 0 1 4-2.4"/><path d="M8.5 16a5 5 0 0 1 2.2-1.3"/><path d="M12 19.5h.01"/><path d="M19.5 9.2a13.8 13.8 0 0 0-8-3.1"/></svg>',
     outcomes: '<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/></svg>',
     cards: '<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="14" height="12" rx="2"/><path d="M7 4h12a2 2 0 0 1 2 2v10"/><path d="M7 11h6M7 14h4"/></svg>',
     summary: '<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4"/><path d="M9 12h7M9 16h7M9 8h2"/></svg>',
@@ -4413,6 +4576,7 @@ const GENERIC = new Set('information data process system method result results s
     if (r.name === 'today') return renderToday(true);
     if (r.name === 'semester') return renderSemester();
     if (r.name === 'plan') return renderPlan();
+    if (r.name === 'leeches') return renderClinic();
     const s = subjectById(r.id);
     if (!s) { go('/'); return; }
     if (r.name === 'subject') { noteVisit(s.id, ''); return renderSubject(s); }
@@ -4444,7 +4608,7 @@ const GENERIC = new Set('information data process system method result results s
       <a class="wordmark" href="#/">UNI Made <span class="ez">EZ</span></a>
       <div class="clock" data-clock>${clockText()}</div>
       <div class="crumb">${crumbs}</div>
-      <div class="toggle-cell"><button type="button" class="disp-btn" data-act="display" aria-label="Display settings — text size, reading comfort, theme">Aa</button><button type="button" class="disp-btn" data-act="keys-help" aria-label="Keyboard shortcuts">?</button>${updateCell()}${installCell()}${themeToggle()}${accountCell()}</div>
+      <div class="toggle-cell">${offlineCell()}<button type="button" class="disp-btn" data-act="display" aria-label="Display settings — text size, reading comfort, theme">Aa</button><button type="button" class="disp-btn" data-act="keys-help" aria-label="Keyboard shortcuts">?</button>${updateCell()}${installCell()}${themeToggle()}${accountCell()}</div>
       ${ctaCell()}
     </header>`;
   }
@@ -4508,7 +4672,7 @@ const GENERIC = new Set('information data process system method result results s
           <span class="arr">→</span>
         </a>`;
       })()}
-      <div class="subjects-head"><h2>${subs.length ? 'Your subjects' : 'No subjects yet'}</h2>${subs.length ? `<a class="btn cell ghost" href="#/plan" title="The next fortnight, worked backwards from your exams and deadlines">Study plan</a><a class="btn cell ghost" href="#/semester" title="Every subject, exam and deadline on one screen">Semester view</a>` : ''}<button class="btn cell ghost" data-act="backup-open" title="Back up every subject to a file, or restore one">Backup &amp; restore</button><button class="btn cell" data-act="new-subject">Add subject <span class="arr">→</span></button></div>
+      <div class="subjects-head"><h2>${subs.length ? 'Your subjects' : 'No subjects yet'}</h2>${subs.length ? `<a class="btn cell ghost" href="#/plan" title="The next fortnight, worked backwards from your exams and deadlines">Study plan</a><a class="btn cell ghost" href="#/semester" title="Every subject, exam and deadline on one screen">Semester view</a>` : ''}${(() => { const n = state.subjects.reduce((x, s2) => x + leechCount(s2.id), 0); return n ? `<a class="btn cell ghost" href="#/leeches" title="Every card that keeps failing, in one place">Leeches <span class="n">${n}</span></a>` : ''; })()}<button class="btn cell ghost" data-act="backup-open" title="Back up every subject to a file, or restore one">Backup &amp; restore</button><button class="btn cell" data-act="new-subject">Add subject <span class="arr">→</span></button></div>
       <div class="subject-grid">
         ${subs.map(s => `<div class="subject-slot"><a class="subject-card" href="#/s/${s.id}" style="--tab:${s.color}">
           <div class="code">${esc(s.code || 'Subject')}</div>
@@ -4651,6 +4815,56 @@ const GENERIC = new Set('information data process system method result results s
     syncModal();
   }
 
+  /* ---------- the leech clinic ----------
+     A leech is a card that has failed six times: the wording is the problem, not the student, and
+     the cure is to rewrite it. Until now each one was flagged where you met it, which is the worst
+     possible moment — mid-review, when you want to keep going. Here they are in one place across
+     every subject, so rewording becomes a task you sit down and do rather than an interruption. */
+  function allLeeches() {
+    const out = [];
+    for (const s2 of state.subjects) {
+      const p = prog(s2.id);
+      for (const key in p.srs) {
+        const c = p.srs[key];
+        if (!c || !c.leech) continue;
+        out.push({ s: s2, key, lapses: c.lapses || 0, at: c.leechAt || 0, ed: (p.edits || {})[key] || null,
+          mine: (p.cards || []).find(x => x.key === key) || null });
+      }
+    }
+    return out.sort((a, b) => b.lapses - a.lapses || (b.at || 0) - (a.at || 0));
+  }
+  function renderClinic() {
+    const rows = allLeeches();
+    const bySub = {};
+    rows.forEach(r => { (bySub[r.s.id] = bySub[r.s.id] || { s: r.s, rows: [] }).rows.push(r); });
+    const groups = Object.values(bySub);
+    const body = `<div class="page">
+      <div class="panel-head slim"><div><span class="label">Cards that keep failing</span><h2>Leech clinic</h2></div>
+        <div class="btn-row"><a class="btn sm ghost" href="#/">Subjects <span class="arr">→</span></a></div></div>
+      <div class="panel-body">
+        <p class="muted">${rows.length
+          ? `${plural(rows.length, 'card')} across ${plural(groups.length, 'subject')} ${rows.length === 1 ? 'has' : 'have'} been missed ${LEECH_AT} times or more. That is a fact about the card, not about you: a card that fails this often is usually two questions in one, or worded in a way that gives the mind nothing to grab. Rewriting one resets its schedule and clears the flag.`
+          : `Nothing is stuck. A card lands here after ${LEECH_AT} misses — the sign that the wording, not the effort, is the problem.`}</p>
+      </div>
+      ${groups.map(g => `<div class="panel-head slim"><div><span class="label" style="--tab:${g.s.color}">${esc(g.s.code || g.s.name)}</span><h2>${esc(g.s.name)}</h2></div><span class="mono muted">${plural(g.rows.length, 'card')}</span></div>
+        <ul class="leech-list">${g.rows.map(r => { const c = cardByKey(g.s.id, r.key); return `<li class="leech-row">
+          <span class="lr-main"><strong>${esc(shortLab((r.ed && r.ed.front) || (r.mine && r.mine.front) || (c && c.front) || r.key, 96))}</strong>
+            <span class="small muted">missed ${r.lapses}×${r.at ? ` · flagged ${esc(whenAgo(r.at))}` : ''}${r.ed ? ' · you have edited it once' : ''}</span></span>
+          <span class="lr-act"><button type="button" class="btn sm primary" data-act="leech-fix" data-s="${esc(g.s.id)}" data-key="${esc(r.key)}">Reword <span class="arr">→</span></button></span>
+        </li>`; }).join('')}</ul>`).join('')}
+      ${rows.length ? `<div class="panel-body"><p class="small muted">What helps: split it into two smaller cards, put a cue in the question ("in glycolysis, …"), make the answer one line, or say it in your own words. Saving a reword forgives the misses and starts the card again.</p></div>` : ''}
+    </div>`;
+    app.innerHTML = frame(`${topbar(`<a href="#/">Subjects</a><span class="sep">/</span><strong>Leeches</strong>`)}
+    <main id="main" tabindex="-1">${body}</main>${foot()}`);
+    syncModal();
+  }
+  // find a generated card by its key without rebuilding the whole deck when the analysis is elsewhere
+  function cardByKey(sid, key) {
+    const a = state.analysis;
+    if (!a || !state.analysisKey || !state.analysisKey.startsWith(sid + ':')) return null;
+    return fullPool(sid, a, 1).find(c => c.key === key) || null;
+  }
+
   function renderSemester() {
     const subs = state.subjects;
     if (!subs.length) { go('/'); return; }
@@ -4707,7 +4921,7 @@ const GENERIC = new Set('information data process system method result results s
           <div class="panel-head slim"><h2>The term on paper</h2></div>
           <div class="panel-body">
             <p class="small muted">Every study session, dated and counted — real evidence of the work if you ever apply for accommodations or a scholarship.</p>
-            <div class="btn-row"><button class="btn sm ghost" data-act="log-export-all"${anyLog ? '' : ' disabled'}>Download the term log (.csv) <span class="arr">↓</span></button>${anyLog ? '' : '<span class="small muted">starts writing when you study</span>'}</div>
+            <div class="btn-row"><button class="btn sm primary" data-act="week-open"${anyLog ? '' : ' disabled'}>This week, as one page <span class="arr">→</span></button><button class="btn sm ghost" data-act="log-export-all"${anyLog ? '' : ' disabled'}>Download the term log (.csv) <span class="arr">↓</span></button>${anyLog ? '' : '<span class="small muted">starts writing when you study</span>'}</div>
           </div>
         </aside>
       </div>
@@ -4848,6 +5062,7 @@ const GENERIC = new Set('information data process system method result results s
         <div class="modal-body">
           <div class="field"><label for="p-title">Name <span class="muted">(optional)</span></label><input class="input" id="p-title" name="title" maxlength="80" placeholder="e.g. Lecture 6 transcript" value="${esc(m.title || '')}"></div>
           <div class="field"><label for="p-text">Text, or one web address</label><textarea class="input" id="p-text" name="text" rows="9" required placeholder="Paste a lecture transcript, a reading, your notes — or a link such as https://en.wikipedia.org/wiki/Photosynthesis">${esc(m.text || '')}</textarea></div>
+          ${netNote('a web address cannot be read')}
           <p class="small muted">${IN_ARTIFACT ? 'Pasted text works here. Web addresses can only be fetched on the <a href="' + LIVE_URL + '" target="_blank" rel="noopener">live site</a> — or open the page, select all, copy and paste it in.' : 'Wikipedia articles are read from Wikipedia directly. Other pages are tried directly first and, if the site blocks that, through a public reader service (r.jina.ai) that only ever sees the address — never your files. If a page still can\'t be read, select all on it, copy, and paste the text here.'}</p>
         </div>
         <div class="modal-foot"><span class="mono muted">Tip: press ⌘V / Ctrl V on the subject page to open this</span><span class="spacer" style="flex:1"></span><button type="button" class="btn sm" data-act="close-modal">Cancel</button><button class="btn sm primary" type="submit">Add to subject <span class="arr">→</span></button></div>
@@ -4954,6 +5169,7 @@ const GENERIC = new Set('information data process system method result results s
           <div class="detail-block"><span class="label">Restore</span>
             <p>Choose a backup file. Subjects in it are added here; a subject that is already here is replaced by the backup copy. You get an Undo afterwards.</p>
             <label class="btn sm restore-btn">Restore from a backup file… <input type="file" accept=".json,application/json" data-restore hidden></label>
+            <label class="btn sm restore-btn">Open a shared deck someone sent… <input type="file" accept=".json,application/json" data-share hidden></label>
           </div>
         </div>
         <div class="modal-foot"><span class="mono muted">Nothing is sent anywhere — the file is written and read on your device</span><span class="spacer" style="flex:1"></span><button class="btn sm" data-act="close-modal">Close</button></div>
@@ -4965,7 +5181,7 @@ const GENERIC = new Set('information data process system method result results s
         <div class="modal-head"><div><span class="label">${esc(p.s.name)}</span><h2>Revision pack</h2></div><button class="btn ghost icon" data-act="close-modal" aria-label="Close">${I.x}</button></div>
         <div class="modal-body">
           <p>Everything from this subject in one document: the summary, key definitions and acronyms, the formula sheet, processes, timeline and figures, your notes, every flash card as a question-and-answer list, and a test-yourself section.</p>
-          <div class="sum-stats pack-stats"><div><b>${p.defs.length + p.acronyms.length}</b><span>definitions</span></div><div><b>${p.formulas.length}</b><span>formulas</span></div><div><b>${p.cards.length}</b><span>flash cards</span></div><div><b>${p.sum.sections.length}</b><span>sections</span></div></div>
+          <div class="sum-stats pack-stats"><div><b>${p.defs.length + p.acronyms.length}</b><span>definitions</span></div><div><b>${p.formulas.length}</b><span>formulas</span></div><div><b>${p.cards.length}</b><span>flash cards</span></div><div><b>${p.outcomes.length || p.sum.sections.length}</b><span>${p.outcomes.length ? 'outcomes mapped' : 'sections'}</span></div></div>
           <div class="btn-row">
             <button class="btn sm primary" data-act="pack-print">Print or save as PDF <span class="arr">⎙</span></button>
             <button class="btn sm" data-act="pack-md">Download .md <span class="arr">↓</span></button>
@@ -5071,6 +5287,38 @@ const GENERIC = new Set('information data process system method result results s
             : why ? `<p class="small muted">${esc(why)}</p>` : ''}
         </div>
         <div class="modal-foot"><span class="mono muted">${esc(cite(sent) || 'your material')}</span><span class="spacer" style="flex:1"></span><button type="button" class="btn sm" data-act="close-modal">Close</button></div>
+      </div></div>`;
+    }
+    if (m.type === 'share') {
+      const subj = m.subject, c = shareCounts(subj);
+      const kept = [`${plural(c.files, 'file')} and their text`, c.mine ? plural(c.mine, 'card you wrote') : '', c.edits ? `${plural(c.edits, 'card')} you reworded` : '',
+        c.outcomes ? plural(c.outcomes, 'learning outcome') : '', c.weeks ? `the ${plural(c.weeks, 'week')} of the schedule` : '',
+        c.assess ? `${plural(c.assess, 'assessment')} and what each is worth` : ''].filter(Boolean);
+      const dropped = [c.due ? `${plural(c.due, 'card schedule')}` : '', c.quizzes ? plural(c.quizzes, 'quiz result') : '',
+        c.marks ? `your ${plural(c.marks, 'mark')}` : '', c.notes ? plural(c.notes, 'note') : '',
+        'your weak spots and study log', 'the exam date and any deadlines'].filter(Boolean);
+      return `<div class="modal-bg" data-act="close-modal"><div class="modal wide">
+        <div class="modal-head"><div><span class="label">Study together</span><h2>Share ${esc(subj.name)}</h2></div><button type="button" class="btn ghost icon" data-act="close-modal" aria-label="Close">${I.x}</button></div>
+        <div class="modal-body">
+          <p class="small muted">A shared deck is not a backup. It carries the material and the cards, so a classmate opens the subject already set up — and it carries nothing about how you have been doing, which is both none of their business and would push their scheduler around for no reason.</p>
+          <div class="share-cols">
+            <div class="share-col keep"><span class="label">Goes with it</span><ul>${kept.map(x => `<li>${esc(x)}</li>`).join('')}</ul></div>
+            <div class="share-col drop"><span class="label">Stays with you</span><ul>${dropped.map(x => `<li>${esc(x)}</li>`).join('')}</ul></div>
+          </div>
+          <p class="small muted">It arrives on their device as a new subject, everything unseen, their schedule starting at zero. ${fmt(c.words)} words in ${plural(c.files, 'file')} — the file is roughly that size, so a big subject is an email attachment, not a message.</p>
+        </div>
+        <div class="modal-foot"><button type="button" class="btn sm ghost" data-act="share-import">Open one someone sent me</button><span class="spacer" style="flex:1"></span><button type="button" class="btn sm" data-act="close-modal">Cancel</button><button type="button" class="btn sm primary" data-act="share-save" data-id="${esc(subj.id)}">${IN_ARTIFACT ? 'Copy the deck' : 'Save the deck'} <span class="arr">${IN_ARTIFACT ? '⧉' : '↓'}</span></button></div>
+      </div></div>`;
+    }
+    if (m.type === 'week') {
+      const rep = weekReport(m.offset || 0);
+      return `<div class="modal-bg" data-act="close-modal"><div class="modal wide">
+        <div class="modal-head"><div><span class="label">One week, as evidence</span><h2>Study record</h2></div><button type="button" class="btn ghost icon" data-act="close-modal" aria-label="Close">${I.x}</button></div>
+        <div class="modal-body">
+          <div class="wk-nav"><button type="button" class="btn sm" data-act="week-shift" data-d="1">← Earlier</button><span class="mono muted">${m.offset ? `${plural(m.offset, 'week')} ago` : 'this week'}</span><button type="button" class="btn sm" data-act="week-shift" data-d="-1" ${m.offset ? '' : 'disabled'}>Later →</button></div>
+          ${weekReportHtml(rep)}
+        </div>
+        <div class="modal-foot"><button type="button" class="btn sm ghost" data-act="week-print">Print <span class="arr">⎙</span></button><button type="button" class="btn sm ghost" data-act="week-copy">Copy <span class="arr">⧉</span></button><span class="spacer" style="flex:1"></span><button type="button" class="btn sm" data-act="close-modal">Close</button>${IN_ARTIFACT ? '' : `<button type="button" class="btn sm primary" data-act="week-save">Save .md <span class="arr">↓</span></button>`}</div>
       </div></div>`;
     }
     if (m.type === 'confirm') {
@@ -5389,7 +5637,7 @@ const GENERIC = new Set('information data process system method result results s
     <main id="main" tabindex="-1">
       <div class="subject-hero" style="--tab:${s.color}">
         <div class="title"><span class="code"><i></i>${esc(s.code || 'Subject')}${ex ? `<b class="exam-chip${ex.days >= 0 && ex.days <= 7 ? ' soon' : ''}">${esc(ex.label)}</b>` : ''}</span><h1>${esc(s.name)}</h1></div>
-        <div class="actions"><button class="btn" data-act="edit-subject">Edit subject <span class="arr">→</span></button><button class="btn danger" data-act="delete-subject" data-id="${s.id}">Remove subject <span class="arr">×</span></button></div>
+        <div class="actions"><button class="btn" data-act="edit-subject">Edit subject <span class="arr">→</span></button><button class="btn" data-act="clear-progress" title="Clear every schedule, quiz result and mark, and keep every file">Start this subject again <span class="arr">↺</span></button><button class="btn danger" data-act="delete-subject" data-id="${s.id}">Remove subject <span class="arr">×</span></button></div>
       </div>
       <div class="subject-layout">
         <section>
@@ -5476,6 +5724,7 @@ const GENERIC = new Set('information data process system method result results s
           <div class="tools-row export-row">
             ${[['pack-open', 'Revision pack', 'Summary, key information, formula sheet and every card in one document — print it, save it as a PDF or as Markdown.', I.pack, ready],
                ['export-anki', 'Anki deck', 'The flash cards as a .txt file Anki imports straight into a deck named after this subject. Quizlet takes a copy.', I.deck, ready],
+               ['share-open', 'Share these cards', 'A file for a classmate: the material and the cards, with none of your schedule, marks or quiz history. It opens as a new subject on their device.', I.deck, s.materials.length > 0],
                ['backup-subject', 'Back up this subject', 'One .json file with its files, their text and your progress. Restore it on another device from the home page.', I.backup, s.materials.length > 0]
               ].map(([act, title, desc, icon, on]) => { const lk = act === 'pack-open' && LOCKED.summary && !isUnlocked(); return `<button type="button" class="tool${on ? '' : ' disabled'}${lk ? ' locked' : ''}" data-act="${act}" ${on ? '' : 'disabled'}><span class="ic">${icon}</span><span class="t"><b>${title}${lk ? ` <span class="lock">${I.lock} Sign-up</span>` : ''}</b><span>${desc}</span></span><span class="arr">${act === 'pack-open' ? '→' : '↓'}</span></button>`; }).join('')}
           </div>
@@ -5509,7 +5758,7 @@ const GENERIC = new Set('information data process system method result results s
     if (m.scan && !m.busy) {
       if (!OCR.available()) scanRow = `<div class="scan-row"><span>Photos and scans are read on the <a href="${LIVE_URL}" target="_blank" rel="noopener">live site</a>${IN_ARTIFACT ? ' — pages inside Claude can\'t fetch the reader' : ''}.</span></div>`;
       else if (pendingScans.has(m.id)) scanRow = `<div class="scan-row"><button type="button" class="btn sm primary" data-act="ocr" data-id="${m.id}">Read this scan <span class="arr">→</span></button><span>Text is read on your device — nothing is uploaded. Printed or typed text works best.</span></div>`;
-      else scanRow = `<div class="scan-row"><span>Upload it again to read it with the scan reader.</span></div>`;
+      else scanRow = `<div class="scan-row"><span>Upload it again to read it with the scan reader.</span>${netNote('the scan reader cannot be fetched')}</div>`;
     } else if (m.thin && !m.busy && !m.err && OCR.available() && pendingScans.has(m.id)) {
       scanRow = `<div class="scan-row"><span>Only ${fmt(m.words)} words on ${plural(m.pages, 'page')} — mostly scans?</span><button type="button" class="btn sm" data-act="ocr" data-id="${m.id}">Read it with OCR <span class="arr">→</span></button></div>`;
     } else if (m.dup && m.include === false && !m.dupOk) {
@@ -5909,7 +6158,7 @@ const GENERIC = new Set('information data process system method result results s
     return frame(`<header class="section-bar">
       <a class="back" href="#/s/${s.id}" title="Back to ${esc(s.name)}">${I.back}<span>${esc(s.code || s.name)}</span></a>
       <div><h2><span style="width:20px;height:20px;display:inline-flex">${meta.icon}</span>${meta.title}</h2></div>
-      <div class="tools">${extraBar}<button class="btn ghost icon" data-act="search" title="Search this subject (/)">${I.search}</button><a class="btn ghost icon" href="${esc(location.href)}" target="_blank" rel="noopener" title="Open this page in a new tab">${I.ext}</a></div>
+      <div class="tools">${offlineCell()}${extraBar}<button class="btn ghost icon" data-act="search" title="Search this subject (/)">${I.search}</button><a class="btn ghost icon" href="${esc(location.href)}" target="_blank" rel="noopener" title="Open this page in a new tab">${I.ext}</a></div>
     </header>
     <main id="main" tabindex="-1">${inner}</main>${foot()}`);
   }
@@ -6135,7 +6384,7 @@ const GENERIC = new Set('information data process system method result results s
         ${sum.keyDefs.length ? `<section class="sum-block"><h3>Key definitions</h3><dl class="def-list compact">${sum.keyDefs.map(d => `<div class="def"><dt>${esc(d.term)}</dt><dd>${hl(d.kind === 'is' || d.kind === 'weak' || d.kind === 'inverse' ? d.sent : d.def)}</dd></div>`).join('')}</dl></section>` : ''}
         <div class="sum-sections-head"><h3>Section by section</h3><span class="label">${plural(sum.sections.length, 'section')}</span></div>
         ${sum.sections.map((sec, i) => `<section class="sum-section" id="sec-${i}">
-          ${sec.title ? `<h4><span class="num">${String(i + 1).padStart(2, '0')}</span>${esc(sec.title)}${speakBtn(`#sec-${i} .sum-points`, sec.title)}</h4>` : speakBtn(`#sec-${i} .sum-points`, 'this section')}
+          ${sec.title ? `<h4><span class="num">${String(i + 1).padStart(2, '0')}</span>${esc(sec.title)}${speakBtn(`#sec-${i} .sum-points`, sec.title)}${secStarBtn(s, sec, i)}</h4>` : `${speakBtn(`#sec-${i} .sum-points`, 'this section')}${secStarBtn(s, sec, i)}`}
           <ul class="sum-points">${sec.sentences.map(x => `<li><span>${hl(x.s)}</span></li>`).join('')}</ul>
           ${visTerms(s.id, sec.terms).length ? `<div class="sum-terms"><span class="label">Terms</span>${visTerms(s.id, sec.terms).map(t => `<button type="button" class="term-chip${ui.termFocus === t.key ? ' on' : ''}" data-act="term-focus" data-key="${esc(t.key)}">${esc(t.display)}</button>`).join('')}</div>` : ''}
         </section>`).join('')}
@@ -6151,6 +6400,15 @@ const GENERIC = new Set('information data process system method result results s
     </div>`;
     app.innerHTML = sectionShell(s, 'summary', inner, bar);
     ui.summaryText = summaryAsMarkdown(s, sum);
+  }
+  // Starring one definition at a time is fine for a term you keep missing and useless for "revise
+  // this bit of the chapter". Starring the section stars the cards that came out of it, so the star
+  // means the same thing here as everywhere else in the app rather than being a second, private mark.
+  function secStarBtn(s, sec, i) {
+    const idx = (state.analysis && state.analysis.sections || []).findIndex(x => x === sec.src || (sec.title && x.title === sec.title));
+    const at = idx >= 0 ? idx : i;
+    const on = isStar(s.id, ID.sec(s.id, at, sec.title || ''));
+    return `<button type="button" class="sec-star${on ? ' on' : ''}" data-act="sec-star" data-i="${at}" title="${on ? 'Unstar this section and its cards' : 'Star this section and every card from it'}" aria-pressed="${on ? 'true' : 'false'}">${on ? '★' : '☆'}<span class="sr-only"> star this section</span></button>`;
   }
   function summaryAsMarkdown(s, sum) {
     const defTxt = d => d.kind === 'is' || d.kind === 'weak' || d.kind === 'inverse' ? d.sent : d.def;
@@ -6686,6 +6944,7 @@ const GENERIC = new Set('information data process system method result results s
     </div></main>${foot()}`);
     syncModal();
     if (u.refocusCard) { u.refocusCard = false; const el = $('.fcard'); if (el) setTimeout(() => el.focus(), 0); }
+    wireSwipe();
   }
 
   /* ---------- flashcards ---------- */
@@ -6758,6 +7017,7 @@ const GENERIC = new Set('information data process system method result results s
     </div>`;
     app.innerHTML = sectionShell(s, 'cards', inner, bar);
     if (ui.refocusCard) { ui.refocusCard = false; const el = $('.fcard'); if (el) setTimeout(() => el.focus(), 0); }
+    wireSwipe();
   }
   // the card on stage with its tools and rating buttons — shared by a subject's deck and the Today deck
   function cardStageHtml(sid, c, ui, chip = '') {
@@ -6789,8 +7049,61 @@ const GENERIC = new Set('information data process system method result results s
         <button class="btn again" data-act="rate" data-v="again">Again<span class="when">10 min</span></button>
         <button class="btn good" data-act="rate" data-v="good">Good<span class="when">${nextIvlText(sid, c.key, 'good')}</span></button>
         <button class="btn got" data-act="rate" data-v="easy">Easy<span class="when">${nextIvlText(sid, c.key, 'easy')}</span></button>
-      </div>`;
+      </div>
+      <p class="small muted swipe-hint">On a phone: swipe left for Again, right for Good, once you have seen the answer. Easy stays a tap.</p>`;
   }
+  /* ---------- rating a card with a thumb ----------
+     Most review happens on a phone, one-handed, in a queue. Three things follow from that: the
+     card should fill the screen rather than sit in a page, the rating row should be at the bottom
+     where the thumb already is, and a swipe should do what the buttons do.
+
+     The swipe is deliberately conservative. It must start on the card, travel further sideways
+     than vertically (so scrolling the answer never rates it by accident), clear a real distance,
+     and only rates a card that has been flipped — rating a card whose answer you have not seen is
+     not a judgement, and an accidental "Easy" pushes a card weeks away. Left is Again and right is
+     Good, matching the buttons' order; Easy stays a deliberate tap, because it is the rating with
+     the most expensive consequence. */
+  const SWIPE_MIN = 64;              // px travelled before it counts as a swipe at all
+  const SWIPE_RATIO = 1.5;           // and it must be this much more sideways than vertical
+  let swipe = null;
+  function wireSwipe() {
+    const card = $('.fcard');
+    if (!card || card.dataset.swipe) return;
+    card.dataset.swipe = '1';
+    card.addEventListener('pointerdown', e => {
+      if (e.pointerType === 'mouse') return;                 // a mouse has buttons; leave it alone
+      swipe = { x: e.clientX, y: e.clientY, id: e.pointerId, moved: false };
+    });
+    card.addEventListener('pointermove', e => {
+      if (!swipe || e.pointerId !== swipe.id) return;
+      const dx = e.clientX - swipe.x, dy = e.clientY - swipe.y;
+      if (!swipe.moved && Math.abs(dx) < 8) return;
+      if (Math.abs(dx) <= Math.abs(dy) * SWIPE_RATIO) return; // that is a scroll, not a swipe
+      swipe.moved = true;
+      const ui = state.ui;
+      if (!ui.flipped) return;                                // nothing to rate yet
+      card.style.transform = `translateX(${Math.max(-140, Math.min(140, dx))}px) rotateY(180deg)`;
+      card.classList.toggle('swiping-left', dx < 0);
+      card.classList.toggle('swiping-right', dx > 0);
+    });
+    const end = e => {
+      if (!swipe || (e.pointerId != null && e.pointerId !== swipe.id)) return;
+      const dx = e.clientX - swipe.x, dy = e.clientY - swipe.y;
+      const was = swipe; swipe = null;
+      card.style.transform = ''; card.classList.remove('swiping-left', 'swiping-right');
+      if (!was.moved || !state.ui.flipped) return;
+      if (Math.abs(dx) < SWIPE_MIN || Math.abs(dx) <= Math.abs(dy) * SWIPE_RATIO) return;
+      e.preventDefault();
+      rateCurrent(dx < 0 ? 'again' : 'good');
+    };
+    card.addEventListener('pointerup', end);
+    card.addEventListener('pointercancel', () => { swipe = null; card.style.transform = ''; card.classList.remove('swiping-left', 'swiping-right'); });
+  }
+  function rateCurrent(v) {
+    const btn = $(`.rate [data-act="rate"][data-v="${v}"]`);
+    if (btn) btn.click();
+  }
+
   // what pressing this button would schedule, without writing anything
   function nextIvlText(sid, key, rating) {
     const cur = prog(sid).srs[key];
@@ -7443,6 +7756,10 @@ const GENERIC = new Set('information data process system method result results s
     setTimeout(() => { try { window.print(); } catch (e) { done(); } }, 60);
     setTimeout(done, 60000);
   }
+  function printWeek() {
+    const rep = weekReport((state.modal && state.modal.offset) || 0);
+    printSheet(`<div class="ps">${weekReportHtml(rep)}</div>`);
+  }
   function printCards(s) {
     const ui = state.ui; const list = ui.pool || ui.cards || [];
     if (!list.length) { toast('No cards to print yet.'); return; }
@@ -7494,7 +7811,10 @@ const GENERIC = new Set('information data process system method result results s
     const cards = fullPool(sid, a, (state.ui && state.ui.key === sid + '/cards' && state.ui.seed) || 1);
     const notes = Object.entries(marks(sid)).filter(([, v]) => v.note).map(([id, v]) => ({ label: v.label || id.slice(2), note: v.note }));
     const files = s.materials.filter(m => m.include !== false && !m.err && !m.busy).map(m => m.name);
-    return { s, a, sum, k, cards, notes, files, ex: examInfo(s),
+    // the outcome map is the one part of the app that says what the COURSE asked for, so a pack
+    // without it is a pack of what the material happens to contain
+    const outcomes = (s.outcomes || []).length ? mapOutcomes(s, a) : [];
+    return { s, a, sum, k, cards, notes, files, outcomes, ex: examInfo(s),
       defs: vis('defs', k.defs), acronyms: vis('acronyms', k.acronyms), formulas: a.formulas || [],
       processes: vis('processes', (k.patterns || {}).processes).filter(p => p.steps && p.steps.length >= 2),
       dates: vis('dates', k.dates), figures: vis('figures', k.figures).slice(0, 12), symbols: k.symbols || [],
@@ -7522,6 +7842,7 @@ const GENERIC = new Set('information data process system method result results s
     const terms = sum.terms.length ? `<p class="pk-terms big">${sum.terms.map(t => esc(t.display)).join(' · ')}</p>` : '';
     return `<div class="pk">${head}${sec('In brief', brief)}${sec('Key definitions', defs)}${sec('Acronyms', acr)}${sec('Section by section', sections)}${sec('Takeaways', take)}
       ${sec('Formula sheet', formulas, 'pk-break')}${sec('Figures and diagrams', diag)}${sec('Processes and steps', procs)}${sec('Timeline', dates)}${sec('Figures worth knowing', figs)}${sec('Your notes', notes)}
+      ${sec('Outcome map', p.outcomes.length ? `<p class="pk-note">${p.outcomes.filter(r => r.status === 'covered').length} of ${p.outcomes.length} covered by this material${p.outcomes.filter(r => r.status === 'gap').length ? `; ${p.outcomes.filter(r => r.status === 'gap').length} not covered at all` : ''}.</p><ol class="pk-oc">${p.outcomes.map(r => `<li class="pk-oc-row ${r.status}"><span class="pk-oc-badge">${OC_LABEL[r.status]}</span><span>${esc(r.o.text)}${r.status === 'gap' ? '<em> — nothing in your material speaks to this</em>' : ` <span class="pk-oc-n">${plural(r.evTotal, 'passage')}${r.cards ? ', ' + plural(r.cards, 'card') : ''}</span>`}</span></li>`).join('')}</ol>` : '')}
       ${sec('Terms to know', terms)}${sec(`Flash cards · ${cards.length}`, deck, 'pk-break')}${sec('Test yourself', test)}
       <footer class="pk-foot">Built on your device by UNI Made EZ from your own course files · check it against your notes</footer></div>`;
   }
@@ -7540,6 +7861,7 @@ const GENERIC = new Set('information data process system method result results s
       H('Processes and steps', p.processes.map(x => `**${x.title || 'Steps'}**\n\n${x.steps.map((y, i) => `${i + 1}. ${y.s}`).join('\n')}`).join('\n\n')) +
       H('Timeline', p.dates.map(x => `- **${x.year}** — ${x.sent.s}`).join('\n')) +
       H('Figures worth knowing', p.figures.map(x => `- ${x.sent.s}`).join('\n')) +
+      H('Outcome map', p.outcomes.map((r, i) => `- **${OC_LABEL[r.status]}** — Outcome ${i + 1}: ${r.o.text}${r.status === 'gap' ? ' _(nothing in your material speaks to this)_' : ` (${plural(r.evTotal, 'passage')}${r.cards ? ', ' + plural(r.cards, 'card') : ''})`}`).join('\n')) +
       H('Your notes', p.notes.map(x => `- **${x.label}** — ${x.note}`).join('\n')) +
       H('Terms to know', sum.terms.map(t => t.display).join(', ')) +
       H(`Flash cards (${cards.length})`, cards.map((c, i) => `${i + 1}. **Q:** ${c.front}  \n   **A:** ${String(c.back).replace(/\n/g, ' / ')}`).join('\n')) +
@@ -7600,6 +7922,206 @@ const GENERIC = new Set('information data process system method result results s
       saveIndex(); saveProgress(); invalidateAnalysis(); render(); toast('Restore undone.');
     } });
   }
+  /* ---------- E3 · sharing a subject with someone else ----------
+     A backup and a shared deck are not the same file, and the difference is the whole point. A
+     backup carries your schedule, your quiz history, your weak spots, your notes and your stars —
+     it is a record of YOU studying, and handing it to a classmate would both mislead their
+     scheduler and tell them things about your work you did not mean to send. A share carries the
+     material and the cards you wrote, and nothing else: it arrives on their device as a NEW
+     subject with a new id, everything unseen, their own schedule starting from zero.
+
+     What is deliberately kept: the files and their text, your own cards, your edits to generated
+     cards, and the course structure (outcomes, weekly schedule, assessment names and weights) —
+     the work of setting a subject up, which is exactly what is worth not doing twice. What is
+     deliberately dropped is listed on the sheet before it is made, because a student handing a
+     file to a friend should be able to see what is in it. */
+  const SHARE_DROP = ['exam', 'cram', 'deadlines', 'lectureDraft', 'wpm', 'paceSamples', 'target'];
+  async function makeShare(subj) {
+    const texts = {};
+    for (const m of subj.materials) {
+      if (m.err || m.busy) continue;
+      try { const t = await IDB.get(m.id); if (t) texts[m.id] = t; if (m.figs) { const g = await IDB.get(m.id + ':figs'); if (g) texts[m.id + ':figs'] = g; } } catch (e) { /* skip */ }
+    }
+    const clean = JSON.parse(JSON.stringify(subj));
+    SHARE_DROP.forEach(k => { delete clean[k]; });
+    // a mark is a grade; the weighting is course structure. Keep the second, never the first.
+    if (Array.isArray(clean.assess)) clean.assess = clean.assess.map(a => { const c = { ...a }; delete c.mark; return c; });
+    clean.materials = clean.materials.map(m => { const c = { ...m }; delete c.status; delete c.hasPdf; return c; });
+    const p = progress[subj.id] || {};
+    const layer = { cards: p.cards || [], edits: p.edits || {} };     // their own cards and rewordings
+    return { app: 'UNI Made EZ', kind: 'share', v: 1, build: BUILD.v, at: new Date().toISOString(),
+      subject: clean, texts, layer,
+      note: 'Shared cards and material only — no schedule, marks, quiz history, notes, stars or deadlines.' };
+  }
+  function shareCounts(subj) {
+    const p = progress[subj.id] || {};
+    return {
+      files: subj.materials.filter(m => !m.err && !m.busy).length,
+      words: subj.materials.reduce((n, m) => n + (m.words || 0), 0),
+      mine: (p.cards || []).length,
+      edits: Object.keys(p.edits || {}).length,
+      outcomes: (subj.outcomes || []).length,
+      weeks: (subj.syllabus || []).length,
+      assess: (subj.assess || []).length,
+      marks: (subj.assess || []).filter(a => a.mark != null).length,
+      due: Object.keys(p.srs || {}).length,
+      quizzes: (p.quizzes || []).length,
+      notes: Object.keys(p.notes || {}).length
+    };
+  }
+  async function saveShare(subj) {
+    const b = await makeShare(subj);
+    saveFile(`unimadeez-${fileStem(subj.code || subj.name)}-cards-${today()}.json`, JSON.stringify(b), 'application/json',
+      `Shared deck · ${esc(subj.name)} · no personal progress`);
+  }
+  function readShare(text) {
+    let b;
+    try { b = JSON.parse(text); } catch (e) { throw new Error('That file is not a UNI Made EZ file (it is not JSON).'); }
+    if (!b || typeof b !== 'object') throw new Error('That file is not a UNI Made EZ file.');
+    if (b.kind === 'backup') throw new Error('That is a backup, not a shared deck — restore it from Backup & restore instead.');
+    if (b.kind !== 'share' || !b.subject || !b.subject.name) throw new Error('That file is not a shared UNI Made EZ deck.');
+    const texts = b.texts && typeof b.texts === 'object' ? b.texts : {};
+    const subject = { ...b.subject, materials: (Array.isArray(b.subject.materials) ? b.subject.materials : []).filter(m => m && m.id && m.name) };
+    if (!subject.materials.length) throw new Error('That shared deck has no material in it.');
+    return { subject, texts, layer: b.layer && typeof b.layer === 'object' ? b.layer : { cards: [], edits: {} }, at: b.at, from: b.build };
+  }
+  // arrives as a NEW subject: new ids throughout, so it can never overwrite what is already here
+  async function importShare(sh) {
+    const idMap = {};
+    const sub = JSON.parse(JSON.stringify(sh.subject));
+    sub.id = uid();
+    sub.name = state.subjects.some(x => lc0(x.name) === lc0(sub.name)) ? `${sub.name} (shared)` : sub.name;
+    sub.color = sub.color || COLORS[state.subjects.length % COLORS.length];
+    SHARE_DROP.forEach(k => { delete sub[k]; });
+    for (const m of sub.materials) {
+      const old = m.id; m.id = uid(); idMap[old] = m.id;
+      m.busy = false; delete m.progress; delete m.status; delete m.hasPdf;
+      if (sh.texts[old]) await IDB.put(m.id, sh.texts[old]);
+      else { m.err = 'Text was not in the shared file — ask for it again, or upload the file yourself.'; m.include = false; }
+      if (sh.texts[old + ':figs']) await IDB.put(m.id + ':figs', sh.texts[old + ':figs']);
+      else if (m.figs) m.figs = 0;
+    }
+    state.subjects.push(sub);
+    const p = prog(sub.id);
+    p.cards = Array.isArray(sh.layer.cards) ? JSON.parse(JSON.stringify(sh.layer.cards)) : [];
+    p.edits = sh.layer.edits && typeof sh.layer.edits === 'object' ? JSON.parse(JSON.stringify(sh.layer.edits)) : {};
+    saveIndex(); saveProgress(); invalidateAnalysis(); render();
+    toast(`${sub.name} added — ${plural(sub.materials.length, 'file')}, nothing studied yet.`, { label: 'Undo', act: async () => {
+      state.subjects = state.subjects.filter(x => x.id !== sub.id);
+      delete progress[sub.id];
+      for (const m of sub.materials) { await IDB.del(m.id); await IDB.del(m.id + ':figs'); }
+      saveIndex(); saveProgress(); invalidateAnalysis(); render(); toast('Shared deck removed.');
+    } });
+    go(`/s/${sub.id}`);
+  }
+  async function importShareFile(file) {
+    if (!file) return;
+    let sh;
+    try { sh = readShare(await file.text()); } catch (e) { toast(e.message || 'Could not read that file.'); return; }
+    const when = sh.at ? new Date(sh.at).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' }) : 'an unknown date';
+    const mine = (sh.layer.cards || []).length;
+    state.modal = { type: 'confirm', title: `Add ${sh.subject.name}?`, yes: 'Add it',
+      body: `${plural(sh.subject.materials.length, 'file')}${mine ? `, ${plural(mine, 'card')} they wrote themselves` : ''}, shared ${when}. It arrives as a new subject with nothing studied — your own subjects are untouched, and their schedule and marks were never in the file. You can undo it from the message that follows.`,
+      onYes: () => importShare(sh) };
+    syncModal();
+  }
+
+  /* ---------- E4 · a week you can hand to someone ----------
+     The study log has held the evidence since v1.8; what it lacked was a form an office would
+     accept. This produces one page for a chosen week: hours by day and by subject, cards and
+     questions answered, quiz results with dates, and what falls due next. It states its own
+     method — that the minutes are estimated from what was done, and how — because a document
+     offered as evidence that hides its method is worth less than one that shows it. */
+  function weekBounds(offset) {
+    const now = new Date(new Date().toDateString());
+    const dow = (now.getDay() + 6) % 7;                     // Monday = 0
+    const start = new Date(now.getTime() - (dow + (offset || 0) * 7) * DAY);
+    const end = new Date(start.getTime() + 6 * DAY);
+    return { start, end, from: dayKey(start.getTime()), to: dayKey(end.getTime()) };
+  }
+  function weekReport(offset) {
+    const w = weekBounds(offset);
+    const days = []; for (let i = 0; i < 7; i++) { const d = new Date(w.start.getTime() + i * DAY); days.push({ d, key: dayKey(d.getTime()), mins: 0, subs: {} }); }
+    const byDay = {}; days.forEach(d => { byDay[d.key] = d; });
+    const subs = [];
+    for (const s of state.subjects) {
+      const log = logOf(s.id).filter(e => e.d >= w.from && e.d <= w.to);
+      if (!log.length) continue;
+      const row = { s, mins: 0, cards: 0, quiz: 0, recall: 0, essays: 0, match: 0, days: new Set() };
+      for (const e of log) {
+        const m = logMinutes(e);
+        row.mins += m; row.cards += e.cards || 0; row.quiz += e.quiz || 0;
+        row.recall += e.recall || 0; row.essays += e.essays || 0; row.match += e.match || 0;
+        row.days.add(e.d);
+        const d = byDay[e.d];
+        if (d) { d.mins += m; d.subs[s.id] = (d.subs[s.id] || 0) + m; }
+      }
+      const qz = (prog(s.id).quizzes || []).filter(q => { const k = dayKey(q.at); return k >= w.from && k <= w.to; });
+      row.quizzes = qz.map(q => ({ at: q.at, pct: Math.round(q.right / Math.max(1, q.total) * 100), right: q.right, total: q.total, exam: !!q.exam }));
+      subs.push(row);
+    }
+    subs.sort((a, b) => b.mins - a.mins);
+    const total = subs.reduce((n, r) => n + r.mins, 0);
+    const studied = days.filter(d => d.mins).length;
+    const coming = semTimeline(state.subjects).filter(e => e.days >= 0 && e.days <= 14);
+    return { w, days, subs, total, studied, coming };
+  }
+  function weekReportHtml(rep) {
+    const dn = d => d.toLocaleDateString(undefined, { weekday: 'short' });
+    const range = `${rep.w.start.toLocaleDateString(undefined, { day: 'numeric', month: 'long' })} – ${rep.w.end.toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' })}`;
+    return `<div class="wk-report" id="wk-report">
+      <div class="wk-head"><span class="label">Study record</span><h2>${esc(range)}</h2>
+        <p class="small muted">${rep.total ? `${hhmm(rep.total)} across ${plural(rep.studied, 'day')} and ${plural(rep.subs.length, 'subject')}.` : 'No study was recorded in this week.'}</p></div>
+      ${rep.total ? `<div class="wk-days">${rep.days.map(d => `<div class="wk-day${d.mins ? ' on' : ''}"><b>${esc(dn(d.d))}</b><span>${d.mins ? hhmm(d.mins) : '—'}</span></div>`).join('')}</div>
+      <table class="wk-table"><thead><tr><th>Subject</th><th>Time</th><th>Days</th><th>Cards</th><th>Questions</th><th>Quiz results</th></tr></thead>
+        <tbody>${rep.subs.map(r => `<tr>
+          <td><strong>${esc(r.s.code || r.s.name)}</strong><span class="small muted">${esc(r.s.name)}</span></td>
+          <td>${hhmm(r.mins)}</td><td>${r.days.size}</td><td>${fmt(r.cards)}</td><td>${fmt(r.quiz + r.recall + r.essays)}</td>
+          <td>${r.quizzes.length ? r.quizzes.map(q => `${q.pct}% (${q.right}/${q.total})`).join(', ') : '—'}</td>
+        </tr>`).join('')}</tbody>
+        <tfoot><tr><th>Total</th><th>${hhmm(rep.total)}</th><th>${rep.studied}</th><th>${fmt(rep.subs.reduce((n, r) => n + r.cards, 0))}</th><th>${fmt(rep.subs.reduce((n, r) => n + r.quiz + r.recall + r.essays, 0))}</th><th></th></tr></tfoot>
+      </table>` : ''}
+      ${rep.coming.length ? `<div class="wk-coming"><span class="label">Due in the next fortnight</span><ul>${rep.coming.map(e => `<li><b>${esc(e.kind)}</b> ${esc(e.title)} — ${esc(new Date(e.date + 'T00:00:00').toLocaleDateString(undefined, { day: 'numeric', month: 'short' }))} (${esc(e.s.code || e.s.name)})</li>`).join('')}</ul></div>` : ''}
+      <p class="small muted wk-method">How the time was counted: every session writes a line as it happens — this is a record, not a recollection. ${TIME_ON_PAGE ? 'Minutes are measured from time actually spent on a study page, counted only while the page is in front of you and stopped after two minutes without a key, a tap or a scroll.' : 'Minutes are estimated from what was done: a card ≈ 10 s, a quiz question ≈ 30 s, a recall prompt ≈ 90 s, a long answer ≈ 6 min.'} Produced by UNI Made EZ ${esc(BUILD.v)} on ${esc(new Date().toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' }))}.</p>
+    </div>`;
+  }
+  function weekReportText(rep) {
+    const range = `${rep.w.start.toLocaleDateString(undefined, { day: 'numeric', month: 'long' })} – ${rep.w.end.toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' })}`;
+    const L = [`# Study record — ${range}`, ''];
+    L.push(rep.total ? `${hhmm(rep.total)} across ${plural(rep.studied, 'day')} and ${plural(rep.subs.length, 'subject')}.` : 'No study was recorded in this week.', '');
+    if (rep.total) {
+      L.push('| Subject | Time | Days | Cards | Questions | Quiz results |', '| --- | --- | --- | --- | --- | --- |');
+      for (const r of rep.subs) L.push(`| ${r.s.code || r.s.name} — ${r.s.name} | ${hhmm(r.mins)} | ${r.days.size} | ${r.cards} | ${r.quiz + r.recall + r.essays} | ${r.quizzes.length ? r.quizzes.map(q => `${q.pct}% (${q.right}/${q.total})`).join(', ') : '—'} |`);
+      L.push(`| **Total** | **${hhmm(rep.total)}** | **${rep.studied}** | **${rep.subs.reduce((n, r) => n + r.cards, 0)}** | **${rep.subs.reduce((n, r) => n + r.quiz + r.recall + r.essays, 0)}** | |`, '');
+    }
+    if (rep.coming.length) { L.push('## Due in the next fortnight', ''); for (const e of rep.coming) L.push(`- **${e.kind}** ${e.title} — ${new Date(e.date + 'T00:00:00').toLocaleDateString(undefined, { day: 'numeric', month: 'short' })} (${e.s.code || e.s.name})`); L.push(''); }
+    L.push('---', '', `How the time was counted: every session writes a line as it happens — this is a record, not a recollection. ${TIME_ON_PAGE ? 'Minutes are measured from time actually spent on a study page, counted only while the page is in front of you and stopped after two minutes without a key, a tap or a scroll.' : 'Minutes are estimated from what was done: a card ~10s, a quiz question ~30s, a recall prompt ~90s, a long answer ~6 min.'} Produced by UNI Made EZ ${BUILD.v} on ${new Date().toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' })}.`);
+    return L.join('\n');
+  }
+
+  /* ---------- starting a subject again ----------
+     Repeating a course, or coming back to one after a year, means the material is still right and
+     everything the app knows about your studying is not. Deleting and re-uploading works and costs
+     an evening. This clears the studying and keeps the files: schedules, quiz history, weak spots,
+     the study log, marks and confidence all go; the files, their text, your own cards, your edits,
+     stars, notes and the course structure stay, because those are work, not progress. */
+  function clearProgress(subj) {
+    const p = prog(subj.id);
+    const before = JSON.parse(JSON.stringify(p));
+    const beforeMarks = (subj.assess || []).map(a => a.mark);
+    const keep = { cards: p.cards || [], edits: p.edits || {}, marks: p.marks || {}, pool: p.pool || 0 };
+    progress[subj.id] = { srs: {}, terms: {}, quizzes: [], log: [], recall: {}, essays: {}, ...keep };
+    (subj.assess || []).forEach(a => { delete a.mark; });
+    delete subj.cram;
+    saveProgress(); saveIndex(); invalidateAnalysis();
+    renderIfSubject(subj); if (parseRoute().name !== 'subject') render();
+    toast(`${subj.name} starts again — the files and your own cards are untouched.`, { label: 'Undo', act: () => {
+      progress[subj.id] = before;
+      (subj.assess || []).forEach((a, i) => { if (beforeMarks[i] != null) a.mark = beforeMarks[i]; });
+      saveProgress(); saveIndex(); invalidateAnalysis(); renderIfSubject(subj); toast('Progress restored.');
+    } });
+  }
+
   async function restoreFromFile(file) {
     if (!file) return;
     let b;
@@ -7796,6 +8318,51 @@ const GENERIC = new Set('information data process system method result results s
         break;
       }
       case 'card-origin': openOrigin(el.dataset.s || (s && s.id), +el.dataset.i); break;
+      case 'leech-fix': (async () => {
+        const subj = subjectById(el.dataset.s); const key = el.dataset.key;
+        if (!subj) return;
+        const p2 = prog(subj.id);
+        const ed = (p2.edits || {})[key], own = (p2.cards || []).find(x => x.key === key);
+        let src = ed || own;
+        // the clinic lists cards from every subject, so the analysis in memory is usually somebody
+        // else's — read this subject's before deciding the card is gone
+        if (!src) { try { await getAnalysis(subj); } catch (e) { /* fall through to the message */ } src = cardByKey(subj.id, key); }
+        if (!src) { toast('That card came from material this subject no longer has.'); return; }
+        state.modal = { type: 'card', cardKey: key, front: src.front, back: src.back, mine: !!own, sid: subj.id, leech: true };
+        syncModal(); $('#c-front')?.focus();
+      })(); break;
+      case 'share-open': if (s) { state.modal = { type: 'share', subject: s }; syncModal(); } break;
+      case 'share-save': { const subj = subjectById(el.dataset.id) || s; if (subj) { state.modal = null; syncModal(); saveShare(subj); } break; }
+      case 'share-import': { state.modal = { type: 'backup' }; syncModal(); setTimeout(() => $('[data-share]')?.click(), 30); break; }
+      case 'week-open': state.modal = { type: 'week', offset: 0 }; syncModal(); break;
+      case 'week-shift': { const m = state.modal; if (m && m.type === 'week') { m.offset = Math.max(0, Math.min(51, (m.offset || 0) + (+el.dataset.d || 0))); syncModal(); } break; }
+      case 'week-copy': copyText(weekReportText(weekReport((state.modal && state.modal.offset) || 0)), 'Week copied — paste it into an email or a form.'); break;
+      case 'week-save': { const rep = weekReport((state.modal && state.modal.offset) || 0); saveFile(`unimadeez-week-${rep.w.from}.md`, weekReportText(rep), 'text/markdown', 'Week record'); break; }
+      case 'week-print': printWeek(); break;
+      case 'clear-progress': {
+        if (!s) break;
+        const st2 = srsStats(s.id), p3 = prog(s.id);
+        state.modal = { type: 'confirm', title: `Start ${s.name} again?`, yes: 'Start again',
+          body: `This clears ${plural(st2.seen, 'card schedule')}, ${plural((p3.quizzes || []).length, 'quiz result')}, your weak spots, the study log and any marks — and keeps every file, its text, your own cards, your edits, stars and notes. You can undo it from the message that follows.`,
+          onYes: () => clearProgress(s) };
+        syncModal();
+        break;
+      }
+      case 'sec-star': {
+        if (!s) break;
+        const i = +el.dataset.i, a2 = state.analysis;
+        const sec = a2 && a2.sections && a2.sections[i];
+        if (!sec) break;
+        const id = ID.sec(s.id, i, sec.title || '');
+        const on = isStar(s.id, id);
+        setMark(s.id, id, { star: on ? 0 : 1, label: sec.title || `Section ${i + 1}` });
+        // starring a section stars what it holds, which is what "revise this bit" has to mean
+        const keys = fullPool(s.id, a2, 1).filter(c => { const st3 = typeof c.sourceId === 'number' ? a2.sentences[c.sourceId] : null; return st3 && st3.section === i; });
+        keys.forEach(c => setMark(s.id, ID.card(c.key), { star: on ? 0 : 1, label: shortLab(c.front, 70) }));
+        renderSection(s, 'summary');
+        toast(on ? `Section unstarred — ${plural(keys.length, 'card')} too.` : `Section starred — ${plural(keys.length, 'card')} with it.`);
+        break;
+      }
       case 'week-revise': { const w = el.dataset.w; s.materials.forEach(m => { if (m.err) return; m.include = String(m.week || '') === String(w); if (m.include && m.dup) m.dupOk = true; }); saveIndex(); invalidateAnalysis(); state.ui = {}; toast(`Studying week ${w} only.`); go(`/s/${s.id}/cards`); break; }
       case 'backup-all': state.modal = null; syncModal(); saveBackup(state.subjects, 'all-subjects'); break;
       case 'backup-subject': if (s) saveBackup([s], s.code || s.name); break;
@@ -7960,6 +8527,7 @@ const GENERIC = new Set('information data process system method result results s
   document.addEventListener('change', e => {
     const el = e.target;
     if (el.matches && el.matches('[data-restore]')) { const f = el.files && el.files[0]; el.value = ''; restoreFromFile(f); return; }
+    if (el.matches && el.matches('[data-share]')) { const f = el.files && el.files[0]; el.value = ''; importShareFile(f); return; }
     if (el.dataset.act === 'ass-mark') {
       const r2 = parseRoute(); const subj = r2.id && subjectById(r2.id);
       if (subj) {
@@ -8020,6 +8588,9 @@ const GENERIC = new Set('information data process system method result results s
       if (!front || !back) return;
       const key = data.key;
       const sid = (state.modal && state.modal.sid) || r.id;
+      // snapshot before the edit, so Undo can put both the wording and the schedule back
+      const wasEdit = key && !key.startsWith('u') ? cardEdits(sid)[key] : null;
+      const wasSrs = key ? JSON.parse(JSON.stringify(prog(sid).srs[key] || null)) : null;
       if (!key) userCards(sid).push({ key: 'u' + uid(), front, back, type: (data.ctype || '').trim() || 'Your card', term: (data.term || '').trim() || front.replace(/^what (is|are)\s+/i, '').replace(/[?.]$/, '').slice(0, 60), createdAt: Date.now() });
       else if (key.startsWith('u')) { const c = userCards(sid).find(x => x.key === key); if (c) { c.front = front; c.back = back; } }
       else cardEdits(sid)[key] = { front, back };
@@ -8028,7 +8599,8 @@ const GENERIC = new Set('information data process system method result results s
       state.modal = null; syncModal();
       if (state.ui.key === 'today') { const c = curCard(); if (c && c.key === key) { c.front = front; c.back = back; } renderToday(); }
       else { state.ui.cards = null; const subj = subjectById(r.id); if (subj && r.kind === 'cards') renderSection(subj, 'cards'); else if (subj) refreshAfterMark(subj); }
-      toast(cured ? 'Reworded — its schedule starts fresh and the leech flag is gone.' : key ? 'Card saved.' : 'Card added.');
+      toast(cured ? 'Reworded — its schedule starts fresh and the leech flag is gone.' : key ? 'Card saved.' : 'Card added.',
+        key && !key.startsWith('u') ? undoableEdit(sid, key, wasEdit, wasSrs) : null);
     } else if (form.dataset.form === 'note') {
       const nsid = (state.modal && state.modal.sid) || r.id;
       setMark(nsid, data.id, { note: (data.note || '').trim(), label: data.label || '' });
@@ -8254,6 +8826,12 @@ const GENERIC = new Set('information data process system method result results s
     if (e.target.matches('input, textarea, select') || e.metaKey || e.ctrlKey || e.altKey) return;
     const s = r.id ? subjectById(r.id) : null;
     if (e.key === '/' && s) { e.preventDefault(); openSearch(s); return; }
+    // C makes a card out of whatever is selected — the button only ever appeared under the mouse
+    if ((e.key === 'c' || e.key === 'C') && s && !state.modal) {
+      const b = document.getElementById('sel-card');
+      if (b && !b.hidden) { e.preventDefault(); b.click(); return; }
+      if (cardFromSelection()) { e.preventDefault(); const c = cardFromSelection(); state.modal = { type: 'card', ...c, sid: s.id }; syncModal(); $('#c-front')?.focus(); return; }
+    }
     if ((r.name === 'section' && r.kind === 'cards' && s) || r.name === 'today') {
       const ui = state.ui; if (!ui.cards || ui.i >= ui.order.length) return;
       const redeck = () => r.name === 'today' ? renderToday() : renderSection(s, 'cards');
