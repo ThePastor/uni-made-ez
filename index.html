@@ -1419,6 +1419,72 @@ math mi[mathvariant="normal"] { font-style: normal; }
 }
 @media print { .sec-star, .wk-nav, .swipe-hint { display: none !important; } .wk-table { font-size: .82rem; } }
 
+/* ---------- the subject page on a phone and a tablet ----------
+   Measured before touching anything: on an iPhone SE the four study sections started 3.9 screens
+   down the page, because the desktop's left column (files, outline, marks, lecture, deadlines,
+   log) collapses ABOVE the right one. Two changes fix it — Study comes first, and the four tiles
+   sit two-up instead of stacked, so all four are on the first screen rather than spread over two.
+   The panels that moved below are reachable from the jump row rather than by scrolling. */
+.jump-row { display: none; }
+@media (max-width: 1000px) {
+  /* Edit / Start again / Remove manage the subject; they are not what the page is for. They cannot
+     move below the tiles without duplicating them (the hero and the study column are siblings), so
+     on a narrow screen they shrink to one slim row of quiet buttons instead of a band of three
+     full-height cells — about 50px back, and the destructive one stops shouting. */
+  .subject-hero .actions { flex-direction: row; flex-wrap: wrap; }
+  .subject-hero .actions .btn {
+    flex: 1 1 auto; min-height: 0; padding: 9px 12px; font-size: .6rem; letter-spacing: .08em;
+    justify-content: center; gap: 6px; color: var(--ink-2); background: var(--surface-2);
+  }
+  .subject-hero .actions .btn .arr { display: none; }
+  .subject-hero .actions .btn.danger { color: var(--bad); }
+  /* the four figures, tighter — they are a glance, not a panel */
+  .subject-stats .stat { padding: 12px 14px; }
+  .subject-stats b { font-size: 1.5rem; }
+  .stats-none { padding: 12px 16px; }
+  .subject-layout > section:nth-child(1) { order: 2; border-right: 0; }
+  .subject-layout > section:nth-child(2) { order: 1; border-bottom: 1px solid var(--line); display: flex; flex-direction: column; }
+  /* Within the study column the same rule again, and for the same reason. A subject with a real
+     exam and a real deck adds the four figures, the recall estimate and the exam-mode offer above
+     the tiles — 539px measured on an iPhone SE, which put the tiles back under the fold and undid
+     the fix for exactly the subjects that matter. The tiles are the doing; the figures are the
+     reading, and they sit right under them. Flex keeps source order for equal `order`, so only
+     the two that move need naming. */
+  .subject-layout > section:nth-child(2) > .panel-head:first-child { order: -4; }
+  .subject-layout > section:nth-child(2) > .tiles { order: -3; }
+  .subject-layout > section:nth-child(2) > .jump-row { order: -2; }
+  /* four ways to study, on one screen */
+  .tiles { grid-template-columns: 1fr 1fr; }
+  .tile { min-height: 0; padding: 16px 16px 14px; gap: 8px; }
+  .tile h3 { margin-top: 6px; font-size: clamp(1.1rem, 3.4vw, 1.4rem); }
+  .tile p { font-size: .84rem; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .tile .num { font-size: .62rem; }
+  .tile .foot { font-size: .62rem; padding-top: 4px; }
+  /* the stats read as a 2x2 block rather than four thin strips */
+  .subject-stats { grid-template-columns: 1fr 1fr; }
+  .jump-row {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 6px;
+    padding: 12px 16px; border-bottom: 1px solid var(--line); background: var(--surface-2);
+  }
+  .jump-row .label { width: 100%; margin-bottom: 2px; }
+  .jump { display: inline-flex; align-items: baseline; gap: 6px; padding: 7px 11px; border: 1px solid var(--line-soft);
+    background: var(--surface); color: var(--ink); text-decoration: none; font-size: .85rem; }
+  .jump .mono { color: var(--ink-3); font-size: .68rem; }
+  .jump:hover, .jump:focus-visible { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  .jump:hover .mono, .jump:focus-visible .mono { color: var(--accent-ink); }
+  .panel-head[id] { scroll-margin-top: 64px; }
+}
+@media (max-width: 560px) {
+  /* one hand, one thumb: the tiles stay two-up but lose the sentence */
+  .tile p { -webkit-line-clamp: 2; font-size: .8rem; }
+  .tile h3 { margin-top: 2px; }
+  .subject-hero .title { padding: 22px 18px 18px; }
+  .subject-hero .title h1 { font-size: clamp(1.7rem, 8vw, 2.4rem); }
+  .panel-body { padding: 16px 18px; }
+  .panel-head { padding: 13px 18px; }
+  .jump-row { padding: 10px 14px; }
+}
+
 </style>
 </head>
 <body>
@@ -3832,7 +3898,7 @@ const GENERIC = new Set('information data process system method result results s
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.6.1', date: '4 September 2026' };
+  const BUILD = { v: '2.7', date: '4 September 2026' };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonandy242', ['gmail', 'com'].join('.')].join('@');
   const OWNER_NAME = 'JohnsonXCorp';   // who the app belongs to, wherever it is named to a user
@@ -5605,6 +5671,28 @@ const GENERIC = new Set('information data process system method result results s
       <p class="small">${bits.length ? `This week: ${bits.join(' · ')} · ~${mins} min (estimated) · studied ${studiedDays([s.id], 7)} of the last 7 days.` : `Nothing this week yet — last studied ${lastStudied(s.id)}.`}</p>
       <div class="btn-row"><button class="btn sm ghost" data-act="log-export">Download the term log (.csv) <span class="arr">↓</span></button><span class="small muted">${plural(log.length, 'day')} on record</span></div>`;
   }
+  /* ---------- getting to the rest of the page without scrolling to it ----------
+     The subject page carries twelve panels. On a desktop two columns hold them and the four study
+     sections are visible on arrival; on a phone the same markup became one column and, measured on
+     an iPhone SE, the four sections a student came here to open started 3.9 screens down. The CSS
+     puts Study first on narrow screens; this row does the other half, so the panels that moved
+     BELOW the tiles are each one tap away rather than a long scroll. It exists only where it is
+     needed — it is hidden on wide screens, where those panels are already beside the tiles. */
+  function jumpRow(s, ready) {
+    const bits = [
+      ['p-files', 'Files', plural(s.materials.length, 'file')],
+      (s.syllabus || []).length || (s.assess || []).length ? ['p-outline', 'Outline', (s.syllabus || []).length ? plural(s.syllabus.length, 'week') : ''] : null,
+      (s.assess || []).length ? ['p-marks', 'Marks', (() => { const mk = marksSummary(s); return mk.marked ? round1(mk.standing) + '%' : ''; })()] : null,
+      ['p-lecture', "Today's lecture", (s.lectureDraft || '').trim() ? 'in progress' : ''],
+      ['p-deadlines', 'Deadlines', (() => { const n = deadlines(s).filter(d => !d.done).length; return n ? String(n) : ''; })()],
+      logOf(s.id).length ? ['p-log', 'Study log', ''] : null
+    ].filter(Boolean);
+    return `<nav class="jump-row" aria-label="The rest of this subject">
+      <span class="label">Also here</span>
+      ${bits.map(([id, lab, note]) => `<a class="jump" href="#${id}" data-act="jump" data-target="${id}">${esc(lab)}${note ? `<span class="mono">${esc(note)}</span>` : ''}</a>`).join('')}
+    </nav>`;
+  }
+
   function renderSubject(s) {
     const included = s.materials.filter(m => m.include !== false && !m.err && !m.busy);
     const words = included.reduce((n, m) => n + (m.words || 0), 0);
@@ -5622,12 +5710,21 @@ const GENERIC = new Set('information data process system method result results s
     const layerBits = [lc.cards ? `${lc.cards} of your own cards` : '', lc.edits ? `${lc.edits} edited` : '', lc.star ? `${lc.star} starred` : '', lc.note ? plural(lc.note, 'note') : '', lc.hide ? `${lc.hide} hidden` : ''].filter(Boolean);
     const layerLine = layerBits.length ? `<div class="panel-body layer-line"><span class="label">Your additions</span><span class="bits">${esc(layerBits.join(' · '))}</span><button class="btn sm ghost" data-act="manage">Manage <span class="arr">→</span></button></div>` : '';
     const pct = st.pool ? Math.round(st.mastered / st.pool * 100) : 0;
-    const stats = ready ? `<div class="subject-stats">
+    // Four figures are worth a block of the first screen once they have something to say. On a
+    // subject just created they say "set an exam date", "0 due", "0% of 0" and "open the deck" —
+    // 150px of a phone screen spent telling the student nothing, above the four sections they came
+    // for. Until there is a real figure among them it collapses to the one line that is actually
+    // useful: how to make the rest appear.
+    const statsWorth = !!(ex || st.due || st.pool);
+    const stats = !ready ? '' : !statsWorth ? `<div class="panel-body stats-none"><p class="small muted">Nothing to report yet. Open the flash cards once and this fills with what is due and what you have mastered; set the exam date under <b>Edit subject</b> and it paces the deck too.</p></div>` : `<div class="subject-stats">
         <button type="button" class="stat" data-act="edit-subject"><b>${ex ? (ex.days >= 0 ? fmt(ex.days) : '—') : '+'}</b><span>${ex ? (ex.days >= 0 ? `days to exam · ${esc(ex.pretty)}` : `exam was ${esc(ex.pretty)}`) : 'set an exam date'}</span></button>
         <a class="stat" href="#/s/${s.id}/cards"><b>${fmt(st.due)}</b><span>cards due now${st.next && !st.due ? ` · next ${whenText(st.next)}` : ''}</span></a>
         <div class="stat"><b>${pct}%</b><span>mastered · ${fmt(st.mastered)} of ${fmt(st.pool || 0)} cards</span><i class="bar" style="--pct:${pct}%"></i></div>
-        <a class="stat" href="#/s/${s.id}/cards"><b>${target ? fmt(target) : '—'}</b><span>${target ? `${targetLabel(s)}${target > DECK_MAX ? ` · ${DECK_MAX} a sitting` : ''}` : ex ? 'open the deck to plan' : 'no exam date set'}</span></a>
-      </div>${st.pool ? readinessHtml(s) : ''}` : '';
+        <a class="stat" href="#/s/${s.id}/cards"><b>${target ? fmt(target) : st.pool ? fmt(st.pool) : '—'}</b><span>${target
+          ? `${targetLabel(s)}${target > DECK_MAX ? ` · ${DECK_MAX} a sitting` : ''}`
+          : ex ? 'open the deck to plan'
+          : st.pool ? 'cards in the deck · set an exam date to pace them' : 'open the deck to see its size'}</span></a>
+      </div>${st.pool ? readinessHtml(s) : ''}`;
     const tiles = [
       { kind: 'cards', title: 'Flash cards', desc: 'Definitions, acronyms and fill-the-gap cards. Flip, rate yourself, repeat the ones you missed.' },
       { kind: 'summary', title: 'Summary', desc: 'The material condensed — a short brief, section by section, plus the takeaways.' },
@@ -5638,11 +5735,11 @@ const GENERIC = new Set('information data process system method result results s
     <main id="main" tabindex="-1">
       <div class="subject-hero" style="--tab:${s.color}">
         <div class="title"><span class="code"><i></i>${esc(s.code || 'Subject')}${ex ? `<b class="exam-chip${ex.days >= 0 && ex.days <= 7 ? ' soon' : ''}">${esc(ex.label)}</b>` : ''}</span><h1>${esc(s.name)}</h1></div>
-        <div class="actions"><button class="btn" data-act="edit-subject">Edit subject <span class="arr">→</span></button><button class="btn" data-act="clear-progress" title="Clear every schedule, quiz result and mark, and keep every file">Start this subject again <span class="arr">↺</span></button><button class="btn danger" data-act="delete-subject" data-id="${s.id}">Remove subject <span class="arr">×</span></button></div>
+        <div class="actions"><button class="btn" data-act="edit-subject">Edit subject <span class="arr">→</span></button><button class="btn" data-act="clear-progress" title="Clear every schedule, quiz result and mark, and keep every file">Start again <span class="arr">↺</span></button><button class="btn danger" data-act="delete-subject" data-id="${s.id}">Remove subject <span class="arr">×</span></button></div>
       </div>
       <div class="subject-layout">
         <section>
-          <div class="panel-head"><h2>Class materials</h2>${s.materials.length ? `<button class="btn sm ghost" data-act="clear-mats">Remove all files ${I.x}</button>` : `<span class="label">this session</span>`}</div>
+          <div class="panel-head" id="p-files"><h2>Class materials</h2>${s.materials.length ? `<button class="btn sm ghost" data-act="clear-mats">Remove all files ${I.x}</button>` : `<span class="label">this session</span>`}</div>
           <div class="panel-body">
             <label class="dropzone" id="dropzone">
               <input type="file" id="file-input" multiple accept=".pdf,.epub,.docx,.pptx,.txt,.md,.html,.htm,.rtf,.csv,.json,.xml,.jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp">
@@ -5656,22 +5753,22 @@ const GENERIC = new Set('information data process system method result results s
             ${s.materials.length ? `<div class="scan-stat"><span><b>${included.length}</b> of ${s.materials.length} included</span><span><b>${fmt(words)}</b> words scanned</span>${readN ? `<span><b>${readN}</b> of ${s.materials.length} read</span>` : ''}${reviewN ? `<span class="warn"><b>${reviewN}</b> to review</span>` : ''}</div>` : ''}
             <p class="small muted">Tick a file to include it in the study set. Tap ⋯ to label it (lecture, week 3), or the badge to mark it read. ${OCR.available() ? 'Scanned PDFs and photos of printed notes are read with the built-in scan reader (OCR) — on your device, nothing uploaded.' : `Scanned PDFs and photos of notes need the scan reader, which runs on the <a href="${LIVE_URL}" target="_blank" rel="noopener">live site</a>.`}</p>
           </div>
-          <div class="panel-head slim"><h2>Course outline</h2><span class="label">${(s.syllabus || []).length ? plural(s.syllabus.length, 'week') + ' mapped' : 'one import fills the term'}</span></div>
+          <div class="panel-head slim" id="p-outline"><h2>Course outline</h2><span class="label">${(s.syllabus || []).length ? plural(s.syllabus.length, 'week') + ' mapped' : 'one import fills the term'}</span></div>
           <div class="panel-body">
             <div class="btn-row"><button class="btn sm" data-act="outline-open">${(s.syllabus || []).length || (s.assess || []).length ? 'Import it again' : 'Import a course outline'} <span class="arr">→</span></button></div>
             <p class="small muted">${(s.syllabus || []).length ? `Week ${s.syllabus[0].n}–${s.syllabus[s.syllabus.length - 1].n} of the schedule is here, so the week chips carry their topics.` : 'The outline already lists the learning outcomes, what each piece of work is worth, the exam date and the weekly schedule. Read it in and nothing needs typing — every row is shown for confirmation first.'}</p>
           </div>
-          <div class="panel-head slim"><h2>Marks</h2><span class="label">what you need</span></div>
+          <div class="panel-head slim" id="p-marks"><h2>Marks</h2><span class="label">what you need</span></div>
           <div class="panel-body">${marksHtml(s)}</div>
-          <div class="panel-head slim"><h2>Today's lecture</h2><span class="label">kept as you type</span></div>
+          <div class="panel-head slim" id="p-lecture"><h2>Today's lecture</h2><span class="label">kept as you type</span></div>
           <div class="panel-body">${lectureHtml(s)}</div>
-          <div class="panel-head slim"><h2>Deadlines &amp; readings</h2><button class="btn sm ghost" data-act="dl-add">+ Add</button></div>
+          <div class="panel-head slim" id="p-deadlines"><h2>Deadlines &amp; readings</h2><button class="btn sm ghost" data-act="dl-add">+ Add</button></div>
           <div class="panel-body">
             ${readingLoadHtml(s)}
             ${deadlineListHtml(s)}
             ${(() => { const toRead = s.materials.filter(m => !m.err && !m.busy && m.status !== 'read').length; return toRead && s.materials.length > 1 ? `<p class="small muted">${plural(toRead, 'file')} still to read — the badge on each file marks it off.</p>` : ''; })()}
           </div>
-          <div class="panel-head slim"><h2>Study log</h2><span class="label">written as you study</span></div>
+          <div class="panel-head slim" id="p-log"><h2>Study log</h2><span class="label">written as you study</span></div>
           <div class="panel-body">${studyLogHtml(s)}</div>
         </section>
         <section>
@@ -5712,6 +5809,7 @@ const GENERIC = new Set('information data process system method result results s
               </a>`;
             }).join('')}
           </div>
+          ${jumpRow(s, ready)}
           <div class="tools-row">
             ${[['recall', 'Free recall', 'Explain a concept in your own words, then see the material\'s version and grade yourself.', I.recall],
                ['essay', 'Long answer', 'Write an exam-style answer and mark it against the key points.', I.essay],
