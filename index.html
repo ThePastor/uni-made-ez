@@ -108,28 +108,28 @@
 @media (max-width: 640px)  { :root { --gut: 18px; --gut-in: 11px; --pad-in: 11px; --band: 15px; --band-lg: 22px; } }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #0C0C0D; --surface: #0C0C0D; --surface-2: #161618; --surface-3: #202024;
-    --ink: #F4F4F2; --ink-2: #B5B5BB; --ink-3: #8B8B94; --line: #F4F4F2; --line-soft: #2C2C31;
-    --accent: #5FD3DC; --accent-ink: #0C0C0D; --accent-soft: #10343A; --accent-deep: #7FE2EA;
-    --mint: #A6F0C5; --mint-ink: #0C0C0D; --mint-deep: #6FE0A4; --coral: #FF8A6E; --coral-soft: #3A2119; --sky: #14303A;
-    --tint-1: #101C22; --tint-2: #171E10; --tint-3: #0F1F17; --tint-4: #201512;
-    --shape: #2A2A2E; --dot: #F4F4F2;
-    --ok: #6FE0A4; --ok-soft: #123324; --bad: #FF8A78; --bad-soft: #3A1D18; --warn: #F2C94C; --warn-soft: #3A2F0E;
-    --inverse: #F4F4F2; --inverse-ink: #0C0C0D; --inverse-ink-2: #4B4B51; --jxc-gold: #B8800E;
-    --shadow: 0 24px 60px -30px rgba(0, 0, 0, .8);
+    --bg: #0F131B; --surface: #161C26; --surface-2: #1E2532; --surface-3: #28303F;
+    --ink: #E3E8F0; --ink-2: #B4BDCA; --ink-3: #959FB0; --line: #2F3949; --line-soft: #1F2632;
+    --accent: #5FD3DC; --accent-ink: #0A1015; --accent-soft: #13303A; --accent-deep: #7FE2EA;
+    --mint: #D9F56B; --mint-ink: #0F131B; --mint-deep: #C6E85C; --coral: #FF8A6E; --coral-soft: #33201B; --sky: #17303C;
+    --tint-1: #14202A; --tint-2: #1D2416; --tint-3: #13291F; --tint-4: #2A1D18;
+    --shape: #222B38; --dot: #33404F;
+    --ok: #6FE0A4; --ok-soft: #102A20; --bad: #FF8A78; --bad-soft: #331C1B; --warn: #F2C94C; --warn-soft: #2A2412;
+    --inverse: #080B11; --inverse-ink: #E3E8F0; --inverse-ink-2: #8E97A6; --jxc-gold: #F0C36B;
+    --shadow: 0 24px 60px -30px rgba(0, 0, 0, .85);
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #0C0C0D; --surface: #0C0C0D; --surface-2: #161618; --surface-3: #202024;
-  --ink: #F4F4F2; --ink-2: #B5B5BB; --ink-3: #8B8B94; --line: #F4F4F2; --line-soft: #2C2C31;
-  --accent: #5FD3DC; --accent-ink: #0C0C0D; --accent-soft: #10343A; --accent-deep: #7FE2EA;
-  --mint: #A6F0C5; --mint-ink: #0C0C0D; --mint-deep: #6FE0A4; --coral: #FF8A6E; --coral-soft: #3A2119; --sky: #14303A;
-  --tint-1: #101C22; --tint-2: #171E10; --tint-3: #0F1F17; --tint-4: #201512;
-  --shape: #2A2A2E; --dot: #F4F4F2;
-  --ok: #6FE0A4; --ok-soft: #123324; --bad: #FF8A78; --bad-soft: #3A1D18; --warn: #F2C94C; --warn-soft: #3A2F0E;
-  --inverse: #F4F4F2; --inverse-ink: #0C0C0D; --inverse-ink-2: #4B4B51; --jxc-gold: #B8800E;
-  --shadow: 0 24px 60px -30px rgba(0, 0, 0, .8);
+  --bg: #0F131B; --surface: #161C26; --surface-2: #1E2532; --surface-3: #28303F;
+  --ink: #E3E8F0; --ink-2: #B4BDCA; --ink-3: #959FB0; --line: #2F3949; --line-soft: #1F2632;
+  --accent: #5FD3DC; --accent-ink: #0A1015; --accent-soft: #13303A; --accent-deep: #7FE2EA;
+  --mint: #D9F56B; --mint-ink: #0F131B; --mint-deep: #C6E85C; --coral: #FF8A6E; --coral-soft: #33201B; --sky: #17303C;
+  --tint-1: #14202A; --tint-2: #1D2416; --tint-3: #13291F; --tint-4: #2A1D18;
+  --shape: #222B38; --dot: #33404F;
+  --ok: #6FE0A4; --ok-soft: #102A20; --bad: #FF8A78; --bad-soft: #331C1B; --warn: #F2C94C; --warn-soft: #2A2412;
+  --inverse: #080B11; --inverse-ink: #E3E8F0; --inverse-ink-2: #8E97A6; --jxc-gold: #F0C36B;
+  --shadow: 0 24px 60px -30px rgba(0, 0, 0, .85);
   color-scheme: dark;
 }
 
@@ -4060,7 +4060,7 @@ const GENERIC = new Set('information data process system method result results s
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.12', date: '4 September 2026', year: 2026 };
+  const BUILD = { v: '2.13', date: '10 September 2026', year: 2026 };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonandy242', ['gmail', 'com'].join('.')].join('@');
   const OWNER_NAME = 'JohnsonXCorp';   // who the app belongs to, wherever it is named to a user
@@ -4069,6 +4069,7 @@ const GENERIC = new Set('information data process system method result results s
      because the person who needs it is the one who just watched the app refresh itself and wants to
      know what moved. Trim the tail when it gets past a dozen; nobody reads further back than that. */
   const WHATS_NEW = [
+    ['2.13', 'A dark theme that is dark rather than switched off: the page sits below the cards so panels lift, the hairlines stop being paper-white, and both themes now share one colour family.'],
     ['2.12', 'A bigger way back out of a study page, a bigger section heading, and a header that takes less of the screen while every control in it got easier to hit.'],
     ['2.11', 'An update that tells you it is there. The installed app checks for a new version when you open it, and asks before refreshing instead of changing under you.'],
     ['2.10', 'An <b>All rights reserved</b> page, opened from the copyright line in the footer.'],
