@@ -1,12 +1,12 @@
-/* UNI Made EZ — service worker, build 2.18.
+/* UNI Made EZ — service worker, build 2.19.
    Keeps a copy of the page so it opens with no connection, and lets the browser install it
    to a home screen. The whole app is one file, so the "offline copy" really is just that file
    plus its icons; nothing here touches your subjects, which live in the browser's own storage. */
-const V = '2.18';
+const V = '2.19';
 const APP = 'umez-app-v' + V;      // the page and its icons, replaced whole on every build
 const RUNTIME = 'umez-runtime-v1'; // web fonts, kept across builds
 
-const SHELL = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './icon-512-maskable.png', './apple-touch-icon.png'];
+const SHELL = ['./', './index.html', './manifest.webmanifest', './sync.json', './icon-192.png', './icon-512.png', './icon-512-maskable.png', './apple-touch-icon.png'];
 
 self.addEventListener('install', e => {
   // addAll fails as a unit; a partial cache would be worse than none, so let it reject quietly
