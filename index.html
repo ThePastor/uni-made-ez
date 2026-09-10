@@ -1657,7 +1657,8 @@ math mi[mathvariant="normal"] { font-style: normal; }
    whose li::before injects a counter. Reusing that class here made the counter a THIRD grid item
    in a two-column row, so every reason wrapped onto its own line and the algebra was shoved right.
    Nothing looked broken in the tests — the elements were all present and the phone stacked fine.
-   It only showed up in a screenshot. Hence a class of its own rather than a fight with the cascade. */
+   It only showed up in a screenshot. Hence a class of its own rather than a fight with the cascade.
+
    The section reuses the app's existing furniture wherever it fits — .quiz, .q-card, .options,
    .opt, .feedback and .section-bar are all the ones the quiz already uses, so practice feels like
    the rest of the app rather than a bolted-on module. What is new here is the shape of a taught
@@ -1749,6 +1750,28 @@ math mi[mathvariant="normal"] { font-style: normal; }
   .unit-row .right { grid-column: 2; justify-items: start; min-width: 0; }
   .unit-row .n { font-size: 1.6rem; }
 }
+/* the section of the lecture slides a lesson follows, and the exam scope on a course page —
+   both exist so a student can line this course up against the one they are actually sitting */
+.lesson-head .src-chip { font-family: var(--font-mono); font-size: .62rem; letter-spacing: .1em; text-transform: uppercase; padding: 4px 9px; border: 1px solid var(--line-soft); color: var(--ink-3); white-space: nowrap; }
+.exam-note { margin-top: var(--band); padding: 12px var(--pad-in); background: var(--warn-soft); color: var(--ink); font-size: .92rem; display: flex; flex-wrap: wrap; gap: 10px; align-items: baseline; }
+@media (max-width: 640px) { .lesson-head { flex-wrap: wrap; gap: 8px 12px; } }
+
+/* ---------- why the Math pages needed min-width: 0 everywhere ----------
+   A grid or flex CHILD defaults to min-width:auto, which means "never shrink below my content".
+   MathML is one unbreakable line, so a formula wider than a phone dragged its whole column wider,
+   and every ancestor with it — measured at 477px inside a 390px viewport. overflow-x:auto on the
+   formula does nothing on its own, because the box was never allowed to get small enough to
+   overflow in the first place. The min-width:0 is what lets the scroll container actually work. */
+.lesson-body > *, .worked, .rules, .rule, .worked .ans { min-width: 0; }
+.rule .fx, .worked .ans .fx { min-width: 0; max-width: 100%; overflow-x: auto; }
+/* a 240px floor is wider than a phone gutter allows; min() lets the track collapse to fit */
+.rules { grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); }
+.worked .wsteps li > * { min-width: 0; }
+.worked .wsteps .do { overflow-wrap: anywhere; }
+.worked figcaption b { overflow-wrap: anywhere; }
+/* an answer that is a sentence is set as a sentence: Engine.mathml does not FAIL on prose, it
+   "succeeds" and returns typeset nonsense, so the data has to say which answers are words */
+.worked .ans .fx.words { font-family: var(--font-body); font-size: .95rem; }
 
 </style>
 </head>
@@ -4172,83 +4195,105 @@ const GENERIC = new Set('information data process system method result results s
    ---------------------------------------------------------------------------------------------
    A course here is DATA, not code. The renderer knows nothing about mathematics; it knows about
    units, lessons, worked examples, pitfalls and practice items. That separation is the whole
-   design: a new course is a new object in COURSES, checked by test/math.js, with no engine change.
+   design: a new subject is a new object in COURSES, checked by test/math.js, with no engine change.
 
-   Why the shape is what it is. The existing app turns a student's OWN files into cards, and it is
-   honest that it extracts rather than understands. An authored course is the opposite bargain —
-   somebody (here, the publisher) has understood the material — so it has to carry the thing an
-   extracted card cannot: WHY each step follows. Hence `steps: [{ do, why }]` rather than a list of
-   lines, and `pitfalls`, which is where most of the tutoring value actually sits: a worked example
-   shows the road, a pitfall shows the ditch beside it that students actually drive into.
+   Why the shape is what it is. The rest of the app turns a student's OWN files into cards, and it
+   is honest that it extracts rather than understands. An authored course is the opposite bargain —
+   somebody has understood the material — so it has to carry the thing an extracted card cannot:
+   WHY each step follows. Hence `steps: [{ do, why }]` rather than a list of lines, and `pitfalls`,
+   which is where most of the tutoring value sits: a worked example shows the road, a pitfall shows
+   the ditch beside it that students actually drive into.
 
    Practice is deliberately limited to what can be marked with certainty in a browser with no
    computer-algebra system and no network:
 
-     numeric  one number, or a set of numbers, compared with a tolerance
+     numeric  one number, compared with a tolerance
      mc       multiple choice, where every distractor is a REAL mistake, not filler
      order    put the steps of a solution back in order
      spot     one step of a worked solution is wrong — find it
 
-   `order` and `spot` are generated from the same worked examples the lesson teaches, so authoring
-   one example yields three ways to practise it. `spot` in particular tests something multiple
-   choice cannot: whether a student can follow an argument closely enough to see it break.
+   `order` and `spot` are built from the same worked examples the lesson teaches, so authoring one
+   example yields three ways to practise it. `spot` tests something multiple choice cannot: whether
+   a student can follow an argument closely enough to see it break.
 
-   Every numeric item carries `verify`, a restatement of the question that a computer algebra
-   system can evaluate independently. test/math.js recomputes each answer from it with SymPy and
-   fails if the two disagree. The answer is written once by a human and once by a machine, from
-   different starting points; a typo in either shows up as a mismatch. No worked answer in this
-   file is trusted because it looks right.
+   EVERY numeric item carries `verify.expr`, a restatement of the question as an expression a
+   computer algebra system can evaluate on its own. test/math.js recomputes each answer with SymPy
+   and fails if the two disagree. The answer is written once by a person and once by a machine from
+   different starting points, so a typo in either shows up as a mismatch. No answer in this file is
+   trusted because it looks right.
+
+   PROVENANCE. The Precalculus course follows Anndy's own TRU section slides — chapters and section
+   numbers are his, not a rearrangement — so a student reading a lesson here is reading the same
+   syllabus in the same order as the lecture. `src` on each lesson names the section it came from.
    --------------------------------------------------------------------------------------------- */
 (function (root) {
   'use strict';
 
+  /* ============================== PRECALCULUS ==============================
+     Chapter 1 Functions (1.1–1.6) · Chapter 2 Linear Functions (2.1–2.2) ·
+     Chapter 3 Polynomial and Rational Functions (3.1–3.2).
+     Midterm 1 covers 1.1 through 2.2. */
   const PRECALC = {
     id: 'precalc',
     code: 'Precalculus',
     title: 'Precalculus',
-    blurb: 'The algebra that calculus assumes you already have. Every unit ends where a calculus course would pick it up.',
+    blurb: 'Functions, linear functions, and the start of polynomials — following the same chapters and section numbers as the course slides.',
     level: 'Foundation',
+    exam: 'Midterm 1 covers sections 1.1 – 2.2.',
     units: [
+
+      /* ============================ UNIT 1 ============================ */
       {
         id: 'functions',
         n: 1,
-        title: 'Functions and what f(x) really means',
-        blurb: 'Notation, evaluation, and reading a domain off a formula — the three things that quietly cost marks in every later unit.',
+        title: 'Functions',
+        blurb: 'Sections 1.1 – 1.6. Notation, domain and range, rate of change, composition, transformations and inverses.',
         objectives: [
-          'Read f(x) as an instruction rather than a multiplication',
-          'Evaluate a function at a number, at a negative, and at an expression',
-          'Build and simplify a difference quotient',
-          'State the domain of a formula built from fractions and roots'
+          'Decide whether a relation is a function, and read f(x) as an instruction rather than a multiplication',
+          'State a domain and range from a formula, a table or a graph, in interval notation',
+          'Compute an average rate of change and say what it does and does not tell you',
+          'Compose two functions in the right order, and find an inverse',
+          'Describe a graph as a sequence of transformations of a toolkit function'
         ],
 
         lessons: [
           {
-            id: 'notation',
-            title: 'A function is a rule, not a product',
-            idea: `A function takes one input and gives back exactly one output. The notation <b>f(x)</b> is read "f of x", and it names the output that the rule f produces when it is handed the input x. It is not f multiplied by x, and nothing in it can be cancelled. The letter in the brackets is a placeholder: <b>f(x) = 3x − 4</b> and <b>f(t) = 3t − 4</b> are the same function written twice.`,
+            id: 's11',
+            title: 'Functions and function notation',
+            src: 'Section 1.1',
+            idea: `A <b>function</b> is a rule that pairs each input with <b>exactly one</b> output. The rule may be a formula, a table, a graph or a mapping diagram — what makes it a function is the "exactly one" part, and that condition points in one direction only. Two different inputs are allowed to share an output; one input is never allowed to have two. The notation <b>f(x)</b> is read "f of x" and names the output when the input is x. It is not f multiplied by x, and nothing in it cancels.`,
             rules: [
-              { name: 'Evaluation', expr: 'f(a)', note: 'Replace every x in the formula with a. Every one, and only the x’s.' },
-              { name: 'Same rule, any letter', expr: 'f(x) = 3x - 4', note: 'The input letter carries no meaning of its own.' }
+              { name: 'Evaluation', expr: 'f(a)', note: 'Replace every x in the formula with a — every one, and only the x’s.' },
+              { name: 'Vertical line test', expr: 'x', note: 'A graph is a function when no vertical line crosses it more than once.' }
             ],
             examples: [
               {
-                prompt: 'If f(x) = 3x − 4, find f(2).',
+                prompt: 'If f(x) = 3x² − 5x + 2, find f(4).',
                 steps: [
-                  { do: 'f(2) = 3(2) − 4', why: 'Replace the x with 2. The brackets are there so the 3 still multiplies.' },
-                  { do: '= 6 − 4', why: 'Multiply before subtracting.' },
-                  { do: '= 2', why: 'Subtract. f(2) = 2 here, which is a coincidence of this function, not a rule.' }
+                  { do: 'f(4) = 3(4)² − 5(4) + 2', why: 'Replace both x’s with 4. Brackets keep the 3 and the 5 multiplying.' },
+                  { do: '= 3(16) − 20 + 2', why: 'Powers before multiplication: square the 4 first.' },
+                  { do: '= 48 − 20 + 2', why: 'Now multiply.' },
+                  { do: '= 30', why: 'Add and subtract left to right.' }
                 ],
-                answer: '2'
+                answer: '30'
               },
               {
-                prompt: 'If f(x) = x² − 3x + 1, find f(−2).',
+                prompt: 'For the same f, find f(−1).',
                 steps: [
-                  { do: 'f(−2) = (−2)² − 3(−2) + 1', why: 'Replace both x’s with −2, in brackets. The brackets are not optional here.' },
-                  { do: '= 4 − 3(−2) + 1', why: '(−2)² is (−2)(−2) = 4. The bracket is what makes the square positive.' },
-                  { do: '= 4 + 6 + 1', why: 'Subtracting a negative adds.' },
-                  { do: '= 11', why: 'Add the three terms. Notice the answer is positive even though the input was negative.' }
+                  { do: 'f(−1) = 3(−1)² − 5(−1) + 2', why: 'A negative input goes in wrapped in brackets. This is not optional.' },
+                  { do: '= 3(1) + 5 + 2', why: '(−1)² = 1, and subtracting −5(−1) adds 5.' },
+                  { do: '= 10', why: 'Add. The output is positive even though the input was negative.' }
                 ],
-                answer: '11'
+                answer: '10'
+              },
+              {
+                prompt: 'A mapping sends −2 ↦ 4, −1 ↦ 1, 0 ↦ 0, 1 ↦ 1, 2 ↦ 4. Is it a function, and what is the rule?',
+                steps: [
+                  { do: 'Check each input once', why: 'Every one of −2, −1, 0, 1, 2 has exactly one arrow leaving it, so it is a function.' },
+                  { do: 'Two inputs share an output', why: '−1 and 1 both land on 1. That is allowed — the condition only forbids one input having two outputs.' },
+                  { do: 'f(x) = x²', why: 'Each output is the square of its input, and squaring is what makes ±a share a value.' }
+                ],
+                answer: 'f(x) = x^2'
               }
             ],
             pitfalls: [
@@ -4258,7 +4303,12 @@ const GENERIC = new Set('information data process system method result results s
                 why: 'Written without brackets, −2² means −(2²) = −4, because the exponent binds tighter than the minus sign. Substituting a negative number always needs brackets.'
               },
               {
-                wrong: 'f(x)/x = f, cancelling the x',
+                wrong: '"It is not a function, because −1 and 1 both give 1."',
+                right: 'That is fine. It fails only if one input gives two outputs.',
+                why: 'The definition is one-directional. A horizontal line through a graph may hit it many times and it is still a function; a VERTICAL line may not.'
+              },
+              {
+                wrong: 'Cancelling the x in f(x)/x to get f',
                 right: 'Nothing cancels. f(x) is one symbol for one number.',
                 why: 'The brackets in f(x) are notation, not multiplication, so there is no factor of x to cancel.'
               }
@@ -4266,211 +4316,816 @@ const GENERIC = new Set('information data process system method result results s
           },
 
           {
-            id: 'expressions',
-            title: 'Feeding an expression into a function',
-            idea: `The rule does not care what it is handed. If the input is <b>x + h</b>, replace every x with <b>(x + h)</b> — brackets included — and simplify afterwards. This is the whole content of the difference quotient, which is the last thing precalculus does and the first thing calculus does.`,
+            id: 's12',
+            title: 'Domain and range',
+            src: 'Section 1.2',
+            idea: `The <b>domain</b> is every input the function will accept; the <b>range</b> is every output it actually produces. From a formula, only two things rule an input out: a <b>denominator equal to zero</b>, and an <b>even root of a negative</b>. Find every denominator and every even root, write down what each demands, and require all of them at once. A <b>piecewise</b> function applies different formulas on different parts of the domain, so its range is the union of what each piece produces.`,
             rules: [
-              { name: 'Difference quotient', expr: '(f(x + h) - f(x))/h', note: 'The average rate of change of f between x and x + h.' },
-              { name: 'Square of a sum', expr: '(x + h)^2 = x^2 + 2*x*h + h^2', note: 'The middle term is the one everybody drops.' }
+              { name: 'No division by zero', expr: 'denominator != 0', note: 'Solve denominator = 0 and exclude those values.' },
+              { name: 'Even roots need non-negatives', expr: 'sqrt(u) needs u >= 0', note: 'Odd roots accept negatives and impose nothing.' },
+              { name: 'Interval notation', expr: '[a, b]', note: 'Square bracket includes the endpoint, round bracket excludes it. Infinity always gets a round bracket.' }
             ],
             examples: [
               {
-                prompt: 'If f(x) = x², find f(x + h).',
+                prompt: 'State the domain of f(x) = √(2x − 1).',
                 steps: [
-                  { do: 'f(x + h) = (x + h)²', why: 'Replace x with the whole input, in brackets.' },
-                  { do: '= x² + 2xh + h²', why: 'Expand. Two middle terms, xh and hx, add to 2xh.' }
+                  { do: '2x − 1 ≥ 0', why: 'A square root is an even root, so what is inside cannot be negative. Write the condition before solving it.' },
+                  { do: '2x ≥ 1', why: 'Add 1 to both sides.' },
+                  { do: 'x ≥ 1/2', why: 'Divide by 2. Dividing by a positive leaves the inequality pointing the same way.' },
+                  { do: 'Domain: [1/2, ∞)', why: 'The endpoint is included because the root of 0 is defined; infinity always takes a round bracket.' }
                 ],
-                answer: 'x^2 + 2xh + h^2'
+                answer: 'x >= 1/2', answerWords: true
               },
               {
-                prompt: 'If f(x) = x², simplify the difference quotient (f(x + h) − f(x)) / h.',
+                prompt: 'State the domain of f(x) = √(4 − x²).',
                 steps: [
-                  { do: '= ((x + h)² − x²) / h', why: 'Substitute both pieces before touching anything else.' },
-                  { do: '= (x² + 2xh + h² − x²) / h', why: 'Expand the square. Keep the − x² outside the expansion.' },
-                  { do: '= (2xh + h²) / h', why: 'The x² terms cancel — that cancellation is why the h in the denominator becomes harmless.' },
-                  { do: '= h(2x + h) / h', why: 'Factor h out of the top. Only now is there a common factor to cancel.' },
-                  { do: '= 2x + h', why: 'Cancel the h. This is legal because h ≠ 0 — the quotient was never defined at h = 0.' }
+                  { do: '4 − x² ≥ 0', why: 'Same condition — but the unknown is now squared, so the answer will be an interval, not a ray.' },
+                  { do: 'x² ≤ 4', why: 'Rearrange so the square stands alone.' },
+                  { do: '−2 ≤ x ≤ 2', why: 'x² ≤ 4 means x is within 2 of zero in either direction. Taking a square root of both sides without thinking loses the negative half.' },
+                  { do: 'Domain: [−2, 2]', why: 'Both endpoints give 0 inside the root, which is allowed.' }
                 ],
-                answer: '2x + h'
+                answer: '-2 <= x <= 2', answerWords: true
+              },
+              {
+                prompt: 'Simplify f(x) = (x² − 9)/(x − 3) and give its domain. Where is the hole?',
+                steps: [
+                  { do: 'Domain first: x ≠ 3', why: 'Read the domain off the ORIGINAL formula, before simplifying. This is the whole point of the question.' },
+                  { do: '(x² − 9) = (x − 3)(x + 3)', why: 'A difference of two squares.' },
+                  { do: 'f(x) = x + 3 for x ≠ 3', why: 'Cancel the common factor — but the cancelled factor does not come back, so the restriction stays.' },
+                  { do: 'Hole at (3, 6)', why: 'The simplified rule would give 3 + 3 = 6 there, but x = 3 was never in the domain, so the graph has a gap at that height.' }
+                ],
+                answer: 'hole at (3, 6)', answerWords: true
               }
             ],
             pitfalls: [
               {
-                wrong: 'f(x + h) = f(x) + h',
-                right: 'f(x + h) means substitute, then simplify.',
-                why: 'Test it with numbers. For f(x) = x², at x = 3 and h = 1: f(4) = 16, but f(3) + 1 = 10. Whenever you are unsure whether a rule about functions is true, put numbers in it.'
+                wrong: 'Simplifying first, getting x + 3, and saying the domain is all real numbers.',
+                right: 'The domain belongs to the original formula: x ≠ 3.',
+                why: 'Cancelling changes what the expression looks like, not what it was ever allowed to eat. This is exactly why the graph has a hole rather than a clean line.'
               },
               {
-                wrong: '(x + h)² = x² + h²',
-                right: '(x + h)² = x² + 2xh + h²',
-                why: 'Squaring is not distributive over addition. Again, numbers settle it: (3 + 1)² = 16, while 3² + 1² = 10.'
+                wrong: '−2x ≥ 6 gives x ≥ −3',
+                right: '−2x ≥ 6 gives x ≤ −3',
+                why: 'Multiplying or dividing an inequality by a negative reverses it. This is the only step in domain work where the direction flips.'
               },
               {
-                wrong: 'Cancelling the h in (2xh + h²)/h one term at a time',
-                right: 'Factor first: h(2x + h)/h, then cancel.',
-                why: 'A denominator only cancels against a factor of the whole numerator. Cancelling into a sum is the single most common algebra error in a calculus course.'
+                wrong: 'Excluding x = 0 from f(x) = x/(x² + 4) "because there is a fraction".',
+                right: 'The domain is every real number.',
+                why: 'A denominator only excludes inputs that make it ZERO. Here x² + 4 ≥ 4 for every real x, so nothing is excluded.'
               }
             ]
           },
 
           {
-            id: 'domain',
-            title: 'Reading a domain off a formula',
-            idea: `The domain is every input the formula can actually accept. Unless a question says otherwise, only two things rule an input out: a <b>denominator equal to zero</b>, and an <b>even root of a negative number</b>. Find every denominator and every even root, write down what each one demands, and take all of the conditions together.`,
+            id: 's13',
+            title: 'Rate of change and behaviour of graphs',
+            src: 'Section 1.3',
+            idea: `A <b>rate of change</b> says how the output moves when the input moves, and its units are output units per input unit. The <b>average rate of change</b> over [a, b] is the total change in output divided by the total change in input — the slope of the straight line joining the two endpoints of the graph. It is an average, so it tells you nothing about what happened in between. A function is <b>increasing</b> on an interval if outputs rise as inputs rise, and a <b>local maximum</b> or <b>minimum</b> is where it turns.`,
             rules: [
-              { name: 'No division by zero', expr: 'denominator != 0', note: 'Solve denominator = 0 and exclude those values.' },
-              { name: 'Even roots need non-negatives', expr: 'sqrt(u) needs u >= 0', note: 'Odd roots — cube roots and so on — accept negatives and impose nothing.' }
+              { name: 'Average rate of change', expr: '(f(b) - f(a))/(b - a)', note: 'The change in output over the change in input, across the whole interval.' },
+              { name: 'In delta notation', expr: 'dy/dx', note: 'Written Δy/Δx = (y2 − y1)/(x2 − x1). The same quantity.' }
             ],
             examples: [
               {
-                prompt: 'State the domain of f(x) = 1 / (x − 3).',
+                prompt: 'Find the average rate of change of f(x) = x² from x = 1 to x = 4.',
                 steps: [
-                  { do: 'Denominator: x − 3', why: 'One denominator, so one condition.' },
-                  { do: 'x − 3 ≠ 0', why: 'Division by zero is undefined.' },
-                  { do: 'x ≠ 3', why: 'Solve. Everything else is allowed.' }
+                  { do: 'f(1) = 1 and f(4) = 16', why: 'Get both endpoint outputs before assembling anything.' },
+                  { do: '(16 − 1) / (4 − 1)', why: 'Change in output over change in input, in that order and consistently.' },
+                  { do: '= 15/3 = 5', why: 'On average the output rose 5 units for each 1 unit of input across this stretch.' }
                 ],
-                answer: 'all real x except x = 3'
+                answer: '5'
               },
               {
-                prompt: 'State the domain of g(x) = √(2x − 8).',
+                prompt: 'A city population rises by 8,000 over 4 years. What is the average rate of change?',
                 steps: [
-                  { do: 'Radicand: 2x − 8', why: 'A square root is an even root, so it demands a non-negative inside.' },
-                  { do: '2x − 8 ≥ 0', why: 'Write the condition before solving it.' },
-                  { do: '2x ≥ 8', why: 'Add 8 to both sides.' },
-                  { do: 'x ≥ 4', why: 'Divide by 2. Dividing by a positive leaves the inequality pointing the same way.' }
+                  { do: '8000 people / 4 years', why: 'Change in output over change in input.' },
+                  { do: '= 2000 people per year', why: 'Carry the units. A rate without units is not an answer to a question about a city.' }
                 ],
-                answer: 'x >= 4'
+                answer: '2000'
               },
               {
-                prompt: 'State the domain of h(x) = √(x + 1) / (x − 2).',
+                prompt: 'For f(x) = x³ − 3x, find and classify the local extrema.',
                 steps: [
-                  { do: 'Two conditions: one root, one denominator', why: 'Deal with each separately, then combine.' },
-                  { do: 'x + 1 ≥ 0, so x ≥ −1', why: 'The even root needs a non-negative inside.' },
-                  { do: 'x − 2 ≠ 0, so x ≠ 2', why: 'The denominator cannot be zero.' },
-                  { do: 'x ≥ −1 and x ≠ 2', why: 'Both must hold at once — combine with "and", never "or".' }
+                  { do: 'The turning points are at x = −1 and x = 1', why: 'The cubic rises, turns, falls, turns and rises again — two turns.' },
+                  { do: 'f(−1) = −1 + 3 = 2', why: 'Evaluate to get the height of the turn.' },
+                  { do: 'f(1) = 1 − 3 = −2', why: 'Same for the other turn.' },
+                  { do: 'Local max (−1, 2), local min (1, −2)', why: 'Going left to right the graph rises to the first and falls to the second, so the left turn is the maximum.' }
                 ],
-                answer: 'x >= -1 with x = 2 removed'
+                answer: 'local max at (-1, 2), local min at (1, -2)', answerWords: true
               }
             ],
             pitfalls: [
               {
-                wrong: 'Finding the root condition and stopping, when there is also a denominator.',
-                right: 'Every denominator and every even root gives a condition. Collect them all.',
-                why: 'A formula can break in more than one place. Scan the whole expression before solving anything.'
+                wrong: '"The average rate of change on [0, 4] is positive, so the function is increasing."',
+                right: 'It only means it ended higher than it started.',
+                why: 'Take f(x) = x³ − 3x on [0, 4]: the average rate is positive, but the function actually falls from 0 to 1 before rising. An average over one interval says nothing about the middle. To claim "increasing", the rate must be positive on EVERY interval.'
               },
               {
-                wrong: '−2x ≥ 6 gives x ≥ −3',
-                right: '−2x ≥ 6 gives x ≤ −3',
-                why: 'Multiplying or dividing an inequality by a negative number reverses it. This is the only step in domain work where the direction changes.'
+                wrong: 'Computing (f(a) − f(b))/(b − a)',
+                right: '(f(b) − f(a))/(b − a)',
+                why: 'Mixing the order of one subtraction but not the other flips the sign of the answer. Keep both subtractions pointing the same way: end minus start, top and bottom.'
+              }
+            ]
+          },
+
+          {
+            id: 's14',
+            title: 'Composition of functions',
+            src: 'Section 1.4',
+            idea: `When the output of one function becomes the input of another, that is a <b>composition</b>, written <b>(f ∘ g)(x) = f(g(x))</b>. Work from the inside out: g acts first, and whatever it produces is handed to f. Order matters — f(g(x)) and g(f(x)) are usually different functions. For f(g(x)) to be defined at an input, x must be in the domain of g <b>and</b> g(x) must be in the domain of f.`,
+            rules: [
+              { name: 'Composition', expr: '(f(g(x)))', note: 'Inner function first. The circle in f ∘ g is not multiplication.' },
+              { name: 'Domain of a composition', expr: 'x', note: 'x must be allowed into g, and g(x) must be allowed into f.' }
+            ],
+            examples: [
+              {
+                prompt: 'If f(x) = 2x + 1 and g(x) = x², find f(g(2)) and g(f(2)).',
+                steps: [
+                  { do: 'g(2) = 2² = 4', why: 'Inside first: g acts on the 2.' },
+                  { do: 'f(4) = 2(4) + 1 = 9', why: 'Hand that output to f. So f(g(2)) = 9.' },
+                  { do: 'f(2) = 2(2) + 1 = 5', why: 'Now the other order: f acts first.' },
+                  { do: 'g(5) = 25', why: 'So g(f(2)) = 25. Same two functions, same input, different answer.' }
+                ],
+                answer: 'f(g(2)) = 9 and g(f(2)) = 25', answerWords: true
               },
               {
-                wrong: 'Excluding x = 0 from f(x) = x/(x² + 1) "because there is a fraction".',
-                right: 'The domain is every real number.',
-                why: 'A denominator only excludes inputs that make it ZERO. Here x² + 1 ≥ 1 for every real x, so nothing is excluded.'
+                prompt: 'If f(x) = √x and g(x) = x + 5, find f(g(x)) and state its domain.',
+                steps: [
+                  { do: 'f(g(x)) = √(x + 5)', why: 'Substitute the whole of g into f’s slot.' },
+                  { do: 'x + 5 ≥ 0', why: 'The composed formula still has an even root, and it still needs a non-negative inside.' },
+                  { do: 'x ≥ −5', why: 'Solve. Here g accepts everything, so the only restriction comes from f.' }
+                ],
+                answer: 'x >= -5', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                wrong: 'f(g(x)) = g(f(x))',
+                right: 'They are different unless something special makes them agree.',
+                why: 'With f(x) = 2x + 1 and g(x) = x² at input 2 they are 9 and 25. Composition is not commutative; the one case where the two do agree and both give x is when f and g are inverses.'
+              },
+              {
+                wrong: 'Reading f ∘ g as "f times g"',
+                right: 'It means f(g(x)).',
+                why: 'The circle is a composition symbol. (fg)(x) — no circle — is the product f(x)·g(x), which is a different function entirely.'
+              },
+              {
+                wrong: 'Finding the domain of f(g(x)) from the simplified formula only.',
+                right: 'Check what g needs as well as what f needs.',
+                why: 'If g itself excludes an input, the composition excludes it too, even when the tidied-up formula looks happy there.'
+              }
+            ]
+          },
+
+          {
+            id: 's15',
+            title: 'Transformations of functions',
+            src: 'Section 1.5',
+            idea: `Every graph in this course is a <b>toolkit function</b> — x², |x|, √x, 1/x — that has been moved and stretched. The rule worth memorising is about <b>where the change sits</b>. A change <b>outside</b> f acts vertically and does what it says: f(x) + d moves up by d. A change <b>inside</b> the brackets acts horizontally and does the <b>opposite</b> of what it says: f(x − c) moves <b>right</b> by c. A minus sign outside flips vertically; a minus inside flips horizontally.`,
+            rules: [
+              { name: 'Vertical shift', expr: 'f(x) + d', note: 'Up if d > 0, down if d < 0. Outside, so it behaves as written.' },
+              { name: 'Horizontal shift', expr: 'f(x - c)', note: 'Right if c > 0. Inside, so it moves opposite to the sign you see.' },
+              { name: 'Vertical stretch and flip', expr: 'a*f(x)', note: 'Stretch by |a|; a < 0 also reflects across the x-axis.' }
+            ],
+            examples: [
+              {
+                prompt: 'Write the parabola obtained by shifting f(x) = x² right 2 and down 3.',
+                steps: [
+                  { do: 'Right 2 goes inside: (x − 2)²', why: 'Horizontal, so it is inside the bracket and takes the opposite sign — right by 2 is written as minus 2.' },
+                  { do: 'Down 3 goes outside: − 3', why: 'Vertical, so it is outside and behaves as written.' },
+                  { do: 'g(x) = (x − 2)² − 3', why: 'Vertex moves from (0, 0) to (2, −3).' }
+                ],
+                answer: '(x - 2)^2 - 3'
+              },
+              {
+                prompt: 'Describe the transformations sending f(x) = |x| to g(x) = −2|x − 3| + 1.',
+                steps: [
+                  { do: 'Inside: x − 3 → right 3', why: 'Horizontal and opposite in sign.' },
+                  { do: 'Multiply by 2 → vertical stretch by 2', why: 'Outside, so vertical. Every height doubles.' },
+                  { do: 'The minus → reflect across the x-axis', why: 'A negative outside flips it upside down.' },
+                  { do: '+ 1 → up 1', why: 'Applied last. The vertex lands at (3, 1) and the V opens downward.' }
+                ],
+                answer: 'right 3, stretch 2, flip, up 1', answerWords: true
+              },
+              {
+                prompt: 'Transform f(x) = 1/x by: shift right 3, reflect across the x-axis, then stretch vertically by 2.',
+                steps: [
+                  { do: 'Right 3: 1/(x − 3)', why: 'Inside the function, opposite sign.' },
+                  { do: 'Reflect: −1/(x − 3)', why: 'A minus in front of the whole thing.' },
+                  { do: 'Stretch by 2: −2/(x − 3)', why: 'Multiply the whole output by 2. Order matters here only between the horizontal and vertical groups, not within the vertical ones.' }
+                ],
+                answer: '-2/(x - 3)'
+              }
+            ],
+            pitfalls: [
+              {
+                wrong: 'f(x − 3) shifts the graph LEFT 3, because of the minus.',
+                right: 'It shifts RIGHT 3.',
+                why: 'Ask which x makes the bracket zero. For f(x − 3) that is x = 3, so whatever used to happen at 0 now happens at 3 — the graph moved right. Reading the sign directly is the single most common transformation error.'
+              },
+              {
+                wrong: 'Treating 2f(x) + 1 and 2(f(x) + 1) as the same.',
+                right: 'They differ: the first shifts up 1, the second shifts up 2.',
+                why: 'The stretch multiplies whatever is already there. Vertical operations apply in the order the algebra applies them, so a shift written inside the multiplication gets stretched too.'
+              }
+            ]
+          },
+
+          {
+            id: 's16',
+            title: 'Inverse functions',
+            src: 'Section 1.6',
+            idea: `The <b>inverse</b> f⁻¹ undoes f: it takes an output back to the input it came from. For that to be well defined, f must be <b>one-to-one</b> — different inputs must give different outputs — which on a graph is the <b>horizontal</b> line test. To find a formula: write y = f(x), swap x and y, then solve for y. The check is composition: f(f⁻¹(x)) = x and f⁻¹(f(x)) = x.`,
+            rules: [
+              { name: 'The undoing property', expr: 'f(g(x)) = x', note: 'And g(f(x)) = x. Both directions, or they are not inverses.' },
+              { name: 'Horizontal line test', expr: 'x', note: 'f has an inverse exactly when no horizontal line meets its graph twice.' }
+            ],
+            examples: [
+              {
+                prompt: 'Find the inverse of f(x) = 3x − 5 and verify it.',
+                steps: [
+                  { do: 'y = 3x − 5', why: 'Name the output.' },
+                  { do: 'x = 3y − 5', why: 'Swap x and y. This is the step that performs the "undo".' },
+                  { do: 'x + 5 = 3y', why: 'Add 5 to both sides.' },
+                  { do: 'y = (x + 5)/3', why: 'Divide by 3, so f⁻¹(x) = (x + 5)/3.' },
+                  { do: 'f(f⁻¹(x)) = 3·(x+5)/3 − 5 = x', why: 'Check one direction; the other works the same way. Both must give x.' }
+                ],
+                answer: '(x + 5)/3'
+              },
+              {
+                prompt: 'Find the inverse of f(x) = (2x + 1)/(x − 3).',
+                steps: [
+                  { do: 'y = (2x + 1)/(x − 3), then swap: x = (2y + 1)/(y − 3)', why: 'Same opening move even when the function is a fraction.' },
+                  { do: 'x(y − 3) = 2y + 1', why: 'Clear the denominator before collecting anything.' },
+                  { do: 'xy − 3x = 2y + 1', why: 'Expand the left side.' },
+                  { do: 'xy − 2y = 3x + 1', why: 'Gather every term containing y on one side and everything else on the other.' },
+                  { do: 'y(x − 2) = 3x + 1', why: 'Factor y out — this is the step that makes it solvable.' },
+                  { do: 'f⁻¹(x) = (3x + 1)/(x − 2)', why: 'Divide by (x − 2).' }
+                ],
+                answer: '(3x + 1)/(x - 2)'
+              },
+              {
+                prompt: 'Why does f(x) = x² have no inverse on all real numbers?',
+                steps: [
+                  { do: 'f(−3) = 9 and f(3) = 9', why: 'Two different inputs give the same output, so it is not one-to-one.' },
+                  { do: 'A horizontal line at y = 9 crosses twice', why: 'That is the horizontal line test failing.' },
+                  { do: 'Restrict to x ≥ 0', why: 'On that half it is one-to-one, and the inverse is √x. Restricting the domain is how the square root gets to exist at all.' }
+                ],
+                answer: 'not one-to-one unless the domain is restricted', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                wrong: 'f⁻¹(x) = 1/f(x)',
+                right: 'f⁻¹ is the undoing function, not the reciprocal.',
+                why: 'The −1 is notation, not an exponent. For f(x) = 3x − 5, the inverse is (x + 5)/3, while 1/f(x) is 1/(3x − 5) — a completely different function. This is the most expensive single confusion in the chapter.'
+              },
+              {
+                wrong: 'Checking only that f(f⁻¹(x)) = x.',
+                right: 'Check both directions.',
+                why: 'One direction can work on a restricted set while the other fails, which is exactly what happens with x² and √x if the restriction is forgotten.'
+              },
+              {
+                wrong: 'Solving x = (2y + 1)/(y − 3) by cancelling the y’s.',
+                right: 'Multiply out, gather the y terms, then factor y.',
+                why: 'A y appears in both the numerator and the denominator, so nothing cancels. Collect and factor — that is the standard route for every rational inverse.'
               }
             ]
           }
         ],
 
         practice: [
-          { id: 'p1', kind: 'numeric', lesson: 'notation',
-            prompt: 'f(x) = 5x + 2. Find f(3).',
-            answer: 17, verify: { f: '5*x + 2', at: 3 },
-            hint: 'Replace the x with 3, then work left to right.',
-            solution: ['f(3) = 5(3) + 2', '= 15 + 2', '= 17'] },
+          { id: 'u1p1', kind: 'numeric', lesson: 's11',
+            prompt: 'f(x) = 3x² − 5x + 2. Find f(4).',
+            answer: 30, verify: { expr: '3*4**2 - 5*4 + 2' },
+            hint: 'Square the 4 before multiplying by 3.',
+            solution: ['f(4) = 3(4)² − 5(4) + 2', '= 48 − 20 + 2', '= 30'] },
 
-          { id: 'p2', kind: 'numeric', lesson: 'notation',
-            prompt: 'f(x) = x² − 4x + 7. Find f(−3).',
-            answer: 28, verify: { f: 'x**2 - 4*x + 7', at: -3 },
-            hint: 'Put −3 in brackets everywhere before you square anything.',
-            solution: ['f(−3) = (−3)² − 4(−3) + 7', '= 9 + 12 + 7', '= 28'] },
+          { id: 'u1p2', kind: 'numeric', lesson: 's11',
+            prompt: 'For the same f(x) = 3x² − 5x + 2, find f(−1).',
+            answer: 10, verify: { expr: '3*(-1)**2 - 5*(-1) + 2' },
+            hint: 'Wrap the −1 in brackets before squaring it.',
+            solution: ['f(−1) = 3(−1)² − 5(−1) + 2', '= 3 + 5 + 2', '= 10'] },
 
-          { id: 'p3', kind: 'numeric', lesson: 'notation',
-            prompt: 'f(x) = 2x² − x. Find f(−1).',
-            answer: 3, verify: { f: '2*x**2 - x', at: -1 },
-            hint: '(−1)² is positive; the second term subtracts a negative.',
-            solution: ['f(−1) = 2(−1)² − (−1)', '= 2(1) + 1', '= 3'] },
-
-          { id: 'p4', kind: 'mc', lesson: 'notation',
-            prompt: 'f(x) = x² + x. A student writes f(−4) = −16 − 4 = −20. What went wrong?',
+          { id: 'u1p3', kind: 'mc', lesson: 's11',
+            prompt: 'A relation sends −1 ↦ 1 and 1 ↦ 1. Is it still a function?',
             options: [
-              { t: 'They wrote −4² instead of (−4)², so the square lost its sign', ok: true },
-              { t: 'They should have added the terms instead of subtracting', ok: false },
-              { t: 'f(−4) cannot be found because the input is negative', ok: false },
-              { t: 'Nothing — −20 is correct', ok: false }
+              { t: 'Yes — two inputs may share an output; only one input having two outputs is forbidden', ok: true },
+              { t: 'No — two different inputs cannot give the same output', ok: false },
+              { t: 'No — the outputs must all be different for it to be a function', ok: false },
+              { t: 'Only if the domain is restricted to positive numbers', ok: false }
             ],
-            hint: 'Work out (−4)² on its own first.',
-            solution: ['(−4)² = 16, not −16', 'f(−4) = 16 + (−4) = 12'] },
+            hint: 'Which line test applies to being a function — vertical or horizontal?',
+            solution: ['The condition is one-directional: each input has exactly one output', 'f(x) = x² does exactly this and is a function'] },
 
-          { id: 'p5', kind: 'numeric', lesson: 'expressions',
-            prompt: 'f(x) = x². Using f(x + h) = x² + 2xh + h², find the value of f(x + h) when x = 3 and h = 2.',
-            answer: 25, verify: { f: '(x + 2)**2', at: 3 },
-            hint: 'It is just f(5). The expanded form must agree.',
-            solution: ['f(3 + 2) = f(5) = 25', 'Check with the expansion: 3² + 2(3)(2) + 2² = 9 + 12 + 4 = 25'] },
+          { id: 'u1p4', kind: 'numeric', lesson: 's12',
+            prompt: 'h(t) = 1 / (t − 2). Find h(2.5).',
+            answer: 2, verify: { expr: '1/(Rational(5,2) - 2)' },
+            hint: 'The denominator is 0.5, and dividing by a half doubles.',
+            solution: ['h(2.5) = 1/(2.5 − 2)', '= 1/0.5', '= 2'] },
 
-          { id: 'p6', kind: 'numeric', lesson: 'expressions',
-            prompt: 'f(x) = x². The difference quotient simplifies to 2x + h. Evaluate it at x = 4, h = 0.5.',
-            answer: 8.5, verify: { f: '2*x + 0.5', at: 4 },
-            hint: 'Substitute straight into 2x + h.',
-            solution: ['2(4) + 0.5', '= 8 + 0.5', '= 8.5'] },
+          { id: 'u1p5', kind: 'numeric', lesson: 's12',
+            prompt: 'f(x) = √(2x − 1). What is the smallest x in the domain?',
+            answer: 0.5, verify: { expr: 'Rational(1,2)' },
+            hint: 'The boundary is where the inside of the root equals zero.',
+            solution: ['2x − 1 ≥ 0', '2x ≥ 1', 'x ≥ 1/2, so the smallest value is 0.5'] },
 
-          { id: 'p7', kind: 'order', lesson: 'expressions',
-            prompt: 'Put the difference quotient for f(x) = x² back into the right order.',
+          { id: 'u1p6', kind: 'numeric', lesson: 's12',
+            prompt: 'f(x) = (x² − 9)/(x − 3) has a hole. At what height (y-value) is the hole?',
+            answer: 6, verify: { expr: '3 + 3' },
+            hint: 'Simplify to x + 3, then ask what that would give at the excluded input.',
+            solution: ['(x² − 9)/(x − 3) = x + 3 for x ≠ 3', 'At x = 3 that would be 6', 'So the hole sits at (3, 6)'] },
+
+          { id: 'u1p7', kind: 'mc', lesson: 's12',
+            prompt: 'What is the domain of f(x) = √(4 − x²)?',
+            options: [
+              { t: '[−2, 2]', ok: true },
+              { t: 'x ≥ 2', ok: false },
+              { t: 'All real numbers', ok: false },
+              { t: 'x ≤ −2 or x ≥ 2', ok: false }
+            ],
+            hint: 'Solve 4 − x² ≥ 0, and remember the square lets x be negative too.',
+            solution: ['4 − x² ≥ 0', 'x² ≤ 4', '−2 ≤ x ≤ 2'] },
+
+          { id: 'u1p8', kind: 'numeric', lesson: 's13',
+            prompt: 'Find the average rate of change of f(x) = x² from x = 1 to x = 4.',
+            answer: 5, verify: { expr: '(4**2 - 1**2)/(4 - 1)' },
+            hint: 'Change in output over change in input.',
+            solution: ['f(4) − f(1) = 16 − 1 = 15', '4 − 1 = 3', '15/3 = 5'] },
+
+          { id: 'u1p9', kind: 'mc', lesson: 's13',
+            prompt: 'True or false: if the average rate of change of f over [0, 4] is positive, f is increasing on [0, 4].',
+            options: [
+              { t: 'False — it only means f ended higher than it started', ok: true },
+              { t: 'True — a positive rate of change means increasing', ok: false },
+              { t: 'True, but only for polynomials', ok: false },
+              { t: 'False — a positive average rate means f is decreasing', ok: false }
+            ],
+            hint: 'Think of a function that dips before it climbs.',
+            solution: ['f(x) = x³ − 3x on [0, 4] has a positive average rate', 'But it falls from x = 0 to x = 1 first', 'To be increasing, the rate must be positive on EVERY interval'] },
+
+          { id: 'u1p10', kind: 'numeric', lesson: 's14',
+            prompt: 'f(x) = 2x + 1 and g(x) = x². Find f(g(2)).',
+            answer: 9, verify: { expr: '2*(2**2) + 1' },
+            hint: 'Inside first: work out g(2), then feed it to f.',
+            solution: ['g(2) = 4', 'f(4) = 2(4) + 1', '= 9'] },
+
+          { id: 'u1p11', kind: 'numeric', lesson: 's14',
+            prompt: 'Same two functions. Find g(f(2)).',
+            answer: 25, verify: { expr: '(2*2 + 1)**2' },
+            hint: 'This time f acts first. The answer is not 9.',
+            solution: ['f(2) = 5', 'g(5) = 5²', '= 25'] },
+
+          { id: 'u1p12', kind: 'order', lesson: 's16',
+            prompt: 'Put the steps for finding the inverse of f(x) = (2x + 1)/(x − 3) back in order.',
             steps: [
-              '((x + h)² − x²) / h',
-              '(x² + 2xh + h² − x²) / h',
-              '(2xh + h²) / h',
-              'h(2x + h) / h',
-              '2x + h'
+              'x = (2y + 1)/(y − 3)',
+              'x(y − 3) = 2y + 1',
+              'xy − 3x = 2y + 1',
+              'xy − 2y = 3x + 1',
+              'y(x − 2) = 3x + 1',
+              'y = (3x + 1)/(x − 2)'
             ],
-            hint: 'Substitute, expand, cancel the x², factor, then cancel the h.',
-            solution: ['The h can only be cancelled after it has been factored out of the whole numerator.'] },
+            hint: 'Swap, clear the denominator, expand, gather the y terms, factor, divide.',
+            solution: ['The y terms have to be collected on one side before y can be factored out — nothing cancels earlier than that.'] },
 
-          { id: 'p8', kind: 'spot', lesson: 'expressions',
+          { id: 'u1p13', kind: 'spot', lesson: 's15',
             prompt: 'One line of this is wrong. Which one?',
             steps: [
-              { t: 'f(x) = x² + 1, so f(x + h) = (x + h)² + 1', bad: false },
-              { t: '= x² + h² + 1', bad: true },
-              { t: 'f(x + h) − f(x) = h² ', bad: false },
-              { t: 'so the quotient is h', bad: false }
+              { t: 'Start from f(x) = x²', bad: false },
+              { t: 'Shift right 2: g(x) = (x + 2)²', bad: true },
+              { t: 'Then down 3: g(x) = (x + 2)² − 3', bad: false },
+              { t: 'So the vertex is at (−2, −3)', bad: false }
             ],
-            why: '(x + h)² is x² + 2xh + h², not x² + h². Everything after that line follows correctly from a wrong start — which is exactly how a dropped middle term survives all the way to a final answer.',
-            hint: 'Check the expansion with numbers: x = 3, h = 1.',
-            solution: ['(x + h)² = x² + 2xh + h²', 'The correct quotient is 2x + h'] },
+            why: 'A shift right by 2 is written (x − 2)², not (x + 2)². Inside the bracket the sign is opposite to the direction of travel — ask which x makes the bracket zero. Every line after this one follows correctly from the wrong start, which is how a sign error survives to the final answer.',
+            hint: 'Which value of x makes the bracket zero?',
+            solution: ['Right 2 gives (x − 2)²', 'So g(x) = (x − 2)² − 3 and the vertex is (2, −3)'] },
 
-          { id: 'p9', kind: 'numeric', lesson: 'domain',
-            prompt: 'f(x) = 1/(x − 7). Which single value of x must be excluded from the domain?',
-            answer: 7, verify: { solve: 'x - 7', forZero: true },
-            hint: 'Set the denominator to zero and solve.',
-            solution: ['x − 7 = 0', 'x = 7'] },
+          { id: 'u1p14', kind: 'numeric', lesson: 's16',
+            prompt: 'f(x) = 3x − 5. Its inverse is f⁻¹(x) = (x + 5)/3. Find f⁻¹(7).',
+            answer: 4, verify: { expr: '(7 + 5)/3' },
+            hint: 'Substitute 7 into the inverse — or ask which input to f gives 7.',
+            solution: ['f⁻¹(7) = (7 + 5)/3', '= 12/3', '= 4'] },
 
-          { id: 'p10', kind: 'numeric', lesson: 'domain',
-            prompt: 'g(x) = √(3x − 12). What is the smallest x in the domain?',
-            answer: 4, verify: { solve: '3*x - 12', forZero: true },
-            hint: 'The radicand must be at least zero; the boundary is where it equals zero.',
-            solution: ['3x − 12 ≥ 0', '3x ≥ 12', 'x ≥ 4, so the smallest value is 4'] },
-
-          { id: 'p11', kind: 'mc', lesson: 'domain',
-            prompt: 'What is the domain of f(x) = x / (x² + 4)?',
+          { id: 'u1p15', kind: 'mc', lesson: 's16',
+            prompt: 'For f(x) = 3x − 5, what is f⁻¹(x)?',
             options: [
-              { t: 'Every real number', ok: true },
-              { t: 'Every real number except x = 0', ok: false },
-              { t: 'Every real number except x = −2 and x = 2', ok: false },
-              { t: 'x ≥ 0 only', ok: false }
+              { t: '(x + 5)/3', ok: true },
+              { t: '1/(3x − 5)', ok: false },
+              { t: '(x − 5)/3', ok: false },
+              { t: '3x + 5', ok: false }
             ],
-            hint: 'Can x² + 4 ever equal zero for a real x?',
-            solution: ['x² ≥ 0 for every real x, so x² + 4 ≥ 4', 'The denominator is never zero, so nothing is excluded'] },
+            hint: 'The −1 is notation, not an exponent.',
+            solution: ['y = 3x − 5, swap: x = 3y − 5', 'x + 5 = 3y', 'y = (x + 5)/3'] }
+        ]
+      },
 
-          { id: 'p12', kind: 'mc', lesson: 'domain',
-            prompt: 'Solving −2x ≥ 10 for the domain of a root, what is the correct result?',
-            options: [
-              { t: 'x ≤ −5', ok: true },
-              { t: 'x ≥ −5', ok: false },
-              { t: 'x ≥ 5', ok: false },
-              { t: 'x ≤ 5', ok: false }
+      /* ============================ UNIT 2 ============================ */
+      {
+        id: 'linear',
+        n: 2,
+        title: 'Linear functions',
+        blurb: 'Sections 2.1 – 2.2. Constant rate of change, the three forms of a line, and what parallel and perpendicular really require.',
+        objectives: [
+          'Recognise a linear function by its constant rate of change',
+          'Move between slope-intercept, point-slope and standard form',
+          'Find the equation of a line from a point and a slope, or from two points',
+          'Say what a slope and an intercept mean in a real context',
+          'Decide whether two lines are parallel, perpendicular or neither'
+        ],
+
+        lessons: [
+          {
+            id: 's21',
+            title: 'Linear functions',
+            src: 'Section 2.1',
+            idea: `A function is <b>linear</b> exactly when its rate of change is <b>constant</b> — the same between any two points you pick. That constant is the <b>slope</b> m, and the value at x = 0 is the <b>vertical intercept</b> b, giving <b>f(x) = mx + b</b>. In a real model the slope is a rate with units ("dollars per game") and the intercept is the starting amount before anything happens.`,
+            rules: [
+              { name: 'Slope-intercept form', expr: 'f(x) = m*x + b', note: 'm is the constant rate of change; b is the output when x = 0.' },
+              { name: 'Slope from two points', expr: '(y2 - y1)/(x2 - x1)', note: 'Subtract in the same order top and bottom.' }
             ],
-            hint: 'Dividing by a negative does something to the inequality sign.',
-            solution: ['Divide both sides by −2', 'Dividing by a negative reverses the inequality', 'x ≤ −5'] }
+            examples: [
+              {
+                prompt: 'Bowling costs a one-off $7 shoe rental plus $3 a game. Write the cost function.',
+                steps: [
+                  { do: 'The $3 repeats per game', why: 'A fixed amount per unit of input is a constant rate of change — that is what makes this linear.' },
+                  { do: 'The $7 happens once, before any game', why: 'That is the value at x = 0, so it is the intercept.' },
+                  { do: 'f(x) = 3x + 7', why: 'Slope 3 dollars per game, intercept 7 dollars.' }
+                ],
+                answer: '3x + 7'
+              },
+              {
+                prompt: 'C(n) = 15n + 50 gives the cost of printing n t-shirts. What do 15 and 50 mean?',
+                steps: [
+                  { do: '15 is the slope', why: 'It multiplies n, so it is the rate: $15 for each additional shirt.' },
+                  { do: '50 is the intercept', why: 'It is the cost when n = 0 — a set-up fee charged before any shirt is printed.' },
+                  { do: 'C(12) = 15(12) + 50 = 230', why: 'Twelve shirts cost $230. Reading a model means being able to use it and to say what its parts mean.' }
+                ],
+                answer: '230'
+              },
+              {
+                prompt: 'Find the equation of the line through (2, 5) with slope −3.',
+                steps: [
+                  { do: 'Point-slope: y − 5 = −3(x − 2)', why: 'Point-slope form takes a point and a slope directly, with no rearranging.' },
+                  { do: 'y − 5 = −3x + 6', why: 'Expand the right side. Both terms get multiplied by −3.' },
+                  { do: 'y = −3x + 11', why: 'Add 5 to both sides. The intercept is 11, which is not one of the numbers in the question.' }
+                ],
+                answer: '-3x + 11'
+              }
+            ],
+            pitfalls: [
+              {
+                wrong: 'Taking the intercept straight from the point: "through (2, 5), so b = 5".',
+                right: 'b is the output at x = 0, not at the point you were given.',
+                why: 'Only a point whose x is 0 gives you b for free. Here the line through (2, 5) with slope −3 has b = 11.'
+              },
+              {
+                wrong: 'Slope = (y₂ − y₁)/(x₁ − x₂)',
+                right: 'Slope = (y₂ − y₁)/(x₂ − x₁)',
+                why: 'Flipping the order on one line and not the other reverses the sign. Pick a first point and a second point, then subtract in that same order twice.'
+              },
+              {
+                wrong: 'Calling any straight-looking data linear.',
+                right: 'Check that the rate of change between successive points is the same.',
+                why: 'A table is linear only if equal steps in x give equal steps in y. Test at least two different pairs before committing.'
+              }
+            ]
+          },
+
+          {
+            id: 's22',
+            title: 'Graphs of linear functions',
+            src: 'Section 2.2',
+            idea: `A line can be drawn from two points, from the slope and intercept, or as a transformation of the identity function f(x) = x. Any equation of the form Ax + By = C describes a line too; solving it for y puts it in slope-intercept form where the slope and intercept can be read off. <b>Parallel</b> lines have <b>equal</b> slopes. <b>Perpendicular</b> lines have slopes that are <b>negative reciprocals</b>: their product is −1.`,
+            rules: [
+              { name: 'Parallel', expr: 'm1 = m2', note: 'Equal slopes, different intercepts.' },
+              { name: 'Perpendicular', expr: 'm1*m2 = -1', note: 'Flip the fraction AND change the sign. Both, not one.' }
+            ],
+            examples: [
+              {
+                prompt: 'Rewrite 4x + 2y = 8 in slope-intercept form and read off the slope and intercept.',
+                steps: [
+                  { do: '2y = −4x + 8', why: 'Move the x term across. Isolate the y term before dividing.' },
+                  { do: 'y = −2x + 4', why: 'Divide EVERY term by 2, including the 8.' },
+                  { do: 'Slope −2, intercept 4', why: 'Now both are visible. The line falls 2 for every 1 across.' }
+                ],
+                answer: 'y = -2x + 4'
+              },
+              {
+                prompt: 'Are y = 2x + 3 and y = −½x + 1 parallel, perpendicular, or neither?',
+                steps: [
+                  { do: 'Slopes: 2 and −1/2', why: 'Read them straight off, both are already in slope-intercept form.' },
+                  { do: 'They are not equal, so not parallel', why: 'Parallel needs identical slopes.' },
+                  { do: '2 × (−1/2) = −1', why: 'The product is −1, which is the perpendicular test.' },
+                  { do: 'Perpendicular', why: '−1/2 is 2 flipped and negated — both operations, which is what "negative reciprocal" means.' }
+                ],
+                answer: 'perpendicular', answerWords: true
+              },
+              {
+                prompt: 'Graph f(x) = 6 − (3/4)x using two points.',
+                steps: [
+                  { do: 'f(0) = 6', why: 'The easiest point to compute is always the intercept.' },
+                  { do: 'f(4) = 6 − (3/4)(4) = 3', why: 'Choose an x that clears the denominator, so the arithmetic stays exact.' },
+                  { do: 'Join (0, 6) and (4, 3)', why: 'Two points determine the line. The slope −3/4 is visible as "down 3, across 4".' }
+                ],
+                answer: 'through (0, 6) and (4, 3)', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                wrong: 'Perpendicular to slope 2 means slope −2.',
+                right: 'It means slope −1/2.',
+                why: 'Negative reciprocal is two operations: flip the fraction and change the sign. Doing only the sign gives a line that is not perpendicular to anything useful. Check by multiplying: it must come to −1.'
+              },
+              {
+                wrong: 'Dividing only some terms: 2y = −4x + 8 giving y = −2x + 8.',
+                right: 'y = −2x + 4',
+                why: 'Dividing an equation by 2 divides EVERY term. Forgetting the constant is the most common slip in rearranging to slope-intercept form.'
+              },
+              {
+                wrong: 'Reading the slope of 4x + 2y = 8 as 4.',
+                right: 'The slope is −2.',
+                why: 'Standard form hides the slope. Nothing can be read off until y is alone on one side.'
+              }
+            ]
+          }
+        ],
+
+        practice: [
+          { id: 'u2p1', kind: 'numeric', lesson: 's21',
+            prompt: 'C(n) = 15n + 50 is the cost of printing n t-shirts. What does it cost to print 12?',
+            answer: 230, verify: { expr: '15*12 + 50' },
+            hint: 'Substitute 12 for n.',
+            solution: ['C(12) = 15(12) + 50', '= 180 + 50', '= 230'] },
+
+          { id: 'u2p2', kind: 'numeric', lesson: 's21',
+            prompt: 'A line passes through (2, 5) with slope −3. What is its y-intercept?',
+            answer: 11, verify: { expr: '5 - (-3)*2' },
+            hint: 'Use y = mx + b with the point given, then solve for b.',
+            solution: ['5 = −3(2) + b', '5 = −6 + b', 'b = 11'] },
+
+          { id: 'u2p3', kind: 'numeric', lesson: 's21',
+            prompt: 'Find the slope of the line through (1, 4) and (5, 16).',
+            answer: 3, verify: { expr: '(16 - 4)/(5 - 1)' },
+            hint: 'Subtract in the same order on top and bottom.',
+            solution: ['(16 − 4)/(5 − 1)', '= 12/4', '= 3'] },
+
+          { id: 'u2p4', kind: 'numeric', lesson: 's22',
+            prompt: 'Rewrite 4x + 2y = 8 in slope-intercept form. What is the slope?',
+            answer: -2, verify: { expr: '-4/2' },
+            hint: 'Get y alone, dividing every term.',
+            solution: ['2y = −4x + 8', 'y = −2x + 4', 'Slope = −2'] },
+
+          { id: 'u2p5', kind: 'numeric', lesson: 's22',
+            prompt: 'For that same line, what is the y-intercept?',
+            answer: 4, verify: { expr: '8/2' },
+            hint: 'Divide the constant by 2 as well.',
+            solution: ['y = −2x + 4', 'Intercept = 4'] },
+
+          { id: 'u2p6', kind: 'mc', lesson: 's22',
+            prompt: 'A line perpendicular to y = 2x + 3 has what slope?',
+            options: [
+              { t: '−1/2', ok: true },
+              { t: '−2', ok: false },
+              { t: '1/2', ok: false },
+              { t: '2', ok: false }
+            ],
+            hint: 'Negative reciprocal is two operations, not one.',
+            solution: ['Flip 2 to get 1/2', 'Change the sign to get −1/2', 'Check: 2 × (−1/2) = −1'] },
+
+          { id: 'u2p7', kind: 'mc', lesson: 's21',
+            prompt: 'P(q) = 0.25q − 10 gives profit in thousands for q thousand units sold. What does −10 mean?',
+            options: [
+              { t: 'A fixed cost of $10,000 carried before any units are sold', ok: true },
+              { t: 'A loss of $10 on every unit sold', ok: false },
+              { t: 'The company loses money once q passes 10', ok: false },
+              { t: 'Profit falls by $10,000 for each thousand units', ok: false }
+            ],
+            hint: 'The intercept is the value when q = 0.',
+            solution: ['At q = 0, P = −10', 'In thousands, that is a $10,000 loss before any sales', 'The 0.25 is the rate: $250 profit per thousand units'] },
+
+          { id: 'u2p8', kind: 'spot', lesson: 's22',
+            prompt: 'One line of this rearrangement is wrong. Which one?',
+            steps: [
+              { t: 'Start: 4x + 2y = 8', bad: false },
+              { t: 'Subtract 4x: 2y = −4x + 8', bad: false },
+              { t: 'Divide by 2: y = −2x + 8', bad: true },
+              { t: 'So the slope is −2 and the intercept is 8', bad: false }
+            ],
+            why: 'Dividing the equation by 2 has to divide EVERY term, including the constant: 8/2 = 4, so the line is y = −2x + 4. The slope happens to survive the error, which is what makes it easy to miss — only the intercept is wrong, and it is wrong by a factor of two.',
+            hint: 'Check what happens to the 8.',
+            solution: ['2y = −4x + 8', 'Divide all three terms by 2', 'y = −2x + 4'] }
+        ]
+      },
+
+      /* ============================ UNIT 3 ============================ */
+      {
+        id: 'poly',
+        n: 3,
+        title: 'Polynomial and rational functions',
+        blurb: 'Sections 3.1 – 3.2. Power functions, polynomial degree and end behaviour, and everything a quadratic tells you about its vertex.',
+        objectives: [
+          'Identify a power function and a polynomial, and state degree and leading coefficient',
+          'Predict end behaviour from the degree and the leading coefficient alone',
+          'Move between the standard and vertex forms of a quadratic',
+          'Find a vertex, and use it for the range and for maximum or minimum problems'
+        ],
+
+        lessons: [
+          {
+            id: 's31',
+            title: 'Power functions and polynomial functions',
+            src: 'Section 3.1',
+            idea: `A <b>power function</b> is f(x) = x<sup>p</sup> — a variable base with a constant exponent. A <b>polynomial</b> is a sum of power functions with whole-number exponents: a₀ + a₁x + a₂x² + … + aₙxⁿ. Its <b>degree</b> is the highest exponent and its <b>leading coefficient</b> is the number attached to that term. Those two facts alone decide the <b>end behaviour</b> — what the graph does far to the left and far to the right — because for very large |x| the highest power dwarfs everything else.`,
+            rules: [
+              { name: 'Power function', expr: 'f(x) = x^p', note: 'Variable base, constant exponent. 2^x is NOT a power function — the variable is in the wrong place.' },
+              { name: 'Polynomial', expr: 'a0 + a1*x + a2*x^2', note: 'Whole-number exponents only. Degree = the highest one.' }
+            ],
+            examples: [
+              {
+                prompt: 'State the degree and leading coefficient of f(x) = 5 − 2x³ + 7x².',
+                steps: [
+                  { do: 'Find the highest exponent, not the first term', why: 'The terms are written out of order here, which is the trap.' },
+                  { do: 'Degree 3', why: 'The −2x³ term carries the highest power.' },
+                  { do: 'Leading coefficient −2', why: 'It is the number on the highest-degree term, and the minus sign belongs to it.' }
+                ],
+                answer: 'degree 3, leading coefficient -2', answerWords: true
+              },
+              {
+                prompt: 'Describe the end behaviour of f(x) = −2x³ + 7x² + 5.',
+                steps: [
+                  { do: 'Degree 3 is odd', why: 'Odd degree means the two ends go in opposite directions.' },
+                  { do: 'Leading coefficient −2 is negative', why: 'A negative flips the usual odd-degree picture.' },
+                  { do: 'Rises on the left, falls on the right', why: 'As x → −∞, f → +∞; as x → +∞, f → −∞. The 7x² and the 5 make no difference this far out.' }
+                ],
+                answer: 'up on the left, down on the right', answerWords: true
+              },
+              {
+                prompt: 'Which of x⁰, x¹, x², x³ are even power functions, and what does that mean for the graph?',
+                steps: [
+                  { do: 'x⁰ = 1 and x² have even exponents', why: 'Even powers turn negatives into positives, so f(−a) = f(a).' },
+                  { do: 'Their graphs are symmetric about the y-axis', why: 'That is what f(−x) = f(x) looks like when drawn.' },
+                  { do: 'x¹ and x³ are odd', why: 'They satisfy f(−x) = −f(x) and are symmetric about the origin instead.' }
+                ],
+                answer: 'x^0 and x^2 are even', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                wrong: 'Reading the degree off the first term written: "5 − 2x³ + 7x² has degree 0".',
+                right: 'Degree 3.',
+                why: 'A polynomial does not have to be written in descending order. Scan every term for the highest exponent before answering.'
+              },
+              {
+                wrong: 'Calling 2ˣ a power function.',
+                right: 'It is exponential; a power function has the variable in the BASE.',
+                why: 'x² and 2ˣ behave completely differently — compare them at x = 10: 100 against 1024, and the gap only widens. Which position the variable occupies is the whole distinction.'
+              },
+              {
+                wrong: 'Leaving the minus sign behind: "leading coefficient 2".',
+                right: '−2.',
+                why: 'The sign is part of the coefficient, and it is the sign that decides which way the graph ends.'
+              }
+            ]
+          },
+
+          {
+            id: 's32',
+            title: 'Quadratic functions',
+            src: 'Section 3.2',
+            idea: `Every quadratic is a transformation of the toolkit function f(x) = x². Written in <b>vertex form</b> f(x) = a(x − h)² + k, the vertex sits at <b>(h, k)</b> and can be read straight off. Written in <b>standard form</b> f(x) = ax² + bx + c, the vertex x-coordinate is <b>−b/(2a)</b>, and substituting it back gives the y-coordinate. The sign of a says which way it opens, and therefore whether the vertex is a minimum or a maximum.`,
+            rules: [
+              { name: 'Vertex form', expr: 'a*(x - h)^2 + k', note: 'Vertex at (h, k). Note the minus: (x + 1)² has h = −1.' },
+              { name: 'Vertex from standard form', expr: '-b/(2*a)', note: 'That is the x-coordinate; substitute it back to get y.' }
+            ],
+            examples: [
+              {
+                prompt: 'Find the vertex of f(x) = x² − 4x + 3.',
+                steps: [
+                  { do: 'a = 1, b = −4', why: 'Read the coefficients with their signs.' },
+                  { do: 'x = −b/(2a) = 4/2 = 2', why: 'The minus in the formula and the minus in b cancel, giving +2.' },
+                  { do: 'f(2) = 4 − 8 + 3 = −1', why: 'Substitute back to get the height of the vertex.' },
+                  { do: 'Vertex (2, −1)', why: 'a = 1 > 0, so the parabola opens upward and this is a minimum.' }
+                ],
+                answer: '(2, -1)'
+              },
+              {
+                prompt: 'State the vertex and range of f(x) = (x + 1)² + 2.',
+                steps: [
+                  { do: 'Match against a(x − h)² + k', why: 'The form has a MINUS, so (x + 1) must be read as (x − (−1)).' },
+                  { do: 'h = −1, k = 2', why: 'Hence the vertex is (−1, 2), not (1, 2).' },
+                  { do: 'a = 1 > 0, opens upward', why: 'So the vertex is the lowest point.' },
+                  { do: 'Range: [2, ∞)', why: 'The output never drops below the vertex height, and 2 itself is achieved.' }
+                ],
+                answer: 'vertex (-1, 2), range [2, inf)', answerWords: true
+              },
+              {
+                prompt: 'Write the quadratic with vertex (2, −3) passing through (0, 1).',
+                steps: [
+                  { do: 'f(x) = a(x − 2)² − 3', why: 'Vertex form, with the vertex substituted in.' },
+                  { do: '1 = a(0 − 2)² − 3', why: 'Use the extra point to pin down a.' },
+                  { do: '1 = 4a − 3, so 4a = 4', why: 'The vertex form leaves exactly one unknown.' },
+                  { do: 'a = 1, f(x) = (x − 2)² − 3', why: 'One point beyond the vertex is always enough to determine a quadratic.' }
+                ],
+                answer: '(x - 2)^2 - 3'
+              }
+            ],
+            pitfalls: [
+              {
+                wrong: '(x + 1)² + 2 has vertex (1, 2).',
+                right: 'The vertex is (−1, 2).',
+                why: 'Vertex form is a(x − h)² + k. To match (x + 1) you need h = −1, because x − (−1) = x + 1. The sign in the bracket is always the opposite of the vertex coordinate.'
+              },
+              {
+                wrong: 'Using x = b/(2a) instead of −b/(2a).',
+                right: 'The formula carries a minus sign.',
+                why: 'For x² − 4x + 3 the correct value is −(−4)/2 = 2. Dropping the minus gives −2, which is on the wrong side of the axis entirely.'
+              },
+              {
+                wrong: 'Giving the vertex as a single number.',
+                right: 'A vertex is a point: (h, k).',
+                why: '−b/(2a) is only the x-coordinate. The question is not finished until it has been substituted back to get the height.'
+              }
+            ]
+          }
+        ],
+
+        practice: [
+          { id: 'u3p1', kind: 'numeric', lesson: 's32',
+            prompt: 'Find the x-coordinate of the vertex of f(x) = x² − 4x + 3.',
+            answer: 2, verify: { expr: '-(-4)/(2*1)' },
+            hint: 'x = −b/(2a), and b is −4.',
+            solution: ['a = 1, b = −4', 'x = −(−4)/(2·1)', '= 2'] },
+
+          { id: 'u3p2', kind: 'numeric', lesson: 's32',
+            prompt: 'For the same f(x) = x² − 4x + 3, what is the y-coordinate of the vertex?',
+            answer: -1, verify: { expr: '2**2 - 4*2 + 3' },
+            hint: 'Substitute the x you just found back into f.',
+            solution: ['f(2) = 4 − 8 + 3', '= −1', 'So the vertex is (2, −1)'] },
+
+          { id: 'u3p3', kind: 'numeric', lesson: 's32',
+            prompt: 'f(x) = (x + 1)² + 2. What is the x-coordinate of the vertex?',
+            answer: -1, verify: { expr: '-1' },
+            hint: 'Vertex form is a(x − h)² + k — match the sign carefully.',
+            solution: ['(x + 1) = (x − (−1))', 'So h = −1', 'The vertex is (−1, 2)'] },
+
+          { id: 'u3p4', kind: 'numeric', lesson: 's32',
+            prompt: 'A quadratic has vertex (2, −3) and passes through (0, 1). What is a?',
+            answer: 1, verify: { expr: '(1 - (-3))/(0 - 2)**2' },
+            hint: 'Put the point into f(x) = a(x − 2)² − 3 and solve.',
+            solution: ['1 = a(0 − 2)² − 3', '1 = 4a − 3', '4a = 4, so a = 1'] },
+
+          { id: 'u3p5', kind: 'numeric', lesson: 's31',
+            prompt: 'What is the degree of f(x) = 5 − 2x³ + 7x²?',
+            answer: 3, verify: { expr: '3' },
+            hint: 'The terms are not in descending order — look at all of them.',
+            solution: ['The exponents present are 0, 3 and 2', 'The highest is 3', 'Degree 3, leading coefficient −2'] },
+
+          { id: 'u3p6', kind: 'mc', lesson: 's31',
+            prompt: 'Which of these is a power function?',
+            options: [
+              { t: 'f(x) = x⁵', ok: true },
+              { t: 'f(x) = 5ˣ', ok: false },
+              { t: 'f(x) = x⁵ + 3x', ok: false },
+              { t: 'f(x) = 5', ok: false }
+            ],
+            hint: 'A power function is a single term x^p — variable in the base.',
+            solution: ['x⁵ has a variable base and a constant exponent', '5ˣ is exponential — the variable is the exponent', 'x⁵ + 3x is a polynomial, but not a single power function'] },
+
+          { id: 'u3p7', kind: 'mc', lesson: 's31',
+            prompt: 'How does f(x) = −2x³ + 7x² + 5 behave at its far ends?',
+            options: [
+              { t: 'Up on the left, down on the right', ok: true },
+              { t: 'Down on the left, up on the right', ok: false },
+              { t: 'Up at both ends', ok: false },
+              { t: 'Down at both ends', ok: false }
+            ],
+            hint: 'Odd degree splits the ends; the sign of the leading coefficient decides which way round.',
+            solution: ['Degree 3 is odd, so the ends go opposite ways', 'The leading coefficient −2 is negative, flipping the usual picture', 'As x → −∞, f → +∞; as x → +∞, f → −∞'] },
+
+          { id: 'u3p8', kind: 'spot', lesson: 's32',
+            prompt: 'One line of this is wrong. Which one?',
+            steps: [
+              { t: 'f(x) = x² − 6x + 5, so a = 1 and b = −6', bad: false },
+              { t: 'Vertex x = b/(2a) = −6/2 = −3', bad: true },
+              { t: 'f(−3) = 9 + 18 + 5 = 32', bad: false },
+              { t: 'So the vertex is (−3, 32)', bad: false }
+            ],
+            why: 'The formula is −b/(2a), not b/(2a). With b = −6 that gives −(−6)/2 = +3, so the vertex is at x = 3 and f(3) = 9 − 18 + 5 = −4. The dropped minus put the vertex on the wrong side of the axis, and the two later lines are arithmetically correct from that wrong start.',
+            hint: 'Write the formula out with its sign before substituting.',
+            solution: ['x = −b/(2a) = −(−6)/2 = 3', 'f(3) = 9 − 18 + 5 = −4', 'Vertex (3, −4)'] },
+
+          { id: 'u3p9', kind: 'order', lesson: 's32',
+            prompt: 'Put the steps for finding the vertex of f(x) = x² − 4x + 3 back in order.',
+            steps: [
+              'a = 1, b = −4',
+              'x = −b/(2a)',
+              'x = −(−4)/(2·1) = 2',
+              'f(2) = 4 − 8 + 3 = −1',
+              'Vertex (2, −1)'
+            ],
+            hint: 'Coefficients, then the formula, then substitute, then evaluate.',
+            solution: ['The x-coordinate has to be found before it can be substituted back for the height.'] }
         ]
       }
     ]
@@ -4482,7 +5137,6 @@ const GENERIC = new Set('information data process system method result results s
     all: () => COURSES,
     get: id => COURSES.find(c => c.id === id) || null,
     unit: (cid, uid) => { const c = COURSES.find(x => x.id === cid); return c ? (c.units.find(u => u.id === uid) || null) : null; },
-    // every practice item in a course, flattened, each tagged with where it came from
     items: cid => {
       const c = COURSES.find(x => x.id === cid);
       if (!c) return [];
@@ -4513,7 +5167,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.15', date: '10 September 2026', year: 2026 };
+  const BUILD = { v: '2.16', date: '10 September 2026', year: 2026 };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonandy242', ['gmail', 'com'].join('.')].join('@');
   const OWNER_NAME = 'JohnsonXCorp';   // who the app belongs to, wherever it is named to a user
@@ -4522,6 +5176,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      because the person who needs it is the one who just watched the app refresh itself and wants to
      know what moved. Trim the tail when it gets past a dozen; nobody reads further back than that. */
   const WHATS_NEW = [
+    ['2.16', 'The <b>Math</b> section now carries the full Precalculus course \u2014 chapters 1 to 3, following the same section numbers as the lecture slides, with worked examples, the mistakes people actually make, and practice that marks itself.'],
     ['2.15', 'A new <b>Tutoring</b> section with a built-in Precalculus course \u2014 worked examples that give a reason for every step, the mistakes people actually make, and practice that marks itself.'],
     ['2.14', 'Sharing the link now shows what this is \u2014 a title, a line of description and a picture \u2014 instead of a bare address, and a mistyped link lands on a page that points back here.'],
     ['2.13', 'A dark theme that is dark rather than switched off: the page sits below the cards so panels lift, the hairlines stop being paper-white, and both themes now share one colour family.'],
@@ -5446,7 +6101,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
           <span class="arr">→</span>
         </a>`;
       })()}
-      <div class="subjects-head"><h2>${subs.length ? 'Your subjects' : 'No subjects yet'}</h2><a class="btn cell ghost" href="#/math" title="Courses written out in full, with worked examples and practice">Tutoring</a>${subs.length ? `<a class="btn cell ghost" href="#/plan" title="The next fortnight, worked backwards from your exams and deadlines">Study plan</a><a class="btn cell ghost" href="#/semester" title="Every subject, exam and deadline on one screen">Semester view</a>` : ''}${(() => { const n = state.subjects.reduce((x, s2) => x + leechCount(s2.id), 0); return n ? `<a class="btn cell ghost" href="#/leeches" title="Every card that keeps failing, in one place">Leeches <span class="n">${n}</span></a>` : ''; })()}<button class="btn cell ghost" data-act="backup-open" title="Back up every subject to a file, or restore one">Backup &amp; restore</button><button class="btn cell" data-act="new-subject">Add subject <span class="arr">→</span></button></div>
+      <div class="subjects-head"><h2>${subs.length ? 'Your subjects' : 'No subjects yet'}</h2><a class="btn cell ghost" href="#/math" title="Courses written out in full, with worked examples and practice">Math</a>${subs.length ? `<a class="btn cell ghost" href="#/plan" title="The next fortnight, worked backwards from your exams and deadlines">Study plan</a><a class="btn cell ghost" href="#/semester" title="Every subject, exam and deadline on one screen">Semester view</a>` : ''}${(() => { const n = state.subjects.reduce((x, s2) => x + leechCount(s2.id), 0); return n ? `<a class="btn cell ghost" href="#/leeches" title="Every card that keeps failing, in one place">Leeches <span class="n">${n}</span></a>` : ''; })()}<button class="btn cell ghost" data-act="backup-open" title="Back up every subject to a file, or restore one">Backup &amp; restore</button><button class="btn cell" data-act="new-subject">Add subject <span class="arr">→</span></button></div>
       <div class="subject-grid">
         ${subs.map(s => `<div class="subject-slot"><a class="subject-card" href="#/s/${s.id}" style="--tab:${s.color}">
           <div class="code">${esc(s.code || 'Subject')}</div>
@@ -5822,10 +6477,10 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
         ${done ? `<span class="bar" aria-hidden="true"><i style="width:${Math.round(done / Math.max(1, n.practice) * 100)}%"></i></span>` : ''}
       </a>`;
     }).join('');
-    app.innerHTML = frame(`${topbar(`<a href="#/">Subjects</a><span class="sep">/</span><strong>Tutoring</strong>`)}
+    app.innerHTML = frame(`${topbar(`<a href="#/">Subjects</a><span class="sep">/</span><strong>Math</strong>`)}
       <main id="main" tabindex="-1">
         <div class="sec-hero">
-          <span class="label">Tutoring</span>
+          <span class="label">Math</span>
           <h1>Courses taught, not just scanned</h1>
           <p class="lede">Your own files still become cards, summaries and quizzes as before. These are different: each one was written out in full, so every step comes with the reason it follows — and the mistake people make there instead.</p>
         </div>
@@ -5856,13 +6511,14 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
         </span>
       </a>`;
     }).join('');
-    app.innerHTML = frame(`${topbar(`<a href="#/">Subjects</a><span class="sep">/</span><a href="#/math">Tutoring</a><span class="sep">/</span><strong>${esc(c.title)}</strong>`)}
+    app.innerHTML = frame(`${topbar(`<a href="#/">Subjects</a><span class="sep">/</span><a href="#/math">Math</a><span class="sep">/</span><strong>${esc(c.title)}</strong>`)}
       <main id="main" tabindex="-1">
         <div class="sec-hero">
           <span class="label">${esc(c.level)} &middot; ${n.units} unit${n.units === 1 ? '' : 's'}</span>
           <h1>${esc(c.title)}</h1>
           <p class="lede">${esc(c.blurb)}</p>
           <div class="sum-stats"><div><b>${n.lessons}</b><span>lessons</span></div><div><b>${n.examples}</b><span>worked examples</span></div><div><b>${n.practice}</b><span>practice questions</span></div></div>
+          ${c.exam ? `<p class="exam-note"><span class="label">Exam scope</span> ${esc(c.exam)}</p>` : ''}
         </div>
         <div class="unit-list">${rows}</div>
       </main>${foot()}`);
@@ -5873,7 +6529,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     const pr = unitProgress(c, u);
     const lessons = u.lessons.map((l, li) => `
       <section class="lesson" id="l-${esc(l.id)}">
-        <div class="lesson-head"><span class="label">${u.n}.${li + 1}</span><h2>${esc(l.title)}</h2></div>
+        <div class="lesson-head"><span class="label">${u.n}.${li + 1}</span><h2>${esc(l.title)}</h2>${l.src ? `<span class="src-chip" title="Follows this section of the course slides">${esc(l.src)}</span>` : ''}</div>
         <div class="lesson-body">
           <p class="idea">${l.idea}</p>
           ${l.rules && l.rules.length ? `<div class="rules">${l.rules.map(rr => `<div class="rule">
@@ -5885,7 +6541,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
           ${l.examples.map((ex, xi) => `<figure class="worked">
             <figcaption><span class="label">Worked example ${u.n}.${li + 1}.${xi + 1}</span><b>${esc(ex.prompt)}</b></figcaption>
             <ol class="wsteps">${ex.steps.map(st => `<li><span class="do">${esc(st.do)}</span><span class="why">${esc(st.why)}</span></li>`).join('')}</ol>
-            <p class="ans"><span class="label">Answer</span> <span class="fx">${fxHtml(ex.answer)}</span></p>
+            <p class="ans"><span class="label">Answer</span> <span class="fx${ex.answerWords ? ' words' : ''}">${fxHtml(ex.answer, ex.answerWords ? 'words' : '')}</span></p>
           </figure>`).join('')}
 
           ${l.pitfalls && l.pitfalls.length ? `<div class="pitfalls">
@@ -5899,7 +6555,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
         </div>
       </section>`).join('');
 
-    app.innerHTML = frame(`${topbar(`<a href="#/math">Tutoring</a><span class="sep">/</span><a href="#/math/${esc(c.id)}">${esc(c.code)}</a><span class="sep">/</span><strong>Unit ${u.n}</strong>`)}
+    app.innerHTML = frame(`${topbar(`<a href="#/math">Math</a><span class="sep">/</span><a href="#/math/${esc(c.id)}">${esc(c.code)}</a><span class="sep">/</span><strong>Unit ${u.n}</strong>`)}
       <div class="section-bar">
         <a class="back" href="#/math/${esc(c.id)}" aria-label="Back to ${esc(c.title)}"><span class="back-ico">${I.back}</span><span class="back-txt">${esc(c.code)}</span></a>
         <div class="sec-title"><h2><span class="sec-ico">${I.formula}</span>Unit ${u.n}</h2></div>
