@@ -6,7 +6,7 @@ const V = '2.19';
 const APP = 'umez-app-v' + V;      // the page and its icons, replaced whole on every build
 const RUNTIME = 'umez-runtime-v1'; // web fonts, kept across builds
 
-const SHELL = ['./', './index.html', './manifest.webmanifest', './sync.json', './icon-192.png', './icon-512.png', './icon-512-maskable.png', './apple-touch-icon.png'];
+const SHELL = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './icon-512-maskable.png', './apple-touch-icon.png'];
 
 self.addEventListener('install', e => {
   // addAll fails as a unit; a partial cache would be worse than none, so let it reject quietly

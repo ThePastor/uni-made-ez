@@ -19,8 +19,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>UNI Made EZ — flash cards, summaries and quizzes from your own course files</title>
-<meta name="description" content="Turn your own lecture PDFs, slides and notes into flash cards, a summary, the key information and a quiz — built in your browser, nothing uploaded anywhere.">
+<title>UNI Made EZ — courses taught in full, and your own files turned into study material</title>
+<meta name="description" content="Two ways to study: courses written out in full, or your own lecture files turned into cards, summaries and quizzes. Both run entirely in your browser.">
 <meta name="color-scheme" content="light dark">
 <meta name="theme-color" content="#F2F8F9" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0C0C0D" media="(prefers-color-scheme: dark)">
@@ -40,19 +40,19 @@
 <meta property="og:site_name" content="UNI Made EZ">
 <meta property="og:locale" content="en_CA">
 <meta property="og:url" content="https://thepastor.github.io/uni-made-ez/">
-<meta property="og:title" content="UNI Made EZ — your lecture files, turned into study material">
-<meta property="og:description" content="Turn your own lecture PDFs, slides and notes into flash cards, a summary, the key information and a quiz — built in your browser, nothing uploaded anywhere.">
+<meta property="og:title" content="UNI Made EZ — two ways to study, both in your browser">
+<meta property="og:description" content="Two ways to study: courses written out in full, or your own lecture files turned into cards, summaries and quizzes. Both run entirely in your browser.">
 <meta property="og:image" content="https://thepastor.github.io/uni-made-ez/preview.png">
 <meta property="og:image:secure_url" content="https://thepastor.github.io/uni-made-ez/preview.png">
 <meta property="og:image:type" content="image/png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="UNI Made EZ — flash cards, summary, key info and quiz, built from your own course files in your browser">
+<meta property="og:image:alt" content="UNI Made EZ — courses taught in full, and your own lecture files turned into flash cards, summaries and quizzes">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="UNI Made EZ — your lecture files, turned into study material">
-<meta name="twitter:description" content="Turn your own lecture PDFs, slides and notes into flash cards, a summary, the key information and a quiz — built in your browser, nothing uploaded anywhere.">
+<meta name="twitter:title" content="UNI Made EZ — two ways to study, both in your browser">
+<meta name="twitter:description" content="Two ways to study: courses written out in full, or your own lecture files turned into cards, summaries and quizzes. Both run entirely in your browser.">
 <meta name="twitter:image" content="https://thepastor.github.io/uni-made-ez/preview.png">
-<meta name="twitter:image:alt" content="UNI Made EZ — flash cards, summary, key info and quiz, built from your own course files in your browser">
+<meta name="twitter:image:alt" content="UNI Made EZ — courses taught in full, and your own lecture files turned into flash cards, summaries and quizzes">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
 <style>
 /* UNI Made EZ — visual system
@@ -1825,20 +1825,38 @@ math mi[mathvariant="normal"] { font-style: normal; }
    uppercase mono with letter-spacing, so the type floor and the contrast floor are enforced
    together in test/contrast.js — .68rem (10.9px) is the smallest anything readable gets. */
 .sum-stats span, .unit-row .chip, .lesson-head .src-chip { font-size: .68rem; }
-.disp-btn.stats { width: auto; padding: 0 9px; display: inline-flex; align-items: center; gap: 6px; text-transform: uppercase; letter-spacing: .06em; }
-.disp-btn.stats svg { width: 13px; height: 13px; display: block; }
-@media (max-width: 900px) { .disp-btn.stats .lbl { display: none; } .disp-btn.stats { padding: 0 7px; } }
-.stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid var(--line); margin: 4px 0 16px; }
-.stat-grid > .stat { padding: 14px 16px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); display: grid; gap: 3px; align-content: start; }
-.stat-grid > .stat:nth-child(4n) { border-right: 0; }
-.stat-grid > .stat:nth-last-child(-n+4) { border-bottom: 0; }
-.stat-grid > .stat strong { font-family: var(--font-display); font-size: 1.9rem; font-weight: 600; letter-spacing: -0.03em; line-height: 1; }
+
+/* ---------- the two doors ----------
+   The home page used to be the upload pitch with the courses as a strip underneath. That stopped
+   being true once the app taught three courses of its own, so the hero is now two panels at equal
+   weight. They share the hairline grid the rest of the app is built from, and each carries its own
+   call to action at the bottom so neither reads as the primary and the other as an afterthought.
+   On a phone they stack, taught-course first, because that is the half a new visitor understands
+   without being told what the app does. */
+.hero .big { flex-direction: column; align-items: flex-start; justify-content: center; gap: 18px; }
+.hero .big .tagline { font-family: var(--font-body); font-size: 1.02rem; font-weight: 400; line-height: 1.6; letter-spacing: 0; color: var(--ink-2); max-width: 54ch; }
+.doors { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line); border-bottom: 1px solid var(--line); }
+.door { background: var(--surface); padding: var(--band-lg) var(--gut) var(--band); display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.door.taught { background: var(--tint-1); }
+.door h2 { font-size: clamp(1.5rem, 2.6vw, 2rem); letter-spacing: -.03em; }
+.door > p { color: var(--ink-2); font-size: .98rem; line-height: 1.6; max-width: 46ch; }
+.door .door-go { margin-top: auto; align-self: flex-start; }
+.door .label { color: var(--ink-2); }
+
+.door-subjects { display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); margin-top: 4px; }
+.subj-card { background: var(--surface); padding: var(--pad-in); display: grid; grid-template-columns: 1fr auto; gap: 4px 14px; align-items: baseline; text-decoration: none; color: inherit; transition: background .12s; }
+.subj-card b { font-family: var(--font-display); font-size: 1.15rem; font-weight: 500; letter-spacing: -.02em; }
+.subj-card .small { grid-column: 1; color: var(--ink-2); }
+.subj-card .n { grid-column: 2; grid-row: 1 / span 2; align-self: center; font-family: var(--font-mono); font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); white-space: nowrap; }
+.subj-card:hover { background: var(--accent-soft); }
+
+.door-steps { list-style: none; margin: 4px 0 0; padding: 0; display: grid; gap: 9px; font-size: .93rem; }
+.door-steps li { display: grid; grid-template-columns: 28px 1fr; gap: 10px; align-items: baseline; color: var(--ink-2); }
+.door-steps li b { font-family: var(--font-mono); font-weight: 500; font-size: .68rem; letter-spacing: .08em; color: var(--ink-2); }
+
 @media (max-width: 900px) {
-  .stat-grid { grid-template-columns: 1fr 1fr; }
-  .stat-grid > .stat:nth-child(2n) { border-right: 0; }
-  .stat-grid > .stat:nth-child(4n) { border-right: 0; }
-  .stat-grid > .stat:nth-last-child(-n+4) { border-bottom: 1px solid var(--line); }
-  .stat-grid > .stat:nth-last-child(-n+2) { border-bottom: 0; }
+  .doors { grid-template-columns: 1fr; }
+  .hero .big .tagline { font-size: .96rem; }
 }
 
 </style>
@@ -5852,13 +5870,17 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
   const BUILD = { v: '2.19', date: '10 September 2026', year: 2026 };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonandy242', ['gmail', 'com'].join('.')].join('@');
+  /* The one sentence that says what this is. It appears under the wordmark, and build.js uses
+     the same words for the page title, the meta description and the share card, so the app cannot
+     describe itself one way on the home page and another way in a link preview. */
+  const TAGLINE = 'Two ways to study: courses written out in full, or your own lecture files turned into cards, summaries and quizzes. Both run entirely in your browser.';
   const OWNER_NAME = 'JohnsonXCorp';   // who the app belongs to, wherever it is named to a user
   const REPO = 'https://github.com/ThePastor/uni-made-ez';
   /* What each version changed, newest first. Kept in the app rather than in a file on a code host,
      because the person who needs it is the one who just watched the app refresh itself and wants to
      know what moved. Trim the tail when it gets past a dozen; nobody reads further back than that. */
   const WHATS_NEW = [
-    ['2.19', 'The owner can now see how many people are using it. A <b>Users</b> button in the header shows how many opened the app today, this week and this month, how many signed up and how many subjects have been started. Sign-ups are recorded properly instead of relying on someone pressing send in their mail app. Course files, cards, answers and progress still never leave your browser — what is counted is a random id per device, and the name and email typed into the sign-up form.'],
+    ['2.19', 'The front page now says what this actually is: two ways to study, side by side \u2014 courses written out in full, and your own files turned into cards. Neither one is buried under the other any more.'],
     ['2.18', 'Text is easier to read in both themes. Every piece of small text now clears the AAA contrast standard rather than the AA minimum \u2014 measured on the real pages, not on the palette \u2014 and nothing readable is left at nine pixels.'],
     ['2.17', 'Two <b>Law</b> courses join Precalculus in the course library \u2014 Commercial Law and Environmental Law, built around the tests you are actually asked to apply on a scenario.'],
     ['2.16', 'The <b>Math</b> section now carries the full Precalculus course \u2014 chapters 1 to 3, following the same section numbers as the lecture slides, with worked examples, the mistakes people actually make, and practice that marks itself.'],
@@ -6536,9 +6558,6 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
   // said in the two places where a connection is actually required
   const netNote = what => `<p class="small warn-ink net-note" data-net ${isOffline ? '' : 'hidden'}>No connection at the moment, so ${what} cannot be done. Everything already in the app — your files, cards, summaries and quizzes — still works.</p>`;
 
-  const statsCell = () => (state.unlock && state.unlock.owner && SYNC_OK)
-    ? `<button type="button" class="disp-btn stats" data-act="stats" title="How many people are using UNI Made EZ" aria-label="Usage figures">${I.stats}<span class="lbl">Users</span></button>`
-    : '';
   const updateCell = () => swWaiting
     ? `<button type="button" class="disp-btn update" data-act="update" title="A newer version of UNI Made EZ is ready" aria-label="Update to the newer version">${I.update}<span class="lbl">Update</span></button>`
     : '';
@@ -6563,102 +6582,6 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     state.modal = { type: 'install' }; syncModal();
   }
 
-  /* ---------- counting who uses it ----------
-     The live site keeps two counts in a Postgres table: one row per device — a random id,
-     when it was first and last seen, how many times it was opened, how many subjects it
-     holds, which platform — and one row per sign-up, holding the name and email that were
-     typed in. Nothing about anybody's course files, cards, answers or progress is ever
-     sent; those stay in the browser as they always have.
-
-     The address and publishable key are read at run time from sync.json beside the page,
-     not baked into this file: rotating the key is then one small edit and no rebuild, and
-     a copy of the app without sync.json simply counts nothing. Switched off entirely
-     inside the Claude artifact frame and for a file:// copy. */
-  const LS_DID = 'unimadeez:did';
-  const LS_PING = 'unimadeez:ping';
-  const LS_OPENS = 'unimadeez:opens';
-  const SYNC_OK = !IN_ARTIFACT && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1');
-  let sync = null;          // { url, key } once sync.json has been read
-  let syncTried = false;
-
-  function deviceId() {
-    let d = null;
-    try { d = localStorage.getItem(LS_DID); } catch (e) { return null; }   // private mode: no id, no counting
-    if (!d) {
-      d = 'd_' + Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
-      try { localStorage.setItem(LS_DID, d); } catch (e) { return null; }
-    }
-    return d;
-  }
-
-  async function syncConfig() {
-    if (sync || syncTried) return sync;
-    syncTried = true;
-    if (!SYNC_OK) return null;
-    try {
-      const r = await fetch('sync.json', { cache: 'no-cache' });
-      if (!r.ok) return null;
-      const c = await r.json();
-      if (c && /^https:\/\/[a-z0-9.-]+$/i.test(String(c.url || '').replace(/\/$/, '')) && /^(sb_publishable_|eyJ)/.test(String(c.key || '')))
-        sync = { url: String(c.url).replace(/\/$/, ''), key: String(c.key) };
-    } catch (e) { /* offline, or no sync.json — the app never depends on it */ }
-    return sync;
-  }
-
-  async function syncFetch(path, opts) {
-    const c = await syncConfig(); if (!c) return null;
-    try {
-      return await fetch(`${c.url}/rest/v1/${path}`, {
-        ...(opts || {}),
-        headers: { apikey: c.key, authorization: 'Bearer ' + c.key, 'content-type': 'application/json', ...((opts || {}).headers || {}) }
-      });
-    } catch (e) { return null; }
-  }
-
-  // One ping per app open, and never more than one an hour — a counter, not a tracker.
-  async function pingDevice(force, signedUp) {
-    if (!SYNC_OK) return;
-    const id = deviceId(); if (!id) return;
-    let last = 0, opens = 0;
-    try { last = +(localStorage.getItem(LS_PING) || 0); opens = +(localStorage.getItem(LS_OPENS) || 0); } catch (e) { /* ignore */ }
-    if (!force && Date.now() - last < 3600000) return;
-    opens += 1;
-    try { localStorage.setItem(LS_OPENS, String(opens)); localStorage.setItem(LS_PING, String(Date.now())); } catch (e) { /* ignore */ }
-    const ua = navigator.userAgent;
-    const plat = /iPhone|iPad|iPod/.test(ua) ? 'iOS' : /Android/.test(ua) ? 'Android'
-      : /Macintosh/.test(ua) ? 'Mac' : /Windows/.test(ua) ? 'Windows' : /Linux/.test(ua) ? 'Linux' : 'Other';
-    let tz = '';
-    try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (e) { /* ignore */ }
-    await syncFetch('umez_devices', {
-      method: 'POST',
-      headers: { prefer: 'resolution=merge-duplicates,return=minimal' },
-      body: JSON.stringify({
-        id, last_seen: new Date().toISOString(), opens,
-        subjects: state.subjects.length, signed_up: signedUp || !!state.unlock,
-        platform: plat + (standalone() ? ' · installed' : ''), tz
-      })
-    });
-  }
-
-  async function recordSignup(name, email) {
-    const id = deviceId() || 'd';
-    await syncFetch('umez_signups', {
-      method: 'POST',
-      headers: { prefer: 'return=minimal' },
-      body: JSON.stringify({ id: id + '_' + Date.now().toString(36), name, email, source: standalone() ? 'installed app' : 'web' })
-    });
-    pingDevice(true, true);   // so the device row shows signed_up straight away
-  }
-
-  // Counts only — the view the app reads holds no names and no emails.
-  async function loadStats() {
-    const r = await syncFetch('umez_stats?select=*', { headers: { accept: 'application/json' } });
-    if (!r) return { err: 'no-config' };
-    if (!r.ok) return { err: 'http-' + r.status };
-    const rows = await r.json().catch(() => null);
-    return (rows && rows[0]) ? { data: rows[0] } : { err: 'empty' };
-  }
-
   const subjectById = id => state.subjects.find(s => s.id === id);
   const isUnlocked = () => !!state.unlock;
 
@@ -6676,6 +6599,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     if (parts[0] === 'plan') return { name: 'plan', q };
     if (parts[0] === 'leeches') return { name: 'leeches', q };
     if (parts[0] === 'rights') return { name: 'rights', q };
+    if ((parts[0] === 'math' || parts[0] === 'courses') && parts[1] === 'in') return { name: 'subject', sid: parts[2] || null, q };
     if (parts[0] === 'math' || parts[0] === 'courses') return { name: 'math', cid: parts[1] || null, uid: parts[2] || null, mode: parts[3] || null, q };
     if (parts[0] === 's' && parts[1]) return { name: parts[2] ? 'section' : 'subject', id: parts[1], kind: parts[2], q };
     return { name: 'home', q };
@@ -6684,7 +6608,6 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 
   /* ---------- icons ---------- */
   const I = {
-    stats: '<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-7"/><path d="M22 20H2"/></svg>',
     update: '<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.6-5.9"/><path d="M20 3.5V8h-4.5"/></svg>',
     install: '<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M12 7.5v7"/><path d="M9 11.5 12 14.5 15 11.5"/></svg>',
     offline: '<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4l20 16"/><path d="M5 12.5a10 10 0 0 1 4-2.4"/><path d="M8.5 16a5 5 0 0 1 2.2-1.3"/><path d="M12 19.5h.01"/><path d="M19.5 9.2a13.8 13.8 0 0 0-8-3.1"/></svg>',
@@ -6788,6 +6711,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     if (r.name === 'leeches') return renderClinic();
     if (r.name === 'rights') return renderRights();
     if (r.name === 'math') return renderMath(r);
+    if (r.name === 'subject') return renderSubjectPage(r.sid);
     const s = subjectById(r.id);
     if (!s) { go('/'); return; }
     if (r.name === 'subject') { noteVisit(s.id, ''); return renderSubject(s); }
@@ -6819,7 +6743,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
       <a class="wordmark" href="#/">UNI Made <span class="ez">EZ</span></a>
       <div class="clock" data-clock>${clockText()}</div>
       <div class="crumb">${crumbs}</div>
-      <div class="toggle-cell">${offlineCell()}<button type="button" class="disp-btn" data-act="display" aria-label="Display settings — text size, reading comfort, theme">Aa</button><button type="button" class="disp-btn" data-act="keys-help" aria-label="Keyboard shortcuts">?</button>${statsCell()}${updateCell()}${installCell()}${themeToggle()}${accountCell()}</div>
+      <div class="toggle-cell">${offlineCell()}<button type="button" class="disp-btn" data-act="display" aria-label="Display settings — text size, reading comfort, theme">Aa</button><button type="button" class="disp-btn" data-act="keys-help" aria-label="Keyboard shortcuts">?</button>${updateCell()}${installCell()}${themeToggle()}${accountCell()}</div>
       ${ctaCell()}
     </header>`;
   }
@@ -6836,29 +6760,50 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
   /* The footer carries the copyright line on every page. A notice does not create the right — that
      exists from the moment the code is written — but it removes any argument that a copier did not
      know, and it is the one place a reader is certain to see it. */
-  const foot = () => `<footer class="foot"><span>Study material is built on your device by the built-in study engine — your files never leave your browser. Check it against your course notes.</span><span class="maker"><span class="by">Built by</span>${makerMark()}<a class="rights" href="#/rights">&copy; ${BUILD.year} ${OWNER_NAME} &middot; All rights reserved</a><button type="button" class="build" data-act="whats-new" title="What changed in this version">&middot; v${BUILD.v} &middot; ${BUILD.date}</button></span></footer>`;
+  const foot = () => `<footer class="foot"><span>Study material is built on your device by the built-in study engine — nothing leaves your browser. Check it against your course notes.</span><span class="maker"><span class="by">Built by</span>${makerMark()}<a class="rights" href="#/rights">&copy; ${BUILD.year} ${OWNER_NAME} &middot; All rights reserved</a><button type="button" class="build" data-act="whats-new" title="What changed in this version">&middot; v${BUILD.v} &middot; ${BUILD.date}</button></span></footer>`;
   const frame = html => `<div class="frame">${html}</div>`;
 
   /* ---------- home ---------- */
   function renderHome() {
     const subs = state.subjects;
+    /* ---------- the front page argues one thing: there are two ways in ----------
+       Until v2.19 the hero was entirely the upload story and the courses were a strip below it,
+       which had stopped being true — the app now teaches three courses of its own. Two doors,
+       side by side, at equal weight: neither reads as the main thing and the other as a footnote.
+       The subject cards on the left show what is actually taught rather than promising it, and
+       they name subjects rather than individual courses so the door still works at a dozen. */
+    const groups = Courses.subjects();
     const hero = `<section class="hero">
-        <div class="big"><h1>UNI<br>Made <span class="ez">EZ</span></h1></div>
+        <div class="big">
+          <h1>UNI<br>Made <span class="ez">EZ</span></h1>
+          <p class="tagline">${esc(TAGLINE)}</p>
+        </div>
         <div class="art halftone"><span class="shape" aria-hidden="true">EZ</span></div>
-        <div class="art-2 halftone soft"></div>
-        <div class="split">
-          <div class="dark">
-            <p>Turn lecture files into flash cards, a summary, the key points and a quiz — built from your own course material, in your browser.</p>
-            <button class="btn" data-act="new-subject">${subs.length ? 'New subject' : 'Start a subject'} <span class="arr">→</span></button>
+      </section>
+      <section class="doors" aria-label="Two ways to study">
+        <div class="door taught">
+          <span class="label">Taught here &middot; free</span>
+          <h2>Take a course</h2>
+          <p>Written out in full, so every step comes with the reason it follows — and the mistake people make there instead.</p>
+          <div class="door-subjects">
+            ${groups.map(g => `<a class="subj-card" href="#/courses/in/${esc(g.id)}">
+              <b>${esc(g.name)}</b>
+              <span class="small">${g.courses.map(c => esc(c.title)).join(' &middot; ')}</span>
+              <span class="n">${plural(g.courses.length, 'course')}</span>
+            </a>`).join('')}
           </div>
-          <div class="mint">
-            <p>One subject per course. Upload this week's readings and slides, then study.</p>
-            <ol>
-              <li><b>01</b><span>Add a subject, e.g. BIOL 1010.</span></li>
-              <li><b>02</b><span>Drop in PDFs, EPUBs, Word files or slides.</span></li>
-              <li><b>03</b><span>Flash cards and Key information open instantly. Sign up once for Summary and Quiz.</span></li>
-            </ol>
-          </div>
+          <a class="btn primary door-go" href="#/courses">Open the courses <span class="arr">&rarr;</span></a>
+        </div>
+        <div class="door own">
+          <span class="label">Your own material</span>
+          <h2>Bring your files</h2>
+          <p>Lecture PDFs, slides, Word files and EPUBs become flash cards, a summary, the key information and a quiz — built on your device, so nothing is uploaded anywhere.</p>
+          <ol class="door-steps">
+            <li><b>01</b><span>Add a subject, e.g. BIOL 1010.</span></li>
+            <li><b>02</b><span>Drop in PDFs, EPUBs, Word files or slides.</span></li>
+            <li><b>03</b><span>Flash cards and Key information open instantly. Sign up once for Summary and Quiz.</span></li>
+          </ol>
+          <button class="btn door-go" data-act="new-subject">${subs.length ? 'New subject' : 'Start a subject'} <span class="arr">&rarr;</span></button>
         </div>
       </section>`;
     app.innerHTML = frame(`${topbar()}
@@ -6886,7 +6831,6 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
           <span class="arr">→</span>
         </a>`;
       })()}
-      <div class="tutoring-strip"><div><span class="label">Built in &middot; free</span><b>Math and Law tutoring, already inside the app</b><span class="small">Precalculus, Commercial Law and Environmental Law &mdash; written out in full, with worked examples, the mistakes people actually make, and practice that marks itself.</span></div><a class="btn primary" href="#/courses">Open the courses <span class="arr">&rarr;</span></a></div>
       <div class="subjects-head"><h2>${subs.length ? 'Your subjects' : 'No subjects yet'}</h2><a class="btn cell ghost" href="#/courses" title="Math and Law courses written out in full, with worked examples and practice">Tutoring</a>${subs.length ? `<a class="btn cell ghost" href="#/plan" title="The next fortnight, worked backwards from your exams and deadlines">Study plan</a><a class="btn cell ghost" href="#/semester" title="Every subject, exam and deadline on one screen">Semester view</a>` : ''}${(() => { const n = state.subjects.reduce((x, s2) => x + leechCount(s2.id), 0); return n ? `<a class="btn cell ghost" href="#/leeches" title="Every card that keeps failing, in one place">Leeches <span class="n">${n}</span></a>` : ''; })()}<button class="btn cell ghost" data-act="backup-open" title="Back up every subject to a file, or restore one">Backup &amp; restore</button><button class="btn cell" data-act="new-subject">Add subject <span class="arr">→</span></button></div>
       <div class="subject-grid">
         ${subs.map(s => `<div class="subject-slot"><a class="subject-card" href="#/s/${s.id}" style="--tab:${s.color}">
@@ -7269,6 +7213,21 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
         ${done ? `<span class="bar" aria-hidden="true"><i style="width:${Math.round(done / Math.max(1, n.practice) * 100)}%"></i></span>` : ''}
       </a>`;
   }
+  function renderSubjectPage(sid) {
+    const g = Courses.subjects().find(x => x.id === sid);
+    if (!g) return renderMathHome();
+    app.innerHTML = frame(`${topbar(`<a href="#/">Home</a><span class="sep">/</span><a href="#/courses">Courses</a><span class="sep">/</span><strong>${esc(g.name)}</strong>`)}
+      <main id="main" tabindex="-1">
+        <div class="sec-hero">
+          <span class="label">${plural(g.courses.length, 'course')}</span>
+          <h1>${esc(g.name)}</h1>
+          <p class="lede">${esc(g.blurb)}</p>
+        </div>
+        <div class="course-grid">${g.courses.map(courseCard).join('')}</div>
+      </main>${foot()}`);
+    syncModal();
+  }
+
   function renderLibrary(groups) {
     app.innerHTML = frame(`${topbar(`<a href="#/">Subjects</a><span class="sep">/</span><strong>Courses</strong>`)}
       <main id="main" tabindex="-1">
@@ -7829,29 +7788,6 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
           <p class="small muted">Print gives you a clean black-on-white document; pick “Save as PDF” in the print dialog to keep a file. The Markdown version opens in Notion, Obsidian, Word or any text editor.</p>
         </div>
         <div class="modal-foot"><span class="mono muted">Hidden items stay out; your own and edited cards are in</span><span class="spacer" style="flex:1"></span><button class="btn sm" data-act="close-modal">Close</button></div>
-      </div></div>`;
-    }
-    if (m.type === 'stats') {
-      const d = m.data || {}, n = v => fmt(v == null ? 0 : v);
-      const body = () => m.err ? `<div class="notice">${m.err === 'no-config'
-          ? 'No counter is configured yet. The page looks for <b>sync.json</b> beside it, holding the database address and its publishable key — until that file is there, nothing is counted and nothing is sent.'
-          : m.err === 'empty' ? 'The counter is configured but returned nothing. The tables may not be installed in this database yet.'
-          : `The database answered <b>${esc(m.err.replace('http-', 'HTTP '))}</b>. If that is 401 or 404 the key in sync.json is wrong, or the tables live in a different project.`}</div>`
-        : `<div class="stat-grid">
-            <div class="stat"><span class="label">Active today</span><strong>${n(d.active_1d)}</strong><span class="muted small">opened in the last 24 hours</span></div>
-            <div class="stat"><span class="label">Active this week</span><strong>${n(d.active_7d)}</strong><span class="muted small">last 7 days</span></div>
-            <div class="stat"><span class="label">Active this month</span><strong>${n(d.active_30d)}</strong><span class="muted small">last 30 days</span></div>
-            <div class="stat"><span class="label">Everyone, ever</span><strong>${n(d.devices_total)}</strong><span class="muted small">devices that have opened it</span></div>
-            <div class="stat"><span class="label">Signed up</span><strong>${n(d.signups_total)}</strong><span class="muted small">${n(d.signups_7d)} this week · ${n(d.signups_1d)} today</span></div>
-            <div class="stat"><span class="label">New this week</span><strong>${n(d.new_7d)}</strong><span class="muted small">first opened it in the last 7 days</span></div>
-            <div class="stat"><span class="label">Times opened</span><strong>${n(d.opens_total)}</strong><span class="muted small">across every device</span></div>
-            <div class="stat"><span class="label">Subjects created</span><strong>${n(d.subjects_total)}</strong><span class="muted small">courses people are studying</span></div>
-          </div>
-          <p class="small muted">A device is one browser on one machine, counted by a random id it keeps to itself — the same person on a laptop and a phone counts twice, and clearing site data starts a new one. Nobody's files, cards, answers or progress are sent anywhere; this panel can only read totals, never names or email addresses. Those you read in the Supabase dashboard, or in the daily email.</p>`;
-      return `<div class="modal-bg" data-act="close-modal"><div class="modal wide info" role="dialog" aria-modal="true" aria-label="Usage figures">
-        <div class="modal-head"><div><span class="label">${m.err ? 'Not configured' : `as of ${d.as_of ? new Date(d.as_of).toLocaleString() : 'now'}`}</span><h2>Who's using UNI Made EZ</h2></div><button class="btn ghost icon" data-act="close-modal" aria-label="Close">${I.x}</button></div>
-        <div class="modal-body">${m.loading ? `<div class="loading"><div class="spinner"></div><div>Counting…</div></div>` : body()}</div>
-        <div class="modal-foot"><button type="button" class="btn sm" data-act="stats">Refresh</button><span class="spacer" style="flex:1"></span><button class="btn sm primary" data-act="close-modal">Close</button></div>
       </div></div>`;
     }
     if (m.type === 'install') {
@@ -10383,7 +10319,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
           <div class="field"><label for="su-email">Email address</label><input class="input" id="su-email" name="email" type="email" required maxlength="120" autocomplete="email" placeholder="you@mytru.ca"></div>
           <div class="err-text" id="su-err" hidden></div>
           <button class="btn primary lg" type="submit">Continue <span class="arr">→</span></button>
-          <p class="fine">Your name and email go to ${esc(OWNER_NAME)} and are used for nothing else. The app also counts how many people open it, using a random id that says nothing about you. Your course files, cards, answers and progress stay in this browser and are never sent anywhere.</p>
+          <p class="fine">Your details are only used to let ${esc(OWNER_NAME)} know who is using UNI Made EZ. Nothing else is collected.</p>
           <button type="button" class="owner-link" data-act="go-owner">I'm the owner — I have an access code</button>
         </form>`}
       </div>
@@ -10878,14 +10814,6 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
       case 'pr-restart': { const ps = practiceState(); Object.assign(ps, { i: 0, picked: null, seq: [], done: false, right: 0, wrong: 0, marked: null }); render(); break; }
       case 'update-later': dismissUpdatePop(); toast('Left as it is. The update button in the top bar takes it whenever you are ready.'); break;
       case 'whats-new': state.modal = { type: 'whatsnew' }; syncModal(); break;
-      case 'stats': {
-        state.modal = { type: 'stats', loading: true }; syncModal();
-        loadStats().then(res => {
-          if (!state.modal || state.modal.type !== 'stats') return;
-          state.modal = { type: 'stats', ...res }; syncModal();
-        });
-        break;
-      }
       case 'install': doInstall(); break;
       case 'display': state.modal = { type: 'display' }; syncModal(); break;
       case 'keys-help': state.modal = { type: 'keys-help' }; syncModal(); break;
@@ -11319,7 +11247,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
       const name = (data.name || '').trim(), email = (data.email || '').trim();
       const err = $('#su-err');
       if (name.length < 2 || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { err.textContent = 'Enter your full name and a valid email address.'; err.hidden = false; return; }
-      state.pendingSignup = { name, email }; recordSignup(name, email); render();
+      state.pendingSignup = { name, email }; render();
     } else if (form.dataset.form === 'owner') {
       const code = (data.code || '').trim();
       const h = await sha256(code);
@@ -11600,7 +11528,6 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
   window.addEventListener('hashchange', render);
   render();
   registerSW();
-  pingDevice();
   noteUpdated();
 })();
 
