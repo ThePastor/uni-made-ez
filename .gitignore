@@ -1,0 +1,13 @@
+*
+!index.html
+!README.md
+!PUBLISH-STEPS.md
+!.gitignore
+!sw.js
+!manifest.webmanifest
+!*.png
+!404.html
+!.nojekyll
+!LICENSE
+!TERMS.md
+!THIRD-PARTY-NOTICES.md

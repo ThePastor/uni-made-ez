@@ -35,10 +35,24 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="UNI Made EZ">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="canonical" href="https://thepastor.github.io/uni-made-ez/">
 <meta property="og:type" content="website">
-<meta property="og:title" content="UNI Made EZ">
+<meta property="og:site_name" content="UNI Made EZ">
+<meta property="og:locale" content="en_CA">
+<meta property="og:url" content="https://thepastor.github.io/uni-made-ez/">
+<meta property="og:title" content="UNI Made EZ — your lecture files, turned into study material">
 <meta property="og:description" content="Turn your own lecture PDFs, slides and notes into flash cards, a summary, the key information and a quiz — built in your browser, nothing uploaded anywhere.">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="https://thepastor.github.io/uni-made-ez/preview.png">
+<meta property="og:image:secure_url" content="https://thepastor.github.io/uni-made-ez/preview.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="UNI Made EZ — flash cards, summary, key info and quiz, built from your own course files in your browser">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="UNI Made EZ — your lecture files, turned into study material">
+<meta name="twitter:description" content="Turn your own lecture PDFs, slides and notes into flash cards, a summary, the key information and a quiz — built in your browser, nothing uploaded anywhere.">
+<meta name="twitter:image" content="https://thepastor.github.io/uni-made-ez/preview.png">
+<meta name="twitter:image:alt" content="UNI Made EZ — flash cards, summary, key info and quiz, built from your own course files in your browser">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
 <style>
 /* UNI Made EZ — visual system
@@ -1637,6 +1651,104 @@ math mi[mathvariant="normal"] { font-style: normal; }
 .wn-list li b { font-family: var(--font-mono); font-size: .7rem; letter-spacing: .06em; color: var(--accent-deep); font-weight: 500; }
 .wn-list li.now b { color: var(--ink); }
 @media (max-width: 480px) { .wn-list li { grid-template-columns: 1fr; gap: 3px; } }
+
+/* ---------- Tutoring: the authored course library ----------
+   NOTE on .wsteps: the app already owns a `.steps` component (a numbered process list, line ~772)
+   whose li::before injects a counter. Reusing that class here made the counter a THIRD grid item
+   in a two-column row, so every reason wrapped onto its own line and the algebra was shoved right.
+   Nothing looked broken in the tests — the elements were all present and the phone stacked fine.
+   It only showed up in a screenshot. Hence a class of its own rather than a fight with the cascade. */
+   The section reuses the app's existing furniture wherever it fits — .quiz, .q-card, .options,
+   .opt, .feedback and .section-bar are all the ones the quiz already uses, so practice feels like
+   the rest of the app rather than a bolted-on module. What is new here is the shape of a taught
+   page: a worked example is a two-column figure, because the REASON has to sit beside the step
+   rather than under it, and on a phone it stacks with the reason indented under its own step. */
+.sec-hero { padding: var(--band-lg) var(--gut) var(--band); border-bottom: 1px solid var(--line); background: var(--surface); }
+.sec-hero h1 { font-size: clamp(1.9rem, 4vw, 3rem); margin: 8px 0 12px; }
+.sec-hero .lede { color: var(--ink-2); font-size: 1.02rem; line-height: 1.6; max-width: 62ch; }
+.sec-hero .sum-stats { margin-top: var(--band); }
+.obj { margin-top: var(--band); border-left: var(--accent-bar) solid var(--accent); padding-left: var(--pad-in); }
+.obj-list { list-style: none; display: grid; gap: 6px; margin: 8px 0 0; padding: 0; font-size: .93rem; color: var(--ink-2); }
+.obj-list li { display: grid; grid-template-columns: 16px 1fr; gap: 10px; }
+.obj-list li::before { content: ""; width: 8px; height: 8px; margin-top: 7px; background: var(--mint); }
+
+.course-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); border-bottom: 1px solid var(--line); }
+.course-grid > * { border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); margin-bottom: -1px; }
+.course-card { position: relative; display: flex; flex-direction: column; gap: 10px; padding: var(--gut); min-height: 200px; background: var(--surface); text-decoration: none; color: inherit; transition: background .12s; }
+.course-card h3 { font-size: 1.5rem; }
+.course-card p { color: var(--ink-2); font-size: .92rem; }
+.course-card .meta { margin-top: auto; display: flex; justify-content: space-between; gap: 12px; font-family: var(--font-mono); font-size: .7rem; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); }
+.course-card .meta .arr { color: var(--ink); transition: transform .18s; }
+.course-card:hover { background: var(--accent-soft); }
+.course-card:hover .meta .arr { transform: translateX(4px); }
+.course-card .bar, .unit-row .bar { display: block; height: 3px; background: var(--surface-3); overflow: hidden; }
+.course-card .bar i, .unit-row .bar i { display: block; height: 100%; background: var(--accent); }
+
+.unit-list { display: flex; flex-direction: column; border-bottom: 1px solid var(--line); }
+.unit-row { display: grid; grid-template-columns: 64px 1fr auto; align-items: center; gap: var(--gut-in); padding: var(--band) var(--gut); border-bottom: 1px solid var(--line); background: var(--surface); text-decoration: none; color: inherit; transition: background .12s; }
+.unit-row:hover { background: var(--accent-soft); }
+.unit-row .n { font-family: var(--font-display); font-size: 2.2rem; font-weight: 600; letter-spacing: -.04em; color: var(--accent-deep); line-height: 1; }
+.unit-row .mid { display: grid; gap: 6px; min-width: 0; }
+.unit-row .mid b { font-family: var(--font-display); font-size: 1.15rem; font-weight: 500; letter-spacing: -.02em; }
+.unit-row .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px; }
+.unit-row .chip { font-family: var(--font-mono); font-size: .62rem; letter-spacing: .08em; text-transform: uppercase; padding: 4px 8px; border: 1px solid var(--line-soft); color: var(--ink-3); }
+.unit-row .right { display: grid; gap: 6px; justify-items: end; min-width: 120px; }
+.unit-row .right .bar { width: 110px; }
+
+.lesson { border-bottom: 1px solid var(--line); background: var(--surface); }
+.lesson-head { display: flex; align-items: baseline; gap: 14px; padding: var(--band) var(--gut) 0; }
+.lesson-head h2 { font-size: clamp(1.25rem, 2.2vw, 1.6rem); }
+.lesson-body { padding: var(--band) var(--gut) var(--band-lg); display: grid; gap: var(--band); max-width: 1100px; }
+/* running prose stays at a readable measure; the tables of algebra use the width they have */
+.lesson-body .idea { max-width: 68ch; }
+.lesson-body .idea { font-size: 1.02rem; line-height: 1.65; color: var(--ink-2); }
+.lesson-body .idea b { color: var(--ink); font-weight: 500; }
+.rules { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+.rule { background: var(--surface); padding: var(--pad-in); display: grid; gap: 8px; }
+.rule .fx, .worked .ans .fx { font-size: 1.05rem; overflow-x: auto; }
+
+.worked { margin: 0; border: 1px solid var(--line); border-left: var(--accent-bar) solid var(--accent); background: var(--surface); }
+.worked figcaption { padding: var(--pad-in); border-bottom: 1px solid var(--line-soft); display: grid; gap: 6px; }
+.worked figcaption b { font-family: var(--font-display); font-size: 1.05rem; font-weight: 500; letter-spacing: -.015em; }
+.worked .wsteps { list-style: none; margin: 0; padding: 0; counter-reset: wstep; }
+.worked .wsteps li { display: grid; grid-template-columns: 30px minmax(0, 1fr) minmax(0, 1.15fr); gap: var(--gut-in); padding: 11px var(--pad-in); border-bottom: 1px solid var(--line-soft); align-items: baseline; }
+.worked .wsteps li::before { counter-increment: wstep; content: counter(wstep); font-family: var(--font-mono); font-size: .7rem; color: var(--ink-3); }
+.worked .wsteps li:last-child { border-bottom: 0; }
+.worked .wsteps .do { font-family: var(--font-mono); font-size: .9rem; line-height: 1.5; }
+.worked .wsteps .why { color: var(--ink-2); font-size: .88rem; line-height: 1.5; }
+.worked .ans { display: flex; align-items: center; gap: 12px; padding: var(--pad-in); background: var(--surface-2); border-top: 1px solid var(--line-soft); }
+
+.pitfalls { border: 1px solid var(--line); background: var(--surface); padding: var(--pad-in); display: grid; gap: var(--pad-in); }
+.pit { display: grid; gap: 5px; padding-bottom: var(--pad-in); border-bottom: 1px solid var(--line-soft); }
+.pit:last-child { border-bottom: 0; padding-bottom: 0; }
+.pit p { font-size: .92rem; line-height: 1.55; }
+.pit .tag { font-family: var(--font-mono); font-size: .6rem; letter-spacing: .1em; text-transform: uppercase; padding: 2px 7px; margin-right: 8px; }
+.pit .bad .tag { background: var(--bad-soft); color: var(--bad); }
+.pit .good .tag { background: var(--ok-soft); color: var(--ok); }
+.pit .bad { font-family: var(--font-mono); font-size: .85rem; }
+.pit .good { font-family: var(--font-mono); font-size: .85rem; }
+.pit .small { color: var(--ink-2); }
+.unit-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--pad-in); border-bottom: 1px solid var(--line); }
+
+.hint-box { border: 1px dashed var(--line-soft); padding: 10px var(--pad-in); }
+.hint-box summary { cursor: pointer; font-family: var(--font-mono); font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
+.hint-box[open] summary { margin-bottom: 8px; }
+.feedback .sol { margin: 8px 0 0; padding-left: 18px; display: grid; gap: 4px; font-family: var(--font-mono); font-size: .82rem; color: inherit; opacity: .92; }
+.spotting .opt { align-items: start; }
+.ordering { display: grid; gap: var(--pad-in); }
+.ord-chosen { list-style: decimal inside; margin: 0; padding: 0; display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); }
+.ord-chosen li { background: var(--surface-2); padding: 10px var(--pad-in); font-family: var(--font-mono); font-size: .85rem; }
+.ord-chosen .empty-slot { color: var(--ink-3); font-family: var(--font-body); list-style: none; }
+.ord-pool { display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); }
+.ord-pool .opt { grid-template-columns: 1fr; text-align: left; font-family: var(--font-mono); font-size: .85rem; }
+
+@media (max-width: 900px) {
+  .worked .wsteps li { grid-template-columns: 24px 1fr; gap: 4px 10px; }
+  .worked .wsteps .why { grid-column: 2; padding-left: 12px; border-left: 2px solid var(--line-soft); }
+  .unit-row { grid-template-columns: 40px 1fr; }
+  .unit-row .right { grid-column: 2; justify-items: start; min-width: 0; }
+  .unit-row .n { font-size: 1.6rem; }
+}
 
 </style>
 </head>
@@ -4053,6 +4165,347 @@ const GENERIC = new Set('information data process system method result results s
 
 </script>
 <script>
+/* UNI Made EZ — the course library
+   Copyright © 2026 JohnsonXCorp. All rights reserved.
+   Proprietary. Not open source: see LICENSE.
+
+   ---------------------------------------------------------------------------------------------
+   A course here is DATA, not code. The renderer knows nothing about mathematics; it knows about
+   units, lessons, worked examples, pitfalls and practice items. That separation is the whole
+   design: a new course is a new object in COURSES, checked by test/math.js, with no engine change.
+
+   Why the shape is what it is. The existing app turns a student's OWN files into cards, and it is
+   honest that it extracts rather than understands. An authored course is the opposite bargain —
+   somebody (here, the publisher) has understood the material — so it has to carry the thing an
+   extracted card cannot: WHY each step follows. Hence `steps: [{ do, why }]` rather than a list of
+   lines, and `pitfalls`, which is where most of the tutoring value actually sits: a worked example
+   shows the road, a pitfall shows the ditch beside it that students actually drive into.
+
+   Practice is deliberately limited to what can be marked with certainty in a browser with no
+   computer-algebra system and no network:
+
+     numeric  one number, or a set of numbers, compared with a tolerance
+     mc       multiple choice, where every distractor is a REAL mistake, not filler
+     order    put the steps of a solution back in order
+     spot     one step of a worked solution is wrong — find it
+
+   `order` and `spot` are generated from the same worked examples the lesson teaches, so authoring
+   one example yields three ways to practise it. `spot` in particular tests something multiple
+   choice cannot: whether a student can follow an argument closely enough to see it break.
+
+   Every numeric item carries `verify`, a restatement of the question that a computer algebra
+   system can evaluate independently. test/math.js recomputes each answer from it with SymPy and
+   fails if the two disagree. The answer is written once by a human and once by a machine, from
+   different starting points; a typo in either shows up as a mismatch. No worked answer in this
+   file is trusted because it looks right.
+   --------------------------------------------------------------------------------------------- */
+(function (root) {
+  'use strict';
+
+  const PRECALC = {
+    id: 'precalc',
+    code: 'Precalculus',
+    title: 'Precalculus',
+    blurb: 'The algebra that calculus assumes you already have. Every unit ends where a calculus course would pick it up.',
+    level: 'Foundation',
+    units: [
+      {
+        id: 'functions',
+        n: 1,
+        title: 'Functions and what f(x) really means',
+        blurb: 'Notation, evaluation, and reading a domain off a formula — the three things that quietly cost marks in every later unit.',
+        objectives: [
+          'Read f(x) as an instruction rather than a multiplication',
+          'Evaluate a function at a number, at a negative, and at an expression',
+          'Build and simplify a difference quotient',
+          'State the domain of a formula built from fractions and roots'
+        ],
+
+        lessons: [
+          {
+            id: 'notation',
+            title: 'A function is a rule, not a product',
+            idea: `A function takes one input and gives back exactly one output. The notation <b>f(x)</b> is read "f of x", and it names the output that the rule f produces when it is handed the input x. It is not f multiplied by x, and nothing in it can be cancelled. The letter in the brackets is a placeholder: <b>f(x) = 3x − 4</b> and <b>f(t) = 3t − 4</b> are the same function written twice.`,
+            rules: [
+              { name: 'Evaluation', expr: 'f(a)', note: 'Replace every x in the formula with a. Every one, and only the x’s.' },
+              { name: 'Same rule, any letter', expr: 'f(x) = 3x - 4', note: 'The input letter carries no meaning of its own.' }
+            ],
+            examples: [
+              {
+                prompt: 'If f(x) = 3x − 4, find f(2).',
+                steps: [
+                  { do: 'f(2) = 3(2) − 4', why: 'Replace the x with 2. The brackets are there so the 3 still multiplies.' },
+                  { do: '= 6 − 4', why: 'Multiply before subtracting.' },
+                  { do: '= 2', why: 'Subtract. f(2) = 2 here, which is a coincidence of this function, not a rule.' }
+                ],
+                answer: '2'
+              },
+              {
+                prompt: 'If f(x) = x² − 3x + 1, find f(−2).',
+                steps: [
+                  { do: 'f(−2) = (−2)² − 3(−2) + 1', why: 'Replace both x’s with −2, in brackets. The brackets are not optional here.' },
+                  { do: '= 4 − 3(−2) + 1', why: '(−2)² is (−2)(−2) = 4. The bracket is what makes the square positive.' },
+                  { do: '= 4 + 6 + 1', why: 'Subtracting a negative adds.' },
+                  { do: '= 11', why: 'Add the three terms. Notice the answer is positive even though the input was negative.' }
+                ],
+                answer: '11'
+              }
+            ],
+            pitfalls: [
+              {
+                wrong: 'f(−2) = −2² − 3(−2) + 1 = −4 + 6 + 1 = 3',
+                right: 'f(−2) = (−2)² − 3(−2) + 1 = 4 + 6 + 1 = 11',
+                why: 'Written without brackets, −2² means −(2²) = −4, because the exponent binds tighter than the minus sign. Substituting a negative number always needs brackets.'
+              },
+              {
+                wrong: 'f(x)/x = f, cancelling the x',
+                right: 'Nothing cancels. f(x) is one symbol for one number.',
+                why: 'The brackets in f(x) are notation, not multiplication, so there is no factor of x to cancel.'
+              }
+            ]
+          },
+
+          {
+            id: 'expressions',
+            title: 'Feeding an expression into a function',
+            idea: `The rule does not care what it is handed. If the input is <b>x + h</b>, replace every x with <b>(x + h)</b> — brackets included — and simplify afterwards. This is the whole content of the difference quotient, which is the last thing precalculus does and the first thing calculus does.`,
+            rules: [
+              { name: 'Difference quotient', expr: '(f(x + h) - f(x))/h', note: 'The average rate of change of f between x and x + h.' },
+              { name: 'Square of a sum', expr: '(x + h)^2 = x^2 + 2*x*h + h^2', note: 'The middle term is the one everybody drops.' }
+            ],
+            examples: [
+              {
+                prompt: 'If f(x) = x², find f(x + h).',
+                steps: [
+                  { do: 'f(x + h) = (x + h)²', why: 'Replace x with the whole input, in brackets.' },
+                  { do: '= x² + 2xh + h²', why: 'Expand. Two middle terms, xh and hx, add to 2xh.' }
+                ],
+                answer: 'x^2 + 2xh + h^2'
+              },
+              {
+                prompt: 'If f(x) = x², simplify the difference quotient (f(x + h) − f(x)) / h.',
+                steps: [
+                  { do: '= ((x + h)² − x²) / h', why: 'Substitute both pieces before touching anything else.' },
+                  { do: '= (x² + 2xh + h² − x²) / h', why: 'Expand the square. Keep the − x² outside the expansion.' },
+                  { do: '= (2xh + h²) / h', why: 'The x² terms cancel — that cancellation is why the h in the denominator becomes harmless.' },
+                  { do: '= h(2x + h) / h', why: 'Factor h out of the top. Only now is there a common factor to cancel.' },
+                  { do: '= 2x + h', why: 'Cancel the h. This is legal because h ≠ 0 — the quotient was never defined at h = 0.' }
+                ],
+                answer: '2x + h'
+              }
+            ],
+            pitfalls: [
+              {
+                wrong: 'f(x + h) = f(x) + h',
+                right: 'f(x + h) means substitute, then simplify.',
+                why: 'Test it with numbers. For f(x) = x², at x = 3 and h = 1: f(4) = 16, but f(3) + 1 = 10. Whenever you are unsure whether a rule about functions is true, put numbers in it.'
+              },
+              {
+                wrong: '(x + h)² = x² + h²',
+                right: '(x + h)² = x² + 2xh + h²',
+                why: 'Squaring is not distributive over addition. Again, numbers settle it: (3 + 1)² = 16, while 3² + 1² = 10.'
+              },
+              {
+                wrong: 'Cancelling the h in (2xh + h²)/h one term at a time',
+                right: 'Factor first: h(2x + h)/h, then cancel.',
+                why: 'A denominator only cancels against a factor of the whole numerator. Cancelling into a sum is the single most common algebra error in a calculus course.'
+              }
+            ]
+          },
+
+          {
+            id: 'domain',
+            title: 'Reading a domain off a formula',
+            idea: `The domain is every input the formula can actually accept. Unless a question says otherwise, only two things rule an input out: a <b>denominator equal to zero</b>, and an <b>even root of a negative number</b>. Find every denominator and every even root, write down what each one demands, and take all of the conditions together.`,
+            rules: [
+              { name: 'No division by zero', expr: 'denominator != 0', note: 'Solve denominator = 0 and exclude those values.' },
+              { name: 'Even roots need non-negatives', expr: 'sqrt(u) needs u >= 0', note: 'Odd roots — cube roots and so on — accept negatives and impose nothing.' }
+            ],
+            examples: [
+              {
+                prompt: 'State the domain of f(x) = 1 / (x − 3).',
+                steps: [
+                  { do: 'Denominator: x − 3', why: 'One denominator, so one condition.' },
+                  { do: 'x − 3 ≠ 0', why: 'Division by zero is undefined.' },
+                  { do: 'x ≠ 3', why: 'Solve. Everything else is allowed.' }
+                ],
+                answer: 'all real x except x = 3'
+              },
+              {
+                prompt: 'State the domain of g(x) = √(2x − 8).',
+                steps: [
+                  { do: 'Radicand: 2x − 8', why: 'A square root is an even root, so it demands a non-negative inside.' },
+                  { do: '2x − 8 ≥ 0', why: 'Write the condition before solving it.' },
+                  { do: '2x ≥ 8', why: 'Add 8 to both sides.' },
+                  { do: 'x ≥ 4', why: 'Divide by 2. Dividing by a positive leaves the inequality pointing the same way.' }
+                ],
+                answer: 'x >= 4'
+              },
+              {
+                prompt: 'State the domain of h(x) = √(x + 1) / (x − 2).',
+                steps: [
+                  { do: 'Two conditions: one root, one denominator', why: 'Deal with each separately, then combine.' },
+                  { do: 'x + 1 ≥ 0, so x ≥ −1', why: 'The even root needs a non-negative inside.' },
+                  { do: 'x − 2 ≠ 0, so x ≠ 2', why: 'The denominator cannot be zero.' },
+                  { do: 'x ≥ −1 and x ≠ 2', why: 'Both must hold at once — combine with "and", never "or".' }
+                ],
+                answer: 'x >= -1 with x = 2 removed'
+              }
+            ],
+            pitfalls: [
+              {
+                wrong: 'Finding the root condition and stopping, when there is also a denominator.',
+                right: 'Every denominator and every even root gives a condition. Collect them all.',
+                why: 'A formula can break in more than one place. Scan the whole expression before solving anything.'
+              },
+              {
+                wrong: '−2x ≥ 6 gives x ≥ −3',
+                right: '−2x ≥ 6 gives x ≤ −3',
+                why: 'Multiplying or dividing an inequality by a negative number reverses it. This is the only step in domain work where the direction changes.'
+              },
+              {
+                wrong: 'Excluding x = 0 from f(x) = x/(x² + 1) "because there is a fraction".',
+                right: 'The domain is every real number.',
+                why: 'A denominator only excludes inputs that make it ZERO. Here x² + 1 ≥ 1 for every real x, so nothing is excluded.'
+              }
+            ]
+          }
+        ],
+
+        practice: [
+          { id: 'p1', kind: 'numeric', lesson: 'notation',
+            prompt: 'f(x) = 5x + 2. Find f(3).',
+            answer: 17, verify: { f: '5*x + 2', at: 3 },
+            hint: 'Replace the x with 3, then work left to right.',
+            solution: ['f(3) = 5(3) + 2', '= 15 + 2', '= 17'] },
+
+          { id: 'p2', kind: 'numeric', lesson: 'notation',
+            prompt: 'f(x) = x² − 4x + 7. Find f(−3).',
+            answer: 28, verify: { f: 'x**2 - 4*x + 7', at: -3 },
+            hint: 'Put −3 in brackets everywhere before you square anything.',
+            solution: ['f(−3) = (−3)² − 4(−3) + 7', '= 9 + 12 + 7', '= 28'] },
+
+          { id: 'p3', kind: 'numeric', lesson: 'notation',
+            prompt: 'f(x) = 2x² − x. Find f(−1).',
+            answer: 3, verify: { f: '2*x**2 - x', at: -1 },
+            hint: '(−1)² is positive; the second term subtracts a negative.',
+            solution: ['f(−1) = 2(−1)² − (−1)', '= 2(1) + 1', '= 3'] },
+
+          { id: 'p4', kind: 'mc', lesson: 'notation',
+            prompt: 'f(x) = x² + x. A student writes f(−4) = −16 − 4 = −20. What went wrong?',
+            options: [
+              { t: 'They wrote −4² instead of (−4)², so the square lost its sign', ok: true },
+              { t: 'They should have added the terms instead of subtracting', ok: false },
+              { t: 'f(−4) cannot be found because the input is negative', ok: false },
+              { t: 'Nothing — −20 is correct', ok: false }
+            ],
+            hint: 'Work out (−4)² on its own first.',
+            solution: ['(−4)² = 16, not −16', 'f(−4) = 16 + (−4) = 12'] },
+
+          { id: 'p5', kind: 'numeric', lesson: 'expressions',
+            prompt: 'f(x) = x². Using f(x + h) = x² + 2xh + h², find the value of f(x + h) when x = 3 and h = 2.',
+            answer: 25, verify: { f: '(x + 2)**2', at: 3 },
+            hint: 'It is just f(5). The expanded form must agree.',
+            solution: ['f(3 + 2) = f(5) = 25', 'Check with the expansion: 3² + 2(3)(2) + 2² = 9 + 12 + 4 = 25'] },
+
+          { id: 'p6', kind: 'numeric', lesson: 'expressions',
+            prompt: 'f(x) = x². The difference quotient simplifies to 2x + h. Evaluate it at x = 4, h = 0.5.',
+            answer: 8.5, verify: { f: '2*x + 0.5', at: 4 },
+            hint: 'Substitute straight into 2x + h.',
+            solution: ['2(4) + 0.5', '= 8 + 0.5', '= 8.5'] },
+
+          { id: 'p7', kind: 'order', lesson: 'expressions',
+            prompt: 'Put the difference quotient for f(x) = x² back into the right order.',
+            steps: [
+              '((x + h)² − x²) / h',
+              '(x² + 2xh + h² − x²) / h',
+              '(2xh + h²) / h',
+              'h(2x + h) / h',
+              '2x + h'
+            ],
+            hint: 'Substitute, expand, cancel the x², factor, then cancel the h.',
+            solution: ['The h can only be cancelled after it has been factored out of the whole numerator.'] },
+
+          { id: 'p8', kind: 'spot', lesson: 'expressions',
+            prompt: 'One line of this is wrong. Which one?',
+            steps: [
+              { t: 'f(x) = x² + 1, so f(x + h) = (x + h)² + 1', bad: false },
+              { t: '= x² + h² + 1', bad: true },
+              { t: 'f(x + h) − f(x) = h² ', bad: false },
+              { t: 'so the quotient is h', bad: false }
+            ],
+            why: '(x + h)² is x² + 2xh + h², not x² + h². Everything after that line follows correctly from a wrong start — which is exactly how a dropped middle term survives all the way to a final answer.',
+            hint: 'Check the expansion with numbers: x = 3, h = 1.',
+            solution: ['(x + h)² = x² + 2xh + h²', 'The correct quotient is 2x + h'] },
+
+          { id: 'p9', kind: 'numeric', lesson: 'domain',
+            prompt: 'f(x) = 1/(x − 7). Which single value of x must be excluded from the domain?',
+            answer: 7, verify: { solve: 'x - 7', forZero: true },
+            hint: 'Set the denominator to zero and solve.',
+            solution: ['x − 7 = 0', 'x = 7'] },
+
+          { id: 'p10', kind: 'numeric', lesson: 'domain',
+            prompt: 'g(x) = √(3x − 12). What is the smallest x in the domain?',
+            answer: 4, verify: { solve: '3*x - 12', forZero: true },
+            hint: 'The radicand must be at least zero; the boundary is where it equals zero.',
+            solution: ['3x − 12 ≥ 0', '3x ≥ 12', 'x ≥ 4, so the smallest value is 4'] },
+
+          { id: 'p11', kind: 'mc', lesson: 'domain',
+            prompt: 'What is the domain of f(x) = x / (x² + 4)?',
+            options: [
+              { t: 'Every real number', ok: true },
+              { t: 'Every real number except x = 0', ok: false },
+              { t: 'Every real number except x = −2 and x = 2', ok: false },
+              { t: 'x ≥ 0 only', ok: false }
+            ],
+            hint: 'Can x² + 4 ever equal zero for a real x?',
+            solution: ['x² ≥ 0 for every real x, so x² + 4 ≥ 4', 'The denominator is never zero, so nothing is excluded'] },
+
+          { id: 'p12', kind: 'mc', lesson: 'domain',
+            prompt: 'Solving −2x ≥ 10 for the domain of a root, what is the correct result?',
+            options: [
+              { t: 'x ≤ −5', ok: true },
+              { t: 'x ≥ −5', ok: false },
+              { t: 'x ≥ 5', ok: false },
+              { t: 'x ≤ 5', ok: false }
+            ],
+            hint: 'Dividing by a negative does something to the inequality sign.',
+            solution: ['Divide both sides by −2', 'Dividing by a negative reverses the inequality', 'x ≤ −5'] }
+        ]
+      }
+    ]
+  };
+
+  const COURSES = [PRECALC];
+
+  root.Courses = {
+    all: () => COURSES,
+    get: id => COURSES.find(c => c.id === id) || null,
+    unit: (cid, uid) => { const c = COURSES.find(x => x.id === cid); return c ? (c.units.find(u => u.id === uid) || null) : null; },
+    // every practice item in a course, flattened, each tagged with where it came from
+    items: cid => {
+      const c = COURSES.find(x => x.id === cid);
+      if (!c) return [];
+      return c.units.reduce((acc, u) => acc.concat((u.practice || []).map(p =>
+        Object.assign({}, p, { course: c.id, unit: u.id, unitTitle: u.title }))), []);
+    },
+    count: cid => {
+      const c = COURSES.find(x => x.id === cid);
+      if (!c) return { units: 0, lessons: 0, examples: 0, practice: 0 };
+      return c.units.reduce((a, u) => ({
+        units: a.units + 1,
+        lessons: a.lessons + u.lessons.length,
+        examples: a.examples + u.lessons.reduce((n, l) => n + l.examples.length, 0),
+        practice: a.practice + (u.practice || []).length
+      }), { units: 0, lessons: 0, examples: 0, practice: 0 });
+    }
+  };
+})(typeof window !== 'undefined' ? window : globalThis);
+
+if (typeof module !== 'undefined' && module.exports) module.exports = globalThis.Courses;
+
+</script>
+<script>
 /* UNI Made EZ — application
    Copyright © 2026 JohnsonXCorp. All rights reserved.
    Proprietary. Not open source: see LICENSE. Third-party components: THIRD-PARTY-NOTICES.md */
@@ -4060,7 +4513,7 @@ const GENERIC = new Set('information data process system method result results s
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.13', date: '10 September 2026', year: 2026 };
+  const BUILD = { v: '2.15', date: '10 September 2026', year: 2026 };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonandy242', ['gmail', 'com'].join('.')].join('@');
   const OWNER_NAME = 'JohnsonXCorp';   // who the app belongs to, wherever it is named to a user
@@ -4069,6 +4522,8 @@ const GENERIC = new Set('information data process system method result results s
      because the person who needs it is the one who just watched the app refresh itself and wants to
      know what moved. Trim the tail when it gets past a dozen; nobody reads further back than that. */
   const WHATS_NEW = [
+    ['2.15', 'A new <b>Tutoring</b> section with a built-in Precalculus course \u2014 worked examples that give a reason for every step, the mistakes people actually make, and practice that marks itself.'],
+    ['2.14', 'Sharing the link now shows what this is \u2014 a title, a line of description and a picture \u2014 instead of a bare address, and a mistyped link lands on a page that points back here.'],
     ['2.13', 'A dark theme that is dark rather than switched off: the page sits below the cards so panels lift, the hairlines stop being paper-white, and both themes now share one colour family.'],
     ['2.12', 'A bigger way back out of a study page, a bigger section heading, and a header that takes less of the screen while every control in it got easier to hit.'],
     ['2.11', 'An update that tells you it is there. The installed app checks for a new version when you open it, and asks before refreshing instead of changing under you.'],
@@ -4782,6 +5237,7 @@ const GENERIC = new Set('information data process system method result results s
     if (parts[0] === 'plan') return { name: 'plan', q };
     if (parts[0] === 'leeches') return { name: 'leeches', q };
     if (parts[0] === 'rights') return { name: 'rights', q };
+    if (parts[0] === 'math') return { name: 'math', cid: parts[1] || null, uid: parts[2] || null, mode: parts[3] || null, q };
     if (parts[0] === 's' && parts[1]) return { name: parts[2] ? 'section' : 'subject', id: parts[1], kind: parts[2], q };
     return { name: 'home', q };
   }
@@ -4891,6 +5347,7 @@ const GENERIC = new Set('information data process system method result results s
     if (r.name === 'plan') return renderPlan();
     if (r.name === 'leeches') return renderClinic();
     if (r.name === 'rights') return renderRights();
+    if (r.name === 'math') return renderMath(r);
     const s = subjectById(r.id);
     if (!s) { go('/'); return; }
     if (r.name === 'subject') { noteVisit(s.id, ''); return renderSubject(s); }
@@ -4989,7 +5446,7 @@ const GENERIC = new Set('information data process system method result results s
           <span class="arr">→</span>
         </a>`;
       })()}
-      <div class="subjects-head"><h2>${subs.length ? 'Your subjects' : 'No subjects yet'}</h2>${subs.length ? `<a class="btn cell ghost" href="#/plan" title="The next fortnight, worked backwards from your exams and deadlines">Study plan</a><a class="btn cell ghost" href="#/semester" title="Every subject, exam and deadline on one screen">Semester view</a>` : ''}${(() => { const n = state.subjects.reduce((x, s2) => x + leechCount(s2.id), 0); return n ? `<a class="btn cell ghost" href="#/leeches" title="Every card that keeps failing, in one place">Leeches <span class="n">${n}</span></a>` : ''; })()}<button class="btn cell ghost" data-act="backup-open" title="Back up every subject to a file, or restore one">Backup &amp; restore</button><button class="btn cell" data-act="new-subject">Add subject <span class="arr">→</span></button></div>
+      <div class="subjects-head"><h2>${subs.length ? 'Your subjects' : 'No subjects yet'}</h2><a class="btn cell ghost" href="#/math" title="Courses written out in full, with worked examples and practice">Tutoring</a>${subs.length ? `<a class="btn cell ghost" href="#/plan" title="The next fortnight, worked backwards from your exams and deadlines">Study plan</a><a class="btn cell ghost" href="#/semester" title="Every subject, exam and deadline on one screen">Semester view</a>` : ''}${(() => { const n = state.subjects.reduce((x, s2) => x + leechCount(s2.id), 0); return n ? `<a class="btn cell ghost" href="#/leeches" title="Every card that keeps failing, in one place">Leeches <span class="n">${n}</span></a>` : ''; })()}<button class="btn cell ghost" data-act="backup-open" title="Back up every subject to a file, or restore one">Backup &amp; restore</button><button class="btn cell" data-act="new-subject">Add subject <span class="arr">→</span></button></div>
       <div class="subject-grid">
         ${subs.map(s => `<div class="subject-slot"><a class="subject-card" href="#/s/${s.id}" style="--tab:${s.color}">
           <div class="code">${esc(s.code || 'Subject')}</div>
@@ -5294,6 +5751,273 @@ const GENERIC = new Set('information data process system method result results s
     app.innerHTML = frame(`${topbar(`<a href="#/">Subjects</a><span class="sep">/</span><strong>All rights reserved</strong>`)}
     <main id="main" tabindex="-1">${body}</main>${foot()}`);
     syncModal();
+  }
+
+  /* ================= Tutoring: the authored course library =================
+     Everything the app does elsewhere is built out of the student's OWN files, and it says plainly
+     that it extracts rather than understands. This section is the other bargain: the material was
+     written by a person who understood it, so it can carry what an extracted card never can — a
+     REASON for each step, and the specific wrong turn students take at that step.
+
+     Three consequences run through the code below. Worked examples render `why` beside every `do`,
+     and the why is not decoration: it is the part being taught. Pitfalls are a first-class block
+     rather than a footnote, because knowing the ditch is worth as much as knowing the road. And
+     practice is only ever of a kind a browser can mark with certainty, offline, with no algebra
+     system: a number, a choice, an ordering, or finding the broken line. Nothing here guesses at
+     whether an answer is "close enough" in a way it cannot defend.
+
+     Progress goes through the same FSRS scheduler as everything else, under a synthetic subject id
+     ("course:precalc"), so a practice item that goes badly comes back on the same forgetting curve
+     as a flash card — without appearing in the subjects index, which belongs to the student. */
+  const courseSid = cid => 'course:' + cid;
+
+  function practiceState() {
+    return state.practice || (state.practice = { cid: null, uid: null, i: 0, picked: null, seq: [], done: false, right: 0, wrong: 0 });
+  }
+  function practiceKey(cid, uid, id) { return 'c:' + cid + ':' + uid + ':' + id; }
+
+  // a number, or a set of numbers, typed by a student: accept 8.5, 8,5 and " 8.50 "
+  function numeric(str) {
+    const t = String(str == null ? '' : str).replace(/\s+/g, '').replace(/,/g, '.');
+    if (!t || !/^[-+]?(\d+\.?\d*|\.\d+)$/.test(t)) return null;
+    const n = parseFloat(t);
+    return isFinite(n) ? n : null;
+  }
+  function markNumeric(item, typed) {
+    const got = numeric(typed);
+    if (got === null) return { ok: false, why: 'That is not a number I can read. Type digits only, like 12 or -3.5.' };
+    const want = Number(item.answer);
+    // a tolerance, not an equality test: 8.5 and 8.50 are the same answer, 8.4 is not
+    return { ok: Math.abs(got - want) <= (item.tol == null ? 1e-9 : item.tol), got: got };
+  }
+
+  function renderMath(r) {
+    if (!r.cid) return renderMathHome();
+    const c = Courses.get(r.cid);
+    if (!c) return renderMathHome();
+    if (!r.uid) return renderCourse(c);
+    const u = Courses.unit(c.id, r.uid);
+    if (!u) return renderCourse(c);
+    if (r.mode === 'practice') return renderPractice(c, u);
+    return renderUnit(c, u);
+  }
+
+  function unitProgress(c, u) {
+    const p = prog(courseSid(c.id));
+    const items = u.practice || [];
+    const seen = items.filter(it => p.srs[practiceKey(c.id, u.id, it.id)]);
+    const strong = seen.filter(it => { const k = p.srs[practiceKey(c.id, u.id, it.id)]; return k && k.s >= 2 && !k.lapses; });
+    return { total: items.length, seen: seen.length, strong: strong.length };
+  }
+
+  function renderMathHome() {
+    const cards = Courses.all().map(c => {
+      const n = Courses.count(c.id);
+      const done = c.units.reduce((a, u) => a + unitProgress(c, u).seen, 0);
+      return `<a class="course-card" href="#/math/${esc(c.id)}">
+        <span class="label">${esc(c.level)}</span>
+        <h3>${esc(c.title)}</h3>
+        <p>${esc(c.blurb)}</p>
+        <span class="meta"><span>${n.units} unit${n.units === 1 ? '' : 's'} &middot; ${n.practice} practice</span><span class="arr">&rarr;</span></span>
+        ${done ? `<span class="bar" aria-hidden="true"><i style="width:${Math.round(done / Math.max(1, n.practice) * 100)}%"></i></span>` : ''}
+      </a>`;
+    }).join('');
+    app.innerHTML = frame(`${topbar(`<a href="#/">Subjects</a><span class="sep">/</span><strong>Tutoring</strong>`)}
+      <main id="main" tabindex="-1">
+        <div class="sec-hero">
+          <span class="label">Tutoring</span>
+          <h1>Courses taught, not just scanned</h1>
+          <p class="lede">Your own files still become cards, summaries and quizzes as before. These are different: each one was written out in full, so every step comes with the reason it follows — and the mistake people make there instead.</p>
+        </div>
+        <div class="course-grid">${cards}</div>
+        <div class="cell">
+          <p class="small muted">Working from your own textbook or notes instead? Add them to a subject on the home page &mdash; the study engine will pull the definitions, formulas and worked steps out of them.</p>
+        </div>
+      </main>${foot()}`);
+    syncModal();
+  }
+
+  function renderCourse(c) {
+    const n = Courses.count(c.id);
+    const rows = c.units.map(u => {
+      const pr = unitProgress(c, u);
+      const pct = pr.total ? Math.round(pr.seen / pr.total * 100) : 0;
+      return `<a class="unit-row" href="#/math/${esc(c.id)}/${esc(u.id)}">
+        <span class="n">${u.n}</span>
+        <span class="mid">
+          <b>${esc(u.title)}</b>
+          <span class="small muted">${esc(u.blurb)}</span>
+          <span class="chips">${u.lessons.map(l => `<span class="chip">${esc(l.title)}</span>`).join('')}</span>
+        </span>
+        <span class="right">
+          <span class="mono small">${pr.seen}/${pr.total}</span>
+          <span class="bar" aria-hidden="true"><i style="width:${pct}%"></i></span>
+          <span class="arr">&rarr;</span>
+        </span>
+      </a>`;
+    }).join('');
+    app.innerHTML = frame(`${topbar(`<a href="#/">Subjects</a><span class="sep">/</span><a href="#/math">Tutoring</a><span class="sep">/</span><strong>${esc(c.title)}</strong>`)}
+      <main id="main" tabindex="-1">
+        <div class="sec-hero">
+          <span class="label">${esc(c.level)} &middot; ${n.units} unit${n.units === 1 ? '' : 's'}</span>
+          <h1>${esc(c.title)}</h1>
+          <p class="lede">${esc(c.blurb)}</p>
+          <div class="sum-stats"><div><b>${n.lessons}</b><span>lessons</span></div><div><b>${n.examples}</b><span>worked examples</span></div><div><b>${n.practice}</b><span>practice questions</span></div></div>
+        </div>
+        <div class="unit-list">${rows}</div>
+      </main>${foot()}`);
+    syncModal();
+  }
+
+  function renderUnit(c, u) {
+    const pr = unitProgress(c, u);
+    const lessons = u.lessons.map((l, li) => `
+      <section class="lesson" id="l-${esc(l.id)}">
+        <div class="lesson-head"><span class="label">${u.n}.${li + 1}</span><h2>${esc(l.title)}</h2></div>
+        <div class="lesson-body">
+          <p class="idea">${l.idea}</p>
+          ${l.rules && l.rules.length ? `<div class="rules">${l.rules.map(rr => `<div class="rule">
+              <span class="label">${esc(rr.name)}</span>
+              <div class="fx">${fxHtml(rr.expr)}</div>
+              <p class="small muted">${esc(rr.note)}</p>
+            </div>`).join('')}</div>` : ''}
+
+          ${l.examples.map((ex, xi) => `<figure class="worked">
+            <figcaption><span class="label">Worked example ${u.n}.${li + 1}.${xi + 1}</span><b>${esc(ex.prompt)}</b></figcaption>
+            <ol class="wsteps">${ex.steps.map(st => `<li><span class="do">${esc(st.do)}</span><span class="why">${esc(st.why)}</span></li>`).join('')}</ol>
+            <p class="ans"><span class="label">Answer</span> <span class="fx">${fxHtml(ex.answer)}</span></p>
+          </figure>`).join('')}
+
+          ${l.pitfalls && l.pitfalls.length ? `<div class="pitfalls">
+            <span class="label">Where this goes wrong</span>
+            ${l.pitfalls.map(pf => `<div class="pit">
+              <p class="bad"><span class="tag">Wrong</span> ${esc(pf.wrong)}</p>
+              <p class="good"><span class="tag">Right</span> ${esc(pf.right)}</p>
+              <p class="small">${esc(pf.why)}</p>
+            </div>`).join('')}
+          </div>` : ''}
+        </div>
+      </section>`).join('');
+
+    app.innerHTML = frame(`${topbar(`<a href="#/math">Tutoring</a><span class="sep">/</span><a href="#/math/${esc(c.id)}">${esc(c.code)}</a><span class="sep">/</span><strong>Unit ${u.n}</strong>`)}
+      <div class="section-bar">
+        <a class="back" href="#/math/${esc(c.id)}" aria-label="Back to ${esc(c.title)}"><span class="back-ico">${I.back}</span><span class="back-txt">${esc(c.code)}</span></a>
+        <div class="sec-title"><h2><span class="sec-ico">${I.formula}</span>Unit ${u.n}</h2></div>
+        <div class="tools"><a class="btn sm primary" href="#/math/${esc(c.id)}/${esc(u.id)}/practice">Practice (${pr.total}) <span class="arr">&rarr;</span></a></div>
+      </div>
+      <main id="main" tabindex="-1">
+        <div class="sec-hero">
+          <h1>${esc(u.title)}</h1>
+          <p class="lede">${esc(u.blurb)}</p>
+          <div class="obj"><span class="label">By the end of this unit you can</span>
+            <ul class="obj-list">${u.objectives.map(x => `<li>${esc(x)}</li>`).join('')}</ul>
+          </div>
+        </div>
+        ${lessons}
+        <div class="cell unit-foot">
+          <div>
+            <span class="label">Ready to try it</span>
+            <p class="small muted">${pr.seen ? `${pr.seen} of ${pr.total} answered so far.` : `${pr.total} questions. Each one marks itself and shows the full working either way.`}</p>
+          </div>
+          <a class="btn primary" href="#/math/${esc(c.id)}/${esc(u.id)}/practice">Practice this unit <span class="arr">&rarr;</span></a>
+        </div>
+      </main>${foot()}`);
+    syncModal();
+  }
+
+  /* ---------- the practice runner ----------
+     Four kinds, one loop. Whatever the kind, the shape after answering is the same: say plainly
+     whether it was right, then show the full working — not only when it was wrong. A student who
+     guessed correctly needs the working more than one who reasoned correctly, and neither of them
+     told us which they were. */
+  function renderPractice(c, u) {
+    const ps = practiceState();
+    if (ps.cid !== c.id || ps.uid !== u.id) {
+      Object.assign(ps, { cid: c.id, uid: u.id, i: 0, picked: null, seq: [], done: false, right: 0, wrong: 0, marked: null });
+    }
+    const items = u.practice || [];
+    const item = items[ps.i];
+    const head = `${topbar(`<a href="#/math/${esc(c.id)}">${esc(c.code)}</a><span class="sep">/</span><a href="#/math/${esc(c.id)}/${esc(u.id)}">Unit ${u.n}</a><span class="sep">/</span><strong>Practice</strong>`)}
+      <div class="section-bar">
+        <a class="back" href="#/math/${esc(c.id)}/${esc(u.id)}" aria-label="Back to unit ${u.n}"><span class="back-ico">${I.back}</span><span class="back-txt">Unit ${u.n}</span></a>
+        <div class="sec-title"><h2><span class="sec-ico">${I.quiz}</span>Practice</h2></div>
+        <div class="tools"><span class="mono small">${Math.min(ps.i + 1, items.length)} / ${items.length}</span></div>
+      </div>`;
+
+    if (ps.done || !item) {
+      const total = ps.right + ps.wrong;
+      app.innerHTML = frame(`${head}<main id="main" tabindex="-1"><div class="quiz">
+        <div class="q-result">
+          <span class="label">Unit ${u.n} practice</span>
+          <span class="score">${total ? Math.round(ps.right / total * 100) : 0}%<small>${ps.right} of ${total} first time</small></span>
+          <p class="small muted">Anything you missed is scheduled to come back. The unit page has the worked examples again whenever you want them.</p>
+          <div class="btn-row">
+            <a class="btn primary" href="#/math/${esc(c.id)}/${esc(u.id)}">Back to the unit <span class="arr">&rarr;</span></a>
+            <button type="button" class="btn" data-act="pr-restart">Go again</button>
+          </div>
+        </div>
+      </div></main>${foot()}`);
+      syncModal(); return;
+    }
+
+    const m = ps.marked;
+    let body = '';
+    if (item.kind === 'numeric') {
+      body = `<form class="fill-row" data-form="pr-num">
+          <input class="input" id="pr-input" name="v" inputmode="decimal" autocomplete="off" placeholder="Your answer" ${m ? 'disabled' : ''} value="${esc(ps.picked || '')}">
+          <button class="btn ${m ? '' : 'primary'}" type="submit" ${m ? 'disabled' : ''}>Check</button>
+        </form>`;
+    } else if (item.kind === 'mc') {
+      body = `<div class="options">${item.options.map((op, oi) => {
+        const cls = m ? (op.ok ? ' correct' : (String(ps.picked) === String(oi) ? ' wrong' : '')) : '';
+        return `<button type="button" class="opt${cls}" data-act="pr-mc" data-i="${oi}" ${m ? 'disabled' : ''}><span class="key">${String.fromCharCode(65 + oi)}</span><span>${esc(op.t)}</span></button>`;
+      }).join('')}</div>`;
+    } else if (item.kind === 'order') {
+      const chosen = ps.seq || [];
+      const left = item.steps.map((t, i2) => i2).filter(i2 => chosen.indexOf(i2) < 0);
+      body = `<div class="ordering">
+          <ol class="ord-chosen">${chosen.length ? chosen.map(i2 => `<li>${esc(item.steps[i2])}</li>`).join('') : '<li class="empty-slot">Pick the first line</li>'}</ol>
+          <div class="ord-pool">${left.map(i2 => `<button type="button" class="opt" data-act="pr-ord" data-i="${i2}" ${m ? 'disabled' : ''}>${esc(item.steps[i2])}</button>`).join('')}</div>
+          <div class="btn-row">
+            ${chosen.length && !m ? '<button type="button" class="btn sm ghost" data-act="pr-ord-undo">Undo</button>' : ''}
+            ${chosen.length === item.steps.length && !m ? '<button type="button" class="btn sm primary" data-act="pr-ord-check">Check the order</button>' : ''}
+          </div>
+        </div>`;
+    } else if (item.kind === 'spot') {
+      body = `<div class="options spotting">${item.steps.map((st, i2) => {
+        const cls = m ? (st.bad ? ' correct' : (String(ps.picked) === String(i2) ? ' wrong' : '')) : '';
+        return `<button type="button" class="opt${cls}" data-act="pr-spot" data-i="${i2}" ${m ? 'disabled' : ''}><span class="key">${i2 + 1}</span><span>${esc(st.t)}</span></button>`;
+      }).join('')}</div>`;
+    }
+
+    const fb = m ? `<div class="feedback ${m.ok ? 'ok' : 'bad'}">
+        <b>${m.ok ? 'Right.' : (m.why ? m.why : 'Not this time.')}</b>
+        ${item.why && !m.ok ? `<span>${esc(item.why)}</span>` : ''}
+        <ol class="sol">${(item.solution || []).map(x => `<li>${esc(x)}</li>`).join('')}</ol>
+      </div>
+      <div class="btn-row"><button type="button" class="btn primary" data-act="pr-next">${ps.i + 1 >= items.length ? 'Finish' : 'Next question'} <span class="arr">&rarr;</span></button></div>` : '';
+
+    app.innerHTML = frame(`${head}<main id="main" tabindex="-1"><div class="quiz">
+      <div class="q-card">
+        <div class="qnum"><span>${esc(item.kind === 'spot' ? 'Find the mistake' : item.kind === 'order' ? 'Put it in order' : item.kind === 'mc' ? 'Choose one' : 'Type the answer')}</span><span>Question ${ps.i + 1}</span></div>
+        <p class="prompt">${esc(item.prompt)}</p>
+        ${body}
+        ${!m && item.hint ? `<details class="hint-box"><summary>Give me a hint</summary><p class="small">${esc(item.hint)}</p></details>` : ''}
+        ${fb}
+      </div>
+    </div></main>${foot()}`);
+    syncModal();
+    const inp = document.getElementById('pr-input');
+    if (inp && !m) inp.focus();
+  }
+
+  function markPractice(ok, why) {
+    const ps = practiceState();
+    ps.marked = { ok: ok, why: why || null };
+    if (ok) ps.right++; else ps.wrong++;
+    schedule(courseSid(ps.cid), practiceKey(ps.cid, ps.uid, (Courses.unit(ps.cid, ps.uid).practice || [])[ps.i].id), ok ? 'good' : 'again');
+    saveProgress();
+    render();
   }
 
   function renderClinic() {
@@ -8661,6 +9385,22 @@ const GENERIC = new Set('information data process system method result results s
       case 'term-jump': openTermPopup(el.dataset.key); break;
       case 'search': if (s) openSearch(s); break;
       case 'update': applyUpdate(); break;
+      case 'pr-mc': { const ps = practiceState(); if (ps.marked) break; ps.picked = el.dataset.i;
+        const it = (Courses.unit(ps.cid, ps.uid).practice || [])[ps.i];
+        markPractice(!!it.options[+el.dataset.i].ok); break; }
+      case 'pr-spot': { const ps = practiceState(); if (ps.marked) break; ps.picked = el.dataset.i;
+        const it = (Courses.unit(ps.cid, ps.uid).practice || [])[ps.i];
+        markPractice(!!it.steps[+el.dataset.i].bad); break; }
+      case 'pr-ord': { const ps = practiceState(); if (ps.marked) break; ps.seq = (ps.seq || []).concat([+el.dataset.i]); render(); break; }
+      case 'pr-ord-undo': { const ps = practiceState(); ps.seq = (ps.seq || []).slice(0, -1); render(); break; }
+      case 'pr-ord-check': { const ps = practiceState(); if (ps.marked) break;
+        const ok = (ps.seq || []).every((v, i2) => v === i2);
+        markPractice(ok, ok ? null : 'Not that order.'); break; }
+      case 'pr-next': { const ps = practiceState(); const its = Courses.unit(ps.cid, ps.uid).practice || [];
+        ps.marked = null; ps.picked = null; ps.seq = [];
+        if (ps.i + 1 >= its.length) ps.done = true; else ps.i++;
+        render(); break; }
+      case 'pr-restart': { const ps = practiceState(); Object.assign(ps, { i: 0, picked: null, seq: [], done: false, right: 0, wrong: 0, marked: null }); render(); break; }
       case 'update-later': dismissUpdatePop(); toast('Left as it is. The update button in the top bar takes it whenever you are ready.'); break;
       case 'whats-new': state.modal = { type: 'whatsnew' }; syncModal(); break;
       case 'install': doInstall(); break;
@@ -9076,6 +9816,15 @@ const GENERIC = new Set('information data process system method result results s
     e.preventDefault();
     const data = Object.fromEntries(new FormData(form));
     const r = parseRoute();
+    if (form.dataset.form === 'pr-num') {
+      const ps = practiceState();
+      if (ps.marked) return;
+      const it = (Courses.unit(ps.cid, ps.uid).practice || [])[ps.i];
+      ps.picked = String(data.v || '');
+      const res = markNumeric(it, ps.picked);
+      markPractice(res.ok, res.why);
+      return;
+    }
     if (form.dataset.form === 'subject') {
       const name = (data.name || '').trim(); if (!name) return;
       if (state.modal.subject) { Object.assign(state.modal.subject, { name, code: (data.code || '').trim(), color: data.color, exam: data.exam || '' }); }
