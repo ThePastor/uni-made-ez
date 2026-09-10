@@ -1773,6 +1773,25 @@ math mi[mathvariant="normal"] { font-style: normal; }
    "succeeds" and returns typeset nonsense, so the data has to say which answers are words */
 .worked .ans .fx.words { font-family: var(--font-body); font-size: .95rem; }
 
+/* ---------- the course library, once it holds more than one subject ---------- */
+.subject-block { border-bottom: 1px solid var(--line); }
+.subject-head { padding: var(--band) var(--gut); display: grid; gap: 4px; background: var(--surface-2); border-bottom: 1px solid var(--line); }
+.subject-head h2 { font-size: 1.2rem; font-weight: 500; }
+.text-note, .read-note { margin-top: 12px; font-size: .9rem; color: var(--ink-2); display: flex; flex-wrap: wrap; gap: 10px; align-items: baseline; }
+.read-note { margin-top: var(--band); padding: 11px var(--pad-in); background: var(--surface-2); color: var(--ink); }
+/* a law course states plainly that it is study material and not advice — the app already
+   disclaims accuracy generally, but "not legal advice" needs saying in its own words */
+.legal-note { margin-top: 12px; padding: 11px var(--pad-in); border-left: var(--accent-bar) solid var(--warn); background: var(--warn-soft); color: var(--ink); font-size: .9rem; display: flex; flex-wrap: wrap; gap: 10px; align-items: baseline; }
+/* the home page says what is built in, above the student's own subjects */
+.tutoring-strip { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--pad-in) var(--gut-in); padding: var(--band) var(--gut); border-bottom: 1px solid var(--line); background: var(--tint-1); }
+.tutoring-strip > div { display: grid; gap: 5px; min-width: 0; flex: 1 1 320px; }
+.tutoring-strip b { font-family: var(--font-display); font-size: clamp(1.05rem, 1.8vw, 1.3rem); font-weight: 500; letter-spacing: -.02em; }
+.tutoring-strip .small { color: var(--ink-2); max-width: 68ch; }
+.topbar .crumb .sep-sub { color: var(--ink-2); }
+/* --ink-3 fails contrast on a TINTED ground, which is the same trap v2.13 hit with .label on
+   surface-2/-3. Anything sitting on a tint takes --ink-2 instead. */
+.tutoring-strip .label { color: var(--ink-2); }
+
 </style>
 </head>
 <body>
@@ -4222,6 +4241,15 @@ const GENERIC = new Set('information data process system method result results s
    different starting points, so a typo in either shows up as a mismatch. No answer in this file is
    trusted because it looks right.
 
+   SUBJECTS. Every course carries a `subject` ({ id, name, blurb }); the library groups by it, so
+   adding Law meant adding data, not a new page. Courses for a subject may live in their own file
+   and call Courses.register() — see courses-law.js — which keeps this file from becoming a bin.
+
+   SOURCE MATERIAL. A course is built from the STRUCTURE of Anndy's own outline (topics, chapters,
+   weeks, exam scope — facts about his course) plus explanation written here from scratch. Set
+   textbooks are named and pointed at, never reproduced: the doctrine is nobody's property, the
+   publisher's wording is. `read` on a unit names the chapter to read alongside it.
+
    PROVENANCE. The Precalculus course follows Anndy's own TRU section slides — chapters and section
    numbers are his, not a rearrangement — so a student reading a lesson here is reading the same
    syllabus in the same order as the lecture. `src` on each lesson names the section it came from.
@@ -4233,7 +4261,10 @@ const GENERIC = new Set('information data process system method result results s
      Chapter 1 Functions (1.1–1.6) · Chapter 2 Linear Functions (2.1–2.2) ·
      Chapter 3 Polynomial and Rational Functions (3.1–3.2).
      Midterm 1 covers 1.1 through 2.2. */
+  const MATH = { id: 'math', name: 'Math', blurb: 'Courses written out in full, from the notation up.' };
+
   const PRECALC = {
+    subject: MATH,
     id: 'precalc',
     code: 'Precalculus',
     title: 'Precalculus',
@@ -5133,8 +5164,23 @@ const GENERIC = new Set('information data process system method result results s
 
   const COURSES = [PRECALC];
 
+  /* Subjects appear in the order their first course was registered, which keeps Math first
+     without hard-coding an order that a later subject would have to be threaded into. */
+  function bySubject() {
+    const out = [];
+    for (const c of COURSES) {
+      let g = out.find(x => x.id === c.subject.id);
+      if (!g) { g = { id: c.subject.id, name: c.subject.name, blurb: c.subject.blurb, courses: [] }; out.push(g); }
+      g.courses.push(c);
+    }
+    return out;
+  }
+
   root.Courses = {
     all: () => COURSES,
+    subjects: bySubject,
+    // a subject file adds its courses here rather than editing this one
+    register: c => { if (c && !COURSES.some(x => x.id === c.id)) COURSES.push(c); return c; },
     get: id => COURSES.find(c => c.id === id) || null,
     unit: (cid, uid) => { const c = COURSES.find(x => x.id === cid); return c ? (c.units.find(u => u.id === uid) || null) : null; },
     items: cid => {
@@ -5160,6 +5206,593 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 
 </script>
 <script>
+/* UNI Made EZ — Law courses
+   Copyright © 2026 JohnsonXCorp. All rights reserved.
+   Proprietary. Not open source: see LICENSE.
+
+   ---------------------------------------------------------------------------------------------
+   Two TRU courses, BLAW 2910 Commercial Law and BLAW 3930 Environmental Law, both taught by
+   Murray Sholty in Fall 2026.
+
+   WHERE THIS CONTENT COMES FROM, AND WHERE IT DOES NOT. The STRUCTURE is taken from the course
+   outlines: the chapter list, the reading weeks, the assessment weighting and the midterm scope
+   are facts about the course. The EXPLANATION is written here from scratch. The set texts —
+   Bhalloo & Alexander for Commercial Law, Muldoon & Williams for Environmental Law, both Emond —
+   are named and pointed at by chapter, and nothing from them is reproduced. Legal doctrine is
+   nobody's property; a publisher's particular expression of it is theirs. Each unit's `read`
+   field names the chapter to read alongside it, because this is a companion to the textbook and
+   not a substitute for it.
+
+   WHY LAW PRACTICE LOOKS DIFFERENT FROM MATHS PRACTICE. Both midterms in these courses are short
+   answer questions on scenarios, so the skill being trained is issue-spotting and applying a test
+   to facts — not recall. The practice here is therefore scenario-led: `mc` items give a fact
+   pattern and ask which rule governs, `order` items rebuild the sequence of a legal test (the
+   order matters, because an analysis that jumps to damages before establishing a duty is wrong
+   even when it reaches the right answer), and `spot` items hand over a flawed analysis to find
+   the broken step. There are no numeric items — law has no arithmetic to verify — so the SymPy
+   check in test/math.js simply has nothing to do here, which is correct rather than a gap.
+
+   NOT LEGAL ADVICE. This is study material for a university course. It states general principles
+   and it will go out of date, because legislatures amend and courts overrule. Anyone with an
+   actual legal problem needs a lawyer, and the app says so on the page.
+   --------------------------------------------------------------------------------------------- */
+(function (root) {
+  'use strict';
+  if (!root.Courses || !root.Courses.register) return;
+
+  const LAW = {
+    id: 'law', name: 'Law',
+    blurb: 'Business and environmental law, built around the tests you are actually asked to apply.'
+  };
+
+  const NOTE = 'Study material for a university course, not legal advice. The law changes; check anything that matters against the current statute, the case law and your instructor.';
+
+  /* ==================== BLAW 2910 — COMMERCIAL LAW ==================== */
+  const COMMERCIAL = {
+    subject: LAW,
+    id: 'blaw2910',
+    code: 'BLAW 2910',
+    title: 'Commercial Law',
+    blurb: 'The legal environment a business operates in: where Canadian law comes from, how disputes get resolved, tort, and the contract rules that run through everything else.',
+    level: 'Second year',
+    exam: 'Midterm 1 covers chapters 1–5. Midterm 2 covers chapters 6–9. The final is comprehensive, and you must pass it to pass the course.',
+    text: 'Bhalloo & Alexander, Canadian Business Law: A British Columbia Perspective, 2nd ed (Emond, 2024)',
+    legalNote: NOTE,
+    units: [
+
+      {
+        id: 'foundations', n: 1,
+        title: 'Foundations and the court system',
+        read: 'Chapters 1–2',
+        blurb: 'Where Canadian law comes from, which level of government may make it, and what actually happens when a business ends up in a dispute.',
+        objectives: [
+          'Distinguish common law, equity and statute, and say which prevails when they conflict',
+          'Use ss. 91 and 92 to say whether a matter is federal or provincial',
+          'Place a dispute in the right court, and state the civil standard of proof',
+          'Compare litigation with negotiation, mediation and arbitration on cost, control and privacy'
+        ],
+        lessons: [
+          {
+            id: 'c1', title: 'Where Canadian law comes from', src: 'Chapter 1',
+            idea: `Canadian law has three sources and they do not sit at the same height. <b>Common law</b> is judge-made, built case by case and bound by precedent — a court follows decisions of higher courts in its own province, and every court follows the Supreme Court of Canada. <b>Equity</b> grew up alongside it to soften outcomes the common law made harsh, and supplies remedies like the injunction. <b>Statute</b> is enacted by a legislature, and it <b>beats both</b>: where a valid statute covers the ground, it displaces the common law. Above all of it sits the <b>Constitution</b>, which decides who may legislate at all — a statute passed by the wrong level of government is invalid no matter how sensible it is.`,
+            rules: [
+              { name: 'The hierarchy', expr: 'Constitution', note: 'Constitution beats statute; statute beats common law and equity.', words: true },
+              { name: 'Division of powers', expr: 's. 91 federal, s. 92 provincial', note: 'Constitution Act, 1867. Some subjects are shared, and the environment is the classic one.', words: true }
+            ],
+            examples: [
+              {
+                prompt: 'A BC statute says a consumer may cancel a contract within 10 days. The common law says a concluded contract binds. Which governs?',
+                steps: [
+                  { do: 'Identify the conflict', why: 'The statute grants a right the common law would not.' },
+                  { do: 'Check the legislature had authority', why: 'Property and civil rights in the province is s. 92(13), so BC may legislate here.' },
+                  { do: 'The statute governs', why: 'A valid statute displaces the common law on the ground it covers. The common law still fills every gap the statute leaves.' }
+                ],
+                answer: 'The statute governs, because it is valid and covers the point.', answerWords: true
+              },
+              {
+                prompt: 'Parliament passes an Act regulating how a BC restaurant writes its employment contracts. Is it valid?',
+                steps: [
+                  { do: 'Characterise the matter', why: 'Ask what the law is really about — its "pith and substance" — not what it is called.' },
+                  { do: 'This is employment in a provincial business', why: 'Labour relations for provincially regulated work fall under s. 92(13), property and civil rights.' },
+                  { do: 'Likely invalid', why: 'Federal employment law reaches federally regulated undertakings — banks, airlines, interprovincial transport — not a local restaurant.' }
+                ],
+                answer: 'Outside federal authority for a provincially regulated employer.', answerWords: true
+              }
+            ],
+            pitfalls: [
+              { wrong: '"Common law" means the law of England, or means unwritten law generally.',
+                right: 'It means judge-made law built from precedent.',
+                why: 'It is a source of law, contrasted with statute — not a country and not a synonym for "traditional". Canadian common law is made by Canadian courts.' },
+              { wrong: 'Treating a statute as valid because it is a good idea.',
+                right: 'Authority comes first: could that legislature enact it at all?',
+                why: 'Division of powers is a threshold question. A well-drafted law from the wrong level is still invalid, which is why exam scenarios so often turn on ss. 91–92 before anything else.' }
+            ]
+          },
+          {
+            id: 'c2', title: 'Resolving disputes', src: 'Chapter 2',
+            idea: `Most disputes never reach trial, and the course expects you to know why. Litigation is public, slow and expensive, and the outcome is imposed. <b>Negotiation</b> keeps control with the parties; <b>mediation</b> adds a neutral who helps them reach their own agreement but cannot impose one; <b>arbitration</b> hands the decision to a private decision-maker whose award binds. In civil litigation the plaintiff must prove the case on the <b>balance of probabilities</b> — more likely than not — which is a materially lower bar than the criminal standard of beyond a reasonable doubt.`,
+            rules: [
+              { name: 'Civil standard', expr: 'balance of probabilities', note: 'More likely than not. Criminal is beyond a reasonable doubt.', words: true },
+              { name: 'Who decides', expr: 'mediator suggests, arbitrator decides', note: 'That single distinction answers a great many exam questions.', words: true }
+            ],
+            examples: [
+              {
+                prompt: 'Two businesses in a supply dispute want it resolved quickly and privately, with a binding outcome. What fits?',
+                steps: [
+                  { do: 'Binding rules out mediation', why: 'A mediator helps them agree but cannot impose a result.' },
+                  { do: 'Private rules out litigation', why: 'Court files and hearings are generally open to the public.' },
+                  { do: 'Arbitration', why: 'Private, binding, usually faster, and the parties can pick a decision-maker who knows the industry.' }
+                ],
+                answer: 'Arbitration.', answerWords: true
+              },
+              {
+                prompt: 'A plaintiff proves her version is somewhat more believable than the defendant\'s. Has she met the civil standard?',
+                steps: [
+                  { do: 'The test is more likely than not', why: 'Anything past the halfway point suffices.' },
+                  { do: 'Yes', why: 'She does not need certainty, and she does not need to exclude the defendant\'s account — only to make hers more probable.' }
+                ],
+                answer: 'Yes — the civil standard is met.', answerWords: true
+              }
+            ],
+            pitfalls: [
+              { wrong: 'Applying "beyond a reasonable doubt" to a business dispute.',
+                right: 'That is the criminal standard.',
+                why: 'A civil plaintiff proves on the balance of probabilities. Importing the criminal standard makes almost every scenario answer come out wrong.' },
+              { wrong: 'Treating mediation and arbitration as interchangeable "ADR".',
+                right: 'Only the arbitrator can impose an outcome.',
+                why: 'If a scenario says the parties want a binding result without a trial, mediation is not the answer.' }
+            ]
+          }
+        ],
+        practice: [
+          { id: 'l1p1', kind: 'mc', lesson: 'c1',
+            prompt: 'A valid provincial statute covers the same ground as an established common law rule, and they conflict. Which governs?',
+            options: [
+              { t: 'The statute — a valid statute displaces the common law on the point it covers', ok: true },
+              { t: 'The common law, because it came first', ok: false },
+              { t: 'Whichever the judge considers fairer on the facts', ok: false },
+              { t: 'Neither — the conflict makes both unenforceable', ok: false }
+            ],
+            hint: 'Rank the sources before comparing their content.',
+            solution: ['Constitution beats statute; statute beats common law', 'The common law still governs any point the statute leaves untouched'] },
+          { id: 'l1p2', kind: 'mc', lesson: 'c2',
+            prompt: 'Two companies want a dispute resolved privately, quickly, and with a decision that binds them. Which process?',
+            options: [
+              { t: 'Arbitration', ok: true },
+              { t: 'Mediation', ok: false },
+              { t: 'Litigation in the BC Supreme Court', ok: false },
+              { t: 'Negotiation', ok: false }
+            ],
+            hint: 'Which of these produces a decision the parties must accept?',
+            solution: ['A mediator cannot impose an outcome', 'Litigation is public and slow', 'Arbitration is private, binding and usually faster'] },
+          { id: 'l1p3', kind: 'mc', lesson: 'c2',
+            prompt: 'What must a plaintiff prove in a civil action?',
+            options: [
+              { t: 'That the case is more likely true than not', ok: true },
+              { t: 'That the case is proven beyond a reasonable doubt', ok: false },
+              { t: 'That the defendant cannot explain the events', ok: false },
+              { t: 'That the case is certain', ok: false }
+            ],
+            hint: 'This is the single most-tested line between civil and criminal.',
+            solution: ['The civil standard is the balance of probabilities', 'Beyond a reasonable doubt is the criminal standard'] }
+        ]
+      },
+
+      {
+        id: 'tort', n: 2,
+        title: 'Tort law',
+        read: 'Chapter 3',
+        blurb: 'A civil wrong that is not a breach of contract. Negligence is the one that reaches most businesses, and it has four elements that must be taken in order.',
+        objectives: [
+          'Distinguish a tort from a crime and from a breach of contract',
+          'State and apply the four elements of negligence in order',
+          'Separate the standard of care from the duty of care',
+          'Identify the common business torts and the main defences'
+        ],
+        lessons: [
+          {
+            id: 'c3a', title: 'What a tort is, and the four elements of negligence', src: 'Chapter 3',
+            idea: `A <b>tort</b> is a civil wrong: one person's conduct causes another loss, and the injured party sues for compensation. It is not a crime — the state is not the plaintiff and the remedy is damages rather than punishment — and it does not require a contract, which is why a business owes duties to people it has never dealt with. <b>Negligence</b> is the unintentional tort that matters most, and it has <b>four elements, all of which must be proved, in this order</b>: a duty of care, a breach of the standard of care, causation, and damages. Failing any one ends the claim.`,
+            rules: [
+              { name: 'The four elements', expr: 'duty, breach, causation, damages', note: 'In that order. An analysis that reaches damages without a duty is wrong even if the conclusion is right.', words: true },
+              { name: 'Factual causation', expr: 'the "but for" test', note: 'But for the defendant\'s breach, would the loss have happened anyway?', words: true }
+            ],
+            examples: [
+              {
+                prompt: 'A café mops its floor, leaves no sign, and a customer slips and breaks a wrist. Work through negligence.',
+                steps: [
+                  { do: 'Duty of care', why: 'An occupier owes a duty to people it can reasonably foresee coming onto the premises. A paying customer is squarely within that.' },
+                  { do: 'Breach of the standard', why: 'The standard is what a reasonable occupier would do. Wet floors are foreseeable and a sign costs nothing, so leaving none falls below it.' },
+                  { do: 'Causation', why: 'But for the unmarked wet floor, would she have fallen? No — so factual causation is made out.' },
+                  { do: 'Damages', why: 'A broken wrist is real, compensable loss. All four elements are present, so the claim succeeds.' }
+                ],
+                answer: 'All four elements are made out; the café is liable.', answerWords: true
+              },
+              {
+                prompt: 'Same café, same missing sign — but the customer tripped over her own untied lace on a dry patch. Does the claim succeed?',
+                steps: [
+                  { do: 'Duty: yes', why: 'Unchanged; she is still a customer on the premises.' },
+                  { do: 'Breach: yes', why: 'The missing sign is still a breach of the standard of care.' },
+                  { do: 'Causation: no', why: 'But for the missing sign, she would have tripped anyway. The breach did not cause this loss.' },
+                  { do: 'Claim fails', why: 'Two elements out of four is not most of the way there — it is nothing. Every element is necessary.' }
+                ],
+                answer: 'No — causation is not established.', answerWords: true
+              }
+            ],
+            pitfalls: [
+              { wrong: 'Finding a breach and concluding the defendant is liable.',
+                right: 'Breach is one element of four.',
+                why: 'Careless conduct that causes no loss, or causes a loss it did not actually bring about, is not actionable negligence. Exam scenarios are usually built so that exactly one element fails.' },
+              { wrong: 'Treating duty of care and standard of care as the same question.',
+                right: 'Duty asks whether the defendant owed anything; standard asks how much.',
+                why: 'Duty is about the relationship — was this plaintiff a foreseeable victim? Standard is about conduct — what would a reasonable person in that position have done? Collapsing them loses marks even where the outcome is right.' },
+              { wrong: 'Calling a tort a crime because the conduct was appalling.',
+                right: 'The same act can be both, but they are separate proceedings.',
+                why: 'A crime is prosecuted by the state to the criminal standard; a tort is sued on by the victim on the balance of probabilities. A defendant acquitted of a crime can still lose the tort claim on the same facts.' }
+            ]
+          }
+        ],
+        practice: [
+          { id: 'l2p1', kind: 'order', lesson: 'c3a',
+            prompt: 'Put the four elements of negligence into the order they must be analysed.',
+            steps: ['Duty of care', 'Breach of the standard of care', 'Causation', 'Damages'],
+            hint: 'Start with whether anything was owed at all.',
+            solution: ['Duty comes first — without it nothing else matters', 'Then breach, then whether the breach caused the loss, then the loss itself'] },
+          { id: 'l2p2', kind: 'mc', lesson: 'c3a',
+            prompt: 'A shop leaves a wet floor unmarked. A customer trips on her own untied lace on a dry part of the floor and is hurt. Is the shop liable in negligence?',
+            options: [
+              { t: 'No — the breach did not cause this loss', ok: true },
+              { t: 'Yes — leaving the floor unmarked was a breach', ok: false },
+              { t: 'Yes — an occupier is strictly liable for injuries on its premises', ok: false },
+              { t: 'No — a shop owes no duty of care to customers', ok: false }
+            ],
+            hint: 'Apply "but for" to these particular facts.',
+            solution: ['Duty and breach are both present', 'But for the missing sign she would still have tripped on her lace', 'Causation fails, so the claim fails'] },
+          { id: 'l2p3', kind: 'spot', lesson: 'c3a',
+            prompt: 'One step of this negligence analysis is wrong. Which one?',
+            steps: [
+              { t: 'The supplier owed a duty of care to the buyer', bad: false },
+              { t: 'The supplier fell below the standard of a reasonable supplier', bad: false },
+              { t: 'Because there was a breach, the supplier is liable', bad: true },
+              { t: 'Damages are assessed at the buyer\'s lost profit', bad: false }
+            ],
+            why: 'The analysis jumps from breach straight to liability, skipping causation. Breach alone is never enough: it must be shown that but for the breach the loss would not have occurred. Missing out an element is the most common way a scenario answer loses marks even when it lands on the right conclusion.',
+            hint: 'Count the elements that appear.',
+            solution: ['Duty, breach, CAUSATION, damages', 'Nothing establishes that the breach produced this loss'] }
+        ]
+      },
+
+      {
+        id: 'contracts', n: 3,
+        title: 'Contracts',
+        read: 'Chapters 4–5',
+        blurb: 'What makes an agreement binding, what makes one collapse, and what a court will do about a breach. This is the heart of Midterm 1.',
+        objectives: [
+          'List the elements of contract formation and apply them to a fact pattern',
+          'Distinguish an offer from an invitation to treat',
+          'Explain why consideration must be sufficient but need not be adequate',
+          'Identify the vitiating factors and match a remedy to a breach'
+        ],
+        lessons: [
+          {
+            id: 'c4', title: 'Formation: when an agreement binds', src: 'Chapters 4–5',
+            idea: `A contract needs <b>five things</b>: an <b>intention</b> to create legal relations, a matching <b>offer and acceptance</b>, <b>consideration</b> moving from each side, <b>capacity</b> in both parties, and a <b>legal</b> purpose. Two of these cause most of the trouble. An <b>offer</b> is a promise capable of being accepted as it stands — a price tag or an advertisement is usually only an <b>invitation to treat</b>, an invitation to make an offer. And <b>consideration</b> must be <b>sufficient but need not be adequate</b>: each side must give something of value, but courts do not police whether the bargain was a good one.`,
+            rules: [
+              { name: 'Formation', expr: 'intention, offer, acceptance, consideration, capacity, legality', note: 'All of them. A missing element means no contract, not a weak one.', words: true },
+              { name: 'Consideration', expr: 'sufficient but not necessarily adequate', note: 'Something of value each way; the court will not ask whether the price was fair.', words: true }
+            ],
+            examples: [
+              {
+                prompt: 'A shop displays a laptop marked $200 when it meant $2,000. A customer takes it to the till and insists on the marked price. Must the shop sell?',
+                steps: [
+                  { do: 'Is the display an offer?', why: 'No — a display of goods is an invitation to treat. It invites offers rather than making one.' },
+                  { do: 'Who makes the offer?', why: 'The customer does, at the till, when she offers to buy at $200.' },
+                  { do: 'Has the shop accepted?', why: 'It has not, and it may refuse. Without acceptance there is no agreement.' },
+                  { do: 'No contract', why: 'This is why a mispriced tag is not a binding promise, and why shops can decline at the till.' }
+                ],
+                answer: 'No — the display was an invitation to treat.', answerWords: true
+              },
+              {
+                prompt: 'An uncle promises his niece $5,000 for nothing in return. She sues when he refuses to pay. Result?',
+                steps: [
+                  { do: 'Look for consideration', why: 'She has given nothing and promised nothing.' },
+                  { do: 'A gratuitous promise is not a contract', why: 'Consideration must move from the promisee. Without it there is no bargain, only a promise.' },
+                  { do: 'Unenforceable', why: 'Had she promised even something small in exchange, sufficiency would be satisfied and the amount would not be examined.' }
+                ],
+                answer: 'Unenforceable — no consideration.', answerWords: true
+              },
+              {
+                prompt: 'A supplier breaches a contract to deliver a machine. The buyer wants that specific machine, which is one of a kind. Which remedy?',
+                steps: [
+                  { do: 'Start with damages', why: 'Damages are the default remedy: money to put the buyer where performance would have.' },
+                  { do: 'Are damages adequate?', why: 'Not if the machine is unique — no sum lets the buyer go and buy the same thing elsewhere.' },
+                  { do: 'Specific performance', why: 'An equitable remedy ordering actual performance, available where damages are inadequate. It is discretionary, not a right.' }
+                ],
+                answer: 'Specific performance, because damages are inadequate.', answerWords: true
+              }
+            ],
+            pitfalls: [
+              { wrong: 'Treating a price tag or an advertisement as an offer.',
+                right: 'It is normally an invitation to treat.',
+                why: 'The customer makes the offer at the till and the shop accepts or declines. The exception is an advertisement worded as a definite promise to anyone who performs a condition, which can be a unilateral offer.' },
+              { wrong: '"The price was far too low, so there is no consideration."',
+                right: 'Consideration must be sufficient, not adequate.',
+                why: 'A court will not rewrite a bad bargain. A grossly unequal exchange may raise unconscionability — a separate vitiating factor — but it does not mean consideration is absent.' },
+              { wrong: 'Reaching for specific performance whenever the plaintiff wants performance.',
+                right: 'Damages first; specific performance only where damages will not do.',
+                why: 'It is an equitable remedy and discretionary. Unique subject matter — land, a one-off machine — is the usual reason it is granted.' }
+            ]
+          }
+        ],
+        practice: [
+          { id: 'l3p1', kind: 'mc', lesson: 'c4',
+            prompt: 'A laptop is displayed at $200 by mistake. The customer takes it to the till. Must the shop sell at that price?',
+            options: [
+              { t: 'No — the display is an invitation to treat, so the shop may decline the customer\'s offer', ok: true },
+              { t: 'Yes — the marked price is a binding offer the customer accepted', ok: false },
+              { t: 'Yes — a shop must honour any advertised price', ok: false },
+              { t: 'No — a contract with a mistaken price is illegal', ok: false }
+            ],
+            hint: 'Work out who is making the offer and who is accepting.',
+            solution: ['A display of goods is an invitation to treat', 'The customer offers at the till; the shop may accept or refuse', 'No acceptance, so no contract'] },
+          { id: 'l3p2', kind: 'order', lesson: 'c4',
+            prompt: 'Put the elements of contract formation into the order they are usually analysed.',
+            steps: ['Intention to create legal relations', 'Offer', 'Acceptance', 'Consideration', 'Capacity and legality'],
+            hint: 'Start by asking whether the parties meant to be legally bound at all.',
+            solution: ['Intention comes first — a social arrangement never gets past it', 'Then the agreement itself, then the bargain, then whether the parties and the purpose were permitted'] },
+          { id: 'l3p3', kind: 'mc', lesson: 'c4',
+            prompt: 'A signs a contract to sell a rare painting to B for far below market value, but freely and with full knowledge. B sues to enforce. Is there consideration?',
+            options: [
+              { t: 'Yes — consideration must be sufficient, not adequate', ok: true },
+              { t: 'No — the price is too far below market value to count', ok: false },
+              { t: 'No — a contract needs a fair price to be enforceable', ok: false },
+              { t: 'Only if a court first assesses the painting', ok: false }
+            ],
+            hint: 'Courts do not ask whether a bargain was a good one.',
+            solution: ['Each side gave something of value, so consideration is present', 'A grossly unequal bargain may raise unconscionability, which is a different question'] },
+          { id: 'l3p4', kind: 'spot', lesson: 'c4',
+            prompt: 'One step of this contract analysis is wrong. Which one?',
+            steps: [
+              { t: 'The parties intended to create legal relations', bad: false },
+              { t: 'The advertisement was an offer, which the customer accepted by turning up', bad: true },
+              { t: 'Both parties had capacity and the purpose was legal', bad: false },
+              { t: 'Therefore a binding contract was formed', bad: false }
+            ],
+            why: 'An advertisement is normally an invitation to treat, not an offer, so turning up cannot be acceptance — the customer would be the one making the offer. The exception is an advertisement framed as a definite promise to anyone who performs a stated condition, which can be a unilateral offer; a general advertisement of goods is not.',
+            hint: 'Which party actually makes the offer in a shop?',
+            solution: ['An advertisement is an invitation to treat', 'The customer offers; the seller accepts or declines'] }
+        ]
+      }
+    ]
+  };
+
+  /* ==================== BLAW 3930 — ENVIRONMENTAL LAW ==================== */
+  const ENVIRO = {
+    subject: LAW,
+    id: 'blaw3930',
+    code: 'BLAW 3930',
+    title: 'Environmental Law',
+    blurb: 'How environmental regulation is made, who has authority to make it, and the duty owed to Indigenous peoples when a decision may affect their rights.',
+    level: 'Third year',
+    exam: 'Midterm 1 covers chapters 1–5. Midterm 2 covers chapters 6–9. The final is comprehensive, and you must pass it to pass the course.',
+    text: 'Muldoon & Williams, An Introduction to Environmental Law and Policy in Canada, 4th ed (Emond, 2025)',
+    legalNote: NOTE,
+    units: [
+      {
+        id: 'evolution', n: 1,
+        title: 'Evolution and governance',
+        read: 'Chapters 1–2',
+        blurb: 'How environmental law grew out of private law, and why both Ottawa and the provinces can regulate the same river.',
+        objectives: [
+          'Trace environmental law from private nuisance to comprehensive statutory regimes',
+          'Explain why environmental jurisdiction is shared rather than assigned',
+          'Name the principles that shape modern environmental statutes and say what each does',
+          'Identify which head of power supports a given federal environmental measure'
+        ],
+        lessons: [
+          {
+            id: 'e1', title: 'From private nuisance to statutory regimes', src: 'Chapter 1',
+            idea: `Environmental protection began as <b>private law</b>: a landowner sued in <b>nuisance</b> for unreasonable interference with the use of their land, or in negligence, or in trespass. That route had a structural weakness — it needed a plaintiff with a proprietary interest and a provable individual loss, so diffuse harm to air, water or a species had nobody with standing to complain. Modern environmental law is therefore overwhelmingly <b>statutory and regulatory</b>: it sets standards in advance, licenses activities, and lets the state enforce without waiting for a private victim. Three principles run through it — <b>polluter pays</b>, the <b>precautionary principle</b> (scientific uncertainty is not a reason to postpone action against serious or irreversible harm), and <b>sustainable development</b>.`,
+            rules: [
+              { name: 'Private nuisance', expr: 'unreasonable interference with use and enjoyment of land', note: 'Needs a plaintiff with an interest in the land affected.', words: true },
+              { name: 'Precautionary principle', expr: 'uncertainty is not a reason to delay', note: 'Where harm would be serious or irreversible, lack of full scientific certainty does not justify postponing measures.', words: true }
+            ],
+            examples: [
+              {
+                prompt: 'A plant emits fumes that damage a neighbouring farm\'s crops. What could the farmer have done before modern statutes, and what can be done now?',
+                steps: [
+                  { do: 'Private nuisance', why: 'The farmer has an interest in land and a concrete loss, so the old private route works here.' },
+                  { do: 'Now, also a regulatory route', why: 'The emission likely breaches a permit or a standard, and the regulator can act without the farmer suing.' },
+                  { do: 'Both may run at once', why: 'A prosecution or administrative penalty does not compensate the farmer, so the civil claim still matters.' }
+                ],
+                answer: 'Nuisance historically; today a regulatory response as well.', answerWords: true
+              },
+              {
+                prompt: 'A chemical is suspected but not proven to cause serious, irreversible harm to a watershed. Must the regulator wait for proof?',
+                steps: [
+                  { do: 'Identify the principle', why: 'Serious or irreversible harm plus scientific uncertainty is the precautionary principle\'s trigger.' },
+                  { do: 'No', why: 'Uncertainty does not justify postponing cost-effective measures.' },
+                  { do: 'Note what it does not say', why: 'It does not reverse the burden of proof in every case or authorise any measure at all — it removes uncertainty as an excuse for inaction.' }
+                ],
+                answer: 'No — uncertainty is not a reason to postpone.', answerWords: true
+              }
+            ],
+            pitfalls: [
+              { wrong: 'Thinking anyone bothered by pollution can sue in private nuisance.',
+                right: 'Nuisance protects an interest in land.',
+                why: 'That limit is exactly why statutory regimes were needed: harm spread thinly across the public had no plaintiff, and the common law had no answer to it.' },
+              { wrong: 'Reading the precautionary principle as "ban anything uncertain".',
+                right: 'It says uncertainty is not a reason to delay where harm would be serious or irreversible.',
+                why: 'It removes an excuse for inaction; it does not decide what the measure should be, and its force depends on how the particular statute enacts it.' }
+            ]
+          },
+          {
+            id: 'e2', title: 'Who may regulate the environment', src: 'Chapter 2',
+            idea: `"The environment" appears nowhere in the Constitution Act, 1867, so it is not assigned to anyone. It is a <b>shared subject</b>, and jurisdiction is worked out by asking which established head of power a particular measure fits. The provinces reach most of it through property and civil rights, local works and undertakings, and public lands. Ottawa reaches it through <b>criminal law</b>, <b>fisheries</b>, <b>navigation and shipping</b>, <b>Indians and lands reserved for Indians</b>, and residually <b>POGG</b>. The criminal law power is the workhorse: a prohibition backed by a penalty and directed at a genuine public purpose — and protecting the environment counts — is valid federal criminal law even though it regulates industry.`,
+            rules: [
+              { name: 'No environment head', expr: 'jurisdiction is shared', note: 'Characterise the measure, then find the head of power it fits.', words: true },
+              { name: 'Federal criminal law power', expr: 'prohibition + penalty + public purpose', note: 'Protection of the environment is an accepted public purpose.', words: true }
+            ],
+            examples: [
+              {
+                prompt: 'Parliament prohibits releasing a listed toxic substance, with fines and imprisonment. A province says this invades its jurisdiction. Valid?',
+                steps: [
+                  { do: 'Characterise it', why: 'A prohibition, backed by a penalty, aimed at protecting health and the environment.' },
+                  { do: 'Match a head of power', why: 'That is the shape of criminal law, and environmental protection is a legitimate public purpose.' },
+                  { do: 'Valid', why: 'Overlap with provincial regulation does not defeat it. Both levels may occupy the field; conflict is handled by paramountcy, not by exclusivity.' }
+                ],
+                answer: 'Valid under the federal criminal law power.', answerWords: true
+              },
+              {
+                prompt: 'A federal scheme requires approval for any project a province considers might affect the environment, whatever the subject matter. Any problem?',
+                steps: [
+                  { do: 'Ask what it is really regulating', why: 'A scheme keyed to "effects on the environment" at large is not keyed to a federal head of power.' },
+                  { do: 'Reaching too far is the risk', why: 'Federal environmental authority runs through specific heads — fisheries, navigation, criminal law, and so on — not through the environment as such.' },
+                  { do: 'Vulnerable', why: 'A scheme tied to genuinely federal effects stands on much firmer ground than one asserting general authority over the environment.' }
+                ],
+                answer: 'Vulnerable — there is no general federal power over the environment.', answerWords: true
+              }
+            ],
+            pitfalls: [
+              { wrong: '"The environment is federal" or "the environment is provincial".',
+                right: 'It is shared, and the answer depends on the measure.',
+                why: 'The question is never "who owns the environment" but "which head of power does this particular law fit". Scenarios are built to reward that move.' },
+              { wrong: 'Assuming overlap makes one law invalid.',
+                right: 'Both levels may legislate; paramountcy resolves actual conflict.',
+                why: 'Only where compliance with both is impossible, or the provincial law frustrates the federal purpose, does the federal law prevail — and then only to the extent of the conflict.' }
+            ]
+          }
+        ],
+        practice: [
+          { id: 'e1p1', kind: 'mc', lesson: 'e2',
+            prompt: 'Which best describes constitutional authority over the environment in Canada?',
+            options: [
+              { t: 'It is shared — neither level has a general environment power, so each measure must be matched to a head of power', ok: true },
+              { t: 'It is exclusively federal under POGG', ok: false },
+              { t: 'It is exclusively provincial under property and civil rights', ok: false },
+              { t: 'It was assigned to the provinces by the Constitution Act, 1867', ok: false }
+            ],
+            hint: 'Look for "environment" in the 1867 Act.',
+            solution: ['The environment is not an enumerated head of power', 'Each level reaches it through the heads it does have', 'Overlap is normal; paramountcy handles genuine conflict'] },
+          { id: 'e1p2', kind: 'mc', lesson: 'e1',
+            prompt: 'Why was private nuisance an inadequate tool for protecting air quality?',
+            options: [
+              { t: 'It requires a plaintiff with an interest in affected land and a provable loss', ok: true },
+              { t: 'Courts refused to hear environmental cases', ok: false },
+              { t: 'Nuisance applies only to noise', ok: false },
+              { t: 'Damages were unavailable in nuisance', ok: false }
+            ],
+            hint: 'Ask who is entitled to bring the claim.',
+            solution: ['Harm spread thinly across the public leaves no one with standing', 'That gap is what statutory regimes were built to fill'] },
+          { id: 'e1p3', kind: 'order', lesson: 'e2',
+            prompt: 'Put the steps for testing whether a federal environmental law is valid into order.',
+            steps: [
+              'Characterise the law — what is it really about?',
+              'Identify the head of power it would fall under',
+              'Ask whether the law fits that head',
+              'If both levels have validly legislated, apply paramountcy to any conflict'
+            ],
+            hint: 'Characterise before you classify.',
+            solution: ['Pith and substance first, then the head of power, then conflict', 'Overlap alone does not invalidate anything'] }
+        ]
+      },
+
+      {
+        id: 'indigenous', n: 2,
+        title: 'Environmental law and Indigenous peoples',
+        read: 'Chapter 3',
+        blurb: 'When the Crown must consult, how much consultation is required, and what UNDRIP and BC\'s Declaration Act changed.',
+        objectives: [
+          'State when the duty to consult is triggered',
+          'Explain why the required depth of consultation varies',
+          'Say who holds the duty and who does not',
+          'Place UNDRIP and BC\'s Declaration Act in relation to the constitutional duty'
+        ],
+        lessons: [
+          {
+            id: 'e3', title: 'The duty to consult and accommodate', src: 'Chapter 3',
+            idea: `Section 35 of the Constitution Act, 1982 recognises and affirms existing Aboriginal and treaty rights. From it flows the <b>duty to consult</b>, which arises when the <b>Crown</b> has <b>real or constructive knowledge</b> of a potential Aboriginal right or title claim and <b>contemplates conduct that might adversely affect it</b>. Two features are constantly tested. It is triggered by a <b>potential</b> claim — the right need not yet be proven — because waiting for proof would let the Crown extinguish the subject matter first. And the required depth sits on a <b>spectrum</b>: from notice at the low end, where the claim is weak and the impact minor, up to deep consultation and possible <b>accommodation</b> where the claim is strong and the impact serious. Consultation is not a veto, and it is not a requirement to agree — but it must be meaningful and in good faith.`,
+            rules: [
+              { name: 'The trigger', expr: 'Crown knowledge + potential right + conduct that may adversely affect it', note: 'All three. The right need not be proven first.', words: true },
+              { name: 'The spectrum', expr: 'notice to deep consultation and accommodation', note: 'Depth scales with the strength of the claim and the seriousness of the impact.', words: true }
+            ],
+            examples: [
+              {
+                prompt: 'BC is considering a permit for a mine on land subject to an unproven but well-supported title claim, with serious potential impact. What is required?',
+                steps: [
+                  { do: 'Is the duty triggered?', why: 'The Crown knows of the claim and is contemplating conduct that could adversely affect it. Yes.' },
+                  { do: 'Does the claim being unproven matter?', why: 'No — a potential claim is enough, which is the whole point of the doctrine.' },
+                  { do: 'Where on the spectrum?', why: 'Strong claim plus serious impact puts this at the deep end.' },
+                  { do: 'Deep consultation, and accommodation may be required', why: 'That can mean changing or conditioning the project. It does not mean the nation holds a veto.' }
+                ],
+                answer: 'Deep consultation, with accommodation likely required.', answerWords: true
+              },
+              {
+                prompt: 'A private company plans a project on the same land and consults the nation itself. Is the Crown\'s duty discharged?',
+                steps: [
+                  { do: 'Who holds the duty?', why: 'The Crown. It is a constitutional obligation and cannot be shed.' },
+                  { do: 'What may be delegated?', why: 'Procedural aspects — the fieldwork of consultation — can be delegated to a proponent.' },
+                  { do: 'Not discharged', why: 'The Crown remains responsible for the adequacy of consultation, however much of the legwork a company did.' }
+                ],
+                answer: 'No — the duty stays with the Crown.', answerWords: true
+              }
+            ],
+            pitfalls: [
+              { wrong: '"The right is not proven, so there is nothing to consult about."',
+                right: 'A potential claim triggers the duty.',
+                why: 'Requiring proof first would let the Crown authorise the destruction of the very thing in dispute while the claim worked through the courts. This is the single most-tested point in the topic.' },
+              { wrong: 'Describing consultation as a veto.',
+                right: 'It requires meaningful, good-faith process — not agreement.',
+                why: 'The Crown may proceed after adequate consultation and accommodation. Overstating it as a veto is as wrong as dismissing it as a formality, and both errors show up in scenario answers.' },
+              { wrong: 'Treating UNDRIP or BC\'s Declaration Act as replacing the s. 35 duty.',
+                right: 'They sit alongside it and shape how it is met.',
+                why: 'BC\'s Declaration on the Rights of Indigenous Peoples Act commits the province to align its laws with UNDRIP, which raises expectations around consent — but the constitutional duty from s. 35 remains the baseline.' }
+            ]
+          }
+        ],
+        practice: [
+          { id: 'e2p1', kind: 'mc', lesson: 'e3',
+            prompt: 'When is the Crown\'s duty to consult triggered?',
+            options: [
+              { t: 'When the Crown knows of a potential Aboriginal right and contemplates conduct that might adversely affect it', ok: true },
+              { t: 'Only once a court has confirmed the right exists', ok: false },
+              { t: 'Whenever a private company begins a project on traditional territory', ok: false },
+              { t: 'Only where a treaty is already in place', ok: false }
+            ],
+            hint: 'Would waiting for proof protect the thing in dispute?',
+            solution: ['Knowledge of a POTENTIAL claim is enough', 'Requiring proof first would let the Crown authorise its destruction in the meantime'] },
+          { id: 'e2p2', kind: 'mc', lesson: 'e3',
+            prompt: 'A company carries out extensive consultation on a project. Has the Crown\'s duty been discharged?',
+            options: [
+              { t: 'No — procedural aspects may be delegated, but the duty and responsibility remain the Crown\'s', ok: true },
+              { t: 'Yes — consultation happened, and by whom does not matter', ok: false },
+              { t: 'Yes, provided the company documented it properly', ok: false },
+              { t: 'No — consultation can never be delegated in any respect', ok: false }
+            ],
+            hint: 'Whose constitutional obligation is it?',
+            solution: ['The duty flows from s. 35 and is owed by the Crown', 'A proponent can do procedural legwork', 'The Crown answers for whether consultation was adequate'] },
+          { id: 'e2p3', kind: 'spot', lesson: 'e3',
+            prompt: 'One step of this analysis is wrong. Which one?',
+            steps: [
+              { t: 'The Crown knew of the nation\'s title claim over the area', bad: false },
+              { t: 'The permit could adversely affect the claimed right', bad: false },
+              { t: 'Because the claim is unproven, no duty to consult arises yet', bad: true },
+              { t: 'Consultation must be meaningful and in good faith', bad: false }
+            ],
+            why: 'A potential, unproven claim is exactly what triggers the duty. Requiring proof first would allow the Crown to authorise conduct destroying the subject matter of the claim while it made its way through the courts — which is the reason the doctrine exists at all.',
+            hint: 'What would happen to the claim if consultation waited for proof?',
+            solution: ['Knowledge of a potential claim plus possible adverse effect is the trigger', 'Depth of consultation scales with the strength of the claim and the seriousness of the impact'] }
+        ]
+      }
+    ]
+  };
+
+  root.Courses.register(COMMERCIAL);
+  root.Courses.register(ENVIRO);
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+<script>
 /* UNI Made EZ — application
    Copyright © 2026 JohnsonXCorp. All rights reserved.
    Proprietary. Not open source: see LICENSE. Third-party components: THIRD-PARTY-NOTICES.md */
@@ -5167,7 +5800,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.16', date: '10 September 2026', year: 2026 };
+  const BUILD = { v: '2.17', date: '10 September 2026', year: 2026 };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonandy242', ['gmail', 'com'].join('.')].join('@');
   const OWNER_NAME = 'JohnsonXCorp';   // who the app belongs to, wherever it is named to a user
@@ -5176,6 +5809,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      because the person who needs it is the one who just watched the app refresh itself and wants to
      know what moved. Trim the tail when it gets past a dozen; nobody reads further back than that. */
   const WHATS_NEW = [
+    ['2.17', 'Two <b>Law</b> courses join Precalculus in the course library \u2014 Commercial Law and Environmental Law, built around the tests you are actually asked to apply on a scenario.'],
     ['2.16', 'The <b>Math</b> section now carries the full Precalculus course \u2014 chapters 1 to 3, following the same section numbers as the lecture slides, with worked examples, the mistakes people actually make, and practice that marks itself.'],
     ['2.15', 'A new <b>Tutoring</b> section with a built-in Precalculus course \u2014 worked examples that give a reason for every step, the mistakes people actually make, and practice that marks itself.'],
     ['2.14', 'Sharing the link now shows what this is \u2014 a title, a line of description and a picture \u2014 instead of a bare address, and a mistyped link lands on a page that points back here.'],
@@ -5892,7 +6526,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     if (parts[0] === 'plan') return { name: 'plan', q };
     if (parts[0] === 'leeches') return { name: 'leeches', q };
     if (parts[0] === 'rights') return { name: 'rights', q };
-    if (parts[0] === 'math') return { name: 'math', cid: parts[1] || null, uid: parts[2] || null, mode: parts[3] || null, q };
+    if (parts[0] === 'math' || parts[0] === 'courses') return { name: 'math', cid: parts[1] || null, uid: parts[2] || null, mode: parts[3] || null, q };
     if (parts[0] === 's' && parts[1]) return { name: parts[2] ? 'section' : 'subject', id: parts[1], kind: parts[2], q };
     return { name: 'home', q };
   }
@@ -6101,7 +6735,8 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
           <span class="arr">→</span>
         </a>`;
       })()}
-      <div class="subjects-head"><h2>${subs.length ? 'Your subjects' : 'No subjects yet'}</h2><a class="btn cell ghost" href="#/math" title="Courses written out in full, with worked examples and practice">Math</a>${subs.length ? `<a class="btn cell ghost" href="#/plan" title="The next fortnight, worked backwards from your exams and deadlines">Study plan</a><a class="btn cell ghost" href="#/semester" title="Every subject, exam and deadline on one screen">Semester view</a>` : ''}${(() => { const n = state.subjects.reduce((x, s2) => x + leechCount(s2.id), 0); return n ? `<a class="btn cell ghost" href="#/leeches" title="Every card that keeps failing, in one place">Leeches <span class="n">${n}</span></a>` : ''; })()}<button class="btn cell ghost" data-act="backup-open" title="Back up every subject to a file, or restore one">Backup &amp; restore</button><button class="btn cell" data-act="new-subject">Add subject <span class="arr">→</span></button></div>
+      <div class="tutoring-strip"><div><span class="label">Built in &middot; free</span><b>Math and Law tutoring, already inside the app</b><span class="small">Precalculus, Commercial Law and Environmental Law &mdash; written out in full, with worked examples, the mistakes people actually make, and practice that marks itself.</span></div><a class="btn primary" href="#/courses">Open the courses <span class="arr">&rarr;</span></a></div>
+      <div class="subjects-head"><h2>${subs.length ? 'Your subjects' : 'No subjects yet'}</h2><a class="btn cell ghost" href="#/courses" title="Math and Law courses written out in full, with worked examples and practice">Tutoring</a>${subs.length ? `<a class="btn cell ghost" href="#/plan" title="The next fortnight, worked backwards from your exams and deadlines">Study plan</a><a class="btn cell ghost" href="#/semester" title="Every subject, exam and deadline on one screen">Semester view</a>` : ''}${(() => { const n = state.subjects.reduce((x, s2) => x + leechCount(s2.id), 0); return n ? `<a class="btn cell ghost" href="#/leeches" title="Every card that keeps failing, in one place">Leeches <span class="n">${n}</span></a>` : ''; })()}<button class="btn cell ghost" data-act="backup-open" title="Back up every subject to a file, or restore one">Backup &amp; restore</button><button class="btn cell" data-act="new-subject">Add subject <span class="arr">→</span></button></div>
       <div class="subject-grid">
         ${subs.map(s => `<div class="subject-slot"><a class="subject-card" href="#/s/${s.id}" style="--tab:${s.color}">
           <div class="code">${esc(s.code || 'Subject')}</div>
@@ -6466,25 +7101,32 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
   }
 
   function renderMathHome() {
-    const cards = Courses.all().map(c => {
-      const n = Courses.count(c.id);
-      const done = c.units.reduce((a, u) => a + unitProgress(c, u).seen, 0);
-      return `<a class="course-card" href="#/math/${esc(c.id)}">
-        <span class="label">${esc(c.level)}</span>
+    const groups = Courses.subjects().map(g => `<section class="subject-block">
+      <div class="subject-head"><h2>${esc(g.name)}</h2><p class="small muted">${esc(g.blurb)}</p></div>
+      <div class="course-grid">${g.courses.map(courseCard).join('')}</div>
+    </section>`).join('');
+    return renderLibrary(groups);
+  }
+  function courseCard(c) {
+    const n = Courses.count(c.id);
+    const done = c.units.reduce((a, u) => a + unitProgress(c, u).seen, 0);
+    return `<a class="course-card" href="#/courses/${esc(c.id)}">
+        <span class="label">${esc(c.code && c.code !== c.title ? c.code + ' \u00b7 ' + c.level : c.level)}</span>
         <h3>${esc(c.title)}</h3>
         <p>${esc(c.blurb)}</p>
         <span class="meta"><span>${n.units} unit${n.units === 1 ? '' : 's'} &middot; ${n.practice} practice</span><span class="arr">&rarr;</span></span>
         ${done ? `<span class="bar" aria-hidden="true"><i style="width:${Math.round(done / Math.max(1, n.practice) * 100)}%"></i></span>` : ''}
       </a>`;
-    }).join('');
-    app.innerHTML = frame(`${topbar(`<a href="#/">Subjects</a><span class="sep">/</span><strong>Math</strong>`)}
+  }
+  function renderLibrary(groups) {
+    app.innerHTML = frame(`${topbar(`<a href="#/">Subjects</a><span class="sep">/</span><strong>Courses</strong>`)}
       <main id="main" tabindex="-1">
         <div class="sec-hero">
-          <span class="label">Math</span>
+          <span class="label">Tutoring &middot; built in</span>
           <h1>Courses taught, not just scanned</h1>
-          <p class="lede">Your own files still become cards, summaries and quizzes as before. These are different: each one was written out in full, so every step comes with the reason it follows — and the mistake people make there instead.</p>
+          <p class="lede">Your own files still become cards, summaries and quizzes as before. These are different: each one was written out in full, so every step comes with the reason it follows &mdash; and the mistake people make there instead.</p>
         </div>
-        <div class="course-grid">${cards}</div>
+        ${groups}
         <div class="cell">
           <p class="small muted">Working from your own textbook or notes instead? Add them to a subject on the home page &mdash; the study engine will pull the definitions, formulas and worked steps out of them.</p>
         </div>
@@ -6497,7 +7139,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     const rows = c.units.map(u => {
       const pr = unitProgress(c, u);
       const pct = pr.total ? Math.round(pr.seen / pr.total * 100) : 0;
-      return `<a class="unit-row" href="#/math/${esc(c.id)}/${esc(u.id)}">
+      return `<a class="unit-row" href="#/courses/${esc(c.id)}/${esc(u.id)}">
         <span class="n">${u.n}</span>
         <span class="mid">
           <b>${esc(u.title)}</b>
@@ -6511,7 +7153,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
         </span>
       </a>`;
     }).join('');
-    app.innerHTML = frame(`${topbar(`<a href="#/">Subjects</a><span class="sep">/</span><a href="#/math">Math</a><span class="sep">/</span><strong>${esc(c.title)}</strong>`)}
+    app.innerHTML = frame(`${topbar(`<a href="#/">Subjects</a><span class="sep">/</span><a href="#/courses">Courses</a><span class="sep">/</span><span class="sep-sub">${esc(c.subject.name)}</span><span class="sep">/</span><strong>${esc(c.title)}</strong>`)}
       <main id="main" tabindex="-1">
         <div class="sec-hero">
           <span class="label">${esc(c.level)} &middot; ${n.units} unit${n.units === 1 ? '' : 's'}</span>
@@ -6519,6 +7161,8 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
           <p class="lede">${esc(c.blurb)}</p>
           <div class="sum-stats"><div><b>${n.lessons}</b><span>lessons</span></div><div><b>${n.examples}</b><span>worked examples</span></div><div><b>${n.practice}</b><span>practice questions</span></div></div>
           ${c.exam ? `<p class="exam-note"><span class="label">Exam scope</span> ${esc(c.exam)}</p>` : ''}
+          ${c.text ? `<p class="text-note"><span class="label">Set text</span> ${esc(c.text)} &mdash; this course points at the chapters to read alongside it and does not replace them.</p>` : ''}
+          ${c.legalNote ? `<p class="legal-note"><span class="label">Please note</span> ${esc(c.legalNote)}</p>` : ''}
         </div>
         <div class="unit-list">${rows}</div>
       </main>${foot()}`);
@@ -6529,7 +7173,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     const pr = unitProgress(c, u);
     const lessons = u.lessons.map((l, li) => `
       <section class="lesson" id="l-${esc(l.id)}">
-        <div class="lesson-head"><span class="label">${u.n}.${li + 1}</span><h2>${esc(l.title)}</h2>${l.src ? `<span class="src-chip" title="Follows this section of the course slides">${esc(l.src)}</span>` : ''}</div>
+        <div class="lesson-head"><span class="label">${u.n}.${li + 1}</span><h2>${esc(l.title)}</h2>${l.src ? `<span class="src-chip" title="Follows this part of the course material">${esc(l.src)}</span>` : ''}</div>
         <div class="lesson-body">
           <p class="idea">${l.idea}</p>
           ${l.rules && l.rules.length ? `<div class="rules">${l.rules.map(rr => `<div class="rule">
@@ -6555,16 +7199,17 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
         </div>
       </section>`).join('');
 
-    app.innerHTML = frame(`${topbar(`<a href="#/math">Math</a><span class="sep">/</span><a href="#/math/${esc(c.id)}">${esc(c.code)}</a><span class="sep">/</span><strong>Unit ${u.n}</strong>`)}
+    app.innerHTML = frame(`${topbar(`<a href="#/courses">${esc(c.subject.name)}</a><span class="sep">/</span><a href="#/courses/${esc(c.id)}">${esc(c.code)}</a><span class="sep">/</span><strong>Unit ${u.n}</strong>`)}
       <div class="section-bar">
-        <a class="back" href="#/math/${esc(c.id)}" aria-label="Back to ${esc(c.title)}"><span class="back-ico">${I.back}</span><span class="back-txt">${esc(c.code)}</span></a>
+        <a class="back" href="#/courses/${esc(c.id)}" aria-label="Back to ${esc(c.title)}"><span class="back-ico">${I.back}</span><span class="back-txt">${esc(c.code)}</span></a>
         <div class="sec-title"><h2><span class="sec-ico">${I.formula}</span>Unit ${u.n}</h2></div>
-        <div class="tools"><a class="btn sm primary" href="#/math/${esc(c.id)}/${esc(u.id)}/practice">Practice (${pr.total}) <span class="arr">&rarr;</span></a></div>
+        <div class="tools"><a class="btn sm primary" href="#/courses/${esc(c.id)}/${esc(u.id)}/practice">Practice (${pr.total}) <span class="arr">&rarr;</span></a></div>
       </div>
       <main id="main" tabindex="-1">
         <div class="sec-hero">
           <h1>${esc(u.title)}</h1>
           <p class="lede">${esc(u.blurb)}</p>
+          ${u.read ? `<p class="read-note"><span class="label">Read alongside</span> ${esc(u.read)}${c.text ? ' of ' + esc(c.text) : ''}</p>` : ''}
           <div class="obj"><span class="label">By the end of this unit you can</span>
             <ul class="obj-list">${u.objectives.map(x => `<li>${esc(x)}</li>`).join('')}</ul>
           </div>
@@ -6575,7 +7220,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             <span class="label">Ready to try it</span>
             <p class="small muted">${pr.seen ? `${pr.seen} of ${pr.total} answered so far.` : `${pr.total} questions. Each one marks itself and shows the full working either way.`}</p>
           </div>
-          <a class="btn primary" href="#/math/${esc(c.id)}/${esc(u.id)}/practice">Practice this unit <span class="arr">&rarr;</span></a>
+          <a class="btn primary" href="#/courses/${esc(c.id)}/${esc(u.id)}/practice">Practice this unit <span class="arr">&rarr;</span></a>
         </div>
       </main>${foot()}`);
     syncModal();
@@ -6593,9 +7238,9 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     }
     const items = u.practice || [];
     const item = items[ps.i];
-    const head = `${topbar(`<a href="#/math/${esc(c.id)}">${esc(c.code)}</a><span class="sep">/</span><a href="#/math/${esc(c.id)}/${esc(u.id)}">Unit ${u.n}</a><span class="sep">/</span><strong>Practice</strong>`)}
+    const head = `${topbar(`<a href="#/courses/${esc(c.id)}">${esc(c.code)}</a><span class="sep">/</span><a href="#/courses/${esc(c.id)}/${esc(u.id)}">Unit ${u.n}</a><span class="sep">/</span><strong>Practice</strong>`)}
       <div class="section-bar">
-        <a class="back" href="#/math/${esc(c.id)}/${esc(u.id)}" aria-label="Back to unit ${u.n}"><span class="back-ico">${I.back}</span><span class="back-txt">Unit ${u.n}</span></a>
+        <a class="back" href="#/courses/${esc(c.id)}/${esc(u.id)}" aria-label="Back to unit ${u.n}"><span class="back-ico">${I.back}</span><span class="back-txt">Unit ${u.n}</span></a>
         <div class="sec-title"><h2><span class="sec-ico">${I.quiz}</span>Practice</h2></div>
         <div class="tools"><span class="mono small">${Math.min(ps.i + 1, items.length)} / ${items.length}</span></div>
       </div>`;
@@ -6608,7 +7253,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
           <span class="score">${total ? Math.round(ps.right / total * 100) : 0}%<small>${ps.right} of ${total} first time</small></span>
           <p class="small muted">Anything you missed is scheduled to come back. The unit page has the worked examples again whenever you want them.</p>
           <div class="btn-row">
-            <a class="btn primary" href="#/math/${esc(c.id)}/${esc(u.id)}">Back to the unit <span class="arr">&rarr;</span></a>
+            <a class="btn primary" href="#/courses/${esc(c.id)}/${esc(u.id)}">Back to the unit <span class="arr">&rarr;</span></a>
             <button type="button" class="btn" data-act="pr-restart">Go again</button>
           </div>
         </div>
