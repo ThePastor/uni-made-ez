@@ -65,17 +65,17 @@
   --surface-2: #E6F1F4;
   --surface-3: #D6E7EC;
   --ink: #0E2A3A;
-  --ink-2: #3F5B69;
-  --ink-3: #55707D;
+  --ink-2: #2D4856;
+  --ink-3: #3C5662;
   --line: #16405A;
   --line-soft: #C9DCE3;
-  --accent: #0E7C86;
+  --accent: #09626A;
   --accent-ink: #FFFFFF;
   --accent-soft: #D2EEF0;
   --accent-deep: #0A5A62;
   --mint: #D9F56B;
   --mint-ink: #0E2A3A;
-  --mint-deep: #0E7C86;
+  --mint-deep: #09626A;
   --coral: #FF7A59;
   --coral-soft: #FFE0D6;
   --sky: #CFEAF3;
@@ -85,11 +85,11 @@
   --tint-4: #FFE1D6;
   --shape: #C3DAE3;
   --dot: #16405A;
-  --ok: #17835B;
+  --ok: #0D593C;
   --ok-soft: #D3F3E3;
-  --bad: #C0341A;
+  --bad: #8C2411;
   --bad-soft: #FFE0D6;
-  --warn: #8C6100;
+  --warn: #6C4A00;
   --warn-soft: #FFF0B8;
   --inverse: #0E2A3A;
   --inverse-ink: #FFFFFF;
@@ -123,26 +123,26 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #0F131B; --surface: #161C26; --surface-2: #1E2532; --surface-3: #28303F;
-    --ink: #E3E8F0; --ink-2: #B4BDCA; --ink-3: #959FB0; --line: #2F3949; --line-soft: #1F2632;
+    --ink: #E3E8F0; --ink-2: #BAC3D0; --ink-3: #A6B0C0; --line: #2F3949; --line-soft: #1F2632;
     --accent: #5FD3DC; --accent-ink: #0A1015; --accent-soft: #13303A; --accent-deep: #7FE2EA;
     --mint: #D9F56B; --mint-ink: #0F131B; --mint-deep: #C6E85C; --coral: #FF8A6E; --coral-soft: #33201B; --sky: #17303C;
     --tint-1: #14202A; --tint-2: #1D2416; --tint-3: #13291F; --tint-4: #2A1D18;
     --shape: #222B38; --dot: #33404F;
-    --ok: #6FE0A4; --ok-soft: #102A20; --bad: #FF8A78; --bad-soft: #331C1B; --warn: #F2C94C; --warn-soft: #2A2412;
-    --inverse: #080B11; --inverse-ink: #E3E8F0; --inverse-ink-2: #8E97A6; --jxc-gold: #F0C36B;
+    --ok: #6FE0A4; --ok-soft: #102A20; --bad: #FF8A78; --bad-soft: #2C1715; --warn: #F2C94C; --warn-soft: #2A2412;
+    --inverse: #080B11; --inverse-ink: #E3E8F0; --inverse-ink-2: #9AA3B2; --jxc-gold: #F0C36B;
     --shadow: 0 24px 60px -30px rgba(0, 0, 0, .85);
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #0F131B; --surface: #161C26; --surface-2: #1E2532; --surface-3: #28303F;
-  --ink: #E3E8F0; --ink-2: #B4BDCA; --ink-3: #959FB0; --line: #2F3949; --line-soft: #1F2632;
+  --ink: #E3E8F0; --ink-2: #BAC3D0; --ink-3: #A6B0C0; --line: #2F3949; --line-soft: #1F2632;
   --accent: #5FD3DC; --accent-ink: #0A1015; --accent-soft: #13303A; --accent-deep: #7FE2EA;
   --mint: #D9F56B; --mint-ink: #0F131B; --mint-deep: #C6E85C; --coral: #FF8A6E; --coral-soft: #33201B; --sky: #17303C;
   --tint-1: #14202A; --tint-2: #1D2416; --tint-3: #13291F; --tint-4: #2A1D18;
   --shape: #222B38; --dot: #33404F;
-  --ok: #6FE0A4; --ok-soft: #102A20; --bad: #FF8A78; --bad-soft: #331C1B; --warn: #F2C94C; --warn-soft: #2A2412;
-  --inverse: #080B11; --inverse-ink: #E3E8F0; --inverse-ink-2: #8E97A6; --jxc-gold: #F0C36B;
+  --ok: #6FE0A4; --ok-soft: #102A20; --bad: #FF8A78; --bad-soft: #2C1715; --warn: #F2C94C; --warn-soft: #2A2412;
+  --inverse: #080B11; --inverse-ink: #E3E8F0; --inverse-ink-2: #9AA3B2; --jxc-gold: #F0C36B;
   --shadow: 0 24px 60px -30px rgba(0, 0, 0, .85);
   color-scheme: dark;
 }
@@ -198,7 +198,7 @@ mark { background: var(--mint); color: var(--mint-ink); padding: 0 .15em; }
 .topbar .crumb { font-size: .9rem; gap: 10px; color: var(--ink-3); }
 .topbar .crumb a { color: var(--ink-2); text-decoration: none; }
 .topbar .crumb a:hover { text-decoration: underline; }
-.topbar .crumb .sep { color: var(--line-soft); }
+.topbar .crumb .sep { color: var(--ink-3); }
 .topbar .crumb strong { color: var(--ink); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .topbar .account { display: inline-flex; align-items: center; gap: 10px; font-size: .85rem; color: var(--ink-2); white-space: nowrap; }
 .topbar .account .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
@@ -784,7 +784,7 @@ main:focus { outline: none; }
 .timeline .yr { font-family: var(--font-mono); font-size: .8rem; color: var(--ink); font-weight: 500; border-right: 2px solid var(--accent); padding-right: 8px; }
 .src-list { display: grid; gap: 6px; margin-bottom: 14px; }
 .src-list ul { margin: 0; padding-left: 18px; font-size: .9rem; color: var(--ink-2); display: grid; gap: 4px; }
-.mat .remove { font-size: .6rem; padding: 6px 8px; color: var(--ink-3); }
+.mat .remove { font-size: .62rem; padding: 6px 8px; color: var(--ink-3); }
 .mat .remove:hover { color: var(--bad); background: var(--bad-soft); }
 @media (max-width: 900px) { .sum-stats { grid-template-columns: 1fr 1fr; } .sum-stats > div:nth-child(2) { border-right: 0; } .sum-stats > div:nth-child(-n+2) { border-bottom: 1px solid var(--line); } }
 
@@ -909,7 +909,7 @@ button.term-chip.k-row { cursor: pointer; }
 #print-sheet .ps-sub { font-family: var(--font-mono); font-size: .7rem; text-transform: uppercase; letter-spacing: .1em; color: #555; margin: 0 0 12px; }
 #print-sheet .ps-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6mm; }
 #print-sheet .ps-card { border: 1px solid #000; padding: 5mm; min-height: 42mm; display: flex; flex-direction: column; gap: 3mm; break-inside: avoid; page-break-inside: avoid; }
-#print-sheet .ps-n { font-family: var(--font-mono); font-size: .6rem; letter-spacing: .1em; text-transform: uppercase; color: #666; }
+#print-sheet .ps-n { font-family: var(--font-mono); font-size: .62rem; letter-spacing: .1em; text-transform: uppercase; color: #666; }
 #print-sheet { color: #000; }
 #print-sheet .ps-q { font-family: var(--font-display); font-size: 1rem; font-weight: 600; line-height: 1.25; color: #000; }
 #print-sheet .ps-a { font-size: .85rem; line-height: 1.4; border-top: 1px dashed #999; padding-top: 3mm; margin-top: auto; color: #222; }
@@ -987,7 +987,7 @@ textarea.input.mono { font-family: var(--font-mono); font-size: .78rem; line-hei
 .hist { display: flex; align-items: flex-end; gap: 4px; height: 74px; padding: 0 2px; border-bottom: 1px solid var(--line-soft); }
 .hist .hbar { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 3px; height: 100%; position: relative; }
 .hist .hbar i { display: block; width: 100%; height: var(--h); background: var(--accent-soft); border-top: 2px solid var(--accent); }
-.hist .hbar b { font-family: var(--font-mono); font-size: .58rem; color: var(--ink-3); font-weight: 400; position: absolute; top: 0; }
+.hist .hbar b { font-family: var(--font-mono); font-size: .62rem; color: var(--ink-3); font-weight: 400; position: absolute; top: 0; }
 .hist .hbar:last-child i { background: var(--accent); border-top-color: var(--accent); }
 .hist .hbar:last-child b { color: var(--accent); font-weight: 500; }
 
@@ -1091,7 +1091,7 @@ textarea.input.mono { font-family: var(--font-mono); font-size: .78rem; line-hei
 .own-note p { margin: 0; overflow-wrap: anywhere; }
 .card-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; justify-content: center; margin-top: 12px; }
 .card-tools .btn { font-size: .62rem; padding: 5px 9px; }
-.card-tools .tag { font-family: var(--font-mono); font-size: .6rem; letter-spacing: .08em; text-transform: uppercase; padding: 4px 8px; background: var(--mint); color: var(--mint-ink); }
+.card-tools .tag { font-family: var(--font-mono); font-size: .62rem; letter-spacing: .08em; text-transform: uppercase; padding: 4px 8px; background: var(--mint); color: var(--mint-ink); }
 .card .own-note { display: block; margin-top: 12px; font-size: .85rem; text-align: left; }
 .card .own-note .label { display: block; margin-bottom: 4px; }
 .form-grid.two { grid-template-columns: 1fr 140px; gap: 14px; }
@@ -1292,7 +1292,7 @@ math mi[mathvariant="normal"] { font-style: normal; }
 .sem-stats .ss { position: relative; display: grid; gap: 2px; align-content: start; padding: 6px 10px 8px; background: var(--surface-2); text-decoration: none; color: inherit; min-width: 0; }
 .sem-stats a.ss:hover { background: var(--accent-soft); }
 .sem-stats .ss b { font-family: var(--font-display); font-size: 1.35rem; font-weight: 600; letter-spacing: -0.03em; line-height: 1; color: var(--accent-deep); }
-.sem-stats .ss > span { font-family: var(--font-mono); font-size: .58rem; letter-spacing: .07em; text-transform: uppercase; color: var(--ink-2); line-height: 1.4; }
+.sem-stats .ss > span { font-family: var(--font-mono); font-size: .62rem; letter-spacing: .07em; text-transform: uppercase; color: var(--ink-2); line-height: 1.4; }
 .sem-stats .ss .bar { position: absolute; left: 0; bottom: 0; height: 3px; width: var(--pct, 0%); background: var(--accent); }
 .sem-flags { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 6px; }
 .sem-flags .flag { font-family: var(--font-mono); font-size: .62rem; letter-spacing: .05em; text-transform: uppercase; padding: 3px 8px; background: var(--warn-soft); color: var(--ink); }
@@ -1302,12 +1302,12 @@ math mi[mathvariant="normal"] { font-style: normal; }
 .sem-tl .tl + .tl { border-top: 1px solid var(--line-soft); }
 .sem-tl .d { display: grid; gap: 1px; min-width: 52px; text-align: center; padding: 5px 4px; background: var(--surface-2); }
 .sem-tl .d b { font-family: var(--font-display); font-size: 1.1rem; font-weight: 600; line-height: 1; }
-.sem-tl .d > span { font-family: var(--font-mono); font-size: .55rem; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2); }
+.sem-tl .d > span { font-family: var(--font-mono); font-size: .62rem; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2); }
 .sem-tl .soon .d { background: var(--warn-soft); } .sem-tl .soon .d b { color: var(--warn); }
 .sem-tl .late .d { background: var(--bad); } .sem-tl .late .d b, .sem-tl .late .d > span { color: var(--surface); }
 .sem-tl .exam .d { background: var(--ink); } .sem-tl .exam .d b, .sem-tl .exam .d > span { color: var(--surface); }
 .sem-tl .what { display: grid; gap: 2px; min-width: 0; }
-.sem-tl .what a { font-family: var(--font-mono); font-size: .6rem; letter-spacing: .07em; text-transform: uppercase; color: var(--ink-2); text-decoration: none; display: flex; align-items: center; gap: 6px; width: max-content; }
+.sem-tl .what a { font-family: var(--font-mono); font-size: .62rem; letter-spacing: .07em; text-transform: uppercase; color: var(--ink-2); text-decoration: none; display: flex; align-items: center; gap: 6px; width: max-content; }
 .sem-tl .what a:hover { color: var(--accent); text-decoration: underline; }
 .sem-tl .what a i { width: 8px; height: 8px; background: var(--tab, var(--accent)); }
 .sem-tl .what strong { font-weight: 500; }
@@ -1331,7 +1331,7 @@ math mi[mathvariant="normal"] { font-style: normal; }
 .oc.covered { border-left-color: var(--ok); }
 .oc.thin { border-left-color: var(--warn); }
 .oc.gap { border-left-color: var(--bad); background: var(--bad-soft); }
-.oc-badge { font-family: var(--font-mono); font-size: .6rem; letter-spacing: .07em; text-transform: uppercase; padding: 3px 8px; white-space: nowrap; margin-top: 2px; background: var(--surface-2); color: var(--ink-2); }
+.oc-badge { font-family: var(--font-mono); font-size: .62rem; letter-spacing: .07em; text-transform: uppercase; padding: 3px 8px; white-space: nowrap; margin-top: 2px; background: var(--surface-2); color: var(--ink-2); }
 .oc.covered .oc-badge { background: var(--ok); color: var(--surface); }
 .oc.thin .oc-badge { background: var(--warn); color: var(--surface); }
 .oc.gap .oc-badge { background: var(--bad); color: var(--surface); }
@@ -1344,7 +1344,7 @@ math mi[mathvariant="normal"] { font-style: normal; }
 .oc-ev .fact-list { display: grid; gap: 8px; }
 @media print { .oc-ev summary { display: none; } .oc-ev .fact-list { display: grid !important; } }
 /* ---------- confidence flags ---------- */
-.conf-chip { font-family: var(--font-mono); font-size: .55rem; letter-spacing: .08em; text-transform: uppercase; padding: 2px 6px; background: var(--warn-soft); color: var(--warn); margin-left: 8px; white-space: nowrap; vertical-align: middle; cursor: help; }
+.conf-chip { font-family: var(--font-mono); font-size: .62rem; letter-spacing: .08em; text-transform: uppercase; padding: 2px 6px; background: var(--warn-soft); color: var(--warn); margin-left: 8px; white-space: nowrap; vertical-align: middle; cursor: help; }
 .conf-note { display: flex; align-items: baseline; gap: 10px; padding: 8px 12px; background: var(--warn-soft); font-size: .82rem; margin: 10px 0 0; text-align: left; }
 .conf-note .conf-chip { margin-left: 0; }
 .detail-block .conf-note, .modal .conf-note { margin: 0 0 12px; }
@@ -1517,7 +1517,7 @@ math mi[mathvariant="normal"] { font-style: normal; }
 .sec-star:hover, .sec-star.on { color: var(--mint-deep); }
 .pk-oc { display: grid; gap: 4px; margin-left: 0; padding-left: 0; list-style: none; }
 .pk-oc-row { display: grid; grid-template-columns: auto 1fr; gap: 8px; align-items: baseline; font-size: .95rem; }
-.pk-oc-badge { font-family: var(--font-mono); font-size: .58rem; letter-spacing: .07em; text-transform: uppercase; padding: 2px 6px; border: 1px solid currentColor; white-space: nowrap; }
+.pk-oc-badge { font-family: var(--font-mono); font-size: .62rem; letter-spacing: .07em; text-transform: uppercase; padding: 2px 6px; border: 1px solid currentColor; white-space: nowrap; }
 .pk-oc-row.gap { color: #000; font-weight: 500; }
 .pk-oc-n { color: var(--ink-3); font-size: .85rem; }
 .subjects-head .btn.cell .n { font-family: var(--font-mono); font-size: .7rem; margin-left: 6px; color: var(--warn); }
@@ -1553,7 +1553,7 @@ math mi[mathvariant="normal"] { font-style: normal; }
      full-height cells — about 50px back, and the destructive one stops shouting. */
   .subject-hero .actions { flex-direction: row; flex-wrap: wrap; }
   .subject-hero .actions .btn {
-    flex: 1 1 auto; min-height: 0; padding: 9px 12px; font-size: .6rem; letter-spacing: .08em;
+    flex: 1 1 auto; min-height: 0; padding: 9px 12px; font-size: .62rem; letter-spacing: .08em;
     justify-content: center; gap: 6px; color: var(--ink-2); background: var(--surface-2);
   }
   .subject-hero .actions .btn .arr { display: none; }
@@ -1723,7 +1723,7 @@ math mi[mathvariant="normal"] { font-style: normal; }
 .pit { display: grid; gap: 5px; padding-bottom: var(--pad-in); border-bottom: 1px solid var(--line-soft); }
 .pit:last-child { border-bottom: 0; padding-bottom: 0; }
 .pit p { font-size: .92rem; line-height: 1.55; }
-.pit .tag { font-family: var(--font-mono); font-size: .6rem; letter-spacing: .1em; text-transform: uppercase; padding: 2px 7px; margin-right: 8px; }
+.pit .tag { font-family: var(--font-mono); font-size: .62rem; letter-spacing: .1em; text-transform: uppercase; padding: 2px 7px; margin-right: 8px; }
 .pit .bad .tag { background: var(--bad-soft); color: var(--bad); }
 .pit .good .tag { background: var(--ok-soft); color: var(--ok); }
 .pit .bad { font-family: var(--font-mono); font-size: .85rem; }
@@ -1791,6 +1791,40 @@ math mi[mathvariant="normal"] { font-style: normal; }
 /* --ink-3 fails contrast on a TINTED ground, which is the same trap v2.13 hit with .label on
    surface-2/-3. Anything sitting on a tint takes --ink-2 instead. */
 .tutoring-strip .label { color: var(--ink-2); }
+
+/* ---------- the rule that keeps muted text readable ----------
+   MEASURED, by walking every rendered text node on twelve pages in both themes and resolving
+   each one's real foreground against its real background. --ink-3 is the de-emphasised grey, and
+   it is solved against --surface, which is the ground it is designed to recede on. The moment a
+   component puts it on a STEPPED or TINTED panel — surface-2, surface-3, a tint, warn-soft — the
+   ground rises under it and the pair drops to about 6.4:1.
+
+   The tempting fix is to darken --ink-3 until it clears 7:1 on the palest panel. That was tried
+   and rejected: it lands ink-3 within one percent of ink-2 in luminance, so the three-step ink
+   hierarchy collapses into two and everything muted starts to look the same weight.
+
+   So the rule is the other way round. --ink-2 already clears 7:1 on EVERY ground in the palette
+   (worst case 7.26 light, 7.45 dark, both on surface-3), so text on a raised panel takes ink-2.
+   Adding a new tinted component means adding it here. */
+.panel-head .label, .subject-head .small, .exam-note, .exam-note .label,
+.text-note, .text-note .label, .read-note, .read-note .label,
+.legal-note, .legal-note .label, .tutoring-strip .label, .tutoring-strip .small,
+.worked .ans .label, .formula, .term-detail, .copy-box, .leech-note,
+.notice.warn, .calib-grid .cq span, .ord-chosen li, .mat .info,
+.subjects-head .btn.cell.ghost, .hint-box summary { color: var(--ink-2); }
+/* status text keeps its own hue on its own tint — those pairs are solved above */
+.notice.warn { color: var(--warn); }
+.calib-grid .cq.sw span { color: var(--ink-2); }
+
+/* The smallest type in the app. Nothing meant to be READ goes below .68rem (10.9px): the
+   pitfall tags were 9.9px, which is small enough that contrast has to work harder than the
+   numbers suggest. */
+.pit .tag { font-size: .68rem; }
+
+/* The three places that still rendered real words at 9.9px. A contrast ratio flatters small
+   uppercase mono with letter-spacing, so the type floor and the contrast floor are enforced
+   together in test/contrast.js — .68rem (10.9px) is the smallest anything readable gets. */
+.sum-stats span, .unit-row .chip, .lesson-head .src-chip { font-size: .68rem; }
 
 </style>
 </head>
@@ -5800,7 +5834,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.17', date: '10 September 2026', year: 2026 };
+  const BUILD = { v: '2.18', date: '10 September 2026', year: 2026 };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonandy242', ['gmail', 'com'].join('.')].join('@');
   const OWNER_NAME = 'JohnsonXCorp';   // who the app belongs to, wherever it is named to a user
@@ -5809,6 +5843,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      because the person who needs it is the one who just watched the app refresh itself and wants to
      know what moved. Trim the tail when it gets past a dozen; nobody reads further back than that. */
   const WHATS_NEW = [
+    ['2.18', 'Text is easier to read in both themes. Every piece of small text now clears the AAA contrast standard rather than the AA minimum \u2014 measured on the real pages, not on the palette \u2014 and nothing readable is left at nine pixels.'],
     ['2.17', 'Two <b>Law</b> courses join Precalculus in the course library \u2014 Commercial Law and Environmental Law, built around the tests you are actually asked to apply on a scenario.'],
     ['2.16', 'The <b>Math</b> section now carries the full Precalculus course \u2014 chapters 1 to 3, following the same section numbers as the lecture slides, with worked examples, the mistakes people actually make, and practice that marks itself.'],
     ['2.15', 'A new <b>Tutoring</b> section with a built-in Precalculus course \u2014 worked examples that give a reason for every step, the mistakes people actually make, and practice that marks itself.'],
