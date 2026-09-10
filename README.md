@@ -1,6 +1,6 @@
 # UNI Made EZ
 
-Turn your own lecture PDFs, slides and notes into **flash cards, a summary, the key information and a quiz** — built in your browser. Nothing is uploaded anywhere: your files are read on your own device and never leave it.
+Turn your own lecture PDFs, slides and notes into **flash cards, a summary, the key information and a quiz** — built in your browser. Your files are read on your own device and never leave it.
 
 **Live app:** https://thepastor.github.io/uni-made-ez/
 
@@ -49,7 +49,9 @@ Built to WCAG 2.1 AA and tested for it. Text size (Normal / Large / Larger), a *
 
 ## Privacy
 
-Your course files never leave your device. There is no server, no analytics and no tracking — the whole app is this one HTML file. Subjects, progress and notes live in your browser's local storage, so they stay on the device you used and clearing site data removes them.
+Your course files never leave your device — reading them, building the cards and marking the quiz all happen in your browser, and the whole app is one HTML file. Subjects, progress and notes live in your browser's local storage, so they stay on the device you used and clearing site data removes them.
+
+Two things do leave, and it is better to say so than to claim a clean sweep. The app counts how many people open it, using a random id generated in your browser that is tied to nothing about you — no account, no fingerprint, no advertising network, and never anything from your files. And if you sign up to unlock Summary and Quiz, the name and email you type go to JohnsonXCorp, and are used for nothing else. Nobody, including the owner, can read your files, cards, answers or progress.
 
 **Sign-ups:** Summary and Quiz ask for a name and email once. The page then opens a pre-filled email in your own mail app for you to send — the page cannot send anything itself.
 
