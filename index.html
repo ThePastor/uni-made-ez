@@ -5930,7 +5930,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.22', date: '11 September 2026', year: 2026 };
+  const BUILD = { v: '2.23', date: '11 September 2026', year: 2026 };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonandy242', ['gmail', 'com'].join('.')].join('@');
   /* The one sentence that says what this is. It appears under the wordmark, and build.js uses
@@ -5943,6 +5943,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      because the person who needs it is the one who just watched the app refresh itself and wants to
      know what moved. Trim the tail when it gets past a dozen; nobody reads further back than that. */
   const WHATS_NEW = [
+    ['2.23', 'The counter is on. Opens are recorded through a database function instead of writing to the table, which means the table holding them stays completely unreadable to this page &mdash; nobody can pull the list out of it, including the app itself.'],
     ['2.22', 'Owner only: the <b>Users</b> panel now says which step of the counter setup is outstanding and what to do about it, instead of only that something is not configured. A key pasted in the wrong place is named as such — and the secret key is refused outright rather than quietly published.'],
     ['2.21', 'A welcome screen the first time you open it, asking your name and email so the people who built this know who is using it — with <b>Skip for now</b> right beside it, and no second ask either way. Signing up is one step now instead of two: it no longer depends on your mail app opening, which is where it used to go wrong.'],
     ['2.20', 'The front page now says what this actually is: two ways to study, side by side \u2014 courses written out in full, and your own files turned into cards. Neither one is buried under the other any more. The <b>Users</b> panel from 2.19 is back alongside it; the two changes were built at the same time and briefly overwrote each other.'],
@@ -6731,13 +6732,22 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
       : /Macintosh/.test(ua) ? 'Mac' : /Windows/.test(ua) ? 'Windows' : /Linux/.test(ua) ? 'Linux' : 'Other';
     let tz = '';
     try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (e) { /* ignore */ }
-    await syncFetch('umez_devices', {
+    /* Through a function, not straight at the table — and that is not a style choice.
+       PostgREST turns an upsert into INSERT ... ON CONFLICT DO UPDATE, and to find the conflicting
+       row Postgres has to be able to SELECT it. umez_devices has INSERT and UPDATE policies for
+       anon but deliberately NO select policy, so every ping after the very first was refused with
+       "new row violates row-level security policy" — measured against the live database, not
+       guessed. Opening a select policy would have fixed it by making every device row readable to
+       anyone holding the key that ships in this page. umez_ping is SECURITY DEFINER instead: it
+       does the upsert with the owner's rights, so the table stays completely unreadable and the
+       public key can do exactly one thing — say "someone opened it". last_seen is set by the
+       database rather than sent from here, so a wrong clock on a phone cannot skew "active today". */
+    await syncFetch('rpc/umez_ping', {
       method: 'POST',
-      headers: { prefer: 'resolution=merge-duplicates,return=minimal' },
       body: JSON.stringify({
-        id, last_seen: new Date().toISOString(), opens,
-        subjects: state.subjects.length, signed_up: signedUp || !!state.unlock,
-        platform: plat + (standalone() ? ' · installed' : ''), tz
+        p_id: id, p_opens: opens, p_subjects: state.subjects.length,
+        p_signed_up: signedUp || !!state.unlock,
+        p_platform: plat + (standalone() ? ' · installed' : ''), p_tz: tz
       })
     });
   }
