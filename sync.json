@@ -1,5 +1,5 @@
 {
   "url": "https://gwwiaijfqovhizrmfxuk.supabase.co",
-  "key": "PASTE_THE_PUBLISHABLE_KEY_HERE",
+  "key": "sb_publishable_XGdorbBh5VFVwwBx_UgApQ_EoN0nRqo",
   "note": "Supabase project \"Syllabus Desk\" — tables umez_devices, umez_signups, view umez_stats. The publishable key is safe in a public page: row-level security lets it add rows and read totals, never read anybody back."
 }
