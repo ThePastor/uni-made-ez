@@ -1882,6 +1882,29 @@ math mi[mathvariant="normal"] { font-style: normal; }
   .stat-grid > .stat:nth-last-child(-n+2) { border-bottom: 0; }
 }
 
+/* ---------- the front door ----------
+   Reuses .gate, so it is the same two-column shape as the sign-up page and inherits every
+   breakpoint that page already has. Two things are its own: the short "what this is" list, so
+   somebody who arrived from a link in an Instagram bio can see what they are signing up to before
+   they are asked; and the actions row, where Skip is a BUTTON beside Continue rather than a grey
+   link beneath it. A skip that has to be hunted for is not a skip. */
+.welcome .lede { color: var(--ink-2); font-size: 1.02rem; line-height: 1.6; }
+.welcome h1 .ez { background: var(--mint); color: var(--mint-ink); padding: 0 .12em; }
+.welcome-what { list-style: none; display: grid; gap: 10px; margin: 4px 0 6px; padding: 0; }
+.welcome-what li { display: grid; gap: 2px; padding-left: var(--pad-in); border-left: var(--accent-bar) solid var(--accent); min-width: 0; }
+.welcome-what li b { font-family: var(--font-display); font-weight: 500; font-size: 1.02rem; letter-spacing: -.02em; }
+.welcome-what li span { color: var(--ink-2); font-size: .92rem; line-height: 1.45; }
+.welcome-acts { display: flex; flex-wrap: wrap; gap: 10px; }
+.welcome-acts .btn { flex: 1 1 auto; justify-content: center; }
+/* the two are equal in weight, not in emphasis: signing up is the accent, skipping is a plain
+   button that is just as easy to hit — on a phone they stack and both stay full width */
+@media (max-width: 480px) { .welcome-acts .btn { flex: 1 1 100%; } }
+/* The gate's fine print is uppercase mono at .66rem — fine for one line under a form nobody is
+   required to read. This one IS meant to be read: it is what the app tells a student about what
+   happens to their name, their email and their files, at the moment it asks for them. A paragraph
+   of uppercase is the wrong typeface for that, so it drops to body text at a readable size. */
+.welcome .fine { font-family: var(--font-body); font-size: .82rem; text-transform: none; letter-spacing: 0; line-height: 1.55; color: var(--ink-2); }
+
 </style>
 </head>
 <body>
@@ -5890,7 +5913,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.20', date: '10 September 2026', year: 2026 };
+  const BUILD = { v: '2.21', date: '11 September 2026', year: 2026 };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonandy242', ['gmail', 'com'].join('.')].join('@');
   /* The one sentence that says what this is. It appears under the wordmark, and build.js uses
@@ -5903,6 +5926,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      because the person who needs it is the one who just watched the app refresh itself and wants to
      know what moved. Trim the tail when it gets past a dozen; nobody reads further back than that. */
   const WHATS_NEW = [
+    ['2.21', 'A welcome screen the first time you open it, asking your name and email so the people who built this know who is using it — with <b>Skip for now</b> right beside it, and no second ask either way. Signing up is one step now instead of two: it no longer depends on your mail app opening, which is where it used to go wrong.'],
     ['2.20', 'The front page now says what this actually is: two ways to study, side by side \u2014 courses written out in full, and your own files turned into cards. Neither one is buried under the other any more. The <b>Users</b> panel from 2.19 is back alongside it; the two changes were built at the same time and briefly overwrote each other.'],
     ['2.19', 'The owner can now see how many people are using it. A <b>Users</b> button in the header shows how many opened the app today, this week and this month, how many signed up and how many subjects have been started. Sign-ups are recorded properly instead of relying on someone pressing send in their mail app. Course files, cards, answers and progress still never leave your browser — what is counted is a random id per device, and the name and email typed into the sign-up form.'],
     ['2.18', 'Text is easier to read in both themes. Every piece of small text now clears the AAA contrast standard rather than the AA minimum \u2014 measured on the real pages, not on the palette \u2014 and nothing readable is left at nine pixels.'],
@@ -6433,7 +6457,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
   }
 
   /* ---------- state ---------- */
-  const state = { subjects: loadIndex().subjects, unlock: loadUnlock(), modal: null, busy: {}, ui: {}, analysis: null, analysisKey: null, pendingSignup: null, timer: null, searchQ: '' };
+  const state = { subjects: loadIndex().subjects, unlock: loadUnlock(), modal: null, busy: {}, ui: {}, analysis: null, analysisKey: null, pendingSignup: null, timer: null, searchQ: '', welcome: null, welcomeNext: '/' };
   // Where is this page running? Inside the Claude artifact frame a page cannot start a download of its own,
   // so every "save" there hands the text over to copy instead. The live site and the standalone file save real files.
   const IN_ARTIFACT = !!(window.__FRAME_PREAMBLE || (window.claude && typeof window.claude.use === 'function'));
@@ -6620,6 +6644,10 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      not baked into this file: rotating the key is then one small edit and no rebuild, and
      a copy of the app without sync.json simply counts nothing. Switched off entirely
      inside the Claude artifact frame and for a file:// copy. */
+  /* Whether the front door has been answered on this device — 'in' if they signed up, 'skip' if
+     they didn't. Either way it is set once and never asked again: a door you have already walked
+     through does not get to stop you a second time. */
+  const LS_WELCOME = 'unimadeez:welcome';
   const LS_DID = 'unimadeez:did';
   const LS_PING = 'unimadeez:ping';
   const LS_OPENS = 'unimadeez:opens';
@@ -6686,14 +6714,20 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     });
   }
 
+  /* Returns true only if the row was actually written. That answer decides whether the sign-up is
+     finished here or has to fall back to the mail app: on the live site the database has the
+     sign-up the moment this resolves, so asking the student to also send an email is asking twice
+     for the same thing — and it is where sign-ups were being lost, because anyone who did not
+     press send in their mail app never reached the button that unlocks Summary and Quiz. */
   async function recordSignup(name, email) {
     const id = deviceId() || 'd';
-    await syncFetch('umez_signups', {
+    const r = await syncFetch('umez_signups', {
       method: 'POST',
       headers: { prefer: 'return=minimal' },
       body: JSON.stringify({ id: id + '_' + Date.now().toString(36), name, email, source: standalone() ? 'installed app' : 'web' })
     });
     pingDevice(true, true);   // so the device row shows signed_up straight away
+    return !!(r && r.ok);
   }
 
   // Counts only — the view the app reads holds no names and no emails.
@@ -6830,6 +6864,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     window.scrollTo({ top: 0 });
     if (r.name !== 'home' && r.name !== 'subject') state.modal = null;
     syncModal();
+    if (welcomeDue(r)) return renderWelcome(r);
     if (r.name === 'home') return renderHome();
     if (r.name === 'signup') return renderSignup(r.q);
     if (r.name === 'owner') return renderOwner(r.q);
@@ -6866,7 +6901,19 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     const dark = document.documentElement.getAttribute('data-theme') === 'dark' || (!document.documentElement.getAttribute('data-theme') && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
     return `<button type="button" class="toggle${dark ? ' dark' : ''}" data-act="theme" aria-label="Switch ${dark ? 'to light' : 'to dark'} mode" title="Light / dark"></button>`;
   }
-  function topbar(crumbs = '') {
+  /* `bare` drops the sign-up call to action and the locked-state badge. Used by the front door,
+     where both are answered by the form filling the page: a "Sign up" button in the corner there
+     points at a SECOND sign-up page, and "Summary & Quiz locked" states the thing the screen is
+     already offering to fix. */
+  function topbar(crumbs = '', bare = false) {
+    if (bare) {
+      return `<header class="topbar">
+      <a class="wordmark" href="#/">UNI Made <span class="ez">EZ</span></a>
+      <div class="clock" data-clock>${clockText()}</div>
+      <div class="crumb">${crumbs}</div>
+      <div class="toggle-cell">${offlineCell()}<button type="button" class="disp-btn" data-act="display" aria-label="Display settings — text size, reading comfort, theme">Aa</button>${installCell()}${themeToggle()}</div>
+    </header>`;
+    }
     return `<header class="topbar">
       <a class="wordmark" href="#/">UNI Made <span class="ez">EZ</span></a>
       <div class="clock" data-clock>${clockText()}</div>
@@ -10439,6 +10486,64 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     app.innerHTML = sectionShell(s, 'map', inner, bar);
   }
 
+  /* ---------- the front door ----------
+     Asked once, on a device that has never opened the app before, and answered either way in one
+     tap. It exists because the link is being passed around campus and a count of anonymous devices
+     does not tell you WHO is using it — but a form in front of the app is also where most people
+     leave, so Skip is a real button next to Continue rather than a grey link under it, and taking
+     it is remembered as firmly as signing up is. Nobody is asked twice.
+
+     Deliberately NOT shown to someone who already has subjects: they are an existing user who
+     happened to update, and a returning student should not meet a sign-up form they never had. */
+  function welcomeSeen() {
+    if (state.welcome) return true;
+    try { return !!localStorage.getItem(LS_WELCOME); } catch (e) { return false; }
+  }
+  function markWelcome(how) {
+    state.welcome = how;
+    try { localStorage.setItem(LS_WELCOME, how); } catch (e) { /* private mode: asked once this session, not again after */ }
+  }
+  function welcomeDue(r) {
+    /* The test is a RESOLVED counter, not merely a possible one. A sign-up with nothing behind it
+       is collected and then thrown away, and asking a student for an email you cannot do anything
+       with is worse than not asking — so the door stays shut in the artifact, in a file opened from
+       disk, and on the live site for as long as sync.json still holds the placeholder key. It opens
+       by itself the moment a real key is in that file; there is nothing to rebuild. */
+    if (!SYNC_OK || !sync) return false;
+    if (r.name === 'owner' || r.name === 'signup' || r.name === 'rights') return false;  // the way in, and the legal page, are never behind it
+    if (isUnlocked() || state.pendingSignup) return false;
+    if (state.subjects.length) return false;
+    return !welcomeSeen();
+  }
+  function renderWelcome(r) {
+    const groups = Courses.subjects();
+    app.innerHTML = frame(`${topbar('', true)}
+    <main id="main" tabindex="-1"><div class="gate welcome">
+      <div class="art halftone"><span class="shape" aria-hidden="true">EZ</span></div>
+      <div class="form">
+        <span class="label">Welcome</span>
+        <h1>UNI Made <span class="ez">EZ</span></h1>
+        <p class="lede">${esc(TAGLINE)}</p>
+        <ul class="welcome-what">
+          <li><b>${esc(groups.map(g => g.name).join(' and '))} courses</b><span>written out in full, free, no sign-up needed</span></li>
+          <li><b>Your own lecture files</b><span>turned into flash cards, a summary, the key information and a quiz</span></li>
+        </ul>
+        <form class="form-grid" data-form="welcome">
+          <div class="field"><label for="wc-name">Your name</label><input class="input" id="wc-name" name="name" maxlength="80" autocomplete="name" placeholder="First and last name"></div>
+          <div class="field"><label for="wc-email">Email address</label><input class="input" id="wc-email" name="email" type="email" maxlength="120" autocomplete="email" placeholder="you@mytru.ca"></div>
+          <div class="err-text" id="wc-err" hidden></div>
+          <div class="welcome-acts">
+            <button class="btn primary lg" type="submit">Sign up and start <span class="arr">&rarr;</span></button>
+            <button class="btn lg" type="button" data-act="welcome-skip">Skip for now</button>
+          </div>
+          <p class="fine">Signing up tells ${esc(OWNER_NAME)} who is using UNI Made EZ, and unlocks Summary and Quiz on this device. Your name and email are used for nothing else. Skipping costs you nothing &mdash; the courses, flash cards and key information are open either way, and you are never asked again. Your course files, cards, answers and progress stay in this browser and are never sent anywhere.</p>
+          <button type="button" class="owner-link" data-act="go-owner">I'm the owner &mdash; I have an access code</button>
+        </form>
+      </div>
+    </div></main>${foot()}`);
+    state.welcomeNext = (r && r.name === 'home') ? '/' : location.hash.slice(1) || '/';
+  }
+
   /* ---------- sign-up gate ---------- */
   function mailtoFor(name, email) {
     const subject = `UNI Made EZ sign-up: ${name}`;
@@ -11056,6 +11161,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
       case 'jump': { e.preventDefault(); const t = document.getElementById(el.dataset.target); if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' }); break; }
       case 'theme': toggleTheme(); break;
       case 'signout': state.unlock = null; saveUnlock(null); state.pendingSignup = null; toast('Signed out on this device.'); render(); break;
+      case 'welcome-skip': { const next = state.welcomeNext || '/'; markWelcome('skip'); if ((location.hash.slice(1) || '/') === next) render(); else go(next); break; }
       case 'go-owner': go(`/owner?next=${encodeURIComponent(r.q.next || '/')}`); break;
       case 'signup-send': /* the mailto link opens; treat clicking it as sent */ setTimeout(() => finishSignup(r.q.next), 400); break;
       case 'signup-done': finishSignup(r.q.next); break;
@@ -11402,11 +11508,27 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
       const created = state.modal.subject ? null : state.subjects[state.subjects.length - 1];
       state.modal = null; saveIndex();
       if (created) go(`/s/${created.id}`); else render();
-    } else if (form.dataset.form === 'signup') {
+    } else if (form.dataset.form === 'signup' || form.dataset.form === 'welcome') {
+      const fromWelcome = form.dataset.form === 'welcome';
       const name = (data.name || '').trim(), email = (data.email || '').trim();
-      const err = $('#su-err');
-      if (name.length < 2 || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { err.textContent = 'Enter your full name and a valid email address.'; err.hidden = false; return; }
-      state.pendingSignup = { name, email }; recordSignup(name, email); render();
+      const err = $(fromWelcome ? '#wc-err' : '#su-err');
+      if (name.length < 2 || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+        err.textContent = fromWelcome
+          ? 'Enter your full name and a valid email address — or press Skip for now.'
+          : 'Enter your full name and a valid email address.';
+        err.hidden = false; return;
+      }
+      const next = fromWelcome ? (state.welcomeNext || '/') : (r.q.next || '/');
+      if (fromWelcome) markWelcome('in');
+      state.pendingSignup = { name, email };
+      /* If the database took the row, the sign-up IS complete — go straight in. The mail-app step
+         below only exists for a copy of the app with no counter behind it (the artifact, a file on
+         disk), where an email is the only way the owner ever hears about it. */
+      const wrote = await recordSignup(name, email);
+      if (wrote) { finishSignup(next); return; }
+      // the counter did not take it — fall back to the mail step rather than lose the sign-up
+      if (fromWelcome) { go(`/signup?next=${encodeURIComponent(next)}`); return; }
+      render();
     } else if (form.dataset.form === 'owner') {
       const code = (data.code || '').trim();
       const h = await sha256(code);
@@ -11685,10 +11807,21 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
   });
 
   window.addEventListener('hashchange', render);
-  render();
-  registerSW();
-  pingDevice();
-  noteUpdated();
+  /* Whether the front door is due has to be settled BEFORE the first paint. Rendering the app and
+     then replacing it with a form a moment later is worse than either one on its own, and it is
+     what happens if the answer arrives late. Settling it needs sync.json — one small same-origin
+     file the browser has usually cached — so it is awaited here behind a short deadline, and only
+     for the visitor who could actually be asked. If it is slow, missing, or not configured, the
+     app simply opens, which is the right answer in every one of those cases anyway. */
+  (async () => {
+    if (SYNC_OK && !welcomeSeen() && !isUnlocked() && !state.subjects.length) {
+      await Promise.race([syncConfig().catch(() => null), new Promise(r => setTimeout(r, 1200))]);
+    }
+    render();
+    registerSW();
+    pingDevice();
+    noteUpdated();
+  })();
 })();
 
 </script>
