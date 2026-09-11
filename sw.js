@@ -1,8 +1,8 @@
-/* UNI Made EZ — service worker, build 2.23.
+/* UNI Made EZ — service worker, build 2.24.
    Keeps a copy of the page so it opens with no connection, and lets the browser install it
    to a home screen. The whole app is one file, so the "offline copy" really is just that file
    plus its icons; nothing here touches your subjects, which live in the browser's own storage. */
-const V = '2.23';
+const V = '2.24';
 const APP = 'umez-app-v' + V;      // the page and its icons, replaced whole on every build
 const RUNTIME = 'umez-runtime-v1'; // web fonts, kept across builds
 
@@ -51,6 +51,28 @@ self.addEventListener('fetch', e => {
         return (await c.match('./index.html')) || (await c.match('./')) ||
           new Response('<h1>Offline</h1><p>Open UNI Made EZ once with a connection and it will work without one after that.</p>',
             { status: 503, headers: { 'content-type': 'text/html; charset=utf-8' } });
+      }
+    })());
+    return;
+  }
+
+  /* sync.json is CONFIGURATION, not an asset, and the difference matters. It exists so the counter's
+     key can be changed by editing one small file — no rebuild, no 2 MB upload. Serving it from the
+     cache first defeats exactly that: an installed app, or any browser that already has this worker,
+     keeps the old file until the next version bump, so the new key never arrives and the counter
+     goes on recording nothing. That is not hypothetical — it is what happened the first time the
+     real key was published, and the page went on reading PASTE_THE_PUBLISHABLE_KEY_HERE.
+     Network first, with the cached copy kept only as the offline fallback. */
+  if (url.origin === location.origin && url.pathname.endsWith('/sync.json')) {
+    e.respondWith((async () => {
+      try {
+        const fresh = await timedFetch(req, 3000);
+        if (fresh && fresh.ok) { const c = await caches.open(APP); await c.put(req, fresh.clone()); }
+        return fresh;
+      } catch (err) {
+        const c = await caches.open(APP);
+        return (await c.match(req)) || (await c.match('./sync.json')) ||
+          new Response('{}', { headers: { 'content-type': 'application/json' } });
       }
     })());
     return;
