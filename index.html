@@ -1905,6 +1905,23 @@ math mi[mathvariant="normal"] { font-style: normal; }
    of uppercase is the wrong typeface for that, so it drops to body text at a readable size. */
 .welcome .fine { font-family: var(--font-body); font-size: .82rem; text-transform: none; letter-spacing: 0; line-height: 1.55; color: var(--ink-2); }
 
+/* ---------- the counter's setup checklist ----------
+   Shown only to the owner, only while the counter is not working. It is a work instruction, so it
+   reads as a checklist with the outstanding step obvious at a glance rather than a wall of prose. */
+.setup-steps { list-style: none; display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); margin: 0 0 14px; padding: 0; }
+.setup-steps li { display: grid; grid-template-columns: 30px 1fr; gap: var(--gut-in); align-items: start; padding: 12px var(--pad-in); background: var(--surface); min-width: 0; }
+.setup-steps li > b { font-family: var(--font-mono); font-size: .78rem; font-weight: 500; color: var(--ink-3); line-height: 1.5; }
+.setup-steps li > span { display: grid; gap: 3px; min-width: 0; }
+.setup-steps li strong { font-weight: 500; font-size: .96rem; }
+.setup-steps li .small { color: var(--ink-2); line-height: 1.5; }
+.setup-steps li.done { background: var(--ok-soft); }
+.setup-steps li.done > b { color: var(--ok); font-size: 1rem; }
+.setup-steps li.done strong { color: var(--ok); }
+/* the step that is actually outstanding is the one the eye should land on */
+.setup-steps li.todo + li.todo { opacity: .72; }
+.setup-steps li.todo > b { background: var(--accent); color: var(--accent-ink); width: 22px; height: 22px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: .68rem; }
+.setup-steps li.todo ~ li.todo > b { background: var(--surface-3); color: var(--ink-2); }
+
 </style>
 </head>
 <body>
@@ -5913,7 +5930,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.21', date: '11 September 2026', year: 2026 };
+  const BUILD = { v: '2.22', date: '11 September 2026', year: 2026 };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonandy242', ['gmail', 'com'].join('.')].join('@');
   /* The one sentence that says what this is. It appears under the wordmark, and build.js uses
@@ -5926,6 +5943,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      because the person who needs it is the one who just watched the app refresh itself and wants to
      know what moved. Trim the tail when it gets past a dozen; nobody reads further back than that. */
   const WHATS_NEW = [
+    ['2.22', 'Owner only: the <b>Users</b> panel now says which step of the counter setup is outstanding and what to do about it, instead of only that something is not configured. A key pasted in the wrong place is named as such — and the secret key is refused outright rather than quietly published.'],
     ['2.21', 'A welcome screen the first time you open it, asking your name and email so the people who built this know who is using it — with <b>Skip for now</b> right beside it, and no second ask either way. Signing up is one step now instead of two: it no longer depends on your mail app opening, which is where it used to go wrong.'],
     ['2.20', 'The front page now says what this actually is: two ways to study, side by side \u2014 courses written out in full, and your own files turned into cards. Neither one is buried under the other any more. The <b>Users</b> panel from 2.19 is back alongside it; the two changes were built at the same time and briefly overwrote each other.'],
     ['2.19', 'The owner can now see how many people are using it. A <b>Users</b> button in the header shows how many opened the app today, this week and this month, how many signed up and how many subjects have been started. Sign-ups are recorded properly instead of relying on someone pressing send in their mail app. Course files, cards, answers and progress still never leave your browser — what is counted is a random id per device, and the name and email typed into the sign-up form.'],
@@ -6665,17 +6683,27 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     return d;
   }
 
+  /* syncWhy records WHICH step of the setup is outstanding, so the owner's panel can say "the key
+     is still the placeholder" rather than the useless "not configured" — the difference between a
+     screen that tells you what to do next and one that tells you something is wrong. */
+  let syncWhy = 'unknown';
   async function syncConfig() {
     if (sync || syncTried) return sync;
     syncTried = true;
-    if (!SYNC_OK) return null;
+    if (!SYNC_OK) { syncWhy = 'not-live'; return null; }
+    let c = null;
     try {
       const r = await fetch('sync.json', { cache: 'no-cache' });
-      if (!r.ok) return null;
-      const c = await r.json();
-      if (c && /^https:\/\/[a-z0-9.-]+$/i.test(String(c.url || '').replace(/\/$/, '')) && /^(sb_publishable_|eyJ)/.test(String(c.key || '')))
-        sync = { url: String(c.url).replace(/\/$/, ''), key: String(c.key) };
-    } catch (e) { /* offline, or no sync.json — the app never depends on it */ }
+      if (!r.ok) { syncWhy = 'no-file'; return null; }
+      c = await r.json();
+    } catch (e) { syncWhy = 'no-file'; return null; }   // offline, or no sync.json — never depended on
+    const url = String((c && c.url) || '').replace(/\/$/, '');
+    const key = String((c && c.key) || '');
+    if (!/^https:\/\/[a-z0-9.-]+$/i.test(url)) { syncWhy = 'bad-url'; return null; }
+    if (/PASTE_THE_PUBLISHABLE_KEY_HERE/.test(key) || !key) { syncWhy = 'placeholder'; return null; }
+    if (/^sb_secret_/.test(key)) { syncWhy = 'secret-key'; return null; }   // never let this one work
+    if (!/^(sb_publishable_|eyJ)/.test(key)) { syncWhy = 'bad-key'; return null; }
+    sync = { url, key }; syncWhy = 'ok';
     return sync;
   }
 
@@ -6733,7 +6761,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
   // Counts only — the view the app reads holds no names and no emails.
   async function loadStats() {
     const r = await syncFetch('umez_stats?select=*', { headers: { accept: 'application/json' } });
-    if (!r) return { err: 'no-config' };
+    if (!r) return { err: 'no-config', why: syncWhy };
     if (!r.ok) return { err: 'http-' + r.status };
     const rows = await r.json().catch(() => null);
     return (rows && rows[0]) ? { data: rows[0] } : { err: 'empty' };
@@ -7967,10 +7995,35 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     }
     if (m.type === 'stats') {
       const d = m.data || {}, n = v => fmt(v == null ? 0 : v);
-      const body = () => m.err ? `<div class="notice">${m.err === 'no-config'
-          ? 'No counter is configured yet. The page looks for <b>sync.json</b> beside it, holding the database address and its publishable key — until that file is there, nothing is counted and nothing is sent.'
-          : m.err === 'empty' ? 'The counter is configured but returned nothing. The tables may not be installed in this database yet.'
-          : `The database answered <b>${esc(m.err.replace('http-', 'HTTP '))}</b>. If that is 401 or 404 the key in sync.json is wrong, or the tables live in a different project.`}</div>`
+      /* The setup, as the four things that have to be true, with the one that isn't marked. This
+         panel is owner-only, so it can be a work instruction rather than an apology — the whole
+         point of opening it while nothing is configured is to find out what is left to do. */
+      const WHY = {
+        'no-file': ['sync.json is not beside the page', 'The build writes it. Run <code>node build.js</code>, then publish <code>github/sync.json</code> along with the page.'],
+        'placeholder': ['the key is still <code>PASTE_THE_PUBLISHABLE_KEY_HERE</code>', 'Everything else is ready. Paste the real publishable key into that one file and publish it — step 3 below.'],
+        'secret-key': ['that is the <b>secret</b> key, and it is refused on purpose', 'The secret key bypasses row-level security. It must never sit in a public page. Replace it with the <b>publishable</b> key.'],
+        'bad-key': ['the key is not a Supabase publishable key', 'It should begin <code>sb_publishable_</code>. Copy it again from the API keys page.'],
+        'bad-url': ['the address in sync.json is not a valid https URL', 'It should be the project URL, e.g. <code>https://&lt;project&gt;.supabase.co</code>.'],
+        'not-live': ['this copy of the app never counts', 'The artifact and a file opened from disk are deliberately switched off. Open the published site instead.']
+      };
+      const step = (n, done, head, note) => `<li class="${done ? 'done' : 'todo'}"><b>${done ? '&check;' : n}</b><span><strong>${head}</strong>${note ? `<span class="small">${note}</span>` : ''}</span></li>`;
+      const setup = () => {
+        const why = m.why || 'unknown';
+        const gotFile = why !== 'no-file' && why !== 'not-live';
+        const gotKey = false;   // this branch only runs when the counter is NOT working
+        const named = WHY[why];
+        return `<div class="notice">${named ? `Nothing is being counted yet because <b>${named[0]}</b>. ${named[1]}` : 'The counter is not configured yet, and the app could not work out which step is outstanding.'}</div>
+          <ol class="setup-steps">
+            ${step(1, true, 'The database is set up', 'Tables <code>umez_devices</code> and <code>umez_signups</code>, and the <code>umez_stats</code> view, in the Syllabus Desk project.')}
+            ${step(2, gotFile, 'sync.json is published beside the page', 'It holds the address and the key, and is read at run time — so changing it needs no rebuild and no 2&nbsp;MB upload.')}
+            ${step(3, gotKey, 'The publishable key is in it', 'Copy it from <b>Project settings &rarr; API keys</b> in the Supabase dashboard &mdash; the one starting <code>sb_publishable_</code>, never the secret key &mdash; and replace the placeholder.')}
+            ${step(4, false, 'Publish that one file', 'Push <code>github/sync.json</code>. Counting starts on the next visit, and the welcome screen starts appearing for new visitors.')}
+          </ol>
+          <p class="small muted">Names and email addresses are read in the Supabase dashboard, never here: this panel can only ever see totals.</p>`;
+      };
+      const body = () => m.err ? `${m.err === 'no-config' ? setup()
+          : m.err === 'empty' ? '<div class="notice">The counter is configured and the key works, but the view returned no rows. The tables may not be installed in this database yet — re-run the setup SQL.</div>'
+          : `<div class="notice">The database answered <b>${esc(m.err.replace('http-', 'HTTP '))}</b>. <b>401</b> means the key is wrong or row-level security is refusing it; <b>404</b> means the tables live in a different project.</div>`}`
         : `<div class="stat-grid">
             <div class="stat"><span class="label">Active today</span><strong>${n(d.active_1d)}</strong><span class="muted small">opened in the last 24 hours</span></div>
             <div class="stat"><span class="label">Active this week</span><strong>${n(d.active_7d)}</strong><span class="muted small">last 7 days</span></div>
@@ -7983,7 +8036,8 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
           </div>
           <p class="small muted">A device is one browser on one machine, counted by a random id it keeps to itself — the same person on a laptop and a phone counts twice, and clearing site data starts a new one. Nobody's files, cards, answers or progress are sent anywhere; this panel can only read totals, never names or email addresses. Those you read in the Supabase dashboard, or in the daily email.</p>`;
       return `<div class="modal-bg" data-act="close-modal"><div class="modal wide info" role="dialog" aria-modal="true" aria-label="Usage figures">
-        <div class="modal-head"><div><span class="label">${m.err ? 'Not configured' : `as of ${d.as_of ? new Date(d.as_of).toLocaleString() : 'now'}`}</span><h2>Who's using UNI Made EZ</h2></div><button class="btn ghost icon" data-act="close-modal" aria-label="Close">${I.x}</button></div>
+        <div class="modal-head"><div><span class="label">${m.err === 'no-config' ? `Setup &middot; step ${({ 'no-file': 2, 'placeholder': 3, 'secret-key': 3, 'bad-key': 3, 'bad-url': 3 })[m.why] || 1} of 4`
+          : m.err ? 'Not configured' : `as of ${d.as_of ? new Date(d.as_of).toLocaleString() : 'now'}`}</span><h2>Who's using UNI Made EZ</h2></div><button class="btn ghost icon" data-act="close-modal" aria-label="Close">${I.x}</button></div>
         <div class="modal-body">${m.loading ? `<div class="loading"><div class="spinner"></div><div>Counting…</div></div>` : body()}</div>
         <div class="modal-foot"><button type="button" class="btn sm" data-act="stats">Refresh</button><span class="spacer" style="flex:1"></span><button class="btn sm primary" data-act="close-modal">Close</button></div>
       </div></div>`;
