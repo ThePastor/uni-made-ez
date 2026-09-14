@@ -7560,7 +7560,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.35', date: '14 September 2026', year: 2026 };
+  const BUILD = { v: '2.36', date: '14 September 2026', year: 2026 };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonandy242', ['gmail', 'com'].join('.')].join('@');
   /* The one sentence that says what this is. It appears under the wordmark, and build.js uses
@@ -7573,6 +7573,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      because the person who needs it is the one who just watched the app refresh itself and wants to
      know what moved. Trim the tail when it gets past a dozen; nobody reads further back than that. */
   const WHATS_NEW = [
+    ['2.36', '<b>The database was audited, and one lock became two.</b> Supabase flagged the two views the owner\u2019s figures are read through: both ran with the database owner\u2019s rights, which is how they returned counts without exposing rows, but a view is a wide surface for a privilege that ought to be narrow. Those rights now sit in one small function each, with a fixed shape and nothing a caller can bolt onto it. Auditing that turned up something more worth fixing: the tables holding sign-ups and the visitor count were protected only by their row rules \u2014 the key in this page still had <i>permission</i> to read them, so one accidental change to those rules would have opened them. It has no permission now either. Nothing about what the app sends changed; <a href="#/rights">the full account</a> says what the two locks are.'],
     ['2.34', '<b>Studying something the ten profiles do not cover? Say so.</b> The subject picker’s last option is now <b>Other</b> &mdash; Nursing, Music, Social Work, anything &mdash; and it is a real answer rather than a shrug: the general engine reads your files with every panel and every question type, exactly as before. Picking it asks <b>one optional question</b>: what subject is this? Answer and that word goes into the queue for the next profile to be written. It is sent on its own &mdash; no name, no email, not even the random id that counts visits &mdash; so there is nothing to connect it to you. Skip it and nothing is sent at all, and nothing is withheld either way. <a href="#/rights">The full account</a> now lists this message in its own table beside the counter.'],
     ['2.33', '<b>The app now reads your files as a subject.</b> Add a Chemistry handout and it is read as Chemistry: reactions and equations come first in Key information, the panels are named the way chemists name them, and the extra sentence shapes chemistry uses are picked up. Ten profiles &mdash; Mathematics, Physics, Chemistry, Biology, Computer science, Statistics, Accounting, Law, Marketing and English. It always shows you what it decided and the words that decided it, and one tap changes it; where two subjects are genuinely close it says so instead of picking. An English handout stops being offered a &ldquo;Figures&rdquo; panel and arithmetic questions, a Law one stops being offered arithmetic, and a Maths one puts its formulas at the top where they belong.'],
     ['2.32', 'Quizzes are <b>bigger and can be made harder</b>. The engine was quietly running out of questions &mdash; a six-hundred-word handout could produce 29 and no more, while a third of its terms were never considered and forty of its sentences were never used, so asking for 40 gave you 29 with no explanation. It now reaches 38 from the same document, and the set-up page says up front how many your material can actually support instead of offering numbers it cannot meet. There is also a <b>difficulty</b> setting, and it is real: every question is graded by the work it takes &mdash; recognise, produce, or discriminate &mdash; and two genuinely hard kinds are new. <b>Three of these are true, which one is not</b> gives you four statements from your own material with one term changed, so elimination is worth nothing. And a <b>two-blank</b> fill removes two load-bearing words from one sentence instead of one. If your last few quizzes were over 85%, the app starts you harder.'],
@@ -9014,9 +9015,17 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
       <p><b>Who can read them.</b> ${OWNER_NAME}, signed in to that database, and nobody else. The
       key that ships inside this page is a <i>publishable</i> key, and the database is configured so
       that key can write a row and cannot read one back — the table holding names and emails has no
-      read permission for it at all. The owner's own statistics panel reads a view that returns
-      counts and never a name. That was tested against the live database by trying to read the rows
-      with the key from this page and being refused, not assumed from the settings screen.</p>
+      read permission for it at all. The owner's own statistics panel reads counts, and cannot
+      return a name.</p>
+      <p><b>Two locks, not one.</b> The key is refused twice over: it has no <i>permission</i> to
+      read that table, and separately the table's own row rules return nothing to it. Either alone
+      would be enough; they are both there so that switching one off by mistake does not open the
+      table. Until 14&nbsp;September&nbsp;2026 only the second lock was in place, which was one
+      accident away from being none &mdash; found by auditing the database rather than by reading
+      the settings screen, and fixed the same day.</p>
+      <p>None of this is taken on trust either: it was tested against the live database by trying
+      to read, change and delete the rows with the key from this page, and being refused each
+      time.</p>
       <p><b>How long they are kept.</b> Your name and email are deleted within 30 days of you asking,
       and in any case when the app is retired. The counter rows above hold no personal information
       and are kept while the app is published.</p>`],

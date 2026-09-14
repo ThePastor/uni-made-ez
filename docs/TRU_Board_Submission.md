@@ -2,7 +2,7 @@
 
 **Application:** UNI Made EZ · <https://thepastor.github.io/uni-made-ez/>
 **Publisher:** JohnsonXCorp (Anndy Johnson), British Columbia
-**Version reviewed:** v2.34, 14 September 2026
+**Version reviewed:** v2.36, 14 September 2026
 **Request:** that TRU permit instructors to recommend UNI Made EZ to students as an optional study
 companion.
 **Cost to the university and to students:** none. Free, no account, no licence, no procurement.
@@ -48,7 +48,7 @@ tests that fail the build, and they are verifiable by anyone in about two minute
 | Is providing it a condition of use? | **No.** Since v2.27 every feature works identically without it. |
 | What happens to course files and student work? | Read in the browser; never transmitted. Held in that browser's storage on that device. |
 | Where is personal information stored? | PostgreSQL on Supabase, **Canadian region `ca-central-1`**. It does not leave Canada. |
-| Who can read it? | The publisher only. The key embedded in the public page can write and **cannot read**; row-level security was verified empirically by attempting a read with that key and being refused. |
+| Who can read it? | The publisher only. The key embedded in the public page can write and **cannot read**, enforced twice over — it holds no read *privilege* on the tables, and separately the tables' row rules return nothing to it. Verified empirically by attempting to read, alter and delete with that key and being refused each time. An audit on 14 September 2026 found only the second of those two mechanisms in place and added the first; the finding and the fix are recorded in [`Counter_Security_Hardening.sql.md`](Counter_Security_Hardening.sql.md) rather than quietly corrected. |
 | Cookies, analytics, advertising, trackers, third-party scripts? | **None of any kind.** As of v2.27 even the web fonts are embedded rather than fetched, so no visitor's IP address reaches any third party. |
 | Retention? | Name and email: deleted within 30 days of request, and when the app is retired. Anonymous counter rows and subject names: while the app is published. On-device data: the student deletes it by clearing site data. |
 | Access, correction, deletion? | By email, no form, no fee, no reason needed; answered within the 30 business days BC PIPA requires. Escalation to the OIPC is stated in the app. |
@@ -182,7 +182,8 @@ An honest submission names its own weaknesses.
 | [`PIA_Response.md`](PIA_Response.md) | Vendor answers to a standard privacy impact assessment |
 | [`Accessibility_Statement.md`](Accessibility_Statement.md) | WCAG 2.1 AA conformance statement with known gaps |
 | [`Counter_Subjects.sql.md`](Counter_Subjects.sql.md) | The schema, filter and access rules behind the subject question in §3, so the claims there can be read rather than taken |
+| [`Counter_Security_Hardening.sql.md`](Counter_Security_Hardening.sql.md) | A database security audit, what it found, what was changed, and the verification afterwards |
 | [`TERMS.md`](../TERMS.md) · [`LICENSE`](../LICENSE) · [`THIRD-PARTY-NOTICES.md`](../THIRD-PARTY-NOTICES.md) | Terms, licence, component notices |
 | **#/rights** in the application | The same material written for a student |
 
-*Prepared 14 September 2026 for v2.34. Contact: johnsonandy242@gmail.com*
+*Prepared 14 September 2026 for v2.36. Contact: johnsonandy242@gmail.com*

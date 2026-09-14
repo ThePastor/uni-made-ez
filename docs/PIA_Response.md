@@ -3,7 +3,7 @@
 **Application:** UNI Made EZ · <https://thepastor.github.io/uni-made-ez/>
 **Vendor / publisher:** JohnsonXCorp (Anndy Johnson), British Columbia, Canada
 **Contact:** johnsonandy242@gmail.com
-**Version assessed:** v2.34, 14 September 2026
+**Version assessed:** v2.36, 14 September 2026
 **Prepared for:** Thompson Rivers University — Information Security Office and Privacy and Access
 Office, whose published PIA process is led by the Director of Information Security with input from
 the Privacy and Access Office.
@@ -109,12 +109,13 @@ a request reaches the host; no personal information is in that request.
 |---|---|
 | Encryption in transit | HTTPS/TLS only |
 | Encryption at rest | Platform-managed |
-| Access control | Row-level security. The publishable key embedded in the page may **INSERT**; it has **no SELECT policy** on the table containing names and emails. The device counter writes through a `SECURITY DEFINER` function so the counter table is not readable by that key either. |
+| Access control | Two independent mechanisms, either sufficient alone. (a) **Privilege**: the publishable key embedded in the page holds no `SELECT`, `UPDATE` or `DELETE` on any table holding data — on `umez_signups` it holds `INSERT` and nothing else; on `umez_devices` and `umez_subjects` it holds nothing at all, because both are written through `SECURITY DEFINER` functions. (b) **Row-level security**: those tables' own policies return nothing to that key regardless. |
 | Administrative access | The publisher alone, authenticated to the database |
 | Privilege of the public key | Write-only, by design — the key ships in a public page and is treated as public |
 | Owner statistics view | Returns **counts only**; it cannot return a name or an email |
-| Verification | Tested against the live database by attempting to read rows with the key from the published page and being refused. Empirical, not inferred from a settings screen. |
-| Segregation | No other application shares the database |
+| Verification | Tested against the live database by attempting to read, alter and delete rows with the key from the published page, and being refused each time. Empirical, not inferred from a settings screen. |
+| Audit history | A privilege audit on 14 September 2026 found mechanism (a) missing on `umez_devices` and `umez_signups` — only the row rules protected them, which was one accidental change away from no protection. Corrected the same day; the finding, the change and the verification are recorded in [`Counter_Security_Hardening.sql.md`](Counter_Security_Hardening.sql.md). Two `SECURITY DEFINER` views flagged by the platform's own linter were replaced with narrow `SECURITY DEFINER` functions in the same pass. |
+| Segregation | One other application by the same publisher, **Syllabus Desk**, shares this database in its own tables (`syllabus_desk_*`). It holds no UNI Made EZ data and UNI Made EZ reads none of its tables; the two share only the Postgres instance and the region. This entry previously read "no other application shares the database", which was wrong, and is corrected here. |
 
 **5.1 On-device data.** Everything a student studies is held in their browser's local storage on
 their device, under their sole control, and is deleted instantly and permanently by clearing site

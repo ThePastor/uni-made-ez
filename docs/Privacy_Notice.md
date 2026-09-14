@@ -2,7 +2,7 @@
 
 **Publisher:** JohnsonXCorp, British Columbia, Canada
 **Application:** UNI Made EZ — <https://thepastor.github.io/uni-made-ez/>
-**Version this notice describes:** v2.34, 14 September 2026
+**Version this notice describes:** v2.36, 14 September 2026
 **Privacy contact:** johnsonandy242@gmail.com
 **Applicable law:** *Personal Information Protection Act* (SBC 2003, c. 63) (British Columbia)
 
@@ -113,13 +113,23 @@ with nothing beside it.
 - **Storage:** PostgreSQL hosted by Supabase, **Canadian region `ca-central-1`**. Personal
   information does not leave Canada.
 - **In transit:** HTTPS/TLS only. **At rest:** encrypted by the platform.
-- **Access control:** the API key embedded in the published page is a *publishable* key. The
-  database uses row-level security configured so that key may **write** a row and may **not read one
-  back**. The table holding names and emails has no read policy for it at all. The publisher's own
-  statistics panel reads a database view returning **counts only** — it cannot return a name.
-- **Verified, not assumed.** This was tested against the live database by attempting to read the
-  rows using the key that ships in the page and being refused. A configuration screen saying the
-  right thing is not evidence; a refused read is.
+- **Access control:** the API key embedded in the published page is a *publishable* key. It may
+  **write** a row and may **not read one back**. Two independent mechanisms enforce that, and either
+  alone would be sufficient: the key holds **no SELECT privilege** on the tables at all, and
+  separately those tables' **row-level security** rules return nothing to it. The publisher's own
+  statistics panel reads **counts only**, through a function with a fixed return shape — it cannot
+  return a name.
+- **A gap that existed and was closed.** Until 14 September 2026 only the second mechanism was in
+  place on `umez_devices` and `umez_signups`: the key still held SELECT, UPDATE and DELETE
+  *privileges*, and only the row rules stood between it and the data. Nothing was exposed, but one
+  accidental change to those rules would have exposed everything, including names and email
+  addresses. Found by auditing the database, fixed the same day, and recorded in
+  [`Counter_Security_Hardening.sql.md`](Counter_Security_Hardening.sql.md). It is described here
+  rather than quietly corrected, because a privacy notice that only records its good days is not
+  worth reading.
+- **Verified, not assumed.** Tested against the live database by attempting to read, alter and
+  delete the rows using the key that ships in the page, and being refused each time. A
+  configuration screen saying the right thing is not evidence; a refused read is.
 - **Who can read personal information:** JohnsonXCorp, authenticated to that database. Nobody else.
 - **Sub-processor:** Supabase Inc. (database hosting). GitHub, Inc. serves the static page and
   receives ordinary web-server request logs as any web host does; it receives no application data.
