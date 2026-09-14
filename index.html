@@ -1722,6 +1722,17 @@ math mi[mathvariant="normal"] { font-style: normal; }
 .legal-table td:first-child { font-weight: 600; white-space: nowrap; }
 .legal-table code { font-size: .86em; }
 .legal-contact { border-left: var(--accent-bar) solid var(--accent); padding: 10px 0 10px 14px; line-height: 1.7; }
+/* ---- course packs (v2.29) ---- */
+.pack-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); margin: 10px 0 var(--band); }
+.pack-card { background: var(--surface); padding: var(--pad-in) var(--gut-in) calc(var(--pad-in) + 4px); display: grid; gap: 5px; text-decoration: none; color: inherit; position: relative; min-height: 118px; align-content: start; transition: background .12s; }
+.pack-card b { font-family: var(--font-display); font-size: 1.12rem; font-weight: 500; letter-spacing: -.02em; line-height: 1.2; }
+.pack-card .small { color: var(--ink-2); }
+.pack-card .arr { position: absolute; right: var(--gut-in); bottom: 10px; transition: transform .18s; }
+.pack-card:hover { background: var(--accent-soft); }
+.pack-card:hover .arr { transform: translateX(4px); }
+.pack-card.built { background: var(--tint-1); }
+.pack-card.built:hover { background: var(--accent-soft); }
+.pack-built { margin-top: var(--band-lg); }
 @media (max-width: 640px) { .legal-sec h2 { font-size: 1.2rem; } .legal-table td:first-child { white-space: normal; } }
 @media print { .legal-toc { display: none !important; } .legal-sec { break-inside: avoid; } .legal-table-wrap { overflow: visible; } }
 
@@ -1939,6 +1950,7 @@ math mi[mathvariant="normal"] { font-style: normal; }
 .mastery-band .label, .lvl-moves li span,
 .worked .ans .label, .formula, .term-detail, .copy-box, .leech-note,
 .fade-note .small, .own-ask label, .own-words .label, .worked .wsteps li.blank .why,
+.pack-card .small, .pack-card .label,
 .notice.warn, .calib-grid .cq span, .ord-chosen li, .mat .info,
 .subjects-head .btn.cell.ghost, .hint-box summary { color: var(--ink-2); }
 /* status text keeps its own hue on its own tint — those pairs are solved above */
@@ -6139,7 +6151,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.28', date: '14 September 2026', year: 2026 };
+  const BUILD = { v: '2.29', date: '14 September 2026', year: 2026 };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonandy242', ['gmail', 'com'].join('.')].join('@');
   /* The one sentence that says what this is. It appears under the wordmark, and build.js uses
@@ -6152,6 +6164,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      because the person who needs it is the one who just watched the app refresh itself and wants to
      know what moved. Trim the tail when it gets past a dozen; nobody reads further back than that. */
   const WHATS_NEW = [
+    ['2.29', '<b>Course packs.</b> A whole course &mdash; the readings, the cards, the learning outcomes, the weekly schedule and what each assessment is worth &mdash; opens from one link, already set up. An instructor or a classmate can build one from a subject they have loaded; you open <b>Course packs</b> from the home page, see exactly what is in a pack before anything is added, and add it with one tap. It arrives as a new subject with nothing studied, so it can never overwrite what you already have, and it carries none of the maker&rsquo;s marks, schedule or quiz history. Packs are served from this app&rsquo;s own address and nowhere else &mdash; opening one still sends nothing about you anywhere.'],
     ['2.28', 'Two changes, both aimed at the same thing: reading an answer is not learning it. <b>Say it your way</b> &mdash; a new card now asks you to put the answer in your own words before it joins the deck. It is optional, it is never marked, and from then on your wording is what you see first, with the material&rsquo;s underneath. Writing it out is one of the best-evidenced things you can do with a card. And in the Math and Law courses, <b>worked examples now fade</b>: once you are Familiar with a skill the last line is left for you to finish, at Proficient the last two, and at Mastered you get the question alone. Every example still opens in full with one tap &mdash; it is study material, not a test.'],
     ['2.27', 'Nothing is locked behind the sign-up any more. Summary, Quiz and essay help are open to everyone, signed up or not &mdash; access to study material should not be the price of your contact details. Signing up is still there and still welcome; it just costs you nothing to skip. The legal page is rewritten as a proper privacy notice: the seven things the app sends are listed field by field, where they are stored (Canada) and who can read them is stated, and there are new sections on academic integrity, accuracy, accessibility and what an institution needs to know before recommending it. Your files still never leave your browser, and that is now written down somewhere a privacy office can read it.'],
     ['2.26', 'Two things borrowed from how Khan Academy teaches. Every question built from your own files now offers a <b>hint before you answer</b> &mdash; where it comes from and one clue about the answer, never the answer &mdash; and a wrong choice now tells you what the option <i>you picked</i> actually was, not just what the right one is. And the courses gain <b>mastery levels</b>: practice takes a skill up to Proficient, but only a <b>mastery challenge</b> &mdash; six questions across three skills, taken later &mdash; can reach Mastered, and it is the only thing that can take a level back off you.'],
@@ -7018,6 +7031,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     if (parts[0] === 'semester') return { name: 'semester', q };
     if (parts[0] === 'plan') return { name: 'plan', q };
     if (parts[0] === 'leeches') return { name: 'leeches', q };
+    if (parts[0] === 'packs') return { name: parts[1] ? 'pack' : 'packs', pid: parts[1] || null, q };
     if (parts[0] === 'rights') return { name: 'rights', q };
     /* NOT `name: 'subject'` — that name already belongs to the student's OWN subject at #/s/<id>,
        and four places downstream branch on it (the dispatcher, renderIfSubject, refreshAfterMark).
@@ -7135,6 +7149,8 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     if (r.name === 'semester') return renderSemester();
     if (r.name === 'plan') return renderPlan();
     if (r.name === 'leeches') return renderClinic();
+    if (r.name === 'packs') return renderPacks();
+    if (r.name === 'pack') return renderPack(r.pid);
     if (r.name === 'rights') return renderRights();
     if (r.name === 'math') return renderMath(r);
     if (r.name === 'coursesubject') return renderSubjectPage(r.sid);
@@ -7269,7 +7285,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
           <span class="arr">→</span>
         </a>`;
       })()}
-      <div class="subjects-head"><h2>${subs.length ? 'Your subjects' : 'No subjects yet'}</h2><a class="btn cell ghost" href="#/courses" title="Math and Law courses written out in full, with worked examples and practice">Tutoring</a>${subs.length ? `<a class="btn cell ghost" href="#/plan" title="The next fortnight, worked backwards from your exams and deadlines">Study plan</a><a class="btn cell ghost" href="#/semester" title="Every subject, exam and deadline on one screen">Semester view</a>` : ''}${(() => { const n = state.subjects.reduce((x, s2) => x + leechCount(s2.id), 0); return n ? `<a class="btn cell ghost" href="#/leeches" title="Every card that keeps failing, in one place">Leeches <span class="n">${n}</span></a>` : ''; })()}<button class="btn cell ghost" data-act="backup-open" title="Back up every subject to a file, or restore one">Backup &amp; restore</button><button class="btn cell" data-act="new-subject">Add subject <span class="arr">→</span></button></div>
+      <div class="subjects-head"><h2>${subs.length ? 'Your subjects' : 'No subjects yet'}</h2><a class="btn cell ghost" href="#/courses" title="Math and Law courses written out in full, with worked examples and practice">Tutoring</a><a class="btn cell ghost" href="#/packs" title="A whole course somebody has already set up — readings, cards, outcomes and schedule">Course packs</a>${subs.length ? `<a class="btn cell ghost" href="#/plan" title="The next fortnight, worked backwards from your exams and deadlines">Study plan</a><a class="btn cell ghost" href="#/semester" title="Every subject, exam and deadline on one screen">Semester view</a>` : ''}${(() => { const n = state.subjects.reduce((x, s2) => x + leechCount(s2.id), 0); return n ? `<a class="btn cell ghost" href="#/leeches" title="Every card that keeps failing, in one place">Leeches <span class="n">${n}</span></a>` : ''; })()}<button class="btn cell ghost" data-act="backup-open" title="Back up every subject to a file, or restore one">Backup &amp; restore</button><button class="btn cell" data-act="new-subject">Add subject <span class="arr">→</span></button></div>
       <div class="subject-grid">
         ${subs.map(s => `<div class="subject-slot"><a class="subject-card" href="#/s/${s.id}" style="--tab:${s.color}">
           <div class="code">${esc(s.code || 'Subject')}</div>
@@ -11632,6 +11648,166 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      the work of setting a subject up, which is exactly what is worth not doing twice. What is
      deliberately dropped is listed on the sheet before it is made, because a student handing a
      file to a friend should be able to see what is in it. */
+  /* ================= course packs =================
+     The app has always been able to read a student's OWN files, which is the right default and is
+     also the reason an instructor could never hand a class anything. A course pack closes that: a
+     subject that somebody has already set up — the readings, the cards written by hand, the
+     outcomes, the weekly schedule, the assessment weights — published once and opened by a link.
+
+     Three decisions, and the first is the one that shaped the rest.
+
+     · A PACK IS SERVED FROM THIS APP'S OWN ADDRESS, and there is deliberately no way to point the
+       app at a pack somewhere else. A `#/packs/x?from=https://…` parameter would have been half an
+       hour's work and would have destroyed the claim this app just spent a release making
+       defensible: that it contacts no third party at all, which test/legal.js enforces by
+       recording every request and refusing any that leaves the origin. It would also mean a link
+       could make a student's browser fetch whatever the sender chose. Same origin, or nothing.
+     · A LINK NEVER IMPORTS BY ITSELF. Opening #/packs/<id> shows what the pack contains, who made
+       it, and what it will do — and waits. A URL that writes to somebody's device the moment they
+       tap it is the behaviour this app spends the rest of its pages arguing against.
+     · A PACK CARRIES NO PERSON. It is built through the same makeShare() that a classmate share
+       uses, so the same things are stripped: no schedule, no marks, no quiz history, no notes, no
+       deadlines, no exam date. The maker's name is in the pack because a student should know where
+       material came from; nothing else about them is.
+
+     The index is packs/index.json beside the page. Its absence is normal and not an error — the
+     artifact and the single-file build have no packs directory, and say so rather than failing. */
+  let packIndex = null, packTried = false;
+  async function loadPackIndex() {
+    if (packTried) return packIndex;
+    packTried = true;
+    if (IN_ARTIFACT) return null;                  // no packs directory alongside an artifact
+    try {
+      const r = await fetch('packs/index.json', { cache: 'no-cache' });
+      if (!r.ok) return null;
+      const j = await r.json();
+      packIndex = Array.isArray(j) ? j : (Array.isArray(j.packs) ? j.packs : null);
+    } catch (e) { packIndex = null; }              // offline, or no packs published — both fine
+    return packIndex;
+  }
+  async function loadPack(id) {
+    if (!/^[a-z0-9][a-z0-9-]{0,48}$/i.test(String(id || ''))) return null;   // an id, not a path
+    try {
+      const r = await fetch(`packs/${id}.json`, { cache: 'no-cache' });
+      if (!r.ok) return null;
+      return await r.json();
+    } catch (e) { return null; }
+  }
+  // what a pack says about itself, over and above the share payload it wraps
+  function packMeta(pk) {
+    const h = (pk && pk.pack) || {};
+    const sub = (pk && pk.subject) || {};
+    return { id: h.id || '', title: h.title || sub.name || 'Course pack', code: h.code || sub.code || '',
+      by: h.by || '', term: h.term || '', note: h.note || '', updated: h.updated || pk.at || '' };
+  }
+  function packContents(pk) {
+    const sub = (pk && pk.subject) || {}, layer = (pk && pk.layer) || {};
+    const mats = Array.isArray(sub.materials) ? sub.materials : [];
+    return {
+      files: mats.length,
+      words: mats.reduce((n, m) => n + (m.words || 0), 0),
+      cards: (layer.cards || []).length,
+      edits: Object.keys(layer.edits || {}).length,
+      outcomes: (sub.outcomes || []).length,
+      weeks: (sub.syllabus || []).length,
+      assess: (sub.assess || []).length
+    };
+  }
+
+  function renderPacks() {
+    const body = id => `<div class="page narrow">
+      <div class="legal-head">
+        <span class="label">Course packs</span>
+        <h1>A whole course, already loaded</h1>
+        <p class="legal-lede">A pack is a subject somebody has already set up &mdash; the readings, the
+          cards, the outcomes, the weekly schedule, what each assessment is worth. Open one and it
+          becomes a subject of your own, with nothing studied yet.</p>
+      </div>
+      ${id}
+      <div class="legal-foot" style="margin-top:var(--band-lg)">
+        <p class="small muted">Packs are served from this app's own address and nowhere else. Opening
+          one fetches a file from here, exactly like opening any other page of the app &mdash; nothing
+          about you is sent anywhere, and nothing is added to your device until you say so.</p>
+        <p class="small muted">Made a subject worth handing out? Open it, choose <b>Share these cards</b>,
+          and save the file &mdash; that is the same format a pack uses.</p>
+      </div>
+    </div>`;
+    app.innerHTML = frame(`${topbar(`<a href="#/">Subjects</a><span class="sep">/</span><strong>Course packs</strong>`)}
+    <main id="main" tabindex="-1">${body('<div class="loading"><div class="spinner"></div><div>Looking for packs…</div></div>')}</main>${foot()}`);
+    loadPackIndex().then(list => {
+      if (parseRoute().name !== 'packs') return;
+      const built = Courses.subjects();
+      const builtIn = `<section class="pack-built">
+        <span class="label">Already inside the app</span>
+        <div class="pack-grid">${Courses.all().map(c => `<a class="pack-card built" href="#/courses/${esc(c.id)}">
+          <span class="label">${esc((c.subject && c.subject.name) || 'Course')}</span>
+          <b>${esc(c.title || c.name || c.id)}</b>
+          <span class="small">${plural(c.units.length, 'unit')} · written out in full, no download</span>
+          <span class="arr">&rarr;</span></a>`).join('')}</div>
+        <p class="small muted">${esc(built.map(g => g.name).join(' and '))} are built into the app itself &mdash;
+          they need no pack and are always there.</p>
+      </section>`;
+      const out = !list
+        ? `${builtIn}<div class="empty" style="margin-top:var(--band-lg)">No packs are published for this copy of the app.
+             ${IN_ARTIFACT ? 'Packs live on the live site &mdash; this is the artifact copy.' : 'A pack someone sends you as a file still opens: use <b>Backup &amp; restore &rarr; Open one someone sent me</b>.'}</div>`
+        : !list.length
+          ? `${builtIn}<div class="empty" style="margin-top:var(--band-lg)">No packs published yet.</div>`
+          : `<section><span class="label">Published packs</span>
+              <div class="pack-grid">${list.map(pk => `<a class="pack-card" href="#/packs/${esc(pk.id)}">
+                ${pk.code ? `<span class="label">${esc(pk.code)}</span>` : ''}
+                <b>${esc(pk.title || pk.id)}</b>
+                <span class="small">${[pk.files ? plural(pk.files, 'file') : '', pk.cards ? plural(pk.cards, 'card') : '', pk.term || ''].filter(Boolean).join(' · ')}</span>
+                ${pk.by ? `<span class="small muted">by ${esc(pk.by)}</span>` : ''}
+                <span class="arr">&rarr;</span></a>`).join('')}</div>
+            </section>${builtIn}`;
+      const main = $('#main'); if (main) main.innerHTML = body(out);
+    });
+  }
+
+  function renderPack(id) {
+    const shell = inner => frame(`${topbar(`<a href="#/">Subjects</a><span class="sep">/</span><a href="#/packs">Course packs</a><span class="sep">/</span><strong>${esc(id || 'Pack')}</strong>`)}
+    <main id="main" tabindex="-1"><div class="page narrow">${inner}</div></main>${foot()}`);
+    app.innerHTML = shell('<div class="loading"><div class="spinner"></div><div>Opening the pack…</div></div>');
+    loadPack(id).then(pk => {
+      const r = parseRoute(); if (r.name !== 'pack' || r.pid !== id) return;
+      if (!pk || !pk.subject || !Array.isArray(pk.subject.materials) || !pk.subject.materials.length) {
+        app.innerHTML = shell(`<div class="legal-head"><span class="label">Course pack</span><h1>That pack isn't here</h1>
+          <p class="legal-lede">Nothing is published at that address on this copy of the app. The link may be mistyped, or the pack may have been withdrawn.</p></div>
+          <div class="btn-row"><a class="btn primary" href="#/packs">See what is published <span class="arr">&rarr;</span></a><a class="btn ghost" href="#/">Back to your subjects</a></div>`);
+        return;
+      }
+      const m = packMeta(pk), c = packContents(pk);
+      const kept = [`${plural(c.files, 'file')} and their text`, c.cards ? plural(c.cards, 'card written by hand') : '',
+        c.edits ? `${plural(c.edits, 'reworded card')}` : '', c.outcomes ? plural(c.outcomes, 'learning outcome') : '',
+        c.weeks ? `the ${plural(c.weeks, 'week')} of the schedule` : '',
+        c.assess ? `${plural(c.assess, 'assessment')} and what each is worth` : ''].filter(Boolean);
+      const clash = state.subjects.some(x => lc0(x.name) === lc0(pk.subject.name || ''));
+      app.innerHTML = shell(`
+        <div class="legal-head">
+          <span class="label">Course pack${m.code ? ` &middot; ${esc(m.code)}` : ''}</span>
+          <h1>${esc(m.title)}</h1>
+          ${m.note ? `<p class="legal-lede">${esc(m.note)}</p>` : ''}
+          <p class="mono small muted">${[m.by ? `Put together by ${m.by}` : '', m.term, m.updated ? `updated ${new Date(m.updated).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })}` : ''].filter(Boolean).map(esc).join(' · ')}</p>
+        </div>
+        <div class="share-cols">
+          <div class="share-col keep"><span class="label">What you get</span><ul>${kept.map(x => `<li>${esc(x)}</li>`).join('')}</ul></div>
+          <div class="share-col drop"><span class="label">What is not in it</span><ul>
+            <li>nobody's card schedule or review history</li><li>nobody's marks or quiz results</li>
+            <li>nobody's notes, stars or weak spots</li><li>no exam date and no deadlines &mdash; those are yours to set</li>
+          </ul></div>
+        </div>
+        <p class="small muted">${fmt(c.words)} words in ${plural(c.files, 'file')}. It arrives as a
+          <b>new subject</b> with new identifiers throughout, so it cannot overwrite anything already here,
+          and nothing in it is marked as studied.${clash ? ' You already have a subject with this name — the copy will be marked "(shared)".' : ''}</p>
+        <p class="small muted">Everything in a pack was put in it by the person named above. Check it against
+          your own course material the same way you would check anything else the app shows you.</p>
+        <div class="btn-row" style="margin-top:var(--band)">
+          <button class="btn primary lg" data-act="pack-add" data-id="${esc(id)}">Add it to my subjects <span class="arr">&rarr;</span></button>
+          <a class="btn ghost" href="#/packs">Other packs</a>
+        </div>`);
+      state.packLoaded = pk;
+    });
+  }
   const SHARE_DROP = ['exam', 'cram', 'deadlines', 'lectureDraft', 'wpm', 'paceSamples', 'target'];
   async function makeShare(subj) {
     const texts = {};
@@ -12062,6 +12238,14 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
         state.modal = { type: 'card', cardKey: key, front: src.front, back: src.back, mine: !!own, sid: subj.id, leech: true };
         syncModal(); $('#c-front')?.focus();
       })(); break;
+      case 'pack-add': {
+        const pk = state.packLoaded;
+        if (!pk) { toast('The pack is still loading — try again in a moment.'); break; }
+        let sh; try { sh = readShare(JSON.stringify({ ...pk, kind: 'share' })); }
+        catch (err) { toast(err.message || 'That pack could not be read.'); break; }
+        importShare(sh);
+        break;
+      }
       case 'share-open': if (s) { state.modal = { type: 'share', subject: s }; syncModal(); } break;
       case 'share-save': { const subj = subjectById(el.dataset.id) || s; if (subj) { state.modal = null; syncModal(); saveShare(subj); } break; }
       case 'share-import': { state.modal = { type: 'backup' }; syncModal(); setTimeout(() => $('[data-share]')?.click(), 30); break; }

@@ -1,0 +1,59 @@
+{
+ "app": "UNI Made EZ",
+ "kind": "share",
+ "v": 1,
+ "build": "2.29",
+ "at": "2026-09-14T02:43:16.845Z",
+ "subject": {
+  "id": "xrv6tpj31tpv",
+  "name": "Sample pack — Cellular respiration",
+  "code": "DEMO 101",
+  "color": "#2B52C4",
+  "createdAt": 1789353796531,
+  "materials": [
+   {
+    "id": "fyuheci11tsn",
+    "name": "sample.md",
+    "ext": "md",
+    "label": "Markdown",
+    "words": 634,
+    "chars": 4078,
+    "include": true,
+    "addedAt": 1789353796631,
+    "busy": false,
+    "hash": "765f6026"
+   },
+   {
+    "id": "zqtragpz1tu7",
+    "name": "proc.md",
+    "ext": "md",
+    "label": "Markdown",
+    "words": 198,
+    "chars": 1186,
+    "include": true,
+    "addedAt": 1789353796687,
+    "busy": false,
+    "hash": "6a4f6511"
+   }
+  ],
+  "assess": []
+ },
+ "texts": {
+  "fyuheci11tsn": "## BIOL 1010 — Lecture 7: Cellular Respiration\n\n## Overview\n\nCellular respiration is the set of metabolic reactions that convert chemical energy from nutrients into adenosine triphosphate (ATP). The process occurs in three main stages: glycolysis, the citric acid cycle, and oxidative phosphorylation. In eukaryotic cells, most of these reactions take place inside the mitochondria. A single molecule of glucose can yield roughly 30 to 32 molecules of ATP under aerobic conditions.\n\nAerobic respiration requires oxygen as the final electron acceptor. Anaerobic respiration uses other molecules, such as nitrate or sulfate, when oxygen is unavailable. Fermentation is a related process that regenerates NAD+ so that glycolysis can continue without oxygen.\n\n## Glycolysis\n\nGlycolysis is the breakdown of one molecule of glucose into two molecules of pyruvate. It takes place in the cytoplasm and does not require oxygen. The pathway consists of ten enzyme-catalysed steps and produces a net gain of 2 ATP and 2 NADH per glucose. The first phase, known as the energy investment phase, consumes 2 ATP. The second phase, called the energy payoff phase, generates 4 ATP by substrate-level phosphorylation.\n\nHexokinase is the enzyme that catalyses the first step, phosphorylating glucose to glucose-6-phosphate. Phosphofructokinase (PFK) is the key regulatory enzyme of glycolysis and is inhibited by high levels of ATP. Otto Meyerhof and Gustav Embden worked out the pathway in the 1930s, which is why it is sometimes called the Embden-Meyerhof pathway.\n\n## The Citric Acid Cycle\n\nBefore entering the cycle, pyruvate is converted to acetyl-CoA by the pyruvate dehydrogenase complex, releasing one molecule of carbon dioxide. The citric acid cycle, also called the Krebs cycle, is a series of eight reactions that oxidise acetyl-CoA to carbon dioxide. Each turn of the cycle produces 3 NADH, 1 FADH2, and 1 GTP. Because each glucose yields two acetyl-CoA molecules, the cycle turns twice per glucose. Hans Krebs described the cycle in 1937 and received the Nobel Prize in 1953.\n\nOxaloacetate: the four-carbon molecule that combines with acetyl-CoA to form citrate at the start of the cycle. Citrate synthase: the enzyme that joins acetyl-CoA and oxaloacetate.\n\n## Oxidative Phosphorylation\n\nOxidative phosphorylation is the stage that produces the majority of ATP. It consists of the electron transport chain (ETC) and chemiosmosis. The electron transport chain is a series of protein complexes embedded in the inner mitochondrial membrane. Electrons from NADH and FADH2 pass along the chain, and the energy released pumps protons into the intermembrane space. This creates a proton gradient, also known as the proton-motive force.\n\nChemiosmosis is the movement of protons back across the membrane through ATP synthase, which drives the synthesis of ATP. Peter Mitchell proposed the chemiosmotic theory in 1961 and won the Nobel Prize in Chemistry in 1978. Roughly 26 to 28 ATP are produced by oxidative phosphorylation per glucose molecule. Cyanide is a poison that blocks complex IV of the chain, which stops ATP production almost immediately.\n\n## Regulation and Efficiency\n\nThe overall equation for aerobic respiration is C6H12O6 + 6 O2 = 6 CO2 + 6 H2O + energy. The efficiency of cellular respiration is approximately 34%, with the remainder lost as heat. ATP is the universal energy currency of the cell. Feedback inhibition means that the end product of a pathway slows an earlier step; for example, citrate inhibits PFK.\n\n- Glycolysis: cytoplasm, 2 ATP net, no oxygen needed\n\n- Citric acid cycle: mitochondrial matrix, 2 ATP (as GTP), releases CO2\n\n- Oxidative phosphorylation: inner membrane, about 26 to 28 ATP, requires oxygen\n\n## Summary\n\nCellular respiration links the breakdown of food to the production of ATP. Glycolysis splits glucose, the citric acid cycle harvests electrons, and oxidative phosphorylation uses those electrons to make most of the ATP. Understanding these stages explains why oxygen is essential for animals and how poisons such as cyanide are lethal.",
+  "zqtragpz1tu7": "## STAT 2000 — Sampling\n\n## Steps for selecting a simple random sample\n\nTo select a simple random sample from a finite population, follow these steps:\n\n- 1. Assign a number to each element of the population.\n\n- 2. Use a random number table or software to generate random numbers.\n\n- 3. Select the elements whose numbers were generated.\n\n- 4. Continue until the desired sample size n is reached.\n\n- 5. Record the selected elements as the sample.\n\n## Why sampling error occurs\n\nSampling error occurs because the sample is only a subset of the population. Because each sample contains different elements, the sample mean varies from sample to sample. A larger sample size leads to a smaller standard error. The standard error is the standard deviation of the sampling distribution of the sample mean.\n\n## Examples of finite populations\n\nFinite populations are often defined by lists such as:\n\n- Organization membership roster\n\n- Credit card account numbers\n\n- Inventory product numbers\n\nFor example, a bank may select 100 accounts from its list of 50,000 credit card accounts. We select the sample and provide the results to the committee. The committee will select a smaller subset later."
+ },
+ "layer": {
+  "cards": [],
+  "edits": {}
+ },
+ "note": "Shared cards and material only — no schedule, marks, quiz history, notes, stars or deadlines.",
+ "pack": {
+  "id": "sample-respiration",
+  "title": "Sample pack — Cellular respiration",
+  "code": "DEMO 101",
+  "by": "JohnsonXCorp",
+  "term": "Demonstration",
+  "updated": "2026-09-14T02:43:16.860Z",
+  "note": "A demonstration of what a course pack is, not a real course. The two readings in it were written for testing this app and are not anybody’s course material — open it to see exactly how a pack arrives, then build your own from a subject you have set up."
+ }
+}
