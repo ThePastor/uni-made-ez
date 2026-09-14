@@ -1809,6 +1809,7 @@ math mi[mathvariant="normal"] { font-style: normal; }
 .panel-head .label, .subject-head .small, .exam-note, .exam-note .label,
 .text-note, .text-note .label, .read-note, .read-note .label,
 .legal-note, .legal-note .label, .tutoring-strip .label, .tutoring-strip .small,
+.mastery-band .label, .lvl-moves li span,
 .worked .ans .label, .formula, .term-detail, .copy-box, .leech-note,
 .notice.warn, .calib-grid .cq span, .ord-chosen li, .mat .info,
 .subjects-head .btn.cell.ghost, .hint-box summary { color: var(--ink-2); }
@@ -1921,6 +1922,49 @@ math mi[mathvariant="normal"] { font-style: normal; }
 .setup-steps li.todo + li.todo { opacity: .72; }
 .setup-steps li.todo > b { background: var(--accent); color: var(--accent-ink); width: 22px; height: 22px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: .68rem; }
 .setup-steps li.todo ~ li.todo > b { background: var(--surface-3); color: var(--ink-2); }
+
+/* ---------- the reason the picked answer was wrong ----------
+   Naming the right answer teaches less than naming what the option the student actually chose IS.
+   It sits inside the feedback block and inherits its ink, so a wrong answer reads as one thought
+   rather than two stacked notices. */
+.feedback .why-picked { display: block; line-height: 1.5; }
+.feedback.bad .why-picked { opacity: .95; }
+
+/* ---------- mastery ----------
+   Four levels, and the colour has to carry the ranking without becoming a traffic light: nothing
+   here is an error, so nothing is red. Grey → tint → accent → mint reads as "further along", and
+   every chip also states its level in words, because colour alone is not a label. */
+.lvl, .chip.lvl-1, .chip.lvl-2, .chip.lvl-3, .chip.lvl-4 { white-space: nowrap; }
+.chip.lvl-1 { border-color: var(--line-soft); color: var(--ink-2); }
+.chip.lvl-2 { border-color: var(--accent-soft); background: var(--accent-soft); color: var(--ink); }
+.chip.lvl-3 { border-color: transparent; background: var(--accent); color: var(--accent-ink); }
+.chip.lvl-4 { border-color: transparent; background: var(--mint); color: var(--mint-ink); font-weight: 500; }
+
+.mastery-band { display: grid; grid-template-columns: 1fr auto; gap: var(--pad-in) var(--gut); align-items: center; padding: var(--band) var(--gut); border-bottom: 1px solid var(--line); background: var(--surface-2); }
+.mastery-band .mb-text { display: grid; gap: 4px; min-width: 0; }
+.mastery-band .mb-text b { font-family: var(--font-display); font-size: clamp(1.05rem, 1.8vw, 1.3rem); font-weight: 500; letter-spacing: -.02em; }
+.mastery-band .mb-text .small { color: var(--ink-2); max-width: 66ch; line-height: 1.5; }
+.mastery-band .mb-meter { grid-column: 1 / -1; display: flex; height: 10px; background: var(--surface-3); overflow: hidden; }
+.mastery-band .mb-meter i { display: block; height: 100%; }
+.mastery-band .mb-meter .m4 { background: var(--mint); }
+.mastery-band .mb-meter .m3 { background: var(--accent); }
+.mastery-band .mb-meter .m2 { background: var(--accent-soft); }
+.mastery-band .mb-meter .m1 { background: var(--line-soft); }
+.mastery-band .mb-act { display: grid; gap: 6px; justify-items: end; text-align: right; max-width: 34ch; }
+.mastery-band .mb-act .small { line-height: 1.45; }
+@media (max-width: 760px) {
+  .mastery-band { grid-template-columns: 1fr; }
+  .mastery-band .mb-act { justify-items: stretch; text-align: left; max-width: none; }
+  .mastery-band .mb-act .btn { justify-content: space-between; }
+}
+
+/* what the challenge moved, and in which direction */
+.lvl-moves { list-style: none; display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); margin: 0 0 6px; padding: 0; text-align: left; width: 100%; }
+.lvl-moves li { display: grid; gap: 2px; padding: 11px var(--pad-in); background: var(--surface); border-left: var(--accent-bar) solid var(--line-soft); }
+.lvl-moves li b { font-weight: 500; }
+.lvl-moves li span { font-size: .88rem; color: var(--ink-2); }
+.lvl-moves li.mv-up { border-left-color: var(--ok); }
+.lvl-moves li.mv-down { border-left-color: var(--warn); }
 
 </style>
 </head>
@@ -4010,6 +4054,7 @@ const GENERIC = new Set('information data process system method result results s
       let mixed = shuffle(correct, rand);
       if (mixed.join('|') === correct.join('|')) mixed = mixed.slice().reverse();
       return { type: 'order', prompt: 'Put these steps in the right order.', body: p.title || '', items: mixed, answer: correct,
+        hint: `Find the step that does not depend on any of the others — that is the one that goes first.`,
         source: correct.map((x, i) => `${i + 1}. ${x}`).join('  '), sourceId: p.steps[0].id, term: p.title || correct[0] };
     });
   }
@@ -4057,32 +4102,133 @@ const GENERIC = new Set('information data process system method result results s
     return qs.slice(0, count).map((q, i) => ({ ...q, id: i + 1 }));
   }
 
+  /* ---------- the hint before, and the reason after ----------
+     The scaffold that matters most is not the explanation AFTER an answer — it is the hint
+     BEFORE it. A student who is stuck has two options without one: guess, or stop. A hint that
+     narrows the question without giving it away keeps them working on the actual material, and
+     it is the thing this quiz was missing on every question type except `fill`.
+
+     A hint generated from someone's own lecture notes has to be honest — it can only say what
+     the material actually supports. Two things always qualify, and neither reveals the answer:
+       · WHERE it comes from — the heading the source sentence sits under
+       · one STRUCTURAL fact — how many words, what letter it starts with, how big the number is
+     Together they cut the search down a long way while leaving the recall to the student.
+
+     `why` is the other half. Telling someone the right answer teaches less than telling them what
+     the option they ACTUALLY PICKED is: "you chose diffusion — the material defines that as
+     movement down a concentration gradient, and the question asked about active transport."
+     That costs nothing to produce here, because the good distractors were already drawn from the
+     material, so the material already defines most of them. */
+  function secTitleOf(a, sentId) {
+    const st = a.sentences[sentId];
+    const sec = st && a.sections[st.section];
+    return sec && sec.title ? sec.title : null;
+  }
+  // what the material itself says this term is, trimmed to something readable in a feedback line
+  function selfDef(a, term) {
+    if (!term) return null;
+    const key = lc(String(term));
+    const d = (a.defs || []).find(x => lc(x.term) === key);
+    if (!d || !d.def) return null;
+    let s = String(d.def).trim().replace(/^[,;:\-–—\s]+/, '');
+    // "Pyruvate kinase is an enzyme that…" quoted after the term reads "X is X is an enzyme…";
+    // drop the definition's own subject when it simply repeats the term being explained
+    const lead = new RegExp('^(?:the\\s+|an?\\s+)?' + escRe(String(term)) + '\\s+(?:is|are|was|were|refers?\\s+to|means)\\s+', 'i');
+    s = s.replace(lead, '');
+    if (!s) return null;
+    if (s.length > 150) s = s.slice(0, 147).replace(/\s+\S*$/, '') + '…';
+    return s;
+  }
+  /* One line per WRONG option. Keyed by the option text, so the page can look up whichever one
+     the student pressed. Options the material never defines are left out rather than padded with
+     something vague — a made-up reason is worse than none. */
+  function whyMap(a, correct, options) {
+    const out = {};
+    for (const op of options) {
+      if (String(op) === String(correct)) continue;
+      const d = selfDef(a, op);
+      if (d) out[String(op)] = `“${op}” is ${/^[a-z]/.test(d) ? d : d}`.replace(/\.*$/, '.');
+    }
+    return Object.keys(out).length ? out : null;
+  }
+  // the structural clue: true of the answer, but nowhere near enough to produce it
+  function clueFor(answer) {
+    const s = String(answer).trim();
+    if (/^[\d.,$%\-–]+\s*[a-zA-Z%°]*$/.test(s)) {
+      const n = parseFloat(s.replace(/[^\d.\-]/g, ''));
+      if (isFinite(n)) {
+        if (/%/.test(s)) return 'it is a percentage';
+        // a bare four-digit number in this range is a year, and "in the thousands" tells nobody
+        // anything; the decade narrows it to ten without handing it over
+        if (Number.isInteger(n) && n >= 1000 && n <= 2999 && /^\d{4}s?$/.test(s)) return /s$/.test(s) ? `it is a decade of the ${Math.floor(n / 100)}00s` : `it is a year in the ${Math.floor(n / 10) * 10}s`;
+        const mag = Math.abs(n);
+        if (mag >= 1e9) return 'it runs to billions';
+        if (mag >= 1e6) return 'it runs to millions';
+        if (mag >= 1000) return 'it is in the thousands';
+        if (mag >= 100) return 'it is in the hundreds';
+        if (Number.isInteger(n)) return 'it is a whole number under a hundred';
+        return 'it is not a whole number';
+      }
+    }
+    const w = wordsOf(s).length;
+    if (!w) return null;
+    return `${w} word${w > 1 ? 's' : ''}, starting with “${s.trim()[0].toUpperCase()}”`;
+  }
+  function hintFrom(a, sentId, answer, lead) {
+    let where = sentId != null ? secTitleOf(a, sentId) : null;
+    /* A heading often IS the term being asked about — the answer "Glycolysis" sitting under a
+       section called "Glycolysis" turns "it comes from X" into the answer. Naming the place is
+       only a hint while the place is not the thing. */
+    if (where && answer) {
+      const ans = String(answer).trim(), w = String(where).trim();
+      const inTitle = new RegExp('(^|[^\\w-])' + escRe(ans) + '([^\\w-]|$)', 'i').test(w);
+      const inAnswer = new RegExp('(^|[^\\w-])' + escRe(w) + '([^\\w-]|$)', 'i').test(ans);
+      if (inTitle || inAnswer) where = null;
+    }
+    const clue = answer == null ? null : clueFor(answer);
+    const parts = [];
+    if (lead) parts.push(lead);
+    if (where) parts.push(`It comes from “${where}”`);
+    if (clue) parts.push(parts.length ? clue : clue[0].toUpperCase() + clue.slice(1));
+    if (!parts.length) return null;
+    return parts.join(parts.length > 1 ? ' — ' : '') + '.';
+  }
+
   function makeMC(a, it, rand, usedSent) {
     if (it.kind === 'def' && (it.def.kind === 'colon' || it.def.kind === 'dash')) {
       const wrong = distractors(a, it.term, it.cat, rand, 3, { sentId: it.def.id, text: it.def.def });
       if (wrong.length < 3 || !shapeOk(it.term, wrong)) return null;
-      return { type: 'mc', prompt: `Which term matches this description?`, body: it.def.def, options: shuffle([it.term].concat(wrong), rand), answer: it.term, source: it.def.sent, sourceId: it.def.id };
+      const opts1 = shuffle([it.term].concat(wrong), rand);
+      return { type: 'mc', prompt: `Which term matches this description?`, body: it.def.def, options: opts1, answer: it.term, source: it.def.sent, sourceId: it.def.id,
+        hint: hintFrom(a, it.def.id, it.term), why: whyMap(a, it.term, opts1) };
     }
     if (it.kind === 'acr') {
       const wrong = a.acronyms.filter(x => x.acr !== it.ac.acr).map(x => x.expansion);
       const more = distractors(a, it.ac.expansion, 'phrase', rand, 3 - Math.min(3, wrong.length), { sentId: it.ac.id, text: '' });
       const opts = shuffle(wrong, rand).slice(0, 3).concat(more).slice(0, 3);
       if (opts.length < 3 || !shapeOk(it.ac.expansion, opts)) return null;
-      return { type: 'mc', prompt: `What does ${it.ac.acr} stand for?`, options: shuffle([it.ac.expansion].concat(opts), rand), answer: it.ac.expansion, source: it.ac.sent, sourceId: it.ac.id };
+      const opts2 = shuffle([it.ac.expansion].concat(opts), rand);
+      return { type: 'mc', prompt: `What does ${it.ac.acr} stand for?`, options: opts2, answer: it.ac.expansion, source: it.ac.sent, sourceId: it.ac.id,
+        hint: hintFrom(a, it.ac.id, it.ac.expansion, `Each letter of ${it.ac.acr} starts a word`), why: whyMap(a, it.ac.expansion, opts2) };
     }
     if (it.kind === 'num') {
       if (usedSent.has(it.fact.sent.id)) return null;
       const s = it.fact.sent.s, n = it.term, idx = s.indexOf(n);
       const wrong = numberVariants(n, rand, a).slice(0, 3);
       if (wrong.length < 3) return null;
-      return { type: 'mc', prompt: 'Fill in the missing figure.', body: s.slice(0, idx) + '______' + s.slice(idx + n.length), options: shuffle([n].concat(wrong), rand), answer: n, source: s, sourceId: it.fact.sent.id };
+      return { type: 'mc', prompt: 'Fill in the missing figure.', body: s.slice(0, idx) + '______' + s.slice(idx + n.length), options: shuffle([n].concat(wrong), rand), answer: n, source: s, sourceId: it.fact.sent.id,
+        hint: hintFrom(a, it.fact.sent.id, n) };
     }
     const cz = clozeFor(a, it.term, usedSent);
     if (!cz) return null;
     const wrong = distractors(a, cz.answer, it.cat, rand, 3, { sentId: cz.sent.id, text: cz.text });
     if (wrong.length < 3 || !shapeOk(cz.answer, wrong)) return null;
-    return { type: 'mc', prompt: 'Which term completes the sentence?', body: cz.text, options: shuffle([cz.answer].concat(wrong), rand), answer: cz.answer, source: cz.sent.s, sourceId: cz.sent.id };
+    const opts3 = shuffle([cz.answer].concat(wrong), rand);
+    return { type: 'mc', prompt: 'Which term completes the sentence?', body: cz.text, options: opts3, answer: cz.answer, source: cz.sent.s, sourceId: cz.sent.id,
+      hint: hintFrom(a, cz.sent.id, cz.answer), why: whyMap(a, cz.answer, opts3) };
   }
+
+const tfHint = (a, id) => hintFrom(a, id, null, 'Check the statement against the material, one claim at a time');
 
   function makeTF(a, it, rand, usedSent) {
     const makeFalse = rand() < 0.5;
@@ -4092,47 +4238,47 @@ const GENERIC = new Set('information data process system method result results s
       // "X may be involved in Y" is neither true nor false to answer — don't ask it
       if (HEDGE_RE.test(sentence)) return null;
       // swapping a term inside "X is not Y" can produce a statement that is true after all
-      if (makeFalse && riskyToSwap(sentence)) return { type: 'tf', prompt: 'True or false?', body: sentence, answer: 'True', source: it.def.sent, sourceId: it.def.id };
-      if (!makeFalse) return { type: 'tf', prompt: 'True or false?', body: sentence, answer: 'True', source: it.def.sent, sourceId: it.def.id };
+      if (makeFalse && riskyToSwap(sentence)) return { type: 'tf', prompt: 'True or false?', body: sentence, answer: 'True', source: it.def.sent, sourceId: it.def.id, hint: tfHint(a, it.def.id) };
+      if (!makeFalse) return { type: 'tf', prompt: 'True or false?', body: sentence, answer: 'True', source: it.def.sent, sourceId: it.def.id, hint: tfHint(a, it.def.id) };
       const wrong = distractors(a, it.term, it.cat, rand, 1, { sentId: it.def.id, text: sentence })[0];
       if (!wrong) return null;
       const re = new RegExp('(^|[^\\w-])' + escRe(it.term) + '(?![\\w-])', 'i');
       if (!re.test(sentence)) return null;
       const swapped = sentence.replace(re, (m, p) => p + wrong);
-      return { type: 'tf', prompt: 'True or false?', body: swapped, answer: 'False', explain: `The correct term is “${it.term}”.`, source: it.def.sent, sourceId: it.def.id };
+      return { type: 'tf', prompt: 'True or false?', body: swapped, answer: 'False', explain: `The correct term is “${it.term}”.${selfDef(a, wrong) ? ` “${wrong}” is ${selfDef(a, wrong)}` : ''}`, source: it.def.sent, sourceId: it.def.id, hint: tfHint(a, it.def.id) };
     }
     if (it.kind === 'num') {
       if (usedSent.has(it.fact.sent.id)) return null;
       const s = it.fact.sent.s;
       if (HEDGE_RE.test(s)) return null;
-      if (!makeFalse) return { type: 'tf', prompt: 'True or false?', body: s, answer: 'True', source: s, sourceId: it.fact.sent.id };
+      if (!makeFalse) return { type: 'tf', prompt: 'True or false?', body: s, answer: 'True', source: s, sourceId: it.fact.sent.id, hint: tfHint(a, it.fact.sent.id) };
       const wrong = numberVariants(it.term, rand, a)[0];
       if (!wrong) return null;
-      return { type: 'tf', prompt: 'True or false?', body: s.replace(it.term, wrong), answer: 'False', explain: `The correct figure is ${it.term}.`, source: s, sourceId: it.fact.sent.id };
+      return { type: 'tf', prompt: 'True or false?', body: s.replace(it.term, wrong), answer: 'False', explain: `The correct figure is ${it.term}.`, source: s, sourceId: it.fact.sent.id, hint: tfHint(a, it.fact.sent.id) };
     }
     const cz = clozeFor(a, it.term, usedSent);
     if (!cz) return null;
     if (HEDGE_RE.test(cz.sent.s)) return null;
-    if (makeFalse && riskyToSwap(cz.sent.s)) return { type: 'tf', prompt: 'True or false?', body: cz.sent.s, answer: 'True', source: cz.sent.s, sourceId: cz.sent.id };
-    if (!makeFalse) return { type: 'tf', prompt: 'True or false?', body: cz.sent.s, answer: 'True', source: cz.sent.s, sourceId: cz.sent.id };
+    if (makeFalse && riskyToSwap(cz.sent.s)) return { type: 'tf', prompt: 'True or false?', body: cz.sent.s, answer: 'True', source: cz.sent.s, sourceId: cz.sent.id, hint: tfHint(a, cz.sent.id) };
+    if (!makeFalse) return { type: 'tf', prompt: 'True or false?', body: cz.sent.s, answer: 'True', source: cz.sent.s, sourceId: cz.sent.id, hint: tfHint(a, cz.sent.id) };
     const wrong = distractors(a, cz.answer, it.cat, rand, 1, { sentId: cz.sent.id, text: cz.sent.s })[0];
     if (!wrong) return null;
-    return { type: 'tf', prompt: 'True or false?', body: cz.before + wrong + cz.after, answer: 'False', explain: `It should say “${cz.answer}”.`, source: cz.sent.s, sourceId: cz.sent.id };
+    return { type: 'tf', prompt: 'True or false?', body: cz.before + wrong + cz.after, answer: 'False', explain: `It should say “${cz.answer}”.${selfDef(a, wrong) ? ` “${wrong}” is ${selfDef(a, wrong)}` : ''}`, source: cz.sent.s, sourceId: cz.sent.id, hint: tfHint(a, cz.sent.id) };
   }
 
   function makeFill(a, it, rand, usedSent) {
-    if (it.kind === 'acr') return { type: 'fill', prompt: 'Type the acronym for:', body: it.ac.expansion, answer: it.ac.acr, source: it.ac.sent, sourceId: it.ac.id };
+    if (it.kind === 'acr') return { type: 'fill', prompt: 'Type the acronym for:', body: it.ac.expansion, answer: it.ac.acr, source: it.ac.sent, sourceId: it.ac.id, hint: hintFrom(a, it.ac.id, null, `${String(it.ac.acr).length} letters`) };
     if (it.kind === 'num') {
       if (usedSent.has(it.fact.sent.id)) return null;
       const s = it.fact.sent.s, n = it.term, idx = s.indexOf(n);
-      return { type: 'fill', prompt: 'Type the missing figure.', body: s.slice(0, idx) + '______' + s.slice(idx + n.length), answer: n, source: s, sourceId: it.fact.sent.id };
+      return { type: 'fill', prompt: 'Type the missing figure.', body: s.slice(0, idx) + '______' + s.slice(idx + n.length), answer: n, source: s, sourceId: it.fact.sent.id, hint: hintFrom(a, it.fact.sent.id, n) };
     }
     if (it.kind === 'def' && (it.def.kind === 'colon' || it.def.kind === 'dash') && wordsOf(it.term).length <= 3) {
-      return { type: 'fill', prompt: 'Which term is being described? Type it.', body: it.def.def, answer: it.term, source: it.def.sent, sourceId: it.def.id };
+      return { type: 'fill', prompt: 'Which term is being described? Type it.', body: it.def.def, answer: it.term, source: it.def.sent, sourceId: it.def.id, hint: hintFrom(a, it.def.id, it.term) };
     }
     const cz = clozeFor(a, it.term, usedSent);
     if (!cz || wordsOf(cz.answer).length > 3) return null;
-    return { type: 'fill', prompt: 'Type the missing term.', body: cz.text, hint: `${wordsOf(cz.answer).length} word${wordsOf(cz.answer).length > 1 ? 's' : ''}, starts with “${cz.answer[0]}”`, answer: cz.answer, source: cz.sent.s, sourceId: cz.sent.id };
+    return { type: 'fill', prompt: 'Type the missing term.', body: cz.text, hint: hintFrom(a, cz.sent.id, cz.answer), answer: cz.answer, source: cz.sent.s, sourceId: cz.sent.id };
   }
 
   /* ---------- answer checking ---------- */
@@ -5865,7 +6011,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.25', date: '13 September 2026', year: 2026 };
+  const BUILD = { v: '2.26', date: '14 September 2026', year: 2026 };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonandy242', ['gmail', 'com'].join('.')].join('@');
   /* The one sentence that says what this is. It appears under the wordmark, and build.js uses
@@ -5878,6 +6024,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      because the person who needs it is the one who just watched the app refresh itself and wants to
      know what moved. Trim the tail when it gets past a dozen; nobody reads further back than that. */
   const WHATS_NEW = [
+    ['2.26', 'Two things borrowed from how Khan Academy teaches. Every question built from your own files now offers a <b>hint before you answer</b> &mdash; where it comes from and one clue about the answer, never the answer &mdash; and a wrong choice now tells you what the option <i>you picked</i> actually was, not just what the right one is. And the courses gain <b>mastery levels</b>: practice takes a skill up to Proficient, but only a <b>mastery challenge</b> &mdash; six questions across three skills, taken later &mdash; can reach Mastered, and it is the only thing that can take a level back off you.'],
     ['2.25', 'The Law courses drop the <b>Where this goes wrong</b> panels. In maths a wrong answer is usually a slip you can name; in law it is a judgement about which test applies, and labelling one reading &ldquo;wrong&rdquo; teaches pattern-matching rather than reasoning. The worked examples, with the reason beside every step, are unchanged.'],
     ['2.24', 'Fixes a bug that would have kept the counter switched off for anyone who had already opened the app: its settings file was being served from the offline cache, so a changed setting never reached them. It is fetched fresh now, and only falls back to the cached copy when there is no connection.'],
     ['2.23', 'The counter is on. Opens are recorded through a database function instead of writing to the table, which means the table holding them stays completely unreadable to this page &mdash; nobody can pull the list out of it, including the app itself.'],
@@ -7309,6 +7456,122 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
   function practiceState() {
     return state.practice || (state.practice = { cid: null, uid: null, i: 0, picked: null, seq: [], done: false, right: 0, wrong: 0 });
   }
+
+  /* ---------- mastery ----------
+     A progress bar that only goes up measures attendance, not learning: work through a unit once
+     and it reads 100% for ever, whether or not any of it stuck. These five levels are Khan
+     Academy's, and so is the rule that makes them mean something — the top one can only be
+     reached, and can only be lost, on a MIXED review that comes back to a skill later, next to
+     other skills, when the answer is no longer fresh.
+
+     So ordinary practice raises a skill as far as Proficient and never lowers it — being marked
+     down for practising would teach people not to practise. The Mastery Challenge is the only
+     thing that grants Mastered, and the only thing that takes a level away. That asymmetry is
+     the whole design: practice is safe, and the claim to have learnt something is not. */
+  const LS_MASTERY = 'unimadeez:mastery:v1';
+  const LEVELS = ['Not started', 'Attempted', 'Familiar', 'Proficient', 'Mastered'];
+  const CHALLENGE_GAP = 12 * 3600 * 1000;   // one challenge per 12 hours, as Khan has it
+  function loadMastery() { try { return JSON.parse(localStorage.getItem(LS_MASTERY) || '{}') || {}; } catch (e) { return {}; } }
+  function saveMastery(m) { try { localStorage.setItem(LS_MASTERY, JSON.stringify(m)); } catch (e) { /* private mode: this session only */ } }
+  function skillLevel(cid, lid) {
+    const m = loadMastery();
+    return (m[cid] && m[cid].s && m[cid].s[lid] && m[cid].s[lid].lvl) || 0;
+  }
+  function setSkillLevel(cid, lid, lvl) {
+    const m = loadMastery();
+    const c = m[cid] || (m[cid] = { s: {} });
+    if (!c.s) c.s = {};
+    c.s[lid] = { lvl: Math.max(0, Math.min(4, lvl)), at: Date.now() };
+    saveMastery(m);
+  }
+  // every lesson in a course is a skill; `items` is how many practice questions can test it
+  function courseSkills(c) {
+    const out = [];
+    for (const u of c.units) {
+      for (const l of u.lessons) {
+        const items = (u.practice || []).filter(p => p.lesson === l.id);
+        out.push({ lid: l.id, title: l.title, unit: u, items, level: skillLevel(c.id, l.id) });
+      }
+    }
+    return out;
+  }
+  function masteryOf(c) {
+    const sk = courseSkills(c);
+    const at = n => sk.filter(s => s.level >= n).length;
+    return { skills: sk, total: sk.length, started: at(1), familiar: at(2), proficient: at(3), mastered: at(4) };
+  }
+  /* Ordinary practice: the run's accuracy on a skill sets the level, but only upwards, and never
+     past Proficient. 100% on the questions you just saw is not mastery — it is a fresh memory. */
+  function notePracticeRun(cid, byLesson) {
+    for (const lid of Object.keys(byLesson)) {
+      const r = byLesson[lid];
+      if (!r.total) continue;
+      const pct = r.right / r.total;
+      const earned = pct >= 1 ? 3 : pct >= 0.7 ? 2 : 1;
+      const now = skillLevel(cid, lid);
+      if (earned > now && now < 4) setSkillLevel(cid, lid, earned);
+    }
+  }
+  /* Khan unlocks a challenge at three familiar skills and one proficient. Two of these courses are
+     smaller than that, and a rule that can never fire is worse than a scaled one, so the threshold
+     follows how many skills the course can actually field — never fewer than two. */
+  function challengeSkills(c) { return courseSkills(c).filter(s => s.items.length >= 2); }
+  function challengeState(c) {
+    const elig = challengeSkills(c);
+    const want = Math.min(3, elig.length);
+    if (want < 2) return { ok: false, why: 'This course is too short for a mixed review — it needs two skills with a couple of questions each.' };
+    const familiar = elig.filter(s => s.level >= 2).length;
+    const proficient = elig.filter(s => s.level >= 3).length;
+    if (familiar < want || proficient < 1) {
+      return { ok: false, want, familiar, proficient, why: `Unlocks at ${plural(want, 'skill')} at Familiar and one at Proficient. You have ${familiar} and ${proficient}.` };
+    }
+    const m = loadMastery();
+    const last = (m[c.id] && m[c.id].last) || 0;
+    const wait = last + CHALLENGE_GAP - Date.now();
+    if (wait > 0) return { ok: false, wait, why: `The next challenge opens in ${Math.ceil(wait / 3600000)} hours. Spacing them out is what makes them worth taking.` };
+    return { ok: true, want };
+  }
+  /* Two questions per skill, the pairs split apart so they are not answered back to back — the
+     gap is the point, because recalling something once you have stopped thinking about it is the
+     thing being measured. Oldest and least-secure skills come first. */
+  function buildChallenge(c) {
+    const st = challengeState(c);
+    if (!st.ok) return null;
+    const m = loadMastery();
+    const seen = (m[c.id] && m[c.id].s) || {};
+    const elig = challengeSkills(c).filter(s => s.level >= 2)
+      .sort((x, y) => (x.level - y.level) || (((seen[x.lid] || {}).at || 0) - ((seen[y.lid] || {}).at || 0)));
+    const picked = elig.slice(0, st.want);
+    const qs = [];
+    for (const s of picked) {
+      const two = s.items.slice().sort(() => Math.random() - 0.5).slice(0, 2);
+      for (const it of two) qs.push({ item: it, lid: s.lid, title: s.title, uid: s.unit.id });
+    }
+    // interleave so the same skill's two questions never sit next to each other
+    const out = [];
+    const byLesson = picked.map(s => qs.filter(q => q.lid === s.lid));
+    for (let round = 0; round < 2; round++) for (const grp of byLesson) if (grp[round]) out.push(grp[round]);
+    return { cid: c.id, qs: out, skills: picked.map(s => ({ lid: s.lid, title: s.title, before: s.level })) };
+  }
+  // both right levels a skill up, both wrong levels it down, one of each leaves it where it was
+  function applyChallenge(ch, results) {
+    const moves = [];
+    for (const sk of ch.skills) {
+      const mine = results.filter(r => r.lid === sk.lid);
+      const right = mine.filter(r => r.ok).length;
+      let to = sk.before;
+      if (mine.length === 2 && right === 2) to = Math.min(4, sk.before + 1);
+      else if (mine.length === 2 && right === 0) to = Math.max(1, sk.before - 1);
+      if (to !== sk.before) setSkillLevel(ch.cid, sk.lid, to);
+      moves.push({ ...sk, after: to, right });
+    }
+    const m = loadMastery();
+    const c = m[ch.cid] || (m[ch.cid] = { s: {} });
+    c.last = Date.now();
+    saveMastery(m);
+    return moves;
+  }
+  const levelChip = lvl => `<span class="lvl lvl-${lvl}" title="${esc(LEVELS[lvl])}">${esc(LEVELS[lvl])}</span>`;
   function practiceKey(cid, uid, id) { return 'c:' + cid + ':' + uid + ':' + id; }
 
   // a number, or a set of numbers, typed by a student: accept 8.5, 8,5 and " 8.50 "
@@ -7331,6 +7594,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     const c = Courses.get(r.cid);
     if (!c) return renderMathHome();
     if (!r.uid) return renderCourse(c);
+    if (r.uid === 'challenge') return renderChallenge(c);
     const u = Courses.unit(c.id, r.uid);
     if (!u) return renderCourse(c);
     if (r.mode === 'practice') return renderPractice(c, u);
@@ -7404,7 +7668,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
         <span class="mid">
           <b>${esc(u.title)}</b>
           <span class="small muted">${esc(u.blurb)}</span>
-          <span class="chips">${u.lessons.map(l => `<span class="chip">${esc(l.title)}</span>`).join('')}</span>
+          <span class="chips">${u.lessons.map(l => { const lv = skillLevel(c.id, l.id); return `<span class="chip${lv ? ` lvl-${lv}` : ''}">${esc(l.title)}${lv ? ` &middot; ${esc(LEVELS[lv])}` : ''}</span>`; }).join('')}</span>
         </span>
         <span class="right">
           <span class="mono small">${pr.seen}/${pr.total}</span>
@@ -7424,9 +7688,35 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
           ${c.text ? `<p class="text-note"><span class="label">Set text</span> ${esc(c.text)} &mdash; this course points at the chapters to read alongside it and does not replace them.</p>` : ''}
           ${c.legalNote ? `<p class="legal-note"><span class="label">Please note</span> ${esc(c.legalNote)}</p>` : ''}
         </div>
+        ${masteryBand(c)}
         <div class="unit-list">${rows}</div>
       </main>${foot()}`);
     syncModal();
+  }
+
+  /* The band that says what has actually stuck, and offers the only route to the top level.
+     It counts skills rather than pages, because "8 of 10 units opened" and "3 of 10 skills
+     proficient" are very different claims and only the second one is about learning. */
+  function masteryBand(c) {
+    const m = masteryOf(c);
+    if (!m.total) return '';
+    const st = challengeState(c);
+    const pct = n => Math.round(n / m.total * 100);
+    return `<div class="mastery-band">
+      <div class="mb-text">
+        <span class="label">Mastery</span>
+        <b>${m.proficient} of ${plural(m.total, 'skill')} at Proficient${m.mastered ? `, ${m.mastered} Mastered` : ''}</b>
+        <span class="small">${m.mastered ? 'Mastered means you got it right in a mixed review, later, with other skills around it.' : 'Proficient comes from practice. Mastered only comes from a mixed review taken later — that is the difference between fresh and learnt.'}</span>
+      </div>
+      <div class="mb-meter" aria-hidden="true">
+        <i class="m4" style="width:${pct(m.mastered)}%"></i><i class="m3" style="width:${pct(m.proficient - m.mastered)}%"></i><i class="m2" style="width:${pct(m.familiar - m.proficient)}%"></i><i class="m1" style="width:${pct(m.started - m.familiar)}%"></i>
+      </div>
+      <div class="mb-act">
+        ${st.ok
+          ? `<a class="btn primary" href="#/courses/${esc(c.id)}/challenge">Mastery challenge <span class="arr">&rarr;</span></a>`
+          : `<button class="btn" disabled>Mastery challenge</button><span class="small muted">${esc(st.why)}</span>`}
+      </div>
+    </div>`;
   }
 
   function renderUnit(c, u) {
@@ -7491,30 +7781,51 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      whether it was right, then show the full working — not only when it was wrong. A student who
      guessed correctly needs the working more than one who reasoned correctly, and neither of them
      told us which they were. */
+  function renderChallenge(c) {
+    const ps = practiceState();
+    if (ps.cid !== c.id || ps.uid !== 'challenge' || !ps.ch) {
+      const ch = buildChallenge(c);
+      if (!ch) { go(`/courses/${c.id}`); return; }
+      Object.assign(ps, { cid: c.id, uid: 'challenge', ch, i: 0, picked: null, seq: [], done: false, right: 0, wrong: 0, marked: null, tally: {}, results: [], moves: null });
+    }
+    return renderPractice(c, { id: 'challenge', n: 'Challenge', practice: practiceItems(ps), lessons: [] });
+  }
+
   function renderPractice(c, u) {
     const ps = practiceState();
     if (ps.cid !== c.id || ps.uid !== u.id) {
-      Object.assign(ps, { cid: c.id, uid: u.id, i: 0, picked: null, seq: [], done: false, right: 0, wrong: 0, marked: null });
+      Object.assign(ps, { cid: c.id, uid: u.id, i: 0, picked: null, seq: [], done: false, right: 0, wrong: 0, marked: null, tally: {}, results: [], moves: null, ch: null });
     }
-    const items = u.practice || [];
+    const isCh = !!ps.ch;
+    const items = practiceItems(ps);
     const item = items[ps.i];
-    const head = `${topbar(`<a href="#/courses/${esc(c.id)}">${esc(c.code)}</a><span class="sep">/</span><a href="#/courses/${esc(c.id)}/${esc(u.id)}">Unit ${u.n}</a><span class="sep">/</span><strong>Practice</strong>`)}
+    const backTo = isCh ? `#/courses/${esc(c.id)}` : `#/courses/${esc(c.id)}/${esc(u.id)}`;
+    const head = `${topbar(isCh
+      ? `<a href="#/courses/${esc(c.id)}">${esc(c.code)}</a><span class="sep">/</span><strong>Mastery challenge</strong>`
+      : `<a href="#/courses/${esc(c.id)}">${esc(c.code)}</a><span class="sep">/</span><a href="#/courses/${esc(c.id)}/${esc(u.id)}">Unit ${u.n}</a><span class="sep">/</span><strong>Practice</strong>`)}
       <div class="section-bar">
-        <a class="back" href="#/courses/${esc(c.id)}/${esc(u.id)}" aria-label="Back to unit ${u.n}"><span class="back-ico">${I.back}</span><span class="back-txt">Unit ${u.n}</span></a>
-        <div class="sec-title"><h2><span class="sec-ico">${I.quiz}</span>Practice</h2></div>
+        <a class="back" href="${backTo}" aria-label="${isCh ? `Back to ${esc(c.title)}` : `Back to unit ${u.n}`}"><span class="back-ico">${I.back}</span><span class="back-txt">${isCh ? esc(c.code) : `Unit ${u.n}`}</span></a>
+        <div class="sec-title"><h2><span class="sec-ico">${I.quiz}</span>${isCh ? 'Mastery challenge' : 'Practice'}</h2></div>
         <div class="tools"><span class="mono small">${Math.min(ps.i + 1, items.length)} / ${items.length}</span></div>
       </div>`;
 
     if (ps.done || !item) {
       const total = ps.right + ps.wrong;
+      const moves = isCh ? (ps.moves || []) : null;
+      const movesHtml = moves ? `<ul class="lvl-moves">${moves.map(mv => {
+        const dir = mv.after > mv.before ? 'up' : mv.after < mv.before ? 'down' : 'same';
+        return `<li class="mv-${dir}"><b>${esc(mv.title)}</b>
+          <span>${mv.right} of 2 right &middot; ${dir === 'same' ? `stays ${esc(LEVELS[mv.after])}` : `${esc(LEVELS[mv.before])} &rarr; ${esc(LEVELS[mv.after])}`}</span></li>`;
+      }).join('')}</ul>
+        <p class="small muted">Both right moves a skill up, both wrong moves it down, one of each leaves it alone. The next challenge opens in 12 hours &mdash; the gap is what makes it a test of memory rather than of attention.</p>` : '';
       app.innerHTML = frame(`${head}<main id="main" tabindex="-1"><div class="quiz">
         <div class="q-result">
-          <span class="label">Unit ${u.n} practice</span>
+          <span class="label">${isCh ? 'Mastery challenge' : `Unit ${u.n} practice`}</span>
           <span class="score">${total ? Math.round(ps.right / total * 100) : 0}%<small>${ps.right} of ${total} first time</small></span>
-          <p class="small muted">Anything you missed is scheduled to come back. The unit page has the worked examples again whenever you want them.</p>
+          ${movesHtml || '<p class="small muted">Anything you missed is scheduled to come back. The unit page has the worked examples again whenever you want them.</p>'}
           <div class="btn-row">
-            <a class="btn primary" href="#/courses/${esc(c.id)}/${esc(u.id)}">Back to the unit <span class="arr">&rarr;</span></a>
-            <button type="button" class="btn" data-act="pr-restart">Go again</button>
+            <a class="btn primary" href="${backTo}">${isCh ? 'Back to the course' : 'Back to the unit'} <span class="arr">&rarr;</span></a>
+            ${isCh ? '' : '<button type="button" class="btn" data-act="pr-restart">Go again</button>'}
           </div>
         </div>
       </div></main>${foot()}`);
@@ -7572,11 +7883,32 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     if (inp && !m) inp.focus();
   }
 
+  // a unit run and a mastery challenge are the same screen over a different list of questions
+  function practiceItems(ps) {
+    if (ps.ch) return ps.ch.qs.map(q => q.item);
+    const u = Courses.unit(ps.cid, ps.uid);
+    return (u && u.practice) || [];
+  }
+  function practiceAt(ps, i) {
+    const it = practiceItems(ps)[i];
+    const q = ps.ch ? ps.ch.qs[i] : null;
+    return { item: it, lid: q ? q.lid : (it && it.lesson), uid: q ? q.uid : ps.uid };
+  }
   function markPractice(ok, why) {
     const ps = practiceState();
     ps.marked = { ok: ok, why: why || null };
     if (ok) ps.right++; else ps.wrong++;
-    schedule(courseSid(ps.cid), practiceKey(ps.cid, ps.uid, (Courses.unit(ps.cid, ps.uid).practice || [])[ps.i].id), ok ? 'good' : 'again');
+    const at = practiceAt(ps, ps.i);
+    if (at.item) {
+      schedule(courseSid(ps.cid), practiceKey(ps.cid, at.uid, at.item.id), ok ? 'good' : 'again');
+      // the per-skill tally is what the mastery level is worked out from when the run ends
+      if (at.lid) {
+        const t = ps.tally || (ps.tally = {});
+        const row = t[at.lid] || (t[at.lid] = { right: 0, total: 0 });
+        row.total++; if (ok) row.right++;
+      }
+      if (ps.ch) (ps.results || (ps.results = [])).push({ lid: at.lid, ok });
+    }
     saveProgress();
     render();
   }
@@ -10066,9 +10398,14 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
         input = `<ol class="order-list">${q.items.map((it, i) => { const at = pick.indexOf(i); return `<li><button type="button" class="opt order${at >= 0 ? ' picked' : ''}" data-act="q-pick" data-i="${i}" ${an ? 'disabled' : ''}><span class="key">${at >= 0 ? at + 1 : '·'}</span><span>${esc(it)}</span></button></li>`; }).join('')}</ol>
           ${an ? '' : `<div class="btn-row" style="justify-content:space-between"><button class="btn sm ghost" data-act="q-clear">Clear</button></div>${confRow(pick.length === q.items.length, ui.exam, 'q-submit-order')}`}`;
       }
-      else input = an && !ui.exam ? '' : `<form class="fill-row" data-form="fill"><input class="input" name="v" autocomplete="off" autocapitalize="off" placeholder="Type your answer" value="${an ? esc(an.given) : ''}" ${an ? '' : 'autofocus'} required aria-describedby="conf-help"><div class="conf" role="group" aria-label="How sure are you?"><span class="label">${ui.exam ? 'Lock in' : 'Check'} as</span><button class="btn sm primary" type="submit" name="conf" value="sure">Sure</button><button class="btn sm" type="submit" name="conf" value="unsure">Unsure</button></div></form><p class="small muted" id="conf-help">${q.hint && !ui.exam ? `Hint: ${esc(q.hint)} · ` : ''}Enter checks as sure.</p>`;
+      else input = an && !ui.exam ? '' : `<form class="fill-row" data-form="fill"><input class="input" name="v" autocomplete="off" autocapitalize="off" placeholder="Type your answer" value="${an ? esc(an.given) : ''}" ${an ? '' : 'autofocus'} required aria-describedby="conf-help"><div class="conf" role="group" aria-label="How sure are you?"><span class="label">${ui.exam ? 'Lock in' : 'Check'} as</span><button class="btn sm primary" type="submit" name="conf" value="sure">Sure</button><button class="btn sm" type="submit" name="conf" value="unsure">Unsure</button></div></form><p class="small muted" id="conf-help">Enter checks as sure.</p>`;
+      /* The hint is a DISCLOSURE, not a banner: a student who wants to try cold is not shown it,
+         and one who is stuck does not have to guess or quit. Hidden in exam mode, where the point
+         is to find out what they can do unaided, and hidden once the question is answered. */
+      const hintBox = (!an && !ui.exam && q.hint)
+        ? `<details class="hint-box"><summary>Give me a hint</summary><p class="small">${esc(q.hint)}</p></details>` : '';
       const confNote = an && an.conf ? (an.ok ? (an.conf === 'unsure' ? ' You were unsure — you knew more than you thought.' : '') : (an.conf === 'sure' ? ' You were sure of this one — worth a second look.' : ' You said unsure, and you were right to check.')) : '';
-      const fb = showFb ? `<div class="feedback ${an.ok ? 'ok' : 'bad'}${an.conf === 'sure' && !an.ok ? ' sure-wrong' : ''}"><strong>${an.ok ? 'Correct.' : `Not quite — the answer is “${esc(Array.isArray(q.answer) ? q.answer.map((x, n) => (n + 1) + '. ' + x).join('  ') : q.answer)}”.`}${esc(confNote)}</strong>${q.explain && !an.ok ? `<span>${esc(q.explain)}</span>` : ''}<span class="src">From the material: ${esc(q.source)}${citeTag(q.source)}</span>${q.sourceId != null ? `<button type="button" class="btn sm ghost" data-act="card-origin" data-i="${q.sourceId}" data-s="${esc(s.id)}">In the original <span class="arr">\u2192</span></button>` : ''}</div>` : '';
+      const fb = showFb ? `<div class="feedback ${an.ok ? 'ok' : 'bad'}${an.conf === 'sure' && !an.ok ? ' sure-wrong' : ''}"><strong>${an.ok ? 'Correct.' : `Not quite — the answer is “${esc(Array.isArray(q.answer) ? q.answer.map((x, n) => (n + 1) + '. ' + x).join('  ') : q.answer)}”.`}${esc(confNote)}</strong>${q.explain && !an.ok ? `<span>${esc(q.explain)}</span>` : ''}${!an.ok && q.why && q.why[an.given] ? `<span class="why-picked">${esc(q.why[an.given])}</span>` : ''}<span class="src">From the material: ${esc(q.source)}${citeTag(q.source)}</span>${q.sourceId != null ? `<button type="button" class="btn sm ghost" data-act="card-origin" data-i="${q.sourceId}" data-s="${esc(s.id)}">In the original <span class="arr">\u2192</span></button>` : ''}</div>` : '';
       // One control row for both modes: go back over what you have done, start the same set again,
       // swap the question types, or move on. In practice, a question you have already answered is
       // read-only when you come back to it — the marking stands.
@@ -10088,7 +10425,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
         <div class="qnum"><span>Question ${ui.qi + 1} of ${ui.qs.length}</span><span class="qtype">${Q_NAMES[q.type]}</span>${an && !ui.exam ? `<span class="answered">${an.ok ? 'Answered · correct' : 'Answered'}</span>` : ''}</div>
         <div class="prompt">${esc(q.prompt)}</div>
         ${q.body ? `<div class="body">${esc(q.body).replace(/______/g, '<b>______</b>')}</div>` : ''}
-        ${input}${fb}${qNav}
+        ${input}${hintBox}${fb}${qNav}
       </div>`;
       if (ui.exam) bar = `<span class="timer${ui.deadline && ui.deadline - Date.now() < 60000 ? ' low' : ''}" id="q-timer">${timeLeftText(ui)}</span><span class="mono muted">${ui.answers.filter(Boolean).length}/${ui.qs.length} answered</span>`;
     }
@@ -11054,21 +11391,25 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
       case 'search': if (s) openSearch(s); break;
       case 'update': applyUpdate(); break;
       case 'pr-mc': { const ps = practiceState(); if (ps.marked) break; ps.picked = el.dataset.i;
-        const it = (Courses.unit(ps.cid, ps.uid).practice || [])[ps.i];
+        const it = practiceItems(ps)[ps.i];
         markPractice(!!it.options[+el.dataset.i].ok); break; }
       case 'pr-spot': { const ps = practiceState(); if (ps.marked) break; ps.picked = el.dataset.i;
-        const it = (Courses.unit(ps.cid, ps.uid).practice || [])[ps.i];
+        const it = practiceItems(ps)[ps.i];
         markPractice(!!it.steps[+el.dataset.i].bad); break; }
       case 'pr-ord': { const ps = practiceState(); if (ps.marked) break; ps.seq = (ps.seq || []).concat([+el.dataset.i]); render(); break; }
       case 'pr-ord-undo': { const ps = practiceState(); ps.seq = (ps.seq || []).slice(0, -1); render(); break; }
       case 'pr-ord-check': { const ps = practiceState(); if (ps.marked) break;
         const ok = (ps.seq || []).every((v, i2) => v === i2);
         markPractice(ok, ok ? null : 'Not that order.'); break; }
-      case 'pr-next': { const ps = practiceState(); const its = Courses.unit(ps.cid, ps.uid).practice || [];
+      case 'pr-next': { const ps = practiceState(); const its = practiceItems(ps);
         ps.marked = null; ps.picked = null; ps.seq = [];
-        if (ps.i + 1 >= its.length) ps.done = true; else ps.i++;
+        if (ps.i + 1 >= its.length) {
+          ps.done = true;
+          if (ps.ch) { if (!ps.moves) ps.moves = applyChallenge(ps.ch, ps.results || []); }
+          else notePracticeRun(ps.cid, ps.tally || {});
+        } else ps.i++;
         render(); break; }
-      case 'pr-restart': { const ps = practiceState(); Object.assign(ps, { i: 0, picked: null, seq: [], done: false, right: 0, wrong: 0, marked: null }); render(); break; }
+      case 'pr-restart': { const ps = practiceState(); Object.assign(ps, { i: 0, picked: null, seq: [], done: false, right: 0, wrong: 0, marked: null, tally: {}, results: [], moves: null }); render(); break; }
       case 'update-later': dismissUpdatePop(); toast('Left as it is. The update button in the top bar takes it whenever you are ready.'); break;
       case 'whats-new': state.modal = { type: 'whatsnew' }; syncModal(); break;
       case 'stats': {
@@ -11496,7 +11837,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     if (form.dataset.form === 'pr-num') {
       const ps = practiceState();
       if (ps.marked) return;
-      const it = (Courses.unit(ps.cid, ps.uid).practice || [])[ps.i];
+      const it = practiceItems(ps)[ps.i];
       ps.picked = String(data.v || '');
       const res = markNumeric(it, ps.picked);
       markPractice(res.ok, res.why);
