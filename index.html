@@ -1985,6 +1985,13 @@ math mi[mathvariant="normal"] { font-style: normal; }
 .course-note > span:not(.label) { flex: 1 1 340px; min-width: 0; }
 .course-note.exam { margin-top: var(--band); background: var(--warn-soft); }
 .course-note.warn { background: var(--warn-soft); border-left: var(--accent-bar) solid var(--warn); }
+/* The honest-gaps note carries a list, so its body is a block, not the one-line span the other
+   notes use. Same flex row; the child just has to be told to take the remaining width. */
+.course-note.gaps > div { flex: 1 1 340px; min-width: 0; }
+.course-note.gaps > div > p { margin: 0 0 9px; }
+.course-note.gaps .rights-list { margin-bottom: 0; }
+.course-note.gaps .rights-list li { padding-left: 22px; line-height: 1.5; }
+.course-note.gaps .rights-list li::before { top: 8px; width: 6px; height: 6px; }
 .exam-note { margin-top: var(--band); padding: 12px var(--pad-in); background: var(--warn-soft); color: var(--ink); font-size: .92rem; display: flex; flex-wrap: wrap; gap: 10px; align-items: baseline; }
 @media (max-width: 640px) { .lesson-head { flex-wrap: wrap; gap: 8px 12px; } }
 
@@ -5109,7 +5116,8 @@ const tfHint = (a, id) => hintFrom(a, id, null, 'Check the statement against the
     code: 'Precalculus',
     title: 'Precalculus',
     blurb: 'Functions, linear functions, and the start of polynomials — following the same chapters and section numbers as the course slides.',
-    level: 'Foundation',
+    level: 'Preparatory',
+    prereq: null,
     exam: 'Midterm 1 covers sections 1.1 – 2.2.',
     units: [
 
@@ -6094,7 +6102,8 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     code: 'BLAW 2910',
     title: 'Commercial Law',
     blurb: 'The legal environment a business operates in: where Canadian law comes from, how disputes get resolved, tort, and the contract rules that run through everything else.',
-    level: 'Second year',
+    level: 'Intermediate',
+    prereq: null,
     exam: 'Midterm 1 covers chapters 1–5. Midterm 2 covers chapters 6–9. The final is comprehensive, and you must pass it to pass the course.',
     text: 'Bhalloo & Alexander, Canadian Business Law: A British Columbia Perspective, 2nd ed (Emond, 2024)',
     legalNote: NOTE,
@@ -6379,7 +6388,8 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     code: 'BLAW 3930',
     title: 'Environmental Law',
     blurb: 'How environmental regulation is made, who has authority to make it, and the duty owed to Indigenous peoples when a decision may affect their rights.',
-    level: 'Third year',
+    level: 'Advanced',
+    prereq: 'blaw2910',
     exam: 'Midterm 1 covers chapters 1–5. Midterm 2 covers chapters 6–9. The final is comprehensive, and you must pass it to pass the course.',
     text: 'Muldoon & Williams, An Introduction to Environmental Law and Policy in Canada, 4th ed (Emond, 2025)',
     legalNote: NOTE,
@@ -7305,6 +7315,867 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 
 </script>
 <script>
+/* UNI Made EZ — Accounting courses
+   Copyright © 2026 JohnsonXCorp. All rights reserved.
+   Proprietary. Not open source: see LICENSE.
+
+   ---------------------------------------------------------------------------------------------
+   WHERE THIS CONTENT COMES FROM. The twelve-module spine this course is cut from was built for a
+   separate project of the same author (ACT Made EZ) by reading a real introductory financial
+   accounting course and its workbook, and recording which question SHAPES actually appear. That
+   spine is structure — a list of topics and the forms they are examined in — and structure is a
+   fact about a course. Every sentence of explanation below is written here from scratch, and no
+   figure, exercise or wording is taken from any textbook.
+
+   WHY THE ARITHMETIC IS CHECKED AND NOT TRUSTED. The rest of this app says plainly that it
+   extracts from a student's file rather than understanding it, and may be wrong. An authored
+   course makes the opposite claim, so every numeric answer here carries a `verify` restatement and
+   test/math.js recomputes it with SymPy before the page is allowed to build. The answer is written
+   once by a person and once by a computer algebra system, from different starting points.
+
+   Accounting sharpens that: a subject where the answer is a single number is a subject where being
+   wrong is obvious and unforgivable. A student told their correct entry is wrong does not come back.
+
+   WHAT IS DELIBERATELY ABSENT. Four units, not twelve. The eight modules not built are listed in
+   `gaps` and printed on the course page under "Not covered here", because a topic someone discovers
+   is missing the night before an exam is worse than one they were told about in week one.
+   --------------------------------------------------------------------------------------------- */
+(function (root) {
+  'use strict';
+  if (!root.Courses || !root.Courses.register) return;
+
+  const ACCT = {
+    id: 'acct', name: 'Accounting',
+    blurb: 'Where each number goes, why it goes there, and how to check that it did.'
+  };
+
+  const NOTE = 'Study material for a university course. It is not professional or financial advice, ' +
+    'and it is not progress toward a CPA designation — in Canada that runs through CPA PEP after the ' +
+    'degree. Standards change; check anything that matters against current IFRS or ASPE and your instructor.';
+
+  const FINACCT = {
+    subject: ACCT,
+    id: 'acct-financial',
+    code: 'Financial Accounting',
+    title: 'Financial Accounting',
+    blurb: 'The first course: the equation everything rests on, how a transaction becomes an entry, why the books are adjusted before anyone reads them, and what to do about money you are owed and may not get.',
+    level: 'Foundation',
+    prereq: null,
+    legalNote: NOTE,
+    /* Prose, not algebra: an accounting worked example is a sentence and a journal entry, not an
+       expression to be set in monospace. */
+    prose: true,
+    gaps: [
+      'Cash — bank reconciliation, internal control over cash, petty cash',
+      'Inventory — perpetual and periodic systems, purchase returns, discount terms such as 3/15 n/30, freight',
+      /* LIFO is named here deliberately. It appears in several widely used Canadian workbooks, so a
+         student will meet it — and it is prohibited under IAS 2.25 and ASPE 3031. Leaving it off
+         this list silently would be the worst option: the arithmetic of a LIFO question is perfectly
+         correct, so nothing in this app would ever flag it, and the student would carry the method
+         into an exam that marks it wrong on the standard rather than on the sum. */
+      'Cost of inventory — FIFO, weighted average, specific identification, and lower of cost and net realisable value. Not LIFO: it is prohibited under IAS 2.25 and ASPE 3031, so if your workbook covers it, it is not a Canadian method you may use',
+      'Property, plant and equipment — capitalising costs, the three depreciation methods, partial years, disposal',
+      'Liabilities — notes payable, warranty provisions, bonds issued at a discount or premium and their amortisation',
+      'Equity — common and preferred shares, dividends, share issuance',
+      'Statement of cash flows — the indirect method',
+      'Ratios and financial statement analysis'
+    ],
+
+    units: [
+
+      /* ============================ UNIT 1 ============================ */
+      {
+        id: 'equation', n: 1,
+        title: 'The equation and the statements',
+        blurb: 'What the four statements are for, the equation that forces them to agree, and how to classify an account before you can do anything else with it.',
+        objectives: [
+          'State the accounting equation and solve it for any missing piece',
+          'Classify an account as asset, liability, equity, revenue, expense or dividend, and as current or long-term',
+          'Say what each of the four statements reports and in what order they must be prepared',
+          'Trace how net income and dividends move through retained earnings onto the balance sheet'
+        ],
+        lessons: [
+          {
+            id: 'a1', title: 'The accounting equation', src: 'Module 1',
+            idea: `Everything a business owns was paid for by somebody, and the equation is just that sentence written down: <b>Assets = Liabilities + Shareholders' Equity</b>. The left side is what the business controls; the right side is who has a claim on it — lenders first, owners with what is left. It is not a rule imposed on bookkeeping, it is a definition, which is why it cannot be broken by a correct entry and why a trial balance that does not balance is proof of an error rather than a matter of opinion.<br><br>Equity has parts worth separating. <b>Share capital</b> is what owners paid in. <b>Retained earnings</b> is everything the business has earned and not paid out, accumulated since it started: <b>Ending RE = Opening RE + Net income − Dividends</b>. Revenue and expense accounts are temporary residents of retained earnings — they collect a year's activity, and at year end they are emptied into it.`,
+            rules: [
+              { name: 'The equation', expr: 'Assets = Liabilities + Shareholders’ Equity', words: true, note: 'True after every single transaction, not just at year end.' },
+              { name: 'Expanded', expr: 'Assets = Liabilities + Share capital + Retained earnings', words: true, note: 'Equity split into what was paid in and what was earned and kept.' },
+              { name: 'Retained earnings', expr: 'Ending RE = Opening RE + Net income − Dividends', words: true, note: 'Dividends are not an expense. They never touch net income.' }
+            ],
+            examples: [
+              {
+                prompt: 'A company has assets of $145,000 and liabilities of $62,500. What is shareholders’ equity?',
+                steps: [
+                  { do: 'A = L + SE, so SE = A − L', why: 'Rearranging is all that is ever needed; there is only one equation.' },
+                  { do: 'SE = 145,000 − 62,500', why: 'Substitute the two known figures.' },
+                  { do: 'SE = 82,500', why: 'Owners have a claim on what is left after the lenders.' }
+                ],
+                answer: '$82,500'
+              },
+              {
+                prompt: 'Opening retained earnings were $48,000. The company earned net income of $27,500 and declared dividends of $9,000. What are ending retained earnings?',
+                steps: [
+                  { do: 'Ending RE = 48,000 + 27,500 − 9,000', why: 'Earnings add, distributions subtract.' },
+                  { do: '= 66,500', why: 'This is the figure that appears in the equity section of the balance sheet.' },
+                  { do: 'Net income stays 27,500', why: 'The dividend reduced retained earnings without touching income — a distribution of profit, not a cost of earning it.' }
+                ],
+                answer: '$66,500'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'acct-dividends-as-expense',
+                wrong: 'Subtracting dividends when computing net income',
+                right: 'Net income = revenues − expenses. Dividends come out afterwards, in retained earnings.',
+                why: 'A dividend is owners taking their own profit out. Treating it as an expense understates income and double-counts the reduction, because retained earnings subtracts it again.'
+              },
+              {
+                id: 'acct-equity-is-cash',
+                wrong: 'Reading shareholders’ equity as the cash the owners could take out',
+                right: 'Equity is a residual claim, not a pile of money.',
+                why: 'Equity is whatever is left after liabilities. The assets backing it may be inventory, equipment or receivables — a company can have large equity and no cash, which is how profitable businesses fail.'
+              }
+            ]
+          },
+
+          {
+            id: 'a2', title: 'Classifying accounts', src: 'Module 1',
+            idea: `Before an account can be recorded, reported or adjusted, it has to be sorted twice. First by <b>type</b> — asset, liability, shareholders' equity, revenue, expense or dividend — which decides which statement it lands on and which side increases it. Second, for assets and liabilities, by <b>term</b>: <b>current</b> means it will be converted, used or settled within one year (or the operating cycle if longer), and <b>long-term</b> means it will not.<br><br>The term split is what makes a balance sheet <b>classified</b>, and it is what a reader actually uses: current assets against current liabilities is the first thing anyone checks. Two accounts catch people out because their names point the wrong way. <b>Unearned revenue</b> is a liability — the customer paid, you owe them the work. <b>Prepaid expense</b> is an asset — you paid, they owe you the service.`,
+            rules: [
+              { name: 'Six types', expr: 'Asset · Liability · Equity · Revenue · Expense · Dividend', words: true, note: 'The first three sit on the balance sheet; the next two on the income statement; dividends on the statement of changes in equity.' },
+              { name: 'Current', expr: 'Settled or used within one year, or the operating cycle if longer', words: true, note: 'The "or the operating cycle" clause matters for businesses with long production cycles.' }
+            ],
+            examples: [
+              {
+                prompt: 'Classify: Unearned subscription revenue, Prepaid rent, Accumulated depreciation, Dividends declared.',
+                steps: [
+                  { do: 'Unearned subscription revenue — current liability', why: 'Cash was received for work not yet done. The obligation is to the customer, not the bank.' },
+                  { do: 'Prepaid rent — current asset', why: 'Payment made in advance buys a future right to occupy. It is used up over time, becoming an expense.' },
+                  { do: 'Accumulated depreciation — contra asset', why: 'It sits on the asset side but carries a credit balance and is subtracted from the asset it relates to.' },
+                  { do: 'Dividends declared — equity (a reduction of retained earnings)', why: 'Not an expense, and not on the income statement.' }
+                ],
+                answer: 'Liability, asset, contra asset, equity'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'acct-unearned-as-revenue',
+                wrong: 'Recording unearned revenue as revenue because the cash arrived',
+                right: 'Cash received before the work is done is a liability until the work is done.',
+                why: 'Revenue is recognised when the performance obligation is satisfied, not when the money lands. Getting this wrong overstates income in the current period and understates it in the next.'
+              },
+              {
+                id: 'acct-accum-dep-as-expense',
+                wrong: 'Treating accumulated depreciation as an expense account',
+                right: 'Depreciation EXPENSE is the year’s charge; ACCUMULATED depreciation is every year’s charge added up.',
+                why: 'The expense closes at year end and starts again at zero; accumulated depreciation never closes and grows for the life of the asset. Confusing them makes the balance sheet wrong by a growing amount every year.'
+              }
+            ]
+          },
+
+          {
+            id: 'a3', title: 'The four statements, and the order they come in', src: 'Module 1',
+            idea: `Four statements, and the order is forced rather than conventional, because each one needs a number the one before it produces.<br><br><b>1. Income statement</b> — revenues less expenses for a period, giving <b>net income</b>. <b>2. Statement of changes in equity</b> — takes that net income, adds it to opening retained earnings, subtracts dividends. <b>3. Balance sheet</b> — takes the closing retained earnings figure and reports assets, liabilities and equity at a single instant. <b>4. Statement of cash flows</b> — explains the movement in cash between two balance sheets.<br><br>Two of them describe a <i>period</i> ("for the year ended 31 December") and two describe an <i>instant</i> ("as at 31 December"). Getting the heading wrong is a marked error because it says you do not know what the statement is claiming.`,
+            rules: [
+              { name: 'Order', expr: 'Income statement → Changes in equity → Balance sheet → Cash flows', words: true, note: 'Each needs a figure the previous one produces.' },
+              { name: 'Period or instant', expr: 'Income and cash flows: for the period. Balance sheet: as at a date.', words: true, note: 'The heading is part of the answer.' }
+            ],
+            examples: [
+              {
+                prompt: 'A trial balance shows service revenue $310,000; salaries expense $186,000; rent expense $42,000; supplies expense $11,500. Opening retained earnings $73,000, dividends $20,000. Find net income and closing retained earnings.',
+                steps: [
+                  { do: 'Net income = 310,000 − (186,000 + 42,000 + 11,500)', why: 'Revenues less all expenses. Dividends are not in this line.' },
+                  { do: 'Net income = 310,000 − 239,500 = 70,500', why: 'This is the bottom of statement 1.' },
+                  { do: 'Closing RE = 73,000 + 70,500 − 20,000', why: 'Statement 2 picks up the 70,500 and applies the dividend.' },
+                  { do: 'Closing RE = 123,500', why: 'And this figure is what statement 3 reports in equity.' }
+                ],
+                answer: 'Net income $70,500; closing retained earnings $123,500'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'acct-statement-order',
+                wrong: 'Preparing the balance sheet first because it feels like the main one',
+                right: 'It cannot be prepared first — its retained earnings figure does not exist yet.',
+                why: 'Retained earnings on the balance sheet is the CLOSING figure, produced by the statement of changes in equity, which needs net income from the income statement. Working out of order means guessing a number you are about to calculate.'
+              }
+            ]
+          }
+        ],
+        practice: [
+          { id: 'e1p1', kind: 'numeric', lesson: 'a1',
+            prompt: 'Assets are $212,400 and liabilities are $88,900. What is shareholders’ equity, in dollars?',
+            answer: 123500, verify: { expr: '212400 - 88900' },
+            hint: 'Rearrange the one equation there is.',
+            solution: ['SE = A − L', '= 212,400 − 88,900', '= 123,500'] },
+
+          { id: 'e1p2', kind: 'numeric', lesson: 'a1',
+            prompt: 'Opening retained earnings $61,200, net income $34,800, dividends declared $12,500. What are closing retained earnings?',
+            answer: 83500, verify: { expr: '61200 + 34800 - 12500' },
+            hint: 'Earnings add; distributions subtract.',
+            solution: ['Closing RE = 61,200 + 34,800 − 12,500', '= 83,500'] },
+
+          { id: 'e1p3', kind: 'numeric', lesson: 'a1',
+            prompt: 'A company’s equity is $95,000 and its liabilities are twice its equity. What are its total assets?',
+            answer: 285000, verify: { expr: '95000 + 2*95000' },
+            hint: 'Work out liabilities first, then use the equation.',
+            solution: ['Liabilities = 2 × 95,000 = 190,000', 'A = L + SE = 190,000 + 95,000', '= 285,000'] },
+
+          { id: 'e1p4', kind: 'mc', lesson: 'a2',
+            prompt: 'A magazine publisher receives $2,400 in January for a twelve-month subscription starting in January. At 31 January, what is on the balance sheet?',
+            options: [
+              { t: 'Unearned revenue of $2,200 — a current liability', ok: true },
+              { t: 'Unearned revenue of $2,400 — nothing has been delivered yet', ok: false },
+              { t: 'Revenue of $2,400 — the cash has been received', ok: false },
+              { t: 'Prepaid revenue of $2,200 — a current asset', ok: false }
+            ],
+            hint: 'One month of twelve has been delivered. What is left is what is still owed.',
+            solution: ['One month is earned: 2,400 ÷ 12 = 200 of revenue', 'The remaining eleven months are still owed: 2,400 − 200 = 2,200', 'That obligation is a liability, because the publisher owes magazines, not money'] },
+
+          { id: 'e1p5', kind: 'numeric', lesson: 'a3',
+            prompt: 'Revenues $418,000. Expenses: salaries $214,000, rent $56,000, utilities $18,400, insurance $9,600. What is net income?',
+            answer: 120000, verify: { expr: '418000 - (214000 + 56000 + 18400 + 9600)' },
+            hint: 'Total the expenses before subtracting, and do not include anything that is not an expense.',
+            solution: ['Total expenses = 214,000 + 56,000 + 18,400 + 9,600 = 298,000', 'Net income = 418,000 − 298,000', '= 120,000'] },
+
+          { id: 'e1p6', kind: 'order', lesson: 'a3',
+            prompt: 'Put the four statements in the order they must be prepared.',
+            steps: [
+              'Income statement — produces net income',
+              'Statement of changes in equity — uses net income, produces closing retained earnings',
+              'Balance sheet — uses closing retained earnings',
+              'Statement of cash flows — explains the movement between two balance sheets'
+            ],
+            hint: 'Each one needs a figure the one before it produces.',
+            solution: ['The order is forced by data, not convention: you cannot report closing retained earnings before you have calculated it.'] },
+
+          { id: 'e1p7', kind: 'spot', lesson: 'a1',
+            prompt: 'One line of this income statement is wrong. Which one?',
+            steps: [
+              { t: 'Revenues for the year, 300,000', bad: false },
+              { t: 'Less expenses, 210,000', bad: false },
+              { t: 'Less dividends declared, 15,000', bad: true },
+              { t: 'Net income, 75,000', bad: false }
+            ],
+            why: 'Dividends are a distribution of profit to the owners, not a cost of earning it, so they never appear on the income statement. Net income is 300,000 − 210,000 = 90,000. The dividend reduces retained equity afterwards, on the statement of retained earnings; subtracting it here counts it twice — once against income and again against the closing balance.',
+            hint: 'One of those three lines is not a cost of earning the revenue.',
+            solution: ['Net income = revenues − expenses = 300,000 − 210,000 = 90,000', 'Dividends are a distribution of profit, not a cost of earning it', 'They reduce retained earnings afterwards, and would otherwise be counted twice'] }
+        ]
+      },
+
+      /* ============================ UNIT 2 ============================ */
+      {
+        id: 'recording', n: 2,
+        title: 'Recording transactions',
+        blurb: 'Debits and credits without the mysticism, the journal entry as the unit of record, and the trial balance as the first thing that can tell you that you are wrong.',
+        objectives: [
+          'Apply the debit and credit rules to any of the six account types',
+          'Write a balanced journal entry for a transaction, in the conventional layout',
+          'Post to T-accounts and take out a trial balance',
+          'Say what a balanced trial balance does and does not prove'
+        ],
+        lessons: [
+          {
+            id: 'b1', title: 'Debits and credits', src: 'Module 2',
+            idea: `<b>Debit</b> means left and <b>credit</b> means right. That is the whole of what the words mean — they carry no sense of good or bad, increase or decrease, and the sooner that is accepted the sooner the rules become mechanical.<br><br>Which side increases an account follows from the equation. Assets sit on the left of <i>A = L + SE</i>, so assets increase on the left: <b>debit</b>. Liabilities and equity sit on the right, so they increase on the right: <b>credit</b>. Revenue increases equity, so it behaves like equity and increases with a credit. Expenses and dividends <i>reduce</i> equity, so they run the other way and increase with a <b>debit</b>.<br><br>The memory aid worth having is <b>DEAD</b>: <b>D</b>ebits increase <b>E</b>xpenses, <b>A</b>ssets and <b>D</b>ividends. Everything else increases with a credit.`,
+            rules: [
+              { name: 'DEAD', expr: 'Debits increase Expenses, Assets, Dividends', words: true, note: 'Credits increase Liabilities, Equity and Revenue.' },
+              { name: 'Every entry', expr: 'Total debits = total credits', words: true, note: 'Not a target to aim at — a consequence of recording both sides of one event.' }
+            ],
+            examples: [
+              {
+                prompt: 'The company pays $3,200 cash for this month’s rent. Which accounts move, and which way?',
+                steps: [
+                  { do: 'Rent expense is an expense, and it has gone up', why: 'Expenses increase with a debit. Debit Rent Expense 3,200.' },
+                  { do: 'Cash is an asset, and it has gone down', why: 'Assets increase with a debit, so they decrease with a credit. Credit Cash 3,200.' },
+                  { do: 'Debits 3,200 = credits 3,200', why: 'One event, two sides, equal amounts.' }
+                ],
+                answer: 'Dr Rent Expense 3,200 / Cr Cash 3,200'
+              },
+              {
+                prompt: 'The company borrows $50,000 from the bank.',
+                steps: [
+                  { do: 'Cash is an asset and has gone up — debit Cash 50,000', why: 'DEAD: assets increase with a debit.' },
+                  { do: 'Bank loan payable is a liability and has gone up — credit Bank Loan Payable 50,000', why: 'Liabilities increase with a credit.' },
+                  { do: 'The equation still holds', why: 'Assets rose 50,000 and liabilities rose 50,000. Equity is untouched — borrowing is not income.' }
+                ],
+                answer: 'Dr Cash 50,000 / Cr Bank Loan Payable 50,000'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'acct-debit-means-good',
+                wrong: 'Treating "credit" as a gain and "debit" as a loss, the way a bank statement uses them',
+                right: 'Debit is left, credit is right. Nothing else.',
+                why: 'A bank statement is written from the BANK’s books, where your deposit is their liability — which is why it reads as a credit to you and a debit in your own books. The words are reversed because the point of view is.'
+              },
+              {
+                id: 'acct-borrowing-as-income',
+                wrong: 'Recording a loan as revenue because cash went up',
+                right: 'Cash increasing is not income. Credit a liability, not a revenue account.',
+                why: 'Revenue is earned by doing something for a customer. Borrowed money has to be paid back, so it creates an obligation, not a profit — and treating it as revenue inflates income by the whole loan.'
+              }
+            ]
+          },
+
+          {
+            id: 'b2', title: 'The journal entry', src: 'Module 2',
+            idea: `A journal entry is the unit of record: a date, the accounts, the amounts, and the rule that <b>debits must equal credits</b>. The layout is a convention with a reason — <b>debits first, flush left; credits indented below</b> — so a reader can see at a glance which side is which without reading the amounts.<br><br>An entry may have more than two lines. A <b>compound entry</b> touches three or more accounts, and is used when one event genuinely moves several things at once: buying equipment with part cash and part loan is one transaction, not two, and splitting it into two entries misrepresents what happened.<br><br>Write the entry by asking three questions in order: what did the business <i>get</i>, what did it <i>give up or owe</i>, and do the two sides balance. If the two sides do not balance, the entry is wrong — there is no version of a correct entry that does not balance.`,
+            rules: [
+              { name: 'Layout', expr: 'Debits first, flush left. Credits indented underneath.', words: true, note: 'Marked, because a reader relies on it.' },
+              { name: 'Compound entry', expr: 'Three or more lines, still balancing', words: true, note: 'One event that moves several accounts stays one entry.' }
+            ],
+            examples: [
+              {
+                prompt: 'On 12 March the company buys equipment for $46,000, paying $16,000 cash and signing a note for the rest.',
+                steps: [
+                  { do: 'What did it get? Equipment, an asset, up 46,000', why: 'Debit Equipment 46,000 — the full cost, not the cash part.' },
+                  { do: 'What did it give up? Cash, down 16,000', why: 'Credit Cash 16,000.' },
+                  { do: 'What does it now owe? A note payable of 46,000 − 16,000 = 30,000', why: 'Credit Notes Payable 30,000.' },
+                  { do: 'Check: debits 46,000; credits 16,000 + 30,000 = 46,000', why: 'One compound entry, balanced. Splitting it into two entries would imply two separate events.' }
+                ],
+                answer: 'Dr Equipment 46,000 / Cr Cash 16,000, Cr Notes Payable 30,000'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'acct-asset-at-cash-paid',
+                wrong: 'Recording the equipment at the $16,000 cash actually handed over',
+                right: 'The asset goes in at its full cost of $46,000, whatever the mix of cash and credit.',
+                why: 'The business controls a $46,000 machine. How it was financed is the other side of the entry, not a discount on the asset — and recording 16,000 would leave the entry unbalanced or the liability missing.'
+              },
+              {
+                id: 'acct-splitting-one-event',
+                wrong: 'Writing two entries: one for the cash, one for the note',
+                right: 'One event is one entry, however many lines it needs.',
+                why: 'Two entries would each have to invent a balancing side that did not happen. It also breaks the audit trail: a reader can no longer see that the cash and the note bought the same machine.'
+              }
+            ]
+          },
+
+          {
+            id: 'b3', title: 'T-accounts and the trial balance', src: 'Module 2',
+            idea: `A <b>T-account</b> is one account drawn as a T: debits on the left, credits on the right, and the <b>balance</b> is the difference, written on whichever side is larger. Posting means copying each journal line into its account.<br><br>A <b>trial balance</b> lists every account with its balance in a debit column or a credit column, and totals both. If the totals agree, the books are internally consistent.<br><br>Here is the part worth being clear about: <b>a balanced trial balance does not mean the books are right.</b> It will happily balance if you posted a correct amount to the wrong account, omitted an entire transaction, recorded a transaction twice, or reversed the debit and credit of an entry. All four leave the two columns equal. What it catches is arithmetic and one-sided postings — useful, and much narrower than students assume.`,
+            rules: [
+              { name: 'Balance of a T-account', expr: 'Larger side − smaller side, written on the larger side', words: true, note: 'An account with equal sides has a nil balance.' },
+              { name: 'What balancing proves', expr: 'Debits posted = credits posted. Nothing more.', words: true, note: 'It cannot see a right amount in a wrong account.' }
+            ],
+            examples: [
+              {
+                prompt: 'Cash has an opening debit balance of $18,000. During the month: received $42,500 from customers, paid $27,300 of expenses, paid a $6,000 dividend. What is the closing balance?',
+                steps: [
+                  { do: 'Debit side: 18,000 + 42,500 = 60,500', why: 'Opening balance and receipts both increase an asset, so both are debits.' },
+                  { do: 'Credit side: 27,300 + 6,000 = 33,300', why: 'Payments reduce cash, so they are credits.' },
+                  { do: 'Balance = 60,500 − 33,300 = 27,200 debit', why: 'The debit side is larger, so the balance is a debit — which is what an asset should be.' }
+                ],
+                answer: '$27,200 debit'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'acct-trial-balance-proves-correct',
+                wrong: '"The trial balance balances, so the books are correct."',
+                right: 'It proves debits equal credits. It cannot detect a right amount posted to a wrong account.',
+                why: 'Four common errors survive it untouched: wrong account, omitted transaction, duplicated transaction, and a reversed entry. Relying on it as a correctness check is how an error reaches the financial statements.'
+              },
+              {
+                id: 'acct-balance-wrong-side',
+                wrong: 'Writing an asset balance on the credit side because the last entry was a credit',
+                right: 'The balance goes on the side with the larger total, not the side of the most recent entry.',
+                why: 'An asset with a credit balance is a claim you are asserting exists — negative cash, for instance. If the arithmetic really gives that, the error is earlier.'
+              }
+            ]
+          }
+        ],
+        practice: [
+          { id: 'e2p1', kind: 'mc', lesson: 'b1',
+            prompt: 'Which entry records paying $1,850 cash for utilities already consumed?',
+            options: [
+              { t: 'Dr Utilities Expense 1,850 / Cr Cash 1,850', ok: true },
+              { t: 'Dr Cash 1,850 / Cr Utilities Expense 1,850', ok: false },
+              { t: 'Dr Utilities Payable 1,850 / Cr Utilities Expense 1,850', ok: false },
+              { t: 'Dr Utilities Expense 1,850 / Cr Utilities Payable 1,850', ok: false }
+            ],
+            hint: 'Two questions: has an expense gone up, and has cash gone up or down?',
+            solution: ['The expense increased, and expenses increase with a debit (DEAD)', 'Cash decreased, and an asset decreases with a credit', 'The fourth option would be right if the bill had NOT yet been paid'] },
+
+          { id: 'e2p2', kind: 'numeric', lesson: 'b2',
+            prompt: 'A vehicle costing $58,400 is bought with $21,900 cash and a note for the balance. What amount is credited to Notes Payable?',
+            answer: 36500, verify: { expr: '58400 - 21900' },
+            hint: 'The asset goes in at full cost; the note covers whatever the cash did not.',
+            solution: ['Dr Vehicle 58,400', 'Cr Cash 21,900', 'Cr Notes Payable = 58,400 − 21,900 = 36,500'] },
+
+          { id: 'e2p3', kind: 'numeric', lesson: 'b3',
+            prompt: 'Accounts Receivable opens at $34,600 debit. Sales on credit during the month are $91,200 and collections from customers are $78,450. What is the closing balance?',
+            answer: 47350, verify: { expr: '34600 + 91200 - 78450' },
+            hint: 'Credit sales increase what customers owe; collections reduce it.',
+            solution: ['Debits: 34,600 + 91,200 = 125,800', 'Credits: 78,450', 'Balance = 125,800 − 78,450 = 47,350 debit'] },
+
+          { id: 'e2p4', kind: 'numeric', lesson: 'b3',
+            prompt: 'Cash opens at $12,750 debit, receipts are $64,300, payments are $58,900. What is the closing balance?',
+            answer: 18150, verify: { expr: '12750 + 64300 - 58900' },
+            hint: 'Receipts are debits to cash; payments are credits.',
+            solution: ['Debit side = 12,750 + 64,300 = 77,050', 'Credit side = 58,900', 'Balance = 18,150 debit'] },
+
+          { id: 'e2p5', kind: 'order', lesson: 'b2',
+            prompt: 'Put the steps of writing a journal entry in order.',
+            steps: [
+              'Identify what the business received, and whether it is an asset, an expense or something else',
+              'Identify what it gave up or now owes',
+              'Apply the debit and credit rules to each account',
+              'Check that total debits equal total credits before writing it down'
+            ],
+            hint: 'Decide what happened before deciding which side each account goes on.',
+            solution: ['Naming the accounts first, then applying the rules, is what stops the guess-and-check habit that falls apart on compound entries.'] },
+
+          { id: 'e2p6', kind: 'mc', lesson: 'b3',
+            prompt: 'A bookkeeper posts a $900 repair correctly as a debit, but to Equipment instead of Repairs Expense. What will the trial balance show?',
+            options: [
+              { t: 'It will balance — the error is invisible to it', ok: true },
+              { t: 'Debits will exceed credits by $900', ok: false },
+              { t: 'Credits will exceed debits by $900', ok: false },
+              { t: 'It will balance, but only if the amount is under the materiality threshold', ok: false }
+            ],
+            hint: 'Ask what the trial balance actually compares.',
+            solution: ['Both accounts are debited, so the debit column total is unchanged', 'The trial balance compares column totals; it cannot see which account a debit landed in', 'This error overstates assets and understates expenses — and balances perfectly'] },
+
+          { id: 'e2p7', kind: 'spot', lesson: 'b1',
+            prompt: 'A company receives a $50,000 bank loan. One line of this reasoning is wrong.',
+            steps: [
+              { t: 'Cash went up by 50,000', bad: false },
+              { t: 'An increase in an asset is a debit, so Dr Cash 50,000', bad: false },
+              { t: 'The money came in, so credit Loan Revenue 50,000', bad: true },
+              { t: 'The entry balances: 50,000 debit, 50,000 credit', bad: false }
+            ],
+            why: 'Money arriving is not the test for revenue. Revenue is earned by doing something for a customer; borrowed money is an obligation to give it back. The credit belongs to Bank Loan Payable, a liability. Crediting revenue would balance perfectly and still overstate the year’s net income by the entire 50,000 — which is why "the entry balances" proves nothing about whether it is right.',
+            hint: 'The debit is fine. Ask what the company owes afterwards.',
+            solution: ['Cash did increase, so Dr Cash 50,000 is right', 'But borrowed money must be repaid, which makes it an obligation', 'Cr Bank Loan Payable 50,000 — crediting revenue would inflate net income by the entire loan'] }
+        ]
+      },
+
+      /* ============================ UNIT 3 ============================ */
+      {
+        id: 'adjusting', n: 3,
+        title: 'Adjusting and closing entries',
+        blurb: 'Why the books are wrong on 31 December before anybody touches them, the four adjustments that fix them, and how the year is put away.',
+        objectives: [
+          'Explain why accrual accounting requires adjusting entries at a period end',
+          'Identify which of the four adjustment types a situation calls for',
+          'Compute and record prepaid expiry, supplies used, accrued items and depreciation',
+          'Close the temporary accounts and say which accounts survive into next year'
+        ],
+        lessons: [
+          {
+            id: 'c1', title: 'Why adjusting entries exist', src: 'Module 3',
+            idea: `Under <b>accrual accounting</b>, revenue is recorded when it is <i>earned</i> and expenses when they are <i>incurred</i> — not when cash moves. Cash accounting records the cash. The gap between the two is why adjusting entries exist.<br><br>During the year the books follow the paperwork: an invoice, a cheque, a receipt. But some things happen without paperwork. Insurance quietly expires day by day. Interest accrues without anyone sending anything. Supplies get used. So on the last day of the period, before any statement can be prepared, the books are brought up to what is actually true.<br><br>Every adjusting entry has two properties worth checking your work against: it touches <b>at least one income statement account and at least one balance sheet account</b>, and it <b>never touches cash</b>. If your adjusting entry debits or credits Cash, it is not an adjusting entry — you have recorded a transaction that has not happened.`,
+            rules: [
+              { name: 'Accrual basis', expr: 'Revenue when earned, expense when incurred', words: true, note: 'Not when the cash moves.' },
+              { name: 'The two-sided check', expr: 'One income statement account, one balance sheet account, never Cash', words: true, note: 'An adjusting entry that touches cash is a mistake, every time.' }
+            ],
+            examples: [
+              {
+                prompt: 'A twelve-month insurance policy costing $8,400 was paid on 1 September. The year end is 31 December. What adjustment is needed?',
+                steps: [
+                  { do: 'Months expired: September to December = 4', why: 'Count the months of cover actually consumed, not the months remaining.' },
+                  { do: 'Expired amount = 8,400 × 4 ÷ 12 = 2,800', why: 'The cost spreads evenly over the twelve months of cover.' },
+                  { do: 'Dr Insurance Expense 2,800 / Cr Prepaid Insurance 2,800', why: 'The expense is recognised; the asset falls to 5,600, which is the eight months still to run.' },
+                  { do: 'Cash is untouched', why: 'It moved on 1 September. This entry only reallocates what that payment bought.' }
+                ],
+                answer: 'Dr Insurance Expense 2,800 / Cr Prepaid Insurance 2,800'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'acct-adjusting-touches-cash',
+                wrong: 'Dr Insurance Expense / Cr Cash at year end',
+                right: 'Credit the prepaid asset. Cash moved months ago.',
+                why: 'Crediting cash records a second payment that never happened, understating cash and leaving the prepaid asset on the books forever.'
+              },
+              {
+                id: 'acct-prepaid-months-remaining',
+                wrong: 'Expensing the eight months still to run instead of the four that expired',
+                right: 'Expense what has been used up; the rest stays as an asset.',
+                why: 'It is an easy slip because both numbers are in front of you. Expensing 5,600 instead of 2,800 overstates the expense and leaves too little on the balance sheet — an error in both statements at once.'
+              }
+            ]
+          },
+
+          {
+            id: 'c2', title: 'The four adjustments', src: 'Module 3',
+            idea: `There are exactly four shapes, and identifying which one you are in is most of the work. Two involve cash that has <i>already</i> moved (deferrals) and two involve cash that has <i>not yet</i> moved (accruals).<br><br><b>Prepaid expense</b> — paid in advance, now partly used. <i>Dr Expense, Cr the prepaid asset.</i><br><b>Unearned revenue</b> — collected in advance, now partly earned. <i>Dr Unearned Revenue, Cr Revenue.</i><br><b>Accrued expense</b> — incurred, not yet paid or invoiced. <i>Dr Expense, Cr a payable.</i><br><b>Accrued revenue</b> — earned, not yet billed or received. <i>Dr a receivable, Cr Revenue.</i><br><br>Two more behave like prepaid expenses and are worth naming separately because they are computed differently. <b>Supplies</b>: you do not track each pencil, you count what is left, and <b>supplies used = opening + purchased − counted at the end</b>. <b>Depreciation</b>: the year's charge is <i>Dr Depreciation Expense, Cr Accumulated Depreciation</i> — crediting the contra account, never the asset itself, so the original cost stays visible.`,
+            rules: [
+              { name: 'Supplies used', expr: 'Opening + purchased − counted at the end', words: true, note: 'The count is the evidence; the usage is inferred from it.' },
+              { name: 'Straight-line depreciation', expr: '(Cost − residual) ÷ useful life', words: true, note: 'Credit Accumulated Depreciation, not the asset.' },
+              { name: 'The four shapes', expr: 'Prepaid · Unearned · Accrued expense · Accrued revenue', words: true, note: 'Two where cash already moved, two where it has not.' }
+            ],
+            examples: [
+              {
+                prompt: 'Supplies opened at $1,200. Purchases during the year were $3,400. A count on 31 December finds $900 on hand. What is the entry?',
+                steps: [
+                  { do: 'Available = 1,200 + 3,400 = 4,600', why: 'Everything that could have been used during the year.' },
+                  { do: 'Used = 4,600 − 900 = 3,700', why: 'What is not there was used. The count is the evidence.' },
+                  { do: 'Dr Supplies Expense 3,700 / Cr Supplies 3,700', why: 'The asset falls to the 900 actually on hand.' }
+                ],
+                answer: 'Dr Supplies Expense 3,700 / Cr Supplies 3,700'
+              },
+              {
+                prompt: 'Five employees each earn $180 a day. The year ends on a Wednesday, and they were last paid the previous Friday. What is accrued?',
+                steps: [
+                  { do: 'Days worked and unpaid: Monday, Tuesday, Wednesday = 3', why: 'Count only the days worked after the last pay date and up to the year end.' },
+                  { do: 'Accrual = 5 × 180 × 3 = 2,700', why: 'Five employees, three days each.' },
+                  { do: 'Dr Salaries Expense 2,700 / Cr Salaries Payable 2,700', why: 'The work is done, so the cost belongs to this year even though payday is next year.' }
+                ],
+                answer: 'Dr Salaries Expense 2,700 / Cr Salaries Payable 2,700'
+              },
+              {
+                prompt: 'Equipment cost $72,000, residual value $12,000, useful life 8 years. What is the annual straight-line charge?',
+                steps: [
+                  { do: 'Depreciable amount = 72,000 − 12,000 = 60,000', why: 'Residual is what you expect to get back, so it is never depreciated.' },
+                  { do: 'Annual charge = 60,000 ÷ 8 = 7,500', why: 'Straight line spreads the depreciable amount evenly.' },
+                  { do: 'Dr Depreciation Expense 7,500 / Cr Accumulated Depreciation 7,500', why: 'Crediting the contra account keeps the 72,000 cost on the books where a reader can see it.' }
+                ],
+                answer: '$7,500 a year'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'acct-supplies-expense-purchases',
+                wrong: 'Expensing the $3,400 purchased',
+                right: 'Expense what was USED: opening + purchased − counted.',
+                why: 'Purchases are not consumption. Expensing purchases ignores both the opening stock and whatever is still sitting in the cupboard.'
+              },
+              {
+                id: 'acct-credit-asset-not-accum',
+                wrong: 'Dr Depreciation Expense / Cr Equipment',
+                right: 'Credit Accumulated Depreciation.',
+                why: 'Crediting the asset erases its original cost, so a reader can no longer tell a nearly-new $72,000 machine from an old one written down to the same figure. The contra account exists to keep both numbers visible.'
+              },
+              {
+                id: 'acct-depreciate-residual',
+                wrong: 'Dividing the full $72,000 cost by 8',
+                right: 'Depreciate cost MINUS residual.',
+                why: 'Residual is what you expect the asset still to be worth at the end. Depreciating it writes off value you expect to recover, overstating the expense every year of the asset’s life.'
+              }
+            ]
+          },
+
+          {
+            id: 'c3', title: 'Closing the year', src: 'Module 3',
+            idea: `Revenue, expense and dividend accounts are <b>temporary</b>: they measure one period and must start the next at zero, or next year's income statement would include this year's activity. Assets, liabilities and equity are <b>permanent</b> — their balances are what the business has, and they carry forward.<br><br>Closing is four steps, and the order matters because each one feeds the next. <b>1.</b> Close revenues: <i>Dr each revenue account, Cr Income Summary.</i> <b>2.</b> Close expenses: <i>Dr Income Summary, Cr each expense account.</i> <b>3.</b> The balance now in Income Summary <i>is</i> net income — close it to retained earnings: <i>Dr Income Summary, Cr Retained Earnings</i> for a profit. <b>4.</b> Close dividends straight to retained earnings: <i>Dr Retained Earnings, Cr Dividends</i> — never through Income Summary, because a dividend is not part of earning anything.<br><br>Afterwards, a <b>post-closing trial balance</b> contains permanent accounts only. If a revenue or expense account still shows a balance, a closing entry was missed.`,
+            rules: [
+              { name: 'Temporary', expr: 'Revenues · Expenses · Dividends — closed to zero', words: true, note: 'They measure a period, so they must restart at zero.' },
+              { name: 'Permanent', expr: 'Assets · Liabilities · Equity — carried forward', words: true, note: 'These are what the business has, not what it did.' },
+              { name: 'Dividends', expr: 'Closed directly to Retained Earnings', words: true, note: 'Never through Income Summary.' }
+            ],
+            examples: [
+              {
+                prompt: 'Revenues $310,000; total expenses $239,500; dividends $20,000. Show the closing entries and the effect on retained earnings.',
+                steps: [
+                  { do: 'Dr Service Revenue 310,000 / Cr Income Summary 310,000', why: 'Revenue has a credit balance, so debiting it empties it.' },
+                  { do: 'Dr Income Summary 239,500 / Cr the expense accounts 239,500', why: 'Expenses have debit balances, so crediting them empties them.' },
+                  { do: 'Income Summary now holds 310,000 − 239,500 = 70,500 credit', why: 'That is net income, arrived at by the accounts themselves rather than copied in.' },
+                  { do: 'Dr Income Summary 70,500 / Cr Retained Earnings 70,500', why: 'Profit joins the accumulated total.' },
+                  { do: 'Dr Retained Earnings 20,000 / Cr Dividends 20,000', why: 'Straight to retained earnings, bypassing Income Summary.' }
+                ],
+                answer: 'Retained earnings rise by 70,500 − 20,000 = 50,500'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'acct-dividends-through-summary',
+                wrong: 'Closing dividends through Income Summary',
+                right: 'Dr Retained Earnings, Cr Dividends. Directly.',
+                why: 'Routing it through Income Summary makes the dividend reduce net income, which is the same error as treating it as an expense — and Income Summary would then no longer equal net income, so the figure it reports is wrong.'
+              },
+              {
+                id: 'acct-closing-permanent',
+                wrong: 'Closing Accumulated Depreciation or Unearned Revenue because they "feel" temporary',
+                right: 'Only revenues, expenses and dividends close.',
+                why: 'Accumulated depreciation must accumulate — that is its whole function — and unearned revenue is an obligation that survives the year end. Closing either destroys information the next period needs.'
+              }
+            ]
+          }
+        ],
+        practice: [
+          { id: 'e3p1', kind: 'numeric', lesson: 'c1',
+            prompt: 'A 12-month insurance policy costing $10,800 was paid on 1 October. At the 31 December year end, how much insurance expense should be recognised?',
+            answer: 2700, verify: { expr: '10800 * 3 / 12' },
+            hint: 'Count the months that have actually expired, not the ones remaining.',
+            solution: ['October, November, December = 3 months expired', 'Expense = 10,800 × 3 ÷ 12 = 2,700', 'Prepaid Insurance is left at 8,100'] },
+
+          { id: 'e3p2', kind: 'numeric', lesson: 'c2',
+            prompt: 'Supplies opened at $2,150, purchases were $6,800, and the year-end count is $1,475. What is supplies expense?',
+            answer: 7475, verify: { expr: '2150 + 6800 - 1475' },
+            hint: 'What is missing was used.',
+            solution: ['Available = 2,150 + 6,800 = 8,950', 'On hand = 1,475', 'Used = 8,950 − 1,475 = 7,475'] },
+
+          { id: 'e3p3', kind: 'numeric', lesson: 'c2',
+            prompt: 'Seven employees each earn $215 a day. Four working days have passed since the last payday when the year ends. What salaries accrual is required?',
+            answer: 6020, verify: { expr: '7 * 215 * 4' },
+            hint: 'Employees times rate times days.',
+            solution: ['7 × 215 = 1,505 a day', '1,505 × 4 = 6,020', 'Dr Salaries Expense 6,020 / Cr Salaries Payable 6,020'] },
+
+          { id: 'e3p4', kind: 'numeric', lesson: 'c2',
+            prompt: 'Machinery cost $94,000 with a residual value of $10,000 and a useful life of 12 years. What is the annual straight-line depreciation charge?',
+            answer: 7000, verify: { expr: '(94000 - 10000) / 12' },
+            hint: 'Residual is never depreciated.',
+            solution: ['Depreciable amount = 94,000 − 10,000 = 84,000', '84,000 ÷ 12 = 7,000 a year'] },
+
+          { id: 'e3p5', kind: 'numeric', lesson: 'c2',
+            prompt: 'A client paid $18,000 in advance for six months of service beginning 1 November. At 31 December, how much revenue has been earned?',
+            answer: 6000, verify: { expr: '18000 * 2 / 6' },
+            hint: 'Two of the six months have been delivered.',
+            solution: ['November and December = 2 months of 6', 'Earned = 18,000 × 2 ÷ 6 = 6,000', 'Dr Unearned Revenue 6,000 / Cr Service Revenue 6,000'] },
+
+          { id: 'e3p6', kind: 'numeric', lesson: 'c3',
+            prompt: 'Revenues were $486,000, total expenses $351,400, and dividends declared $42,000. By how much do retained earnings increase this year?',
+            answer: 92600, verify: { expr: '486000 - 351400 - 42000' },
+            hint: 'Net income first, then the dividend.',
+            solution: ['Net income = 486,000 − 351,400 = 134,600', 'Increase in RE = 134,600 − 42,000 = 92,600'] },
+
+          { id: 'e3p7', kind: 'mc', lesson: 'c2',
+            prompt: 'Interest of $1,400 has accrued on a bank loan but will not be paid until February. What is the year-end adjusting entry?',
+            options: [
+              { t: 'Dr Interest Expense 1,400 / Cr Interest Payable 1,400', ok: true },
+              { t: 'Dr Interest Expense 1,400 / Cr Cash 1,400', ok: false },
+              { t: 'Dr Interest Payable 1,400 / Cr Interest Expense 1,400', ok: false },
+              { t: 'No entry — the interest is not due until February', ok: false }
+            ],
+            hint: 'The cost has been incurred. Has any cash moved?',
+            solution: ['The loan was outstanding all year, so the interest cost belongs to this year', 'No cash has moved, so the other side is a payable', 'Option 4 is the cash-basis answer, which accrual accounting rejects'] },
+
+          { id: 'e3p8', kind: 'order', lesson: 'c3',
+            prompt: 'Put the closing entries in the order they are made.',
+            steps: [
+              'Close revenue accounts to Income Summary',
+              'Close expense accounts to Income Summary',
+              'Close Income Summary to Retained Earnings',
+              'Close Dividends directly to Retained Earnings'
+            ],
+            hint: 'Income Summary has to hold net income before it can be transferred.',
+            solution: ['Revenues and expenses must both land in Income Summary before its balance means anything', 'Dividends never pass through it — they are a distribution, not part of earning'] },
+
+          { id: 'e3p9', kind: 'spot', lesson: 'c2',
+            prompt: 'Annual depreciation on equipment is 7,500. One line of this entry is wrong.',
+            steps: [
+              { t: 'Using up the equipment over the year is a cost of that year', bad: false },
+              { t: 'Dr Depreciation Expense 7,500', bad: false },
+              { t: 'Cr Equipment 7,500, because the equipment is worth less', bad: true },
+              { t: 'Net income falls by 7,500 and total assets fall by 7,500', bad: false }
+            ],
+            why: 'The credit belongs to Accumulated Depreciation, a contra asset, not to Equipment itself. Crediting Equipment reduces total assets by the right amount and destroys the information: the original cost is gone from the records, so nobody can later see what the asset cost or how much of its life has been used. Keeping the two figures side by side is the whole point of a contra account.',
+            hint: 'The debit is right, and so is the amount. Which account should take the credit?',
+            solution: ['The credit belongs to Accumulated Depreciation, a contra asset', 'Crediting Equipment erases the original cost from the records', 'Keeping both figures is what lets a reader see age as well as value'] }
+        ]
+      },
+
+      /* ============================ UNIT 4 ============================ */
+      {
+        id: 'receivables', n: 4,
+        title: 'Receivables',
+        blurb: 'Money you are owed, some of which will never arrive: estimating it before you know, and recording it when you do.',
+        objectives: [
+          'Explain why bad debts are estimated rather than waited for',
+          'Apply both estimation approaches and say which statement each one starts from',
+          'Adjust for an existing allowance balance, in either direction',
+          'Record a write-off and a subsequent recovery, and state the effect on net realisable value'
+        ],
+        lessons: [
+          {
+            id: 'd1', title: 'Why bad debts are estimated', src: 'Module 5',
+            idea: `Sell on credit and some customers will not pay. You do not know which ones — if you did you would not have sold to them — and you will not know for months. Waiting until a specific account is hopeless (the <b>direct write-off</b> method) puts the loss in the wrong year and is not acceptable under IFRS or ASPE for material amounts, because the expense of making a sale belongs in the period of the sale.<br><br>So the loss is <b>estimated</b> at the period end and recorded against a contra-asset account, <b>Allowance for Doubtful Accounts</b>. The entry is <i>Dr Bad Debt Expense, Cr Allowance for Doubtful Accounts</i>, and the balance sheet then reports <b>net realisable value</b>: <i>Accounts Receivable − Allowance</i>, which is what the business honestly expects to collect.<br><br>The allowance is used rather than crediting receivables directly for a reason: you do not yet know <i>whose</i> account to reduce. The allowance reduces the total without accusing anybody.`,
+            rules: [
+              { name: 'The estimate', expr: 'Dr Bad Debt Expense, Cr Allowance for Doubtful Accounts', words: true, note: 'A contra asset, so it carries a credit balance.' },
+              { name: 'Net realisable value', expr: 'Accounts receivable − Allowance', words: true, note: 'What the business expects actually to collect.' }
+            ],
+            examples: [
+              {
+                prompt: 'Accounts receivable are $240,000 and the allowance has a credit balance of $14,500. What is reported on the balance sheet?',
+                steps: [
+                  { do: 'Gross receivables 240,000', why: 'The full amount customers owe, shown first.' },
+                  { do: 'Less allowance 14,500', why: 'The estimated portion that will not arrive.' },
+                  { do: 'Net realisable value = 225,500', why: 'The honest expectation, and the figure that matters to a reader.' }
+                ],
+                answer: '$225,500'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'acct-credit-ar-for-estimate',
+                wrong: 'Dr Bad Debt Expense / Cr Accounts Receivable for the estimate',
+                right: 'Credit the Allowance.',
+                why: 'Accounts Receivable is the sum of specific customer balances and must still agree with the subsidiary ledger. Crediting it for an estimate breaks that agreement and implies you know which customer will default.'
+              }
+            ]
+          },
+
+          {
+            id: 'd2', title: 'The two estimation approaches', src: 'Module 5',
+            idea: `Two approaches are taught, they start from different statements, and the difference is <b>not</b> a matter of taste — it changes what the calculated number means.<br><br><b>Percentage of credit sales</b> (income statement approach) estimates the <i>expense</i> directly: a percentage of this period's credit sales. The answer <b>is</b> the bad debt expense, and the existing allowance balance is irrelevant to it.<br><br><b>Ageing of receivables</b> (balance sheet approach) estimates the <i>allowance</i>: group receivables by how overdue they are, apply a higher rate to older groups, and total them. That total is the balance the allowance must <b>end up at</b> — so the expense is whatever gets it there from where it currently is.<br><br>That last sentence is the whole lesson. Under ageing, <b>expense = required ending allowance − existing credit balance</b>, or <b>+ existing debit balance</b> if write-offs have overdrawn it. A course may examine either approach; read the question to see which number it is asking for.`,
+            rules: [
+              { name: 'Percentage of sales', expr: 'Expense = rate × credit sales', words: true, note: 'The answer is the expense. Ignore the existing balance.' },
+              { name: 'Ageing', expr: 'Expense = required allowance − existing credit balance', words: true, note: 'Add instead if the existing balance is a debit.' }
+            ],
+            examples: [
+              {
+                prompt: 'Credit sales were $486,000 and the company estimates 2% will not be collected. The allowance already has a $3,100 credit balance. What is bad debt expense?',
+                steps: [
+                  { do: 'This is the percentage-of-sales approach', why: 'The rate is applied to SALES, so it estimates the expense directly.' },
+                  { do: 'Expense = 486,000 × 2 ÷ 100 = 9,720', why: 'Straight multiplication.' },
+                  { do: 'The existing 3,100 is ignored', why: 'It is not part of this calculation. The allowance simply becomes 3,100 + 9,720 = 12,820.' }
+                ],
+                answer: '$9,720'
+              },
+              {
+                prompt: 'An ageing schedule says the allowance should be $14,300. It currently has a $2,150 credit balance. What is bad debt expense?',
+                steps: [
+                  { do: 'This is the ageing approach', why: 'The schedule gives the required ENDING allowance, not the expense.' },
+                  { do: 'Expense = 14,300 − 2,150 = 12,150', why: 'Top up from where it is to where it must be.' },
+                  { do: 'Check: 2,150 + 12,150 = 14,300', why: 'The allowance ends where the schedule said it should.' }
+                ],
+                answer: '$12,150'
+              },
+              {
+                prompt: 'Same schedule requiring $14,300, but write-offs have left the allowance with an $800 DEBIT balance. What is bad debt expense?',
+                steps: [
+                  { do: 'A debit balance means write-offs exceeded the estimate', why: 'The allowance is a contra asset, so its normal balance is a credit. A debit balance means it is overdrawn.' },
+                  { do: 'Expense = 14,300 + 800 = 15,100', why: 'You must first cover the 800 overdraft, then build the 14,300.' },
+                  { do: 'Check: −800 + 15,100 = 14,300', why: 'The arithmetic confirms the direction.' }
+                ],
+                answer: '$15,100'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'acct-ageing-ignores-balance',
+                wrong: 'Recording $14,300 of expense because the ageing schedule says $14,300',
+                right: 'The schedule gives the required ENDING allowance. Subtract what is already there.',
+                why: 'This is the single most common error in the topic. Recording the full amount overstates the expense and leaves the allowance at 16,450 instead of 14,300 — wrong in both statements.'
+              },
+              {
+                id: 'acct-debit-balance-subtracted',
+                wrong: 'Subtracting an existing DEBIT balance as though it were a credit',
+                right: 'A debit balance is ADDED to the required allowance.',
+                why: 'A debit balance means the allowance is overdrawn and has to be brought back to zero before it can be built up. Subtracting takes you further from the target rather than toward it.'
+              },
+              {
+                id: 'acct-sales-approach-adjusts',
+                wrong: 'Subtracting the existing balance under the percentage-of-sales approach',
+                right: 'That approach estimates the expense directly. The existing balance is irrelevant.',
+                why: 'It is the mirror image of the previous error, and it comes from applying one approach’s rule to the other. Ask first which the question gives you: a rate on SALES, or a required allowance total.'
+              }
+            ]
+          },
+
+          {
+            id: 'd3', title: 'Write-offs and recoveries', src: 'Module 5',
+            idea: `When a specific account is finally judged uncollectible, it is <b>written off</b>: <i>Dr Allowance for Doubtful Accounts, Cr Accounts Receivable.</i><br><br>Two things about that entry surprise people, and both follow from the estimate already having been made. There is <b>no expense</b> — the expense was recorded when the allowance was set up, and recording it again would double-count. And <b>net realisable value does not change</b>: receivables fall and the allowance falls by the same amount, so the difference between them is exactly what it was. The write-off does not make the business poorer; it records something already anticipated.<br><br>If the customer later pays after all, the write-off is <b>reversed</b> first — <i>Dr Accounts Receivable, Cr Allowance</i> — and then the cash is recorded normally: <i>Dr Cash, Cr Accounts Receivable.</i> Two entries, not one, so the customer's account shows the full history of what happened rather than a payment appearing from nowhere.`,
+            rules: [
+              { name: 'Write-off', expr: 'Dr Allowance, Cr Accounts Receivable', words: true, note: 'No expense, and no change in net realisable value.' },
+              { name: 'Recovery', expr: 'Reverse the write-off, then record the cash', words: true, note: 'Two entries, so the account tells the whole story.' }
+            ],
+            examples: [
+              {
+                prompt: 'Receivables are $240,000 with a $14,500 allowance. A $3,600 account is written off. What is net realisable value afterwards?',
+                steps: [
+                  { do: 'Before: 240,000 − 14,500 = 225,500', why: 'The starting net figure.' },
+                  { do: 'Dr Allowance 3,600 / Cr Accounts Receivable 3,600', why: 'Both sides of the subtraction fall by the same amount.' },
+                  { do: 'After: 236,400 − 10,900 = 225,500', why: 'Unchanged — which is the point. The loss was recognised when the allowance was created.' }
+                ],
+                answer: '$225,500 — unchanged'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'acct-writeoff-as-expense',
+                wrong: 'Dr Bad Debt Expense / Cr Accounts Receivable on write-off',
+                right: 'Dr Allowance, Cr Accounts Receivable.',
+                why: 'The expense was already recorded when the allowance was estimated. Charging it again counts the same loss twice — once in the year of the estimate and once in the year of the write-off.'
+              },
+              {
+                id: 'acct-recovery-one-entry',
+                wrong: 'Recording a recovery as a single Dr Cash / Cr Allowance',
+                right: 'Reinstate the receivable first, then record the collection.',
+                why: 'The shortcut arrives at the same balances but leaves the customer’s account with no record of the reinstatement, so the credit history is lost — which is exactly the information a recovery is evidence about.'
+              }
+            ]
+          }
+        ],
+        practice: [
+          { id: 'e4p1', kind: 'numeric', lesson: 'd2',
+            prompt: 'Credit sales were $712,000 and 1.5% are estimated uncollectible. Using the percentage-of-sales approach, what is bad debt expense?',
+            answer: 10680, verify: { expr: '712000 * 15 / 1000' },
+            hint: 'This approach estimates the expense directly.',
+            solution: ['Expense = 712,000 × 1.5% = 10,680', 'Any existing allowance balance is irrelevant to this approach'] },
+
+          { id: 'e4p2', kind: 'numeric', lesson: 'd2',
+            prompt: 'An ageing schedule requires an allowance of $21,700. The allowance currently has a credit balance of $4,900. What is bad debt expense?',
+            answer: 16800, verify: { expr: '21700 - 4900' },
+            hint: 'The schedule gives where the allowance must END, not the expense.',
+            solution: ['Expense = 21,700 − 4,900 = 16,800', 'Check: 4,900 + 16,800 = 21,700'] },
+
+          { id: 'e4p3', kind: 'numeric', lesson: 'd2',
+            prompt: 'An ageing schedule requires an allowance of $18,400. Write-offs have left the allowance with a DEBIT balance of $1,250. What is bad debt expense?',
+            answer: 19650, verify: { expr: '18400 + 1250' },
+            hint: 'An overdrawn allowance has to be brought back to zero first.',
+            solution: ['The debit balance means write-offs exceeded the previous estimate', 'Expense = 18,400 + 1,250 = 19,650', 'Check: −1,250 + 19,650 = 18,400'] },
+
+          { id: 'e4p4', kind: 'numeric', lesson: 'd1',
+            prompt: 'Accounts receivable are $386,500 and the allowance has a credit balance of $23,900. What is net realisable value?',
+            answer: 362600, verify: { expr: '386500 - 23900' },
+            hint: 'Gross less the allowance.',
+            solution: ['NRV = 386,500 − 23,900 = 362,600'] },
+
+          { id: 'e4p5', kind: 'numeric', lesson: 'd3',
+            prompt: 'Receivables are $150,000 with a $9,000 allowance. A $2,400 account is written off. What is net realisable value after the write-off?',
+            answer: 141000, verify: { expr: '(150000 - 2400) - (9000 - 2400)' },
+            hint: 'Work out both sides after the entry, then subtract.',
+            solution: ['Receivables become 150,000 − 2,400 = 147,600', 'Allowance becomes 9,000 − 2,400 = 6,600', 'NRV = 147,600 − 6,600 = 141,000 — exactly what it was before'] },
+
+          { id: 'e4p6', kind: 'mc', lesson: 'd3',
+            prompt: 'A customer whose $1,900 balance was written off last year unexpectedly pays in full. What is recorded?',
+            options: [
+              { t: 'Dr A/R 1,900 / Cr Allowance 1,900, then Dr Cash 1,900 / Cr A/R 1,900', ok: true },
+              { t: 'Dr Cash 1,900 / Cr Bad Debt Expense 1,900', ok: false },
+              { t: 'Dr Cash 1,900 / Cr Accounts Receivable 1,900 only', ok: false },
+              { t: 'Dr Cash 1,900 / Cr Retained Earnings 1,900', ok: false }
+            ],
+            hint: 'The receivable has to exist again before it can be collected.',
+            solution: ['First reinstate what was written off: Dr A/R, Cr Allowance', 'Then record the collection normally: Dr Cash, Cr A/R', 'Two entries keep the customer’s account history intact'] },
+
+          { id: 'e4p7', kind: 'spot', lesson: 'd2',
+            prompt: 'An ageing schedule says the allowance should be 14,300. The allowance already holds 2,150 credit. One line below is wrong.',
+            steps: [
+              { t: 'The schedule gives the balance the allowance must end at: 14,300', bad: false },
+              { t: 'The allowance already carries 2,150 credit from last year', bad: false },
+              { t: 'So bad debt expense for the year is 14,300', bad: true },
+              { t: 'Dr Bad Debt Expense / Cr Allowance for Doubtful Accounts', bad: false }
+            ],
+            why: 'The ageing schedule produces a required ENDING balance, not an expense. The entry is whatever it takes to move the allowance from where it is to where it must be: 14,300 − 2,150 = 12,150. Recording 14,300 leaves the allowance at 16,450 and overstates the expense by exactly the balance that was already there. This is the single commonest error on this topic, and it happens because the ageing method and the percentage-of-sales method use their answer differently — one sets the ending balance, the other IS the expense.',
+            hint: 'Ask what the schedule figure describes: a balance, or an amount for this year?',
+            solution: ['The schedule gives the required ENDING allowance balance, not the expense', 'Expense = 14,300 − 2,150 = 12,150', 'Recording 14,300 leaves the allowance at 16,450 and overstates the expense by 2,150'] },
+
+          { id: 'e4p8', kind: 'order', lesson: 'd3',
+            prompt: 'Put the life of a doubtful account in order.',
+            steps: [
+              'Sell on credit — Dr Accounts Receivable, Cr Revenue',
+              'Estimate at period end — Dr Bad Debt Expense, Cr Allowance',
+              'Judge the account uncollectible — Dr Allowance, Cr Accounts Receivable',
+              'Customer pays after all — reinstate, then record the cash'
+            ],
+            hint: 'The estimate comes before anyone knows which account will fail.',
+            solution: ['The expense is recognised at step 2, in the period of the sale', 'Step 3 carries no expense, because step 2 already did'] }
+        ]
+      }
+    ]
+  };
+
+  root.Courses.register(FINACCT);
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+<script>
 /* UNI Made EZ — subject profiles
    Copyright © 2026 JohnsonXCorp. All rights reserved.
    Proprietary. Not open source: see LICENSE. */
@@ -7560,7 +8431,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.36', date: '14 September 2026', year: 2026 };
+  const BUILD = { v: '2.37', date: '14 September 2026', year: 2026 };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonandy242', ['gmail', 'com'].join('.')].join('@');
   /* The one sentence that says what this is. It appears under the wordmark, and build.js uses
@@ -7573,6 +8444,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      because the person who needs it is the one who just watched the app refresh itself and wants to
      know what moved. Trim the tail when it gets past a dozen; nobody reads further back than that. */
   const WHATS_NEW = [
+    ['2.37', '<b>Accounting is taught here now.</b> A first <b>Financial Accounting</b> course &mdash; the accounting equation and the statements, recording transactions, adjusting and closing entries, and receivables &mdash; built from a twelve-module outline checked against a real ACCT 2210 course rather than invented. Every figure in its practice is recomputed by a computer algebra system before the page is allowed to ship, the same guard the maths course has. Courses now also say <b>what comes before them</b> and, just as importantly, <b>what they do not cover</b>: the topics left out are listed by name on the course page instead of being discovered the night before an exam.'],
     ['2.36', '<b>The database was audited, and one lock became two.</b> Supabase flagged the two views the owner\u2019s figures are read through: both ran with the database owner\u2019s rights, which is how they returned counts without exposing rows, but a view is a wide surface for a privilege that ought to be narrow. Those rights now sit in one small function each, with a fixed shape and nothing a caller can bolt onto it. Auditing that turned up something more worth fixing: the tables holding sign-ups and the visitor count were protected only by their row rules \u2014 the key in this page still had <i>permission</i> to read them, so one accidental change to those rules would have opened them. It has no permission now either. Nothing about what the app sends changed; <a href="#/rights">the full account</a> says what the two locks are.'],
     ['2.34', '<b>Studying something the ten profiles do not cover? Say so.</b> The subject picker’s last option is now <b>Other</b> &mdash; Nursing, Music, Social Work, anything &mdash; and it is a real answer rather than a shrug: the general engine reads your files with every panel and every question type, exactly as before. Picking it asks <b>one optional question</b>: what subject is this? Answer and that word goes into the queue for the next profile to be written. It is sent on its own &mdash; no name, no email, not even the random id that counts visits &mdash; so there is nothing to connect it to you. Skip it and nothing is sent at all, and nothing is withheld either way. <a href="#/rights">The full account</a> now lists this message in its own table beside the counter.'],
     ['2.33', '<b>The app now reads your files as a subject.</b> Add a Chemistry handout and it is read as Chemistry: reactions and equations come first in Key information, the panels are named the way chemists name them, and the extra sentence shapes chemistry uses are picked up. Ten profiles &mdash; Mathematics, Physics, Chemistry, Biology, Computer science, Statistics, Accounting, Law, Marketing and English. It always shows you what it decided and the words that decided it, and one tap changes it; where two subjects are genuinely close it says so instead of picking. An English handout stops being offered a &ldquo;Figures&rdquo; panel and arithmetic questions, a Law one stops being offered arithmetic, and a Maths one puts its formulas at the top where they belong.'],
@@ -8676,7 +9548,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     const subs = state.subjects;
     /* ---------- the front page argues one thing: there are two ways in ----------
        Until v2.19 the hero was entirely the upload story and the courses were a strip below it,
-       which had stopped being true — the app now teaches three courses of its own. Two doors,
+       which had stopped being true — the app now teaches four courses of its own. Two doors,
        side by side, at equal weight: neither reads as the main thing and the other as a footnote.
        The subject cards on the left show what is actually taught rather than promising it, and
        they name subjects rather than individual courses so the door still works at a dozen. */
@@ -8739,7 +9611,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
           <span class="arr">→</span>
         </a>`;
       })()}
-      <div class="subjects-head"><h2>${subs.length ? 'Your subjects' : 'No subjects yet'}</h2><a class="btn cell ghost" href="#/courses" title="Math and Law courses written out in full, with worked examples and practice">Tutoring</a><a class="btn cell ghost" href="#/packs" title="A whole course somebody has already set up — readings, cards, outcomes and schedule">Course packs</a>${subs.length ? `<a class="btn cell ghost" href="#/plan" title="The next fortnight, worked backwards from your exams and deadlines">Study plan</a><a class="btn cell ghost" href="#/semester" title="Every subject, exam and deadline on one screen">Semester view</a>` : ''}${(() => { const n = state.subjects.reduce((x, s2) => x + leechCount(s2.id), 0); return n ? `<a class="btn cell ghost" href="#/leeches" title="Every card that keeps failing, in one place">Leeches <span class="n">${n}</span></a>` : ''; })()}<button class="btn cell ghost" data-act="backup-open" title="Back up every subject to a file, or restore one">Backup &amp; restore</button><button class="btn cell" data-act="new-subject">Add subject <span class="arr">→</span></button></div>
+      <div class="subjects-head"><h2>${subs.length ? 'Your subjects' : 'No subjects yet'}</h2><a class="btn cell ghost" href="#/courses" title="Courses written out in full, with worked examples and practice">Tutoring</a><a class="btn cell ghost" href="#/packs" title="A whole course somebody has already set up — readings, cards, outcomes and schedule">Course packs</a>${subs.length ? `<a class="btn cell ghost" href="#/plan" title="The next fortnight, worked backwards from your exams and deadlines">Study plan</a><a class="btn cell ghost" href="#/semester" title="Every subject, exam and deadline on one screen">Semester view</a>` : ''}${(() => { const n = state.subjects.reduce((x, s2) => x + leechCount(s2.id), 0); return n ? `<a class="btn cell ghost" href="#/leeches" title="Every card that keeps failing, in one place">Leeches <span class="n">${n}</span></a>` : ''; })()}<button class="btn cell ghost" data-act="backup-open" title="Back up every subject to a file, or restore one">Backup &amp; restore</button><button class="btn cell" data-act="new-subject">Add subject <span class="arr">→</span></button></div>
       <div class="subject-grid">
         ${subs.map(s => `<div class="subject-slot"><a class="subject-card" href="#/s/${s.id}" style="--tab:${s.color}">
           <div class="code">${esc(s.code || 'Subject')}</div>
@@ -9527,6 +10399,30 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     </section>`).join('');
     return renderLibrary(groups);
   }
+  /* The prerequisite is stored as a course ID and the TITLE is looked up, never retyped. A course
+     renamed in one file and quoted by hand in another is a pair that drifts silently, and the one
+     that drifts is always the copy nobody is looking at. An id that resolves to nothing is a
+     build error, not a blank space — test/courses.js walks the whole chain. */
+  function prereqOf(c) {
+    if (!c || !c.prereq) return null;
+    return Courses.all().find(x => x.id === c.prereq) || null;
+  }
+  function prereqNote(c) {
+    if (!c || !c.prereq) return '';
+    const p = prereqOf(c);
+    if (!p) return '';   // an unresolved id is caught by the suite, not papered over here
+    return `<p class="course-note"><span class="label">Comes after</span> <span><a href="#/courses/${esc(p.id)}">${esc(p.title)}</a> &mdash; this course assumes you can already do what that one teaches.</span></p>`;
+  }
+  /* What a course deliberately does NOT cover. A confidently wrong lesson in someone's revision is
+     worse than an absent one, so an absent one is named rather than left to be discovered the night
+     before an exam. */
+  function gapsNote(c) {
+    if (!c || !c.gaps || !c.gaps.length) return '';
+    return `<div class="course-note gaps"><span class="label">Not covered here</span>
+      <div><p>These are on the course outline and are deliberately not in this app yet. Nothing below is taught here &mdash; use your notes and the set text.</p>
+      <ul class="rights-list">${c.gaps.map(g => `<li>${esc(g)}</li>`).join('')}</ul></div></div>`;
+  }
+
   function courseCard(c) {
     const n = Courses.count(c.id);
     const done = c.units.reduce((a, u) => a + unitProgress(c, u).seen, 0);
@@ -9595,9 +10491,11 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
           <h1>${esc(c.title)}</h1>
           <p class="lede">${esc(c.blurb)}</p>
           <div class="sum-stats"><div><b>${n.lessons}</b><span>lessons</span></div><div><b>${n.examples}</b><span>worked examples</span></div><div><b>${n.practice}</b><span>practice questions</span></div></div>
+          ${prereqNote(c)}
           ${c.exam ? `<p class="course-note exam"><span class="label">Exam scope</span> <span>${esc(c.exam)}</span></p>` : ''}
           ${c.text ? `<p class="course-note"><span class="label">Set text</span> <span>${esc(c.text)} &mdash; this course points at the chapters to read alongside it and does not replace them.</span></p>` : ''}
           ${c.legalNote ? `<p class="course-note warn"><span class="label">Please note</span> <span>${esc(c.legalNote)}</span></p>` : ''}
+          ${gapsNote(c)}
         </div>
         ${masteryBand(c)}
         <div class="unit-list">${rows}</div>
