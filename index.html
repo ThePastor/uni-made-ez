@@ -1771,6 +1771,26 @@ math mi[mathvariant="normal"] { font-style: normal; }
 .pack-card.built { background: var(--tint-1); }
 .pack-card.built:hover { background: var(--accent-soft); }
 .pack-built { margin-top: var(--band-lg); }
+/* ---- how a subject is being read (v2.33) ----
+   This strip is a statement about the app's own reasoning, so it is quiet rather than loud: an
+   accent bar, the subject named once, and the words that decided it. The unsure variant is warm
+   rather than alarming — being torn between Biology and Chemistry is the correct answer for a
+   biochemistry handout, not a failure to report. */
+.subj-strip { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; margin: 0 0 var(--band); padding: 11px var(--pad-in); background: var(--surface-2); border-left: var(--accent-bar) solid var(--accent); }
+.subj-strip.unsure { border-left-color: var(--warn); background: var(--warn-soft); }
+.subj-strip .subj-name { font-family: var(--font-display); font-weight: 600; font-size: 1.02rem; letter-spacing: -.02em; }
+.subj-strip .small { color: var(--ink-2); flex: 1 1 320px; min-width: 0; line-height: 1.5; }
+.subj-strip .btn { margin-left: auto; }
+/* the ordered variant: cells are direct children, so DOM order is reading order at every width */
+.keys.flow { align-items: start; align-content: start; }
+.keys.flow > .cell { align-self: start; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.subj-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+.subj-opt { text-align: left; background: var(--surface); border: 0; padding: 12px var(--pad-in); display: grid; gap: 4px; cursor: pointer; }
+.subj-opt b { font-family: var(--font-display); font-weight: 500; font-size: 1rem; letter-spacing: -.015em; }
+.subj-opt .small { color: var(--ink-2); line-height: 1.45; }
+.subj-opt:hover { background: var(--accent-soft); }
+.subj-opt.on { background: var(--accent); color: var(--accent-ink); }
+.subj-opt.on .small { color: var(--accent-ink); }
 /* A stacked pair of .small paragraphs on the pack preview had no gap between them at all: .page
    sets no paragraph margin, and only .legal-sec p did. Measured at 0px. */
 .page.narrow > p { margin: 0 0 .9em; }
@@ -2016,7 +2036,7 @@ math mi[mathvariant="normal"] { font-style: normal; }
 .mastery-band .label, .lvl-moves li span,
 .worked .ans .label, .formula, .term-detail, .copy-box, .leech-note,
 .fade-note .small, .own-ask label, .own-words .label, .worked .wsteps li.blank .why,
-.pack-card .small, .pack-card .label,
+.pack-card .small, .pack-card .label, .subj-strip .small, .subj-strip .label, .subj-opt .small,
 .notice.warn, .calib-grid .cq span, .ord-chosen li, .mat .info,
 .subjects-head .btn.cell.ghost, .hint-box summary { color: var(--ink-2); }
 /* status text keeps its own hue on its own tint — those pairs are solved above */
@@ -4277,7 +4297,7 @@ const GENERIC = new Set('information data process system method result results s
        · a term could be asked about once, ever, even where a second sentence used it differently.
      Widened here. The guards that matter are kept: a sentence is still used once, and a term may
      be asked about twice at most and never the same way twice. */
-  function quiz(a, { count = 10, types = ['mc', 'tf', 'fill'], seed = 1, only = null, level = 0, mix = null } = {}) {
+  function quiz(a, { count = 10, types = ['mc', 'tf', 'fill'], seed = 1, only = null, level = 0, mix = null, profile = null } = {}) {
     const rand = rng(seed);
     const qs = [];
     const usedSent = new Set();
@@ -4288,13 +4308,26 @@ const GENERIC = new Set('information data process system method result results s
     for (const d of a.defs) items.push({ kind: 'def', term: d.term, def: d, cat: catOf(d.term) });
     for (const ac of a.acronyms) items.push({ kind: 'acr', term: ac.acr, ac, cat: 'acr' });
     for (const t of a.terms.slice(0, 60)) if (!items.some(i => lc(i.term) === t.key) && !(t.cat === 'word' && (t.count < 3 || GENERIC.has(t.key) || a.terms.indexOf(t) > 34))) items.push({ kind: 'term', term: t.display, cat: t.cat });
-    for (const f of a.facts) for (const n of f.nums.slice(0, 3)) items.push({ kind: 'num', term: n, fact: f, cat: 'num' });
+    /* A discipline that has no arithmetic gets no figure questions. In Law a number is a section
+       number, a date or an award; in English it is a page reference. Asking a student to fill one
+       in is asking them to recall a token, which is the least useful thing this engine can do. */
+    const wantNums = !(profile && profile.types && profile.types.numeric === false);
+    if (wantNums) for (const f of a.facts) for (const n of f.nums.slice(0, 3)) items.push({ kind: 'num', term: n, fact: f, cat: 'num' });
     let pool = items;
     if (only && only.size) {
       const hit = items.filter(i => { const t = lc(i.term); for (const k of only) if (t === k || t.includes(k) || k.includes(t)) return true; return false; });
       if (hit.length >= 3) pool = hit;
     }
+    /* Vocabulary this discipline builds its questions out of goes first, so a Chemistry quiz leads
+       with reactions and compounds rather than whatever happened to be frequent. A boost reorders
+       the candidates; it never adds one that was not in the material. */
+    const boost = new Set(((profile && profile.boost) || []).map(lc));
     const order = shuffle(pool, rand);
+    if (boost.size) order.sort((x, y) => {
+      const bx = Array.from(boost).some(b => lc(x.term).includes(b)) ? 1 : 0;
+      const by = Array.from(boost).some(b => lc(y.term).includes(b)) ? 1 : 0;
+      return by - bx;
+    });
     const ordQ = types.includes('order') && !only ? orderQuestions(a, rand, Math.max(1, Math.round(count / 4))) : [];
     const wanted = types.filter(t => t !== 'order').length ? types.filter(t => t !== 'order') : (ordQ.length ? [] : ['mc']);
     const room = Math.max(0, count - ordQ.length);
@@ -7257,6 +7290,254 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 
 </script>
 <script>
+/* UNI Made EZ — subject profiles
+   Copyright © 2026 JohnsonXCorp. All rights reserved.
+   Proprietary. Not open source: see LICENSE. */
+/* ---------- what a "subject engine" actually is ----------
+
+   A student's Chemistry handout and their English seminar notes are not the same kind of document,
+   and until v2.33 this app read them identically: the same definition patterns, the same key
+   information panels in the same order, the same question types, the same idea of what a "formula"
+   is. That is why an English essay picked up a "Figures" panel and a Maths handout buried its
+   equations under "Entities".
+
+   TEN ENGINES WOULD HAVE BEEN THE WRONG SHAPE. Ninety per cent of what the engine does — finding
+   sentences, sections, definitions, terms, building a spaced-repetition deck — is the same work for
+   every discipline, and ten copies of it would be ten places for the same bug to live and nine
+   places for a fix to be forgotten. What actually differs between disciplines is small, specific
+   and declarative, so it is DATA:
+
+     signals   the words and notation that say "this is Chemistry", used to detect the subject
+     boost     vocabulary this discipline builds its questions out of, so those terms rank first
+     panels    which parts of Key information matter here, in the order this discipline reads them
+     types     which question kinds make sense — Law has no arithmetic, English has no formulas
+     patterns  extra definition shapes this discipline uses that the generic engine misses
+     labels    what this discipline CALLS things, so the app uses the student's own vocabulary
+
+   Everything here is a preference expressed over one engine. A profile can reorder, rename,
+   re-weight and switch off; a profile cannot invent a fact, and nothing here changes the rule that
+   the app extracts rather than understands.
+
+   ON DETECTION, AND WHY IT IS ALWAYS SHOWN. Guessing the subject wrong and silently reshaping a
+   student's revision would be worse than not guessing at all — a Biochemistry handout is honestly
+   ambiguous between Biology and Chemistry, and the app has no business pretending otherwise. So
+   detection returns a RANKING with a margin, the app shows what it decided and the words that
+   decided it, and one tap changes it. Where the top two are close it says so rather than picking. */
+(root => {
+  const P = [
+    {
+      id: 'math', name: 'Mathematics', short: 'Maths',
+      blurb: 'Formulas, worked method, and questions that ask you to apply a rule rather than recall it.',
+      signals: ['theorem', 'proof', 'lemma', 'corollary', 'derivative', 'integral', 'polynomial', 'matrix', 'vector',
+        'asymptote', 'factorise', 'factorize', 'quadratic', 'logarithm', 'exponent', 'coefficient', 'inequality',
+        'domain', 'range', 'differentiate', 'integrate', 'solve for', 'let x', 'substitute', 'simplify', 'graph of',
+        'function f', 'f(x)', 'sine', 'cosine', 'tangent', 'radian', 'hypotenuse', '∫', '∑', '√', 'π', '≤', '≥'],
+      boost: ['theorem', 'proof', 'formula', 'equation', 'function', 'derivative', 'integral', 'identity', 'rule'],
+      panels: ['formulas', 'acronyms', 'defs', 'processes', 'terms', 'lists', 'figures'],
+      types: { mc: true, tf: true, fill: true, order: true, numeric: true },
+      labels: { figures: 'Figures and constants', processes: 'Methods, step by step' },
+      patterns: [
+        { re: /\b(?:the\s+)?([a-z][a-z\s-]{2,28}?)\s+(?:theorem|rule|law|identity)\s+(?:states|says)\s+that\s+(.{10,200})/i, kind: 'rule' }
+      ],
+      note: 'Worked method matters more than wording here, so ordering questions and numeric answers are on by default.'
+    },
+    {
+      id: 'physics', name: 'Physics',
+      blurb: 'Quantities with units, the equation that links them, and what happens when one changes.',
+      signals: ['velocity', 'acceleration', 'momentum', 'newton', 'joule', 'watt', 'kinetic', 'potential energy',
+        'wavelength', 'frequency', 'amplitude', 'voltage', 'resistance', 'current', 'circuit', 'magnetic', 'electric field',
+        'friction', 'gravity', 'gravitational', 'inertia', 'torque', 'displacement', 'free-body', 'thermodynamic',
+        'quantum', 'photon', 'refraction', 'm/s', 'kg', 'n/m', 'joules', 'ohm', 'hertz', 'watts'],
+      boost: ['law', 'equation', 'constant', 'quantity', 'unit', 'force', 'energy', 'field'],
+      panels: ['formulas', 'acronyms', 'figures', 'defs', 'processes', 'terms', 'lists'],
+      types: { mc: true, tf: true, fill: true, order: true, numeric: true },
+      labels: { figures: 'Quantities and constants', acronyms: 'Acronyms' },
+      patterns: [
+        { re: /\b([A-Za-z][A-Za-z\s'-]{2,28}?)\s+law\s+(?:of\s+[a-z\s]{3,24}\s+)?states\s+that\s+(.{10,200})/i, kind: 'law' }
+      ],
+      note: 'Units are treated as part of a figure, so an answer is wrong if the unit is wrong.'
+    },
+    {
+      id: 'chem', name: 'Chemistry',
+      blurb: 'Reactions, the conditions they need, and the quantities that come out of them.',
+      signals: ['mole', 'molar', 'reagent', 'catalyst', 'oxidation', 'reduction', 'redox', 'valence', 'isotope',
+        'covalent', 'ionic bond', 'enthalpy', 'entropy', 'titration', 'stoichiometry', 'aqueous', 'precipitate',
+        'solvent', 'solute', 'electronegativity', 'periodic table', 'atomic number', 'compound', 'reaction',
+        'equilibrium', 'acid', 'alkaline', 'ph ', 'buffer', 'hydrocarbon', 'alkane', 'alkene', 'functional group'],
+      boost: ['reaction', 'compound', 'element', 'bond', 'acid', 'base', 'catalyst', 'equation', 'ion'],
+      panels: ['formulas', 'processes', 'defs', 'acronyms', 'figures', 'terms', 'lists'],
+      types: { mc: true, tf: true, fill: true, order: true, numeric: true },
+      labels: { formulas: 'Equations and formulas', processes: 'Reactions and procedures' },
+      patterns: [
+        { re: /\b([A-Za-z0-9()]{1,24})\s*(?:\+\s*[A-Za-z0-9()]{1,24}\s*)*(?:→|->|⟶)\s*(.{2,80})/, kind: 'reaction' }
+      ],
+      note: 'Subscripts and superscripts are restored from the PDF text layer, so H₂O is not read as H2O.'
+    },
+    {
+      id: 'bio', name: 'Biology',
+      blurb: 'Structures and what they do, processes in order, and the vocabulary that names them.',
+      signals: ['cell', 'enzyme', 'protein', 'dna', 'rna', 'gene', 'mitochondria', 'photosynthesis', 'organism',
+        'tissue', 'species', 'membrane', 'allele', 'chromosome', 'eukaryotic', 'prokaryotic', 'nucleus', 'ribosome',
+        'metabolism', 'respiration', 'homeostasis', 'genotype', 'phenotype', 'mitosis', 'meiosis', 'bacteria',
+        'antibody', 'hormone', 'neuron', 'ecosystem', 'evolution', 'natural selection', 'amino acid'],
+      boost: ['process', 'structure', 'function', 'stage', 'pathway', 'organ', 'system', 'cycle'],
+      panels: ['defs', 'processes', 'terms', 'lists', 'figures', 'formulas', 'acronyms'],
+      types: { mc: true, tf: true, fill: true, order: true, numeric: true },
+      labels: { processes: 'Processes and pathways', defs: 'Terms and what they mean' },
+      patterns: [
+        { re: /\b([A-Z][a-z][a-z\s-]{2,28}?)\s+is\s+the\s+(?:process|stage|pathway|cycle)\s+(?:by\s+which|in\s+which|where)\s+(.{10,200})/i, kind: 'process' }
+      ],
+      note: 'Processes in a fixed order are common here, so ordering questions are on by default.'
+    },
+    {
+      id: 'cs', name: 'Computer science', short: 'CS',
+      blurb: 'Algorithms as ordered steps, the cost of running them, and the vocabulary of the language.',
+      signals: ['algorithm', 'recursion', 'recursive', 'compiler', 'runtime', 'complexity', 'o(n', 'big-o',
+        'array', 'linked list', 'hash table', 'binary tree', 'pointer', 'stack', 'queue', 'iteration', 'boolean',
+        'variable', 'parameter', 'return value', 'database', 'query', 'sql', 'api', 'inheritance', 'polymorphism',
+        'encapsulation', 'thread', 'concurrency', 'bitwise', 'integer', 'string literal', 'pseudocode', 'debug'],
+      boost: ['algorithm', 'data structure', 'complexity', 'function', 'class', 'method', 'operation', 'pattern'],
+      panels: ['processes', 'defs', 'terms', 'acronyms', 'lists', 'formulas', 'figures'],
+      types: { mc: true, tf: true, fill: true, order: true, numeric: false },
+      labels: { processes: 'Algorithms, step by step', acronyms: 'Acronyms' },
+      patterns: [
+        { re: /\b([a-z][a-z\s-]{2,28}?)\s+runs\s+in\s+(O\([^)]{1,16}\)[^.]{0,60})/i, kind: 'complexity' }
+      ],
+      note: 'An algorithm is an ordered thing, so ordering questions carry most of the weight. Numeric answers are off — the figures here are usually complexities, not quantities.'
+    },
+    {
+      id: 'stats', name: 'Statistics',
+      blurb: 'Which test to use and when, what a result means, and the symbols that carry it.',
+      signals: ['standard deviation', 'variance', 'p-value', 'null hypothesis', 'confidence interval', 'regression',
+        'correlation', 'sample size', 'population mean', 'distribution', 'significance', 't-test', 'chi-square',
+        'anova', 'probability', 'random variable', 'skew', 'quartile', 'percentile', 'residual', 'normal distribution',
+        'standard error', 'degrees of freedom', 'statistically significant', 'μ', 'σ', 'α =', 'p <'],
+      boost: ['test', 'distribution', 'hypothesis', 'interval', 'estimate', 'measure', 'assumption', 'statistic'],
+      panels: ['formulas', 'acronyms', 'defs', 'figures', 'terms', 'processes', 'lists'],
+      types: { mc: true, tf: true, fill: true, order: true, numeric: true },
+      labels: { acronyms: 'Acronyms', defs: 'Tests, measures and terms', processes: 'Procedures' },
+      patterns: [
+        { re: /\buse\s+(?:a|an|the)\s+([a-z][a-z\s-]{2,28}?)\s+(?:test|when)\s+(.{10,200})/i, kind: 'whento' }
+      ],
+      note: 'The commonest exam question here is which test applies, so "when to use" statements are treated as definitions.'
+    },
+    {
+      id: 'acct', name: 'Accounting',
+      blurb: 'What goes where, which statement it lands on, and the rule that says so.',
+      signals: ['debit', 'credit', 'ledger', 'journal entry', 'balance sheet', 'income statement', 'cash flow',
+        'accounts receivable', 'accounts payable', 'depreciation', 'amortisation', 'amortization', 'accrual',
+        'gaap', 'ifrs', 'asset', 'liability', 'equity', 'revenue', 'expense', 'trial balance', 'retained earnings',
+        'inventory', 'amortised cost', 'fiscal year', 'audit', 'double-entry', 'cost of goods sold', 'gross margin'],
+      boost: ['account', 'statement', 'entry', 'standard', 'principle', 'ratio', 'method', 'balance'],
+      panels: ['defs', 'figures', 'formulas', 'processes', 'terms', 'lists', 'acronyms'],
+      types: { mc: true, tf: true, fill: true, order: true, numeric: true },
+      labels: { figures: 'Figures and thresholds', formulas: 'Ratios and equations', processes: 'Procedures' },
+      patterns: [
+        { re: /\b([a-z][a-z\s-]{2,28}?)\s+(?:is|are)\s+(?:recorded|recognised|recognized|reported)\s+(?:as|in|on|when)\s+(.{10,200})/i, kind: 'treatment' }
+      ],
+      note: 'Where an item is recorded is treated as a definition, because that is what the exam asks.'
+    },
+    {
+      id: 'law', name: 'Law',
+      blurb: 'The test for a thing, its elements, and the authority it comes from.',
+      signals: ['statute', 'plaintiff', 'defendant', 'tort', 'negligence', 'liability', 'jurisdiction', 'precedent',
+        'doctrine', 'breach of contract', 'remedy', 'damages', 'consideration', 'reasonable person', 'duty of care',
+        'common law', 'legislation', 'appellant', 'respondent', 'injunction', 'statutory', 'case law', 'ratio decidendi',
+        'obiter', 'court of appeal', 'supreme court', 'enacted', 'unenforceable', 'burden of proof', 's. 3', 'v.'],
+      boost: ['test', 'element', 'principle', 'doctrine', 'duty', 'right', 'remedy', 'defence', 'defense'],
+      panels: ['defs', 'lists', 'terms', 'processes', 'figures', 'formulas', 'acronyms'],
+      types: { mc: true, tf: true, fill: true, order: true, numeric: false },
+      labels: { defs: 'Tests, doctrines and terms', lists: 'Elements and factors', processes: 'How a question is worked' },
+      patterns: [
+        { re: /\bthe\s+test\s+for\s+([a-z][a-z\s-]{2,40}?)\s+(?:is|requires)\s+(.{10,220})/i, kind: 'test' },
+        { re: /\b(?:to\s+establish|to\s+prove)\s+([a-z][a-z\s-]{2,40}?),?\s+(?:a\s+claimant|the\s+plaintiff|you)\s+must\s+(.{10,220})/i, kind: 'elements' }
+      ],
+      note: 'Numeric answers are off: law has no arithmetic, and a figure in a case is a date or an amount, not something to calculate.'
+    },
+    {
+      id: 'mktg', name: 'Marketing',
+      blurb: 'Frameworks, what each part of them is for, and the vocabulary a brief is written in.',
+      signals: ['brand', 'consumer', 'segmentation', 'targeting', 'positioning', 'marketing mix', 'promotion',
+        'distribution channel', 'market share', 'campaign', 'swot', 'value proposition', 'customer journey',
+        'b2b', 'b2c', 'stakeholder', 'advertising', 'pricing strategy', 'product life cycle', 'loyalty',
+        'demographic', 'psychographic', 'conversion rate', 'touchpoint', 'differentiation', 'competitive advantage',
+        'four ps', '4ps', 'buyer persona', 'go-to-market'],
+      boost: ['framework', 'model', 'strategy', 'segment', 'channel', 'objective', 'metric', 'stage'],
+      panels: ['defs', 'lists', 'terms', 'processes', 'figures', 'formulas', 'acronyms'],
+      types: { mc: true, tf: true, fill: true, order: true, numeric: false },
+      labels: { lists: 'Frameworks and their parts', defs: 'Concepts and terms', processes: 'Processes and funnels' },
+      patterns: [
+        { re: /\bthe\s+(?:four|4|five|5|seven|7)\s+(?:p'?s|c'?s)\s+(?:of\s+[a-z\s]{3,24}\s+)?(?:are|is)\s*:?\s*(.{10,200})/i, kind: 'framework' }
+      ],
+      note: 'This discipline is built out of named frameworks with a fixed number of parts, so lists are treated as first-class and the app asks you to name all of them.'
+    },
+    {
+      id: 'eng', name: 'English',
+      blurb: 'Devices, argument and evidence — no formulas, and nothing pretending to be a calculation.',
+      signals: ['metaphor', 'narrator', 'imagery', 'protagonist', 'antagonist', 'stanza', 'rhetoric', 'thesis statement',
+        'symbolism', 'motif', 'literary', 'novel', 'poem', 'poet', 'prose', 'allegory', 'irony', 'juxtaposition',
+        'alliteration', 'connotation', 'genre', 'soliloquy', 'the speaker', 'the reader', 'characterisation',
+        'characterization', 'foreshadowing', 'tone and mood', 'close reading', 'essay argument', 'counterargument'],
+      boost: ['device', 'theme', 'argument', 'evidence', 'technique', 'effect', 'structure', 'voice'],
+      panels: ['defs', 'terms', 'lists', 'processes', 'figures', 'formulas', 'acronyms'],
+      types: { mc: true, tf: true, fill: true, order: false, numeric: false },
+      labels: { defs: 'Devices, terms and concepts', lists: 'Points and evidence', terms: 'Names and works' },
+      patterns: [],
+      note: 'No formulas, no figures panel and no arithmetic — an English handout has none of those, and offering them is how an essay ended up with a "Figures" section.'
+    }
+  ];
+
+  const byId = Object.fromEntries(P.map(p => [p.id, p]));
+
+  /* Score every profile against a document. Normalised by length, because a long handout will hit
+     more of everything, and a signal is only evidence if it is unusually frequent HERE.
+
+     The margin between first and second is returned, and it matters more than the top score: a
+     biochemistry handout scoring 0.9 Biology and 0.85 Chemistry has been read correctly and
+     classified meaninglessly, and the app should say so rather than flip a coin. */
+  function detect(text) {
+    const t = ' ' + String(text || '').toLowerCase().replace(/\s+/g, ' ') + ' ';
+    const words = Math.max(120, t.split(' ').length);
+    const scale = Math.sqrt(words / 400);
+    const scored = P.map(p => {
+      let hits = 0; const found = [];
+      for (const sig of p.signals) {
+        const s = sig.toLowerCase();
+        // a multi-word or punctuated signal is matched literally; a bare word needs its boundaries
+        const re = /^[a-z]+$/.test(s) ? new RegExp('\\b' + s + '(?:s|es|ed|ing)?\\b', 'g') : null;
+        const n = re ? (t.match(re) || []).length : t.split(s).length - 1;
+        if (n) { hits += Math.min(n, 6); found.push(sig); }
+      }
+      return { id: p.id, name: p.name, raw: hits, score: hits / scale, distinct: found.length, found: found.slice(0, 6) };
+    }).sort((a, b) => b.score - a.score);
+    const top = scored[0], next = scored[1];
+    const margin = top.score ? (top.score - next.score) / top.score : 0;
+    /* Three states, and the middle one is the honest one. A document with almost no signals is not
+       "Biology with low confidence", it is a document this has nothing to say about. */
+    const sure = top.distinct >= 4 && top.score >= 3 && margin >= 0.3;
+    const near = top.distinct >= 3 && top.score >= 2;
+    return {
+      id: sure ? top.id : null,
+      best: top.id, name: top.name,
+      confidence: sure ? 'clear' : near ? 'close' : 'none',
+      margin: +margin.toFixed(2),
+      runnerUp: near && !sure ? next.id : null,
+      runnerUpName: near && !sure ? next.name : null,
+      found: top.found,
+      ranked: scored.slice(0, 3).map(x => ({ id: x.id, name: x.name, score: +x.score.toFixed(1), distinct: x.distinct }))
+    };
+  }
+
+  root.Subjects = {
+    all: () => P.slice(),
+    get: id => byId[id] || null,
+    ids: () => P.map(p => p.id),
+    detect
+  };
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+<script>
 /* UNI Made EZ — application
    Copyright © 2026 JohnsonXCorp. All rights reserved.
    Proprietary. Not open source: see LICENSE. Third-party components: THIRD-PARTY-NOTICES.md */
@@ -7264,7 +7545,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.32', date: '14 September 2026', year: 2026 };
+  const BUILD = { v: '2.33', date: '14 September 2026', year: 2026 };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonandy242', ['gmail', 'com'].join('.')].join('@');
   /* The one sentence that says what this is. It appears under the wordmark, and build.js uses
@@ -7277,6 +7558,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      because the person who needs it is the one who just watched the app refresh itself and wants to
      know what moved. Trim the tail when it gets past a dozen; nobody reads further back than that. */
   const WHATS_NEW = [
+    ['2.33', '<b>The app now reads your files as a subject.</b> Add a Chemistry handout and it is read as Chemistry: reactions and equations come first in Key information, the panels are named the way chemists name them, and the extra sentence shapes chemistry uses are picked up. Ten profiles &mdash; Mathematics, Physics, Chemistry, Biology, Computer science, Statistics, Accounting, Law, Marketing and English. It always shows you what it decided and the words that decided it, and one tap changes it; where two subjects are genuinely close it says so instead of picking. An English handout stops being offered a &ldquo;Figures&rdquo; panel and arithmetic questions, a Law one stops being offered arithmetic, and a Maths one puts its formulas at the top where they belong.'],
     ['2.32', 'Quizzes are <b>bigger and can be made harder</b>. The engine was quietly running out of questions &mdash; a six-hundred-word handout could produce 29 and no more, while a third of its terms were never considered and forty of its sentences were never used, so asking for 40 gave you 29 with no explanation. It now reaches 38 from the same document, and the set-up page says up front how many your material can actually support instead of offering numbers it cannot meet. There is also a <b>difficulty</b> setting, and it is real: every question is graded by the work it takes &mdash; recognise, produce, or discriminate &mdash; and two genuinely hard kinds are new. <b>Three of these are true, which one is not</b> gives you four statements from your own material with one term changed, so elimination is worth nothing. And a <b>two-blank</b> fill removes two load-bearing words from one sentence instead of one. If your last few quizzes were over 85%, the app starts you harder.'],
     ['2.31', 'Legibility fixes, two of them bad. On the <b>privacy page</b>, every bullet that began with bold text was being shattered &mdash; the word after the bold run lost its space, and the rest of the sentence stacked one word per line down a 14px column. In the <b>Law courses</b>, every &ldquo;rule&rdquo; box was being typeset as mathematics: italic serif with the spaces stripped out and the end clipped off, so <i>the circumstances of the bargain</i> read as one long unbroken word. Both are fixed, and both now fail the build if they come back. Also: the steps of a worked example in a Law course are set in reading type rather than the monospace that suits algebra; the three notes at the top of a course page are one component instead of three, and no longer run 169 characters to the line; and bulleted lists have a gap under them again.'],
     ['2.30', 'Both Law courses now run to the end of Midterm 2. <b>Commercial Law</b> gains consumer protection and competition law, the forms of carrying on business and what separate legal personality actually buys you, Indigenous business and economic development, and secured lending &mdash; chapters 6 to 9. <b>Environmental Law</b> gains international law and the regulatory toolbox (chapters 4 and 5, which are in <b>Midterm 1</b> and were missing), then sectoral regimes and impact assessment, and planning and market instruments. Six new units, nine lessons, 25 worked examples and 24 practice questions, each pointing at the chapter of the set text to read alongside it. Still not legal advice, and still nothing copied from anybody&rsquo;s textbook.'],
@@ -10005,6 +10287,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
         <div class="modal-foot"><span class="mono muted">${esc(cite(sent) || 'your material')}</span><span class="spacer" style="flex:1"></span><button type="button" class="btn sm" data-act="close-modal">Close</button></div>
       </div></div>`;
     }
+    if (m.type === 'subject-profile') return renderSubjectPicker(m.sid);
     if (m.type === 'share') {
       const subj = m.subject, c = shareCounts(subj);
       const kept = [`${plural(c.files, 'file')} and their text`, c.mine ? plural(c.mine, 'card you wrote') : '', c.edits ? `${plural(c.edits, 'card')} you reworded` : '',
@@ -11391,18 +11674,107 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     state.modal = { type: 'info', title: KIND_META[kind], kicker: `All ${plural(items.length, 'item')} · tap one for the full text`, filter: items.length > 8, body: `<${wrap} class="${cls} modal-list">${items.map((it, i) => keysRow(kind, it, i)).join('')}</${wrap}>` };
     syncModal();
   }
+  /* ================= subject profiles =================
+     src/subjects.js holds ten of them as data. This is the thin layer that decides WHICH one a
+     given subject is read as, and it has exactly one rule: the student is told, and the student
+     can overrule. A profile reshapes what they see, so guessing silently and getting it wrong
+     would be worse than not guessing — a biochemistry handout is honestly ambiguous, and the app
+     has no business pretending it is not.
+
+     Three states, and the middle one is the honest one:
+       chosen    the student picked, and nothing overrides that, ever
+       clear     one subject wins by a wide margin — used, and shown with the words that won it
+       close     two are within a quarter of each other, or the document is too thin to tell —
+                 the generic engine is used and the app says which two it was torn between */
+  const SUBJ_NONE = '_none';
+  function detectFor(a) {
+    if (!a) return null;
+    if (a._subjDetect) return a._subjDetect;
+    const text = (a.sentences || []).slice(0, 400).map(x => x.s).join(' ');
+    let d = null;
+    try { d = Subjects.detect(text); } catch (e) { d = null; }
+    a._subjDetect = d;
+    return d;
+  }
+  // what this subject is actually being read as, and why
+  function subjectRead(s, a) {
+    const picked = s && s.subjectId;
+    if (picked === SUBJ_NONE) return { profile: null, how: 'chosen', name: 'General' };
+    if (picked && Subjects.get(picked)) return { profile: Subjects.get(picked), how: 'chosen', name: Subjects.get(picked).name };
+    const d = detectFor(a);
+    if (d && d.id) return { profile: Subjects.get(d.id), how: 'detected', name: Subjects.get(d.id).name, found: d.found };
+    return { profile: null, how: 'unsure', name: 'General', d };
+  }
+  function subjNote(read) {
+    if (!read) return '';
+    if (read.how === 'chosen') return read.profile
+      ? `Read as <b>${esc(read.profile.name)}</b> because you chose it.`
+      : 'Read with the general engine because you chose it.';
+    if (read.how === 'detected') return `Read as <b>${esc(read.name)}</b> &mdash; ${esc((read.found || []).slice(0, 4).join(', ') || 'the vocabulary in your files')}.`;
+    const d = read.d;
+    if (d && d.confidence === 'close') return `Torn between <b>${esc(Subjects.get(d.best) ? Subjects.get(d.best).name : d.best)}</b> and <b>${esc(d.runnerUpName || '')}</b>, so the general engine is used. Pick one and it will read your files that way.`;
+    return 'Not enough subject vocabulary to tell what this is, so the general engine is used.';
+  }
+  /* The panels a discipline reads first, expanded into the full list so nothing is ever dropped —
+     a profile reorders Key information, it does not hide half of it. */
+  const PANEL_ALL = ['defs', 'acronyms', 'formulas', 'terms', 'processes', 'causes', 'comparisons',
+    'examples', 'diagrams', 'map', 'dates', 'figures', 'entities', 'lists'];
+  function panelOrder(prof) {
+    const want = (prof && prof.panels) || [];
+    const seen = new Set();
+    const out = [];
+    for (const k of want) if (PANEL_ALL.includes(k) && !seen.has(k)) { seen.add(k); out.push(k); }
+    for (const k of PANEL_ALL) if (!seen.has(k)) out.push(k);
+    return out;
+  }
+  function panelLabel(prof, kind) {
+    const l = prof && prof.labels && prof.labels[kind];
+    return l || KIND_META[kind] || kind;
+  }
+
+  function subjStripHtml(s2, read) {
+    const prof = read.profile;
+    return `<div class="subj-strip${read.how === 'unsure' ? ' unsure' : ''}">
+      <span class="label">Reading this as</span>
+      <span class="subj-name">${esc(read.name)}</span>
+      <span class="small">${subjNote(read)}</span>
+      ${prof ? `<span class="small muted">${esc(prof.note)}</span>` : ''}
+      <button type="button" class="btn sm" data-act="subj-open" data-s="${esc(s2.id)}">Change <span class="arr">&rarr;</span></button>
+    </div>`;
+  }
+
+  function renderSubjectPicker(sid) {
+    const s2 = subjectById(sid); if (!s2) return '';
+    const cur = s2.subjectId || '';
+    const row = (id, name, blurb) => `<button type="button" class="subj-opt${cur === id ? ' on' : ''}" data-act="subj-pick" data-id="${esc(id)}">
+      <b>${esc(name)}</b><span class="small">${esc(blurb)}</span></button>`;
+    return `<div class="modal-bg" data-act="close-modal"><div class="modal wide">
+      <div class="modal-head"><div><span class="label">How this subject is read</span><h2>${esc(s2.name)}</h2></div><button type="button" class="btn ghost icon" data-act="close-modal" aria-label="Close">${I.x}</button></div>
+      <div class="modal-body">
+        <p class="small muted">A profile changes which parts of Key information come first and what they are called, which question types are offered, and which extra sentence shapes the engine looks for. It never invents anything: everything still comes out of your own files.</p>
+        <div class="subj-grid">
+          ${row('', 'Detect it for me', 'Read the vocabulary in the files and pick. This is the default.')}
+          ${Subjects.all().map(pr => row(pr.id, pr.name, pr.blurb)).join('')}
+          ${row(SUBJ_NONE, 'General', 'No profile. Every panel in the standard order, every question type offered.')}
+        </div>
+      </div>
+    </div></div>`;
+  }
+
   function renderKeys(s, a, ui, note) {
     const k = Engine.keyInfo(a);
     ui.keys = k;
     const terms = keysItems(k, 'terms');
     const focus = ui.termFocus ? terms.find(t => t.key === ui.termFocus) : null;
     const lc = layerCounts(s.id);
+    const read = subjectRead(s, a);
+    const prof = read.profile;
     const cell = (kind, wrapOpen, wrapClose, extra = '') => {
       const items = keysItems(k, kind);
       if (!items.length) return '';
       const lim = ui.printAll ? items.length : (LIMITS[kind] || 6);
       const shown = items.slice(0, lim);
-      return `<div class="cell"><h3>${KIND_META[kind]} <span class="count">${items.length}</span></h3>${wrapOpen}${shown.map((it, i) => keysRow(kind, it, i)).join('')}${wrapClose}${extra}${items.length > lim ? `<button type="button" class="btn sm more" data-act="keys-all" data-kind="${kind}">Show all ${items.length} <span class="arr">→</span></button>` : ''}</div>`;
+      return `<div class="cell"><h3>${esc(panelLabel(prof, kind))} <span class="count">${items.length}</span></h3>${wrapOpen}${shown.map((it, i) => keysRow(kind, it, i)).join('')}${wrapClose}${extra}${items.length > lim ? `<button type="button" class="btn sm more" data-act="keys-all" data-kind="${kind}">Show all ${items.length} <span class="arr">→</span></button>` : ''}</div>`;
     };
     const termsBody = `<div class="term-chips">${terms.slice(0, LIMITS.terms).map((t) => `<button type="button" class="term-chip${ui.termFocus === t.key ? ' on' : ''}" data-act="term-focus" data-key="${esc(t.key)}"${mark(s.id, ID.term(t.key)) && mark(s.id, ID.term(t.key)).star ? ' data-star="1"' : ''}${noteOf(s.id, ID.term(t.key)) ? ' data-note="1"' : ''}>${esc(t.display)} <span class="mono dim">${t.count}</span></button>`).join('')}</div>
           ${focus ? `<div class="term-detail"><div class="row between"><strong>${esc(focus.display)}</strong><span class="mono muted">${focus.count}× · ${plural(focus.sections || 1, 'section')}</span></div>${focus.examples.length ? focus.examples.map(e => `<div class="clamp">${hlNeedles(e, [focus.display])}</div>`).join('') : '<div>Appears in headings or short lines only.</div>'}<button type="button" class="btn sm" data-act="keys-item" data-kind="terms" data-i="${terms.indexOf(focus)}">Full context <span class="arr">→</span></button></div>` : `<p class="small muted" style="margin-top:6px">Tap a term to see it in context.</p>`}`;
@@ -11412,30 +11784,40 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
       ${(lc.star || lc.note || lc.hide || lc.cards || lc.edits) ? `<button type="button" class="btn sm ghost" data-act="manage">Your additions <span class="arr">→</span></button>` : ''}
     </div>`;
     const nothing = ui.starOnly && !terms.length && !keysItems(k, 'defs').length && !keysItems(k, 'figures').length;
-    const inner = `<div class="panel-head">${note}<span class="label">${fmt(k.stats.sentences)} sentences · ${k.stats.sections} sections · tap any item to star it, note it or make a card</span>${tools}</div>
-    ${nothing ? `<div class="empty" style="margin-top:16px">Nothing starred in this subject yet. Turn the filter off, tap any item and choose ☆ Star.</div>` : ''}
-    <div class="keys">
-      <div class="stack">
-        ${k.defs.length ? cell('defs', '<dl class="def-list">', '</dl>') : `<div class="cell"><h3>Definitions <span class="count">0</span></h3><p class="muted small">No “X is …” style definitions were found. Try the terms list instead.</p></div>`}
-        ${cell('acronyms', '<dl class="def-list">', '</dl>')}
-        ${cell('formulas', '<div class="stack tight">', '</div>')}
-      </div>
-      <div class="stack">
-        <div class="cell"><h3>Terms to know <span class="count">${terms.length}</span></h3>${termsBody}</div>
-        ${cell('processes', '<div class="fact-list">', '</div>')}
-        ${cell('causes', '<div class="fact-list">', '</div>')}
-        ${cell('comparisons', '<div class="fact-list">', '</div>')}
-        ${cell('examples', '<div class="fact-list">', '</div>')}
-      </div>
-      <div class="stack">
-        ${cell('diagrams', '<div class="fig-list">', '</div>')}
-        ${cell('map', '<ol class="sec-map">', '</ol>')}
-        ${cell('dates', '<ol class="timeline">', '</ol>')}
-        ${cell('figures', '<div class="fact-list">', '</div>')}
-        ${cell('entities', '<div class="ent-list">', '</div>')}
-        ${cell('lists', '<div>', '</div>')}
-      </div>
-    </div>`;
+    /* The panels used to sit in three hard-coded columns in one fixed order, which meant a Maths
+       handout put its equations in the middle column under the terms list, and an English essay led
+       with "Definitions, Acronyms, Formulas" — two of which it does not have. The order now comes
+       from the subject profile, and the three columns are filled from that one list, so the panels
+       this discipline reads first are the ones at the top left. Nothing is ever dropped: a profile
+       reorders and renames, it does not hide. */
+    const WRAP = {
+      defs: ['<dl class="def-list">', '</dl>'], acronyms: ['<dl class="def-list">', '</dl>'],
+      formulas: ['<div class="stack tight">', '</div>'], processes: ['<div class="fact-list">', '</div>'],
+      causes: ['<div class="fact-list">', '</div>'], comparisons: ['<div class="fact-list">', '</div>'],
+      examples: ['<div class="fact-list">', '</div>'], diagrams: ['<div class="fig-list">', '</div>'],
+      map: ['<ol class="sec-map">', '</ol>'], dates: ['<ol class="timeline">', '</ol>'],
+      figures: ['<div class="fact-list">', '</div>'], entities: ['<div class="ent-list">', '</div>'],
+      lists: ['<div>', '</div>']
+    };
+    const blocks = [];
+    for (const kind of panelOrder(prof)) {
+      if (kind === 'terms') { blocks.push(`<div class="cell"><h3>${esc(panelLabel(prof, 'terms'))} <span class="count">${terms.length}</span></h3>${termsBody}</div>`); continue; }
+      if (kind === 'defs' && !k.defs.length) { blocks.push(`<div class="cell"><h3>${esc(panelLabel(prof, 'defs'))} <span class="count">0</span></h3><p class="muted small">No &ldquo;X is &hellip;&rdquo; style definitions were found. Try the terms list instead.</p></div>`); continue; }
+      const w = WRAP[kind]; if (!w) continue;
+      const html = cell(kind, w[0], w[1]);
+      if (html) blocks.push(html);
+    }
+    /* One ordered list, not three columns filled round-robin. Round-robin puts blocks 0,1,2 across
+       the top row, which is right on a desktop and wrong the moment the grid collapses to one
+       column on a phone — the reading order becomes 0,3,6,1,4,7 and the profile's priority is
+       scrambled exactly where screen space is scarcest and priority matters most. A single list
+       reads correctly at every width; the cost is some vertical raggedness on a wide screen, and
+       that is the cheaper of the two. */
+    const keysGrid = `<div class="keys flow">${blocks.join('')}</div>`;
+    const inner = `<div class="panel-head">${note}<span class="label">${fmt(k.stats.sentences)} sentences &middot; ${k.stats.sections} sections &middot; tap any item to star it, note it or make a card</span>${tools}</div>
+    ${subjStripHtml(s, read)}
+    ${nothing ? `<div class="empty" style="margin-top:16px">Nothing starred in this subject yet. Turn the filter off, tap any item and choose &#9734; Star.</div>` : ''}
+    ${keysGrid}`;
     app.innerHTML = sectionShell(s, 'keys', inner, `<button class="btn sm" data-act="print-page" title="Print all key information">Print <span class="arr">⎙</span></button>`);
   }
 
@@ -11945,9 +12327,18 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
   }
 
   function renderQuiz(s, a, ui, note) {
-    ui.count = ui.count || 10; ui.types = ui.types || ['mc', 'tf', 'fill']; ui.seed = ui.seed || 1;
+    /* Which question types a discipline can honestly support is a property of the discipline, not a
+       preference. Law has no arithmetic and English has neither arithmetic nor an ordered process,
+       so offering those is offering something the material cannot fill — the app used to do it and
+       then quietly return fewer questions than asked for. */
+    const readQ = subjectRead(s, a);
+    const allow = (readQ.profile && readQ.profile.types) || { mc: true, tf: true, fill: true, order: true, numeric: true };
+    ui.count = ui.count || 10;
+    ui.types = (ui.types || ['mc', 'tf', 'fill']).filter(t => allow[t] !== false);
+    if (!ui.types.length) ui.types = ['mc'];
+    ui.seed = ui.seed || 1;
     if (ui.level == null) ui.level = suggestedLevel(s.id);
-    const hasSteps = (Engine.keyInfo(a).patterns.processes || []).some(p => p.steps && p.steps.length >= 3);
+    const hasSteps = allow.order !== false && (Engine.keyInfo(a).patterns.processes || []).some(p => p.steps && p.steps.length >= 3);
     let body, bar = '';
     if (!ui.qs) {
       /* What this material can ACTUALLY field, measured rather than assumed. The old set-up offered
@@ -11975,7 +12366,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             <p class="small muted">${esc(bp.why)}${bp.kind === 'outcome' ? ' The assessment table is not used to shape it: "Midterm — 25%" is a name and a number, and nothing in the outline says which content the midterm covers, so weighting a paper by it would be a guess presented as a plan.' : ''}</p></div></div>`; })() : ''}
         <div class="field"><label>Question types</label><div class="opts">
           ${[['mc', 'Multiple choice'], ['tf', 'True / false'], ['fill', 'Fill in the blank']].concat(hasSteps ? [['order', 'Order the steps']] : []).map(([k, l]) => `<label class="check"><input type="checkbox" data-act="q-type" data-k="${k}" ${ui.types.includes(k) ? 'checked' : ''}> ${l}</label>`).join('')}
-        </div>${hasSteps ? '' : '<p class="small muted">Ordering questions appear when your material has numbered steps.</p>'}</div>
+        </div>${hasSteps ? '' : `<p class="small muted">${allow.order === false ? `Ordering questions are off for ${esc(readQ.name)} — this discipline does not set fixed-order processes.` : 'Ordering questions appear when your material has numbered steps.'}</p>`}${allow.numeric === false ? `<p class="small muted">Questions that ask for a figure are off for ${esc(readQ.name)}: a number here is a date or an amount, not something to calculate.</p>` : ''}</div>
         ${(() => { const w = weakTerms(s.id, 25); return w.length >= 2 ? `<div class="field"><label>Focus</label><label class="check"><input type="checkbox" data-act="q-weak" ${ui.weakOnly ? 'checked' : ''}> Weak spots only — ${plural(w.length, 'term')} you have missed</label></div>` : ''; })()}
         ${limitsHtml(s, a, 'quiz')}
         ${quizHistoryHtml(s.id)}
@@ -12226,7 +12617,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
       const pa = buildPaper(s, state.analysis, ui);
       ui.qs = pa.qs; ui.bp = pa.bp; ui.short = pa.short;
     } else {
-      ui.qs = visQuiz(s.id, Engine.quiz(state.analysis, { count: ui.count, types: ui.types, seed: ui.seed, level: ui.level || 0, only: ui.weakOnly ? new Set(weakTerms(s.id, 25).map(w => w.key)) : null }));
+      ui.qs = visQuiz(s.id, Engine.quiz(state.analysis, { count: ui.count, types: ui.types, seed: ui.seed, level: ui.level || 0, profile: subjectRead(s, state.analysis).profile, only: ui.weakOnly ? new Set(weakTerms(s.id, 25).map(w => w.key)) : null }));
       ui.bp = null; ui.short = [];
     }
     ui.qi = 0; ui.answers = []; ui.pick = []; ui.startedAt = Date.now();
@@ -13408,6 +13799,21 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
         let sh; try { sh = readShare(JSON.stringify({ ...pk, kind: 'share' })); }
         catch (err) { toast(err.message || 'That pack could not be read.'); break; }
         importShare(sh);
+        break;
+      }
+      case 'subj-open': state.modal = { type: 'subject-profile', sid: el.dataset.s || (s && s.id) }; syncModal(); break;
+      case 'subj-pick': {
+        const sj = subjectById(state.modal && state.modal.sid); if (!sj) break;
+        const id = el.dataset.id;
+        if (!id) delete sj.subjectId; else sj.subjectId = id;
+        saveIndex(); state.modal = null;
+        /* The profile changes which question types are offered and which panels lead, so a quiz
+           already set up under the old profile is stale. Clearing it is cheaper than reasoning
+           about which parts of it survive. */
+        if (state.ui) { state.ui.qs = null; state.ui.types = null; state.ui.level = null; }
+        syncModal(); render();
+        const r2 = subjectRead(sj, state.analysis);
+        toast(`Reading ${sj.name} as ${r2.name}.`);
         break;
       }
       case 'share-open': if (s) { state.modal = { type: 'share', subject: s }; syncModal(); } break;
