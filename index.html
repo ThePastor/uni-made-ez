@@ -1820,6 +1820,30 @@ math mi[mathvariant="normal"] { font-style: normal; }
 .worked .wsteps li:last-child { border-bottom: 0; }
 .worked .wsteps .do { font-family: var(--font-mono); font-size: .9rem; line-height: 1.5; }
 .worked .wsteps .why { color: var(--ink-2); font-size: .88rem; line-height: 1.5; }
+/* ---- a faded example (v2.28) ----
+   The blanked steps have to read as "yours to finish", not as a rendering failure. A dashed rule
+   and a stated invitation do that; a grey box does not. The whole figure keeps its accent bar, so
+   at a glance it is still the same component. */
+.worked.faded { border-left-color: var(--mint-deep); }
+.worked .wsteps li.blank { border-bottom-style: dashed; background: var(--tint-2); }
+.worked .wsteps li.blank .do { font-family: var(--font-display); font-weight: 500; letter-spacing: -.01em; color: var(--ink); }
+.worked .wsteps li.blank .why { color: var(--ink-2); }
+.worked .wsteps li.blank::before { color: var(--ink-2); }
+.fade-note { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 14px; padding: 11px var(--pad-in); border-top: 1px solid var(--line-soft); background: var(--surface-2); }
+.fade-note .small { color: var(--ink-2); flex: 1 1 240px; line-height: 1.5; }
+.worked > [data-act="ex-close"] { margin: 0 var(--pad-in) var(--pad-in); }
+
+/* ---- say it your way (v2.28) ----
+   It sits between the card and the rating row, which is the one moment the student has just seen
+   the answer and has not yet moved on. It must not look like a wall: no border box around the
+   whole thing, a small label, and Skip as a real ghost button beside Save rather than a link
+   hidden underneath. */
+.own-ask { display: grid; gap: 10px; margin: 14px 0 0; padding: 14px var(--pad-in); background: var(--surface-2); border-left: var(--accent-bar) solid var(--accent); }
+.own-ask label { display: grid; gap: 5px; font-size: .87rem; color: var(--ink-2); line-height: 1.5; }
+.own-ask textarea { resize: vertical; min-height: 56px; font-size: .95rem; }
+.own-words { background: var(--tint-3); border-left: 3px solid var(--mint-deep); padding: 12px 14px; display: grid; gap: 4px; overflow-wrap: anywhere; }
+.own-words .label { color: var(--ink-2); }
+@media print { .own-ask { display: none !important; } }
 .worked .ans { display: flex; align-items: center; gap: 12px; padding: var(--pad-in); background: var(--surface-2); border-top: 1px solid var(--line-soft); }
 
 .pitfalls { border: 1px solid var(--line); background: var(--surface); padding: var(--pad-in); display: grid; gap: var(--pad-in); }
@@ -1914,6 +1938,7 @@ math mi[mathvariant="normal"] { font-style: normal; }
 .legal-note, .legal-note .label, .tutoring-strip .label, .tutoring-strip .small,
 .mastery-band .label, .lvl-moves li span,
 .worked .ans .label, .formula, .term-detail, .copy-box, .leech-note,
+.fade-note .small, .own-ask label, .own-words .label, .worked .wsteps li.blank .why,
 .notice.warn, .calib-grid .cq span, .ord-chosen li, .mat .info,
 .subjects-head .btn.cell.ghost, .hint-box summary { color: var(--ink-2); }
 /* status text keeps its own hue on its own tint — those pairs are solved above */
@@ -6114,7 +6139,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.27', date: '14 September 2026', year: 2026 };
+  const BUILD = { v: '2.28', date: '14 September 2026', year: 2026 };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonandy242', ['gmail', 'com'].join('.')].join('@');
   /* The one sentence that says what this is. It appears under the wordmark, and build.js uses
@@ -6127,6 +6152,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      because the person who needs it is the one who just watched the app refresh itself and wants to
      know what moved. Trim the tail when it gets past a dozen; nobody reads further back than that. */
   const WHATS_NEW = [
+    ['2.28', 'Two changes, both aimed at the same thing: reading an answer is not learning it. <b>Say it your way</b> &mdash; a new card now asks you to put the answer in your own words before it joins the deck. It is optional, it is never marked, and from then on your wording is what you see first, with the material&rsquo;s underneath. Writing it out is one of the best-evidenced things you can do with a card. And in the Math and Law courses, <b>worked examples now fade</b>: once you are Familiar with a skill the last line is left for you to finish, at Proficient the last two, and at Mastered you get the question alone. Every example still opens in full with one tap &mdash; it is study material, not a test.'],
     ['2.27', 'Nothing is locked behind the sign-up any more. Summary, Quiz and essay help are open to everyone, signed up or not &mdash; access to study material should not be the price of your contact details. Signing up is still there and still welcome; it just costs you nothing to skip. The legal page is rewritten as a proper privacy notice: the seven things the app sends are listed field by field, where they are stored (Canada) and who can read them is stated, and there are new sections on academic integrity, accuracy, accessibility and what an institution needs to know before recommending it. Your files still never leave your browser, and that is now written down somewhere a privacy office can read it.'],
     ['2.26', 'Two things borrowed from how Khan Academy teaches. Every question built from your own files now offers a <b>hint before you answer</b> &mdash; where it comes from and one clue about the answer, never the answer &mdash; and a wrong choice now tells you what the option <i>you picked</i> actually was, not just what the right one is. And the courses gain <b>mastery levels</b>: practice takes a skill up to Proficient, but only a <b>mastery challenge</b> &mdash; six questions across three skills, taken later &mdash; can reach Mastered, and it is the only thing that can take a level back off you.'],
     ['2.25', 'The Law courses drop the <b>Where this goes wrong</b> panels. In maths a wrong answer is usually a slip you can name; in law it is a judgement about which test applies, and labelling one reading &ldquo;wrong&rdquo; teaches pattern-matching rather than reasoning. The worked examples, with the reason beside every step, are unchanged.'],
@@ -7797,6 +7823,56 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      down for practising would teach people not to practise. The Mastery Challenge is the only
      thing that grants Mastered, and the only thing that takes a level away. That asymmetry is
      the whole design: practice is safe, and the claim to have learnt something is not. */
+  /* ---------- say it your way ----------
+     The generation effect, and the best-evidenced thing left that this app was not doing. Reading a
+     card back is recognition; producing the sentence yourself is retrieval plus encoding, and it is
+     worth about d = 0.45 on later recall and d = 0.29 on transfer — the transfer number being the
+     interesting one, because transfer is exactly what an extracted card is worst at.
+
+     Four decisions, each of which could have been made the other way and would have been wrong:
+
+     · It is OPTIONAL. A prompt you cannot dismiss is a gate, and this app has just finished taking
+       its gate out. Skip is a real button, and skipping a card does not ask again in this session.
+     · It NEVER REPLACES the material's wording. A paraphrase can be wrong, and an app whose whole
+       posture is "check it against the original" cannot then hide the original behind the student's
+       own guess. Both are shown, each labelled, the student's first.
+     · It is NEVER MARKED. There is no model here to judge a sentence, and pretending otherwise
+       would be the one dishonest thing in the feature.
+     · But a COPY is caught, because a copy defeats the entire point. If the words are the
+       material's words rearranged, it says so once, gently, and saves it anyway. Refusing to save
+       would turn an encouragement into a hurdle. */
+  const LS_OWNWORDS = 'unimadeez:ownwords:v1';
+  function loadOwn() { try { return JSON.parse(localStorage.getItem(LS_OWNWORDS) || '{}') || {}; } catch (e) { return {}; } }
+  function saveOwn(o) { try { localStorage.setItem(LS_OWNWORDS, JSON.stringify(o)); } catch (e) { /* private mode: this session only */ } }
+  function ownWords(sid, key) { const o = loadOwn(); return (o[sid] && o[sid][key]) || null; }
+  function setOwnWords(sid, key, text) {
+    const o = loadOwn(); const b = o[sid] || (o[sid] = {});
+    const t = String(text || '').trim();
+    if (!t) { delete b[key]; saveOwn(o); return null; }
+    const rec = { t, at: Date.now(), echo: isEcho(t, (state.ui && state.ui.lastBack) || '') };
+    b[key] = rec; saveOwn(o); return rec;
+  }
+  function ownCount(sid) { const o = loadOwn(); return Object.keys(o[sid] || {}).length; }
+  /* Is this the material's sentence wearing a hat? Content words only — dropping the fifty-odd
+     function words that any two English sentences share — and the test is what fraction of the
+     STUDENT's content words came straight out of the original. Their fraction, not the original's:
+     a short true summary of a long passage is exactly what we are asking for and must not be
+     flagged, while a copy with three words dropped must be. Under six content words nothing is
+     judged at all, because "mitochondria make ATP" cannot be said many other ways and telling a
+     student off for the only sentence available would be both wrong and annoying. */
+  const STOPW = new Set(('a an and are as at be been but by for from had has have he her his if in into is it its of on or '
+    + 'that the their them there these they this to was were which while who with you your not no all can will would there'
+    ).split(' '));
+  function contentWords(t) {
+    return String(t || '').toLowerCase().replace(/[^a-z0-9\s-]/g, ' ').split(/\s+/)
+      .filter(w => w.length > 2 && !STOPW.has(w));
+  }
+  function isEcho(mine, original) {
+    const a = contentWords(mine), b = new Set(contentWords(original));
+    if (a.length < 6 || !b.size) return false;
+    const shared = a.filter(w => b.has(w)).length;
+    return shared / a.length >= 0.8;
+  }
   const LS_MASTERY = 'unimadeez:mastery:v1';
   const LEVELS = ['Not started', 'Attempted', 'Familiar', 'Proficient', 'Mastered'];
   const CHALLENGE_GAP = 12 * 3600 * 1000;   // one challenge per 12 hours, as Khan has it
@@ -8048,6 +8124,47 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     </div>`;
   }
 
+  /* ---------- worked examples that fade ----------
+     The completion effect: a learner who has followed a few full examples learns more from
+     finishing a partial one than from reading another complete one, and the evidenced direction is
+     BACKWARDS — take the last step away first, then the last two. That order matters. Blanking the
+     FIRST step asks the student to start a problem they have not seen the shape of, which is just
+     the exercise again; blanking the last asks them to finish a line of reasoning they have been
+     following, which is the thing that transfers.
+
+     The fade is driven by the mastery level this app already tracks per lesson, so it costs no new
+     state and it cannot run ahead of the student: a lesson at level 0 or 1 shows every step, which
+     is what someone who has never practised it needs.
+
+     Two rules keep this study material rather than a quiz. Nothing is marked — there is no CAS
+     here and the app's standing rule is that it only marks what it can mark with certainty, so a
+     hidden step is "think it, then look", not an answer box that judges you. And every example can
+     be opened in full, in one tap, always. A student stuck at midnight must never be arguing with
+     the pedagogy. */
+  const FADE_AT = [0, 0, 1, 2, 99];   // steps hidden from the END, by skill level; 99 = the lot
+  function fadeFor(c, l, ex) {
+    if (!ex.steps || ex.steps.length < 3) return 0;   // two-step examples have nothing to spare
+    const n = FADE_AT[Math.max(0, Math.min(4, skillLevel(c.id, l.id)))] || 0;
+    return Math.min(n, ex.steps.length - 1);          // the first step is never taken away
+  }
+  function workedHtml(c, l, ex, num, key) {
+    const open = state.openEx && state.openEx[key];
+    const hide = open ? 0 : fadeFor(c, l, ex);
+    const shown = ex.steps.length - hide;
+    const lvl = LEVELS[Math.max(0, Math.min(4, skillLevel(c.id, l.id)))];
+    return `<figure class="worked${hide ? ' faded' : ''}">
+      <figcaption><span class="label">Worked example ${num}</span><b>${esc(ex.prompt)}</b></figcaption>
+      <ol class="wsteps">${ex.steps.map((st, i) => i < shown
+        ? `<li><span class="do">${esc(st.do)}</span><span class="why">${esc(st.why)}</span></li>`
+        : `<li class="blank"><span class="do">${i === shown ? 'Your turn — finish it' : '&hellip;'}</span><span class="why">${i === shown ? 'Work the rest out, then open the example to check.' : ''}</span></li>`).join('')}</ol>
+      ${hide
+        ? `<div class="fade-note"><span class="small">${plural(hide, 'step')} left for you, because this skill is at <b>${esc(lvl)}</b>. Finishing a partial example teaches more than reading a whole one.</span>
+           <button type="button" class="btn sm" data-act="ex-open" data-k="${esc(key)}">Show every step and the answer <span class="arr">&darr;</span></button></div>`
+        : `<p class="ans"><span class="label">Answer</span> <span class="fx${ex.answerWords ? ' words' : ''}">${fxHtml(ex.answer, ex.answerWords ? 'words' : '')}</span></p>
+           ${fadeFor(c, l, ex) ? `<button type="button" class="btn sm ghost" data-act="ex-close" data-k="${esc(key)}">Hide the last ${plural(fadeFor(c, l, ex), 'step')} again</button>` : ''}`}
+    </figure>`;
+  }
+
   function renderUnit(c, u) {
     const pr = unitProgress(c, u);
     const lessons = u.lessons.map((l, li) => `
@@ -8061,11 +8178,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
               <p class="small muted">${esc(rr.note)}</p>
             </div>`).join('')}</div>` : ''}
 
-          ${l.examples.map((ex, xi) => `<figure class="worked">
-            <figcaption><span class="label">Worked example ${u.n}.${li + 1}.${xi + 1}</span><b>${esc(ex.prompt)}</b></figcaption>
-            <ol class="wsteps">${ex.steps.map(st => `<li><span class="do">${esc(st.do)}</span><span class="why">${esc(st.why)}</span></li>`).join('')}</ol>
-            <p class="ans"><span class="label">Answer</span> <span class="fx${ex.answerWords ? ' words' : ''}">${fxHtml(ex.answer, ex.answerWords ? 'words' : '')}</span></p>
-          </figure>`).join('')}
+          ${l.examples.map((ex, xi) => workedHtml(c, l, ex, `${u.n}.${li + 1}.${xi + 1}`, `${l.id}-${xi}`)).join('')}
 
           ${l.pitfalls && l.pitfalls.length ? `<div class="pitfalls">
             <span class="label">Where this goes wrong</span>
@@ -10529,6 +10642,8 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
       const state5 = sr ? (sr.leech ? 'Leech' : sr.ivl >= 21 ? 'Mastered' : sr.ivl === 0 && sr.lapses ? 'Relearning' : sr.reps ? `Seen ${plural(sr.reps, 'time')}` : 'New') : 'New';
       const leechNote = sr && sr.leech ? `<div class="leech-note speak-skip"><span class="tag warn">Leech · missed ${sr.lapses}×</span><span>This card keeps failing — the wording is the problem, not you. Split it, add a cue, or say it your way.</span><button type="button" class="btn sm" data-act="card-edit">Reword it <span class="arr">→</span></button></div>` : '';
       const cid = ID.card(c.key);
+      if (ui) ui.lastBack = c.back;   // what isEcho compares a paraphrase against
+
       const cnote = noteOf(sid, cid) || (c.term ? noteOf(sid, ID.term(c.term)) : '');
       const starred = isStar(sid, cid);
       return `${chip}<div class="scene"><div class="fcard${ui.flipped ? ' flipped' : ''}" data-act="flip" role="button" tabindex="0" aria-expanded="${ui.flipped ? 'true' : 'false'}" aria-label="Card ${ui.i + 1} of ${ui.order.length}, ${esc(c.type)}. ${ui.flipped ? 'Showing the answer' : 'Showing the question'}. Space flips it.">
@@ -10536,6 +10651,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
         <div class="face back"><div class="kind"><span>Answer</span><span>${ui.i + 1} / ${ui.order.length}</span></div>${c.img && c.type !== 'Figure' ? `<img class="fig small" src="${c.img}" alt="">` : ''}
           ${isCloze ? `<div class="txt answer">${esc(c.back)}</div>${c.source ? `<div class="src">${esc(c.source)}${c.citeText != null ? (c.citeText ? `<span class="cite">${esc(c.citeText)}</span>` : '') : citeTag(c.source)}</div>` : ''}` : `<div class="txt">${esc(c.back)}</div>${c.source && c.back !== c.source ? `<div class="src">${esc(c.source)}${c.citeText != null ? (c.citeText ? `<span class="cite">${esc(c.citeText)}</span>` : '') : citeTag(c.source)}</div>` : c.source ? `<div class="src">${c.citeText != null ? (c.citeText ? `<span class="cite">${esc(c.citeText)}</span>` : '') : citeTag(c.source)}</div>` : ''}`}
           ${(() => { const cs = c.sid || sid; if (c.mine || c.sourceId == null || !state.analysisKey || !state.analysisKey.startsWith(cs + ':')) return ''; return confNote(confOf(defById(c.sourceId) || { id: c.sourceId })); })()}
+          ${(() => { const ow = ownWords(c.sid || sid, c.key); return ow ? `<div class="own-words"><span class="label">In your words</span>${esc(ow.t)}</div>` : ''; })()}
           ${cnote ? `<div class="own-note"><span class="label">Your note</span>${esc(cnote)}</div>` : ''}
         </div>
       </div></div>
@@ -10548,6 +10664,18 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
         ${(() => { const cs = c.sid || sid; if (c.mine || c.sourceId == null || !state.analysisKey || !state.analysisKey.startsWith(cs + ':')) return ''; return `<button class="btn sm ghost" data-act="card-origin" data-i="${c.sourceId}" data-s="${esc(cs)}" title="The paragraph this came from, and the page it was on">In the original</button>`; })()}
         ${c.mine ? `<span class="tag">Yours</span>` : c.edited ? `<span class="tag">Edited</span>` : ''}
       </div>
+      ${(() => {
+        const cs = c.sid || sid;
+        if (!ui.flipped || ownWords(cs, c.key)) return '';
+        if (ui.ownSkip && ui.ownSkip.has(c.key)) return '';
+        const sr2 = prog(cs).srs[c.key];
+        if (sr2 && sr2.reps > 2 && !sr2.lapses) return '';   // long-known cards are not worth interrupting
+        return `<form class="own-ask speak-skip" data-form="own-words">
+          <label for="own-in"><span class="label">Say it your way</span>Write the answer as you would explain it to someone on your course. It is never marked, and it does not replace what the material says &mdash; you will see both.</label>
+          <textarea class="input" id="own-in" name="text" rows="2" maxlength="400" placeholder="In your own words&hellip;"></textarea>
+          <div class="btn-row"><button class="btn sm primary" type="submit">Save it <span class="arr">&rarr;</span></button><button class="btn sm ghost" type="button" data-act="own-skip">Not this one</button></div>
+        </form>`;
+      })()}
       <div class="rate three">
         <button class="btn again" data-act="rate" data-v="again">Again<span class="when">10 min</span></button>
         <button class="btn good" data-act="rate" data-v="good">Good<span class="when">${nextIvlText(sid, c.key, 'good')}</span></button>
@@ -11741,6 +11869,8 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
           else notePracticeRun(ps.cid, ps.tally || {});
         } else ps.i++;
         render(); break; }
+      case 'ex-open': { (state.openEx || (state.openEx = {}))[el.dataset.k] = 1; render(); break; }
+      case 'ex-close': { if (state.openEx) delete state.openEx[el.dataset.k]; render(); break; }
       case 'pr-restart': { const ps = practiceState(); Object.assign(ps, { i: 0, picked: null, seq: [], done: false, right: 0, wrong: 0, marked: null, tally: {}, results: [], moves: null }); render(); break; }
       case 'update-later': dismissUpdatePop(); toast('Left as it is. The update button in the top bar takes it whenever you are ready.'); break;
       case 'whats-new': state.modal = { type: 'whatsnew' }; syncModal(); break;
@@ -11789,6 +11919,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
         if (el.dataset.mine) p.cards = userCards(s.id).filter(c => c.key !== key); else delete cardEdits(s.id)[key];
         saveProgress(); state.modal = null; ui.cards = null; syncModal(); renderSection(s, 'cards'); toast(el.dataset.mine ? 'Card deleted.' : 'Edit undone.'); break;
       }
+      case 'own-skip': { const c = curCard(); if (c) { (ui.ownSkip || (ui.ownSkip = new Set())).add(c.key); redeck(); } break; }
       case 'card-star': { const c = curCard(); if (c) { const sid = c.sid || s.id; const id = ID.card(c.key); setMark(sid, id, { star: isStar(sid, id) ? 0 : 1, label: shortLab(c.front, 70) }); redeck(); } break; }
       case 'card-hide': { const c = curCard(); if (c) { const sid = c.sid || s.id; const id = ID.card(c.key); setMark(sid, id, { hide: 1, label: shortLab(c.front, 70) }); if (ui.key === 'today') { ui.order.splice(ui.i, 1); } else ui.cards = null; redeck(); toast('Card hidden.', { label: 'Undo', act: () => { setMark(sid, id, { hide: 0 }); if (ui.key !== 'today') ui.cards = null; redeck(); toast('Card is back.'); } }); } break; }
       case 'card-note': { const c = curCard(); if (c) { const sid = c.sid || s.id; const id = ID.card(c.key); state.modal = { type: 'note', itemId: id, title: shortLab(c.front, 70), label: shortLab(c.front, 70), note: noteOf(sid, id), sid }; syncModal(); } break; }
@@ -12173,6 +12304,22 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
       ps.picked = String(data.v || '');
       const res = markNumeric(it, ps.picked);
       markPractice(res.ok, res.why);
+      return;
+    }
+    if (form.dataset.form === 'own-words') {
+      const c = curCard(); if (!c) return;
+      /* c.sid is set only on the Today deck, where cards come from several subjects. Everywhere
+         else the subject is the route's own id — NOT `.sid`, which is the course routes' field and
+         is undefined here, which filed every paraphrase under the empty string. */
+      const sid = c.sid || r.id || '';
+      const rec = setOwnWords(sid, c.key, data.text);
+      const ui2 = state.ui;
+      if (!rec) { (ui2.ownSkip || (ui2.ownSkip = new Set())).add(c.key); }
+      if (ui2.key === 'today' || r.name === 'today') renderToday(); else { const sj = subjectById(sid); if (sj) renderSection(sj, 'cards'); else render(); }
+      /* An echo is worth saying once, in the moment, and never again — it is a nudge, not a
+         verdict, and the wording is saved either way. Refusing to save a copy would make the
+         feature a hurdle, which is exactly what it must not be. */
+      toast(rec ? (rec.echo ? 'Saved — though that is close to the material\u2019s own wording. The gain comes from saying it differently.' : 'Saved in your words.') : 'Left as it was.');
       return;
     }
     if (form.dataset.form === 'subject') {
