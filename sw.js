@@ -1,8 +1,8 @@
-/* UNI Made EZ — service worker, build 2.26.
+/* UNI Made EZ — service worker, build 2.27.
    Keeps a copy of the page so it opens with no connection, and lets the browser install it
    to a home screen. The whole app is one file, so the "offline copy" really is just that file
    plus its icons; nothing here touches your subjects, which live in the browser's own storage. */
-const V = '2.26';
+const V = '2.27';
 const APP = 'umez-app-v' + V;      // the page and its icons, replaced whole on every build
 const RUNTIME = 'umez-runtime-v1'; // web fonts, kept across builds
 
@@ -87,16 +87,8 @@ self.addEventListener('fetch', e => {
     return;
   }
 
-  // Google's web fonts: serve the copy we have, refresh it in the background. Everything else
-  // off-origin (the scan reader, reading a web address) is left alone — those need the network.
-  if (url.hostname === 'fonts.googleapis.com' || url.hostname === 'fonts.gstatic.com') {
-    e.respondWith(caches.open(RUNTIME).then(async c => {
-      const hit = await c.match(req);
-      const net = timedFetch(req, 5000).then(res => {
-        if (res && (res.ok || res.type === 'opaque')) c.put(req, res.clone());
-        return res;
-      }).catch(() => hit || Response.error());
-      return hit || net;
-    }));
-  }
+  // Nothing else is intercepted. The typefaces used to need a route here because they came from
+  // Google's font CDN; since v2.27 they are embedded in the page itself, so there is no font
+  // request to cache and no third party to reach. Everything else off-origin (the scan reader,
+  // reading a web address) is left alone — those need the network.
 });

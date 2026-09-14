@@ -12,3 +12,10 @@
 !TERMS.md
 !THIRD-PARTY-NOTICES.md
 !sync.json
+# v2.27 — the legal pack the app's own #/rights page links out to, and the one test suite that
+# proves the privacy claims. These are published deliberately: a privacy notice nobody can reach,
+# and an assertion nobody can read, are worth exactly nothing to the person assessing the app.
+!docs/
+!docs/*.md
+!test/
+!test/*.js
