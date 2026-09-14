@@ -186,7 +186,10 @@ const ok = (n, c, d = '') => { (c ? pass++ : fail++); console.log(`${c ? 'PASS' 
   const built = fs.readFileSync(path.join(ROOT, 'dist', 'standalone.html'), 'utf8');
   const banned = [
     [/document\.cookie\s*=/, 'sets a cookie'],
-    [/google-analytics|googletagmanager|gtag\(|\bfbq\(|hotjar|mixpanel|segment\.com|plausible|posthog/i, 'loads an analytics service'],
+    /* Each of these matches the SERVICE, not an English word that happens to contain its name:
+       a bare /plausible/ fired on the word "plausible" in a source comment, which is a false
+       positive that teaches people to weaken the guard. Plausible ships as plausible.io/js/…. */
+    [/google-analytics|googletagmanager|gtag\(|\bfbq\(|hotjar\.com|mixpanel|segment\.com|plausible\.io|posthog/i, 'loads an analytics service'],
     [/navigator\.geolocation/, 'asks for location'],
     [/canvas[\s\S]{0,40}toDataURL[\s\S]{0,80}fingerprint/i, 'fingerprints the device']
   ];

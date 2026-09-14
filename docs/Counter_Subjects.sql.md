@@ -87,7 +87,7 @@ grant execute on function public.umez_subject(text) to anon, authenticated;
 create or replace view public.umez_subject_tally
 with (security_invoker = off) as
   select
-    min(label)                        as label,
+    mode() within group (order by label)  as label,
     count(*)::bigint                  as students,
     min(said_on)                      as first_seen,
     max(said_on)                      as last_seen,
@@ -113,6 +113,9 @@ select public.umez_subject('this app is bad and here is why in detail'); -- fals
 select * from public.umez_subject_tally;        -- Nursing · 2
 ```
 
+`mode()` rather than `min()` deliberately: the tally folds `Nursing` and `nursing` into one row,
+and the half worth showing is the spelling most people actually typed, not whichever sorts first.
+
 Then remove the test rows — this one is safe to run, it touches nothing a student wrote:
 
 ```sql
@@ -132,6 +135,25 @@ curl -s "$URL/rest/v1/umez_subject_tally?select=*" -H "apikey: $KEY" -H "authori
 # the raw table: must be 401 or an empty array, never rows
 curl -s "$URL/rest/v1/umez_subjects?select=*" -H "apikey: $KEY" -H "authorization: Bearer $KEY"
 ```
+
+## Verified against the live database
+
+Run on 14 September 2026, with the publishable key that ships in the page:
+
+| Check | Result |
+|---|---|
+| `umez_subject('Nursing')` / `('nursing')` / `('Social Work')` | `true` |
+| `umez_subject('me@example.com')` | `false` — an `@` |
+| `umez_subject('PHYS 1100')` | `false` — digits |
+| `umez_subject('https://example.com/thing')` | `false` |
+| a 41-character string, and a seven-word sentence | `false` |
+| `GET /rest/v1/umez_subject_tally` with the publishable key | **200**, a JSON array |
+| `GET /rest/v1/umez_subjects` with the same key | **401**, `permission denied for table umez_subjects` |
+| the same POST issued from the published page's own origin, using the `sync.json` it reads | `true` / `false` as above |
+
+The 401 is the one that matters: the table holding what students typed cannot be read back by the
+key that ships in every copy of the app. That was tested by attempting the read and being refused,
+not inferred from the settings screen.
 
 ## Where it appears
 

@@ -7560,7 +7560,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.34', date: '14 September 2026', year: 2026 };
+  const BUILD = { v: '2.35', date: '14 September 2026', year: 2026 };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonandy242', ['gmail', 'com'].join('.')].join('@');
   /* The one sentence that says what this is. It appears under the wordmark, and build.js uses
@@ -8425,6 +8425,16 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
   /* Counts per subject name — the same shape as umez_stats: an aggregate with no id, no time of
      day and no row per student. Returns null when the table has not been installed yet, which is
      what the owner's panel shows as a setup step rather than an error. */
+  /* A bare YYYY-MM-DD is parsed by Date() as UTC midnight, so west of Greenwich it renders as
+     the DAY BEFORE — every row in the owner's list was dated one day early, permanently, which
+     is exactly the kind of thing that survives forever because it looks plausible. Caught by
+     reading the panel rather than the numbers. Build it from the parts instead. */
+  function plainDate(s2) {
+    const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(s2 || ''));
+    if (!m) return '';
+    return new Date(+m[1], +m[2] - 1, +m[3]).toLocaleDateString();
+  }
+
   async function loadSubjectTally() {
     const r = await syncFetch('umez_subject_tally?select=*&order=students.desc', { headers: { accept: 'application/json' } });
     if (!r) return { err: 'no-config', why: syncWhy };
@@ -10246,7 +10256,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
           <p class="small muted">Students who picked <b>Other</b> and chose to say what they are studying. This is the queue for the next profile.</p>
           <div class="legal-table-wrap"><table class="legal-table tally-table">
             <thead><tr><th>Subject</th><th>Students</th><th>First asked</th></tr></thead>
-            <tbody>${top.map(rw => `<tr><td>${esc(rw.label || '')}</td><td class="mono">${fmt(rw.students || 0)}</td><td class="mono muted">${rw.first_seen ? new Date(rw.first_seen).toLocaleDateString() : ''}</td></tr>`).join('')}</tbody>
+            <tbody>${top.map(rw => `<tr><td>${esc(rw.label || '')}</td><td class="mono">${fmt(rw.students || 0)}</td><td class="mono muted">${plainDate(rw.first_seen)}</td></tr>`).join('')}</tbody>
           </table></div>
           ${t.rows.length > top.length ? `<p class="small muted">Showing the ${top.length} most asked for of ${t.rows.length}.</p>` : ''}
           <p class="small muted">Free text, filtered to something shaped like the name of a subject before it is stored, and never tied to a device, a name or an email. A daily list also arrives at 6pm.</p></div>`;
