@@ -358,6 +358,12 @@ main ol.steps, main ul.steps { margin-bottom: .95em; }
 .seg button { border: 0; background: transparent; padding: 8px 14px; cursor: pointer; color: var(--ink-2); font-family: var(--font-mono); font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; }
 .seg button + button { border-left: 1px solid var(--line); }
 .seg button.on { background: var(--accent); color: var(--accent-ink); }
+/* A .field stretches its children, so a segmented control filled the row and its LAST cell
+   absorbed all the slack — "30" and "DISCRIMINATE" were twice the width of their neighbours for
+   no reason. Sized to content, and allowed to wrap rather than overflow on a phone. */
+.field > .seg { align-self: flex-start; max-width: 100%; flex-wrap: wrap; }
+.field > .seg button { border-left: 1px solid var(--line); }
+.field > .seg button:first-child { border-left: 0; }
 .check { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; font-size: .9rem; }
 .check input { width: 16px; height: 16px; accent-color: var(--ink); margin: 0; }
 
@@ -680,6 +686,13 @@ button.term-chip { cursor: pointer; }
 .opt[disabled]:hover .key { color: var(--ink-3); }
 .tf { grid-template-columns: 1fr 1fr; }
 .tf .opt { grid-template-columns: 1fr; text-align: center; font-family: var(--font-mono); font-size: .8rem; letter-spacing: .12em; text-transform: uppercase; padding: 20px; }
+/* ---- options that are whole sentences (v2.32) ----
+   "Three of these are true, which one is not" puts four sentences from the material in the option
+   list instead of four single terms. A row built for "pyruvate" squeezes a 150-character claim
+   onto one clipped line, so the long variant lets it wrap and gives the text its own leading. */
+.options.long .opt { align-items: start; padding: 15px 16px; }
+.options.long .opt span:last-child { line-height: 1.55; }
+.options.long .opt .key { padding-top: 1px; }
 .fill-row { display: flex; gap: 1px; border: 1px solid var(--line); background: var(--line); }
 .fill-row .input { flex: 1; border: 0; font-size: 1.05rem; }
 .fill-row .btn { border: 0; border-radius: 0; }
@@ -4098,7 +4111,11 @@ const GENERIC = new Set('information data process system method result results s
     if (a._sibs) return a._sibs;
     const m = new Map();
     const pair = items => {
-      const keep = items.map(x => String(x).replace(/^(the|a|an)\s+/i, '').trim()).filter(x => x && wordsOf(x).length <= 6);
+      /* "a, b and c" was yielding "and c" as a member, so "and oxidative phosphorylation" became a
+         sibling name and, downstream, an option a student could be shown. Strip the conjunction as
+         well as the article. */
+      const keep = items.map(x => String(x).replace(/^(?:and|or)\s+/i, '').replace(/^(the|a|an)\s+/i, '').trim())
+        .filter(x => x && wordsOf(x).length <= 6);
       if (keep.length < 2) return;
       for (const x of keep) {
         const k = lc(x);
@@ -4251,18 +4268,27 @@ const GENERIC = new Set('information data process system method result results s
         source: correct.map((x, i) => `${i + 1}. ${x}`).join('  '), sourceId: p.steps[0].id, term: p.title || correct[0] };
     });
   }
-  function quiz(a, { count = 10, types = ['mc', 'tf', 'fill'], seed = 1, only = null } = {}) {
+  /* The candidate pool. Measured at v2.31: a 634-word document could yield 29 questions and no
+     more, while 31 of its 61 terms were never considered and 42 usable sentences were never
+     touched — so asking for 40 silently gave you 29, and the number on the button was a lie.
+     Three limits were doing it, and all three were arbitrary rather than principled:
+       · only the top 30 terms were candidates, and ordinary words past index 15 were dropped;
+       · a fact had to carry EXACTLY one number, so "3 NADH, 1 FADH2 and 1 GTP" was skipped whole;
+       · a term could be asked about once, ever, even where a second sentence used it differently.
+     Widened here. The guards that matter are kept: a sentence is still used once, and a term may
+     be asked about twice at most and never the same way twice. */
+  function quiz(a, { count = 10, types = ['mc', 'tf', 'fill'], seed = 1, only = null, level = 0, mix = null } = {}) {
     const rand = rng(seed);
     const qs = [];
     const usedSent = new Set();
-    const usedTerm = new Set();
-    // candidate items: definitions + top terms + facts
+    const termUse = new Map();                      // term -> [types already asked]
+    // candidate items: definitions + terms + facts
     const items = [];
     const catOf = term => a.terms.find(t => t.key === lc(term))?.cat || categorize(term, false);
     for (const d of a.defs) items.push({ kind: 'def', term: d.term, def: d, cat: catOf(d.term) });
     for (const ac of a.acronyms) items.push({ kind: 'acr', term: ac.acr, ac, cat: 'acr' });
-    for (const t of a.terms.slice(0, 30)) if (!items.some(i => lc(i.term) === t.key) && !(t.cat === 'word' && (t.count < 4 || GENERIC.has(t.key) || a.terms.indexOf(t) > 15))) items.push({ kind: 'term', term: t.display, cat: t.cat });
-    for (const f of a.facts) if (f.nums.length === 1) items.push({ kind: 'num', term: f.nums[0], fact: f, cat: 'num' });
+    for (const t of a.terms.slice(0, 60)) if (!items.some(i => lc(i.term) === t.key) && !(t.cat === 'word' && (t.count < 3 || GENERIC.has(t.key) || a.terms.indexOf(t) > 34))) items.push({ kind: 'term', term: t.display, cat: t.cat });
+    for (const f of a.facts) for (const n of f.nums.slice(0, 3)) items.push({ kind: 'num', term: n, fact: f, cat: 'num' });
     let pool = items;
     if (only && only.size) {
       const hit = items.filter(i => { const t = lc(i.term); for (const k of only) if (t === k || t.includes(k) || k.includes(t)) return true; return false; });
@@ -4272,27 +4298,116 @@ const GENERIC = new Set('information data process system method result results s
     const ordQ = types.includes('order') && !only ? orderQuestions(a, rand, Math.max(1, Math.round(count / 4))) : [];
     const wanted = types.filter(t => t !== 'order').length ? types.filter(t => t !== 'order') : (ordQ.length ? [] : ['mc']);
     const room = Math.max(0, count - ordQ.length);
+    /* The harder kinds are only reachable when the student asked for multiple choice or typing —
+       an odd-one-out IS a multiple choice and a double cloze IS a fill, so neither smuggles in a
+       type that was switched off. */
+    const build = (type, it) => type === 'mc' ? makeMC(a, it, rand, usedSent)
+      : type === 'tf' ? makeTF(a, it, rand, usedSent)
+      : type === 'odd' ? makeOddOne(a, it, rand, usedSent)
+      : type === 'two' ? makeDoubleCloze(a, it, rand, usedSent)
+      : makeFill(a, it, rand, usedSent);
+    const kinds = wanted.slice();
+    if (wanted.includes('mc')) kinds.push('odd');
+    if (wanted.includes('fill')) kinds.push('two');
+    /* An odd-one-out SELF-SELECTS: it returns null unless the material actually lists a set the
+       item belongs to, which is rare. So trying it first costs nothing and is the only way it ever
+       gets tried at all — left in the ordinary rotation it fired zero times across eight documents,
+       because the three terms that could support one were never the ones the rotation happened to
+       offer it to. A double cloze is the opposite, available almost everywhere, so it stays in the
+       rotation at ordinary difficulty and only leads when hard questions were asked for. */
+    const lead = level >= 3 ? ['two'] : [];
+    const wish = lead.filter(k => kinds.includes(k))
+      .concat(level === 1 ? kinds.filter(k => k !== 'two') : kinds);
+    const rota = (wish.length ? wish : kinds).filter(k => k !== 'odd' || level !== 1);
     let ti = 0;
-    for (const it of order) {
-      if (!wanted.length || qs.length >= room) break;
-      if (usedTerm.has(lc(it.term))) continue;
-      const type = wanted[ti % wanted.length];
-      let q = null;
-      if (type === 'mc') q = makeMC(a, it, rand, usedSent);
-      else if (type === 'tf') q = makeTF(a, it, rand, usedSent);
-      else q = makeFill(a, it, rand, usedSent);
-      if (!q) { // try another type for this item
-        for (const alt of wanted) { if (alt === type) continue; q = alt === 'mc' ? makeMC(a, it, rand, usedSent) : alt === 'tf' ? makeTF(a, it, rand, usedSent) : makeFill(a, it, rand, usedSent); if (q) break; }
+    const collected = [];
+    /* The odd-one-out runs BEFORE everything else, and that ordering is the whole reason it
+       works. It cites the one sentence that lists the set, and that sentence is a rich source —
+       so by the time the ordinary rotation reached it, some cloze or true/false had already
+       claimed it and usedSent turned every odd-one-out away. It fired zero times for two
+       iterations of this work for exactly that reason. One per family, capped at a quarter of the
+       quiz so a document with many lists does not become nothing but this one question. */
+    if (rota.includes('odd') && !only) {
+      const fams = new Set();
+      /* Capped against a REALISTIC quiz, not against whatever was asked for. capacity() asks for
+         400 to find the ceiling, and a quarter of 400 let this pre-pass take a hundred questions —
+         each of which spends four sentences — so the measured ceiling of a 634-word document fell
+         from 38 to 20. A hard question is a seasoning. */
+      const cap = Math.max(1, Math.round(Math.min(room, 25) / 5));
+      for (const it of order) {
+        if (collected.length >= cap) break;
+        const fam = siblings(a).get(lc(it.term));
+        if (!fam || fam.size < 2) continue;
+        const sig = Array.from(fam).concat([lc(it.term)]).sort().join('|');
+        if (fams.has(sig)) continue;
+        const q = makeOddOne(a, it, rand, usedSent);
+        if (!q) continue;
+        fams.add(sig);
+        termUse.set(lc(it.term), ['odd']);
+        usedSent.add(q.sourceId);
+        q.level = levelOf(a, q);
+        collected.push(q);
       }
-      if (!q) continue;
-      usedTerm.add(lc(it.term));
-      usedSent.add(q.sourceId);
-      qs.push(q);
-      ti++;
+      // and top up to the cap with the kind that works on any material
+      for (const it of order) {
+        if (collected.length >= cap) break;
+        if (termUse.has(lc(it.term))) continue;
+        const q = makeFalseOne(a, it, rand, usedSent);
+        if (!q) continue;
+        termUse.set(lc(it.term), ['odd']);
+        usedSent.add(q.sourceId);
+        q.level = levelOf(a, q);
+        collected.push(q);
+      }
     }
-    // drop the ordering questions in at random positions so a quiz doesn't front-load them
-    for (const oq of ordQ) qs.splice(Math.floor(rand() * (qs.length + 1)), 0, oq);
-    return qs.slice(0, count).map((q, i) => ({ ...q, id: i + 1 }));
+    /* Two passes. The first asks every candidate once, so a quiz is spread over the material
+       rather than exhausting one corner of it; the second comes back for a SECOND question on
+       terms that can carry one, which is where the extra depth beyond the old ceiling comes
+       from. A term is never asked the same way twice. */
+    for (const pass of [1, 2]) {
+      for (const it of order) {
+        if (!rota.length || collected.length >= room * 3) break;
+        const key = lc(it.term);
+        const done = termUse.get(key) || [];
+        if (done.length >= pass) continue;
+        let q = null, used = null;
+        for (let k = 0; k < rota.length; k++) {
+          const type = rota[(ti + k) % rota.length];
+          if (done.includes(type)) continue;
+          q = build(type, it);
+          if (q) { used = type; break; }
+        }
+        if (!q) continue;
+        termUse.set(key, done.concat([used]));
+        usedSent.add(q.sourceId);
+        q.level = levelOf(a, q);
+        collected.push(q);
+        ti++;
+      }
+    }
+    /* Difficulty is a preference, not a filter: a document that cannot field ten hard questions
+       must still give you ten questions. Wanted level first, then everything else by how close it
+       is — never "sorry, not enough hard ones". */
+    let chosen = collected;
+    if (level) {
+      chosen = collected.slice().sort((x, y) => Math.abs((x.level || 1) - level) - Math.abs((y.level || 1) - level));
+    }
+    for (const q of chosen.slice(0, room)) qs.push(q);
+    if (level) shuffleInto(qs, rand);
+    for (const oq of ordQ) { oq.level = 3; qs.splice(Math.floor(rand() * (qs.length + 1)), 0, oq); }
+    return qs.slice(0, count).map((q, i) => ({ ...q, id: i + 1, level: q.level || levelOf(a, q) }));
+  }
+  function shuffleInto(arr, rand) { for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(rand() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; } }
+
+  /* How many questions this material can actually support, and at what difficulty. The quiz
+     set-up used to offer 5 / 10 / 15 / 20 whatever the document was, and a 193-word handout
+     answered every one of them with five questions. Saying so beforehand is both more honest and
+     more useful than letting somebody pick 20 and receive 5 without explanation. */
+  function capacity(a, types = ['mc', 'tf', 'fill', 'order']) {
+    const all = quiz(a, { count: 400, types, seed: 5 });
+    const by = { 1: 0, 2: 0, 3: 0 };
+    for (const q of all) by[q.level || 1]++;
+    return { total: all.length, easy: by[1], medium: by[2], hard: by[3] };
   }
 
   /* ---------- the hint before, and the reason after ----------
@@ -4385,6 +4500,214 @@ const GENERIC = new Set('information data process system method result results s
     if (clue) parts.push(parts.length ? clue : clue[0].toUpperCase() + clue.slice(1));
     if (!parts.length) return null;
     return parts.join(parts.length > 1 ? ' — ' : '') + '.';
+  }
+
+  /* ================= difficulty, and the two kinds that are actually hard =================
+
+     Until v2.32 every generated question was whatever the generator happened to produce, and the
+     mix was measured at 116 multiple-choice, 142 true/false and 82 fill across eight documents —
+     so the single commonest question in this app was the one a student can get right half the
+     time by guessing. There was no notion of difficulty at all: no way to ask for a harder quiz,
+     and no way for the app to notice that somebody scoring 95% is being under-served.
+
+     A LEVEL is assigned from what the question IS, not from how often it has been missed — an
+     extractive engine has no data on that for a question it has just invented, and a difficulty
+     rating built from nothing would be the kind of confident guess this app keeps refusing to
+     make. Three levels, each defined by the cognitive work it actually takes:
+
+       1 · RECOGNISE — true/false, and multiple choice whose options came from anywhere in the
+           document. You can often get there by elimination.
+       2 · PRODUCE  — type the answer, or choose between options that are the same KIND of thing.
+           Elimination stops working; you have to know which one.
+       3 · DISCRIMINATE — every option is a sibling of the answer (the material lists them
+           together), or the answer is the one that does NOT belong, or the order of a process, or
+           two blanks in one sentence. Guessing is worth 25% and elimination is worth nothing.
+
+     Levels are computed, never declared, so a question cannot claim to be hard while being easy. */
+  function levelOf(a, q) {
+    if (!q) return 1;
+    if (q.type === 'order' || q.type === 'odd' || q.two) return 3;
+    if (q.type === 'tf') return 1;
+    if (q.type === 'fill') return 2;
+    if (q.type === 'mc') {
+      const opts = (q.options || []).map(String);
+      if (opts.length < 2) return 1;
+      const sibs = siblings(a).get(lc(q.answer));
+      const wrong = opts.filter(o => lc(o) !== lc(q.answer));
+      // every wrong option is something the material lists alongside the answer
+      if (sibs && wrong.length && wrong.every(o => sibs.has(lc(o)))) return 3;
+      // or every wrong option is defined as the same kind of thing
+      const head = defHead(a, q.answer);
+      if (head && wrong.length && wrong.every(o => defHead(a, o) === head)) return 3;
+      // a figure with magnitude-matched neighbours is real work; a definition match is recall
+      if (q.prompt && /figure/i.test(q.prompt)) return 2;
+      const someSib = sibs && wrong.some(o => sibs.has(lc(o)));
+      return someSib ? 2 : 1;
+    }
+    return 1;
+  }
+
+  /* "Which of these is NOT one of the stages?" — the one question type where elimination works
+     against the student instead of for them, because three of the four options ARE right.
+
+     It is only safe where the material lists a set explicitly, which siblings() already finds. The
+     trap is the odd one out: picking any other term risks picking something that belongs to the
+     set and simply was not listed in that sentence, which would mark a correct answer wrong. So
+     the odd one must come from a DIFFERENT sibling set — the material has grouped it with other
+     things, which is evidence it is not in this one — and must not appear in the source sentence. */
+  function makeOddOne(a, it, rand, usedSent) {
+    const sibs = siblings(a);
+    const key = lc(it.term);
+    const mine = sibs.get(key);
+    /* A THREE-item list — "the stages are a, b and c" — is by far the commonest shape, and it gives
+       each member exactly two siblings. Requiring three was requiring a four-item list, which is
+       why this generator fired zero times across every test document on its first outing. */
+    if (!mine || mine.size < 2) return null;
+    const family = [it.term].concat(Array.from(mine));
+    // the sentence that listed them, so the question can cite it and the odd one can be kept out of it
+    let host = null;
+    for (const st of a.sentences) {
+      if (st.dangling) continue;
+      const hits = family.filter(x => inText(st.s, x)).length;
+      if (hits >= 3) { host = st; break; }
+    }
+    if (!host || usedSent.has(host.id)) return null;
+    const label = (() => {
+      const m = host.s.match(/\b(causes|types|kinds|functions|stages|steps|features|components|parts|effects|factors|categories|classes|phases|forms|methods|examples)\b/i);
+      return m ? lc(m[1]) : 'group';
+    })();
+    /* Choosing the odd one is the whole risk in this question type: pick something that IS a member
+       and was merely not listed in that sentence, and the app marks a correct answer wrong. Two
+       tiers of evidence, and no third — it returns nothing rather than guessing.
+         1. a member of a DIFFERENT sibling set. The material has grouped it with other things.
+         2. a term the material defines as a different KIND of thing from the family's shared head
+            ("X is an enzyme" against a family of stages).
+       A document with one list and no definitions gets no odd-one-out question, which is correct. */
+    const famKeys = new Set(family.map(lc));
+    const famHead = (() => {
+      const hs = family.map(x => defHead(a, x)).filter(Boolean);
+      return hs.length >= 2 && hs.every(h => h === hs[0]) ? hs[0] : null;
+    })();
+    const ok = k => !famKeys.has(k) && !mine.has(k) && k !== key && !inText(host.s, k);
+    let odd = null;
+    for (const [k, set] of sibs) {
+      if (!ok(k) || set.has(key)) continue;
+      const disp = (a.terms.find(t => t.key === k) || {}).display;
+      if (disp) { odd = disp; break; }
+    }
+    if (!odd && famHead) {
+      for (const t of a.terms) {
+        if (!ok(t.key)) continue;
+        const h = defHead(a, t.display);
+        if (h && h !== famHead) { odd = t.display; break; }
+      }
+    }
+    if (!odd) return null;
+    const keep = shuffle(family, rand).slice(0, 3);
+    if (keep.length < 3) return null;
+    const options = shuffle(keep.concat([odd]), rand);
+    return { type: 'odd', prompt: `Which of these is NOT one of the ${label} the material lists?`,
+      body: null, options, answer: odd, source: host.s, sourceId: host.id,
+      explain: `The material lists ${keep.join(', ')} together. “${odd}” belongs to a different group.`,
+      hint: hintFrom(a, host.id, null, 'Three of these are listed together in one sentence') };
+  }
+
+  /* "Which of these statements is NOT true?" — four sentences, three of them verbatim from the
+     material and one with a single term swapped.
+
+     This is the hard question type that actually WORKS on ordinary material, and it exists because
+     the odd-one-out above mostly cannot: that one needs the material to list a complete set AND to
+     give enough evidence that some other term is outside it, and a document with one list and no
+     consistent definitions gives neither — so it refuses, correctly, and fires almost never. This
+     one needs nothing but four usable sentences, which every document has.
+
+     Why it is hard: three of the four options are TRUE, so elimination is worth nothing and the
+     student has to actually check a claim. Why it is safe: the false one is false because this app
+     made it false, one term at a time, through the same guards the true/false generator uses — a
+     sentence carrying a negation or a hedge is never swapped, and a replacement the material would
+     make true anyway is rejected before it is offered. */
+  /* Is this a claim a student could judge true or false? A heading is not, a bullet fragment is
+     not, and a clause with no verb is not. Used for the altered statement and for the true ones
+     alike — applying it to only one of the two is how a heading ended up as the answer. */
+  function statementish(t) {
+    const x = String(t || '').trim();
+    if (!x || /^[#*>\-\u2022]/.test(x)) return false;
+    if (!/[.!?]$/.test(x)) return false;
+    return /\b(is|are|was|were|has|have|had|does|do|can|will|produces?|requires?|uses?|takes?|occurs?|contains?|converts?|yields?|consists?|includes?|causes?|means?|refers?|allows?|forms?|makes?|gives?|begins?|ends?|carries|carry|sets?|holds?|shows?|states?)\b/i.test(x);
+  }
+
+  function makeFalseOne(a, it, rand, usedSent) {
+    const cz = clozeFor(a, it.term, usedSent);
+    if (!cz) return null;
+    const host = cz.sent;
+    if (HEDGE_RE.test(host.s) || riskyToSwap(host.s) || host.s.length > 200) return null;
+    /* The host has to be a statement too. The guard below was applied to the three TRUE options and
+       not to the one being altered, so "# Physics 1099 — Lecture 6: Work, Energy" was offered as
+       the false statement — which is not false, it is not a statement, and it is obviously the odd
+       one out for the wrong reason. */
+    if (!statementish(host.s)) return null;
+    const wrong = distractors(a, cz.answer, it.cat, rand, 1, { sentId: host.id, text: host.s })[0];
+    if (!wrong) return null;
+    const re = new RegExp('(^|[^\\w-])' + escRe(cz.answer) + '(?![\\w-])', 'i');
+    if (!re.test(host.s)) return null;
+    const falsed = host.s.replace(re, (m, pre) => pre + wrong);
+    if (falsed === host.s) return null;
+    // three true statements, none of them the one being altered, none already spent
+    const trues = [];
+    for (const st of a.sentences) {
+      if (trues.length >= 3) break;
+      if (st.id === host.id || st.dangling || usedSent.has(st.id)) continue;
+      if (st.s.length < 40 || st.s.length > 200) continue;
+      /* A heading is not a claim. "# BIOL 1010 — Lecture 7: Cellular Respiration" was being offered
+         as one of the three true statements, which is both absurd to read and a giveaway, since it
+         is plainly not the altered one. A statement has to end like one and carry a verb. */
+      if (!statementish(st.s)) continue;
+      if (HEDGE_RE.test(st.s)) continue;                       // "may be" is not true or false
+      if (inText(st.s, cz.answer) || inText(st.s, wrong)) continue;   // would give the swap away
+      trues.push(st);
+    }
+    if (trues.length < 3) return null;
+    const options = shuffle([falsed].concat(trues.map(t => t.s)), rand);
+    /* Only the ALTERED sentence is spent. The three true ones were shown verbatim, exactly as the
+       material already shows them, so there is nothing to protect by locking them away — and
+       locking them away cost a 634-word document ten of its questions, because each of these
+       spends four sentences and the ceiling is made of sentences. */
+    usedSent.add(host.id);
+    return { type: 'odd', prompt: 'Three of these are true. Which one is NOT?',
+      body: null, options, answer: falsed, source: host.s, sourceId: host.id,
+      explain: `It should say “${cz.answer}”, not “${wrong}”.${selfDef(a, wrong) ? ` “${wrong}” is ${selfDef(a, wrong)}` : ''}`,
+      hint: hintFrom(a, host.id, null, 'One term in one of these has been changed') };
+  }
+
+  /* Two blanks in one sentence, both required. Strictly harder than one blank — you cannot use
+     the rest of the sentence to reason your way to a single missing word, because two of the
+     load-bearing words are gone — and it is still markable with certainty, because both answers
+     are exact strings from the material. */
+  function makeDoubleCloze(a, it, rand, usedSent) {
+    const cz = clozeFor(a, it.term, usedSent);
+    if (!cz) return null;
+    const sent = cz.sent;
+    const others = termsIn(a, [sent], 6)
+      .map(t => t.display)
+      .filter(d => lc(d) !== lc(cz.answer) && !lc(cz.answer).includes(lc(d)) && !lc(d).includes(lc(cz.answer)))
+      .filter(d => wordsOf(d).length <= 3 && inText(cz.text, d));
+    if (!others.length) return null;
+    const second = others[0];
+    const re = new RegExp('(^|[^\\w-])' + escRe(second) + '(?![\\w-])', 'i');
+    if (!re.test(cz.text)) return null;
+    const body = cz.text.replace(re, (m, pre) => pre + '______');
+    if ((body.match(/______/g) || []).length !== 2) return null;
+    /* Taking a second word out can leave a sentence with nothing left to reason from, and a blank
+       you cannot reason towards is not a hard question — it is a guess. The single-blank generator
+       has required two other known terms to survive in the sentence since v2.2; the same floor has
+       to apply here, or this type is just the old one with more removed. */
+    let left = 0;
+    for (const t of a.terms) { if (left >= 2) break; if (inText(body, t.display)) left++; }
+    if (left < 2) return null;
+    return { type: 'fill', two: true, prompt: 'Two words are missing. Type them in order, separated by a comma.',
+      body, answer: `${cz.answer}, ${second}`, answers: [cz.answer, second],
+      source: sent.s, sourceId: sent.id,
+      hint: hintFrom(a, sent.id, cz.answer, 'Two blanks — the first comes before the second in the sentence') };
   }
 
   function makeMC(a, it, rand, usedSent) {
@@ -4671,7 +4994,7 @@ const tfHint = (a, id) => hintFrom(a, id, null, 'Check the statement against the
     return out;
   }
 
-  return { analyze, summary, keyInfo, flashcards, quiz, checkAnswer, splitSentences, splitCause, termsIn, cardKey, termGraph, extractSymbols, mathml, outline };
+  return { analyze, summary, keyInfo, flashcards, quiz, capacity, levelOf, checkAnswer, splitSentences, splitCause, termsIn, cardKey, termGraph, extractSymbols, mathml, outline };
 })();
 
 </script>
@@ -6941,7 +7264,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.31', date: '14 September 2026', year: 2026 };
+  const BUILD = { v: '2.32', date: '14 September 2026', year: 2026 };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonandy242', ['gmail', 'com'].join('.')].join('@');
   /* The one sentence that says what this is. It appears under the wordmark, and build.js uses
@@ -6954,6 +7277,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      because the person who needs it is the one who just watched the app refresh itself and wants to
      know what moved. Trim the tail when it gets past a dozen; nobody reads further back than that. */
   const WHATS_NEW = [
+    ['2.32', 'Quizzes are <b>bigger and can be made harder</b>. The engine was quietly running out of questions &mdash; a six-hundred-word handout could produce 29 and no more, while a third of its terms were never considered and forty of its sentences were never used, so asking for 40 gave you 29 with no explanation. It now reaches 38 from the same document, and the set-up page says up front how many your material can actually support instead of offering numbers it cannot meet. There is also a <b>difficulty</b> setting, and it is real: every question is graded by the work it takes &mdash; recognise, produce, or discriminate &mdash; and two genuinely hard kinds are new. <b>Three of these are true, which one is not</b> gives you four statements from your own material with one term changed, so elimination is worth nothing. And a <b>two-blank</b> fill removes two load-bearing words from one sentence instead of one. If your last few quizzes were over 85%, the app starts you harder.'],
     ['2.31', 'Legibility fixes, two of them bad. On the <b>privacy page</b>, every bullet that began with bold text was being shattered &mdash; the word after the bold run lost its space, and the rest of the sentence stacked one word per line down a 14px column. In the <b>Law courses</b>, every &ldquo;rule&rdquo; box was being typeset as mathematics: italic serif with the spaces stripped out and the end clipped off, so <i>the circumstances of the bargain</i> read as one long unbroken word. Both are fixed, and both now fail the build if they come back. Also: the steps of a worked example in a Law course are set in reading type rather than the monospace that suits algebra; the three notes at the top of a course page are one component instead of three, and no longer run 169 characters to the line; and bulleted lists have a gap under them again.'],
     ['2.30', 'Both Law courses now run to the end of Midterm 2. <b>Commercial Law</b> gains consumer protection and competition law, the forms of carrying on business and what separate legal personality actually buys you, Indigenous business and economic development, and secured lending &mdash; chapters 6 to 9. <b>Environmental Law</b> gains international law and the regulatory toolbox (chapters 4 and 5, which are in <b>Midterm 1</b> and were missing), then sectoral regimes and impact assessment, and planning and market instruments. Six new units, nine lessons, 25 worked examples and 24 practice questions, each pointing at the chapter of the set text to read alongside it. Still not legal advice, and still nothing copied from anybody&rsquo;s textbook.'],
     ['2.29', '<b>Course packs.</b> A whole course &mdash; the readings, the cards, the learning outcomes, the weekly schedule and what each assessment is worth &mdash; opens from one link, already set up. An instructor or a classmate can build one from a subject they have loaded; you open <b>Course packs</b> from the home page, see exactly what is in a pack before anything is added, and add it with one tap. It arrives as a new subject with nothing studied, so it can never overwrite what you already have, and it carries none of the maker&rsquo;s marks, schedule or quiz history. Packs are served from this app&rsquo;s own address and nowhere else &mdash; opening one still sends nothing about you anywhere.'],
@@ -10721,7 +11045,11 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      "possible inaccuracies". The counts in it are this subject's real numbers, not a boilerplate. */
   function limitsHtml(s2, a, where) {
     const flagged = (a && a.defs || []).filter(d => confOf(d)).length;
-    const ocr = (a && a.ocrFiles || 0);
+    /* ocrFiles is a SET of file names, not a count — and an empty Set is truthy, so `|| 0` never
+       fired and plural() was handed a Set. Every subject's summary and quiz set-up has been
+       reading "NaN files here were read by the scan reader" since the panel shipped, on the very
+       panel this app points at as evidence that it says what it cannot do. */
+    const ocr = (a && a.ocrFiles && a.ocrFiles.size) || 0;
     const merged = (a && a.repeatsMerged) || 0;
     const risk = where === 'quiz'
       ? 'A question is only as good as the sentence under it: a table read out of order, a negation carried into the wrong half of a sentence, or a definition that was never actually stated can all produce a question with a confident wrong answer.'
@@ -11585,13 +11913,50 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
       <p class="small muted">Last ${plural(pcts.length, 'attempt')} · best ${best}% · average ${avg}% · latest ${last}% (${trend})</p></div>`;
   }
   function orderState(ui) { return ui.pick || (ui.pick = []); }
+  /* How hard should this student's next quiz be, if they have not said?
+     Not a guess about them — a reading of their own last three results. Somebody averaging over
+     85% is being asked questions they have already answered, and the honest response to that is
+     harder questions rather than a longer streak of easy ones. Below 60% the opposite. It is only
+     a default: the control is right there and whatever they choose sticks. */
+  function suggestedLevel(sid) {
+    const h = (prog(sid).quizzes || []).slice(-3);
+    if (h.length < 2) return 0;
+    const pct = h.reduce((n, x) => n + (x.right / Math.max(1, x.total)), 0) / h.length;
+    return pct >= 0.85 ? 3 : pct < 0.6 ? 1 : 0;
+  }
+  const LEVEL_NAME = { 0: 'Mixed', 1: 'Recognise', 2: 'Produce', 3: 'Discriminate' };
+  const LEVEL_WHY = {
+    0: 'A spread of all three, which is what most revision wants.',
+    1: 'True/false and multiple choice from anywhere in the material. Good for a first pass.',
+    2: 'Type the answer, or choose between options of the same kind. Elimination stops working.',
+    3: 'Every option is a near neighbour, or three of the four statements are true and one is not. Guessing is worth a quarter and elimination is worth nothing.'
+  };
+
+  /* Capacity is a full generation run, so it is measured once for a given subject, analysis and
+     set of question types rather than on every keystroke in the set-up form. */
+  const capCache = new Map();
+  function quizCapacity(sid, a, types) {
+    const key = sid + '|' + (state.analysisKey || '') + '|' + types.slice().sort().join(',');
+    if (capCache.has(key)) return capCache.get(key);
+    let out;
+    try { out = Engine.capacity(a, types); } catch (e) { out = { total: 0, easy: 0, medium: 0, hard: 0 }; }
+    capCache.set(key, out);
+    return out;
+  }
+
   function renderQuiz(s, a, ui, note) {
     ui.count = ui.count || 10; ui.types = ui.types || ['mc', 'tf', 'fill']; ui.seed = ui.seed || 1;
+    if (ui.level == null) ui.level = suggestedLevel(s.id);
     const hasSteps = (Engine.keyInfo(a).patterns.processes || []).some(p => p.steps && p.steps.length >= 3);
     let body, bar = '';
     if (!ui.qs) {
-      const counts = ui.exam ? [15, 20, 30, 40] : [5, 10, 15, 20];
-      if (!counts.includes(ui.count)) ui.count = ui.exam ? 20 : 10;
+      /* What this material can ACTUALLY field, measured rather than assumed. The old set-up offered
+         5 / 10 / 15 / 20 to every document, and a 193-word handout answered all four of them with
+         five questions and no explanation. */
+      const cap = quizCapacity(s.id, a, ui.types.concat(hasSteps ? ['order'] : []));
+      const offer = (ui.exam ? [15, 20, 30, 40] : [5, 10, 15, 20, 30, 40]).filter(n => n <= Math.max(5, cap.total));
+      const counts = offer.length ? offer : [Math.max(1, cap.total)];
+      if (!counts.includes(ui.count)) ui.count = counts[Math.min(1, counts.length - 1)];
       const saved = loadQuizRun(s.id);
       body = `<div class="q-setup">
         ${saved ? `<div class="notice resume-note"><div><strong>You have a ${saved.exam ? 'exam' : 'quiz'} in progress</strong> — question ${saved.qi + 1} of ${saved.qs.length}${saved.exam && saved.deadline && saved.deadline < Date.now() ? ', and its time is up' : ''}.</div><div class="btn-row"><button class="btn sm primary" data-act="q-resume">${saved.exam && saved.deadline && saved.deadline < Date.now() ? 'See the result' : 'Carry on'} <span class="arr">→</span></button><button class="btn sm ghost" data-act="q-discard">Start fresh</button></div></div>` : ''}
@@ -11600,7 +11965,10 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
           <button type="button" class="${ui.exam ? '' : 'on'}" data-act="q-mode" data-m="practice">Practice</button>
           <button type="button" class="${ui.exam ? 'on' : ''}" data-act="q-mode" data-m="exam">Exam</button>
         </div><p class="small muted">${ui.exam ? 'Timed, one minute a question, no feedback until you submit — like the real thing.' : 'Marked as you go, with the answer and its source after each question.'}</p></div>
-        <div class="field"><label>Number of questions</label><div class="seg">${counts.map(n => `<button type="button" class="${ui.count === n ? 'on' : ''}" data-act="q-count" data-n="${n}">${n}</button>`).join('')}</div></div>
+        <div class="field"><label>Number of questions</label><div class="seg">${counts.map(n => `<button type="button" class="${ui.count === n ? 'on' : ''}" data-act="q-count" data-n="${n}">${n}</button>`).join('')}</div>
+          <p class="small muted">Your material supports about <b>${cap.total}</b> ${plural(cap.total, 'question').replace(/^\d+\s/, '')} in total &mdash; ${cap.easy} to recognise, ${cap.medium} to produce, ${cap.hard} to discriminate. Add more files and that number goes up.</p></div>
+        <div class="field"><label>Difficulty</label><div class="seg">${[0, 1, 2, 3].map(l => `<button type="button" class="${ui.level === l ? 'on' : ''}" data-act="q-level" data-l="${l}">${LEVEL_NAME[l]}</button>`).join('')}</div>
+          <p class="small muted">${esc(LEVEL_WHY[ui.level])}${ui.level && (ui.level === 1 ? cap.easy : ui.level === 2 ? cap.medium : cap.hard) < ui.count ? ` This material has only ${ui.level === 1 ? cap.easy : ui.level === 2 ? cap.medium : cap.hard} of those, so the rest come from the nearest level.` : ''}${suggestedLevel(s.id) === 3 && ui.level === 3 ? ' Started here because your last few quizzes were over 85%.' : ''}</p></div>
         ${ui.exam ? (() => { const bp = examBlueprint(s, a, ui.count);
           return `<div class="field"><label>The paper</label>
             <div class="bp">${bp.kind === 'flat' ? '' : `<div class="bp-parts">${bp.parts.map(x => `<span class="bp-part"><b>${fmt(x.want)}</b>${esc(x.label)}</span>`).join('')}</div>`}
@@ -11656,7 +12024,11 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
       let input = '';
       const pend = ui.pending != null && ui.pendQ === ui.qi ? ui.pending : null;
       const optCls = o => { let cls = 'opt'; if (an) { if (ui.exam) { if (o === an.given) cls += ' picked'; } else if (o === q.answer) cls += ' correct'; else if (o === an.given) cls += ' wrong'; } else if (pend === o) cls += ' pending'; return cls; };
-      if (q.type === 'mc') input = `<div class="options">${q.options.map((o, i) => `<button type="button" class="${optCls(o)}" data-act="q-pick-opt" data-v="${esc(o)}" ${an && !ui.exam ? 'disabled' : ''} aria-pressed="${pend === o ? 'true' : 'false'}"><span class="key">${'ABCD'[i]}</span><span>${esc(o)}</span></button>`).join('')}</div>${an && !ui.exam ? '' : confRow(pend != null, ui.exam)}`;
+      /* 'odd' is a multiple choice whose options are whole sentences rather than single terms, so
+         it renders through the same control with a modifier that lets a line wrap instead of
+         being squeezed onto one. Everything else about it — picking, confidence, keyboard — is
+         the multiple-choice behaviour, which is the point of giving it the same type of input. */
+      if (q.type === 'mc' || q.type === 'odd') input = `<div class="options${q.type === 'odd' ? ' long' : ''}">${q.options.map((o, i) => `<button type="button" class="${optCls(o)}" data-act="q-pick-opt" data-v="${esc(o)}" ${an && !ui.exam ? 'disabled' : ''} aria-pressed="${pend === o ? 'true' : 'false'}"><span class="key">${'ABCD'[i]}</span><span>${esc(o)}</span></button>`).join('')}</div>${an && !ui.exam ? '' : confRow(pend != null, ui.exam)}`;
       else if (q.type === 'tf') input = `<div class="options tf">${['True', 'False'].map(o => `<button type="button" class="${optCls(o)}" data-act="q-pick-opt" data-v="${o}" ${an && !ui.exam ? 'disabled' : ''} aria-pressed="${pend === o ? 'true' : 'false'}">${o}</button>`).join('')}</div>${an && !ui.exam ? '' : confRow(pend != null, ui.exam)}`;
       else if (q.type === 'order') {
         const pick = orderState(ui);
@@ -11854,7 +12226,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
       const pa = buildPaper(s, state.analysis, ui);
       ui.qs = pa.qs; ui.bp = pa.bp; ui.short = pa.short;
     } else {
-      ui.qs = visQuiz(s.id, Engine.quiz(state.analysis, { count: ui.count, types: ui.types, seed: ui.seed, only: ui.weakOnly ? new Set(weakTerms(s.id, 25).map(w => w.key)) : null }));
+      ui.qs = visQuiz(s.id, Engine.quiz(state.analysis, { count: ui.count, types: ui.types, seed: ui.seed, level: ui.level || 0, only: ui.weakOnly ? new Set(weakTerms(s.id, 25).map(w => w.key)) : null }));
       ui.bp = null; ui.short = [];
     }
     ui.qi = 0; ui.answers = []; ui.pick = []; ui.startedAt = Date.now();
@@ -13098,6 +13470,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
       case 'deck-new': ui.seed = (ui.seed || 1) + 1; ui.cards = null; renderSection(s, 'cards'); break;
       case 'weak-cards': state.ui = { key: s.id + '/cards', mode: 'weak' }; go(`/s/${s.id}/cards`); break;
       case 'weak-quiz': state.ui = { key: s.id + '/quiz', weakOnly: true }; go(`/s/${s.id}/quiz`); break;
+      case 'q-level': ui.level = +el.dataset.l; renderSection(s, 'quiz'); break;
       case 'q-count': ui.count = parseInt(el.dataset.n, 10); if (state.modal && state.modal.type === 'q-types') syncModal(); else renderSection(s, 'quiz'); break;
       case 'q-mode': ui.exam = el.dataset.m === 'exam'; ui.count = ui.exam ? 20 : 10; if (state.modal && state.modal.type === 'q-types') syncModal(); else renderSection(s, 'quiz'); break;
       case 'q-pick': { const pick = orderState(ui); const i = +el.dataset.i; const at = pick.indexOf(i); if (at >= 0) pick.splice(at, pick.length - at); else pick.push(i); renderSection(s, 'quiz'); break; }
@@ -13528,7 +13901,14 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
   function answerQuiz(s, given, conf) {
     const ui = state.ui; if (!ui.qs || (ui.answers[ui.qi] && !ui.exam)) return;
     const q = ui.qs[ui.qi];
+    /* A two-blank fill is marked half by half. Checking the whole "a, b" string at once let the
+       fuzzy tolerance forgive one blank being completely wrong whenever the other was long enough
+       to absorb the edit distance. Both blanks, each on its own, in order. */
     const ok = q.type === 'order' ? Array.isArray(given) && given.join('|') === q.answer.join('|')
+      : (q.type === 'fill' && q.answers) ? (() => {
+          const parts = String(given || '').split(/\s*[,;]\s*|\s+and\s+/i).filter(Boolean);
+          return parts.length === q.answers.length && q.answers.every((ansPart, i) => Engine.checkAnswer(parts[i], ansPart));
+        })()
       : q.type === 'fill' ? Engine.checkAnswer(given, q.answer) : given === q.answer;
     ui.answers[ui.qi] = { given, ok, conf: conf || null };
     ui.pending = null; ui.pendQ = null;
@@ -13598,7 +13978,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
       if (an && !ui.exam && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); ui.qi++; renderSection(s, 'quiz'); return; }
       const pendingHere = ui.pending != null && ui.pendQ === ui.qi;
       if ((!an || ui.exam) && pendingHere && (e.key === 'Enter' || /^u$/i.test(e.key))) { e.preventDefault(); answerQuiz(s, ui.pending, e.key === 'Enter' ? 'sure' : 'unsure'); return; }
-      if ((!an || ui.exam) && q.type === 'mc' && /^[1-4a-dA-D]$/.test(e.key)) { const i = /\d/.test(e.key) ? +e.key - 1 : 'abcd'.indexOf(e.key.toLowerCase()); if (q.options[i]) { ui.pending = q.options[i]; ui.pendQ = ui.qi; renderSection(s, 'quiz'); } }
+      if ((!an || ui.exam) && (q.type === 'mc' || q.type === 'odd') && /^[1-4a-dA-D]$/.test(e.key)) { const i = /\d/.test(e.key) ? +e.key - 1 : 'abcd'.indexOf(e.key.toLowerCase()); if (q.options[i]) { ui.pending = q.options[i]; ui.pendQ = ui.qi; renderSection(s, 'quiz'); } }
       if ((!an || ui.exam) && q.type === 'tf' && /^[tf]$/i.test(e.key)) { ui.pending = e.key.toLowerCase() === 't' ? 'True' : 'False'; ui.pendQ = ui.qi; renderSection(s, 'quiz'); }
     }
   });
