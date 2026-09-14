@@ -313,6 +313,15 @@ main { flex: 1; width: 100%; }
    one inside prose is a list and keeps its bullets and its indent. Modals count: the what's-new
    list picked the same 40px up again in v2.11, because #overlay is not inside main. */
 main ul[class], main ol[class], #overlay ul[class], #overlay ol[class] { margin: 0; padding: 0; }
+/* …except the ones that are PROSE rather than a component. The rule above exists because a classed
+   list in this app is normally a layout block that sets its own structure, and the browser's 40px
+   indent was showing up inside ten of them. But it also silenced the bottom margin on the four
+   lists that really are paragraphs with bullets, so a bulleted list ran straight into the sentence
+   after it with no gap at all — measured at 0px in five places on the privacy page. */
+/* ul.x, not .x: `main ul[class]` above is 0-1-2, so a plain class loses to it and the margin
+   stayed at zero. Matching its specificity and coming later is what actually wins. */
+main ul.rights-list, main ul.takeaways, main ul.sum-points, main ul.obj-list,
+main ol.steps, main ul.steps { margin-bottom: .95em; }
 .foot { border-top: 1px solid var(--line); background: var(--inverse); color: var(--inverse-ink-2); display: grid; grid-template-columns: 1fr auto; gap: 24px; padding: var(--band) var(--gut); font-size: .78rem; font-family: var(--font-mono); letter-spacing: .02em; }
 .foot span:last-child { text-transform: uppercase; letter-spacing: .1em; }
 .foot .rights { text-transform: none; letter-spacing: .02em; white-space: nowrap; color: inherit; text-decoration: none; border-bottom: 1px solid currentColor; padding-bottom: 1px; }
@@ -590,8 +599,8 @@ main ul[class], main ol[class], #overlay ul[class], #overlay ol[class] { margin:
 .side { display: flex; flex-direction: column; }
 .side .cell { border-bottom: 1px solid var(--line); }
 .takeaways { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; }
-.takeaways li { display: grid; grid-template-columns: 14px 1fr; gap: 12px; font-size: .9rem; color: var(--ink-2); }
-.takeaways li::before { content: ""; width: 10px; height: 10px; margin-top: 6px; background: var(--mint); }
+.takeaways li { position: relative; padding-left: 26px; font-size: .9rem; line-height: 1.55; color: var(--ink-2); }
+.takeaways li::before { content: ""; position: absolute; left: 0; top: 6px; width: 10px; height: 10px; background: var(--mint); }
 .term-chips { display: flex; flex-wrap: wrap; gap: 6px; }
 .term-chip { font-size: .8rem; padding: 5px 10px; border: 1px solid var(--line-soft); background: var(--surface); color: var(--ink-2); }
 .term-chip.on, .term-chip:hover { background: var(--mint); color: var(--mint-ink); border-color: var(--mint-ink); }
@@ -844,8 +853,8 @@ main:focus { outline: none; }
 .sum-section h4 { font-size: 1.15rem; margin-bottom: 10px; display: flex; align-items: baseline; gap: 12px; }
 .sum-section h4 .num { font-family: var(--font-mono); font-size: .68rem; letter-spacing: .12em; color: var(--accent); font-weight: 500; }
 .sum-points { list-style: none; padding: 0; margin: 0 0 10px; display: grid; gap: 8px; }
-.sum-points li { display: grid; grid-template-columns: 14px 1fr; gap: 12px; line-height: 1.55; }
-.sum-points li::before { content: ""; width: 8px; height: 8px; margin-top: 8px; background: var(--accent); }
+.sum-points li { position: relative; padding-left: 26px; line-height: 1.55; }
+.sum-points li::before { content: ""; position: absolute; left: 0; top: 8px; width: 8px; height: 8px; background: var(--accent); }
 .sum-terms { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
 .sum-terms .label { margin-right: 4px; }
 .self-test { display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); }
@@ -918,8 +927,8 @@ button.term-chip.k-row { cursor: pointer; }
 
 /* ---------- processes / cause-effect / examples ---------- */
 .steps { margin: 0; padding: 0 0 0 4px; list-style: none; counter-reset: step; display: grid; gap: 8px; }
-.steps li { display: grid; grid-template-columns: 26px 1fr; gap: 10px; align-items: start; font-size: .92rem; color: var(--ink-2); overflow-wrap: anywhere; }
-.steps li::before { counter-increment: step; content: counter(step, decimal-leading-zero); font-family: var(--font-mono); font-size: .68rem; letter-spacing: .06em; color: var(--accent); font-weight: 500; padding-top: 4px; }
+.steps li { position: relative; padding-left: 36px; font-size: .92rem; line-height: 1.55; color: var(--ink-2); overflow-wrap: anywhere; }
+.steps li::before { counter-increment: step; content: counter(step, decimal-leading-zero); position: absolute; left: 0; top: 4px; font-family: var(--font-mono); font-size: .68rem; letter-spacing: .06em; color: var(--accent); font-weight: 500; }
 .steps.big-steps li { font-size: 1rem; color: var(--ink); gap: 14px; }
 .steps.big-steps li::before { font-size: .75rem; }
 .k-row.proc { display: grid; gap: 8px; padding: 6px 0; }
@@ -1706,9 +1715,25 @@ math mi[mathvariant="normal"] { font-style: normal; }
 .legal-sec p { margin: 0 0 .85em; line-height: 1.65; max-width: 68ch; }
 .legal-sec p:last-child { margin-bottom: 0; }
 .legal-sec b { font-weight: 600; }
+/* ---- markers sit OUT of flow, and that is not a style preference ----
+   These five lists are "a bullet or a number, then prose". Every one of them used to be a
+   two-column grid on the <li>, with the marker generated into column one. That works exactly as
+   long as the bullet's content is a single unbroken text node — and CSS makes every run of content
+   in a grid container its OWN grid item, so the moment any inline markup appears the bullet is cut
+   into pieces: the whitespace between two items is not part of either, so "<b>have it corrected</b>
+   if it is wrong" rendered as "correctedif it is wrong", and auto-placement then dropped the rest
+   of the sentence into the 14px marker column, one word per line.
+
+   v2.27 put a <b> at the start of every bullet on the privacy page and that is what it did to it —
+   the single worst-looking thing this app has served, on the page an institution was going to read.
+   The same trap had already been hit once before, in v2.21, where a counter became a third grid
+   item (see the note by .wn-list below).
+
+   So the marker is positioned absolutely and the <li> is ordinary block flow. It looks identical,
+   any inline markup inside a bullet now behaves, and the trap is gone rather than avoided. */
 .rights-list { display: grid; gap: 9px; margin: 0 0 .85em; max-width: 68ch; }
-.rights-list li { display: grid; grid-template-columns: 14px 1fr; gap: 12px; line-height: 1.6; }
-.rights-list li::before { content: ""; width: 8px; height: 8px; margin-top: 9px; background: var(--accent); }
+.rights-list li { position: relative; padding-left: 26px; line-height: 1.6; }
+.rights-list li::before { content: ""; position: absolute; left: 0; top: 9px; width: 8px; height: 8px; background: var(--accent); }
 .legal-foot { border-top: 1px solid var(--line); padding-top: var(--band); display: grid; gap: 14px; }
 /* The itemised "what the app sends" table. It is the one place on the page where a list would be
    worse than a table: the point being made is that the list is SHORT and complete, and a two-column
@@ -1733,6 +1758,10 @@ math mi[mathvariant="normal"] { font-style: normal; }
 .pack-card.built { background: var(--tint-1); }
 .pack-card.built:hover { background: var(--accent-soft); }
 .pack-built { margin-top: var(--band-lg); }
+/* A stacked pair of .small paragraphs on the pack preview had no gap between them at all: .page
+   sets no paragraph margin, and only .legal-sec p did. Measured at 0px. */
+.page.narrow > p { margin: 0 0 .9em; }
+.page.narrow > p:last-child { margin-bottom: 0; }
 @media (max-width: 640px) { .legal-sec h2 { font-size: 1.2rem; } .legal-table td:first-child { white-space: normal; } }
 @media print { .legal-toc { display: none !important; } .legal-sec { break-inside: avoid; } .legal-table-wrap { overflow: visible; } }
 
@@ -1784,8 +1813,8 @@ math mi[mathvariant="normal"] { font-style: normal; }
 .sec-hero .sum-stats { margin-top: var(--band); }
 .obj { margin-top: var(--band); border-left: var(--accent-bar) solid var(--accent); padding-left: var(--pad-in); }
 .obj-list { list-style: none; display: grid; gap: 6px; margin: 8px 0 0; padding: 0; font-size: .93rem; color: var(--ink-2); }
-.obj-list li { display: grid; grid-template-columns: 16px 1fr; gap: 10px; }
-.obj-list li::before { content: ""; width: 8px; height: 8px; margin-top: 7px; background: var(--mint); }
+.obj-list li { position: relative; padding-left: 26px; line-height: 1.55; max-width: 80ch; }
+.obj-list li::before { content: ""; position: absolute; left: 0; top: 7px; width: 8px; height: 8px; background: var(--mint); }
 
 .course-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); border-bottom: 1px solid var(--line); }
 .course-grid > * { border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); margin-bottom: -1px; }
@@ -1830,6 +1859,12 @@ math mi[mathvariant="normal"] { font-style: normal; }
 .worked .wsteps li::before { counter-increment: wstep; content: counter(wstep); font-family: var(--font-mono); font-size: .7rem; color: var(--ink-3); }
 .worked .wsteps li:last-child { border-bottom: 0; }
 .worked .wsteps .do { font-family: var(--font-mono); font-size: .9rem; line-height: 1.5; }
+/* A worked step in a LAW course is a sentence — "Is it a deceptive act?" — and monospace is the
+   wrong type for a sentence: it is set for aligning symbols, it reads measurably slower as prose,
+   and beside the reason in body type the two halves looked like code and its commentary rather
+   than a step and why. Algebra keeps the mono, because there the alignment IS the point. The flag
+   is declared on the course, not guessed from the characters in the string. */
+.lesson.prose .worked .wsteps .do { font-family: var(--font-body); font-size: .95rem; font-weight: 500; }
 .worked .wsteps .why { color: var(--ink-2); font-size: .88rem; line-height: 1.5; }
 /* ---- a faded example (v2.28) ----
    The blanked steps have to read as "yours to finish", not as a rendering failure. A dashed rule
@@ -1891,6 +1926,17 @@ math mi[mathvariant="normal"] { font-style: normal; }
 /* the section of the lecture slides a lesson follows, and the exam scope on a course page —
    both exist so a student can line this course up against the one they are actually sitting */
 .lesson-head .src-chip { font-family: var(--font-mono); font-size: .62rem; letter-spacing: .1em; text-transform: uppercase; padding: 4px 9px; border: 1px solid var(--line-soft); color: var(--ink-3); white-space: nowrap; }
+/* ---- one note strip, three uses (v2.31) ----
+   A course page carried three of these, built three different ways: a yellow flex strip, a bare
+   label over prose with no strip at all, and a yellow strip with an accent bar. Stacked on top of
+   each other they read as clutter rather than as three facts. One component now, with a modifier
+   for the two that need emphasis, and — the part that actually matters for reading — a measure.
+   These ran the full width of the page: 169 characters a line, against the 65–75 that prose is
+   comfortable at. A line that long makes the eye lose its place on the way back to the left. */
+.course-note { margin-top: 12px; padding: 11px var(--pad-in); background: var(--surface-2); color: var(--ink); font-size: .92rem; line-height: 1.55; display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; max-width: 82ch; }
+.course-note > span:not(.label) { flex: 1 1 340px; min-width: 0; }
+.course-note.exam { margin-top: var(--band); background: var(--warn-soft); }
+.course-note.warn { background: var(--warn-soft); border-left: var(--accent-bar) solid var(--warn); }
 .exam-note { margin-top: var(--band); padding: 12px var(--pad-in); background: var(--warn-soft); color: var(--ink); font-size: .92rem; display: flex; flex-wrap: wrap; gap: 10px; align-items: baseline; }
 @media (max-width: 640px) { .lesson-head { flex-wrap: wrap; gap: 8px 12px; } }
 
@@ -1910,6 +1956,12 @@ math mi[mathvariant="normal"] { font-style: normal; }
 /* an answer that is a sentence is set as a sentence: Engine.mathml does not FAIL on prose, it
    "succeeds" and returns typeset nonsense, so the data has to say which answers are words */
 .worked .ans .fx.words { font-family: var(--font-body); font-size: .95rem; }
+/* A rule in a Law course is a sentence — "mediator suggests, arbitrator decides" — and it was being
+   typeset as mathematics: italic serif, and the maths renderer strips the spaces between tokens, so
+   it came out as "thecircumstancesofthebargain, notjusti", clipped at the edge of its box. The DATA
+   was right all along: every prose rule carries words: true, and the renderer simply never passed
+   it through. Every rule in both Law courses has looked like that since v2.17. */
+.rule .fx.words { font-family: var(--font-body); font-size: .98rem; line-height: 1.5; overflow-x: visible; white-space: normal; }
 
 /* ---------- the course library, once it holds more than one subject ---------- */
 .subject-block { border-bottom: 1px solid var(--line); }
@@ -1946,6 +1998,7 @@ math mi[mathvariant="normal"] { font-style: normal; }
    Adding a new tinted component means adding it here. */
 .panel-head .label, .subject-head .small, .exam-note, .exam-note .label,
 .text-note, .text-note .label, .read-note, .read-note .label,
+.legal-note, .legal-note .label, .course-note, .course-note .label,
 .legal-note, .legal-note .label, .tutoring-strip .label, .tutoring-strip .small,
 .mastery-band .label, .lvl-moves li span,
 .worked .ans .label, .formula, .term-detail, .copy-box, .leech-note,
@@ -5674,6 +5727,10 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     exam: 'Midterm 1 covers chapters 1–5. Midterm 2 covers chapters 6–9. The final is comprehensive, and you must pass it to pass the course.',
     text: 'Bhalloo & Alexander, Canadian Business Law: A British Columbia Perspective, 2nd ed (Emond, 2024)',
     legalNote: NOTE,
+    /* A law course is written in sentences, not expressions. The renderer uses this to set the
+       steps of a worked example in reading type rather than the monospace it uses for algebra, and
+       to label a unit with a book rather than the fx glyph. Extraction courses leave it unset. */
+    prose: true,
     units: [
 
       {
@@ -5955,6 +6012,10 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     exam: 'Midterm 1 covers chapters 1–5. Midterm 2 covers chapters 6–9. The final is comprehensive, and you must pass it to pass the course.',
     text: 'Muldoon & Williams, An Introduction to Environmental Law and Policy in Canada, 4th ed (Emond, 2025)',
     legalNote: NOTE,
+    /* A law course is written in sentences, not expressions. The renderer uses this to set the
+       steps of a worked example in reading type rather than the monospace it uses for algebra, and
+       to label a unit with a book rather than the fx glyph. Extraction courses leave it unset. */
+    prose: true,
     units: [
       {
         id: 'evolution', n: 1,
@@ -6880,7 +6941,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.30', date: '14 September 2026', year: 2026 };
+  const BUILD = { v: '2.31', date: '14 September 2026', year: 2026 };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonandy242', ['gmail', 'com'].join('.')].join('@');
   /* The one sentence that says what this is. It appears under the wordmark, and build.js uses
@@ -6893,6 +6954,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      because the person who needs it is the one who just watched the app refresh itself and wants to
      know what moved. Trim the tail when it gets past a dozen; nobody reads further back than that. */
   const WHATS_NEW = [
+    ['2.31', 'Legibility fixes, two of them bad. On the <b>privacy page</b>, every bullet that began with bold text was being shattered &mdash; the word after the bold run lost its space, and the rest of the sentence stacked one word per line down a 14px column. In the <b>Law courses</b>, every &ldquo;rule&rdquo; box was being typeset as mathematics: italic serif with the spaces stripped out and the end clipped off, so <i>the circumstances of the bargain</i> read as one long unbroken word. Both are fixed, and both now fail the build if they come back. Also: the steps of a worked example in a Law course are set in reading type rather than the monospace that suits algebra; the three notes at the top of a course page are one component instead of three, and no longer run 169 characters to the line; and bulleted lists have a gap under them again.'],
     ['2.30', 'Both Law courses now run to the end of Midterm 2. <b>Commercial Law</b> gains consumer protection and competition law, the forms of carrying on business and what separate legal personality actually buys you, Indigenous business and economic development, and secured lending &mdash; chapters 6 to 9. <b>Environmental Law</b> gains international law and the regulatory toolbox (chapters 4 and 5, which are in <b>Midterm 1</b> and were missing), then sectoral regimes and impact assessment, and planning and market instruments. Six new units, nine lessons, 25 worked examples and 24 practice questions, each pointing at the chapter of the set text to read alongside it. Still not legal advice, and still nothing copied from anybody&rsquo;s textbook.'],
     ['2.29', '<b>Course packs.</b> A whole course &mdash; the readings, the cards, the learning outcomes, the weekly schedule and what each assessment is worth &mdash; opens from one link, already set up. An instructor or a classmate can build one from a subject they have loaded; you open <b>Course packs</b> from the home page, see exactly what is in a pack before anything is added, and add it with one tap. It arrives as a new subject with nothing studied, so it can never overwrite what you already have, and it carries none of the maker&rsquo;s marks, schedule or quiz history. Packs are served from this app&rsquo;s own address and nowhere else &mdash; opening one still sends nothing about you anywhere.'],
     ['2.28', 'Two changes, both aimed at the same thing: reading an answer is not learning it. <b>Say it your way</b> &mdash; a new card now asks you to put the answer in your own words before it joins the deck. It is optional, it is never marked, and from then on your wording is what you see first, with the material&rsquo;s underneath. Writing it out is one of the best-evidenced things you can do with a card. And in the Math and Law courses, <b>worked examples now fade</b>: once you are Familiar with a skill the last line is left for you to finish, at Proficient the last two, and at Mastered you get the question alone. Every example still opens in full with one tap &mdash; it is study material, not a test.'],
@@ -8835,9 +8897,9 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
           <h1>${esc(c.title)}</h1>
           <p class="lede">${esc(c.blurb)}</p>
           <div class="sum-stats"><div><b>${n.lessons}</b><span>lessons</span></div><div><b>${n.examples}</b><span>worked examples</span></div><div><b>${n.practice}</b><span>practice questions</span></div></div>
-          ${c.exam ? `<p class="exam-note"><span class="label">Exam scope</span> ${esc(c.exam)}</p>` : ''}
-          ${c.text ? `<p class="text-note"><span class="label">Set text</span> ${esc(c.text)} &mdash; this course points at the chapters to read alongside it and does not replace them.</p>` : ''}
-          ${c.legalNote ? `<p class="legal-note"><span class="label">Please note</span> ${esc(c.legalNote)}</p>` : ''}
+          ${c.exam ? `<p class="course-note exam"><span class="label">Exam scope</span> <span>${esc(c.exam)}</span></p>` : ''}
+          ${c.text ? `<p class="course-note"><span class="label">Set text</span> <span>${esc(c.text)} &mdash; this course points at the chapters to read alongside it and does not replace them.</span></p>` : ''}
+          ${c.legalNote ? `<p class="course-note warn"><span class="label">Please note</span> <span>${esc(c.legalNote)}</span></p>` : ''}
         </div>
         ${masteryBand(c)}
         <div class="unit-list">${rows}</div>
@@ -8914,13 +8976,13 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
   function renderUnit(c, u) {
     const pr = unitProgress(c, u);
     const lessons = u.lessons.map((l, li) => `
-      <section class="lesson" id="l-${esc(l.id)}">
+      <section class="lesson${c.prose ? ' prose' : ''}" id="l-${esc(l.id)}">
         <div class="lesson-head"><span class="label">${u.n}.${li + 1}</span><h2>${esc(l.title)}</h2>${l.src ? `<span class="src-chip" title="Follows this part of the course material">${esc(l.src)}</span>` : ''}</div>
         <div class="lesson-body">
           <p class="idea">${l.idea}</p>
           ${l.rules && l.rules.length ? `<div class="rules">${l.rules.map(rr => `<div class="rule">
               <span class="label">${esc(rr.name)}</span>
-              <div class="fx">${fxHtml(rr.expr)}</div>
+              <div class="fx${rr.words ? ' words' : ''}">${fxHtml(rr.expr, rr.words ? 'words' : '')}</div>
               <p class="small muted">${esc(rr.note)}</p>
             </div>`).join('')}</div>` : ''}
 
@@ -8940,14 +9002,14 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     app.innerHTML = frame(`${topbar(`<a href="#/courses">${esc(c.subject.name)}</a><span class="sep">/</span><a href="#/courses/${esc(c.id)}">${esc(c.code)}</a><span class="sep">/</span><strong>Unit ${u.n}</strong>`)}
       <div class="section-bar">
         <a class="back" href="#/courses/${esc(c.id)}" aria-label="Back to ${esc(c.title)}"><span class="back-ico">${I.back}</span><span class="back-txt">${esc(c.code)}</span></a>
-        <div class="sec-title"><h2><span class="sec-ico">${I.formula}</span>Unit ${u.n}</h2></div>
+        <div class="sec-title"><h2><span class="sec-ico">${c.prose ? I.outcomes : I.formula}</span>Unit ${u.n}</h2></div>
         <div class="tools"><a class="btn sm primary" href="#/courses/${esc(c.id)}/${esc(u.id)}/practice">Practice (${pr.total}) <span class="arr">&rarr;</span></a></div>
       </div>
       <main id="main" tabindex="-1">
         <div class="sec-hero">
           <h1>${esc(u.title)}</h1>
           <p class="lede">${esc(u.blurb)}</p>
-          ${u.read ? `<p class="read-note"><span class="label">Read alongside</span> ${esc(u.read)}${c.text ? ' of ' + esc(c.text) : ''}</p>` : ''}
+          ${u.read ? `<p class="course-note"><span class="label">Read alongside</span> <span>${esc(u.read)}${c.text ? ' of ' + esc(c.text) : ''}</span></p>` : ''}
           <div class="obj"><span class="label">By the end of this unit you can</span>
             <ul class="obj-list">${u.objectives.map(x => `<li>${esc(x)}</li>`).join('')}</ul>
           </div>
