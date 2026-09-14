@@ -2,7 +2,7 @@
 
 **Application:** UNI Made EZ · <https://thepastor.github.io/uni-made-ez/>
 **Publisher:** JohnsonXCorp (Anndy Johnson), British Columbia
-**Version reviewed:** v2.27, 14 September 2026
+**Version reviewed:** v2.34, 14 September 2026
 **Request:** that TRU permit instructors to recommend UNI Made EZ to students as an optional study
 companion.
 **Cost to the university and to students:** none. Free, no account, no licence, no procurement.
@@ -44,12 +44,13 @@ tests that fail the build, and they are verifiable by anyone in about two minute
 | Question a privacy office asks | Answer |
 |---|---|
 | What personal information is collected? | A name and email address, only if the student types them into an optional form. Nothing else. |
+| Is anything else typed by a student ever sent? | One thing, added in v2.34, and only on request: the **name of a subject** — one or two words such as `Nursing` — if a student sets a course to *Other* and chooses to answer one optional question about what they are studying. It is sent **with no device id and no other field**, so there is no column in that table to join it to a visit or a person, and it is filtered to letters and spaces, four words, 40 characters, in the page and again in the database. Skipping sends nothing and withholds nothing. |
 | Is providing it a condition of use? | **No.** Since v2.27 every feature works identically without it. |
 | What happens to course files and student work? | Read in the browser; never transmitted. Held in that browser's storage on that device. |
 | Where is personal information stored? | PostgreSQL on Supabase, **Canadian region `ca-central-1`**. It does not leave Canada. |
 | Who can read it? | The publisher only. The key embedded in the public page can write and **cannot read**; row-level security was verified empirically by attempting a read with that key and being refused. |
 | Cookies, analytics, advertising, trackers, third-party scripts? | **None of any kind.** As of v2.27 even the web fonts are embedded rather than fetched, so no visitor's IP address reaches any third party. |
-| Retention? | Name and email: deleted within 30 days of request, and when the app is retired. Anonymous counter rows: while the app is published. On-device data: the student deletes it by clearing site data. |
+| Retention? | Name and email: deleted within 30 days of request, and when the app is retired. Anonymous counter rows and subject names: while the app is published. On-device data: the student deletes it by clearing site data. |
 | Access, correction, deletion? | By email, no form, no fee, no reason needed; answered within the 30 business days BC PIPA requires. Escalation to the OIPC is stated in the app. |
 | Which law applies to the publisher? | BC PIPA. The publisher is a BC organisation; a designated privacy contact is published in the app and in the notice. |
 | Is a PIA needed? | TRU's PIA process is triggered by TRU implementing a system. Nothing is being implemented, and no TRU data is involved. If the university wishes to document one anyway, [`docs/PIA_Response.md`](PIA_Response.md) answers the standard questions in advance. |
@@ -180,7 +181,8 @@ An honest submission names its own weaknesses.
 | [`Privacy_Notice.md`](Privacy_Notice.md) | The operative privacy notice |
 | [`PIA_Response.md`](PIA_Response.md) | Vendor answers to a standard privacy impact assessment |
 | [`Accessibility_Statement.md`](Accessibility_Statement.md) | WCAG 2.1 AA conformance statement with known gaps |
+| [`Counter_Subjects.sql.md`](Counter_Subjects.sql.md) | The schema, filter and access rules behind the subject question in §3, so the claims there can be read rather than taken |
 | [`TERMS.md`](../TERMS.md) · [`LICENSE`](../LICENSE) · [`THIRD-PARTY-NOTICES.md`](../THIRD-PARTY-NOTICES.md) | Terms, licence, component notices |
 | **#/rights** in the application | The same material written for a student |
 
-*Prepared 14 September 2026 for v2.27. Contact: johnsonandy242@gmail.com*
+*Prepared 14 September 2026 for v2.34. Contact: johnsonandy242@gmail.com*

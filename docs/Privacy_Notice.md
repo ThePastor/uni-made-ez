@@ -2,7 +2,7 @@
 
 **Publisher:** JohnsonXCorp, British Columbia, Canada
 **Application:** UNI Made EZ — <https://thepastor.github.io/uni-made-ez/>
-**Version this notice describes:** v2.27, 14 September 2026
+**Version this notice describes:** v2.34, 14 September 2026
 **Privacy contact:** johnsonandy242@gmail.com
 **Applicable law:** *Personal Information Protection Act* (SBC 2003, c. 63) (British Columbia)
 
@@ -20,12 +20,16 @@ running on their device. **No file, and no text taken out of a file, is ever tra
 answers, ratings, progress, notes and exam dates are held in that browser's own storage on that
 device, and nowhere else.
 
-The application transmits exactly two things, both described in full below:
+The application transmits exactly three things, all described in full below:
 
 1. an **anonymous open-counter** message, at most once an hour, so the publisher knows roughly how
-   many people use the app; and
+   many people use the app;
 2. a **name and email address**, *only* if a student chooses to type them into an optional sign-up
-   form and press the button.
+   form and press the button; and
+3. **the name of a subject** — one or two words such as `Nursing` — *only* if a student sets a
+   subject to **Other** and chooses to answer one optional question about what they are studying.
+   This message carries no device id and no other field, so it cannot be linked to a visit or to a
+   person.
 
 There are no cookies, no advertising identifiers, no analytics services, no third-party scripts of
 any kind, no location, no fingerprinting, and no sale or sharing of anything with anyone.
@@ -64,11 +68,43 @@ as a new device — a deliberate accuracy cost accepted in exchange for not foll
 - **Not used for** advertising, profiling, scoring, resale, disclosure to any third party, or any
   purpose beyond (a) and (b).
 
-### 2.3 What is never collected, by design
+### 2.3 A subject name — collected with consent, stored unlinked
+
+The application reads a student's files using one of ten subject profiles (Mathematics, Physics,
+Chemistry, Biology, Computer Science, Statistics, Accounting, Law, Marketing, English). Ten
+profiles do not cover a university, so a student whose course is not among them sets the subject to
+**Other**, which uses the general engine and withholds nothing.
+
+Choosing **Other** asks one optional question: *what subject is this?* It exists to decide which
+profile is written next.
+
+| Item | What it is |
+|---|---|
+| Subject name | Free text the student typed, maximum 40 characters, e.g. `Nursing`. |
+
+- **Nothing else is sent with it.** No device id — not even the random counter id in 2.1 — no name,
+  no email, no timestamp from the client, and nothing derived from the student's files. There is no
+  column in that table to join it to anything. This is why it is not personal information about an
+  identifiable individual, and it is a property of the schema rather than a policy commitment.
+- **Filtered before storage, in two places.** The text must match letters, spaces, hyphens,
+  apostrophes and ampersands, be four words or fewer, and be 40 characters or fewer. It is checked
+  in the page and checked again by the database function that writes it, so the filter cannot be
+  bypassed by calling the API directly with the key published in the page. Anything containing
+  digits, an `@` sign or a web address is discarded rather than stored, and the student is told so.
+- **Consent is real, and is obtained at the point of collection.** The profile is saved *before* the
+  question appears; both buttons close it; closing it any other way is the same as skipping;
+  skipping transmits nothing; and no feature is withheld either way. A student is not asked twice
+  for the same subject.
+- **Purpose:** to decide which subject profile to build next. Not used for any other purpose.
+- **What the publisher sees:** a list of subject names with a count beside each.
+
+### 2.4 What is never collected, by design
 
 Course files; text extracted from them; flash cards; quiz answers; scores; study progress; notes;
 exam dates; search terms; institution; student number; course enrolment; IP address; precise or
-approximate location; browsing history; contacts; any biometric or device-identifying signal.
+approximate location; browsing history; contacts; any biometric or device-identifying signal. The
+subject name in 2.3 is the only free text the application has ever transmitted, and it is stored
+with nothing beside it.
 
 ---
 
@@ -94,6 +130,7 @@ approximate location; browsing history; contacts; any biometric or device-identi
 |---|---|
 | Name and email | Until deletion is requested, and in any event when the application is retired. Deleted **within 30 days** of a request. |
 | Open-counter rows | While the application is published. They contain no personal information. |
+| Subject names (2.3) | While the application is published. They contain no personal information and hold no identifier to action a deletion request against — which is the reason the table was built without one. |
 | On-device data (files, cards, progress) | Under the individual's sole control. Deleted instantly and permanently by clearing browser site data. |
 
 ## 5. Rights, and how to use them

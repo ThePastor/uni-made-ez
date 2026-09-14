@@ -1760,6 +1760,18 @@ math mi[mathvariant="normal"] { font-style: normal; }
 .legal-table td:first-child { font-weight: 600; white-space: nowrap; }
 .legal-table code { font-size: .86em; }
 .legal-contact { border-left: var(--accent-bar) solid var(--accent); padding: 10px 0 10px 14px; line-height: 1.7; }
+/* The optional "what subject is this?" box (v2.34). A narrow modal, so it uses the plain <h2> form
+   the other short forms use rather than the head/body/foot grid, which only lays out under .wide. */
+.subj-ask .label { display: block; margin-bottom: 2px; }
+.subj-ask h2 { margin-bottom: 4px; }
+.subj-ask p { line-height: 1.6; }
+.subj-ask .field { margin: 4px 0 2px; }
+.subj-ask .field .small { margin-top: -2px; }
+/* The owner's tally of what students typed under "Other" (v2.34). Same table, three narrow columns
+   rather than two wide ones, so the count is read down a column instead of hunted for. */
+.tally-table { min-width: 340px; }
+.tally-table th:nth-child(n+2), .tally-table td:nth-child(n+2) { width: 1%; white-space: nowrap; text-align: right; }
+.tally-table td:first-child { white-space: normal; }
 /* ---- course packs (v2.29) ---- */
 .pack-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); margin: 10px 0 var(--band); }
 .pack-card { background: var(--surface); padding: var(--pad-in) var(--gut-in) calc(var(--pad-in) + 4px); display: grid; gap: 5px; text-decoration: none; color: inherit; position: relative; min-height: 118px; align-content: start; transition: background .12s; }
@@ -1781,6 +1793,9 @@ math mi[mathvariant="normal"] { font-style: normal; }
 .subj-strip .subj-name { font-family: var(--font-display); font-weight: 600; font-size: 1.02rem; letter-spacing: -.02em; }
 .subj-strip .small { color: var(--ink-2); flex: 1 1 320px; min-width: 0; line-height: 1.5; }
 .subj-strip .btn { margin-left: auto; }
+/* With two buttons (v2.34 adds "Say what it is" beside "Change") only the FIRST should absorb the
+   free space, or they end up flush against each other at the right edge. */
+.subj-strip .btn ~ .btn { margin-left: 0; }
 /* the ordered variant: cells are direct children, so DOM order is reading order at every width */
 .keys.flow { align-items: start; align-content: start; }
 .keys.flow > .cell { align-self: start; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
@@ -7545,7 +7560,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.33', date: '14 September 2026', year: 2026 };
+  const BUILD = { v: '2.34', date: '14 September 2026', year: 2026 };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonandy242', ['gmail', 'com'].join('.')].join('@');
   /* The one sentence that says what this is. It appears under the wordmark, and build.js uses
@@ -7558,6 +7573,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      because the person who needs it is the one who just watched the app refresh itself and wants to
      know what moved. Trim the tail when it gets past a dozen; nobody reads further back than that. */
   const WHATS_NEW = [
+    ['2.34', '<b>Studying something the ten profiles do not cover? Say so.</b> The subject picker’s last option is now <b>Other</b> &mdash; Nursing, Music, Social Work, anything &mdash; and it is a real answer rather than a shrug: the general engine reads your files with every panel and every question type, exactly as before. Picking it asks <b>one optional question</b>: what subject is this? Answer and that word goes into the queue for the next profile to be written. It is sent on its own &mdash; no name, no email, not even the random id that counts visits &mdash; so there is nothing to connect it to you. Skip it and nothing is sent at all, and nothing is withheld either way. <a href="#/rights">The full account</a> now lists this message in its own table beside the counter.'],
     ['2.33', '<b>The app now reads your files as a subject.</b> Add a Chemistry handout and it is read as Chemistry: reactions and equations come first in Key information, the panels are named the way chemists name them, and the extra sentence shapes chemistry uses are picked up. Ten profiles &mdash; Mathematics, Physics, Chemistry, Biology, Computer science, Statistics, Accounting, Law, Marketing and English. It always shows you what it decided and the words that decided it, and one tap changes it; where two subjects are genuinely close it says so instead of picking. An English handout stops being offered a &ldquo;Figures&rdquo; panel and arithmetic questions, a Law one stops being offered arithmetic, and a Maths one puts its formulas at the top where they belong.'],
     ['2.32', 'Quizzes are <b>bigger and can be made harder</b>. The engine was quietly running out of questions &mdash; a six-hundred-word handout could produce 29 and no more, while a third of its terms were never considered and forty of its sentences were never used, so asking for 40 gave you 29 with no explanation. It now reaches 38 from the same document, and the set-up page says up front how many your material can actually support instead of offering numbers it cannot meet. There is also a <b>difficulty</b> setting, and it is real: every question is graded by the work it takes &mdash; recognise, produce, or discriminate &mdash; and two genuinely hard kinds are new. <b>Three of these are true, which one is not</b> gives you four statements from your own material with one term changed, so elimination is worth nothing. And a <b>two-blank</b> fill removes two load-bearing words from one sentence instead of one. If your last few quizzes were over 85%, the app starts you harder.'],
     ['2.31', 'Legibility fixes, two of them bad. On the <b>privacy page</b>, every bullet that began with bold text was being shattered &mdash; the word after the bold run lost its space, and the rest of the sentence stacked one word per line down a 14px column. In the <b>Law courses</b>, every &ldquo;rule&rdquo; box was being typeset as mathematics: italic serif with the spaces stripped out and the end clipped off, so <i>the circumstances of the bargain</i> read as one long unbroken word. Both are fixed, and both now fail the build if they come back. Also: the steps of a worked example in a Law course are set in reading type rather than the monospace that suits algebra; the three notes at the top of a course page are one component instead of three, and no longer run 169 characters to the line; and bulleted lists have a gap under them again.'],
@@ -8388,6 +8404,35 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     });
   }
 
+  /* One subject name, sent once, when a student picks Other and chooses to type one.
+     Through a SECURITY DEFINER function for the same reason the ping is: umez_subjects has no read
+     permission for the key in this page, so nothing that lands in it can ever be read back out by
+     the page that wrote it. The function re-applies the filter above with the database's own
+     regex — the app's check is a courtesy to the student, the database's is the one that counts —
+     and discards anything that is not shaped like the name of a subject.
+
+     The device id is NOT sent. A tally of subject names is the whole purpose; knowing which device
+     said "Nursing" adds nothing to that and would turn an aggregate into a record about a person.
+     The cost is that one student changing their mind twice counts twice, which is the right side
+     to be wrong on. */
+  async function reportSubject(label) {
+    const clean = subjLabelClean(label);
+    if (!clean || !SYNC_OK) return false;
+    const r = await syncFetch('rpc/umez_subject', { method: 'POST', body: JSON.stringify({ p_label: clean }) });
+    return !!(r && r.ok);
+  }
+
+  /* Counts per subject name — the same shape as umez_stats: an aggregate with no id, no time of
+     day and no row per student. Returns null when the table has not been installed yet, which is
+     what the owner's panel shows as a setup step rather than an error. */
+  async function loadSubjectTally() {
+    const r = await syncFetch('umez_subject_tally?select=*&order=students.desc', { headers: { accept: 'application/json' } });
+    if (!r) return { err: 'no-config', why: syncWhy };
+    if (!r.ok) return { err: 'http-' + r.status };
+    const rows = await r.json().catch(() => null);
+    return { rows: Array.isArray(rows) ? rows : [] };
+  }
+
   /* Returns true only if the row was actually written. That answer decides whether the sign-up is
      finished here or has to fall back to the mail app: on the live site the database has the
      sign-up the moment this resolves, so asking the student to also send an email is asking twice
@@ -8883,9 +8928,9 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
       was added, which made that sentence false, so the sentence was changed. The note is left here
       on purpose: a privacy promise that quietly stops matching the code is worse than no promise,
       because it is the thing people read instead of the code.</p>
-      <p>Here is the whole of it. At most once an hour, and only when the app is opened, one message
-      goes to the publisher's database containing these seven things and nothing else:</p>
-      <div class="legal-table-wrap"><table class="legal-table">
+      <p>Here is the counter, in full. At most once an hour, and only when the app is opened, one
+      message goes to the publisher's database containing these seven things and nothing else:</p>
+      <div class="legal-table-wrap"><table class="legal-table ping-table">
         <thead><tr><th>What is sent</th><th>What it actually is</th></tr></thead>
         <tbody>
           <tr><td>A device id</td><td>A random string your browser generated the first time you
@@ -8904,10 +8949,33 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             so a wrong clock on a phone cannot distort the count.</td></tr>
         </tbody>
       </table></div>
-      <p>That is the complete list. There are <b>no cookies</b>, no advertising identifier, no
-      analytics library, no third-party script of any kind, no fingerprinting, no location, no page
-      or click tracking, and no attempt to work out who you are. Nothing is sold, and nothing is
-      shared with anybody.</p>
+      <p>That is the whole of the counter. There are <b>no cookies</b>, no advertising identifier,
+      no analytics library, no third-party script of any kind, no fingerprinting, no location, no
+      page or click tracking, and no attempt to work out who you are. Nothing is sold, and nothing
+      is shared with anybody.</p>
+      <p><b>One other message exists, and only if you ask for it.</b> The app reads your files with
+      one of ten subject profiles. If none of them fits, you can set a subject to <b>Other</b> — and
+      when you do, it asks one optional question: what subject is this? Answering is how the
+      eleventh profile gets chosen. If you type something and press the button, exactly one thing is
+      sent:</p>
+      <div class="legal-table-wrap"><table class="legal-table other-table">
+        <thead><tr><th>What is sent</th><th>What it actually is</th></tr></thead>
+        <tbody>
+          <tr><td>A subject name</td><td>The words you typed, up to 40 characters &mdash; for
+            example <code>Nursing</code>. It is checked first, here and again at the database, and
+            stored only if it is shaped like the name of a subject: letters, spaces, hyphens and
+            apostrophes, four words at most. Anything with digits, an <code>@</code> sign or a web
+            address in it is discarded rather than stored, and the app tells you so.</td></tr>
+        </tbody>
+      </table></div>
+      <p>That message carries <b>no device id</b> — not even the random one above — no name, no
+      email, no time of day and nothing about your files. It cannot be linked back to you or to
+      your visits, by the publisher or by anybody else, because the link is not stored. What the
+      publisher sees is a list of subject names with a number beside each.</p>
+      <p>The box is <b>optional in the way that actually matters</b>: the profile is already set
+      before the question appears, both buttons close it, and closing it any other way is the same
+      as skipping. Skip it and nothing is sent. Nothing in the app is withheld either way, and you
+      are not asked twice for the same subject.</p>
       <p>Clearing your site data discards the id, and your next visit is counted as a new device.
       That is a real weakness in the count, and it is the price of a counter that does not follow
       you. The count is deliberately the less accurate of the two options.</p>
@@ -8917,6 +8985,11 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     ['personal', 'Your name and email', `
       <p>The only personal information this app can ever hold about you is a name and an email
       address, and only if you type them into the sign-up form yourself and press the button.</p>
+      <p>The subject name described in the previous section is the app's only other free-text field,
+      and it is deliberately not personal information: it is stored with no device id, no name and
+      no email beside it, so there is nothing in that table to connect to a person. If you type
+      something into it that identifies you, it is discarded rather than stored — the filter accepts
+      letters and spaces only, and four words at most.</p>
       <p><b>Since v2.27 nothing is withheld if you don't.</b> Every part of the app — the courses,
       flash cards, key information, the summary, the quiz, essay help, every export — works the
       same whether you sign up or not. Signing up is a way of telling the publisher you exist, not a
@@ -10156,6 +10229,28 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
           </ol>
           <p class="small muted">Names and email addresses are read in the Supabase dashboard, never here: this panel can only ever see totals.</p>`;
       };
+      /* What students typed after picking Other — the list that decides which profile gets written
+         next. Counts only, ordered by how many people asked; there is nothing else in the table to
+         show. A 404 here means the tally has not been installed in this database, which is a job
+         to do rather than a fault, so it says which one. */
+      const tally = () => {
+        const t = m.tally;
+        if (!t) return '';
+        if (t.err === 'http-404') return `<div class="detail-block"><span class="label">Subjects asked for</span>
+          <p class="small muted">The tally is not installed in this database yet. Run the SQL in <code>docs/Counter_Subjects.sql.md</code> &mdash; one table, one function, one view &mdash; and this fills in on its own. Nothing is lost meanwhile: until it exists the app simply sends nothing when a student picks Other.</p></div>`;
+        if (t.err) return '';
+        if (!t.rows.length) return `<div class="detail-block"><span class="label">Subjects asked for</span>
+          <p class="small muted">Nobody has picked <b>Other</b> and typed a subject yet. Ten profiles are shipped; this fills in as students tell you what the eleventh should be.</p></div>`;
+        const top = t.rows.slice(0, 40);
+        return `<div class="detail-block"><span class="label">Subjects asked for &middot; ${plural(t.rows.length, 'name')}</span>
+          <p class="small muted">Students who picked <b>Other</b> and chose to say what they are studying. This is the queue for the next profile.</p>
+          <div class="legal-table-wrap"><table class="legal-table tally-table">
+            <thead><tr><th>Subject</th><th>Students</th><th>First asked</th></tr></thead>
+            <tbody>${top.map(rw => `<tr><td>${esc(rw.label || '')}</td><td class="mono">${fmt(rw.students || 0)}</td><td class="mono muted">${rw.first_seen ? new Date(rw.first_seen).toLocaleDateString() : ''}</td></tr>`).join('')}</tbody>
+          </table></div>
+          ${t.rows.length > top.length ? `<p class="small muted">Showing the ${top.length} most asked for of ${t.rows.length}.</p>` : ''}
+          <p class="small muted">Free text, filtered to something shaped like the name of a subject before it is stored, and never tied to a device, a name or an email. A daily list also arrives at 6pm.</p></div>`;
+      };
       const body = () => m.err ? `${m.err === 'no-config' ? setup()
           : m.err === 'empty' ? '<div class="notice">The counter is configured and the key works, but the view returned no rows. The tables may not be installed in this database yet — re-run the setup SQL.</div>'
           : `<div class="notice">The database answered <b>${esc(m.err.replace('http-', 'HTTP '))}</b>. <b>401</b> means the key is wrong or row-level security is refusing it; <b>404</b> means the tables live in a different project.</div>`}`
@@ -10169,6 +10264,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             <div class="stat"><span class="label">Times opened</span><strong>${n(d.opens_total)}</strong><span class="muted small">across every device</span></div>
             <div class="stat"><span class="label">Subjects created</span><strong>${n(d.subjects_total)}</strong><span class="muted small">courses people are studying</span></div>
           </div>
+          ${tally()}
           <p class="small muted">A device is one browser on one machine, counted by a random id it keeps to itself — the same person on a laptop and a phone counts twice, and clearing site data starts a new one. Nobody's files, cards, answers or progress are sent anywhere; this panel can only read totals, never names or email addresses. Those you read in the Supabase dashboard, or in the daily email.</p>`;
       return `<div class="modal-bg" data-act="close-modal"><div class="modal wide info" role="dialog" aria-modal="true" aria-label="Usage figures">
         <div class="modal-head"><div><span class="label">${m.err === 'no-config' ? `Setup &middot; step ${({ 'no-file': 2, 'placeholder': 3, 'secret-key': 3, 'bad-key': 3, 'bad-url': 3 })[m.why] || 1} of 4`
@@ -10287,7 +10383,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
         <div class="modal-foot"><span class="mono muted">${esc(cite(sent) || 'your material')}</span><span class="spacer" style="flex:1"></span><button type="button" class="btn sm" data-act="close-modal">Close</button></div>
       </div></div>`;
     }
-    if (m.type === 'subject-profile') return renderSubjectPicker(m.sid);
+    if (m.type === 'subject-profile') return renderSubjectPicker(m.sid, m.asking);
     if (m.type === 'share') {
       const subj = m.subject, c = shareCounts(subj);
       const kept = [`${plural(c.files, 'file')} and their text`, c.mine ? plural(c.mine, 'card you wrote') : '', c.edits ? `${plural(c.edits, 'card')} you reworded` : '',
@@ -11687,6 +11783,30 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
        close     two are within a quarter of each other, or the document is too thin to tell —
                  the generic engine is used and the app says which two it was torn between */
   const SUBJ_NONE = '_none';
+  /* "Other" is the twelfth option and it is not a failure state. Ten profiles do not cover a
+     university, and a student in Nursing or Music or Social Work should get a working app and an
+     honest label, not a shrug. Behind it is the general engine, unchanged.
+
+     Picking it also asks — once, optionally, skippably — what the subject actually is, because the
+     only way to know which profile to write next is to be told. That answer is the single piece of
+     free text this app has ever sent, so it is handled with more care than the rest of the ping
+     put together: capped, filtered to something that looks like the name of a subject, never tied
+     to a name or an email, and stated in the privacy notice at the point of collection as well as
+     on the legal page. A box that quietly harvested sentences would be worth more data and would
+     not be defensible to anyone. */
+  const SUBJ_LABEL_MAX = 40;
+  /* The same shape the database function enforces, so the app never promises to send something the
+     database will discard, and never pretends to have sent something it dropped. Letters (any
+     alphabet), spaces, hyphens, apostrophes and ampersands; one to four words; no digits, no @, no
+     URLs. "Nursing", "Social Work", "Music history" pass. An email address, a sentence or a
+     complaint does not. */
+  function subjLabelClean(raw) {
+    const s2 = String(raw == null ? '' : raw).replace(/\s+/g, ' ').trim().slice(0, SUBJ_LABEL_MAX);
+    if (!s2) return '';
+    if (!/^[\p{L}][\p{L}\s'’&-]*$/u.test(s2)) return '';
+    if (s2.split(' ').length > 4) return '';
+    return s2;
+  }
   function detectFor(a) {
     if (!a) return null;
     if (a._subjDetect) return a._subjDetect;
@@ -11699,7 +11819,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
   // what this subject is actually being read as, and why
   function subjectRead(s, a) {
     const picked = s && s.subjectId;
-    if (picked === SUBJ_NONE) return { profile: null, how: 'chosen', name: 'General' };
+    if (picked === SUBJ_NONE) return { profile: null, how: 'chosen', name: 'Other', said: (s && s.subjectOther) || '' };
     if (picked && Subjects.get(picked)) return { profile: Subjects.get(picked), how: 'chosen', name: Subjects.get(picked).name };
     const d = detectFor(a);
     if (d && d.id) return { profile: Subjects.get(d.id), how: 'detected', name: Subjects.get(d.id).name, found: d.found };
@@ -11709,7 +11829,9 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     if (!read) return '';
     if (read.how === 'chosen') return read.profile
       ? `Read as <b>${esc(read.profile.name)}</b> because you chose it.`
-      : 'Read with the general engine because you chose it.';
+      : read.said
+        ? `You said this is <b>${esc(read.said)}</b>. There is no profile for it yet, so the general engine is used &mdash; every panel, every question type.`
+        : 'Read with the general engine because you chose Other.';
     if (read.how === 'detected') return `Read as <b>${esc(read.name)}</b> &mdash; ${esc((read.found || []).slice(0, 4).join(', ') || 'the vocabulary in your files')}.`;
     const d = read.d;
     if (d && d.confidence === 'close') return `Torn between <b>${esc(Subjects.get(d.best) ? Subjects.get(d.best).name : d.best)}</b> and <b>${esc(d.runnerUpName || '')}</b>, so the general engine is used. Pick one and it will read your files that way.`;
@@ -11739,13 +11861,31 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
       <span class="subj-name">${esc(read.name)}</span>
       <span class="small">${subjNote(read)}</span>
       ${prof ? `<span class="small muted">${esc(prof.note)}</span>` : ''}
+      ${!prof && read.how === 'chosen' && !read.said && SYNC_OK ? `<button type="button" class="btn sm ghost" data-act="subj-ask" data-s="${esc(s2.id)}">Say what it is</button>` : ''}
       <button type="button" class="btn sm" data-act="subj-open" data-s="${esc(s2.id)}">Change <span class="arr">&rarr;</span></button>
     </div>`;
   }
 
-  function renderSubjectPicker(sid) {
+  function renderSubjectPicker(sid, asking) {
     const s2 = subjectById(sid); if (!s2) return '';
     const cur = s2.subjectId || '';
+    /* The optional question, and it is optional in the way that matters: the profile is ALREADY
+       chosen and saved by the time this appears, both buttons close the box, and closing it with
+       the X or the Escape key is the same as skipping. Nothing downstream waits on the answer. */
+    if (asking) return `<div class="modal-bg" data-act="close-modal"><form class="modal subj-ask" data-form="subj-other">
+      <span class="label">Optional &middot; ${esc(s2.name)} is set to Other</span>
+      <h2>What subject is this?</h2>
+      <p>It helps decide which profiles to add next. There are ten so far, and the next one should be the subject the most people are actually studying.</p>
+      <div class="field"><label for="f-other">Subject</label>
+        <input class="input" id="f-other" name="label" maxlength="${SUBJ_LABEL_MAX}" autocomplete="off" autocapitalize="words" placeholder="Nursing" value="${esc(s2.subjectOther || '')}" autofocus>
+        <p class="small muted">Just the name &mdash; a few words at most, letters only.</p>
+      </div>
+      <p class="small muted">If you type something, that word is sent to ${esc(OWNER_NAME)} on its own: not your name, not your email, not the id that counts visits, not the time, and nothing about your files. It is kept as a list of subject names with a number beside each, and it cannot be linked back to you. Skip it and nothing at all is sent. <a href="#/rights">What the app sends, in full</a>.</p>
+      <div class="btn-row" style="justify-content:flex-end">
+        <button type="button" class="btn ghost" data-act="subj-other-skip">Skip</button>
+        <button type="submit" class="btn primary">Send it <span class="arr">&rarr;</span></button>
+      </div>
+    </form></div>`;
     const row = (id, name, blurb) => `<button type="button" class="subj-opt${cur === id ? ' on' : ''}" data-act="subj-pick" data-id="${esc(id)}">
       <b>${esc(name)}</b><span class="small">${esc(blurb)}</span></button>`;
     return `<div class="modal-bg" data-act="close-modal"><div class="modal wide">
@@ -11755,8 +11895,9 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
         <div class="subj-grid">
           ${row('', 'Detect it for me', 'Read the vocabulary in the files and pick. This is the default.')}
           ${Subjects.all().map(pr => row(pr.id, pr.name, pr.blurb)).join('')}
-          ${row(SUBJ_NONE, 'General', 'No profile. Every panel in the standard order, every question type offered.')}
+          ${row(SUBJ_NONE, 'Other', 'Anything else — Nursing, Music, Social Work. The general engine: every panel in the standard order, every question type offered.')}
         </div>
+        <p class="small muted">Ten profiles do not cover a university. <b>Other</b> is a real answer, not a failure &mdash; and picking it asks one optional question, so the eleventh profile is the one people are asking for.</p>
       </div>
     </div></div>`;
   }
@@ -11774,7 +11915,10 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
       if (!items.length) return '';
       const lim = ui.printAll ? items.length : (LIMITS[kind] || 6);
       const shown = items.slice(0, lim);
-      return `<div class="cell"><h3>${esc(panelLabel(prof, kind))} <span class="count">${items.length}</span></h3>${wrapOpen}${shown.map((it, i) => keysRow(kind, it, i)).join('')}${wrapClose}${extra}${items.length > lim ? `<button type="button" class="btn sm more" data-act="keys-all" data-kind="${kind}">Show all ${items.length} <span class="arr">→</span></button>` : ''}</div>`;
+      /* data-kind, not the heading text: since v2.33 a profile RENAMES these panels ("Definitions"
+         becomes "Terms and what they mean" under Biology), so anything that finds a panel by its
+         visible words finds nothing as soon as a profile is in play. */
+      return `<div class="cell" data-kind="${kind}"><h3>${esc(panelLabel(prof, kind))} <span class="count">${items.length}</span></h3>${wrapOpen}${shown.map((it, i) => keysRow(kind, it, i)).join('')}${wrapClose}${extra}${items.length > lim ? `<button type="button" class="btn sm more" data-act="keys-all" data-kind="${kind}">Show all ${items.length} <span class="arr">→</span></button>` : ''}</div>`;
     };
     const termsBody = `<div class="term-chips">${terms.slice(0, LIMITS.terms).map((t) => `<button type="button" class="term-chip${ui.termFocus === t.key ? ' on' : ''}" data-act="term-focus" data-key="${esc(t.key)}"${mark(s.id, ID.term(t.key)) && mark(s.id, ID.term(t.key)).star ? ' data-star="1"' : ''}${noteOf(s.id, ID.term(t.key)) ? ' data-note="1"' : ''}>${esc(t.display)} <span class="mono dim">${t.count}</span></button>`).join('')}</div>
           ${focus ? `<div class="term-detail"><div class="row between"><strong>${esc(focus.display)}</strong><span class="mono muted">${focus.count}× · ${plural(focus.sections || 1, 'section')}</span></div>${focus.examples.length ? focus.examples.map(e => `<div class="clamp">${hlNeedles(e, [focus.display])}</div>`).join('') : '<div>Appears in headings or short lines only.</div>'}<button type="button" class="btn sm" data-act="keys-item" data-kind="terms" data-i="${terms.indexOf(focus)}">Full context <span class="arr">→</span></button></div>` : `<p class="small muted" style="margin-top:6px">Tap a term to see it in context.</p>`}`;
@@ -13607,9 +13751,11 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
       case 'whats-new': state.modal = { type: 'whatsnew' }; syncModal(); break;
       case 'stats': {
         state.modal = { type: 'stats', loading: true }; syncModal();
-        loadStats().then(res => {
+        /* Both reads, together, and neither blocks the other: the tally table may not be installed
+           in a given database, and the figures are still worth showing when it is not. */
+        Promise.all([loadStats(), loadSubjectTally()]).then(([res, tal]) => {
           if (!state.modal || state.modal.type !== 'stats') return;
-          state.modal = { type: 'stats', ...res }; syncModal();
+          state.modal = { type: 'stats', ...res, tally: tal }; syncModal();
         });
         break;
       }
@@ -13802,18 +13948,37 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
         break;
       }
       case 'subj-open': state.modal = { type: 'subject-profile', sid: el.dataset.s || (s && s.id) }; syncModal(); break;
+      case 'subj-ask': state.modal = { type: 'subject-profile', sid: el.dataset.s || (s && s.id), asking: true }; syncModal(); break;
       case 'subj-pick': {
         const sj = subjectById(state.modal && state.modal.sid); if (!sj) break;
         const id = el.dataset.id;
+        const wasOther = sj.subjectId === SUBJ_NONE;
         if (!id) delete sj.subjectId; else sj.subjectId = id;
-        saveIndex(); state.modal = null;
+        if (id !== SUBJ_NONE) delete sj.subjectOther;
+        saveIndex();
         /* The profile changes which question types are offered and which panels lead, so a quiz
            already set up under the old profile is stale. Clearing it is cheaper than reasoning
            about which parts of it survive. */
         if (state.ui) { state.ui.qs = null; state.ui.types = null; state.ui.level = null; }
+        /* The pick is saved before the question is asked, so the question is genuinely optional:
+           whatever happens next, the profile is already what they chose. Asked once per subject —
+           picking Other again on a subject that has already been asked does not ask twice. */
+        const askOther = id === SUBJ_NONE && !wasOther && SYNC_OK && !sj.subjectOther;
+        state.modal = null;
+        /* The question is opened AFTER the re-render, not before it: render() clears state.modal
+           on every route but home and subject, so a modal set first is wiped by the very redraw
+           that is meant to show the new profile. Setting it afterwards is the only order that
+           survives, and it is also the honest one — the page behind the question is already
+           showing the profile that was chosen. */
         syncModal(); render();
-        const r2 = subjectRead(sj, state.analysis);
-        toast(`Reading ${sj.name} as ${r2.name}.`);
+        if (askOther) { state.modal = { type: 'subject-profile', sid: sj.id, asking: true }; syncModal(); }
+        else { const r2 = subjectRead(sj, state.analysis); toast(`Reading ${sj.name} as ${r2.name}.`); }
+        break;
+      }
+      case 'subj-other-skip': {
+        const sj = subjectById(state.modal && state.modal.sid);
+        state.modal = null; syncModal(); render();
+        if (sj) toast(`Reading ${sj.name} with the general engine. Nothing was sent.`);
         break;
       }
       case 'share-open': if (s) { state.modal = { type: 'share', subject: s }; syncModal(); } break;
@@ -14075,6 +14240,23 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
          verdict, and the wording is saved either way. Refusing to save a copy would make the
          feature a hurdle, which is exactly what it must not be. */
       toast(rec ? (rec.echo ? 'Saved — though that is close to the material\u2019s own wording. The gain comes from saying it differently.' : 'Saved in your words.') : 'Left as it was.');
+      return;
+    }
+    if (form.dataset.form === 'subj-other') {
+      const sj = subjectById(state.modal && state.modal.sid);
+      const clean = subjLabelClean(data.label);
+      const typed = String(data.label || '').trim();
+      state.modal = null; syncModal();
+      if (sj && clean) { sj.subjectOther = clean; saveIndex(); }
+      render();
+      if (!typed) { toast('Left blank — nothing was sent.'); return; }
+      if (!clean) { toast('That did not look like the name of a subject, so nothing was sent. A word or two, letters only.'); return; }
+      /* Fire and forget, and say so honestly either way. A student who typed something has done
+         the app a favour; making them wait on a network round trip to find out whether it landed
+         would be charging them for it. */
+      reportSubject(clean).then(sent => toast(sent
+        ? `Thank you — “${clean}” was added to the list of subjects to write a profile for.`
+        : `Saved here as ${clean}. It could not be sent just now, and it will not be retried.`));
       return;
     }
     if (form.dataset.form === 'subject') {

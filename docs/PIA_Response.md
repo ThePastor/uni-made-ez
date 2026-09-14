@@ -3,7 +3,7 @@
 **Application:** UNI Made EZ · <https://thepastor.github.io/uni-made-ez/>
 **Vendor / publisher:** JohnsonXCorp (Anndy Johnson), British Columbia, Canada
 **Contact:** johnsonandy242@gmail.com
-**Version assessed:** v2.27, 14 September 2026
+**Version assessed:** v2.34, 14 September 2026
 **Prepared for:** Thompson Rivers University — Information Security Office and Privacy and Access
 Office, whose published PIA process is led by the Director of Information Security with input from
 the Privacy and Access Office.
@@ -48,25 +48,45 @@ browser-generated device id, an open count, a subject count, a signed-up boolean
 string, an IANA time-zone name. Server-side timestamp. **No IP address is stored.** Full table in
 [`Privacy_Notice.md`](Privacy_Notice.md) §2.1.
 
-**2.3 Is the collection necessary and minimal?** Yes, and it was reduced in v2.27. Two features had
+**2.3 Non-identifying subject names** (added v2.34). The application reads a student's files using
+one of ten subject profiles. A student whose course is not among them sets the subject to **Other**,
+which withholds nothing, and is asked one optional question: *what subject is this?* If they answer,
+**one field is transmitted — the subject name, 40 characters maximum** — and nothing else: no device
+id (not even the counter id in 2.2), no name, no email, no client timestamp, nothing from their
+files. The receiving table has no column to join it to any other record, so the absence of linkage
+is a property of the schema rather than an undertaking. The text is filtered to letters, spaces,
+hyphens, apostrophes and ampersands, four words maximum, **in the page and again in the database
+function that writes it**, so the filter cannot be bypassed by calling the API directly with the key
+published in the page; anything containing digits, an `@` or a URL is discarded rather than stored.
+Purpose: to decide which subject profile is built next. Full account in
+[`Privacy_Notice.md`](Privacy_Notice.md) §2.3; schema and filter in
+[`Counter_Subjects.sql.md`](Counter_Subjects.sql.md).
+
+**2.4 Is the collection necessary and minimal?** Yes, and it was reduced in v2.27. Two features had
 been gated behind sign-up; the gate was removed so that **nothing is withheld from a student who
 declines**, on the reasoning that consent given to unlock study material is not meaningful consent
 and would not satisfy PIPA's "reasonable person" standard.
 
-**2.4 Information explicitly NOT collected.** Course files or any text from them; cards; quiz
+**2.5 Information explicitly NOT collected.** Course files or any text from them; cards; quiz
 answers or scores; study progress; notes; exam dates; search terms; student number; institution;
 enrolment; IP address; location; browsing history; biometrics; device fingerprints. No cookies, no
-analytics service, no advertising identifiers, **no third-party requests of any kind**.
+analytics service, no advertising identifiers, **no third-party requests of any kind**. The subject
+name in 2.3 is the only free-text field the application transmits, and it is stored unlinked.
 
-**2.5 Sensitive personal information.** None is collected. There is therefore no s. 30.1-style
+**2.6 Sensitive personal information.** None is collected. There is therefore no s. 30.1-style
 assessment to make, and none is stored outside Canada in any event.
 
 ## 3. Collection
 
 **3.1 Method and source.** Directly from the individual, typed into a form in their browser.
 **3.2 Notice at collection.** Purposes, storage location, non-disclosure, and the deletion right
-are stated on screen at both points where the form appears, with a link to the full account.
-**3.3 Indirect collection.** None.
+are stated on screen at both points where the form appears, with a link to the full account. The
+same is done for the optional subject question in 2.3: what is and is not sent is stated in the box
+itself, before anything is typed, with a link to the full account.
+**3.3 Consent is withdrawable by not giving it.** For the subject question the profile is saved
+before the question appears, both buttons dismiss it, dismissing it any other way is the same as
+skipping, skipping transmits nothing, and no feature is withheld either way.
+**3.4 Indirect collection.** None.
 
 ## 4. Use and disclosure
 
@@ -77,7 +97,7 @@ for advertising, profiling or scoring.
 
 | Party | Role | Data reached | Location |
 |---|---|---|---|
-| Supabase Inc. | Managed PostgreSQL | Sign-up rows and counter rows | **`ca-central-1` (Canada)** |
+| Supabase Inc. | Managed PostgreSQL | Sign-up rows, counter rows and subject names | **`ca-central-1` (Canada)** |
 | GitHub, Inc. (GitHub Pages) | Static web hosting | Ordinary web-server request logs, as any host receives. **No application data.** | GitHub infrastructure |
 
 **4.4 Cross-border.** Personal information is stored in Canada. Serving a web page necessarily means

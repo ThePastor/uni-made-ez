@@ -64,7 +64,7 @@ const ok = (n, c, d = '') => { (c ? pass++ : fail++); console.log(`${c ? 'PASS' 
 
   // then use the material for real — build the cards, the summary and the quiz
   const sid = (await page.evaluate(() => location.hash)).split('/')[2];
-  for (const kind of ['cards', 'key', 'summary', 'quiz']) {
+  for (const kind of ['cards', 'keys', 'summary', 'quiz']) {
     await page.evaluate(h => { location.hash = h; }, `#/s/${sid}/${kind}`);
     await page.waitForTimeout(900);
   }
@@ -117,7 +117,8 @@ const ok = (n, c, d = '') => { (c ? pass++ : fail++); console.log(`${c ? 'PASS' 
   const L = await page.evaluate(() => ({
     secs: Array.from(document.querySelectorAll('.legal-sec')).map(e => e.id),
     text: document.querySelector('.legal').innerText,
-    rows: document.querySelectorAll('.legal-table tbody tr').length,
+    rows: document.querySelectorAll('.ping-table tbody tr').length,
+    otherRows: document.querySelectorAll('.other-table tbody tr').length,
     hscroll: document.documentElement.scrollWidth > innerWidth + 1
   }));
   for (const need of ['lg-privacy', 'lg-sending', 'lg-personal', 'lg-control', 'lg-integrity',
@@ -131,6 +132,24 @@ const ok = (n, c, d = '') => { (c ? pass++ : fail++); console.log(`${c ? 'PASS' 
   const fields = Array.from(new Set((ping.match(/\bp_[a-z_]+\b/g) || [])));
   ok(`the ping sends ${fields.length} fields (${fields.join(', ')})`, fields.length === 6,
     'six sent, plus the time set by the database, is the seven rows in the table');
+
+  /* v2.34 — the second, optional message: the subject a student types after picking Other. It is
+     listed in its own table because it is not part of the ping and does not travel with it, and
+     the claim that distinguishes it from everything else on this page — that it carries NO device
+     id, so it cannot be joined back to a visit — is checked against the payload, not the prose. */
+  ok(`the Other message is itemised too (${L.otherRows} row)`, L.otherRows === 1);
+  const other = (SRC.match(/rpc\/umez_subject'[\s\S]{0,300}?\}\)\s*;/) || [''])[0];
+  const oFields = Array.from(new Set((other.match(/\bp_[a-z_]+\b/g) || [])));
+  ok(`it sends ${oFields.length} field (${oFields.join(', ') || 'none found'})`,
+    oFields.length === 1 && oFields[0] === 'p_label');
+  ok('and carries no device id, which is the claim that makes it unlinkable',
+    !/p_id/.test(other) && !/deviceId\(\)/.test(other));
+  ok('the page says so in those words', /no device id/i.test(L.text));
+  ok('the box is described as optional at the point it is offered',
+    /Optional/.test(SRC.match(/data-form="subj-other"[\s\S]{0,900}/)?.[0] || ''));
+  // the filter is applied in the page AND stated on the page
+  ok('the free-text field is filtered before anything is sent', /function subjLabelClean/.test(SRC));
+  ok('and the page states the limit it applies', /40 characters/.test(L.text) && /four words/i.test(L.text));
 
   const must = [
     [/30 business days/, 'the statutory answer time for a request'],
