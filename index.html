@@ -6138,6 +6138,735 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     ]
   };
 
+  /* ================= Midterm 2 scope: chapters 6–9 =================
+     Written against the chapter list in the course outline, from doctrine, in the same way units 1
+     to 3 were: the STRUCTURE is his course's, the words are not the textbook's. Where a chapter's
+     substance is in the set text, the lesson says which chapter to read alongside it rather than
+     reproducing it. Nothing here is legal advice, and the course says so on every screen. */
+  const COMMERCIAL_2 = [
+    {
+      id: 'marketplace', n: 4,
+      title: 'Consumers and the marketplace',
+      read: 'Chapter 6',
+      blurb: 'The two regimes that sit on top of contract law: consumer protection, which is provincial, and competition law, which is federal.',
+      objectives: [
+        'Say why consumer protection legislation exists on top of ordinary contract law',
+        'Identify a deceptive or unconscionable act under BC’s consumer statute',
+        'Distinguish the criminal from the civil side of the Competition Act',
+        'Explain what a cooling-off period does and when one applies'
+      ],
+      lessons: [
+        {
+          id: 'c6a', title: 'Consumer protection in British Columbia', src: 'Chapter 6',
+          idea: `Contract law assumes two parties of roughly equal bargaining power who read what they sign. Consumer transactions usually satisfy neither assumption, so the legislature adds a layer that ordinary contract law cannot: it makes some terms unenforceable no matter what the consumer agreed to. In BC the statute is the <b>Business Practices and Consumer Protection Act</b> (BPCPA), and two concepts do most of the work. A <b>deceptive act or practice</b> is a representation or conduct that has the <i>capability, tendency or effect</i> of deceiving or misleading a consumer &mdash; note that no one has to have actually been deceived. An <b>unconscionable act or practice</b> looks at the circumstances of the bargain: whether the supplier took advantage of the consumer’s inability to understand, whether the price grossly exceeded what was available elsewhere, whether there was no reasonable probability of full payment. The remedies are strong &mdash; a consumer may rescind, and the court may order damages or restitution &mdash; and the rights <b>cannot be waived</b>. A clause saying "the consumer waives the BPCPA" is worth nothing.`,
+          rules: [
+            { name: 'Deceptive act', expr: 'capability, tendency or effect of misleading', note: 'Actual deception is not required, which is why this catches advertising as easily as a sales pitch.', words: true },
+            { name: 'Unconscionable act', expr: 'the circumstances of the bargain, not just its terms', note: 'Inability to understand, grossly excessive price, no reasonable probability of payment.', words: true },
+            { name: 'Cannot be waived', expr: 'a contract term purporting to waive the Act is void', note: 'This is the point of the statute: agreement is not a defence.', words: true }
+          ],
+          examples: [
+            {
+              prompt: 'A door-to-door seller tells a homeowner her furnace is "about to fail" — it is not — and she signs a $9,000 replacement contract on the spot. What can she do?',
+              steps: [
+                { do: 'Is it a deceptive act?', why: 'A false statement about the furnace’s condition has the tendency to mislead. Yes, and she does not have to prove she believed it.' },
+                { do: 'Is it also unconscionable?', why: 'Possibly — pressure at the door plus a price well above market would support it, but deception alone is enough here.' },
+                { do: 'Direct sales contract', why: 'A contract made at the consumer’s home is a direct sales contract and carries a cooling-off right independent of any deception.' },
+                { do: 'Rescind, and recover what she paid', why: 'The BPCPA gives rescission and restitution. Her signature does not cure a deceptive act.' }
+              ],
+              answer: 'She can rescind and recover, on the deceptive act and on the cooling-off right.', answerWords: true
+            },
+            {
+              prompt: 'The same contract contains a clause: "The buyer agrees this sale is final and waives all rights under consumer protection legislation." Does that change the answer?',
+              steps: [
+                { do: 'Read the clause as contract law would', why: 'On ordinary principles a clearly worded term binds a party who signed it.' },
+                { do: 'Then read the statute', why: 'The BPCPA makes a waiver of its rights void. The statute overrides the agreement.' },
+                { do: 'No change', why: 'This is the whole reason a consumer statute exists: if agreement were a defence, every supplier would simply put the waiver in the form.' }
+              ],
+              answer: 'No — the waiver is void.', answerWords: true
+            }
+          ]
+        },
+        {
+          id: 'c6b', title: 'Competition law and the marketplace', src: 'Chapter 6',
+          idea: `Consumer protection is provincial and protects the individual buyer. The <b>Competition Act</b> is <b>federal</b> and protects the market itself, which is why conduct can be perfectly fine between the two parties to it and still be unlawful. The Act has two sides and students lose marks by mixing them up. The <b>criminal</b> side covers the conduct treated as inherently harmful: agreements between competitors to fix prices, allocate markets or restrict supply (<b>conspiracy</b>), and <b>bid-rigging</b>. These are prosecuted, carry fines and imprisonment, and the agreement itself is the offence &mdash; no effect on the market needs to be proved. The <b>civil</b> (reviewable-conduct) side covers behaviour that is harmful only depending on its effect: <b>abuse of dominant position</b>, mergers that substantially lessen competition, and most <b>misleading advertising</b>. These go before the Competition Tribunal, which can order the conduct stopped, order administrative monetary penalties, and in the merger case unwind the transaction. A representation is judged by its <b>general impression</b> as well as its literal meaning, and a performance claim must be based on an <b>adequate and proper test</b> made before the claim is made.`,
+          rules: [
+            { name: 'Criminal side', expr: 'conspiracy, bid-rigging — the agreement is the offence', note: 'No proof of market effect required.', words: true },
+            { name: 'Civil side', expr: 'abuse of dominance, mergers, misleading advertising — judged by effect', note: 'Competition Tribunal, not a criminal court.', words: true },
+            { name: 'Advertising test', expr: 'general impression + literal meaning', note: 'A technically true claim can still be misleading.', words: true }
+          ],
+          examples: [
+            {
+              prompt: 'Three of the four suppliers in a region agree over dinner to quote no lower than a set price. Prices in fact do not move. Any offence?',
+              steps: [
+                { do: 'Which side of the Act?', why: 'An agreement between competitors to fix prices is conspiracy — the criminal side.' },
+                { do: 'Does it matter that prices did not move?', why: 'No. On the criminal side the agreement itself is the offence; effect is not an element.' },
+                { do: 'Offence complete', why: 'Dinner and a handshake are enough. This is the single most commonly missed point in this chapter.' }
+              ],
+              answer: 'Yes — criminal conspiracy, complete on agreement.', answerWords: true
+            },
+            {
+              prompt: 'A retailer advertises a mattress at "70% off" from a price it charged for two days in January. The arithmetic is correct. Problem?',
+              steps: [
+                { do: 'Is the claim literally true?', why: 'Yes — the discount really is 70% of the stated former price.' },
+                { do: 'What is the general impression?', why: 'That the ordinary selling price is the higher one, which it never really was.' },
+                { do: 'Ordinary selling price rules', why: 'A former-price claim must reflect a price at which a substantial volume was sold, or the item was offered in good faith for a substantial period.' },
+                { do: 'Misleading — civil side', why: 'Reviewable conduct: the Tribunal can order it stopped and impose a penalty, without any criminal charge.' }
+              ],
+              answer: 'Misleading representation, judged on general impression.', answerWords: true
+            }
+          ]
+        }
+      ],
+      practice: [
+        { id: 'l4p1', kind: 'mc', lesson: 'c6a',
+          prompt: 'A contract term says the consumer waives all rights under the BPCPA. What is its effect?',
+          options: [
+            { t: 'None — a waiver of the Act’s rights is void', ok: true },
+            { t: 'It binds the consumer, who signed it', ok: false },
+            { t: 'It binds unless the consumer can prove they did not read it', ok: false },
+            { t: 'It is valid if the term is printed in bold', ok: false }
+          ],
+          hint: 'If agreement were a defence, what would every supplier put in the form?',
+          solution: ['Consumer statutes exist because agreement is not reliable evidence of a fair bargain', 'The BPCPA makes waivers void', 'Signing it changes nothing'] },
+        { id: 'l4p2', kind: 'mc', lesson: 'c6a',
+          prompt: 'Which best describes a "deceptive act or practice"?',
+          options: [
+            { t: 'Conduct with the capability, tendency or effect of misleading a consumer', ok: true },
+            { t: 'Conduct that actually misled at least one consumer', ok: false },
+            { t: 'Any false statement made with intent to deceive', ok: false },
+            { t: 'A breach of a term of the contract', ok: false }
+          ],
+          hint: 'How many of the three words in the test require anyone to have been fooled?',
+          solution: ['The test is capability, tendency OR effect', 'Neither actual deception nor intent is required', 'That is what lets it reach advertising as well as sales talk'] },
+        { id: 'l4p3', kind: 'mc', lesson: 'c6b',
+          prompt: 'Competitors agree to divide a territory between them. Which is right?',
+          options: [
+            { t: 'Criminal conspiracy under the Competition Act, complete on the agreement', ok: true },
+            { t: 'Reviewable conduct, if the Tribunal finds a substantial lessening of competition', ok: false },
+            { t: 'Lawful, because each firm may sell where it chooses', ok: false },
+            { t: 'A matter for provincial consumer protection legislation', ok: false }
+          ],
+          hint: 'Which side of the Act needs proof of an effect on the market?',
+          solution: ['Market allocation between competitors is on the criminal side', 'The agreement itself is the offence', 'No proof of effect is needed'] },
+        { id: 'l4p4', kind: 'spot', lesson: 'c6b',
+          prompt: 'One step of this advice is wrong. Which one?',
+          steps: [
+            { t: 'The advertisement’s arithmetic is accurate', bad: false },
+            { t: 'A representation is judged on its general impression as well as its literal meaning', bad: false },
+            { t: 'Because every statement in it is literally true, it cannot be misleading', bad: true },
+            { t: 'The Tribunal may order the conduct stopped and impose a monetary penalty', bad: false }
+          ],
+          why: 'Literal truth is not a defence. The test expressly includes the general impression a representation conveys, precisely because a careful advertiser can mislead without saying anything false.',
+          hint: 'What does the test add to the literal meaning?',
+          solution: ['General impression and literal meaning are both part of the test', 'A true statement arranged to convey a false impression is caught'] }
+      ]
+    },
+    {
+      id: 'business-forms', n: 5,
+      title: 'Forms of carrying on business',
+      read: 'Chapter 7',
+      blurb: 'Sole proprietorship, partnership, corporation — and what separate legal personality actually buys you.',
+      objectives: [
+        'Compare the three forms on liability, continuity and how profits are taxed',
+        'State the consequence of separate legal personality',
+        'Say when a court will look behind the corporate veil, and when it will not',
+        'Name the two duties a director owes and to whom they are owed'
+      ],
+      lessons: [
+        {
+          id: 'c7a', title: 'Choosing a form: liability, continuity, tax', src: 'Chapter 7',
+          idea: `Three questions decide the form. <b>Who is liable?</b> A <b>sole proprietor</b> is the business &mdash; unlimited personal liability. A <b>general partnership</b> is worse in one respect: partners are jointly liable for the firm’s obligations and each partner can bind the firm, so a partner is exposed to another partner’s decisions. A <b>corporation</b> is a separate legal person, so the shareholders’ exposure is limited to what they paid for their shares. <b>Does it survive?</b> A proprietorship ends with the proprietor; a partnership is dissolved by a partner’s departure unless the agreement says otherwise; a corporation has <b>perpetual existence</b>. <b>How is it taxed?</b> A proprietorship and a partnership are not taxpayers &mdash; income flows through to the individuals; a corporation is taxed in its own right, and again when profits are distributed. A partnership can arise <b>without any agreement at all</b>: two or more persons carrying on business in common with a view to profit are partners whether or not they used the word, which is how people acquire unlimited liability by accident.`,
+          rules: [
+            { name: 'Partnership, defined', expr: 'business in common, with a view to profit', note: 'No document required. The label the parties used does not decide it.', words: true },
+            { name: 'The trade-off', expr: 'limited liability is bought with formality and double tax', note: 'Registration, filings, separate returns — the price of the shield.', words: true }
+          ],
+          examples: [
+            {
+              prompt: 'Two friends share the costs and profits of a market stall, with no written agreement. One orders $20,000 of stock and the venture fails. Who pays?',
+              steps: [
+                { do: 'Is this a partnership?', why: 'Business in common with a view to profit. Yes — no document is needed and none was used.' },
+                { do: 'Could one partner bind the firm?', why: 'Yes. A partner has authority to bind the firm in its ordinary business, and ordering stock is squarely that.' },
+                { do: 'Both are liable, personally and without limit', why: 'The friend who ordered nothing is liable for the whole amount. This is the accident the chapter is warning about.' }
+              ],
+              answer: 'Both, personally and for the full amount.', answerWords: true
+            },
+            {
+              prompt: 'Would incorporating first have changed it?',
+              steps: [
+                { do: 'Who would the contract be with?', why: 'The corporation — a separate legal person — not the two individuals.' },
+                { do: 'Shareholder exposure', why: 'Limited to what they paid for their shares.' },
+                { do: 'The usual practical qualification', why: 'A supplier dealing with a new company with no assets will often demand a personal guarantee, which puts the liability straight back.' }
+              ],
+              answer: 'Yes in law — subject to any personal guarantee given.', answerWords: true
+            }
+          ]
+        },
+        {
+          id: 'c7b', title: 'Inside the corporation: the veil and the duties', src: 'Chapter 7',
+          idea: `A corporation is a <b>separate legal person</b>. It owns its own property, makes its own contracts, sues and is sued in its own name, and its debts are its own. That separateness holds even where one person owns every share and runs the company &mdash; the principle from <i>Salomon</i>, and the reason limited liability functions at all. Courts <b>lift the corporate veil</b> rarely and narrowly: broadly, where the corporation is being used as a vehicle for fraud or to evade an existing legal obligation. "The company cannot pay" is not a reason; that is the shield working as designed. Directors owe two distinct duties. A <b>fiduciary duty</b> &mdash; to act honestly and in good faith with a view to the best interests of <i>the corporation</i>, which is not the same as the interests of the majority shareholder. And a <b>duty of care</b> &mdash; the care, diligence and skill of a reasonably prudent person in comparable circumstances. Courts apply the <b>business judgment rule</b> to the second: a decision within a range of reasonable alternatives is not second-guessed because it turned out badly. Where conduct is oppressive or unfairly prejudicial to a shareholder, creditor or director, the <b>oppression remedy</b> gives a court very broad power to put it right.`,
+          rules: [
+            { name: 'Separate personality', expr: 'the company’s debts are the company’s', note: 'True even for a one-shareholder company.', words: true },
+            { name: 'Fiduciary duty', expr: 'best interests of the corporation', note: 'Owed to the corporation — not to the shareholders, and not to whoever appointed you.', words: true },
+            { name: 'Business judgment rule', expr: 'a reasonable decision is not reviewed with hindsight', note: 'It protects the process, not the outcome.', words: true }
+          ],
+          examples: [
+            {
+              prompt: 'A sole shareholder’s company owes a supplier $50,000 and has no assets. The shareholder has a house. Can the supplier reach it?',
+              steps: [
+                { do: 'Who is the debtor?', why: 'The corporation. The contract was with it.' },
+                { do: 'Is inability to pay a reason to lift the veil?', why: 'No. That is the ordinary operation of limited liability, not an abuse of it.' },
+                { do: 'What would be?', why: 'Using the company to commit a fraud, or to escape an obligation the shareholder was already under.' },
+                { do: 'Unless a guarantee was given, no', why: 'And this is why suppliers ask for guarantees from small companies.' }
+              ],
+              answer: 'No — absent fraud, evasion, or a personal guarantee.', answerWords: true
+            },
+            {
+              prompt: 'A director approves a costly expansion after taking advice and considering alternatives. It fails and the company loses heavily. Breach of the duty of care?',
+              steps: [
+                { do: 'What is the standard?', why: 'The care, diligence and skill of a reasonably prudent person in comparable circumstances.' },
+                { do: 'Apply the business judgment rule', why: 'The court asks whether the decision was within a range of reasonable alternatives, on the information available at the time.' },
+                { do: 'Advice taken, alternatives considered', why: 'That is a reasonable process. The rule protects exactly this.' },
+                { do: 'No breach', why: 'A bad outcome is not a breached duty. Directors would take no risks at all if it were.' }
+              ],
+              answer: 'No — the business judgment rule protects the decision.', answerWords: true
+            }
+          ]
+        }
+      ],
+      practice: [
+        { id: 'l5p1', kind: 'mc', lesson: 'c7a',
+          prompt: 'Two people run a venture together for profit with nothing in writing. What is it?',
+          options: [
+            { t: 'A partnership, with each personally liable for the firm’s obligations', ok: true },
+            { t: 'Nothing, until they register one', ok: false },
+            { t: 'A corporation, once they open a business bank account', ok: false },
+            { t: 'Two sole proprietorships, each liable only for its own contracts', ok: false }
+          ],
+          hint: 'Does the definition mention a document?',
+          solution: ['Business in common with a view to profit is the whole test', 'No agreement and no registration is needed', 'Each partner can bind the firm, and each is personally liable'] },
+        { id: 'l5p2', kind: 'mc', lesson: 'c7b',
+          prompt: 'A director owes the fiduciary duty to whom?',
+          options: [
+            { t: 'The corporation', ok: true },
+            { t: 'The majority shareholder', ok: false },
+            { t: 'Whichever shareholder nominated them', ok: false },
+            { t: 'The creditors, once the company is in difficulty', ok: false }
+          ],
+          hint: 'Which of these is a separate legal person in its own right?',
+          solution: ['The duty runs to the corporation itself', 'That is why a director may have to refuse what the majority shareholder wants', 'A shareholder harmed by conduct has the oppression remedy instead'] },
+        { id: 'l5p3', kind: 'order', lesson: 'c7b',
+          prompt: 'Put the analysis of a claim against a shareholder personally into order.',
+          steps: [
+            'Identify who the contract was actually with',
+            'Confirm the corporation is a separate legal person',
+            'Ask whether the corporation was used for fraud or to evade an existing obligation',
+            'If not, ask whether a personal guarantee was given',
+            'Conclude on whether the shareholder is personally liable'
+          ],
+          hint: 'Separateness is the starting point, not the last resort.',
+          solution: ['Start from separate personality and work out whether anything displaces it', 'Inability to pay never does'] },
+        { id: 'l5p4', kind: 'spot', lesson: 'c7b',
+          prompt: 'One step of this analysis is wrong. Which one?',
+          steps: [
+            { t: 'The company entered the contract in its own name', bad: false },
+            { t: 'The company has no assets to meet the judgment', bad: false },
+            { t: 'Because the company cannot pay, the court will lift the veil', bad: true },
+            { t: 'A personal guarantee, if one was given, would make the shareholder liable', bad: false }
+          ],
+          why: 'Inability to pay is the ordinary consequence of limited liability, not an abuse of it. If insolvency alone lifted the veil, the veil would exist only where it was not needed.',
+          hint: 'When would the shield ever be tested, if not when the company cannot pay?',
+          solution: ['Lifting the veil is narrow: fraud, or evasion of an existing obligation', 'Insolvency is the shield working, not failing'] }
+      ]
+    },
+    {
+      id: 'finance', n: 6,
+      title: 'Indigenous business, banking and credit',
+      read: 'Chapters 8–9',
+      blurb: 'The legal setting for Indigenous economic development, and how secured lending decides who gets paid first.',
+      objectives: [
+        'Explain why lending against on-reserve property is structured differently',
+        'Describe the structures used for Indigenous-led economic development',
+        'Distinguish a secured from an unsecured creditor and say why it matters',
+        'Put attachment, perfection and priority in order and say what each does'
+      ],
+      lessons: [
+        {
+          id: 'c8', title: 'Indigenous business and economic development', src: 'Chapter 8',
+          idea: `Commercial law applies on reserve, but one provision reshapes how it works in practice. Under the <b>Indian Act</b>, the real and personal property of an Indian or a band situated <b>on reserve</b> is generally <b>not subject to seizure</b> by anyone other than an Indian or a band, and reserve land cannot simply be mortgaged to an outside lender. The purpose is protective &mdash; it prevents reserve land being lost through debt &mdash; and the commercial consequence is that ordinary security over on-reserve assets is largely unavailable, so financing is built differently: leasehold interests in designated land, security over off-reserve or non-exempt assets, ministerial loan guarantees, Indigenous financial institutions, and lending to a corporation rather than to the band. Development is commonly carried on through a <b>development corporation</b> owned by the nation, which separates business decisions from governance decisions and puts the commercial activity in an entity that can contract and grant security normally. Alongside this sit <b>impact benefit agreements</b> &mdash; negotiated contracts between a proponent and a nation covering employment, contracting, revenue sharing and environmental commitments &mdash; which are private agreements and do not replace the Crown’s constitutional duty to consult.`,
+          rules: [
+            { name: 'The seizure restriction', expr: 'on-reserve property of an Indian or band: not seizable by others', note: 'Protective in purpose; it is why ordinary security does not work there.', words: true },
+            { name: 'Development corporation', expr: 'nation-owned company carries on the business', note: 'Separates commerce from governance and can contract and give security normally.', words: true },
+            { name: 'IBA', expr: 'a contract, not a substitute for consultation', note: 'The Crown duty is constitutional and cannot be bought out by a proponent.', words: true }
+          ],
+          examples: [
+            {
+              prompt: 'A bank is asked to lend against equipment kept on reserve, owned by a band member. What is the difficulty, and what can be done?',
+              steps: [
+                { do: 'Identify the restriction', why: 'Personal property of an Indian situated on reserve is generally not subject to seizure by a non-Indian creditor.' },
+                { do: 'What that does to the security', why: 'The bank could take the charge, and then be unable to realise on it — security it cannot enforce is not security.' },
+                { do: 'Routes that work', why: 'Security over off-reserve assets; lending to a corporation that holds the assets; a ministerial loan guarantee; an Indigenous financial institution.' },
+                { do: 'Structure around it, do not ignore it', why: 'The restriction is protective and is not waivable by agreement in the way a contract term would be.' }
+              ],
+              answer: 'The security would be unenforceable; the loan must be structured differently.', answerWords: true
+            },
+            {
+              prompt: 'A proponent signs a comprehensive impact benefit agreement with a nation. Has the Crown’s consultation obligation been met?',
+              steps: [
+                { do: 'What is an IBA?', why: 'A private contract between the proponent and the nation.' },
+                { do: 'Where does the duty come from?', why: 'Section 35 of the Constitution Act, 1982 — it is owed by the Crown.' },
+                { do: 'No', why: 'A contract between two other parties cannot discharge a constitutional obligation the Crown owes. The agreement may be relevant evidence of what was discussed; it is not a substitute.' }
+              ],
+              answer: 'No — the duty remains the Crown’s.', answerWords: true
+            }
+          ]
+        },
+        {
+          id: 'c9', title: 'Banking, financing and debtor–creditor law', src: 'Chapter 9',
+          idea: `An <b>unsecured</b> creditor has a promise. If the debtor does not pay, the creditor sues, gets a judgment, and joins the queue &mdash; and in an insolvency that queue usually pays cents. A <b>secured</b> creditor has a promise <i>and</i> a claim against identified property, so it can realise on that property and does so ahead of the unsecured creditors. Under the <b>Personal Property Security Act</b> the analysis is three steps and the order matters. <b>Attachment</b> makes the security interest effective between the two parties: value given, the debtor has rights in the collateral, and there is a signed security agreement describing it. <b>Perfection</b> makes it effective against the rest of the world, almost always by <b>registration</b> in the personal property registry, or by taking possession. <b>Priority</b> decides who wins when two people claim the same collateral, and the general rule is first to register or perfect. The practical lesson is blunt: an unregistered interest can be perfectly valid against the debtor and still lose to a later lender who registered. A <b>guarantee</b> is a different animal &mdash; a promise to answer for another’s debt, which must generally be evidenced in writing, and which is how lenders reach behind a company with no assets.`,
+          rules: [
+            { name: 'Attachment', expr: 'value + rights in collateral + signed agreement', note: 'Effective between debtor and creditor.', words: true },
+            { name: 'Perfection', expr: 'registration or possession', note: 'Effective against everyone else.', words: true },
+            { name: 'Priority', expr: 'generally, first to register or perfect', note: 'Valid and unregistered still loses to later and registered.', words: true }
+          ],
+          examples: [
+            {
+              prompt: 'Lender A takes a signed security agreement over a company’s equipment in January and does not register. Lender B takes security over the same equipment in March and registers immediately. The company fails. Who has priority?',
+              steps: [
+                { do: 'Did A’s interest attach?', why: 'Value given, debtor had rights in the equipment, signed agreement describing it. Yes — A has a valid interest against the company.' },
+                { do: 'Did A perfect?', why: 'No. No registration and no possession.' },
+                { do: 'Did B perfect?', why: 'Yes, on registration in March.' },
+                { do: 'B wins', why: 'Priority runs on perfection, not on the date of the agreement. A’s interest is good against the debtor and worth little against B.' }
+              ],
+              answer: 'Lender B — perfection decides priority.', answerWords: true
+            },
+            {
+              prompt: 'A supplier sells goods on credit to a company with no assets, taking no security. The company fails owing $40,000. What is the supplier’s position?',
+              steps: [
+                { do: 'Secured or unsecured?', why: 'Unsecured — a promise and nothing else.' },
+                { do: 'What is the remedy?', why: 'Sue, obtain judgment, and rank with the other unsecured creditors after the secured ones are paid out of their collateral.' },
+                { do: 'Realistically', why: 'Little or nothing. The lesson of the chapter is that the protection had to be arranged before the credit was extended, not after.' },
+                { do: 'What would have helped', why: 'A registered security interest in the goods sold, or a personal guarantee from a director.' }
+              ],
+              answer: 'Unsecured, ranking behind the secured creditors.', answerWords: true
+            }
+          ]
+        }
+      ],
+      practice: [
+        { id: 'l6p1', kind: 'order', lesson: 'c9',
+          prompt: 'Put the secured-lending analysis into the order the PPSA uses.',
+          steps: [
+            'Attachment — value given, debtor has rights in the collateral, signed security agreement',
+            'Perfection — register in the personal property registry, or take possession',
+            'Priority — decide between competing claims, generally first to perfect',
+            'Realisation — seize and sell the collateral on default'
+          ],
+          hint: 'Which step makes the interest good against the world rather than just against the debtor?',
+          solution: ['Attachment is between the two parties', 'Perfection is against everybody else', 'Priority only becomes a question once more than one interest exists'] },
+        { id: 'l6p2', kind: 'mc', lesson: 'c9',
+          prompt: 'An earlier security agreement was never registered; a later lender registered at once. Who has priority?',
+          options: [
+            { t: 'The later lender, because priority follows perfection', ok: true },
+            { t: 'The earlier lender, because its agreement came first', ok: false },
+            { t: 'They share rateably', ok: false },
+            { t: 'Neither — an unregistered interest voids both', ok: false }
+          ],
+          hint: 'What is the registry actually for?',
+          solution: ['An unregistered interest is still valid against the debtor', 'Priority runs on perfection', 'The registry exists so a later lender can find out what is already claimed'] },
+        { id: 'l6p3', kind: 'mc', lesson: 'c8',
+          prompt: 'Why is ordinary security over on-reserve property of limited use to a bank?',
+          options: [
+            { t: 'Such property is generally not subject to seizure by a non-Indian creditor, so the security cannot be realised', ok: true },
+            { t: 'Provincial personal property legislation does not apply on reserve at all', ok: false },
+            { t: 'Bands are not permitted to borrow money', ok: false },
+            { t: 'Registration in the personal property registry is unavailable on reserve', ok: false }
+          ],
+          hint: 'What is security worth if you cannot enforce it?',
+          solution: ['The Indian Act restricts seizure of on-reserve property by others', 'The purpose is to prevent reserve land and property being lost through debt', 'Financing is structured around it, not in spite of it'] },
+        { id: 'l6p4', kind: 'spot', lesson: 'c8',
+          prompt: 'One step of this advice is wrong. Which one?',
+          steps: [
+            { t: 'The proponent negotiated an impact benefit agreement with the nation', bad: false },
+            { t: 'The agreement covers employment, contracting and revenue sharing', bad: false },
+            { t: 'The agreement therefore discharges the Crown’s duty to consult', bad: true },
+            { t: 'The Crown must still satisfy itself that consultation was adequate', bad: false }
+          ],
+          why: 'The duty to consult is constitutional and is owed by the Crown. An agreement between a proponent and a nation is a contract between two parties, neither of whom is the Crown, and it cannot discharge an obligation the Crown owes.',
+          hint: 'Who owes the duty, and were they a party to this agreement?',
+          solution: ['The duty flows from s. 35 and belongs to the Crown', 'Procedural aspects may be delegated to a proponent', 'The Crown remains answerable for the adequacy of consultation'] }
+      ]
+    }
+  ];
+
+  /* ================= chapters 4–9 =================
+     Unit 3 finishes the Midterm 1 scope, which stopped at chapter 3 when this course was first
+     written — chapters 4 and 5 are examinable in October and were simply missing. Units 4 and 5 are
+     the Midterm 2 scope. Same rule as everywhere else here: the structure is the course outline's,
+     the doctrine is written out rather than reproduced, and the set text is named to be read
+     alongside. Nothing here is legal advice. */
+  const ENVIRO_2 = [
+    {
+      id: 'intl-tools', n: 3,
+      title: 'International law, and the regulatory toolbox',
+      read: 'Chapters 4–5',
+      blurb: 'How an international commitment becomes enforceable in Canada, and the instruments a regulator actually has. Both are in Midterm 1.',
+      objectives: [
+        'Explain why signing a treaty does not by itself change Canadian law',
+        'Distinguish binding obligations from soft law, and say what soft law is nonetheless good for',
+        'Name the main regulatory instruments and say what each is good and bad at',
+        'State the offence category most environmental offences fall into, and the defence that goes with it'
+      ],
+      lessons: [
+        {
+          id: 'e4', title: 'Canadian law and international law', src: 'Chapter 4',
+          idea: `Canada is <b>dualist</b>: international law and domestic law are separate systems, and an obligation on the international plane does not become enforceable in a Canadian court until Parliament or a legislature has <b>implemented</b> it in legislation. The sequence matters and is a favourite of short-answer questions. <b>Signature</b> indicates an intention and an obligation not to defeat the treaty’s object; <b>ratification</b> binds Canada internationally; <b>implementing legislation</b> is what gives a Canadian court something to apply. A treaty Canada has ratified but not implemented still does real work &mdash; courts use it as an interpretive aid, presuming legislation is meant to conform with Canada’s international obligations &mdash; but a litigant cannot sue on it directly. There is a further federalism wrinkle peculiar to Canada: the federal government makes treaties, yet implementation must respect the division of powers, so where the subject matter is provincial, implementation is for the provinces. Alongside binding treaties sits <b>soft law</b> &mdash; declarations, guidelines, principles &mdash; which creates no legal obligation but shapes statutes, informs how discretion is exercised, and is where principles like precaution and sustainable development entered domestic law from.`,
+          rules: [
+            { name: 'Dualism', expr: 'ratified ≠ enforceable at home', note: 'Implementation in legislation is the step that makes it justiciable here.', words: true },
+            { name: 'The sequence', expr: 'signature → ratification → implementation', note: 'Each does something different. Know which is which.', words: true },
+            { name: 'Soft law', expr: 'not binding, still influential', note: 'Interprets statutes, guides discretion, and is where the principles came from.', words: true }
+          ],
+          examples: [
+            {
+              prompt: 'Canada ratifies a convention on a pollutant but passes no implementing statute. A group sues a company for breaching it. What happens?',
+              steps: [
+                { do: 'Is Canada bound?', why: 'Internationally, yes — ratification does that.' },
+                { do: 'Is there a domestic cause of action?', why: 'No. Dualism means there is nothing for a Canadian court to enforce against a private party until it is implemented.' },
+                { do: 'Is the convention useless in court?', why: 'No — it can be used to interpret existing legislation, on the presumption that Parliament intends to comply with Canada’s obligations.' },
+                { do: 'Claim fails as pleaded', why: 'The remedy for non-implementation is political, not curial.' }
+              ],
+              answer: 'No direct claim — but the convention can inform the reading of a statute.', answerWords: true
+            },
+            {
+              prompt: 'The subject matter of a treaty Canada wishes to implement falls squarely within provincial jurisdiction. Can Ottawa legislate to implement it?',
+              steps: [
+                { do: 'Who has treaty-making power?', why: 'The federal executive.' },
+                { do: 'Does that carry implementing power?', why: 'No. Implementation must respect the division of powers — treaty-making does not enlarge federal legislative competence.' },
+                { do: 'So the provinces must act', why: 'Which is why Canada is sometimes slow to ratify: it must first be confident the provinces will implement.' }
+              ],
+              answer: 'No — implementation follows the division of powers.', answerWords: true
+            }
+          ]
+        },
+        {
+          id: 'e5', title: 'Protection regimes and regulatory tools', src: 'Chapter 5',
+          idea: `The dominant instrument in Canadian environmental law is <b>command and control</b>: a statute prohibits an activity, and a permit or approval allows it on stated conditions. Standards come in three kinds and the distinction is examinable. An <b>ambient</b> standard sets the quality of the receiving environment; an <b>emission</b> (or effluent) standard limits what a source may release; a <b>technology</b> standard requires particular equipment or practice. Ambient standards measure the thing we actually care about but are hard to attribute to one polluter; technology standards are easy to enforce and freeze innovation at whatever was required. Around this sit other tools: <b>economic instruments</b> (charges, tradable permits, deposit-refund), <b>information</b> instruments (mandatory reporting, pollutant inventories, labelling), and <b>administrative monetary penalties</b>, which avoid the cost of prosecution. On enforcement, the category matters most. Since <i>R v Sault Ste. Marie</i>, most regulatory offences are <b>strict liability</b>: the prosecution proves the prohibited act, and the accused may escape liability by proving, on the balance of probabilities, that it took <b>all reasonable care</b> &mdash; the <b>due diligence</b> defence. That is neither absolute liability (no defence at all) nor a true crime (where the Crown must prove a guilty mind), and saying which one applies is usually worth the marks.`,
+          rules: [
+            { name: 'Three kinds of standard', expr: 'ambient · emission · technology', note: 'Quality of the environment, what a source may release, what equipment must be used.', words: true },
+            { name: 'Strict liability', expr: 'Crown proves the act; accused may prove due diligence', note: 'The middle category, and the default for regulatory offences.', words: true },
+            { name: 'Due diligence', expr: 'all reasonable care, on the balance of probabilities', note: 'Systems, training, maintenance and monitoring — proved with records, not assertions.', words: true }
+          ],
+          examples: [
+            {
+              prompt: 'A company is charged with depositing a deleterious substance into water frequented by fish. It says the release was caused by an equipment failure it did not know about. What must each side show?',
+              steps: [
+                { do: 'What category of offence?', why: 'A regulatory offence of this kind is strict liability unless the statute says otherwise.' },
+                { do: 'What does the Crown prove?', why: 'The prohibited act — that the deposit occurred. Not intent, and not negligence.' },
+                { do: 'What must the company prove?', why: 'Due diligence: that it took all reasonable care, on the balance of probabilities. Ignorance of the failure is not the defence — the maintenance and monitoring system that should have found it is.' },
+                { do: 'Records decide it', why: 'Inspection schedules, alarms, training, response. A company that cannot document its system usually cannot prove the defence.' }
+              ],
+              answer: 'Crown proves the act; the company must prove due diligence.', answerWords: true
+            },
+            {
+              prompt: 'A regulator must reduce a regional air problem caused by many small sources. Which instrument, and why?',
+              steps: [
+                { do: 'Ambient standard alone?', why: 'It names the goal but cannot be enforced against any one of many small contributors — attribution is the problem.' },
+                { do: 'Emission standard per source?', why: 'Enforceable, but uniform limits ignore that reduction is far cheaper at some sources than others.' },
+                { do: 'Economic instrument', why: 'A charge or a tradable permit makes the reductions happen where they cost least, which is the case for using one here.' },
+                { do: 'In practice, a combination', why: 'An ambient target to define success, emission limits as a floor, and an economic instrument to allocate the effort.' }
+              ],
+              answer: 'An economic instrument over an ambient target, with emission limits as a floor.', answerWords: true
+            }
+          ]
+        }
+      ],
+      practice: [
+        { id: 'e3p1', kind: 'mc', lesson: 'e4',
+          prompt: 'Canada has ratified a treaty but not implemented it. What is its status in a Canadian court?',
+          options: [
+            { t: 'Not directly enforceable, but usable to interpret existing legislation', ok: true },
+            { t: 'Directly enforceable, because ratification binds Canada', ok: false },
+            { t: 'Of no legal relevance whatsoever', ok: false },
+            { t: 'Enforceable only against governments, not private parties', ok: false }
+          ],
+          hint: 'What does a dualist system require before a court has something to apply?',
+          solution: ['Ratification binds Canada internationally', 'Implementation in legislation is what makes it justiciable at home', 'Unimplemented treaties still guide interpretation'] },
+        { id: 'e3p2', kind: 'mc', lesson: 'e5',
+          prompt: 'Which describes a strict liability offence?',
+          options: [
+            { t: 'The Crown proves the prohibited act; the accused may prove due diligence', ok: true },
+            { t: 'The Crown must prove the act and a guilty mind', ok: false },
+            { t: 'Liability follows from the act with no defence available', ok: false },
+            { t: 'The accused must disprove the act beyond a reasonable doubt', ok: false }
+          ],
+          hint: 'There are three categories. Which is the middle one?',
+          solution: ['True crimes need mens rea', 'Absolute liability offers no defence', 'Strict liability sits between: the act, plus a due diligence defence on the balance of probabilities'] },
+        { id: 'e3p3', kind: 'mc', lesson: 'e5',
+          prompt: 'A rule requiring every plant to install a named scrubber is which kind of standard?',
+          options: [
+            { t: 'A technology standard', ok: true },
+            { t: 'An ambient standard', ok: false },
+            { t: 'An emission standard', ok: false },
+            { t: 'An economic instrument', ok: false }
+          ],
+          hint: 'Is it specifying the equipment, the release, or the quality of the air?',
+          solution: ['Technology standards name the equipment or practice', 'Easy to enforce, and they freeze the technology at whatever was required'] },
+        { id: 'e3p4', kind: 'spot', lesson: 'e4',
+          prompt: 'One step of this analysis is wrong. Which one?',
+          steps: [
+            { t: 'Canada signed and then ratified the convention', bad: false },
+            { t: 'Ratification binds Canada on the international plane', bad: false },
+            { t: 'Ratification therefore creates a cause of action in a Canadian court', bad: true },
+            { t: 'Implementing legislation is required before a court can enforce it domestically', bad: false }
+          ],
+          why: 'Canada is dualist. International and domestic law are separate systems, and until an obligation is implemented in legislation there is nothing for a Canadian court to enforce — however firmly Canada is bound internationally.',
+          hint: 'Two systems, or one?',
+          solution: ['Signature, ratification and implementation each do something different', 'Only implementation makes a treaty enforceable in a Canadian court'] }
+      ]
+    },
+    {
+      id: 'sectoral', n: 4,
+      title: 'Sectoral regimes and impact assessment',
+      read: 'Chapters 6–7',
+      blurb: 'The statutes that regulate particular media and sectors, and the process that decides whether a major project proceeds.',
+      objectives: [
+        'Identify which level of government regulates a given environmental subject and on what basis',
+        'State the general prohibition that does most of the work in federal fisheries protection',
+        'Set out the stages of a federal impact assessment and say who ultimately decides',
+        'Explain what BC’s assessment legislation added in relation to Indigenous nations'
+      ],
+      lessons: [
+        {
+          id: 'e6', title: 'Sectoral regulatory regimes', src: 'Chapter 6',
+          idea: `There is no single environmental statute. Protection is delivered through overlapping regimes organised by <b>medium</b> (air, water, land) and by <b>sector</b>, at both levels of government. Federally, the <b>Canadian Environmental Protection Act</b> is the principal instrument for toxic substances: substances are assessed, listed, and then managed by regulation, and the 2023 amendments added a recognition of a <b>right to a healthy environment</b> to be administered under the Act. The <b>Fisheries Act</b> carries one of the most powerful provisions in Canadian environmental law &mdash; a general prohibition on depositing a <b>deleterious substance</b> into water frequented by fish, unless authorised by regulation. It is broad, it does not require proof that any fish were harmed, and it reaches activities with no obvious connection to fishing. Provincially in BC, the <b>Environmental Management Act</b> regulates waste discharge through permits, approvals and codes of practice, with contaminated sites dealt with under its own remediation scheme. The recurring exam point is <b>overlap</b>: the same discharge can engage a federal prohibition and a provincial permit at once, and complying with one is not a defence to the other.`,
+          rules: [
+            { name: 'The fisheries prohibition', expr: 'no deposit of a deleterious substance into water frequented by fish', note: 'Unless authorised. No proof of harm to fish is needed.', words: true },
+            { name: 'CEPA', expr: 'assess → list → regulate', note: 'The federal route for toxic substances; 2023 added a right to a healthy environment under the Act.', words: true },
+            { name: 'Overlap', expr: 'a provincial permit is not a defence to a federal offence', note: 'Both regimes apply to the same act.', words: true }
+          ],
+          examples: [
+            {
+              prompt: 'A mill holds a valid provincial waste discharge permit and stays within it. Its effluent is deleterious to fish. Exposure?',
+              steps: [
+                { do: 'Provincial position', why: 'Within its permit, so no provincial offence.' },
+                { do: 'Federal position', why: 'The Fisheries Act prohibition applies unless the deposit is authorised under federal regulation. A provincial permit is not that authorisation.' },
+                { do: 'Does actual harm need proving?', why: 'No — the substance being deleterious is the element, not injury to identified fish.' },
+                { do: 'Exposed federally', why: 'This is the overlap point, and it is the one students most often get wrong.' }
+              ],
+              answer: 'Compliant provincially, still exposed under the Fisheries Act.', answerWords: true
+            },
+            {
+              prompt: 'A substance is suspected of being toxic. What is the federal route to controlling it?',
+              steps: [
+                { do: 'Assessment', why: 'The substance is assessed against the statutory criteria for toxicity.' },
+                { do: 'Listing', why: 'If it meets them it is added to the list of toxic substances under the Act.' },
+                { do: 'Risk management', why: 'Regulation then follows — prohibition, limits, permitted uses, or a phase-out.' },
+                { do: 'Listing alone controls nothing', why: 'The common error is to stop at listing. It is the trigger for regulation, not the control.' }
+              ],
+              answer: 'Assess, list, then regulate under CEPA.', answerWords: true
+            }
+          ]
+        },
+        {
+          id: 'e7', title: 'Impact assessment', src: 'Chapter 7',
+          idea: `Impact assessment is <b>anticipatory</b>: it is a planning process applied before a project proceeds, not an enforcement tool applied afterwards. Federally, the <b>Impact Assessment Act</b> (2019) broadened what is assessed &mdash; beyond biophysical effects to health, social and economic effects, effects on Indigenous peoples and their rights, and a project’s contribution to Canada’s climate commitments. Its structure is a planning phase, an assessment phase, a decision, and then conditions and follow-up. The <b>decision is a public interest determination</b> made by the Minister or Cabinet, which is the feature to understand: assessment does not mechanically approve or refuse, it produces the record on which a political decision is made and must be justified. In 2023 the Supreme Court held in a reference that significant parts of the federal scheme exceeded federal jurisdiction as it then stood, and the Act was amended in 2024 to tie it more tightly to federal heads of power &mdash; a live illustration of the division-of-powers material from Unit 1. In BC, the <b>Environmental Assessment Act</b> (2018) was built around <b>consent-seeking with participating Indigenous nations</b>, with defined opportunities for a nation to give or withhold consent and a requirement that a decision explain how consent was addressed. That is a structurally different posture from consultation, and the contrast is worth being able to state.`,
+          rules: [
+            { name: 'Anticipatory', expr: 'a planning process, before the project', note: 'Not an enforcement mechanism.', words: true },
+            { name: 'The decision', expr: 'a public interest determination', note: 'Political, on the assessment record, and it must be justified.', words: true },
+            { name: 'BC 2018', expr: 'consent-seeking, not only consultation', note: 'Defined consent opportunities for participating nations.', words: true }
+          ],
+          examples: [
+            {
+              prompt: 'An assessment concludes a project will cause significant adverse effects. Must it be refused?',
+              steps: [
+                { do: 'What does the assessment produce?', why: 'A record of effects, mitigation and residual impacts — not a verdict.' },
+                { do: 'Who decides?', why: 'The Minister or Cabinet, on whether the effects are in the public interest.' },
+                { do: 'Can it still proceed?', why: 'Yes, with conditions, if justified in the public interest — and the justification has to be given.' },
+                { do: 'Not automatic either way', why: 'Treating "significant adverse effects" as an automatic refusal is the classic error here.' }
+              ],
+              answer: 'No — it goes to a public interest determination.', answerWords: true
+            },
+            {
+              prompt: 'What did BC’s 2018 legislation change about the position of Indigenous nations, compared with a duty to consult?',
+              steps: [
+                { do: 'The constitutional baseline', why: 'The Crown must consult, and accommodate where required. Consultation is not a veto.' },
+                { do: 'What the statute adds', why: 'Defined opportunities for a participating nation to give or withhold consent, built into the process itself.' },
+                { do: 'And if consent is withheld?', why: 'The decision-maker may still decide, but must address how consent was sought and what happened — the process is visible rather than internal.' },
+                { do: 'A different posture, not a new constitutional rule', why: 'Say both halves of that in an answer.' }
+              ],
+              answer: 'A statutory consent-seeking process on top of the constitutional duty.', answerWords: true
+            }
+          ]
+        }
+      ],
+      practice: [
+        { id: 'e4p1', kind: 'mc', lesson: 'e6',
+          prompt: 'A discharge complies with a provincial permit but is deleterious to fish. Which is right?',
+          options: [
+            { t: 'The federal Fisheries Act prohibition may still be engaged — a provincial permit is not federal authorisation', ok: true },
+            { t: 'The provincial permit is a complete answer', ok: false },
+            { t: 'The federal prohibition applies only where fish are shown to have died', ok: false },
+            { t: 'Only the province may regulate a discharge within its borders', ok: false }
+          ],
+          hint: 'Who issued the permit, and whose prohibition is it?',
+          solution: ['The regimes overlap and both apply to the same act', 'Compliance with one is not a defence to the other', 'No proof of harm to particular fish is needed'] },
+        { id: 'e4p2', kind: 'mc', lesson: 'e7',
+          prompt: 'Who makes the final decision at the end of a federal impact assessment?',
+          options: [
+            { t: 'The Minister or Cabinet, as a public interest determination', ok: true },
+            { t: 'The assessment panel, on its scientific findings', ok: false },
+            { t: 'The Federal Court, on review of the record', ok: false },
+            { t: 'The province in which the project is located', ok: false }
+          ],
+          hint: 'Does the process produce a verdict, or a record?',
+          solution: ['Assessment produces the record', 'The decision is political and must be justified in the public interest', 'Significant adverse effects do not automatically mean refusal'] },
+        { id: 'e4p3', kind: 'order', lesson: 'e7',
+          prompt: 'Put the stages of a federal impact assessment into order.',
+          steps: [
+            'Planning — scope the project, engage early, decide whether an assessment is required',
+            'Assessment — gather evidence on effects, including health, social, Indigenous rights and climate',
+            'Decision — a public interest determination by the Minister or Cabinet',
+            'Conditions and follow-up — enforceable terms, monitoring and compliance'
+          ],
+          hint: 'Which stage decides whether there will even be an assessment?',
+          solution: ['Planning comes first and can end the process', 'The decision is separate from the assessment that informs it'] },
+        { id: 'e4p4', kind: 'spot', lesson: 'e6',
+          prompt: 'One step of this advice is wrong. Which one?',
+          steps: [
+            { t: 'The substance was assessed and found to meet the criteria for toxicity', bad: false },
+            { t: 'It was added to the list of toxic substances under CEPA', bad: false },
+            { t: 'Listing itself prohibits its use', bad: true },
+            { t: 'Regulations may then prohibit, limit or phase out its use', bad: false }
+          ],
+          why: 'Listing is the trigger for risk management, not the control itself. A listed substance remains lawful to use until a regulation made under the Act says otherwise.',
+          hint: 'What is the third step in assess → list → ?',
+          solution: ['Assessment, then listing, then regulation', 'The regulation is what actually controls the substance'] }
+      ]
+    },
+    {
+      id: 'planning-market', n: 5,
+      title: 'Planning, management and market forces',
+      read: 'Chapters 8–9',
+      blurb: 'Regimes that manage land and resources over time, and the tools that work on companies through price and disclosure rather than prohibition.',
+      objectives: [
+        'Explain what planning and management regimes do that permitting cannot',
+        'Say what the cumulative effects problem is and why single-project approval misses it',
+        'Describe how liability reaches a corporation and its directors',
+        'Compare a carbon charge with a tradable permit system on certainty of price and of quantity'
+      ],
+      lessons: [
+        {
+          id: 'e8', title: 'Planning and management regimes', src: 'Chapter 8',
+          idea: `Permitting answers one question at a time: may <i>this</i> activity proceed? Planning and management regimes answer a different one: what should happen across <i>this area</i> over <i>this period</i>, and how much in total. Land use planning, protected areas, park and wildlife legislation, forest and water management and marine planning all belong here, and they work by allocating uses in advance rather than by adjudicating applications as they arrive. The problem they exist to address is <b>cumulative effects</b>: each approval, judged alone, is defensible, while the sum of them degrades the area. Project-by-project assessment structurally cannot see this, because there is no stage at which anyone is asked about the total. Planning also carries a distinct legal character &mdash; a plan may be binding, or it may guide the exercise of discretion, and telling which is a question of the enabling statute rather than of the document’s tone. In BC, land use planning increasingly proceeds through agreements with Indigenous nations, which changes who is at the table when the allocation is made rather than only when a permit is issued.`,
+          rules: [
+            { name: 'Cumulative effects', expr: 'each approval defensible, the sum not', note: 'The gap that project-level assessment cannot close.', words: true },
+            { name: 'Plans differ in force', expr: 'binding, or a guide to discretion', note: 'Read the enabling statute; do not infer it from the document.', words: true }
+          ],
+          examples: [
+            {
+              prompt: 'Twelve small developments are each approved as having no significant effect. The watershed deteriorates. What went wrong?',
+              steps: [
+                { do: 'Was any single decision wrong?', why: 'Not necessarily — each may have been correct on its own facts and its own record.' },
+                { do: 'Name the problem', why: 'Cumulative effects. Nobody was ever asked about the total, because no stage of the process poses that question.' },
+                { do: 'What addresses it', why: 'Regional planning, a cap or allocation across the area, and regional or strategic assessment ahead of individual applications.' },
+                { do: 'Not fixed by stricter permitting', why: 'Tightening each permit slows the curve; only an instrument that sees the whole area changes it.' }
+              ],
+              answer: 'Cumulative effects — a planning problem, not a permitting one.', answerWords: true
+            },
+            {
+              prompt: 'A regional plan says an area is "a priority for conservation". A permit is applied for there. Does the plan prevent it?',
+              steps: [
+                { do: 'Is the plan binding?', why: 'It depends entirely on the statute under which it was made — the wording of the plan does not settle it.' },
+                { do: 'If binding', why: 'The decision-maker cannot approve what is inconsistent with it.' },
+                { do: 'If a guide', why: 'It must be considered, and a departure will need reasons, but it can be departed from.' },
+                { do: 'Answer the statute, not the document', why: 'The marks are for identifying that this is the question, not for guessing.' }
+              ],
+              answer: 'It depends on the force the enabling statute gives the plan.', answerWords: true
+            }
+          ]
+        },
+        {
+          id: 'e9', title: 'Corporations and market forces', src: 'Chapter 9',
+          idea: `Two ways of reaching a company. The first is <b>liability</b>. A corporation is prosecuted in its own name for regulatory offences, and its <b>due diligence</b> defence turns on its systems &mdash; policies, training, maintenance, monitoring, response &mdash; which is why environmental management systems exist. Directors and officers can face <b>personal</b> liability where a statute imposes a duty on them to take reasonable care to prevent the corporation’s offence, and the same due diligence defence applies to them personally. The second is <b>price and information</b>. Carbon pricing puts a cost on emissions: a <b>charge</b> fixes the price and leaves the quantity to respond, while <b>cap-and-trade</b> fixes the quantity and lets the price move. Neither is simply better &mdash; the choice is which certainty you want &mdash; and the federal pricing legislation was upheld by the Supreme Court in 2021 under the national concern branch of peace, order and good government, which is a direct application of the jurisdiction material from Unit 1. Information instruments work on reputation and capital: pollutant release inventories, climate-related disclosure, and the 2024 <b>greenwashing</b> amendments to the Competition Act, which require environmental claims about a product or a business to be supported by adequate and proper substantiation. That last one connects this chapter straight to commercial law: an environmental claim is also an advertising claim.`,
+          rules: [
+            { name: 'Corporate due diligence', expr: 'systems, documented', note: 'Proved with records of training, maintenance, monitoring and response.', words: true },
+            { name: 'Charge vs cap-and-trade', expr: 'price certainty vs quantity certainty', note: 'You get one. Which matters depends on the objective.', words: true },
+            { name: 'Greenwashing', expr: 'environmental claims need adequate and proper substantiation', note: 'Competition Act, 2024 amendments — a marketplace rule doing environmental work.', words: true }
+          ],
+          examples: [
+            {
+              prompt: 'A jurisdiction must hit a fixed emissions total by 2030. Charge, or cap-and-trade?',
+              steps: [
+                { do: 'What does a charge fix?', why: 'The price. The quantity is whatever emitters choose at that price — which may not be the target.' },
+                { do: 'What does cap-and-trade fix?', why: 'The quantity. The cap is the target; the permit price moves to whatever clears the market.' },
+                { do: 'The objective was a quantity', why: 'So cap-and-trade matches it directly.' },
+                { do: 'The cost of that', why: 'Price volatility, which is exactly what a charge would have avoided. There is no option with both certainties.' }
+              ],
+              answer: 'Cap-and-trade — it fixes the quantity, at the cost of price certainty.', answerWords: true
+            },
+            {
+              prompt: 'A company advertises a product as "carbon neutral" on the strength of an internal estimate. Any exposure?',
+              steps: [
+                { do: 'Is this an environmental question or a marketplace one?', why: 'Both — which is the point of the 2024 amendments.' },
+                { do: 'What is required?', why: 'An environmental claim about a product must be based on adequate and proper testing or substantiation, and the burden of showing it sits with the advertiser.' },
+                { do: 'Is an internal estimate enough?', why: 'Very likely not, if it is not an adequate and proper substantiation on a recognised methodology.' },
+                { do: 'Exposure under the Competition Act', why: 'Reviewable conduct: orders and monetary penalties, without any environmental statute being engaged at all.' }
+              ],
+              answer: 'Yes — an unsubstantiated environmental claim is reviewable conduct.', answerWords: true
+            }
+          ]
+        }
+      ],
+      practice: [
+        { id: 'e5p1', kind: 'mc', lesson: 'e8',
+          prompt: 'What is the cumulative effects problem?',
+          options: [
+            { t: 'Each approval is defensible alone, while the total degrades the area, and no stage asks about the total', ok: true },
+            { t: 'Regulators approve projects without assessing their effects', ok: false },
+            { t: 'Effects that appear only years after a project is built', ok: false },
+            { t: 'The same project being assessed by two levels of government', ok: false }
+          ],
+          hint: 'Is the problem that the individual decisions were wrong?',
+          solution: ['Every individual decision may have been correct', 'Project-level assessment has no stage that considers the total', 'Planning and regional assessment are what address it'] },
+        { id: 'e5p2', kind: 'mc', lesson: 'e9',
+          prompt: 'A government wants certainty about the quantity of emissions, not the price. Which instrument?',
+          options: [
+            { t: 'Cap-and-trade — it fixes the quantity and lets the price move', ok: true },
+            { t: 'A carbon charge — it fixes the quantity directly', ok: false },
+            { t: 'A technology standard — it guarantees a total', ok: false },
+            { t: 'Either, since both fix quantity and price', ok: false }
+          ],
+          hint: 'Each instrument fixes one variable. Which fixes which?',
+          solution: ['A charge fixes price and lets quantity respond', 'A cap fixes quantity and lets price respond', 'No instrument gives both certainties'] },
+        { id: 'e5p3', kind: 'mc', lesson: 'e9',
+          prompt: 'How does a corporation establish due diligence in a regulatory prosecution?',
+          options: [
+            { t: 'By proving it took all reasonable care — documented systems, training, monitoring and response', ok: true },
+            { t: 'By showing management did not know of the incident', ok: false },
+            { t: 'By showing it held a valid permit', ok: false },
+            { t: 'By showing the incident caused no measurable harm', ok: false }
+          ],
+          hint: 'Is not knowing the defence, or the thing the system was meant to prevent?',
+          solution: ['The defence is all reasonable care, on the balance of probabilities', 'Ignorance is usually evidence the system failed', 'It is proved with records'] },
+        { id: 'e5p4', kind: 'spot', lesson: 'e8',
+          prompt: 'One step of this analysis is wrong. Which one?',
+          steps: [
+            { t: 'Twelve projects were each assessed and each found insignificant', bad: false },
+            { t: 'The combined effect on the watershed is severe', bad: false },
+            { t: 'Therefore at least one of the twelve assessments must have been wrongly decided', bad: true },
+            { t: 'A regional plan or cap would have addressed the total', bad: false }
+          ],
+          why: 'Cumulative effects arise precisely where every individual decision was correct. The failure is structural — no stage of project-level assessment asks about the total — which is why the answer is a planning instrument rather than a stricter permit.',
+          hint: 'Could all twelve decisions be right and the outcome still be bad?',
+          solution: ['Each decision can be correct on its own record', 'The gap is that nobody is asked about the sum', 'Planning and regional assessment close it'] }
+      ]
+    }
+  ];
+
+  /* Pushed rather than written inline, so the two long course objects above stay readable and a
+     later batch of chapters is one more array rather than surgery inside a 500-line literal. */
+  COMMERCIAL.units.push(...COMMERCIAL_2);
+  ENVIRO.units.push(...ENVIRO_2);
+
   root.Courses.register(COMMERCIAL);
   root.Courses.register(ENVIRO);
 })(typeof window !== 'undefined' ? window : globalThis);
@@ -6151,7 +6880,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.29', date: '14 September 2026', year: 2026 };
+  const BUILD = { v: '2.30', date: '14 September 2026', year: 2026 };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonandy242', ['gmail', 'com'].join('.')].join('@');
   /* The one sentence that says what this is. It appears under the wordmark, and build.js uses
@@ -6164,6 +6893,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      because the person who needs it is the one who just watched the app refresh itself and wants to
      know what moved. Trim the tail when it gets past a dozen; nobody reads further back than that. */
   const WHATS_NEW = [
+    ['2.30', 'Both Law courses now run to the end of Midterm 2. <b>Commercial Law</b> gains consumer protection and competition law, the forms of carrying on business and what separate legal personality actually buys you, Indigenous business and economic development, and secured lending &mdash; chapters 6 to 9. <b>Environmental Law</b> gains international law and the regulatory toolbox (chapters 4 and 5, which are in <b>Midterm 1</b> and were missing), then sectoral regimes and impact assessment, and planning and market instruments. Six new units, nine lessons, 25 worked examples and 24 practice questions, each pointing at the chapter of the set text to read alongside it. Still not legal advice, and still nothing copied from anybody&rsquo;s textbook.'],
     ['2.29', '<b>Course packs.</b> A whole course &mdash; the readings, the cards, the learning outcomes, the weekly schedule and what each assessment is worth &mdash; opens from one link, already set up. An instructor or a classmate can build one from a subject they have loaded; you open <b>Course packs</b> from the home page, see exactly what is in a pack before anything is added, and add it with one tap. It arrives as a new subject with nothing studied, so it can never overwrite what you already have, and it carries none of the maker&rsquo;s marks, schedule or quiz history. Packs are served from this app&rsquo;s own address and nowhere else &mdash; opening one still sends nothing about you anywhere.'],
     ['2.28', 'Two changes, both aimed at the same thing: reading an answer is not learning it. <b>Say it your way</b> &mdash; a new card now asks you to put the answer in your own words before it joins the deck. It is optional, it is never marked, and from then on your wording is what you see first, with the material&rsquo;s underneath. Writing it out is one of the best-evidenced things you can do with a card. And in the Math and Law courses, <b>worked examples now fade</b>: once you are Familiar with a skill the last line is left for you to finish, at Proficient the last two, and at Mastered you get the question alone. Every example still opens in full with one tap &mdash; it is study material, not a test.'],
     ['2.27', 'Nothing is locked behind the sign-up any more. Summary, Quiz and essay help are open to everyone, signed up or not &mdash; access to study material should not be the price of your contact details. Signing up is still there and still welcome; it just costs you nothing to skip. The legal page is rewritten as a proper privacy notice: the seven things the app sends are listed field by field, where they are stored (Canada) and who can read them is stated, and there are new sections on academic integrity, accuracy, accessibility and what an institution needs to know before recommending it. Your files still never leave your browser, and that is now written down somewhere a privacy office can read it.'],
