@@ -1,7 +1,7 @@
 # Curriculum spine — ten disciplines, forty course slots
 
-**Status: decisions 1–3 taken and shipped in v2.37. Decisions 4 and 5 are still open.**
-Prepared 14 September 2026 against build v2.36; updated 14 September 2026 for v2.37.
+**Status: all five decisions taken. Decisions 1–3 shipped in v2.37; 4 and 5 answered 15 September 2026.**
+Prepared 14 September 2026 against build v2.36; updated 15 September 2026 for v2.38.
 
 This is step 1 of the tutoring expansion brief. It is a map, not a course. Its job is to let you
 reject a shape before several hundred lessons are written to it.
@@ -16,8 +16,11 @@ reject a shape before several hundred lessons are written to it.
 | Law | BLAW 2910 Commercial Law | `Intermediate` | — | 6 | 10 | 22 |
 | Law | BLAW 3930 Environmental Law | `Advanced` | BLAW 2910 | 5 | 9 | 18 |
 | Accounting | Financial Accounting | `Foundation` | — | 4 | 12 | 31 |
+| Physics | Mechanics | `Foundation` | Precalculus | 4 | 12 | 39 |
+| Chemistry | General Chemistry | `Foundation` | — | 4 | 12 | 40 |
 
-Four courses across three disciplines. Seven disciplines have nothing. At the fidelity of those four
+Six courses across five disciplines. Four disciplines still have nothing: Biology, Computer
+Science, Statistics and Marketing. English was taken off the list — see decision 5. At the fidelity of those four
 — roughly 600 to 1,000 lines of authored data each — forty courses is on the order of 30,000 lines.
 That is the number that makes the staging non-negotiable.
 
@@ -30,7 +33,9 @@ the Accounting section below for what came across and what did not.
 
 ## Five decisions that need your call before authoring starts
 
-These are the things I would otherwise have to guess at, and guessing costs a rebuild.
+These are the things I would otherwise have to guess at, and guessing costs a rebuild. All five are
+now answered; each decision keeps its original wording, with the answer recorded underneath it, so
+the reasoning that led to the call is still readable rather than replaced by its outcome.
 
 ### 1. There is no prerequisite field. One has to be added.
 
@@ -113,6 +118,13 @@ unchanged to *authored courses* is a category error.
 
 This is the only one of the five I feel strongly about.
 
+**✅ Decided 15 September 2026: option (c) — a course-level `types` override, with a stated reason.**
+An authored course may carry its own `types`, defaulting to the subject profile and overriding it
+only where the course says why. Uploaded documents keep the profile untouched, so how the engine
+reads a marketing slide deck is unchanged. A test asserts that every override is explicit and
+carries its reason, so it cannot happen by accident or spread quietly. Built alongside the Computer
+Science and Marketing courses, which are the two that need it.
+
 ### 5. English is the discipline this app can help least with
 
 With `numeric` and `order` both off, English practice is **mc and spot only**. That is workable for
@@ -122,6 +134,15 @@ close reading, rhetoric and argument analysis. I cannot build something that imp
 and the course pages will say so. If you would rather I skip English entirely than ship something
 that can only help around the edges, that is a defensible call — tell me now rather than after it is
 written.
+
+**✅ Decided 15 September 2026: skip English for now.** Nine profiles get authored courses; English
+keeps the general upload engine, which reads an English handout as English and builds cards, a
+summary, key information and a quiz from it exactly as before. Nothing is taken away — what is not
+added is a set of authored courses that could only have helped around the edges of how the subject
+is actually assessed. Being honest by omission is better here than shipping four courses with a
+disclaimer at the top of each saying what they cannot do. Revisit if a way to mark writing appears:
+the profile change needed would be the same course-level `types` override that decision 4 introduces,
+applied to `eng`.
 
 ---
 
@@ -172,7 +193,7 @@ page will say so. The first three levels are well served by this format.
 
 | Level | Title | Prerequisite | Units |
 |---|---|---|---|
-| Foundation | **Mechanics** | — | Units, dimensions and estimation; Kinematics in one and two dimensions; Newton's laws and free-body diagrams; Work, energy and power; Momentum and collisions; Rotation |
+| Foundation | **Mechanics** ✅ **built, v2.38** | Precalculus | Measurement, units and estimation; Describing motion; Newton's laws and free-body diagrams; Work, energy and power |
 | Intermediate | **Electromagnetism** | Mechanics | Electrostatics and Coulomb's law; Fields, potential and energy; Capacitance and dielectrics; Current, resistance and circuits; Magnetic fields and forces; Induction and Faraday's law |
 | Advanced | **Quantum Mechanics** | Electromagnetism | The failures of classical physics; The wavefunction and Schrödinger's equation; The infinite well and the harmonic oscillator; Operators, eigenvalues and measurement; Angular momentum and spin; The hydrogen atom |
 | Professional | **Statistical Mechanics** | Quantum Mechanics | Microstates, entropy and the Boltzmann distribution; Ensembles and partition functions; Classical and quantum ideal gases; Bose–Einstein and Fermi–Dirac statistics; Phase transitions and critical behaviour |
@@ -185,7 +206,7 @@ units in the prompt and the SymPy restatement carries them.
 
 | Level | Title | Prerequisite | Units |
 |---|---|---|---|
-| Foundation | **General Chemistry** | — | Atoms, moles and stoichiometry; Reactions in solution; Gases and the gas laws; Thermochemistry; Atomic structure and periodicity; Bonding and molecular shape |
+| Foundation | **General Chemistry** ✅ **built, v2.38** | — | Atoms, the mole and stoichiometry; Reactions in solution; Gases; Thermochemistry |
 | Intermediate | **Organic Chemistry** | General Chemistry | Structure, hybridisation and nomenclature; Stereochemistry; Substitution and elimination; Addition to alkenes and alkynes; Aromaticity and aromatic substitution; Carbonyl chemistry |
 | Advanced | **Physical Chemistry** | Organic Chemistry | The laws of thermodynamics; Chemical and phase equilibria; Chemical kinetics and rate laws; Reaction mechanisms and catalysis; Electrochemistry |
 | Professional | **Structure Determination** | Physical Chemistry | Mass spectrometry; Infrared spectroscopy; Nuclear magnetic resonance — proton; NMR — carbon and two-dimensional; Combined-technique problems; X-ray crystallography in outline |

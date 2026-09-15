@@ -5200,9 +5200,9 @@ const tfHint = (a, id) => hintFrom(a, id, null, 'Check the statement against the
             src: 'Section 1.2',
             idea: `The <b>domain</b> is every input the function will accept; the <b>range</b> is every output it actually produces. From a formula, only two things rule an input out: a <b>denominator equal to zero</b>, and an <b>even root of a negative</b>. Find every denominator and every even root, write down what each demands, and require all of them at once. A <b>piecewise</b> function applies different formulas on different parts of the domain, so its range is the union of what each piece produces.`,
             rules: [
-              { name: 'No division by zero', expr: 'denominator != 0', note: 'Solve denominator = 0 and exclude those values.' },
+              { name: 'No division by zero', expr: 'denominator != 0', words: true, note: 'Solve denominator = 0 and exclude those values.' },
               { name: 'Even roots need non-negatives', expr: 'sqrt(u) needs u >= 0', note: 'Odd roots accept negatives and impose nothing.' },
-              { name: 'Interval notation', expr: '[a, b]', note: 'Square bracket includes the endpoint, round bracket excludes it. Infinity always gets a round bracket.' }
+              { name: 'Interval notation', expr: '[a, b]', words: true, note: 'Square bracket includes the endpoint, round bracket excludes it. Infinity always gets a round bracket.' }
             ],
             examples: [
               {
@@ -8176,6 +8176,2156 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 
 </script>
 <script>
+/* UNI Made EZ — Physics courses
+   Copyright © 2026 JohnsonXCorp. All rights reserved.
+   Proprietary. Not open source: see LICENSE.
+
+   ---------------------------------------------------------------------------------------------
+   WHAT THIS IS. The first physics course a science or engineering student takes, cut down to the
+   four units that everything later leans on. Nothing here is copied from a textbook: the topic
+   order follows what an introductory mechanics course examines, which is a fact about the subject,
+   and every sentence, figure and exercise below is written from scratch.
+
+   WHY THE ARITHMETIC IS CHECKED. Every numeric answer carries a `verify` restatement that
+   test/math.js recomputes with SymPy before the page is allowed to build. Physics adds a wrinkle
+   accounting did not have: real answers are reported to a stated precision — 4.90 m, not 49/10 —
+   so those items carry `verify.dp`. The expression is still evaluated EXACTLY, as a rational, and
+   only the final comparison rounds. A rounded answer stays a checked answer.
+
+   WHY UNITS ARE PART OF THE ANSWER AND NOT DECORATION. Mechanics is where students first meet a
+   number that is meaningless without its unit, and the commonest lost marks in first year are
+   unit errors, not algebra errors. So dimensional analysis is unit 1 rather than an appendix, and
+   several practice items ask for a unit or reject a quantity on dimensional grounds alone.
+
+   WHAT IS DELIBERATELY ABSENT. Four units, not the whole of mechanics. What is missing is listed
+   in `gaps` and printed on the course page under "Not covered here".
+   --------------------------------------------------------------------------------------------- */
+(function (root) {
+  'use strict';
+  if (!root.Courses || !root.Courses.register) return;
+
+  const PHYS = {
+    id: 'physics', name: 'Physics',
+    blurb: 'The quantity, the unit it is measured in, and the law that connects it to the next one.'
+  };
+
+  const NOTE = 'Study material for a university course. Worked answers use g = 9.81 m/s² and ignore ' +
+    'air resistance unless a question says otherwise; your course may use 9.8 or 10, which changes ' +
+    'the last digit. Where a question states a precision, answers are rounded to it — check the ' +
+    'convention your instructor marks to.';
+
+  const MECH = {
+    subject: PHYS,
+    id: 'phys-mechanics',
+    code: 'Mechanics',
+    title: 'Mechanics',
+    blurb: 'The first physics course: what a measurement actually claims, how to describe motion without explaining it, the three laws that explain it, and the accounting of energy that makes hard problems easy.',
+    level: 'Foundation',
+    prereq: 'precalc',
+    legalNote: NOTE,
+    gaps: [
+      'Momentum and collisions — impulse, conservation of momentum, elastic and inelastic collisions in one and two dimensions',
+      'Rotation — angular kinematics, torque, moment of inertia, angular momentum and rolling',
+      'Statics — equilibrium of extended bodies, centre of mass, the conditions for a structure not to move',
+      'Gravitation — Newton’s law of universal gravitation, orbits and Kepler’s laws',
+      'Oscillations — simple harmonic motion, the pendulum, damping and resonance',
+      'Fluids — pressure with depth, buoyancy, continuity and Bernoulli’s equation',
+      'Waves and sound — wave speed, superposition, standing waves, the Doppler effect',
+      'Thermal physics — temperature, heat capacity, the gas laws and the first law of thermodynamics'
+    ],
+    units: [
+
+      /* ============================ UNIT 1 ============================ */
+      {
+        id: 'measure', n: 1,
+        title: 'Measurement, units and estimation',
+        blurb: 'What a measured number actually claims, how to carry units through an equation, and how to reject a wrong answer before you have worked out the right one.',
+        read: 'Chapter 1',
+        objectives: [
+          'Convert between SI units and express a quantity in base units',
+          'Use dimensional analysis to check an equation and to reject a wrong one',
+          'Report an answer to the number of significant figures the data supports',
+          'Estimate a quantity to the nearest power of ten and say why the estimate is trustworthy'
+        ],
+        lessons: [
+          {
+            id: 'a1', title: 'Quantities, units and conversion', src: 'Section 1.1',
+            idea: `A physical quantity is a <b>number and a unit</b>, and the unit is not an afterthought — it is half the quantity. "The mass is 5" is not an answer to anything; 5 g and 5 kg differ by a factor of a thousand.<br><br>SI builds everything from seven base units, and mechanics needs three of them: the <b>metre</b> (m) for length, the <b>kilogram</b> (kg) for mass and the <b>second</b> (s) for time. Every other mechanical unit is these three multiplied and divided: speed is m/s, acceleration m/s², force kg·m/s² (given the name newton, N), energy kg·m²/s² (the joule, J).<br><br>Converting is multiplying by one. 1 km = 1000 m, so the fraction 1000 m / 1 km equals 1, and multiplying by it changes the unit without changing the quantity. Write the conversion as a fraction and cancel the units like algebra: if the unit you wanted does not survive the cancelling, the conversion was upside down.`,
+            rules: [
+              { name: 'Base units of mechanics', expr: 'metre (m) · kilogram (kg) · second (s)', words: true, note: 'Everything else in this course is built from these three.' },
+              { name: 'Newton', expr: '1 N = 1 kg·m/s²', words: true, note: 'Force is not a base unit. It is mass times acceleration, written short.' },
+              { name: 'Joule', expr: '1 J = 1 N·m = 1 kg·m²/s²', words: true, note: 'Energy is force times distance, written short.' },
+              { name: 'Converting', expr: 'Multiply by a fraction equal to 1, and cancel units like algebra', words: true, note: 'If the wanted unit does not survive, the fraction was the wrong way up.' }
+            ],
+            examples: [
+              {
+                prompt: 'Convert 72 km/h to metres per second.',
+                steps: [
+                  { do: '72 km/h × (1000 m / 1 km) × (1 h / 3600 s)', why: 'Two fractions, each equal to 1: one replaces km with m, the other replaces h with s.' },
+                  { do: 'km cancels against km, h cancels against h, leaving m/s', why: 'Check the units before touching the arithmetic — this is the step that catches an upside-down fraction.' },
+                  { do: '= 72 × 1000 / 3600 m/s', why: 'Now the numbers.' },
+                  { do: '= 20 m/s', why: 'A useful sanity figure: 72 km/h is a highway speed, and 20 m/s is about the length of a bus every second.' }
+                ],
+                answer: '20 m/s', answerWords: true
+              },
+              {
+                prompt: 'Express the joule in base units.',
+                steps: [
+                  { do: '1 J = 1 N·m', why: 'Energy is force applied through a distance.' },
+                  { do: '1 N = 1 kg·m/s², so 1 J = (1 kg·m/s²)·m', why: 'Substitute the definition of the newton.' },
+                  { do: '1 J = 1 kg·m²/s²', why: 'Multiply the metres. Every mechanical energy — kinetic, potential, work — reduces to this, which is why they can be added together at all.' }
+                ],
+                answer: '1 J = 1 kg·m²/s²', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'phys-convert-upside-down',
+                wrong: '72 km/h × (1 km / 1000 m) = 0.072, "so 0.072 m/s"',
+                right: 'Multiply by 1000 m / 1 km. The unit you are removing goes on the bottom.',
+                why: 'Written as a fraction the error is visible before the arithmetic: km/h × km/m leaves km²/(h·m), which is not a speed. Cancelling units first is what makes the mistake impossible rather than merely unlikely.'
+              },
+              {
+                id: 'phys-grams-in-formulas',
+                wrong: 'Using grams or centimetres directly in F = ma or in an energy formula',
+                right: 'Convert to kg and m before substituting, unless every unit in the problem is consistent.',
+                why: 'The newton and the joule are defined in kg and m. A mass in grams gives an answer a thousand times too small in newtons, and nothing in the algebra will warn you — the number looks perfectly reasonable.'
+              }
+            ]
+          },
+
+          {
+            id: 'a2', title: 'Dimensional analysis', src: 'Section 1.2',
+            idea: `A <b>dimension</b> is the kind of thing a quantity is, independent of the unit used to measure it: length [L], mass [M], time [T]. A speed has dimensions [L][T]⁻¹ whether it is measured in m/s, km/h or furlongs per fortnight.<br><br>The rule that makes this useful: <b>you may only add quantities with the same dimensions, and both sides of an equation must have the same dimensions.</b> A metre cannot be added to a second. So any equation can be checked before it is used, and a wrong one can often be rejected without knowing the right one.<br><br>This is the cheapest error-check in physics and the one students skip. It cannot catch a wrong dimensionless factor — it will accept <span class="nowrap">s = 2at²</span> as happily as <span class="nowrap">s = ½at²</span> — but it catches every misremembered power and every term that does not belong, which is most of what goes wrong under exam pressure.`,
+            rules: [
+              { name: 'The three mechanical dimensions', expr: '[M] mass · [L] length · [T] time', words: true, note: 'Every mechanical quantity is a product of powers of these.' },
+              { name: 'Homogeneity', expr: 'Every term in a valid equation has the same dimensions', words: true, note: 'Both sides, and every term added on either side.' },
+              { name: 'What it cannot do', expr: 'It never checks a dimensionless constant', words: true, note: 'A factor of ½, 2 or π passes any dimensional check.' }
+            ],
+            examples: [
+              {
+                prompt: 'Check whether v² = u² + 2as is dimensionally possible.',
+                steps: [
+                  { do: 'v² and u² have dimensions ([L][T]⁻¹)² = [L]²[T]⁻²', why: 'Square the dimensions of a speed.' },
+                  { do: 'a has [L][T]⁻², s has [L], so 2as has [L][T]⁻²·[L] = [L]²[T]⁻²', why: 'The 2 is dimensionless and contributes nothing — which is precisely the limit of the method.' },
+                  { do: 'All three terms are [L]²[T]⁻²', why: 'They may be added, and both sides agree.' },
+                  { do: 'Dimensionally consistent', why: 'Which is not the same as correct. It rules out a large family of errors and no more.' }
+                ],
+                answer: 'Consistent: every term is [L]²[T]⁻²', answerWords: true
+              },
+              {
+                prompt: 'A student writes the period of a pendulum as T = 2π√(L/g). Check it.',
+                steps: [
+                  { do: 'L has [L]; g has [L][T]⁻²', why: 'g is an acceleration.' },
+                  { do: 'L/g has [L] / ([L][T]⁻²) = [T]²', why: 'The lengths cancel, which is why the answer can be a time at all.' },
+                  { do: '√([T]²) = [T]', why: 'A time, matching the left side.' },
+                  { do: 'Consistent', why: 'And note what is untested: 2π could be 1, 4 or 100 and this check would not notice.' }
+                ],
+                answer: 'Consistent: both sides are [T]', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'phys-dimensional-proves-correct',
+                wrong: 'Treating a dimensionally consistent equation as proved correct',
+                right: 'Consistency is a necessary condition, never a sufficient one.',
+                why: 'The method is blind to every dimensionless factor. s = ½at², s = at² and s = 97at² all pass. What it does prove is the converse: an inconsistent equation is definitely wrong, and that is worth the ten seconds it takes.'
+              },
+              {
+                id: 'phys-angles-have-dimensions',
+                wrong: 'Assigning dimensions to an angle, or to a quantity inside a sine or exponential',
+                right: 'Angles in radians are dimensionless, and the argument of sin, cos, ln or exp must be dimensionless.',
+                why: 'A radian is a length divided by a length, so the units cancel. This is a check in its own right: if you find yourself taking the sine of a quantity in metres, an earlier step is wrong.'
+              }
+            ]
+          },
+
+          {
+            id: 'a3', title: 'Significant figures and estimation', src: 'Section 1.3',
+            idea: `A measured value carries a claim about its own precision. Writing 2.50 m rather than 2.5 m says the measurement is good to the nearest centimetre, not the nearest ten. Adding digits an instrument never produced is a false claim, and it is marked as one.<br><br>Two rules cover almost everything. For <b>multiplication and division</b>, the answer gets the same number of significant figures as the least precise input. For <b>addition and subtraction</b>, the answer gets the same number of decimal places as the input with fewest. They differ because multiplying scales the relative error while adding scales the absolute error.<br><br>Round <b>once, at the end</b>. Rounding at every intermediate step accumulates error in the direction of whatever you happened to round, and in a long problem that can move the last two digits.<br><br><b>Estimation</b> is the other half of the same skill: getting an answer right to the nearest power of ten, fast, so that a calculator slip announces itself. A student who knows a person is about 2 m and not 20 m will notice a result that is ten times too big; a student who only trusts the calculator will not.`,
+            rules: [
+              { name: 'Multiplying and dividing', expr: 'Answer takes the fewest significant figures of any input', words: true, note: '3.0 × 2.4567 = 7.4, not 7.3701.' },
+              { name: 'Adding and subtracting', expr: 'Answer takes the fewest decimal places of any input', words: true, note: '12.1 + 0.0345 = 12.1, not 12.1345.' },
+              { name: 'When to round', expr: 'Once, at the end', words: true, note: 'Carry extra digits through the working; round the reported answer.' },
+              { name: 'Exact numbers', expr: 'Counts and defined conversions have infinite significant figures', words: true, note: 'The 1000 in 1 km = 1000 m never limits an answer.' }
+            ],
+            examples: [
+              {
+                prompt: 'A rectangular plate measures 12.4 cm by 3.2 cm. Report its area with the correct precision.',
+                steps: [
+                  { do: '12.4 × 3.2 = 39.68 cm²', why: 'Do the arithmetic in full first.' },
+                  { do: '12.4 has 3 significant figures; 3.2 has 2', why: 'The least precise input governs a multiplication.' },
+                  { do: 'Round to 2 significant figures', why: 'Reporting 39.68 would claim a precision the 3.2 cm measurement cannot support.' },
+                  { do: '40. cm² — better written 4.0 × 10¹ cm²', why: 'Scientific notation removes the ambiguity: "40" alone does not say whether the zero is measured.' }
+                ],
+                answer: '4.0 × 10¹ cm²', answerWords: true
+              },
+              {
+                prompt: 'Estimate how many seconds there are in a human lifetime, to the nearest power of ten.',
+                steps: [
+                  { do: 'A year is about 3 × 10⁷ s', why: '365 × 24 × 3600 ≈ 3.15 × 10⁷. Worth memorising — π × 10⁷ is close enough for any estimate.' },
+                  { do: 'A lifetime is of order 80 years, call it 10²', why: 'Estimation rounds to convenient powers; the answer is only claimed to an order of magnitude.' },
+                  { do: '3 × 10⁷ × 10² ≈ 3 × 10⁹ s', why: 'Multiply the powers of ten and keep one leading digit.' },
+                  { do: 'About 10⁹ seconds — a few billion', why: 'The value of this is not the number. It is that any later calculation giving 10⁶ or 10¹² for the same thing is now visibly wrong.' }
+                ],
+                answer: 'Of order 10⁹ s (about 2.5 × 10⁹)', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'phys-sigfig-rounding-early',
+                wrong: 'Rounding each intermediate result to the reported precision',
+                right: 'Carry extra digits through the working and round only the final answer.',
+                why: 'Each rounding introduces an error of up to half a unit in the last place, and in a multi-step problem these accumulate rather than cancel. Two or three roundings can shift the final digit, which then reads as an arithmetic error to whoever is marking.'
+              },
+              {
+                id: 'phys-sigfig-rules-swapped',
+                wrong: 'Applying the significant-figures rule to a sum, or the decimal-places rule to a product',
+                right: 'Multiply and divide → significant figures. Add and subtract → decimal places.',
+                why: 'Multiplying combines relative uncertainties, which significant figures measure; adding combines absolute uncertainties, which decimal places measure. Swapping them gives 12.1 + 0.0345 = 12.13, claiming a hundredth of a unit the 12.1 measurement never had.'
+              },
+              {
+                id: 'phys-estimate-as-guess',
+                wrong: 'Treating an estimate as a guess with no obligation to be defensible',
+                right: 'An estimate names its assumptions and is right to a power of ten.',
+                why: 'An estimate that cannot be defended is not worth making. The point is to build an independent expectation against which a detailed calculation can be checked — and a check you cannot justify catches nothing.'
+              }
+            ]
+          }
+        ],
+        practice: [
+          { id: 'm1', kind: 'numeric', lesson: 'a1',
+            prompt: 'Convert 54 km/h to metres per second.',
+            answer: 15, verify: { expr: '54 * 1000 / 3600' },
+            hint: 'Two conversion fractions: km to m, and hours to seconds.',
+            solution: ['54 km/h × 1000 m/km × 1 h/3600 s', 'km and h cancel, leaving m/s', '54 × 1000 / 3600 = 15 m/s'] },
+
+          { id: 'm2', kind: 'numeric', lesson: 'a1',
+            prompt: 'A room is 4.5 m by 3.2 m by 2.5 m. What is its volume in cubic metres?',
+            answer: 36, verify: { expr: '45/10 * 32/10 * 25/10' },
+            hint: 'Straight multiplication — the units are already consistent.',
+            solution: ['V = 4.5 × 3.2 × 2.5', '= 14.4 × 2.5', '= 36 m³'] },
+
+          { id: 'm3', kind: 'numeric', lesson: 'a1',
+            prompt: 'A force of 2.5 kN acts on a body. How many newtons is that?',
+            answer: 2500, verify: { expr: '25/10 * 1000' },
+            hint: 'The prefix k means ×10³.',
+            solution: ['1 kN = 1000 N', '2.5 × 1000 = 2500 N'] },
+
+          { id: 'm4', kind: 'mc', lesson: 'a2',
+            prompt: 'Which of these has the same dimensions as energy?',
+            options: [
+              { t: 'Force × distance', ok: true },
+              { t: 'Force × time' },
+              { t: 'Mass × speed' },
+              { t: 'Force ÷ area' }
+            ],
+            hint: 'Write each one out in [M], [L] and [T] before choosing.',
+            solution: ['Energy is [M][L]²[T]⁻²', 'Force × distance = [M][L][T]⁻² × [L] = [M][L]²[T]⁻² ✓',
+              'Force × time is impulse, [M][L][T]⁻¹; mass × speed is momentum, the same; force ÷ area is pressure, [M][L]⁻¹[T]⁻²'] },
+
+          { id: 'm5', kind: 'spot', lesson: 'a2',
+            prompt: 'A student checks the equation v = u + at² dimensionally. One line is wrong.',
+            steps: [
+              { t: 'v and u are speeds, [L][T]⁻¹', bad: false },
+              { t: 'a is an acceleration, [L][T]⁻²', bad: false },
+              { t: 'at² is [L][T]⁻² × [T]² = [L][T]⁻¹, so the equation is consistent', bad: true },
+              { t: 'Therefore the equation may still contain a wrong numerical factor', bad: false }
+            ],
+            why: '[L][T]⁻² × [T]² = [L], not [L][T]⁻¹. The term at² is a length, and a length cannot be added to a speed — so the equation is dimensionally inconsistent and definitely wrong. The correct relation is v = u + at, where at is [L][T]⁻² × [T] = [L][T]⁻¹, a speed. This is exactly the misremembered power dimensional analysis exists to catch.',
+            hint: 'Multiply the powers of [T] carefully: −2 plus 2 is 0, not −1.',
+            solution: ['at² has dimensions [L][T]⁻²·[T]² = [L]', 'A length cannot be added to a speed, so the equation is inconsistent', 'v = u + at is the consistent form'] },
+
+          { id: 'm6', kind: 'numeric', lesson: 'a3',
+            prompt: 'A plate measures 6.0 cm by 2.5 cm. Give the area in cm² to the correct number of significant figures.',
+            answer: 15, verify: { expr: '60/10 * 25/10' },
+            hint: 'Both inputs have two significant figures.',
+            solution: ['6.0 × 2.5 = 15', 'Both inputs carry 2 significant figures, so the answer takes 2', 'Area = 15 cm²'] },
+
+          { id: 'm7', kind: 'mc', lesson: 'a3',
+            prompt: 'A student computes 12.1 + 0.0345 on a calculator and writes 12.1345. What should be reported?',
+            options: [
+              { t: '12.1 — the fewest decimal places of any input', ok: true },
+              { t: '12.13 — four significant figures' },
+              { t: '12.1345 — the calculator is more precise than the inputs' },
+              { t: '12 — the fewest significant figures of any input' }
+            ],
+            hint: 'Addition is governed by decimal places, not significant figures.',
+            solution: ['12.1 is known only to one decimal place', 'For addition the answer takes the fewest decimal places', 'Reporting 12.13 would claim a hundredth the 12.1 measurement never had'] },
+
+          { id: 'm8', kind: 'order', lesson: 'a3',
+            prompt: 'Put these steps of an order-of-magnitude estimate in the order they must be done.',
+            steps: [
+              'State the quantity to be estimated and the assumptions being made',
+              'Replace each assumed value with the nearest convenient power of ten',
+              'Combine the powers of ten, keeping one leading digit',
+              'Check the result against something already known to be the right size'
+            ],
+            hint: 'The assumptions come before the arithmetic, and the check comes after it.',
+            solution: ['An estimate whose assumptions are not stated cannot be defended or corrected',
+              'Rounding to powers of ten is what makes the arithmetic doable without a calculator',
+              'The final check is the point of the exercise — an estimate nobody compares to anything catches nothing'] }
+        ]
+      },
+
+      /* ============================ UNIT 2 ============================ */
+      {
+        id: 'kinematics', n: 2,
+        title: 'Describing motion',
+        blurb: 'Position, velocity and acceleration; the four equations that hold when acceleration is constant; and the two-dimensional case where the horizontal and vertical motions are solved separately.',
+        read: 'Chapters 2–3',
+        objectives: [
+          'Distinguish distance from displacement and speed from velocity, and say when each is wanted',
+          'Choose and apply the correct constant-acceleration equation for a given set of knowns',
+          'Read position, velocity and acceleration off each other’s graphs',
+          'Solve projectile problems by treating the horizontal and vertical motions independently'
+        ],
+        lessons: [
+          {
+            id: 'b1', title: 'Position, velocity and acceleration', src: 'Section 2.1',
+            idea: `Kinematics describes motion without asking what causes it. That separation is deliberate and worth respecting: half of first-year physics problems are solved entirely without mentioning a force.<br><br>Four quantities, and the distinction between two pairs of them is where marks are lost. <b>Distance</b> is how far you travelled; <b>displacement</b> is how far you ended up from where you started, with a direction. Walk 3 m east and 4 m west: distance 7 m, displacement 1 m west. <b>Speed</b> is distance over time; <b>velocity</b> is displacement over time, with a direction. A lap of a track at constant speed has zero average velocity, because you finished where you began.<br><br><b>Acceleration</b> is the rate of change of <i>velocity</i>, not of speed. This is why a car going round a corner at a steady 50 km/h is accelerating: the direction of its velocity is changing even though the number on the speedometer is not. And because acceleration is a change in velocity, it is negative whenever velocity is decreasing — which is not the same as "moving backwards".`,
+            rules: [
+              { name: 'Average velocity', expr: 'v = Delta s / Delta t', note: 'Displacement over time, not distance over time.' },
+              { name: 'Average acceleration', expr: 'a = Delta v / Delta t', note: 'Change in velocity over time. A vector quantity.' },
+              { name: 'Vector or scalar', expr: 'Displacement, velocity and acceleration carry direction. Distance, speed and time do not.', words: true, note: 'In one dimension the direction is just a sign.' }
+            ],
+            examples: [
+              {
+                prompt: 'A runner goes 300 m north in 60 s, then 100 m south in 20 s. Find the average speed and the average velocity.',
+                steps: [
+                  { do: 'Total distance = 300 + 100 = 400 m; total time = 80 s', why: 'Distance adds regardless of direction.' },
+                  { do: 'Average speed = 400 / 80 = 5 m/s', why: 'Speed is a scalar: it does not know the runner turned round.' },
+                  { do: 'Displacement = 300 − 100 = 200 m north', why: 'Displacement is the net change in position; south subtracts.' },
+                  { do: 'Average velocity = 200 / 80 = 2.5 m/s north', why: 'Half the average speed, because a third of the running undid the rest. The direction is part of the answer.' }
+                ],
+                answer: 'Speed 5 m/s; velocity 2.5 m/s north', answerWords: true
+              },
+              {
+                prompt: 'A car slows from 25 m/s to 10 m/s in 5.0 s. Find its acceleration.',
+                steps: [
+                  { do: 'a = (v − u)/t = (10 − 25)/5.0', why: 'Final minus initial, always in that order.' },
+                  { do: '= −15 / 5.0', why: 'The negative sign appears on its own; it was not chosen.' },
+                  { do: '= −3.0 m/s²', why: 'Negative here means the acceleration opposes the motion — the car is slowing, not reversing. The sign is information, not an error to be removed.' }
+                ],
+                answer: '−3.0 m/s²', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'phys-speed-for-velocity',
+                wrong: 'Computing average velocity as total distance ÷ total time',
+                right: 'Average velocity is DISPLACEMENT ÷ total time.',
+                why: 'The two agree only when the motion never reverses. On a round trip the true average velocity is zero while the average speed is not, and a question that asks for velocity is usually asking precisely because the motion reversed.'
+              },
+              {
+                id: 'phys-negative-means-backwards',
+                wrong: 'Reading a negative acceleration as "moving backwards"',
+                right: 'Negative acceleration means velocity is decreasing in the chosen positive direction.',
+                why: 'Acceleration and velocity are separate quantities with separate signs. A ball thrown upward has negative acceleration throughout, including while it is still rising. What the sign of a tells you is how v is changing, never which way the object is currently going.'
+              }
+            ]
+          },
+
+          {
+            id: 'b2', title: 'The constant-acceleration equations', src: 'Section 2.2',
+            idea: `When acceleration is constant, four equations relate the five quantities <b>u</b> (initial velocity), <b>v</b> (final velocity), <b>a</b> (acceleration), <b>s</b> (displacement) and <b>t</b> (time). Each equation leaves out exactly one of the five, and that is how you choose: identify the three you know and the one you want, and pick the equation that does not mention the fifth.<br><br>That is the whole method, and it turns a guessing game into a lookup. The commonest wasted minutes in a kinematics problem come from picking an equation containing a quantity nobody gave you and then hunting for it.<br><br>Two conditions are easy to forget. The acceleration must be <b>constant</b> — these equations say nothing about a car whose acceleration is changing. And every quantity must be measured in the <b>same direction convention</b>: pick which way is positive, write it down, and apply it to u, v, a and s consistently. Free fall near the Earth's surface is the standard application, with a = −9.81 m/s² if upward is positive.`,
+            rules: [
+              { name: 'No s', expr: 'v = u + at', note: 'Use when displacement is neither known nor wanted.' },
+              { name: 'No v', expr: 's = ut + (1/2)at^2', note: 'Use when the final velocity is neither known nor wanted.' },
+              { name: 'No t', expr: 'v^2 = u^2 + 2as', note: 'The one to reach for when time is not mentioned in the question at all.' },
+              { name: 'No a', expr: 's = ((u + v)/2)t', note: 'Average velocity times time — valid only because a is constant.' }
+            ],
+            examples: [
+              {
+                prompt: 'A car accelerates uniformly from rest at 2.0 m/s² for 6.0 s. How far does it travel?',
+                steps: [
+                  { do: 'Known: u = 0, a = 2.0, t = 6.0. Wanted: s. Not involved: v', why: 'List them before choosing. The missing quantity picks the equation.' },
+                  { do: 'Use s = ut + ½at², the one without v', why: 'Reaching for v² = u² + 2as instead would need v, which nobody gave.' },
+                  { do: 's = 0 × 6.0 + ½ × 2.0 × 6.0²', why: 'From rest means u = 0, which removes the first term entirely.' },
+                  { do: 's = ½ × 2.0 × 36 = 36 m', why: 'Note that doubling the time would quadruple the distance — the t² is the physics, not decoration.' }
+                ],
+                answer: '36 m', answerWords: true
+              },
+              {
+                prompt: 'A stone is dropped from rest down a well and hits the water after 2.0 s. How deep is the well? Take g = 9.81 m/s².',
+                steps: [
+                  { do: 'Take downward as positive: u = 0, a = 9.81, t = 2.0, want s', why: 'Choosing downward positive keeps every number positive and removes a sign error.' },
+                  { do: 's = ut + ½at² = 0 + ½ × 9.81 × 2.0²', why: 'Again the equation without v, because v was not given and is not wanted.' },
+                  { do: 's = ½ × 9.81 × 4.0 = 19.62 m', why: 'Full precision first.' },
+                  { do: 's = 19.6 m to three significant figures', why: 'The data has two or three figures; 19.62 would overclaim. About the height of a five-storey building — worth a moment to check the answer is the right size.' }
+                ],
+                answer: '19.6 m', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'phys-suvat-on-varying-a',
+                wrong: 'Using v = u + at when the acceleration is changing',
+                right: 'All four equations assume a is constant. If it is not, they do not apply.',
+                why: 'A question describing a car whose acceleration decreases, or a falling body with air resistance, is not a constant-acceleration problem no matter how familiar the symbols look. Applying the equations anyway gives a confident, well-presented, wrong number.'
+              },
+              {
+                id: 'phys-mixed-sign-convention',
+                wrong: 'Taking upward as positive for displacement but using a = +9.81',
+                right: 'Choose a positive direction once, write it down, and apply it to u, v, a and s alike.',
+                why: 'Mixing conventions is the single commonest error in projectile work, and it is silent: the algebra runs perfectly and produces a stone that rises for ever. If an answer says something impossible, the sign convention is the first thing to check.'
+              }
+            ]
+          },
+
+          {
+            id: 'b3', title: 'Motion in two dimensions', src: 'Section 3.1',
+            idea: `A projectile is not one hard problem. It is two easy ones, solved separately and joined only by the clock.<br><br><b>Horizontally</b>, with air resistance ignored, there is no force and therefore no acceleration: the horizontal velocity is constant for the whole flight, and <span class="nowrap">x = u<sub>x</sub>t</span>. <b>Vertically</b>, gravity acts throughout: it is a constant-acceleration problem with a = −9.81 m/s², solved with the equations of the previous lesson.<br><br>The independence is the whole idea, and it is genuinely surprising — a bullet fired horizontally and a bullet dropped from the same height at the same instant hit the ground together. The vertical motion does not know or care what the horizontal motion is doing.<br><br><b>Time is the only bridge.</b> Whatever couples the two is always t: the time of flight is found from the vertical problem and then used in the horizontal one, or occasionally the reverse. At the top of the flight the vertical velocity is zero — the horizontal velocity is not, which is why a projectile at its peak is still moving.`,
+            rules: [
+              { name: 'Horizontal', expr: 'x = u_x t', note: 'No acceleration, so velocity is constant. No ½at² term at all.' },
+              { name: 'Vertical', expr: 'y = u_y t + (1/2)at^2', note: 'A constant-acceleration problem with a = −g.' },
+              { name: 'Components', expr: 'u_x = u cos(theta)', note: 'Resolve the launch velocity once, at the start.' },
+              { name: 'At the top', expr: 'Vertical velocity is zero; horizontal velocity is unchanged', words: true, note: 'The projectile is at its slowest there, not stationary.' }
+            ],
+            examples: [
+              {
+                prompt: 'A ball rolls off a table 1.25 m high at 3.0 m/s horizontally. How long is it in the air, and how far from the table does it land? Take g = 9.81 m/s².',
+                steps: [
+                  { do: 'Vertical, downward positive: u_y = 0, a = 9.81, y = 1.25', why: 'Rolling off horizontally means there is no initial vertical velocity. Solve the vertical problem first — it is the one that contains the time.' },
+                  { do: 'y = ½at² → 1.25 = ½ × 9.81 × t², so t² = 2 × 1.25 / 9.81 = 0.2548', why: 'Rearrange for t² before taking the root.' },
+                  { do: 't = 0.5048 s, call it 0.50 s', why: 'Keep the extra digits for the next step; round only what is reported.' },
+                  { do: 'Horizontal: x = u_x t = 3.0 × 0.5048 = 1.514 m', why: 'The horizontal velocity never changed, so this is a plain multiplication.' },
+                  { do: 'x = 1.5 m', why: 'Two significant figures, matching the 3.0 m/s. Note the 3.0 m/s played no part in the time — a faster ball lands further away in exactly the same time.' }
+                ],
+                answer: 't = 0.50 s; x = 1.5 m', answerWords: true
+              },
+              {
+                prompt: 'A ball is launched at 20 m/s at 30° above the horizontal. Find its initial horizontal and vertical velocity components.',
+                steps: [
+                  { do: 'u_x = u cos θ = 20 cos 30°', why: 'The horizontal component is the adjacent side of the triangle.' },
+                  { do: 'u_x = 20 × 0.8660 = 17.3 m/s', why: 'This stays 17.3 m/s for the entire flight.' },
+                  { do: 'u_y = u sin θ = 20 sin 30° = 20 × 0.5', why: 'The vertical component is the opposite side.' },
+                  { do: 'u_y = 10 m/s', why: 'And this one changes every instant, at 9.81 m/s² downward. Two components, two completely different stories.' }
+                ],
+                answer: 'u_x = 17.3 m/s; u_y = 10 m/s', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'phys-gravity-in-horizontal',
+                wrong: 'Writing x = u_x t + ½gt² for the horizontal motion',
+                right: 'x = u_x t. There is no horizontal acceleration.',
+                why: 'Gravity acts vertically, so it contributes nothing to the horizontal equation. Adding a ½gt² term there produces a projectile that accelerates sideways for no reason, and the error is easy to miss because the equation looks like the one from the previous lesson.'
+              },
+              {
+                id: 'phys-velocity-zero-at-top',
+                wrong: 'Setting the whole velocity to zero at the highest point',
+                right: 'Only the VERTICAL component is zero at the top. The horizontal component is unchanged.',
+                why: 'If the entire velocity were zero the projectile would stop dead in mid-air and fall straight down. What is zero at the peak is the vertical component, which is exactly the condition used to find the time to the top.'
+              },
+              {
+                id: 'phys-range-without-time',
+                wrong: 'Trying to find the horizontal range without first finding the time of flight',
+                right: 'Solve the vertical problem for t, then use that t in the horizontal one.',
+                why: 'Time is the only quantity the two motions share. Every projectile problem is solved through it, and a student stuck on one is almost always trying to connect x and y directly instead of going through t.'
+              }
+            ]
+          }
+        ],
+        practice: [
+          { id: 'k1', kind: 'numeric', lesson: 'b1',
+            prompt: 'A cyclist rides 800 m east then 200 m west, taking 200 s in total. What is the magnitude of the average velocity, in m/s?',
+            answer: 3, verify: { expr: '(800 - 200) / 200' },
+            hint: 'Velocity uses displacement, not distance.',
+            solution: ['Displacement = 800 − 200 = 600 m east', 'Average velocity = 600 / 200 = 3 m/s east',
+              '(The average SPEED is 1000/200 = 5 m/s — a different question.)'] },
+
+          { id: 'k2', kind: 'numeric', lesson: 'b1',
+            prompt: 'A train slows from 30 m/s to 12 m/s in 6.0 s. What is its acceleration, in m/s²?',
+            answer: -3, verify: { expr: '(12 - 30) / 6' },
+            hint: 'Final minus initial, in that order. Keep the sign.',
+            solution: ['a = (v − u)/t = (12 − 30)/6.0', '= −18/6.0', '= −3 m/s². Negative because the velocity is decreasing.'] },
+
+          { id: 'k3', kind: 'numeric', lesson: 'b2',
+            prompt: 'A car starts from rest and accelerates uniformly at 3.0 m/s² for 4.0 s. How far does it travel, in metres?',
+            answer: 24, verify: { expr: '0 * 4 + 3 * 4**2 / 2' },
+            hint: 'Three knowns — u, a, t — and v is not involved.',
+            solution: ['s = ut + ½at², with u = 0', 's = ½ × 3.0 × 16', 's = 24 m'] },
+
+          { id: 'k4', kind: 'numeric', lesson: 'b2',
+            prompt: 'A stone is dropped from rest and falls 20 m. What is its speed on landing, in m/s? Take g = 10 m/s² and give your answer to 1 decimal place.',
+            answer: 20, tol: 0.05, verify: { expr: 'sqrt(0**2 + 2*10*20)', dp: 1 },
+            hint: 'Time is neither given nor wanted — which equation leaves it out?',
+            solution: ['v² = u² + 2as with u = 0', 'v² = 2 × 10 × 20 = 400', 'v = 20.0 m/s'] },
+
+          { id: 'k5', kind: 'numeric', lesson: 'b2',
+            prompt: 'A ball is thrown straight up at 14.7 m/s. How long does it take to reach its highest point, in seconds? Take g = 9.8 m/s² and give your answer to 2 decimal places.',
+            answer: 1.5, tol: 0.005, verify: { expr: '147/10 / (98/10)', dp: 2 },
+            hint: 'At the highest point the velocity is zero. Use v = u + at.',
+            solution: ['At the top v = 0', '0 = 14.7 − 9.8t', 't = 14.7 / 9.8 = 1.50 s'] },
+
+          { id: 'k6', kind: 'mc', lesson: 'b2',
+            prompt: 'You know u, a and t, and want s. Which equation should you use?',
+            options: [
+              { t: 's = ut + ½at² — the one that leaves out v', ok: true },
+              { t: 'v² = u² + 2as — the one that leaves out t' },
+              { t: 'v = u + at — the one that leaves out s' },
+              { t: 's = ((u + v)/2)t — the one that leaves out a' }
+            ],
+            hint: 'Which of the five quantities is neither known nor wanted here?',
+            solution: ['Known u, a, t; wanted s. The quantity not involved is v', 'Choose the equation that omits v: s = ut + ½at²',
+              'The others each require v, which nobody gave you'] },
+
+          { id: 'k7', kind: 'numeric', lesson: 'b3',
+            prompt: 'A ball rolls off a bench at 4.0 m/s horizontally and is in the air for 0.50 s. How far horizontally does it travel, in metres?',
+            answer: 2, verify: { expr: '4 * 5/10' },
+            hint: 'Horizontally there is no acceleration at all.',
+            solution: ['x = u_x t, with no ½at² term', 'x = 4.0 × 0.50', 'x = 2.0 m'] },
+
+          { id: 'k8', kind: 'numeric', lesson: 'b3',
+            prompt: 'A projectile is launched at 25 m/s at 36.87° above the horizontal, where cos θ = 0.8. What is its horizontal velocity component, in m/s?',
+            answer: 20, verify: { expr: '25 * 8/10' },
+            hint: 'The horizontal component uses cosine, and it never changes.',
+            solution: ['u_x = u cos θ = 25 × 0.8', 'u_x = 20 m/s', 'This value is the same at launch, at the peak and at landing.'] },
+
+          { id: 'k9', kind: 'spot', lesson: 'b3',
+            prompt: 'A ball leaves a 1.8 m table horizontally at 5.0 m/s. One line of this working is wrong.',
+            steps: [
+              { t: 'Vertically: u_y = 0, a = 9.8 m/s², y = 1.8 m', bad: false },
+              { t: '1.8 = ½ × 9.8 × t², so t = 0.606 s', bad: false },
+              { t: 'Horizontally: x = 5.0 × 0.606 + ½ × 9.8 × 0.606²', bad: true },
+              { t: 'The 5.0 m/s had no effect on how long the ball was in the air', bad: false }
+            ],
+            why: 'The horizontal equation has no acceleration term. Gravity acts vertically, so horizontally x = u_x t = 5.0 × 0.606 = 3.0 m. Adding ½at² there gives 4.8 m — an answer that is wrong by 60% and that looks entirely plausible on the page, which is what makes this error worth naming.',
+            hint: 'What force acts on the ball horizontally once it has left the table?',
+            solution: ['Horizontally: x = u_x t only', 'x = 5.0 × 0.606 = 3.0 m', 'There is no horizontal force, so there is no horizontal acceleration'] },
+
+          { id: 'k10', kind: 'order', lesson: 'b3',
+            prompt: 'Put the steps of a projectile problem in the order they must be done.',
+            steps: [
+              'Choose a positive direction and resolve the launch velocity into horizontal and vertical components',
+              'Solve the vertical motion for the time of flight',
+              'Use that time in the horizontal equation to find the range',
+              'Check the answer is a sensible size for the launch speed given'
+            ],
+            hint: 'Time is the only quantity the two motions share.',
+            solution: ['Resolving first gives u_x and u_y, which the two separate problems need',
+              'The vertical problem contains gravity and therefore the time',
+              'The horizontal problem is then a single multiplication'] }
+        ]
+      },
+
+      /* ============================ UNIT 3 ============================ */
+      {
+        id: 'newton', n: 3,
+        title: 'Newton’s laws and free-body diagrams',
+        blurb: 'Why things change their motion, the diagram that turns a described situation into an equation, and the two forces students most often get wrong.',
+        read: 'Chapters 4–5',
+        objectives: [
+          'State all three of Newton’s laws and say what each one is for',
+          'Draw a free-body diagram showing every force acting ON one chosen body',
+          'Resolve forces into components and apply ΣF = ma along each axis',
+          'Distinguish weight from mass, and normal force from weight'
+        ],
+        lessons: [
+          {
+            id: 'c1', title: 'The three laws', src: 'Section 4.1',
+            idea: `Kinematics described motion. Dynamics explains it, and three statements do the whole job.<br><br><b>First law.</b> A body stays at rest, or moving at constant velocity in a straight line, unless a net external force acts on it. The everyday intuition that motion needs a continuing cause is wrong — what needs a cause is a <i>change</i> in motion. A puck sliding on ice slows because of friction, not because moving is unnatural.<br><br><b>Second law.</b> <b>ΣF = ma</b>. The net force, the vector sum of every force acting on the body, equals mass times acceleration. Three things matter in that sentence: it is the <i>net</i> force, not any one force; it is a vector equation, so it holds separately along each axis; and it links force to <i>acceleration</i>, not to velocity. A body can be moving fast with no net force on it at all.<br><br><b>Third law.</b> If A pushes B, then B pushes A with equal magnitude in the opposite direction. The two forces always act on <b>different bodies</b>, which is exactly why they never cancel: a pair acting on the same body would mean nothing could ever accelerate.`,
+            rules: [
+              { name: 'First law', expr: 'No net force → no change in velocity', words: true, note: 'Constant velocity includes being at rest. Both need zero net force.' },
+              { name: 'Second law', expr: 'Sigma F = ma', note: 'A vector equation: apply it separately along x and along y.' },
+              { name: 'Third law', expr: 'F_AB = -F_BA', note: 'Equal, opposite, and acting on DIFFERENT bodies.' },
+              { name: 'Weight', expr: 'W = mg', note: 'Weight is a force in newtons. Mass is in kilograms and is not a force.' }
+            ],
+            examples: [
+              {
+                prompt: 'A 1200 kg car experiences a net forward force of 3600 N. Find its acceleration.',
+                steps: [
+                  { do: 'ΣF = ma, so a = ΣF/m', why: 'Rearranged for the unknown.' },
+                  { do: 'a = 3600 / 1200', why: 'Both quantities are already in SI units — newtons and kilograms — so nothing needs converting.' },
+                  { do: 'a = 3.0 m/s²', why: 'And note what this does not say: nothing about how fast the car is going, only about how fast that is changing.' }
+                ],
+                answer: '3.0 m/s²', answerWords: true
+              },
+              {
+                prompt: 'A 60 kg person stands still on the ground. Identify the third-law partner of their weight, and explain why the pair does not cancel.',
+                steps: [
+                  { do: 'Weight is the Earth pulling down on the person: 60 × 9.81 = 589 N', why: 'A force exerted BY the Earth ON the person.' },
+                  { do: 'Its third-law partner is the person pulling UP on the Earth with 589 N', why: 'Swap the two bodies and reverse the direction. That is the whole rule.' },
+                  { do: 'That partner acts on the EARTH, not on the person', why: 'So it can never appear in the person’s free-body diagram, and can never cancel anything there.' },
+                  { do: 'What balances the person’s weight is the normal force from the ground, also 589 N', why: 'A different force with a different origin that happens to have the same size here. Confusing it with the third-law partner is the standard error.' }
+                ],
+                answer: 'Partner: person pulls Earth up with 589 N. Balance comes from the normal force instead.', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'phys-force-needed-for-motion',
+                wrong: 'Assuming a moving object must have a forward force on it',
+                right: 'Constant velocity requires zero net force. Force causes acceleration, not motion.',
+                why: 'This is the Aristotelian intuition everyone arrives with, and it survives being told once. A spacecraft coasting between planets has no engine running and no force on it, and does not slow down. If an object moves at constant speed in a straight line, the net force on it is zero — always.'
+              },
+              {
+                id: 'phys-third-law-same-body',
+                wrong: 'Treating the normal force as the third-law partner of weight',
+                right: 'Weight’s partner is the body pulling the Earth up. The normal force is a separate contact force.',
+                why: 'Third-law pairs act on different bodies and can never both appear in one free-body diagram. The giveaway: weight and the normal force are equal only on level ground with nothing else happening. Put the person in a lift and they differ immediately, which a genuine third-law pair could never do.'
+              },
+              {
+                id: 'phys-mass-weight-confused',
+                wrong: 'Using kilograms as a force, or saying an astronaut’s mass changes in orbit',
+                right: 'Mass (kg) is how much matter; weight (N) is the gravitational force on it, W = mg.',
+                why: 'Mass is the same everywhere; weight depends on where you are. A 70 kg astronaut has 70 kg of mass in orbit and essentially no weight. Substituting a mass in kilograms where a force in newtons is wanted gives an answer roughly ten times too small.'
+              }
+            ]
+          },
+
+          {
+            id: 'c2', title: 'Free-body diagrams', src: 'Section 4.2',
+            idea: `A free-body diagram is the step that turns a paragraph of description into algebra, and it is the step most often skipped. It has three rules and they are absolute.<br><br><b>One body.</b> Choose which object you are analysing and draw only that one, as a dot or a box. Two objects need two diagrams.<br><br><b>Only forces acting ON it.</b> Not forces it exerts on other things — those belong on the other diagram. Not "the force of its motion", which does not exist. If you cannot name what is exerting a force, it is not a force.<br><br><b>Every force, once.</b> Weight always, straight down. A normal force wherever a surface touches it, perpendicular to that surface. Tension along any rope, away from the body. Friction along a surface, opposing relative sliding. An applied push or pull if one is described.<br><br>Then choose axes — <b>along the motion is almost always easiest</b>, which on a slope means tilting them — resolve every force onto them, and write ΣF = ma once per axis. On any axis with no acceleration, ΣF = 0, and that is usually where the unknown is hiding.`,
+            rules: [
+              { name: 'One body', expr: 'Draw only the object being analysed', words: true, note: 'Two objects, two diagrams, joined later by a shared tension or acceleration.' },
+              { name: 'Forces on, not by', expr: 'Only forces acting ON the chosen body appear', words: true, note: 'Name the thing exerting each one, or it is not a force.' },
+              { name: 'One equation per axis', expr: 'Sigma F_x = m a_x', note: 'Where there is no acceleration along an axis, that sum is zero.' },
+              { name: 'Axes on a slope', expr: 'Tilt the axes to lie along and perpendicular to the surface', words: true, note: 'Then only the weight needs resolving, instead of everything else.' }
+            ],
+            examples: [
+              {
+                prompt: 'A 5.0 kg box sits at rest on a level floor. A person pushes horizontally with 12 N but the box does not move. Find the friction force and the normal force. Take g = 9.81 m/s².',
+                steps: [
+                  { do: 'Forces on the box: weight down, normal force up, push right, friction left', why: 'Four forces, each with a nameable source: Earth, floor, person, floor.' },
+                  { do: 'Vertical: no acceleration, so N − mg = 0', why: 'The box is not sinking or rising, so the vertical forces sum to zero.' },
+                  { do: 'N = 5.0 × 9.81 = 49.05, so N = 49 N', why: 'Here N happens to equal the weight, because the floor is level and the push is horizontal. Tilt either and it stops being true.' },
+                  { do: 'Horizontal: not moving, so 12 − f = 0, giving f = 12 N', why: 'Static friction is not a fixed value — it takes whatever magnitude is needed, up to its maximum. Push with 8 N and friction would be 8 N.' }
+                ],
+                answer: 'N = 49 N; friction = 12 N', answerWords: true
+              },
+              {
+                prompt: 'A 2.0 kg block slides down a frictionless slope inclined at 30°. Find its acceleration. Take g = 9.81 m/s².',
+                steps: [
+                  { do: 'Tilt the axes: x along the slope downhill, y perpendicular to it', why: 'With tilted axes the acceleration is entirely along x, and only the weight needs resolving.' },
+                  { do: 'Weight component along the slope: mg sin θ', why: 'The angle between the weight and the perpendicular is the same 30° as the slope — sine goes with the along-slope direction.' },
+                  { do: 'ΣF_x = mg sin 30° = ma, so a = g sin 30°', why: 'The mass cancels, which is why every object slides down a frictionless slope at the same rate.' },
+                  { do: 'a = 9.81 × 0.5 = 4.905, so a = 4.91 m/s²', why: 'Exactly half of g, as it must be at 30°. That the mass vanished is the useful physics here.' }
+                ],
+                answer: '4.91 m/s² down the slope', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'phys-fbd-force-of-motion',
+                wrong: 'Drawing a forward arrow labelled "the force of its motion" on a moving body',
+                right: 'Motion is not a force. Only draw forces something is exerting.',
+                why: 'There is no agent exerting it, and the test for every arrow is being able to name what is pushing or pulling. Adding this phantom force makes a coasting object accelerate for ever, and it comes from the same intuition as thinking motion needs a cause.'
+              },
+              {
+                id: 'phys-normal-always-equals-weight',
+                wrong: 'Writing N = mg on a slope, or when something is pushing down at an angle',
+                right: 'Find N from ΣF = 0 perpendicular to the surface, every time.',
+                why: 'On a slope N = mg cos θ, and with an angled push it is different again. N = mg is a result that happens to hold in the simplest case, not a definition — remembering it as one produces a friction force that is wrong by cos θ throughout the rest of the problem.'
+              },
+              {
+                id: 'phys-untilted-axes-on-slope',
+                wrong: 'Keeping horizontal and vertical axes for a body on an incline',
+                right: 'Tilt the axes along and perpendicular to the slope.',
+                why: 'With upright axes the acceleration has two non-zero components and the normal force and friction both need resolving — three resolutions instead of one, and three chances to drop a sine. Tilting is not a trick; it is choosing the axes the problem already has.'
+              }
+            ]
+          },
+
+          {
+            id: 'c3', title: 'Friction and connected bodies', src: 'Section 5.1',
+            idea: `<b>Friction</b> comes in two kinds and the difference is not decorative. <b>Static</b> friction acts while surfaces are not sliding, and it is a range, not a value: it takes whatever magnitude is needed to prevent sliding, up to a maximum of <b>μ<sub>s</sub>N</b>. <b>Kinetic</b> friction acts while they are sliding, and it is a fixed value, <b>μ<sub>k</sub>N</b>, opposing the relative motion. Usually μ<sub>k</sub> &lt; μ<sub>s</sub>, which is why a heavy box is harder to start than to keep moving.<br><br>Both depend on the <b>normal force</b>, not on the weight and not on the contact area. Press down harder and friction rises; put the box on its side and it does not change.<br><br><b>Connected bodies</b> — two blocks on a rope, a block and a hanging mass over a pulley — are solved by one method. Draw a free-body diagram for <i>each</i> body, apply ΣF = ma to each, and use the two facts that connect them: an inextensible rope means both bodies share the same magnitude of acceleration, and an ideal massless rope over a frictionless pulley has the <b>same tension throughout</b>. That gives two equations in two unknowns — usually a and T — and the tension cancels when you add them.`,
+            rules: [
+              { name: 'Static friction', expr: 'f_s <= mu_s N', note: 'A range. It equals whatever is needed to prevent sliding, up to this maximum.' },
+              { name: 'Kinetic friction', expr: 'f_k = mu_k N', note: 'A fixed value while sliding, opposing the relative motion.' },
+              { name: 'Connected bodies', expr: 'Same |a| for both; same T throughout an ideal rope', words: true, note: 'These two facts are what make two equations solvable.' },
+              { name: 'Method', expr: 'One free-body diagram per body, one ΣF = ma per body', words: true, note: 'Adding the two equations eliminates the tension.' }
+            ],
+            examples: [
+              {
+                prompt: 'A 4.0 kg box slides on a level floor with μ_k = 0.25. Find the kinetic friction force and the deceleration. Take g = 9.81 m/s².',
+                steps: [
+                  { do: 'Vertical: N = mg = 4.0 × 9.81 = 39.24 N', why: 'Level floor, no vertical acceleration, nothing pressing at an angle.' },
+                  { do: 'f_k = μ_k N = 0.25 × 39.24 = 9.81 N', why: 'Friction depends on N, not directly on the mass — they coincide only because the floor is level.' },
+                  { do: 'Horizontal: the only force is friction, so ma = −9.81', why: 'Negative because it opposes the motion.' },
+                  { do: 'a = −9.81 / 4.0 = −2.45 m/s²', why: 'Equivalently a = −μ_k g: the mass cancels, so every box with this μ_k decelerates at the same rate regardless of how heavy it is.' }
+                ],
+                answer: 'f_k = 9.81 N; a = −2.45 m/s²', answerWords: true
+              },
+              {
+                prompt: 'A 3.0 kg block on a frictionless table is connected over a pulley to a 2.0 kg hanging mass. Find the acceleration. Take g = 10 m/s².',
+                steps: [
+                  { do: 'Block: T = 3.0a. Hanging mass: 2.0 × 10 − T = 2.0a', why: 'One diagram each. The tension pulls the block forward and opposes the hanging mass falling.' },
+                  { do: 'Add the two equations: 20 = 3.0a + 2.0a', why: 'The tension appears with opposite signs and cancels — which is the reason for adding rather than substituting.' },
+                  { do: '20 = 5.0a, so a = 4.0 m/s²', why: 'Note the denominator: the moving mass is the TOTAL 5.0 kg, because both are being accelerated.' },
+                  { do: 'Then T = 3.0 × 4.0 = 12 N', why: 'Less than the 20 N weight of the hanging mass — as it must be, or the mass would not accelerate downward at all.' }
+                ],
+                answer: 'a = 4.0 m/s²; T = 12 N', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'phys-static-friction-at-max',
+                wrong: 'Always computing static friction as μ_s N',
+                right: 'μ_s N is the MAXIMUM. The actual static friction equals whatever is needed, up to it.',
+                why: 'Push a stationary box with 5 N when μ_s N is 30 N and friction is 5 N, not 30 N — if it were 30 N the box would accelerate backwards. Only at the instant of slipping does static friction reach its maximum, and a question saying "on the point of moving" is telling you that this is that instant.'
+              },
+              {
+                id: 'phys-friction-depends-on-area',
+                wrong: 'Expecting friction to change when a block is turned onto a smaller face',
+                right: 'f = μN depends on the normal force, not on the contact area.',
+                why: 'A smaller area carries the same total force over fewer square centimetres, and the two effects cancel in the simple model. The intuition that more contact means more grip is about tyres and deformation, which this model does not cover — and which is worth saying out loud rather than letting it quietly contradict the formula.'
+              },
+              {
+                id: 'phys-tension-differs-across-pulley',
+                wrong: 'Using different tensions on the two sides of an ideal pulley',
+                right: 'A massless rope over a frictionless pulley has the same tension throughout.',
+                why: 'A difference in tension would have to accelerate the rope or spin the pulley, and an ideal rope and pulley have no mass to accelerate. Assuming two tensions leaves three unknowns and two equations, which is why the problem then appears unsolvable.'
+              }
+            ]
+          }
+        ],
+        practice: [
+          { id: 'n1', kind: 'numeric', lesson: 'c1',
+            prompt: 'A net force of 45 N acts on a 9.0 kg object. What is its acceleration, in m/s²?',
+            answer: 5, verify: { expr: '45 / 9' },
+            hint: 'ΣF = ma, rearranged.',
+            solution: ['a = ΣF/m', 'a = 45 / 9.0', 'a = 5.0 m/s²'] },
+
+          { id: 'n2', kind: 'numeric', lesson: 'c1',
+            prompt: 'What is the weight, in newtons, of a 7.5 kg object where g = 9.8 m/s²? Give your answer to 1 decimal place.',
+            answer: 73.5, tol: 0.05, verify: { expr: '75/10 * 98/10', dp: 1 },
+            hint: 'W = mg. The answer is a force, not a mass.',
+            solution: ['W = mg = 7.5 × 9.8', 'W = 73.5 N', 'The mass stays 7.5 kg wherever it goes; the weight does not.'] },
+
+          { id: 'n3', kind: 'mc', lesson: 'c1',
+            prompt: 'A spacecraft coasts through deep space at a constant 8 km/s with its engines off. What is the net force on it?',
+            options: [
+              { t: 'Zero — constant velocity means no net force', ok: true },
+              { t: 'A forward force equal to its weight, keeping it moving' },
+              { t: 'A small forward force, since it is still moving' },
+              { t: 'Impossible to say without knowing its mass' }
+            ],
+            hint: 'What does the first law say a net force is needed for?',
+            solution: ['The first law: no net force is required to maintain constant velocity',
+              'Force causes a CHANGE in motion, not motion itself',
+              'The engines are off and there is nothing to push against — the net force is zero, and the craft keeps its 8 km/s indefinitely'] },
+
+          { id: 'n4', kind: 'numeric', lesson: 'c2',
+            prompt: 'A 6.0 kg box rests on a level floor with nothing else pushing on it. What is the normal force, in newtons? Take g = 9.8 m/s².',
+            answer: 58.8, tol: 0.05, verify: { expr: '60/10 * 98/10', dp: 1 },
+            hint: 'No vertical acceleration, so the vertical forces sum to zero.',
+            solution: ['Vertical: N − mg = 0', 'N = 6.0 × 9.8', 'N = 58.8 N — equal to the weight here only because the floor is level'] },
+
+          { id: 'n5', kind: 'numeric', lesson: 'c2',
+            prompt: 'A block slides down a frictionless slope at 30°. What is its acceleration, in m/s²? Take g = 9.8 m/s² and give your answer to 2 decimal places.',
+            answer: 4.9, tol: 0.005, verify: { expr: '98/10 * 1/2', dp: 2 },
+            hint: 'a = g sin θ, and sin 30° = ½. Notice the mass is not needed.',
+            solution: ['Along the slope: mg sin θ = ma', 'The mass cancels: a = g sin θ', 'a = 9.8 × 0.5 = 4.90 m/s²'] },
+
+          { id: 'n6', kind: 'spot', lesson: 'c2',
+            prompt: 'A student draws a free-body diagram for a box sliding right across a floor. One entry does not belong.',
+            steps: [
+              { t: 'Weight, acting downward', bad: false },
+              { t: 'Normal force from the floor, acting upward', bad: false },
+              { t: 'A rightward force of the box’s motion, keeping it going', bad: true },
+              { t: 'Kinetic friction from the floor, acting leftward', bad: false }
+            ],
+            why: 'There is no such thing as a force of motion. The test for every arrow on a free-body diagram is being able to name the object exerting it — Earth exerts the weight, the floor exerts the normal force and the friction — and nothing at all exerts this one. A box sliding across a floor with no one pushing it has exactly three forces on it, and it slows down.',
+            hint: 'For each arrow, name the object exerting it.',
+            solution: ['Every force has an identifiable source', 'Weight ← Earth; normal ← floor; friction ← floor', 'Motion is not a source, so the third arrow is not a force'] },
+
+          { id: 'n7', kind: 'numeric', lesson: 'c3',
+            prompt: 'A 10 kg box on a level floor has μ_k = 0.30. What is the kinetic friction force, in newtons? Take g = 9.8 m/s².',
+            answer: 29.4, tol: 0.05, verify: { expr: '3/10 * 10 * 98/10', dp: 1 },
+            hint: 'Find the normal force first, then multiply.',
+            solution: ['N = mg = 10 × 9.8 = 98 N', 'f_k = μ_k N = 0.30 × 98', 'f_k = 29.4 N'] },
+
+          { id: 'n8', kind: 'numeric', lesson: 'c3',
+            prompt: 'A 4.0 kg block on a frictionless table is joined over a pulley to a 6.0 kg hanging mass. What is the acceleration of the system, in m/s²? Take g = 10 m/s².',
+            answer: 6, verify: { expr: '6 * 10 / (4 + 6)' },
+            hint: 'The driving force is the hanging weight; the mass being accelerated is both blocks.',
+            solution: ['Driving force = 6.0 × 10 = 60 N', 'Total mass accelerated = 4.0 + 6.0 = 10 kg', 'a = 60/10 = 6.0 m/s²'] },
+
+          { id: 'n9', kind: 'mc', lesson: 'c3',
+            prompt: 'A 20 kg crate has μ_s = 0.40, so its maximum static friction is 78 N. You push it horizontally with 50 N and it does not move. What is the friction force?',
+            options: [
+              { t: '50 N — static friction takes whatever value prevents sliding', ok: true },
+              { t: '78 N — static friction is always at its maximum' },
+              { t: '28 N — the difference between the maximum and the push' },
+              { t: '0 N — nothing is moving, so there is no friction' }
+            ],
+            hint: 'The crate is not accelerating. What must the horizontal forces sum to?',
+            solution: ['Not moving means ΣF = 0 horizontally', 'So friction must exactly balance the 50 N push',
+              'μ_s N = 78 N is the maximum available, not the value in use. At 78 N the crate would accelerate backwards, which is absurd.'] },
+
+          { id: 'n10', kind: 'order', lesson: 'c2',
+            prompt: 'Put the steps of a Newton’s-second-law problem in order.',
+            steps: [
+              'Choose one body and draw every force acting on it',
+              'Choose axes, tilting them along the motion if the surface is sloped',
+              'Resolve each force onto the axes',
+              'Write ΣF = ma once per axis and solve'
+            ],
+            hint: 'The diagram comes before the axes, and the axes before any resolving.',
+            solution: ['The diagram is what decides which forces exist at all',
+              'Axes chosen along the motion mean the acceleration has only one component',
+              'Only then is there anything to resolve, and one equation per axis finishes it'] }
+        ]
+      },
+
+      /* ============================ UNIT 4 ============================ */
+      {
+        id: 'energy', n: 4,
+        title: 'Work, energy and power',
+        blurb: 'The accounting system of mechanics: what work actually means, the two energies that convert into each other, and why conservation solves problems that forces make painful.',
+        read: 'Chapters 6–7',
+        objectives: [
+          'Compute the work done by a constant force, including when it acts at an angle',
+          'Apply the work–energy theorem to find a speed without using the kinematic equations',
+          'Use conservation of mechanical energy, and say when it does not apply',
+          'Compute power as work per unit time, and as force times velocity'
+        ],
+        lessons: [
+          {
+            id: 'd1', title: 'Work and kinetic energy', src: 'Section 6.1',
+            idea: `<b>Work</b> has a narrow technical meaning that the everyday word does not: <b>W = Fd cos θ</b>, where θ is the angle between the force and the displacement. Only the component of force <i>along</i> the motion does work. Carry a heavy box across a level room and you do no work on it at all in this sense — the force is vertical, the motion horizontal, cos 90° = 0 — however tired you get.<br><br>Work can be negative. Friction acts opposite to the motion, θ = 180°, cos 180° = −1, so friction does negative work: it takes energy out.<br><br><b>Kinetic energy</b> is the energy of motion, <b>KE = ½mv²</b>, and the <b>work–energy theorem</b> ties the two together: the net work done on a body equals its change in kinetic energy. <b>W<sub>net</sub> = ΔKE</b>.<br><br>That theorem is a genuine shortcut. Any problem asking for a final speed after a force has acted over a distance can be done with it in one line, where the force-and-acceleration route takes three. And note the square: doubling the speed quadruples the kinetic energy, which is why stopping distances grow so much faster than speeds do.`,
+            rules: [
+              { name: 'Work', expr: 'W = F d cos(theta)', note: 'θ is between the force and the displacement. Perpendicular force does no work.' },
+              { name: 'Kinetic energy', expr: 'KE = (1/2)mv^2', note: 'Always positive. Proportional to the SQUARE of the speed.' },
+              { name: 'Work–energy theorem', expr: 'W_net = Delta KE', note: 'Net work — every force — equals the change in kinetic energy.' },
+              { name: 'Units', expr: '1 J = 1 N·m', words: true, note: 'Work and energy share a unit because they are the same kind of quantity.' }
+            ],
+            examples: [
+              {
+                prompt: 'A 50 N force is applied at 60° above the horizontal to drag a crate 8.0 m along the floor. How much work does the force do?',
+                steps: [
+                  { do: 'W = Fd cos θ = 50 × 8.0 × cos 60°', why: 'Only the horizontal component of the pull is along the displacement.' },
+                  { do: 'cos 60° = 0.5', why: 'Half the force is doing nothing useful here — the vertical part is lifting against the floor, not moving the crate.' },
+                  { do: 'W = 50 × 8.0 × 0.5', why: 'Now the arithmetic.' },
+                  { do: 'W = 200 J', why: 'Pull at 0° instead and the same force over the same distance does 400 J. The angle is not a detail.' }
+                ],
+                answer: '200 J', answerWords: true
+              },
+              {
+                prompt: 'A 1500 kg car travelling at 20 m/s brakes to rest. How much work did the brakes do?',
+                steps: [
+                  { do: 'Initial KE = ½ × 1500 × 20² = ½ × 1500 × 400', why: 'Square the speed before multiplying — a common slip is to double it.' },
+                  { do: 'Initial KE = 300 000 J = 300 kJ', why: 'Final KE is zero, since the car stops.' },
+                  { do: 'W_net = ΔKE = 0 − 300 000', why: 'Final minus initial, in that order.' },
+                  { do: 'W = −300 kJ', why: 'Negative because the braking force opposes the motion. The magnitude is what became heat in the discs — and at 40 m/s it would be four times as much, not twice.' }
+                ],
+                answer: '−3.0 × 10⁵ J', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'phys-work-without-cos',
+                wrong: 'Computing W = Fd when the force acts at an angle to the motion',
+                right: 'W = Fd cos θ. Only the component along the displacement does work.',
+                why: 'Dropping the cosine overstates the work by up to a factor of the whole force. It is the same error as forgetting to resolve, and it is easier to miss here because W = Fd is the version everyone memorises first — the angled case looks like the exception rather than the general rule.'
+              },
+              {
+                id: 'phys-ke-linear-in-v',
+                wrong: 'Assuming twice the speed means twice the kinetic energy',
+                right: 'KE = ½mv². Twice the speed is FOUR times the energy.',
+                why: 'The square is the physically important part of the formula. It is why a crash at 100 km/h releases four times the energy of one at 50, and why stopping distance grows with the square of speed. Treating KE as linear in v underestimates every high-speed quantity badly.'
+              },
+              {
+                id: 'phys-negative-work-ignored',
+                wrong: 'Taking the magnitude of work done by friction and adding it in',
+                right: 'Friction does NEGATIVE work: θ = 180°, so cos θ = −1.',
+                why: 'Net work is a sum of signed quantities. Adding friction’s work as positive gives an object that speeds up as it rubs along the ground, and the sign error is invisible in the final number — it just comes out too big.'
+              }
+            ]
+          },
+
+          {
+            id: 'd2', title: 'Potential energy and conservation', src: 'Section 6.2',
+            idea: `<b>Gravitational potential energy</b> is the energy an object has because of where it is: <b>PE = mgh</b>, where h is the height above whatever level you chose as zero. That choice is yours and it does not matter, because only <i>changes</i> in PE ever appear in an answer — but you must choose once and keep it.<br><br><b>Mechanical energy</b> is KE + PE, and the conservation principle says: when only gravity does work, mechanical energy is constant. <b>KE<sub>i</sub> + PE<sub>i</sub> = KE<sub>f</sub> + PE<sub>f</sub></b>.<br><br>This is the most powerful tool in the course because it does not care about the path. A ball dropped, rolled down a curved ramp, or swung on a string arrives at the same height with the same speed, and you never have to know what happened in between. Problems that are unpleasant with forces become one line.<br><br><b>When it fails.</b> If friction, air resistance or an applied force acts, mechanical energy is not conserved — the missing energy went somewhere, usually to heat. The honest version is then <b>KE<sub>i</sub> + PE<sub>i</sub> + W<sub>other</sub> = KE<sub>f</sub> + PE<sub>f</sub></b>, where W<sub>other</sub> is negative for friction. A question that mentions a rough surface is telling you which equation to use.`,
+            rules: [
+              { name: 'Gravitational PE', expr: 'PE = mgh', note: 'h is measured from a zero level you choose. Only changes matter.' },
+              { name: 'Conservation', expr: 'KE_i + PE_i = KE_f + PE_f', note: 'Valid when only gravity does work. Path-independent.' },
+              { name: 'With friction', expr: 'KE_i + PE_i + W_other = KE_f + PE_f', note: 'W_other is negative for friction — energy leaves as heat.' },
+              { name: 'Speed from a height', expr: 'v = sqrt(2gh)', note: 'Falling from rest through h. The mass cancels; so does the path.' }
+            ],
+            examples: [
+              {
+                prompt: 'A 0.50 kg ball is dropped from rest at 5.0 m. How fast is it moving just before it lands? Take g = 9.81 m/s².',
+                steps: [
+                  { do: 'Take the ground as h = 0. Initially KE = 0, PE = mgh', why: 'Choosing the ground as zero makes the final PE vanish.' },
+                  { do: 'mgh = ½mv² — the mass cancels from both sides', why: 'Which is why a heavy ball and a light one land at the same speed.' },
+                  { do: 'v = √(2gh) = √(2 × 9.81 × 5.0) = √98.1', why: 'The path is irrelevant: dropped, or rolled down a smooth curved ramp from the same height, the answer is identical.' },
+                  { do: 'v = 9.90 m/s', why: 'The same answer v² = u² + 2as would give, in one line instead of two, and without ever finding the time.' }
+                ],
+                answer: '9.90 m/s', answerWords: true
+              },
+              {
+                prompt: 'A 2.0 kg block slides from rest down a rough slope, dropping 3.0 m in height, and reaches the bottom at 6.0 m/s. How much energy was lost to friction? Take g = 10 m/s².',
+                steps: [
+                  { do: 'Energy in: PE = mgh = 2.0 × 10 × 3.0 = 60 J', why: 'All of it potential, since it started at rest.' },
+                  { do: 'Energy out: KE = ½mv² = ½ × 2.0 × 6.0² = 36 J', why: 'Square the 6.0 first: 36, then halve the product.' },
+                  { do: 'Missing: 60 − 36 = 24 J', why: 'Mechanical energy is not conserved here, and the shortfall is the whole point of the question.' },
+                  { do: '24 J went to heat via friction', why: 'It did not disappear. Energy is still conserved overall — just not mechanical energy, which is what "rough" in the question was signalling.' }
+                ],
+                answer: '24 J lost to friction', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'phys-conservation-with-friction',
+                wrong: 'Using KE_i + PE_i = KE_f + PE_f on a rough surface',
+                right: 'With friction, mechanical energy is not conserved. Include W_other.',
+                why: 'Conservation of mechanical energy assumes only gravity does work. The word "rough", or any mention of air resistance, cancels that assumption — and using the clean equation anyway gives a final speed that is always too high, with no sign that anything went wrong.'
+              },
+              {
+                id: 'phys-pe-zero-level-changed',
+                wrong: 'Measuring the initial height from the ground and the final height from the table',
+                right: 'Choose one zero level and measure every height from it.',
+                why: 'Only differences in PE are physical, so any zero works — but two different zeros in one equation inserts a constant offset that appears as an energy that came from nowhere. Write the chosen level on the diagram; it costs nothing and removes the error entirely.'
+              },
+              {
+                id: 'phys-mass-needed-for-speed',
+                wrong: 'Refusing to answer a falling-speed question because the mass was not given',
+                right: 'The mass cancels: v = √(2gh) regardless of mass.',
+                why: 'Both KE and PE are proportional to m, so it divides out of the conservation equation. A question that omits the mass is usually testing exactly this — and a student who asks for the mass has not noticed the physics the question is about.'
+              }
+            ]
+          },
+
+          {
+            id: 'd3', title: 'Power', src: 'Section 7.1',
+            idea: `<b>Power</b> is the rate of doing work: <b>P = W/t</b>, measured in watts (1 W = 1 J/s). It answers a different question from energy. A lift and a staircase can move you through the same height and do the same work; the lift does it faster and therefore needs more power.<br><br>When a force acts on something moving at constant velocity, there is a second and often more useful form: <b>P = Fv</b>. A car cruising at steady speed has zero net force, but its engine is still working continuously against drag, and P = Fv gives that output directly without ever computing a total work.<br><br>Two things worth keeping straight. A <b>watt</b> is a rate; a <b>joule</b> is an amount. And a <b>kilowatt-hour</b> is not a unit of power despite how it sounds — it is a power multiplied by a time, so it is energy: 1 kWh = 1000 W × 3600 s = 3.6 × 10⁶ J. That is the unit on an electricity bill, which charges for energy, not for power.`,
+            rules: [
+              { name: 'Power', expr: 'P = W/t', note: 'Work per unit time. 1 W = 1 J/s.' },
+              { name: 'With constant velocity', expr: 'P = Fv', note: 'Handy when nothing is accelerating and no total work is available.' },
+              { name: 'Energy from power', expr: 'W = Pt', note: 'A power multiplied by a time is an energy — which is what a kWh is.' },
+              { name: 'kWh', expr: '1 kWh = 3.6 × 10⁶ J', words: true, note: 'A unit of energy, not power, despite the name.' }
+            ],
+            examples: [
+              {
+                prompt: 'A crane lifts a 250 kg load 12 m in 20 s at constant speed. What is its power output? Take g = 10 m/s².',
+                steps: [
+                  { do: 'Work done = mgh = 250 × 10 × 12', why: 'At constant speed the KE does not change, so all the work goes into potential energy.' },
+                  { do: 'W = 30 000 J', why: 'Thirty kilojoules of energy moved into the load.' },
+                  { do: 'P = W/t = 30 000 / 20', why: 'The whole definition: energy divided by the time taken.' },
+                  { do: 'P = 1500 W = 1.5 kW', why: 'Take twice as long and the work is identical while the power halves — which is the distinction the question is testing.' }
+                ],
+                answer: '1.5 kW', answerWords: true
+              },
+              {
+                prompt: 'A car travels at a steady 25 m/s against a total resistive force of 600 N. What power does the engine deliver?',
+                steps: [
+                  { do: 'Constant speed means the driving force equals the resistance: F = 600 N', why: 'Zero acceleration means zero net force, so the engine exactly matches the drag.' },
+                  { do: 'P = Fv = 600 × 25', why: 'The second form avoids needing any distance or time at all.' },
+                  { do: 'P = 15 000 W = 15 kW', why: 'And because drag rises steeply with speed, the power needed rises faster still — which is why fuel economy collapses on a motorway.' }
+                ],
+                answer: '15 kW', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'phys-power-energy-confused',
+                wrong: 'Reporting an energy in watts, or a power in joules',
+                right: 'Watt = joule per second. Power is a rate; energy is an amount.',
+                why: 'The two are related by a time, and a question asking "how much energy" wants joules while "how powerful" wants watts. Mixing them is marked as a conceptual error rather than an arithmetic one, because the units say you have answered a different question.'
+              },
+              {
+                id: 'phys-kwh-as-power',
+                wrong: 'Treating a kilowatt-hour as a unit of power because it contains "kilowatt"',
+                right: 'kWh = power × time = energy. 1 kWh = 3.6 × 10⁶ J.',
+                why: 'The name misleads because the multiplication is hidden. An electricity bill charges for energy delivered, which is why it is measured in kWh and not kW — and a household that halves its power but doubles its hours pays exactly the same.'
+              }
+            ]
+          }
+        ],
+        practice: [
+          { id: 'e1', kind: 'numeric', lesson: 'd1',
+            prompt: 'A constant 40 N force pushes a box 6.0 m in the direction of the force. How much work is done, in joules?',
+            answer: 240, verify: { expr: '40 * 6' },
+            hint: 'The force and the displacement are in the same direction, so cos θ = 1.',
+            solution: ['W = Fd cos θ with θ = 0', 'W = 40 × 6.0 × 1', 'W = 240 J'] },
+
+          { id: 'e2', kind: 'numeric', lesson: 'd1',
+            prompt: 'A 60 N force at 60° to the horizontal drags a crate 10 m horizontally. How much work does it do, in joules? (cos 60° = 0.5)',
+            answer: 300, verify: { expr: '60 * 10 * 1/2' },
+            hint: 'Only the component along the motion counts.',
+            solution: ['W = Fd cos θ = 60 × 10 × 0.5', 'W = 300 J', 'Pulling horizontally instead would have done 600 J for the same effort'] },
+
+          { id: 'e3', kind: 'numeric', lesson: 'd1',
+            prompt: 'What is the kinetic energy, in joules, of a 1200 kg car travelling at 30 m/s?',
+            answer: 540000, verify: { expr: '1200 * 30**2 / 2' },
+            hint: 'Square the speed before halving.',
+            solution: ['KE = ½mv² = ½ × 1200 × 900', 'KE = 540 000 J = 540 kJ', 'At 15 m/s it would be 135 kJ — a quarter, not a half'] },
+
+          { id: 'e4', kind: 'mc', lesson: 'd1',
+            prompt: 'You carry a 20 kg suitcase at constant speed for 50 m along a level corridor. How much work do you do on the suitcase?',
+            options: [
+              { t: 'Zero — your force is vertical and the motion is horizontal', ok: true },
+              { t: '10 000 J — the weight times the distance' },
+              { t: '1000 J — the mass times the distance' },
+              { t: 'It cannot be found without knowing how long it took' }
+            ],
+            hint: 'What is the angle between your upward force and the horizontal displacement?',
+            solution: ['The force is vertical, the displacement horizontal, so θ = 90°', 'cos 90° = 0, so W = 0',
+              'You get tired because your muscles consume energy holding the load — but no work is done ON the suitcase in the physics sense'] },
+
+          { id: 'e5', kind: 'numeric', lesson: 'd2',
+            prompt: 'How much gravitational potential energy does a 5.0 kg mass gain when lifted 4.0 m? Take g = 10 m/s². Answer in joules.',
+            answer: 200, verify: { expr: '5 * 10 * 4' },
+            hint: 'PE = mgh.',
+            solution: ['PE = mgh = 5.0 × 10 × 4.0', 'PE = 200 J'] },
+
+          { id: 'e6', kind: 'numeric', lesson: 'd2',
+            prompt: 'An object is dropped from rest from 45 m. What is its speed on landing, in m/s? Take g = 10 m/s².',
+            answer: 30, verify: { expr: 'sqrt(2 * 10 * 45)' },
+            hint: 'All the potential energy becomes kinetic. The mass cancels.',
+            solution: ['mgh = ½mv², so v = √(2gh)', 'v = √(2 × 10 × 45) = √900', 'v = 30 m/s — and no mass was needed'] },
+
+          { id: 'e7', kind: 'numeric', lesson: 'd2',
+            prompt: 'A 3.0 kg block slides from rest down a rough slope, dropping 5.0 m, and arrives at 8.0 m/s. How many joules were lost to friction? Take g = 10 m/s².',
+            answer: 54, verify: { expr: '3 * 10 * 5 - 3 * 8**2 / 2' },
+            hint: 'Compare the potential energy in with the kinetic energy out.',
+            solution: ['PE in = 3.0 × 10 × 5.0 = 150 J', 'KE out = ½ × 3.0 × 64 = 96 J', 'Lost to friction = 150 − 96 = 54 J'] },
+
+          { id: 'e8', kind: 'spot', lesson: 'd2',
+            prompt: 'A student finds the landing speed of a block sliding down a rough ramp from 2.0 m. One line is wrong.',
+            steps: [
+              { t: 'The ramp is described as rough, so friction acts on the block', bad: false },
+              { t: 'Initial energy is all potential: PE = mgh', bad: false },
+              { t: 'So KE_i + PE_i = KE_f + PE_f, giving v = √(2gh)', bad: true },
+              { t: 'The true landing speed is therefore less than √(2gh)', bad: false }
+            ],
+            why: 'Mechanical energy is conserved only when gravity is the sole force doing work. The first line already said the ramp is rough, so friction removes energy as heat and the correct relation is KE_i + PE_i + W_friction = KE_f + PE_f, with W_friction negative. Using the clean equation always overstates the final speed, and nothing in the arithmetic signals it — which is why the word "rough" has to be read as an instruction.',
+            hint: 'Read the first line again, then ask whether the third is allowed to follow it.',
+            solution: ['Conservation of mechanical energy requires that only gravity does work',
+              'Friction does negative work, so mechanical energy is not conserved here',
+              'Use KE_i + PE_i + W_other = KE_f + PE_f, which gives a smaller v'] },
+
+          { id: 'e9', kind: 'numeric', lesson: 'd3',
+            prompt: 'A motor does 24 000 J of work in 30 s. What is its power output, in watts?',
+            answer: 800, verify: { expr: '24000 / 30' },
+            hint: 'Power is work divided by time.',
+            solution: ['P = W/t = 24 000 / 30', 'P = 800 W'] },
+
+          { id: 'e10', kind: 'numeric', lesson: 'd3',
+            prompt: 'A train travels at a steady 30 m/s against 12 000 N of resistance. What power does it deliver, in watts?',
+            answer: 360000, verify: { expr: '12000 * 30' },
+            hint: 'At constant speed the driving force equals the resistance.',
+            solution: ['Constant speed → driving force = 12 000 N', 'P = Fv = 12 000 × 30', 'P = 360 000 W = 360 kW'] },
+
+          { id: 'e11', kind: 'order', lesson: 'd2',
+            prompt: 'Put the steps of an energy-conservation problem in order.',
+            steps: [
+              'Choose a zero level for height and mark it on the diagram',
+              'Decide whether any force other than gravity does work',
+              'Write the energy equation — with or without a W_other term',
+              'Substitute and solve, checking the answer is smaller when friction is present'
+            ],
+            hint: 'Deciding which equation applies comes before writing one down.',
+            solution: ['The zero level must be fixed before any height is measured from it',
+              'Whether friction acts decides which of the two equations is correct',
+              'The final check catches the commonest error: using the frictionless equation on a rough surface'] }
+        ]
+      }
+    ]
+  };
+
+  root.Courses.register(MECH);
+
+})(typeof window !== 'undefined' ? window : globalThis);
+
+if (typeof module !== 'undefined' && module.exports) module.exports = globalThis.Courses;
+
+</script>
+<script>
+/* UNI Made EZ — Chemistry courses
+   Copyright © 2026 JohnsonXCorp. All rights reserved.
+   Proprietary. Not open source: see LICENSE.
+
+   ---------------------------------------------------------------------------------------------
+   WHAT THIS IS. The first-semester general chemistry course, cut to the four units that the rest
+   of the subject is built on. The topic order follows what an introductory course examines, which
+   is a fact about the subject; every sentence, figure and exercise below is written from scratch
+   and nothing is taken from any textbook.
+
+   THE ATOMIC MASSES USED HERE are the ordinary four-figure values: H 1.008, C 12.01, N 14.01,
+   O 16.00, Na 22.99, S 32.07, Cl 35.45, Ca 40.08. A course using three figures will differ in the
+   last digit. Every question states the precision it wants, and `verify.dp` makes the SymPy check
+   round the exact value rather than trusting a rounded one.
+
+   WHY CHEMISTRY NEEDS THE UNIT CHECK MORE THAN MOST. Almost every wrong answer in first-year
+   chemistry is a conversion, not a concept: grams where moles belong, millilitres where litres do,
+   °C where kelvin does. So the arithmetic is written out in full in every worked example, and
+   several pitfalls below are about nothing but that.
+
+   WHAT IS DELIBERATELY ABSENT. Four units, not the whole of general chemistry. What is missing is
+   listed in `gaps` and printed on the course page under "Not covered here".
+   --------------------------------------------------------------------------------------------- */
+(function (root) {
+  'use strict';
+  if (!root.Courses || !root.Courses.register) return;
+
+  const CHEM = {
+    id: 'chem', name: 'Chemistry',
+    blurb: 'How much of what reacts with how much of what else, and where the energy goes.'
+  };
+
+  const NOTE = 'Study material for a university course. It is not a laboratory safety document and ' +
+    'nothing here is an instruction to carry out a reaction. Atomic masses are four-figure values ' +
+    'and R = 0.0821 L·atm/(mol·K); your course may use different figures, which changes the last digit.';
+
+  const GENCHEM = {
+    subject: CHEM,
+    id: 'chem-general',
+    code: 'General Chemistry',
+    title: 'General Chemistry',
+    blurb: 'The first course: counting atoms by weighing them, what a balanced equation actually promises, reactions in solution, gases, and the heat that comes out.',
+    level: 'Foundation',
+    prereq: null,
+    legalNote: NOTE,
+    gaps: [
+      'Atomic structure and periodicity — quantum numbers, orbitals, electron configuration and periodic trends',
+      'Bonding — Lewis structures, formal charge, VSEPR and molecular shape, polarity',
+      'Intermolecular forces and the states of matter — hydrogen bonding, phase diagrams',
+      'Chemical equilibrium — the equilibrium constant, the reaction quotient and Le Châtelier’s principle',
+      'Acids and bases beyond neutralisation — pH, Ka and Kb, buffers, titration curves',
+      'Kinetics — rate laws, reaction order, activation energy and mechanisms',
+      'Electrochemistry — galvanic cells, standard reduction potentials, electrolysis',
+      'Nuclear chemistry — radioactive decay, half-life and binding energy',
+      'Organic chemistry — functional groups, nomenclature and isomerism'
+    ],
+    units: [
+
+      /* ============================ UNIT 1 ============================ */
+      {
+        id: 'moles', n: 1,
+        title: 'Atoms, the mole and stoichiometry',
+        blurb: 'Why chemists count in moles instead of atoms, how to get from a mass on a balance to a number of particles, and what a balanced equation lets you predict.',
+        read: 'Chapters 1–3',
+        objectives: [
+          'Explain relative atomic mass in terms of isotopes and their abundances',
+          'Convert between mass, moles and number of particles for any substance',
+          'Determine empirical and molecular formulas from composition data',
+          'Balance an equation and use its coefficients as a mole ratio'
+        ],
+        lessons: [
+          {
+            id: 'a1', title: 'Atoms, isotopes and relative atomic mass', src: 'Section 1.1',
+            idea: `An atom is identified by its <b>atomic number</b> Z — the number of protons — and nothing else. Change Z and you have a different element. The <b>mass number</b> A is protons plus neutrons, and atoms of the same element with different neutron counts are <b>isotopes</b>: chlorine-35 and chlorine-37 are both chlorine, both with 17 protons, differing by two neutrons.<br><br>This is why the atomic mass on a periodic table is almost never a whole number. It is a <b>weighted average</b> over the isotopes as they actually occur in nature, weighted by abundance:<br><br><b>relative atomic mass = Σ (isotope mass × fractional abundance)</b><br><br>Chlorine's 35.45 is not the mass of any chlorine atom. It is the average of about 76% chlorine-35 and 24% chlorine-37. No single atom weighs 35.45 u — the figure describes a sample, and that distinction matters the moment you start weighing things out.<br><br>The <b>unified atomic mass unit</b> (u) is defined as one twelfth of the mass of a carbon-12 atom, which is why carbon's tabulated value, 12.01, sits so close to a whole number: carbon-12 dominates the natural mixture.`,
+            rules: [
+              { name: 'Atomic number', expr: 'Z = number of protons', words: true, note: 'It alone decides which element an atom is.' },
+              { name: 'Mass number', expr: 'A = protons + neutrons', words: true, note: 'Differs between isotopes of the same element.' },
+              { name: 'Weighted average', expr: 'Σ (isotope mass × fractional abundance)', words: true, note: 'Abundances are fractions that sum to 1, not percentages that sum to 100.' }
+            ],
+            examples: [
+              {
+                prompt: 'Chlorine is 75% chlorine-35 (mass 35.00 u) and 25% chlorine-37 (mass 37.00 u). Find its relative atomic mass.',
+                steps: [
+                  { do: 'Convert the percentages to fractions: 0.75 and 0.25', why: 'Using 75 and 25 directly gives an answer a hundred times too large.' },
+                  { do: 'Average = 35.00 × 0.75 + 37.00 × 0.25', why: 'Each isotope contributes in proportion to how common it is.' },
+                  { do: '= 26.25 + 9.25', why: 'The lighter isotope dominates because there is three times as much of it.' },
+                  { do: '= 35.50 u', why: 'Closer to 35 than to 37, as it must be. An answer of 36 — the plain average of the two masses — would ignore the abundances entirely.' }
+                ],
+                answer: '35.50 u', answerWords: true
+              },
+              {
+                prompt: 'An atom has 26 protons, 30 neutrons and 26 electrons. Identify it and give its mass number.',
+                steps: [
+                  { do: 'Z = 26, so the element is iron', why: 'The proton count alone identifies the element; nothing else in the question can change that.' },
+                  { do: 'A = 26 + 30 = 56', why: 'Mass number counts the particles in the nucleus. Electrons contribute negligibly to mass.' },
+                  { do: 'Equal protons and electrons, so the atom is neutral', why: 'A different electron count would make it an ion, not a different element.' },
+                  { do: 'Iron-56, mass number 56', why: 'Written ⁵⁶Fe. This is the commonest iron isotope, which is why iron’s tabulated mass is 55.85.' }
+                ],
+                answer: 'Iron-56 (⁵⁶Fe), A = 56', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'chem-abundance-as-percent',
+                wrong: 'Multiplying isotope masses by 75 and 25 instead of 0.75 and 0.25',
+                right: 'Abundances go into the sum as fractions that add to 1.',
+                why: 'It gives an answer a hundred times too large — 3550 u for chlorine — which is obviously wrong and still gets written down under time pressure. Either divide by 100 first, or divide the whole sum by 100 at the end; do not do both, and do not do neither.'
+              },
+              {
+                id: 'chem-atomic-mass-is-one-atom',
+                wrong: 'Treating 35.45 as the mass of a chlorine atom',
+                right: 'It is a weighted average over the natural isotope mixture. No single atom has that mass.',
+                why: 'Individual chlorine atoms weigh about 35 u or about 37 u and nothing in between. The tabulated value describes a bulk sample, which is exactly what you have when you weigh something — so it is the right number to use, for a reason worth understanding rather than memorising.'
+              },
+              {
+                id: 'chem-isotopes-as-elements',
+                wrong: 'Thinking a different neutron count makes a different element',
+                right: 'Only the proton count Z decides the element. Different neutrons means a different isotope.',
+                why: 'Carbon-12 and carbon-14 are both carbon and behave identically in every reaction in this course. What changes with neutron count is mass and nuclear stability, not chemistry — which is why isotopic labelling works as an experimental technique at all.'
+              }
+            ]
+          },
+
+          {
+            id: 'a2', title: 'The mole and molar mass', src: 'Section 2.1',
+            idea: `Atoms are far too small and too numerous to count, and chemistry needs to count them. The <b>mole</b> solves this: one mole is <b>6.022 × 10²³</b> particles, Avogadro's number, chosen so that one mole of any substance has a mass in grams equal to its relative atomic or molecular mass in u.<br><br>That is the whole trick, and it is worth saying plainly: <b>the periodic table is a conversion chart between grams and particles.</b> Carbon's 12.01 means one carbon atom weighs 12.01 u and one mole of carbon atoms weighs 12.01 g. A balance measures grams; a reaction cares about particles; the molar mass is the bridge.<br><br>Two relations do nearly all the work:<br><br><b>n = m / M</b> — moles equals mass divided by molar mass<br><b>N = n × N<sub>A</sub></b> — particles equals moles times Avogadro's number<br><br><b>Molar mass of a compound</b> is the sum over its formula, counting every atom. H₂SO₄ is 2(1.008) + 32.07 + 4(16.00) = 98.086 g/mol — and the subscript applies only to the atom immediately before it, which is where most errors enter.`,
+            rules: [
+              { name: 'Avogadro’s number', expr: 'N_A = 6.022 × 10²³ per mole', words: true, note: 'Particles per mole — atoms, molecules, ions, whatever the formula names.' },
+              { name: 'Moles from mass', expr: 'n = m/M', note: 'm in grams, M in g/mol, n in moles.' },
+              { name: 'Particles from moles', expr: 'N = n × N_A', note: 'Going the other way, divide.' },
+              { name: 'Molar mass of a compound', expr: 'Sum every atom in the formula', words: true, note: 'A subscript applies only to the atom or bracket immediately before it.' }
+            ],
+            examples: [
+              {
+                prompt: 'Find the molar mass of calcium hydroxide, Ca(OH)₂. Use Ca 40.08, O 16.00, H 1.008.',
+                steps: [
+                  { do: 'The subscript 2 is outside the bracket, so it multiplies BOTH O and H', why: 'This is the whole reason for the bracket. Ca(OH)₂ contains two oxygens and two hydrogens.' },
+                  { do: 'Ca: 1 × 40.08 = 40.08', why: 'One calcium, with no subscript.' },
+                  { do: 'O: 2 × 16.00 = 32.00; H: 2 × 1.008 = 2.016', why: 'Both doubled by the bracket subscript.' },
+                  { do: 'M = 40.08 + 32.00 + 2.016 = 74.096, so 74.10 g/mol', why: 'Reading the formula as CaOH₂ instead would give 58.10 — a 22% error introduced by one misread bracket.' }
+                ],
+                answer: '74.10 g/mol', answerWords: true
+              },
+              {
+                prompt: 'How many molecules are there in 36.032 g of water? Use H 1.008, O 16.00.',
+                steps: [
+                  { do: 'M(H₂O) = 2(1.008) + 16.00 = 18.016 g/mol', why: 'Two hydrogens, one oxygen.' },
+                  { do: 'n = m/M = 36.032 / 18.016 = 2.000 mol', why: 'Grams to moles first, always. Nothing can be counted until this step is done.' },
+                  { do: 'N = n × N_A = 2.000 × 6.022 × 10²³', why: 'Now moles to molecules.' },
+                  { do: 'N = 1.204 × 10²⁴ molecules', why: 'Note the question asked for molecules. Asking for atoms would mean three times as many, since each molecule contains three.' }
+                ],
+                answer: '1.204 × 10²⁴ molecules', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'chem-subscript-scope',
+                wrong: 'Reading Ca(OH)₂ as one oxygen and two hydrogens',
+                right: 'A subscript after a bracket multiplies everything inside it.',
+                why: 'It changes the molar mass by 16 g/mol here and propagates into every subsequent step of the problem. The habit that prevents it is writing out the atom count as a list before adding anything: Ca 1, O 2, H 2.'
+              },
+              {
+                id: 'chem-mass-ratio-for-mole-ratio',
+                wrong: 'Using masses directly in a ratio the balanced equation gives',
+                right: 'Convert to moles first. Coefficients are mole ratios, never mass ratios.',
+                why: 'A balanced equation counts particles, and equal masses of two substances contain wildly different numbers of them. Grams → moles → mole ratio → moles → grams is the route, and skipping the first conversion is the commonest single error in the whole subject.'
+              },
+              {
+                id: 'chem-molecules-vs-atoms',
+                wrong: 'Reporting molecules when the question asked for atoms, or the reverse',
+                right: 'n × N_A gives the particles the formula names. Multiply by the atom count for atoms.',
+                why: 'One mole of H₂O is 6.022 × 10²³ molecules but 1.807 × 10²⁴ atoms. Both answers are right to some question, and only one is right to the one asked — so read the noun at the end of the question before writing anything down.'
+              }
+            ]
+          },
+
+          {
+            id: 'a3', title: 'Balanced equations and stoichiometry', src: 'Section 3.1',
+            idea: `A chemical equation is a statement about <b>atoms being conserved</b>. Balancing it means making every element appear the same number of times on both sides, and it is done by adjusting <b>coefficients only</b> — never subscripts, because changing a subscript changes the substance. Turning H₂O into H₂O₂ to balance an oxygen is not a bookkeeping fix; it replaces water with hydrogen peroxide.<br><br>Once balanced, the coefficients are a <b>mole ratio</b>, and that is what makes prediction possible:<br><br><b>2 H₂ + O₂ → 2 H₂O</b><br><br>says two moles of hydrogen react with one of oxygen to give two of water. It does <i>not</i> say two grams with one gram. Every stoichiometry problem is the same four steps: <b>grams → moles → mole ratio → moles → grams</b>. The middle step is the chemistry; the two ends are arithmetic with molar masses.<br><br>A practical order for balancing: leave the element that appears in the most compounds until last, balance oxygen and hydrogen near the end, and if fractions appear, multiply the whole equation through to clear them.`,
+            rules: [
+              { name: 'What you may change', expr: 'Coefficients only, never subscripts', words: true, note: 'A subscript is part of the substance’s identity.' },
+              { name: 'What the coefficients mean', expr: 'A mole ratio', words: true, note: 'Not a mass ratio, and not a volume ratio except for gases at the same conditions.' },
+              { name: 'The four steps', expr: 'grams → moles → mole ratio → moles → grams', words: true, note: 'The only step that is chemistry is the middle one.' }
+            ],
+            examples: [
+              {
+                prompt: 'Balance: C₃H₈ + O₂ → CO₂ + H₂O.',
+                steps: [
+                  { do: 'Carbon: 3 on the left, so 3 CO₂ on the right', why: 'Balance the element that appears in fewest compounds first — carbon is only in two.' },
+                  { do: 'Hydrogen: 8 on the left, so 4 H₂O on the right', why: 'Each water carries two hydrogens, so eight hydrogens need four waters.' },
+                  { do: 'Oxygen on the right is now 3(2) + 4(1) = 10', why: 'Oxygen last, because it appears in three of the four compounds — counting it earlier means recounting it later.' },
+                  { do: 'So 5 O₂ on the left: C₃H₈ + 5 O₂ → 3 CO₂ + 4 H₂O', why: 'Check every element once more: C 3 = 3, H 8 = 8, O 10 = 10. A balanced equation that has not been checked is a guess.' }
+                ],
+                answer: 'C₃H₈ + 5 O₂ → 3 CO₂ + 4 H₂O', answerWords: true
+              },
+              {
+                prompt: 'For 2 H₂ + O₂ → 2 H₂O, how many grams of water are produced from 8.00 g of hydrogen with excess oxygen? Use H 1.008, O 16.00.',
+                steps: [
+                  { do: 'M(H₂) = 2 × 1.008 = 2.016 g/mol; n(H₂) = 8.00 / 2.016 = 3.968 mol', why: 'Grams to moles. Nothing in the balanced equation can be used until this is done.' },
+                  { do: 'Ratio H₂ : H₂O is 2 : 2, so n(H₂O) = 3.968 mol', why: 'One to one here, which will not usually be the case — read the coefficients rather than assuming.' },
+                  { do: 'M(H₂O) = 18.016 g/mol', why: 'Now back from moles to grams.' },
+                  { do: 'm = 3.968 × 18.016 = 71.5 g', why: 'Sanity check: the mass grew because oxygen joined the hydrogen, and 71.5 − 8.00 = 63.5 g of oxygen was consumed. Mass is conserved, which is a free check on the whole calculation.' }
+                ],
+                answer: '71.5 g of water', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'chem-balance-by-subscript',
+                wrong: 'Changing H₂O to H₂O₂ to make the oxygens balance',
+                right: 'Adjust coefficients only. Subscripts define the substance.',
+                why: 'It balances the equation and describes a different reaction. The resulting numbers are internally consistent and chemically meaningless, which makes this worse than an arithmetic slip — nothing downstream will flag it.'
+              },
+              {
+                id: 'chem-coefficients-as-grams',
+                wrong: 'Reading 2 H₂ + O₂ → 2 H₂O as "2 g of hydrogen and 1 g of oxygen"',
+                right: 'Coefficients are moles. Convert to grams only through molar masses.',
+                why: 'Two moles of H₂ is 4.032 g and one mole of O₂ is 32.00 g — nothing like a 2 : 1 mass ratio. This misreading gives answers that are wrong by nearly an order of magnitude and look perfectly tidy on the page.'
+              },
+              {
+                id: 'chem-no-final-check',
+                wrong: 'Stopping as soon as the last element balances',
+                right: 'Count every element on both sides once more before using the equation.',
+                why: 'Balancing one element commonly unbalances an earlier one, especially oxygen. The recount takes ten seconds and is the only thing standing between a small slip and an entire stoichiometry problem built on a wrong ratio.'
+              }
+            ]
+          }
+        ],
+        practice: [
+          { id: 'q1', kind: 'numeric', lesson: 'a1',
+            prompt: 'An element is 80.0% of an isotope with mass 10.00 u and 20.0% of one with mass 11.00 u. What is its relative atomic mass, in u? Give 2 decimal places.',
+            answer: 10.2, tol: 0.005, verify: { expr: '1000/100 * 800/1000 + 1100/100 * 200/1000', dp: 2 },
+            hint: 'Turn the percentages into fractions first.',
+            solution: ['0.800 × 10.00 = 8.00', '0.200 × 11.00 = 2.20', 'Total = 10.20 u — nearer the commoner isotope, as it must be'] },
+
+          { id: 'q2', kind: 'numeric', lesson: 'a1',
+            prompt: 'An atom has 17 protons and 20 neutrons. What is its mass number?',
+            answer: 37, verify: { expr: '17 + 20' },
+            hint: 'Mass number counts nuclear particles only.',
+            solution: ['A = protons + neutrons', 'A = 17 + 20 = 37', 'With Z = 17 this is chlorine-37'] },
+
+          { id: 'q3', kind: 'numeric', lesson: 'a2',
+            prompt: 'What is the molar mass of water, H₂O, in g/mol? Use H 1.008 and O 16.00, and give 3 decimal places.',
+            answer: 18.016, tol: 0.0005, verify: { expr: '2 * 1008/1000 + 16', dp: 3 },
+            hint: 'Two hydrogens, one oxygen.',
+            solution: ['H: 2 × 1.008 = 2.016', 'O: 1 × 16.00 = 16.00', 'M = 18.016 g/mol'] },
+
+          { id: 'q4', kind: 'numeric', lesson: 'a2',
+            prompt: 'How many moles are there in 88.00 g of carbon dioxide, CO₂? Use C 12.01 and O 16.00. Give 3 decimal places.',
+            answer: 2, tol: 0.0005, verify: { expr: '88 / (1201/100 + 2*16)', dp: 3 },
+            hint: 'Find the molar mass first, then divide.',
+            solution: ['M(CO₂) = 12.01 + 2(16.00) = 44.01 g/mol', 'n = m/M = 88.00 / 44.01', 'n = 2.000 mol'] },
+
+          { id: 'q5', kind: 'numeric', lesson: 'a2',
+            prompt: 'What is the molar mass of calcium hydroxide, Ca(OH)₂, in g/mol? Use Ca 40.08, O 16.00, H 1.008. Give 3 decimal places.',
+            answer: 74.096, tol: 0.0005, verify: { expr: '4008/100 + 2*16 + 2*1008/1000', dp: 3 },
+            hint: 'The subscript outside the bracket doubles both the O and the H.',
+            solution: ['Ca: 40.08', 'O: 2 × 16.00 = 32.00', 'H: 2 × 1.008 = 2.016', 'M = 74.096 g/mol'] },
+
+          { id: 'q6', kind: 'mc', lesson: 'a2',
+            prompt: 'You have one mole of H₂O. How many ATOMS does it contain?',
+            options: [
+              { t: '1.807 × 10²⁴ — three atoms per molecule', ok: true },
+              { t: '6.022 × 10²³ — one Avogadro’s number' },
+              { t: '2.007 × 10²³ — Avogadro’s number divided by three' },
+              { t: '1.204 × 10²⁴ — two atoms per molecule' }
+            ],
+            hint: 'n × N_A gives molecules. Each molecule has how many atoms?',
+            solution: ['One mole of molecules is 6.022 × 10²³ molecules',
+              'Each H₂O contains 3 atoms — two H and one O',
+              '3 × 6.022 × 10²³ = 1.807 × 10²⁴ atoms'] },
+
+          { id: 'q7', kind: 'numeric', lesson: 'a3',
+            prompt: 'Balance C₃H₈ + O₂ → CO₂ + H₂O. What is the coefficient of O₂?',
+            answer: 5, verify: { expr: '(3*2 + 4*1) / 2' },
+            hint: 'Balance carbon and hydrogen first, then count the oxygens on the right.',
+            solution: ['3 CO₂ balances the carbon; 4 H₂O balances the hydrogen',
+              'Oxygen on the right: 3(2) + 4(1) = 10 atoms', '10 atoms ÷ 2 per O₂ = 5 O₂'] },
+
+          { id: 'q8', kind: 'numeric', lesson: 'a3',
+            prompt: 'For N₂ + 3 H₂ → 2 NH₃, how many moles of ammonia are produced from 6.00 mol of hydrogen with excess nitrogen?',
+            answer: 4, verify: { expr: '6 * 2 / 3' },
+            hint: 'Read the coefficients as a mole ratio.',
+            solution: ['The H₂ : NH₃ ratio is 3 : 2', 'n(NH₃) = 6.00 × 2/3', 'n(NH₃) = 4.00 mol'] },
+
+          { id: 'q9', kind: 'spot', lesson: 'a3',
+            prompt: 'A student balances H₂ + O₂ → H₂O. One line is wrong.',
+            steps: [
+              { t: 'Hydrogen: 2 on the left, 2 on the right — balanced', bad: false },
+              { t: 'Oxygen: 2 on the left, 1 on the right — not balanced', bad: false },
+              { t: 'So change H₂O to H₂O₂ and the oxygens balance', bad: true },
+              { t: 'A balanced equation must have the same atoms of each element on both sides', bad: false }
+            ],
+            why: 'Only coefficients may be changed. H₂O₂ is hydrogen peroxide, a different substance with different properties — the equation would now balance while describing a reaction that was never asked about. The correct route is coefficients: 2 H₂ + O₂ → 2 H₂O, which gives H 4 = 4 and O 2 = 2.',
+            hint: 'What does changing a subscript do to the identity of the substance?',
+            solution: ['Subscripts define the substance and may not be altered', 'Adjust coefficients instead', '2 H₂ + O₂ → 2 H₂O balances with H 4 = 4, O 2 = 2'] },
+
+          { id: 'q10', kind: 'order', lesson: 'a3',
+            prompt: 'Put the four steps of a mass-to-mass stoichiometry calculation in order.',
+            steps: [
+              'Convert the given mass to moles using its molar mass',
+              'Apply the mole ratio from the balanced equation',
+              'Convert the resulting moles to a mass using the other molar mass',
+              'Check that total mass is conserved across the reaction'
+            ],
+            hint: 'The balanced equation can only be used on moles.',
+            solution: ['Coefficients are mole ratios, so the mass must become moles first',
+              'The mole ratio is the only step that is chemistry rather than arithmetic',
+              'Conservation of mass is a free check that costs one subtraction'] }
+        ]
+      },
+
+      /* ============================ UNIT 2 ============================ */
+      {
+        id: 'solution', n: 2,
+        title: 'Reactions in solution',
+        blurb: 'Concentration and what it does and does not tell you, the three reaction types you will meet first, and what happens when one reactant runs out before the others.',
+        read: 'Chapter 4',
+        objectives: [
+          'Compute molar concentration and use the dilution relation',
+          'Recognise precipitation, acid–base and redox reactions from an equation',
+          'Identify the limiting reagent and compute the theoretical and percentage yield',
+          'Carry out a titration calculation from volume and concentration data'
+        ],
+        lessons: [
+          {
+            id: 'b1', title: 'Concentration and dilution', src: 'Section 4.1',
+            idea: `<b>Molar concentration</b> is moles of solute per litre of solution: <b>c = n / V</b>, in mol/L, often written M. Two things in that definition trip people up. It is per litre of <b>solution</b>, not of solvent — dissolving something changes the volume. And V is in <b>litres</b>, while almost every piece of laboratory glassware is marked in millilitres, so a factor of 1000 waits in nearly every question.<br><br><b>Dilution</b> adds solvent without adding solute. The number of moles is unchanged, and since n = cV on both sides:<br><br><b>c₁V₁ = c₂V₂</b><br><br>Because only a ratio of volumes appears, this one relation is safe in millilitres as long as both volumes use the same unit — the only place in the topic where you may skip the conversion, and worth knowing precisely so you do not skip it anywhere else.<br><br>A dissolved ionic compound also gives concentrations of its <i>ions</i>, which are not the same as the concentration of the compound. A 0.10 M solution of CaCl₂ is 0.10 M in Ca²⁺ and <b>0.20 M</b> in Cl⁻, because each formula unit releases two chlorides.`,
+            rules: [
+              { name: 'Concentration', expr: 'c = n/V', note: 'mol/L. V is the volume of SOLUTION, in litres.' },
+              { name: 'Dilution', expr: 'c_1 V_1 = c_2 V_2', note: 'Moles unchanged. Safe in mL as long as both volumes match.' },
+              { name: 'Ion concentration', expr: 'Multiply by the subscript in the formula', words: true, note: '0.10 M CaCl₂ is 0.20 M in Cl⁻.' }
+            ],
+            examples: [
+              {
+                prompt: 'What is the concentration of a solution containing 0.250 mol of solute in 500 mL?',
+                steps: [
+                  { do: 'Convert the volume: 500 mL = 0.500 L', why: 'Concentration is per litre. Dividing by 500 instead of 0.500 gives an answer a thousand times too small.' },
+                  { do: 'c = n/V = 0.250 / 0.500', why: 'Now both quantities are in the units the formula expects.' },
+                  { do: 'c = 0.500 mol/L', why: 'Sanity check: half a mole in half a litre is one mole per litre… no — 0.250 in 0.500 is 0.500 M. Doing that check out loud is how a factor-of-two slip gets caught.' }
+                ],
+                answer: '0.500 M', answerWords: true
+              },
+              {
+                prompt: 'How much water must be added to 50.0 mL of 2.00 M HCl to make it 0.500 M?',
+                steps: [
+                  { do: 'c₁V₁ = c₂V₂ → 2.00 × 50.0 = 0.500 × V₂', why: 'Both volumes in mL, which is allowed here because only their ratio matters.' },
+                  { do: 'V₂ = 100 / 0.500 = 200 mL', why: 'This is the FINAL total volume, not the water added.' },
+                  { do: 'Water added = 200 − 50.0 = 150 mL', why: 'The question asked what to add. Answering 200 mL is the standard error, and it is a reading error rather than a chemistry one.' }
+                ],
+                answer: '150 mL of water', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'chem-ml-not-converted',
+                wrong: 'Using c = n/V with the volume still in millilitres',
+                right: 'Divide the millilitres by 1000 first. Concentration is per litre.',
+                why: 'It gives an answer a thousand times too small, and the number still looks like a plausible concentration, so nothing about it announces the error. The exception — and only this one — is c₁V₁ = c₂V₂, where the units cancel.'
+              },
+              {
+                id: 'chem-dilution-final-vs-added',
+                wrong: 'Reporting V₂ as the volume of solvent to add',
+                right: 'V₂ is the total final volume. Subtract V₁ to get what to add.',
+                why: 'The dilution relation is about the final state of the solution, not about the addition. A question phrased "how much water must be added" is asking for V₂ − V₁, and the difference between the two answers is exactly the original volume.'
+              },
+              {
+                id: 'chem-ion-concentration-same',
+                wrong: 'Saying 0.10 M CaCl₂ is 0.10 M in chloride',
+                right: 'Each CaCl₂ releases two Cl⁻, so the chloride concentration is 0.20 M.',
+                why: 'The formula subscript carries through into solution. This matters for every precipitation and titration calculation involving a salt with more than one of the same ion, and the error halves or doubles the answer.'
+              }
+            ]
+          },
+
+          {
+            id: 'b2', title: 'Three kinds of reaction', src: 'Section 4.2',
+            idea: `Three reaction types cover most of a first course, and recognising which one you are looking at tells you what to expect.<br><br><b>Precipitation.</b> Two solutions are mixed and an insoluble solid forms. The useful form is the <b>net ionic equation</b>, which shows only the ions that actually combine and leaves out the <b>spectator ions</b> that were dissolved before and after and did nothing.<br><br><b>Acid–base (neutralisation).</b> An acid donates H⁺ to a base. The general pattern is <b>acid + base → salt + water</b>, and the net ionic equation for a strong acid with a strong base is always the same: H⁺ + OH⁻ → H₂O.<br><br><b>Redox.</b> Electrons move. Something is <b>oxidised</b> — loses electrons, oxidation number rises — and something else is <b>reduced</b> — gains electrons, oxidation number falls. The two always happen together, which is what the name means; there is no such thing as an oxidation without a reduction somewhere in the same equation.<br><br>The memory aid that survives contact with an exam: <b>OIL RIG</b> — Oxidation Is Loss, Reduction Is Gain — of electrons. The oxidising <i>agent</i> is the substance that is itself reduced, which is the opposite of what the name suggests and the reason it is asked about.`,
+            rules: [
+              { name: 'Precipitation', expr: 'Two solutions → an insoluble solid', words: true, note: 'Write the net ionic equation; drop the spectator ions.' },
+              { name: 'Neutralisation', expr: 'acid + base → salt + water', words: true, note: 'Strong acid with strong base: H⁺ + OH⁻ → H₂O every time.' },
+              { name: 'Redox', expr: 'OIL RIG — Oxidation Is Loss, Reduction Is Gain', words: true, note: 'Of electrons. Never one without the other.' },
+              { name: 'The agents', expr: 'The oxidising agent is the one that gets reduced', words: true, note: 'And the reducing agent is the one that gets oxidised.' }
+            ],
+            examples: [
+              {
+                prompt: 'Silver nitrate solution is mixed with sodium chloride solution and silver chloride precipitates. Write the net ionic equation.',
+                steps: [
+                  { do: 'Full equation: AgNO₃(aq) + NaCl(aq) → AgCl(s) + NaNO₃(aq)', why: 'Start with the complete reaction so nothing is lost.' },
+                  { do: 'Everything aqueous is dissociated: Ag⁺, NO₃⁻, Na⁺, Cl⁻ separately in solution', why: 'Soluble ionic compounds exist as free ions, not as intact formula units.' },
+                  { do: 'Na⁺ and NO₃⁻ are unchanged on both sides — spectators', why: 'They were dissolved before and are dissolved after. Nothing happened to them.' },
+                  { do: 'Ag⁺(aq) + Cl⁻(aq) → AgCl(s)', why: 'This is the actual chemistry, and it is the same whichever soluble silver salt and whichever soluble chloride you started from.' }
+                ],
+                answer: 'Ag⁺(aq) + Cl⁻(aq) → AgCl(s)', answerWords: true
+              },
+              {
+                prompt: 'In Zn + Cu²⁺ → Zn²⁺ + Cu, identify what is oxidised, what is reduced, and the oxidising agent.',
+                steps: [
+                  { do: 'Zinc goes from 0 to +2 — it lost two electrons', why: 'An element on its own has oxidation number 0.' },
+                  { do: 'Loss is oxidation, so zinc is oxidised', why: 'OIL: Oxidation Is Loss.' },
+                  { do: 'Copper goes from +2 to 0 — it gained two electrons, so it is reduced', why: 'RIG: Reduction Is Gain. The same two electrons, handed over.' },
+                  { do: 'The oxidising agent is Cu²⁺ — the species that was reduced', why: 'It caused the zinc to be oxidised by accepting its electrons. Naming Zn here is the standard error, and it comes from reading the name as a description of what happened to it.' }
+                ],
+                answer: 'Zn oxidised; Cu²⁺ reduced; Cu²⁺ is the oxidising agent', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'chem-spectators-kept',
+                wrong: 'Writing the full molecular equation when a net ionic equation is asked for',
+                right: 'Cancel every ion that is unchanged on both sides.',
+                why: 'The point of the net ionic equation is that it shows what actually happened, and it is the same for a whole family of starting materials. Keeping the spectators hides that generality and does not answer the question that was asked.'
+              },
+              {
+                id: 'chem-oxidising-agent-inverted',
+                wrong: 'Naming the substance that was oxidised as the oxidising agent',
+                right: 'The oxidising agent is the one that gets REDUCED — it oxidises something else.',
+                why: 'The name describes what it does to its partner, not what happens to it. This is asked precisely because the wording is counterintuitive, and the check is quick: find what was reduced, and that is the oxidising agent.'
+              },
+              {
+                id: 'chem-redox-one-sided',
+                wrong: 'Identifying an oxidation with no corresponding reduction',
+                right: 'Electrons have to go somewhere. Every oxidation is paired with a reduction.',
+                why: 'If you cannot find the partner, you have misassigned an oxidation number. Treating the pairing as a rule that must hold turns it from a fact to memorise into a check on your own working.'
+              }
+            ]
+          },
+
+          {
+            id: 'b3', title: 'Limiting reagent, yield and titration', src: 'Section 4.3',
+            idea: `Reactants are rarely mixed in exactly the ratio the equation wants. The <b>limiting reagent</b> is the one that runs out first, and it alone decides how much product forms; the rest is left over in <b>excess</b>.<br><br>Finding it: convert both amounts to moles, <b>divide each by its coefficient</b>, and the smaller result is limiting. Comparing raw moles without dividing by the coefficients is the classic error — it gives the right answer only when the coefficients happen to be equal.<br><br><b>Theoretical yield</b> is what the limiting reagent predicts. <b>Actual yield</b> is what came out of the flask, always less: some product stays on the glassware, some side reaction competes, some is lost in purification. The comparison is the <b>percentage yield</b>:<br><br><b>% yield = (actual / theoretical) × 100</b><br><br>A percentage yield above 100% is not a triumph — it means the product was still wet, or impure, or the balance was wrong. It is a signal to repeat the measurement.<br><br><b>Titration</b> runs a reaction to a known endpoint to find an unknown concentration. At the endpoint the moles are in the equation's ratio: <b>c₁V₁ / coefficient₁ = c₂V₂ / coefficient₂</b>. For a 1 : 1 reaction that simplifies to c₁V₁ = c₂V₂ — which looks exactly like the dilution relation and means something completely different.`,
+            rules: [
+              { name: 'Finding the limiting reagent', expr: 'Divide each reactant’s moles by its coefficient; smallest wins', words: true, note: 'Comparing raw moles works only if the coefficients are equal.' },
+              { name: 'Percentage yield', expr: '% yield = (actual / theoretical) × 100', words: true, note: 'Above 100% means an impure or wet product, not a good result.' },
+              { name: 'Titration', expr: 'c_1 V_1 / a = c_2 V_2 / b', note: 'a and b are the coefficients. Only 1 : 1 gives c₁V₁ = c₂V₂.' }
+            ],
+            examples: [
+              {
+                prompt: 'For N₂ + 3 H₂ → 2 NH₃, you have 4.00 mol of N₂ and 9.00 mol of H₂. Which is limiting, and how much NH₃ forms?',
+                steps: [
+                  { do: 'N₂: 4.00 / 1 = 4.00. H₂: 9.00 / 3 = 3.00', why: 'Divide by the coefficient. Comparing 4.00 with 9.00 directly would wrongly name nitrogen as limiting.' },
+                  { do: '3.00 is smaller, so hydrogen is limiting', why: 'There is more hydrogen by count and still not enough, because each nitrogen needs three of it.' },
+                  { do: 'n(NH₃) = 9.00 × 2/3 = 6.00 mol', why: 'Use the LIMITING reagent and its ratio to ammonia. Using the nitrogen figure would give 8.00 mol, which there is not enough hydrogen to make.' },
+                  { do: 'Nitrogen used: 9.00 × 1/3 = 3.00 mol, leaving 1.00 mol in excess', why: 'The leftover is worth computing — it is often the second half of the question.' }
+                ],
+                answer: 'H₂ is limiting; 6.00 mol NH₃; 1.00 mol N₂ left over', answerWords: true
+              },
+              {
+                prompt: '25.0 mL of NaOH is neutralised by 20.0 mL of 0.500 M HCl. The reaction is 1 : 1. Find the NaOH concentration.',
+                steps: [
+                  { do: 'n(HCl) = cV = 0.500 × 0.0200 L = 0.0100 mol', why: 'Convert the millilitres here — this step is not the dilution relation and the units do not cancel.' },
+                  { do: 'HCl : NaOH is 1 : 1, so n(NaOH) = 0.0100 mol', why: 'Read the ratio from the equation rather than assuming it.' },
+                  { do: 'c(NaOH) = n/V = 0.0100 / 0.0250 L', why: 'Again in litres.' },
+                  { do: 'c = 0.400 M', why: 'Lower than the acid, as expected: a larger volume of it was needed to supply the same number of moles.' }
+                ],
+                answer: '0.400 M', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'chem-limiting-without-coefficients',
+                wrong: 'Calling the reactant with fewer moles the limiting one',
+                right: 'Divide each reactant’s moles by its coefficient first, then compare.',
+                why: 'A reactant needed three times over runs out three times faster. In the worked example above, hydrogen is limiting despite there being more than twice as much of it, and comparing raw moles gets it backwards and overstates the product by a third.'
+              },
+              {
+                id: 'chem-yield-over-100',
+                wrong: 'Reporting a percentage yield above 100% as a good result',
+                right: 'Above 100% means the product is wet, impure, or the measurement is wrong.',
+                why: 'The theoretical yield is the maximum the atoms allow; exceeding it is impossible. It is a genuinely useful signal — it says the experiment needs repeating, not that it went unusually well.'
+              },
+              {
+                id: 'chem-titration-as-dilution',
+                wrong: 'Applying c₁V₁ = c₂V₂ to a titration with a 1 : 2 stoichiometry',
+                right: 'Titration needs the coefficients: c₁V₁/a = c₂V₂/b.',
+                why: 'The two relations look identical and describe different things — dilution conserves moles of one substance, titration relates moles of two different ones. For H₂SO₄ against NaOH the ratio is 1 : 2, and ignoring it gives an answer wrong by a factor of two.'
+              }
+            ]
+          }
+        ],
+        practice: [
+          { id: 'r1', kind: 'numeric', lesson: 'b1',
+            prompt: 'What is the concentration, in mol/L, of a solution containing 0.400 mol of solute in 250 mL?',
+            answer: 1.6, tol: 0.0005, verify: { expr: '(400/1000) / (250/1000)', dp: 3 },
+            hint: 'Convert millilitres to litres first.',
+            solution: ['250 mL = 0.250 L', 'c = n/V = 0.400 / 0.250', 'c = 1.600 mol/L'] },
+
+          { id: 'r2', kind: 'numeric', lesson: 'b1',
+            prompt: '40.0 mL of 3.00 M solution is diluted to 0.400 M. What is the final volume, in mL?',
+            answer: 300, verify: { expr: '3 * 40 / (4/10)' },
+            hint: 'c₁V₁ = c₂V₂ — and both volumes may stay in mL here.',
+            solution: ['3.00 × 40.0 = 0.400 × V₂', '120 = 0.400 V₂', 'V₂ = 300 mL total (so 260 mL of water is added)'] },
+
+          { id: 'r3', kind: 'numeric', lesson: 'b1',
+            prompt: 'What is the chloride ion concentration, in mol/L, of a 0.150 M solution of AlCl₃?',
+            answer: 0.45, tol: 0.0005, verify: { expr: '150/1000 * 3', dp: 3 },
+            hint: 'How many chlorides does each formula unit release?',
+            solution: ['Each AlCl₃ gives three Cl⁻', 'c(Cl⁻) = 3 × 0.150', 'c(Cl⁻) = 0.450 mol/L'] },
+
+          { id: 'r4', kind: 'mc', lesson: 'b2',
+            prompt: 'In the reaction Mg + 2 HCl → MgCl₂ + H₂, which species is the reducing agent?',
+            options: [
+              { t: 'Mg — it is oxidised, so it reduces something else', ok: true },
+              { t: 'HCl — it is the other reactant' },
+              { t: 'H₂ — it is the reduced product' },
+              { t: 'MgCl₂ — it contains both elements' }
+            ],
+            hint: 'The reducing agent is the one that is itself oxidised.',
+            solution: ['Mg goes from 0 to +2 — it loses electrons, so it is oxidised',
+              'H goes from +1 to 0 — it gains electrons, so it is reduced',
+              'The substance oxidised is the reducing agent: Mg'] },
+
+          { id: 'r5', kind: 'mc', lesson: 'b2',
+            prompt: 'Mixing BaCl₂(aq) with Na₂SO₄(aq) precipitates BaSO₄. Which is the net ionic equation?',
+            options: [
+              { t: 'Ba²⁺(aq) + SO₄²⁻(aq) → BaSO₄(s)', ok: true },
+              { t: 'BaCl₂(aq) + Na₂SO₄(aq) → BaSO₄(s) + 2 NaCl(aq)' },
+              { t: 'Ba²⁺(aq) + 2 Cl⁻(aq) → BaCl₂(s)' },
+              { t: '2 Na⁺(aq) + 2 Cl⁻(aq) → 2 NaCl(s)' }
+            ],
+            hint: 'Remove every ion that is dissolved both before and after.',
+            solution: ['Na⁺ and Cl⁻ are dissolved on both sides — spectators',
+              'Only barium and sulfate actually combine',
+              'Ba²⁺(aq) + SO₄²⁻(aq) → BaSO₄(s)'] },
+
+          { id: 'r6', kind: 'numeric', lesson: 'b3',
+            prompt: 'For 2 Al + 3 Cl₂ → 2 AlCl₃ you have 4.00 mol Al and 3.00 mol Cl₂. How many moles of AlCl₃ form?',
+            answer: 2, verify: { expr: '3 * 2 / 3' },
+            hint: 'Divide each amount by its coefficient before comparing.',
+            solution: ['Al: 4.00/2 = 2.00. Cl₂: 3.00/3 = 1.00', 'Cl₂ is limiting',
+              'n(AlCl₃) = 3.00 × 2/3 = 2.00 mol'] },
+
+          { id: 'r7', kind: 'numeric', lesson: 'b3',
+            prompt: 'A reaction has a theoretical yield of 25.0 g and actually produces 20.0 g. What is the percentage yield?',
+            answer: 80, verify: { expr: '200/10 / (250/10) * 100' },
+            hint: 'Actual over theoretical, times 100.',
+            solution: ['% yield = (20.0 / 25.0) × 100', '= 0.800 × 100', '= 80.0%'] },
+
+          { id: 'r8', kind: 'numeric', lesson: 'b3',
+            prompt: '20.0 mL of NaOH is neutralised by 25.0 mL of 0.200 M HCl in a 1 : 1 reaction. What is the NaOH concentration, in mol/L? Give 3 decimal places.',
+            answer: 0.25, tol: 0.0005, verify: { expr: '(2/10) * (250/10) / (200/10)', dp: 3 },
+            hint: 'Find the moles of acid, apply the 1 : 1 ratio, then divide by the base volume.',
+            solution: ['n(HCl) = 0.200 × 0.0250 = 0.00500 mol', '1 : 1, so n(NaOH) = 0.00500 mol',
+              'c = 0.00500 / 0.0200 = 0.250 mol/L'] },
+
+          { id: 'r9', kind: 'spot', lesson: 'b3',
+            prompt: 'For N₂ + 3 H₂ → 2 NH₃ a student has 5.00 mol N₂ and 6.00 mol H₂. One line is wrong.',
+            steps: [
+              { t: 'Both reactants are present, so one of them must run out first', bad: false },
+              { t: 'N₂ has 5.00 mol and H₂ has 6.00 mol, so N₂ is limiting', bad: true },
+              { t: 'The limiting reagent alone decides how much product forms', bad: false },
+              { t: 'The other reactant is left over in excess', bad: false }
+            ],
+            why: 'Raw moles cannot be compared, because each nitrogen consumes three hydrogens. Dividing by the coefficients gives N₂: 5.00/1 = 5.00 and H₂: 6.00/3 = 2.00, so hydrogen is limiting despite there being more of it. Naming nitrogen instead predicts 10.0 mol of ammonia where only 4.00 mol can form — an answer two and a half times too large.',
+            hint: 'How many hydrogens does each nitrogen need?',
+            solution: ['Divide each amount by its coefficient', 'N₂: 5.00/1 = 5.00; H₂: 6.00/3 = 2.00',
+              'H₂ is limiting, and n(NH₃) = 6.00 × 2/3 = 4.00 mol'] },
+
+          { id: 'r10', kind: 'order', lesson: 'b3',
+            prompt: 'Put the steps of a limiting-reagent problem in order.',
+            steps: [
+              'Balance the equation',
+              'Convert every given mass to moles',
+              'Divide each reactant’s moles by its coefficient and take the smallest',
+              'Use the limiting reagent’s moles and the mole ratio to find the product'
+            ],
+            hint: 'The coefficients are needed for step three, so they must be right first.',
+            solution: ['An unbalanced equation has the wrong coefficients, which makes every later step wrong',
+              'Moles are the only currency the coefficients work in',
+              'The division by coefficients is what makes "fewest moles" the wrong test'] }
+        ]
+      },
+
+      /* ============================ UNIT 3 ============================ */
+      {
+        id: 'gases', n: 3,
+        title: 'Gases',
+        blurb: 'One equation that covers every gas law you will be asked about, the temperature scale it forces on you, and what the molecules are actually doing.',
+        read: 'Chapter 5',
+        objectives: [
+          'Apply the ideal gas equation and the combined gas law with correct units',
+          'Use molar volume to move between gas volumes and moles',
+          'Compute partial pressures and apply Dalton’s law',
+          'State the assumptions of the kinetic molecular model and say where a real gas departs from them'
+        ],
+        lessons: [
+          {
+            id: 'c1', title: 'The gas laws and the ideal gas equation', src: 'Section 5.1',
+            idea: `Four quantities describe a gas sample: pressure P, volume V, temperature T and amount n. One equation relates all four:<br><br><b>PV = nRT</b><br><br>with R = 0.0821 L·atm/(mol·K) when pressure is in atmospheres and volume in litres, or 8.314 J/(mol·K) in SI units. <b>Pick R to match your units and the conversions take care of themselves</b>; mixing them is the commonest source of an answer that is out by a factor of about a hundred.<br><br>The named gas laws are all the same equation with something held constant. Boyle: at fixed n and T, PV is constant. Charles: at fixed n and P, V/T is constant. Gay-Lussac: at fixed n and V, P/T is constant. Rather than memorise four, remember the combined form for a fixed amount of gas:<br><br><b>P₁V₁ / T₁ = P₂V₂ / T₂</b><br><br><b>Temperature must be in kelvin.</b> Not sometimes — always, in every gas calculation without exception. K = °C + 273.15. Celsius has an arbitrary zero, so ratios of Celsius temperatures are meaningless: doubling from 10 °C to 20 °C does not double anything physical, while 283 K to 566 K does.`,
+            rules: [
+              { name: 'Ideal gas equation', expr: 'PV = nRT', note: 'R = 0.0821 L·atm/(mol·K), or 8.314 J/(mol·K) in SI.' },
+              { name: 'Combined gas law', expr: 'P_1 V_1 / T_1 = P_2 V_2 / T_2', note: 'For a fixed amount of gas. Covers Boyle, Charles and Gay-Lussac at once.' },
+              { name: 'Temperature', expr: 'K = °C + 273.15', words: true, note: 'Always kelvin in a gas calculation. No exceptions.' },
+              { name: 'Molar volume at STP', expr: '22.4 L/mol at 0 °C and 1 atm', words: true, note: 'A consequence of PV = nRT, not an extra law.' }
+            ],
+            examples: [
+              {
+                prompt: 'How many moles of gas occupy 5.00 L at 2.00 atm and 300 K? Take R = 0.0821 L·atm/(mol·K).',
+                steps: [
+                  { do: 'n = PV/RT', why: 'Rearranged for the unknown.' },
+                  { do: 'n = (2.00 × 5.00) / (0.0821 × 300)', why: 'Atmospheres with litres, so R = 0.0821 is the right constant. The temperature is already in kelvin.' },
+                  { do: 'n = 10.0 / 24.63', why: 'Do the denominator as one number before dividing.' },
+                  { do: 'n = 0.406 mol', why: 'A sanity check: at STP this would be about 0.22 mol, and here the pressure is doubled, so roughly twice as much gas is reasonable.' }
+                ],
+                answer: '0.406 mol', answerWords: true
+              },
+              {
+                prompt: 'A gas occupies 2.00 L at 1.00 atm and 300 K. What volume does it occupy at 2.00 atm and 600 K?',
+                steps: [
+                  { do: 'P₁V₁/T₁ = P₂V₂/T₂, with all temperatures in kelvin', why: 'Fixed amount of gas, so the combined law applies and R never appears.' },
+                  { do: '(1.00 × 2.00)/300 = (2.00 × V₂)/600', why: 'Substitute, keeping each pair together.' },
+                  { do: 'V₂ = (1.00 × 2.00 × 600)/(2.00 × 300)', why: 'Rearranged in one step rather than two.' },
+                  { do: 'V₂ = 2.00 L', why: 'Unchanged — the doubled pressure would halve it, and the doubled temperature doubles it back. Two effects that exactly cancel, which is why this makes a good check on the method.' }
+                ],
+                answer: '2.00 L', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'chem-celsius-in-gas-law',
+                wrong: 'Substituting a temperature in °C into PV = nRT or the combined law',
+                right: 'Convert to kelvin every time: K = °C + 273.15.',
+                why: 'Celsius has an arbitrary zero, so a Celsius ratio means nothing — and at 0 °C the equation would predict zero volume. The error is largest at low temperatures and never announces itself, because the answer is still a plausible-looking number.'
+              },
+              {
+                id: 'chem-wrong-r-constant',
+                wrong: 'Using R = 8.314 with pressure in atmospheres and volume in litres',
+                right: 'Match R to your units: 0.0821 for L·atm, 8.314 for SI pascals and cubic metres.',
+                why: 'The two differ by about a factor of a hundred, so the answer is out by that much. Writing the units of R beside it when you copy it down makes the mismatch visible before the arithmetic starts.'
+              },
+              {
+                id: 'chem-stp-volume-everywhere',
+                wrong: 'Using 22.4 L/mol at any temperature and pressure',
+                right: '22.4 L/mol holds only at STP — 0 °C and 1 atm.',
+                why: 'It is a value of PV = nRT at one particular condition, not a constant of nature. At room temperature and pressure the molar volume is about 24 L/mol, and using 22.4 anywhere else introduces an error of several per cent for no reason, since the full equation is no harder.'
+              }
+            ]
+          },
+
+          {
+            id: 'c2', title: 'Gas volumes, density and stoichiometry', src: 'Section 5.2',
+            idea: `Because the ideal gas equation contains n, a gas volume can enter a stoichiometry calculation directly. The route is unchanged — <b>volume → moles → mole ratio → moles → whatever is wanted</b> — and PV = nRT is simply how the first and last steps are done when the substance is a gas.<br><br>A consequence worth stating separately: at the <b>same temperature and pressure</b>, equal volumes of any gas contain equal numbers of molecules. This is Avogadro's law, and it means that for gases, and only for gases, <b>the coefficients of a balanced equation are also a volume ratio</b>. In 2 H₂ + O₂ → 2 H₂O, two litres of hydrogen react with one litre of oxygen. That shortcut does not exist for solids or solutions.<br><br><b>Gas density</b> follows from rearranging. Since n = m/M, PV = (m/M)RT, and density ρ = m/V gives:<br><br><b>ρ = PM / (RT)</b><br><br>Two readings of that are useful. Denser gases have higher molar masses at the same conditions, which is why carbon dioxide pools at floor level and helium rises. And measuring a gas's density is a way of finding its molar mass — historically the way it was done.`,
+            rules: [
+              { name: 'Avogadro’s law', expr: 'Equal volumes of any gas at the same T and P hold equal numbers of molecules', words: true, note: 'So coefficients are volume ratios — for gases only.' },
+              { name: 'Gas density', expr: 'rho = PM/(RT)', note: 'Rearranged from PV = nRT with n = m/M.' },
+              { name: 'Molar mass from density', expr: 'M = rho RT/P', note: 'The same relation, solved the other way.' }
+            ],
+            examples: [
+              {
+                prompt: 'What volume of oxygen at STP is needed to burn 2.00 mol of methane? CH₄ + 2 O₂ → CO₂ + 2 H₂O. Molar volume at STP is 22.4 L/mol.',
+                steps: [
+                  { do: 'Ratio CH₄ : O₂ is 1 : 2, so n(O₂) = 2 × 2.00 = 4.00 mol', why: 'The mole ratio from the balanced equation, as always.' },
+                  { do: 'V = n × 22.4 L/mol', why: 'Molar volume applies because the question specified STP.' },
+                  { do: 'V = 4.00 × 22.4', why: 'A single multiplication once the moles are known.' },
+                  { do: 'V = 89.6 L', why: 'At room conditions instead this would be about 96 L, which is why the question had to say STP.' }
+                ],
+                answer: '89.6 L', answerWords: true
+              },
+              {
+                prompt: 'Find the density of oxygen gas at 1.00 atm and 273 K. M(O₂) = 32.00 g/mol, R = 0.0821 L·atm/(mol·K).',
+                steps: [
+                  { do: 'ρ = PM/(RT)', why: 'The rearranged ideal gas equation, with M the molar mass.' },
+                  { do: 'ρ = (1.00 × 32.00) / (0.0821 × 273)', why: 'Consistent units throughout: atm, g/mol, L·atm/(mol·K), K.' },
+                  { do: 'ρ = 32.00 / 22.41', why: 'The denominator is the molar volume at these conditions, which is a useful thing to notice.' },
+                  { do: 'ρ = 1.43 g/L', why: 'Slightly denser than air at about 1.29 g/L, as it should be — air is mostly nitrogen at 28 g/mol.' }
+                ],
+                answer: '1.43 g/L', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'chem-volume-ratio-for-solutions',
+                wrong: 'Applying the coefficients as a volume ratio to liquids or solutions',
+                right: 'Coefficients are volume ratios for GASES at the same T and P only.',
+                why: 'Avogadro’s law is about gases, where the molecules are far apart and their own size is irrelevant. A litre of one liquid and a litre of another contain entirely different numbers of molecules, so the shortcut silently becomes wrong the moment the state changes.'
+              },
+              {
+                id: 'chem-density-units-mixed',
+                wrong: 'Reporting a gas density in g/mL by analogy with liquids',
+                right: 'Gas densities are naturally in g/L — they are about a thousand times smaller.',
+                why: 'Oxygen is 1.43 g/L, which is 0.00143 g/mL. Quoting a gas density in g/mL is not wrong arithmetic but it hides the magnitude, and a student who expects a number near 1 will mistake the correct answer for an error.'
+              }
+            ]
+          },
+
+          {
+            id: 'c3', title: 'Partial pressures and the kinetic model', src: 'Section 5.3',
+            idea: `In a mixture, each gas exerts the pressure it would exert if it were alone in the container. That is its <b>partial pressure</b>, and <b>Dalton's law</b> says the total is their sum:<br><br><b>P<sub>total</sub> = P₁ + P₂ + P₃ + …</b><br><br>Equivalently, each gas's share of the pressure is its share of the molecules: <b>P₁ = x₁ P<sub>total</sub></b>, where x₁ is the mole fraction. A gas collected over water is the standard application — the measured pressure includes water vapour, which must be subtracted before the collected gas is quantified.<br><br>The <b>kinetic molecular model</b> is the picture underneath all of this. Its assumptions: molecules are in constant random motion; their own volume is negligible compared with the container; collisions are perfectly elastic; there are no attractive forces between them; and the average kinetic energy is proportional to the absolute temperature.<br><br>That last one is the important one. <b>Temperature is a measure of average molecular kinetic energy</b> — which is why kelvin is the only scale a gas law can use, and why at the same temperature a heavy molecule moves more slowly than a light one.<br><br><b>Where real gases depart.</b> The two assumptions that fail first are the ones stated as negligible: molecules do have volume, and they do attract each other. So real gases deviate most at <b>high pressure</b>, where the molecules are crowded, and <b>low temperature</b>, where they are moving slowly enough for attractions to matter. Which is exactly the condition under which a gas liquefies — something an ideal gas could never do.`,
+            rules: [
+              { name: 'Dalton’s law', expr: 'P_total = P_1 + P_2 + P_3', note: 'Each gas acts as though the others were not there.' },
+              { name: 'Mole fraction', expr: 'P_1 = x_1 P_total', note: 'A gas’s share of the pressure is its share of the molecules.' },
+              { name: 'Temperature', expr: 'Proportional to average molecular kinetic energy', words: true, note: 'The reason kelvin is the only usable scale.' },
+              { name: 'Where the model fails', expr: 'High pressure and low temperature', words: true, note: 'Exactly where molecular volume and attraction stop being negligible.' }
+            ],
+            examples: [
+              {
+                prompt: 'A container holds nitrogen at 0.600 atm, oxygen at 0.250 atm and argon at 0.150 atm. Find the total pressure and the mole fraction of nitrogen.',
+                steps: [
+                  { do: 'P_total = 0.600 + 0.250 + 0.150 = 1.00 atm', why: 'Dalton’s law: partial pressures simply add.' },
+                  { do: 'x(N₂) = P(N₂)/P_total = 0.600/1.00', why: 'Mole fraction is the pressure share.' },
+                  { do: 'x(N₂) = 0.600', why: 'So 60% of the molecules are nitrogen — close to ordinary air, which is about 78%.' },
+                  { do: 'The three fractions sum to 1.00', why: 'Always worth checking: mole fractions that do not sum to 1 mean a gas has been missed or double-counted.' }
+                ],
+                answer: 'P_total = 1.00 atm; x(N₂) = 0.600', answerWords: true
+              },
+              {
+                prompt: 'A gas is collected over water at 25 °C, where the vapour pressure of water is 23.8 mmHg. The total pressure is 750.0 mmHg. What is the pressure of the dry gas?',
+                steps: [
+                  { do: 'The measured pressure is the sum of the gas and the water vapour', why: 'The space above the water always contains water vapour at its own saturation pressure.' },
+                  { do: 'P(gas) = P_total − P(water vapour)', why: 'Dalton’s law rearranged; the water vapour is one of the partial pressures.' },
+                  { do: 'P(gas) = 750.0 − 23.8', why: 'Subtract, do not ignore — 23.8 mmHg is about 3% of the total.' },
+                  { do: 'P(gas) = 726.2 mmHg', why: 'Using 750.0 instead would overstate the collected gas by 3%, which is larger than most experimental errors in the measurement itself.' }
+                ],
+                answer: '726.2 mmHg', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'chem-water-vapour-ignored',
+                wrong: 'Using the total measured pressure for a gas collected over water',
+                right: 'Subtract the water vapour pressure at that temperature first.',
+                why: 'The collected volume contains water vapour as well as the gas of interest, and its partial pressure rises sharply with temperature. Ignoring it makes every result a few per cent too high, systematically in the same direction, which is worse than random error because it never averages out.'
+              },
+              {
+                id: 'chem-ideal-at-all-conditions',
+                wrong: 'Assuming the ideal gas equation is accurate under any conditions',
+                right: 'Real gases deviate at high pressure and low temperature.',
+                why: 'The model assumes molecules have no volume and do not attract each other, and both assumptions fail exactly where gases are compressed or cooled. A model that is accurate everywhere could never explain why gases liquefy — so the deviation is not a defect, it is the interesting part.'
+              },
+              {
+                id: 'chem-heavier-means-hotter',
+                wrong: 'Thinking a heavier molecule at the same temperature has more kinetic energy',
+                right: 'Same temperature means the same AVERAGE kinetic energy. Heavier molecules move more slowly.',
+                why: 'KE = ½mv², so if the energy is fixed and m is larger, v must be smaller. This is why light gases diffuse faster and why helium escapes a balloon before the air does — an everyday observation that follows directly from the model.'
+              }
+            ]
+          }
+        ],
+        practice: [
+          { id: 's1', kind: 'numeric', lesson: 'c1',
+            prompt: 'Convert 27 °C to kelvin.',
+            answer: 300.15, tol: 0.005, verify: { expr: '27 + 27315/100', dp: 2 },
+            hint: 'K = °C + 273.15.',
+            solution: ['K = 27 + 273.15', 'K = 300.15 K', 'Many courses round 273.15 to 273, giving 300 K'] },
+
+          { id: 's2', kind: 'numeric', lesson: 'c1',
+            prompt: 'How many moles of gas occupy 5.00 L at 2.00 atm and 300 K? Take R = 0.0821 L·atm/(mol·K). Give 3 decimal places.',
+            answer: 0.406, tol: 0.0005, verify: { expr: '(2 * 5) / (821/10000 * 300)', dp: 3 },
+            hint: 'n = PV/RT, and the temperature is already in kelvin.',
+            solution: ['n = PV/RT', 'n = (2.00 × 5.00) / (0.0821 × 300)', 'n = 10.0 / 24.63 = 0.406 mol'] },
+
+          { id: 's3', kind: 'numeric', lesson: 'c1',
+            prompt: 'A gas occupies 6.00 L at 300 K. At constant pressure, what volume does it occupy at 400 K?',
+            answer: 8, verify: { expr: '6 * 400 / 300' },
+            hint: 'Constant pressure means V/T is constant.',
+            solution: ['V₁/T₁ = V₂/T₂', 'V₂ = 6.00 × 400/300', 'V₂ = 8.00 L'] },
+
+          { id: 's4', kind: 'spot', lesson: 'c1',
+            prompt: 'A student finds the new volume of a gas heated from 20 °C to 40 °C at constant pressure. One line is wrong.',
+            steps: [
+              { t: 'At constant pressure, V₁/T₁ = V₂/T₂', bad: false },
+              { t: 'The temperature doubles from 20 °C to 40 °C, so the volume doubles', bad: true },
+              { t: 'In kelvin the temperatures are 293 K and 313 K', bad: false },
+              { t: 'So the volume rises by a factor of 313/293, about 6.8%', bad: false }
+            ],
+            why: 'Celsius has an arbitrary zero, so the ratio of two Celsius temperatures is physically meaningless. 20 °C to 40 °C is 293 K to 313 K — an increase of under 7%, not 100%. The third and fourth lines are right and the second contradicts them, which is the tell: a correct working never contains two answers.',
+            hint: 'Is 40 °C really twice as hot as 20 °C in any physical sense?',
+            solution: ['Convert to kelvin before taking any ratio', '20 °C = 293 K, 40 °C = 313 K',
+              'V₂ = V₁ × 313/293, an increase of about 6.8%'] },
+
+          { id: 's5', kind: 'numeric', lesson: 'c2',
+            prompt: 'What volume, in litres, do 3.00 mol of gas occupy at STP? Take the molar volume as 22.4 L/mol.',
+            answer: 67.2, tol: 0.05, verify: { expr: '3 * 224/10', dp: 1 },
+            hint: 'One multiplication.',
+            solution: ['V = n × 22.4', 'V = 3.00 × 22.4', 'V = 67.2 L'] },
+
+          { id: 's6', kind: 'numeric', lesson: 'c2',
+            prompt: 'For CH₄ + 2 O₂ → CO₂ + 2 H₂O, what volume of O₂ at STP burns 1.50 mol of methane? Molar volume 22.4 L/mol. Give 1 decimal place.',
+            answer: 67.2, tol: 0.05, verify: { expr: '15/10 * 2 * 224/10', dp: 1 },
+            hint: 'Mole ratio first, then molar volume.',
+            solution: ['n(O₂) = 2 × 1.50 = 3.00 mol', 'V = 3.00 × 22.4', 'V = 67.2 L'] },
+
+          { id: 's7', kind: 'mc', lesson: 'c2',
+            prompt: 'At the same temperature and pressure, 2 H₂ + O₂ → 2 H₂O. What volume of oxygen reacts with 10 L of hydrogen?',
+            options: [
+              { t: '5 L — for gases the coefficients are also a volume ratio', ok: true },
+              { t: '10 L — equal volumes always react one to one' },
+              { t: '20 L — twice the hydrogen volume' },
+              { t: 'It cannot be found without the temperature and pressure' }
+            ],
+            hint: 'Avogadro’s law: equal volumes of any gas hold equal numbers of molecules.',
+            solution: ['At the same T and P, equal volumes contain equal numbers of molecules',
+              'So the 2 : 1 mole ratio is also a 2 : 1 volume ratio', '10 L of H₂ needs 5 L of O₂'] },
+
+          { id: 's8', kind: 'numeric', lesson: 'c3',
+            prompt: 'A mixture contains nitrogen at 0.450 atm, oxygen at 0.300 atm and helium at 0.250 atm. What is the total pressure, in atm? Give 3 decimal places.',
+            answer: 1, tol: 0.0005, verify: { expr: '450/1000 + 300/1000 + 250/1000', dp: 3 },
+            hint: 'Dalton’s law: partial pressures add.',
+            solution: ['P_total = 0.450 + 0.300 + 0.250', 'P_total = 1.000 atm'] },
+
+          { id: 's9', kind: 'numeric', lesson: 'c3',
+            prompt: 'A gas is collected over water at a total pressure of 780.0 mmHg. The water vapour pressure is 25.0 mmHg. What is the pressure of the dry gas, in mmHg?',
+            answer: 755, verify: { expr: '780 - 25' },
+            hint: 'The measured pressure includes the water vapour.',
+            solution: ['P(gas) = P_total − P(water)', 'P(gas) = 780.0 − 25.0', 'P(gas) = 755.0 mmHg'] },
+
+          { id: 's10', kind: 'mc', lesson: 'c3',
+            prompt: 'Under which conditions does a real gas deviate MOST from ideal behaviour?',
+            options: [
+              { t: 'High pressure and low temperature', ok: true },
+              { t: 'Low pressure and high temperature' },
+              { t: 'High pressure and high temperature' },
+              { t: 'A real gas never deviates measurably' }
+            ],
+            hint: 'Which two assumptions of the model fail first, and when?',
+            solution: ['The model assumes molecules have negligible volume and no attractions',
+              'High pressure crowds them, so their own volume stops being negligible',
+              'Low temperature slows them, so attractions start to matter — which is why gases liquefy'] }
+        ]
+      },
+
+      /* ============================ UNIT 4 ============================ */
+      {
+        id: 'thermo', n: 4,
+        title: 'Thermochemistry',
+        blurb: 'Where the energy goes: the sign convention that decides half the marks, measuring heat with a thermometer, and adding reactions together to get one you never measured.',
+        read: 'Chapter 6',
+        objectives: [
+          'Apply the sign convention for heat and for enthalpy change',
+          'Use q = mcΔT to compute heat transferred in a calorimetry experiment',
+          'Apply Hess’s law to combine reactions into a target reaction',
+          'Compute a reaction enthalpy from standard enthalpies of formation'
+        ],
+        lessons: [
+          {
+            id: 'd1', title: 'Heat, work and the sign convention', src: 'Section 6.1',
+            idea: `Thermochemistry needs one decision made once and kept: everything is described <b>from the system's point of view</b>. The system is the reaction; the surroundings are everything else, including the flask and the thermometer.<br><br><b>Energy entering the system is positive. Energy leaving it is negative.</b> That single rule generates everything else.<br><br>An <b>exothermic</b> reaction releases heat to the surroundings, so the system loses energy and <b>ΔH is negative</b> — while the thermometer in the surroundings reads <i>higher</i>. That inversion is where most sign errors come from, and it is not a trick: the thermometer is measuring the surroundings, not the system.<br><br>An <b>endothermic</b> reaction absorbs heat, <b>ΔH is positive</b>, and the mixture feels cold.<br><br><b>Enthalpy</b> H is the heat content at constant pressure, which is the condition of nearly every reaction done in an open flask. So for laboratory purposes <b>ΔH = q<sub>p</sub></b>, the heat absorbed or released at constant pressure. <b>ΔH is also extensive</b>: doubling the amounts doubles ΔH, and reversing a reaction flips its sign.`,
+            rules: [
+              { name: 'Sign convention', expr: 'Into the system is positive; out of the system is negative', words: true, note: 'Decided from the system’s point of view, always.' },
+              { name: 'Exothermic', expr: 'ΔH < 0 — releases heat, surroundings warm up', words: true, note: 'The thermometer reads higher while the system loses energy.' },
+              { name: 'Endothermic', expr: 'ΔH > 0 — absorbs heat, surroundings cool down', words: true, note: 'The mixture feels cold.' },
+              { name: 'Extensive', expr: 'Double the amounts, double ΔH. Reverse the reaction, flip the sign.', words: true, note: 'ΔH belongs to the equation as written, coefficients included.' }
+            ],
+            examples: [
+              {
+                prompt: 'Burning 1 mol of methane releases 890 kJ. Write ΔH for the combustion, and for the reverse reaction.',
+                steps: [
+                  { do: 'Heat is released, so energy leaves the system', why: 'The flask gets hot because energy is going out of the reaction into the surroundings.' },
+                  { do: 'ΔH = −890 kJ/mol for the combustion', why: 'Negative for exothermic, from the system’s point of view.' },
+                  { do: 'Reversing a reaction flips the sign', why: 'Making methane back from CO₂ and water must cost exactly what burning it released, or energy would be created.' },
+                  { do: 'ΔH = +890 kJ/mol for the reverse', why: 'Which is why it does not happen spontaneously in a flask.' }
+                ],
+                answer: 'Combustion −890 kJ/mol; reverse +890 kJ/mol', answerWords: true
+              },
+              {
+                prompt: 'For 2 H₂ + O₂ → 2 H₂O, ΔH = −572 kJ. What is ΔH for H₂ + ½O₂ → H₂O?',
+                steps: [
+                  { do: 'ΔH belongs to the equation exactly as written, coefficients and all', why: 'It is not a per-mole-of-anything figure unless the equation says so.' },
+                  { do: 'The second equation is the first one halved', why: 'Every coefficient is divided by two.' },
+                  { do: 'So ΔH is halved: −572/2', why: 'Enthalpy is extensive — it scales with the amount.' },
+                  { do: 'ΔH = −286 kJ', why: 'Still negative: halving the amount does not change the direction of the energy flow, only how much.' }
+                ],
+                answer: '−286 kJ', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'chem-exothermic-positive',
+                wrong: 'Writing ΔH as positive for an exothermic reaction because the flask got hotter',
+                right: 'ΔH is negative when heat leaves the system, however the surroundings feel.',
+                why: 'The thermometer measures the surroundings, and the convention describes the system. A hot flask means energy left the reaction, which is a loss to it. Writing the sign convention at the top of the page before starting costs nothing and removes the error for the whole question.'
+              },
+              {
+                id: 'chem-enthalpy-not-scaled',
+                wrong: 'Quoting the tabulated ΔH after changing the coefficients',
+                right: 'ΔH scales with the equation. Halve the coefficients, halve ΔH.',
+                why: 'ΔH belongs to the equation as written. Using a value for 2 mol when the question is about 1 mol doubles the answer, and because the number came from a table it looks authoritative rather than wrong.'
+              },
+              {
+                id: 'chem-sign-not-flipped',
+                wrong: 'Keeping the sign of ΔH when a reaction is reversed',
+                right: 'Reversing a reaction reverses the direction of energy flow, so the sign flips.',
+                why: 'If it did not, you could go round the cycle forward and back and create energy. This is the rule that makes Hess’s law work, and forgetting it is the commonest error in the Hess’s-law questions two lessons from here.'
+              }
+            ]
+          },
+
+          {
+            id: 'd2', title: 'Calorimetry', src: 'Section 6.2',
+            idea: `A reaction's heat is measured indirectly: run it in a known mass of water and measure how much the <i>water's</i> temperature changes. The relation is:<br><br><b>q = mcΔT</b><br><br>where m is the mass in grams, c the <b>specific heat capacity</b> in J/(g·°C) — 4.18 for water — and ΔT the temperature change, final minus initial.<br><br>The specific heat capacity is how much energy one gram needs to warm by one degree. Water's is unusually high, which is why it is used as the measuring fluid and why coastal climates are milder than inland ones.<br><br><b>ΔT is a difference, so °C and K give the same number.</b> This is the one place in the whole course where Celsius is safe, and it is safe for a specific reason worth understanding rather than memorising: a difference of 10 °C is a difference of 10 K, because the two scales have the same size degree and differ only in where zero sits.<br><br><b>The sign, once more.</b> The q from q = mcΔT is the heat gained by the <i>water</i>. If the water warmed up, the reaction released that heat, so <b>q<sub>reaction</sub> = −q<sub>water</sub></b>. Skipping that negation is the single commonest error in calorimetry, and it produces an answer with the right magnitude and the wrong sign — which reads as not having understood what was measured.`,
+            rules: [
+              { name: 'Calorimetry', expr: 'q = m c Delta T', note: 'm in grams, c in J/(g·°C), ΔT = final − initial.' },
+              { name: 'Specific heat of water', expr: 'c = 4.18 J/(g·°C)', words: true, note: 'Unusually high, which is why water is the measuring fluid.' },
+              { name: 'ΔT in a difference', expr: '°C and K give the same ΔT', words: true, note: 'The only place in the course where Celsius is safe.' },
+              { name: 'Whose heat', expr: 'q_reaction = -q_water', note: 'The formula gives the water’s heat. The reaction’s is the opposite.' }
+            ],
+            examples: [
+              {
+                prompt: 'How much heat is needed to warm 250 g of water from 20.0 °C to 40.0 °C? Take c = 4.18 J/(g·°C).',
+                steps: [
+                  { do: 'ΔT = 40.0 − 20.0 = 20.0 °C', why: 'Final minus initial. As a difference this is also 20.0 K, so no conversion is needed.' },
+                  { do: 'q = mcΔT = 250 × 4.18 × 20.0', why: 'Mass already in grams, which is what c expects.' },
+                  { do: 'q = 20 900 J', why: 'Multiply left to right.' },
+                  { do: 'q = 20.9 kJ', why: 'Positive because the water gained energy. Something else lost it.' }
+                ],
+                answer: '20.9 kJ absorbed by the water', answerWords: true
+              },
+              {
+                prompt: 'A reaction in 100.0 g of water raises the temperature from 25.0 °C to 31.0 °C. Find ΔH for the reaction in kJ. Take c = 4.18 J/(g·°C).',
+                steps: [
+                  { do: 'ΔT = 31.0 − 25.0 = 6.0 °C', why: 'The water warmed, so it gained heat.' },
+                  { do: 'q_water = 100.0 × 4.18 × 6.0 = 2508 J', why: 'This is the heat the WATER gained — not yet the answer.' },
+                  { do: 'q_reaction = −q_water = −2508 J', why: 'The energy came out of the reaction. This negation is the step that gets skipped.' },
+                  { do: 'ΔH = −2.51 kJ — exothermic', why: 'Negative, and the water got warmer. Both statements are true at once, and that is the whole point of the sign convention.' }
+                ],
+                answer: '−2.51 kJ (exothermic)', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'chem-calorimetry-sign-skipped',
+                wrong: 'Reporting q from q = mcΔT as the reaction’s enthalpy change',
+                right: 'q = mcΔT is the water’s heat. The reaction’s is q_reaction = −q_water.',
+                why: 'The formula is applied to the water, because the water is what has a measured mass, a known specific heat and a thermometer in it. Forgetting the negation gives the right number with the wrong sign, and claims an endothermic reaction warmed the flask.'
+              },
+              {
+                id: 'chem-mass-in-kg',
+                wrong: 'Using the mass in kilograms with c = 4.18 J/(g·°C)',
+                right: 'c is per GRAM, so the mass must be in grams.',
+                why: 'It gives an answer a thousand times too small. The units of c are written on it for exactly this reason — reading them before substituting is a two-second habit that removes the error permanently.'
+              },
+              {
+                id: 'chem-delta-t-converted',
+                wrong: 'Converting a temperature DIFFERENCE from °C to K by adding 273.15',
+                right: 'A difference of 20 °C is a difference of 20 K. Nothing is added.',
+                why: 'The 273.15 shifts where zero sits and does not change the size of a degree, so it cancels in any subtraction. Adding it to a ΔT is over-correcting — an error caused by having been told, correctly, to always convert temperatures in the gas laws.'
+              }
+            ]
+          },
+
+          {
+            id: 'd3', title: 'Hess’s law and enthalpies of formation', src: 'Section 6.3',
+            idea: `Some reaction enthalpies cannot be measured directly — the reaction is too slow, too violent, or produces something else alongside. <b>Hess's law</b> gets them anyway: <b>the enthalpy change of a reaction is the same whatever route is taken from reactants to products.</b><br><br>That works because enthalpy is a <b>state function</b> — it depends only on where you start and where you finish, not on how you got there. So known reactions can be added, reversed and scaled until they sum to the target equation, and their ΔH values are treated in exactly the same way: <b>reverse a reaction, flip its sign; multiply it by a factor, multiply its ΔH by the same factor.</b><br><br>A shortcut covers most textbook cases. The <b>standard enthalpy of formation</b> ΔH°<sub>f</sub> is the enthalpy change when one mole of a compound forms from its elements in their standard states. Then:<br><br><b>ΔH°<sub>rxn</sub> = Σ ΔH°<sub>f</sub>(products) − Σ ΔH°<sub>f</sub>(reactants)</b><br><br>weighted by the coefficients. Two things about it. <b>Products minus reactants</b>, in that order — reversing it gives the right magnitude and the wrong sign. And <b>an element in its standard state has ΔH°<sub>f</sub> = 0</b> by definition: O₂(g), N₂(g), C(graphite), Fe(s) all contribute nothing. That is not an approximation, it is where the scale is anchored.`,
+            rules: [
+              { name: 'Hess’s law', expr: 'ΔH is the same by any route', words: true, note: 'Because enthalpy is a state function.' },
+              { name: 'Manipulating a step', expr: 'Reverse → flip the sign. Scale by k → multiply ΔH by k.', words: true, note: 'Do both to the equation and its ΔH together.' },
+              { name: 'From formation enthalpies', expr: 'Delta H_rxn = Sigma Delta H_f(products) - Sigma Delta H_f(reactants)', note: 'Weighted by coefficients. Products first.' },
+              { name: 'Elements', expr: 'ΔH_f = 0 for an element in its standard state', words: true, note: 'By definition — it is where the scale is anchored.' }
+            ],
+            examples: [
+              {
+                prompt: 'Given A → B with ΔH = −50 kJ and B → C with ΔH = +30 kJ, find ΔH for A → C.',
+                steps: [
+                  { do: 'The two steps already run in the right direction and join at B', why: 'Nothing needs reversing or scaling, which is the simplest case.' },
+                  { do: 'Add them: A → B → C is A → C overall', why: 'B appears on the right of one and the left of the other, so it cancels.' },
+                  { do: 'ΔH = −50 + 30', why: 'Add the enthalpy changes exactly as the equations were added.' },
+                  { do: 'ΔH = −20 kJ', why: 'Net exothermic, because the first step releases more than the second absorbs.' }
+                ],
+                answer: '−20 kJ', answerWords: true
+              },
+              {
+                prompt: 'Find ΔH for CH₄ + 2 O₂ → CO₂ + 2 H₂O given ΔH_f: CH₄ −75 kJ/mol, CO₂ −394 kJ/mol, H₂O −286 kJ/mol.',
+                steps: [
+                  { do: 'O₂ is an element in its standard state, so ΔH_f = 0', why: 'It contributes nothing to either side, whatever its coefficient.' },
+                  { do: 'Products: (−394) + 2(−286) = −394 − 572 = −966 kJ', why: 'Each value multiplied by its coefficient in the equation.' },
+                  { do: 'Reactants: (−75) + 2(0) = −75 kJ', why: 'Only the methane contributes.' },
+                  { do: 'ΔH = −966 − (−75) = −891 kJ', why: 'Products minus reactants. Subtracting a negative adds — and reversing the order would give +891, exothermic combustion reported as absorbing energy.' }
+                ],
+                answer: '−891 kJ', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'chem-hess-order-reversed',
+                wrong: 'Computing reactants minus products',
+                right: 'Products minus reactants, always in that order.',
+                why: 'It gives the right magnitude with the wrong sign, turning every combustion endothermic. The sanity check is free: a combustion must come out negative, and if it does not, the subtraction was the wrong way round.'
+              },
+              {
+                id: 'chem-element-formation-nonzero',
+                wrong: 'Looking up or inventing a formation enthalpy for O₂(g) or N₂(g)',
+                right: 'An element in its standard state has ΔH_f = 0 by definition.',
+                why: 'Formation enthalpies measure the energy to make a compound FROM its elements, so making an element from itself costs nothing. It is the zero of the scale, not a value that happens to be small — and O₃ or monatomic O are not standard states, so those are not zero.'
+              },
+              {
+                id: 'chem-hess-sign-not-flipped',
+                wrong: 'Reversing an equation in a Hess cycle but keeping its ΔH sign',
+                right: 'Reverse the equation and flip the sign of its ΔH together.',
+                why: 'The two are one operation. Doing only half of it puts an error of twice that step’s ΔH into the answer, and because the arithmetic is otherwise sound nothing looks wrong. Rewriting each manipulated step in full, with its new ΔH beside it, before adding anything is what prevents it.'
+              }
+            ]
+          }
+        ],
+        practice: [
+          { id: 't1', kind: 'mc', lesson: 'd1',
+            prompt: 'A reaction warms its flask noticeably. What is true of ΔH?',
+            options: [
+              { t: 'Negative — heat left the system, so the surroundings warmed', ok: true },
+              { t: 'Positive — the temperature went up' },
+              { t: 'Zero — energy is conserved' },
+              { t: 'It depends on the mass of the reactants' }
+            ],
+            hint: 'The thermometer is in the surroundings. ΔH describes the system.',
+            solution: ['A warm flask means energy moved from the reaction into the surroundings',
+              'Energy leaving the system is negative by convention',
+              'ΔH < 0: exothermic. The surroundings warming is exactly what that looks like from outside.'] },
+
+          { id: 't2', kind: 'numeric', lesson: 'd1',
+            prompt: 'For 2 H₂ + O₂ → 2 H₂O, ΔH = −572 kJ. What is ΔH, in kJ, for H₂ + ½O₂ → H₂O?',
+            answer: -286, verify: { expr: '-572 / 2' },
+            hint: 'Enthalpy scales with the equation.',
+            solution: ['The equation has been halved', 'So ΔH is halved: −572/2', 'ΔH = −286 kJ, still exothermic'] },
+
+          { id: 't3', kind: 'numeric', lesson: 'd1',
+            prompt: 'A reaction has ΔH = −120 kJ. What is ΔH, in kJ, for the reverse reaction?',
+            answer: 120, verify: { expr: '-1 * (-120)' },
+            hint: 'Reversing reverses the direction of energy flow.',
+            solution: ['Reversing a reaction flips the sign of ΔH', 'ΔH = +120 kJ',
+              'The reverse must cost exactly what the forward reaction released'] },
+
+          { id: 't4', kind: 'numeric', lesson: 'd2',
+            prompt: 'How much heat, in joules, is needed to warm 250 g of water by 20.0 °C? Take c = 4.18 J/(g·°C).',
+            answer: 20900, verify: { expr: '250 * 418/100 * 20' },
+            hint: 'q = mcΔT, with the mass in grams.',
+            solution: ['q = mcΔT = 250 × 4.18 × 20.0', 'q = 20 900 J', '= 20.9 kJ'] },
+
+          { id: 't5', kind: 'numeric', lesson: 'd2',
+            prompt: 'A 500 g sample of water cools by 8.00 °C. How many joules does it lose? Give the magnitude.',
+            answer: 16720, verify: { expr: '500 * 418/100 * 8' },
+            hint: 'Same formula; the question asks only for the size.',
+            solution: ['q = mcΔT = 500 × 4.18 × 8.00', 'q = 16 720 J lost by the water',
+              'Whatever absorbed it gained the same 16 720 J'] },
+
+          { id: 't6', kind: 'spot', lesson: 'd2',
+            prompt: 'A reaction in 200 g of water raises its temperature by 5.00 °C. A student computes ΔH. One line is wrong.',
+            steps: [
+              { t: 'q_water = mcΔT = 200 × 4.18 × 5.00 = 4180 J', bad: false },
+              { t: 'The water warmed, so the water gained 4180 J', bad: false },
+              { t: 'Therefore ΔH for the reaction is +4180 J', bad: true },
+              { t: 'The reaction is exothermic, since the flask got warmer', bad: false }
+            ],
+            why: 'q = mcΔT gives the heat gained by the WATER. The energy came out of the reaction, so q_reaction = −q_water = −4180 J and ΔH is negative. The fourth line says the reaction is exothermic and the third says ΔH is positive, which cannot both be true — a correct working never contradicts itself, and that contradiction is the quickest way to spot this error in your own answer.',
+            hint: 'Whose temperature did the thermometer measure?',
+            solution: ['q = mcΔT applies to the water, which is what has a mass and a thermometer',
+              'q_reaction = −q_water', 'ΔH = −4180 J = −4.18 kJ, exothermic'] },
+
+          { id: 't7', kind: 'numeric', lesson: 'd3',
+            prompt: 'A → B has ΔH = −40 kJ and B → C has ΔH = −25 kJ. What is ΔH, in kJ, for A → C?',
+            answer: -65, verify: { expr: '-40 + -25' },
+            hint: 'The two steps already join at B in the right direction.',
+            solution: ['Add the two equations: B cancels', 'ΔH = −40 + (−25)', 'ΔH = −65 kJ'] },
+
+          { id: 't8', kind: 'numeric', lesson: 'd3',
+            prompt: 'X → Y has ΔH = +60 kJ. In a Hess cycle you need Y → X. What ΔH, in kJ, should you use?',
+            answer: -60, verify: { expr: '-1 * 60' },
+            hint: 'Reversing the equation does one thing to its ΔH.',
+            solution: ['Reversing an equation flips the sign of its ΔH', 'ΔH = −60 kJ',
+              'Keeping +60 would put an error of 120 kJ into the final answer'] },
+
+          { id: 't9', kind: 'numeric', lesson: 'd3',
+            prompt: 'For CH₄ + 2 O₂ → CO₂ + 2 H₂O, use ΔH_f: CH₄ −75, CO₂ −394, H₂O −286 kJ/mol. What is ΔH_rxn, in kJ?',
+            answer: -891, verify: { expr: '(-394 + 2*(-286)) - (-75 + 2*0)' },
+            hint: 'O₂ is an element in its standard state. Products minus reactants.',
+            solution: ['Products: −394 + 2(−286) = −966', 'Reactants: −75 + 2(0) = −75',
+              'ΔH = −966 − (−75) = −891 kJ'] },
+
+          { id: 't10', kind: 'order', lesson: 'd3',
+            prompt: 'Put the steps of a Hess’s-law problem in order.',
+            steps: [
+              'Write the target equation and identify which substances must cancel',
+              'Reverse or scale each given equation so the intermediates cancel',
+              'Apply the same reversal or scaling to each ΔH',
+              'Add the manipulated equations and their enthalpy changes together'
+            ],
+            hint: 'You cannot decide what to reverse until you know what the target is.',
+            solution: ['The target equation is what decides every manipulation',
+              'Equations and their ΔH values must be manipulated together, never separately',
+              'Adding last means every sign has already been settled'] }
+        ]
+      }
+    ]
+  };
+
+  root.Courses.register(GENCHEM);
+
+})(typeof window !== 'undefined' ? window : globalThis);
+
+if (typeof module !== 'undefined' && module.exports) module.exports = globalThis.Courses;
+
+</script>
+<script>
 /* UNI Made EZ — subject profiles
    Copyright © 2026 JohnsonXCorp. All rights reserved.
    Proprietary. Not open source: see LICENSE. */
@@ -8431,7 +10581,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.37', date: '14 September 2026', year: 2026 };
+  const BUILD = { v: '2.38', date: '15 September 2026', year: 2026 };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonandy242', ['gmail', 'com'].join('.')].join('@');
   /* The one sentence that says what this is. It appears under the wordmark, and build.js uses
@@ -8444,6 +10594,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      because the person who needs it is the one who just watched the app refresh itself and wants to
      know what moved. Trim the tail when it gets past a dozen; nobody reads further back than that. */
   const WHATS_NEW = [
+    ['2.38', '<b>Physics and Chemistry are taught here now.</b> <b>Mechanics</b> &mdash; measurement and dimensional analysis, describing motion, Newton&rsquo;s laws and free-body diagrams, and work, energy and power. <b>General Chemistry</b> &mdash; atoms, the mole and stoichiometry, reactions in solution, gases, and thermochemistry. Four units each, 24 lessons, 48 worked examples, 79 practice questions and 59 named misconceptions between them, every one of which is a mistake students actually make rather than a generic warning. Physics needed one new guarantee: real answers are reported to a stated precision, so the computer algebra check now evaluates each expression <i>exactly</i> and rounds only at the comparison &mdash; a rounded answer stays a checked answer rather than becoming an unchecked one. Both courses list on their own page what they do not cover.'],
     ['2.37', '<b>Accounting is taught here now.</b> A first <b>Financial Accounting</b> course &mdash; the accounting equation and the statements, recording transactions, adjusting and closing entries, and receivables &mdash; built from a twelve-module outline checked against a real ACCT 2210 course rather than invented. Every figure in its practice is recomputed by a computer algebra system before the page is allowed to ship, the same guard the maths course has. Courses now also say <b>what comes before them</b> and, just as importantly, <b>what they do not cover</b>: the topics left out are listed by name on the course page instead of being discovered the night before an exam.'],
     ['2.36', '<b>The database was audited, and one lock became two.</b> Supabase flagged the two views the owner\u2019s figures are read through: both ran with the database owner\u2019s rights, which is how they returned counts without exposing rows, but a view is a wide surface for a privilege that ought to be narrow. Those rights now sit in one small function each, with a fixed shape and nothing a caller can bolt onto it. Auditing that turned up something more worth fixing: the tables holding sign-ups and the visitor count were protected only by their row rules \u2014 the key in this page still had <i>permission</i> to read them, so one accidental change to those rules would have opened them. It has no permission now either. Nothing about what the app sends changed; <a href="#/rights">the full account</a> says what the two locks are.'],
     ['2.34', '<b>Studying something the ten profiles do not cover? Say so.</b> The subject picker’s last option is now <b>Other</b> &mdash; Nursing, Music, Social Work, anything &mdash; and it is a real answer rather than a shrug: the general engine reads your files with every panel and every question type, exactly as before. Picking it asks <b>one optional question</b>: what subject is this? Answer and that word goes into the queue for the next profile to be written. It is sent on its own &mdash; no name, no email, not even the random id that counts visits &mdash; so there is nothing to connect it to you. Skip it and nothing is sent at all, and nothing is withheld either way. <a href="#/rights">The full account</a> now lists this message in its own table beside the counter.'],
