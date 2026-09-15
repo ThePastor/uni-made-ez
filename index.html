@@ -9025,9 +9025,12 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
    Accounting sharpens that: a subject where the answer is a single number is a subject where being
    wrong is obvious and unforgivable. A student told their correct entry is wrong does not come back.
 
-   WHAT IS DELIBERATELY ABSENT. Four units, not twelve. The eight modules not built are listed in
-   `gaps` and printed on the course page under "Not covered here", because a topic someone discovers
-   is missing the night before an exam is worse than one they were told about in week one.
+   WHAT IS DELIBERATELY ABSENT. All twelve modules of the outline are now built, across nine units.
+   What remains in `gaps` is the material a second accounting course covers, plus LIFO — which is
+   named there deliberately rather than omitted, because it is prohibited in Canada and its
+   arithmetic is correct, so nothing else in this app would ever flag it. Everything in `gaps` is
+   printed on the course page under "Not covered here", because a topic someone discovers is missing
+   the night before an exam is worse than one they were told about in week one.
    --------------------------------------------------------------------------------------------- */
 (function (root) {
   'use strict';
@@ -9047,7 +9050,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     id: 'acct-financial',
     code: 'Financial Accounting',
     title: 'Financial Accounting',
-    blurb: 'The first course: the equation everything rests on, how a transaction becomes an entry, why the books are adjusted before anyone reads them, and what to do about money you are owed and may not get.',
+    blurb: 'The whole first course: the equation everything rests on, how a transaction becomes an entry, the adjustments made before anyone reads the books, receivables, cash and inventory, costing and long-lived assets, what the company owes, and the cash flow statement and ratios a reader starts from.',
     level: 'Foundation',
     prereq: null,
     legalNote: NOTE,
@@ -9055,19 +9058,19 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
        expression to be set in monospace. */
     prose: true,
     gaps: [
-      'Cash — bank reconciliation, internal control over cash, petty cash',
-      'Inventory — perpetual and periodic systems, purchase returns, discount terms such as 3/15 n/30, freight',
-      /* LIFO is named here deliberately. It appears in several widely used Canadian workbooks, so a
-         student will meet it — and it is prohibited under IAS 2.25 and ASPE 3031. Leaving it off
-         this list silently would be the worst option: the arithmetic of a LIFO question is perfectly
-         correct, so nothing in this app would ever flag it, and the student would carry the method
-         into an exam that marks it wrong on the standard rather than on the sum. */
-      'Cost of inventory — FIFO, weighted average, specific identification, and lower of cost and net realisable value. Not LIFO: it is prohibited under IAS 2.25 and ASPE 3031, so if your workbook covers it, it is not a Canadian method you may use',
-      'Property, plant and equipment — capitalising costs, the three depreciation methods, partial years, disposal',
-      'Liabilities — notes payable, warranty provisions, bonds issued at a discount or premium and their amortisation',
-      'Equity — common and preferred shares, dividends, share issuance',
-      'Statement of cash flows — the indirect method',
-      'Ratios and financial statement analysis'
+      /* LIFO is named here as well as in the costing unit. It appears in several widely used
+         Canadian workbooks, so a student will meet it — and it is prohibited under IAS 2.25 and
+         ASPE 3031. The arithmetic of a LIFO question is perfectly correct, so nothing in this app
+         would ever flag it; only knowing the standard prevents the error. */
+      'LIFO — not taught here because it is prohibited under IAS 2.25 and ASPE 3031. If your workbook covers it, it is not a Canadian method you may use, and its arithmetic being correct is exactly why that has to be said out loud',
+      'Partnerships — formation, profit allocation, admission and withdrawal of partners',
+      'Payroll accounting in detail — CPP, EI, income tax withholdings and the employer’s share',
+      'Income taxes — current and deferred tax, and why accounting profit differs from taxable income',
+      'Intangible assets and goodwill — recognition, amortisation and impairment testing',
+      'Investments in other companies — fair value, the equity method and consolidation',
+      'The direct method of presenting operating cash flows, and the reconciliation it still requires',
+      'Subsidiary ledgers, special journals and computerised accounting systems',
+      'The conceptual framework in depth — the qualitative characteristics and the recognition criteria behind the rules this course applies'
     ],
 
     units: [
@@ -9100,7 +9103,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
                   { do: 'SE = 145,000 − 62,500', why: 'Substitute the two known figures.' },
                   { do: 'SE = 82,500', why: 'Owners have a claim on what is left after the lenders.' }
                 ],
-                answer: '$82,500'
+                answer: '$82,500', answerWords: true
               },
               {
                 prompt: 'Opening retained earnings were $48,000. The company earned net income of $27,500 and declared dividends of $9,000. What are ending retained earnings?',
@@ -9109,7 +9112,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
                   { do: '= 66,500', why: 'This is the figure that appears in the equity section of the balance sheet.' },
                   { do: 'Net income stays 27,500', why: 'The dividend reduced retained earnings without touching income — a distribution of profit, not a cost of earning it.' }
                 ],
-                answer: '$66,500'
+                answer: '$66,500', answerWords: true
               }
             ],
             pitfalls: [
@@ -9144,7 +9147,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
                   { do: 'Accumulated depreciation — contra asset', why: 'It sits on the asset side but carries a credit balance and is subtracted from the asset it relates to.' },
                   { do: 'Dividends declared — equity (a reduction of retained earnings)', why: 'Not an expense, and not on the income statement.' }
                 ],
-                answer: 'Liability, asset, contra asset, equity'
+                answer: 'Liability, asset, contra asset, equity', answerWords: true
               }
             ],
             pitfalls: [
@@ -9179,7 +9182,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
                   { do: 'Closing RE = 73,000 + 70,500 − 20,000', why: 'Statement 2 picks up the 70,500 and applies the dividend.' },
                   { do: 'Closing RE = 123,500', why: 'And this figure is what statement 3 reports in equity.' }
                 ],
-                answer: 'Net income $70,500; closing retained earnings $123,500'
+                answer: 'Net income $70,500; closing retained earnings $123,500', answerWords: true
               }
             ],
             pitfalls: [
@@ -9280,7 +9283,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
                   { do: 'Cash is an asset, and it has gone down', why: 'Assets increase with a debit, so they decrease with a credit. Credit Cash 3,200.' },
                   { do: 'Debits 3,200 = credits 3,200', why: 'One event, two sides, equal amounts.' }
                 ],
-                answer: 'Dr Rent Expense 3,200 / Cr Cash 3,200'
+                answer: 'Dr Rent Expense 3,200 / Cr Cash 3,200', answerWords: true
               },
               {
                 prompt: 'The company borrows $50,000 from the bank.',
@@ -9289,7 +9292,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
                   { do: 'Bank loan payable is a liability and has gone up — credit Bank Loan Payable 50,000', why: 'Liabilities increase with a credit.' },
                   { do: 'The equation still holds', why: 'Assets rose 50,000 and liabilities rose 50,000. Equity is untouched — borrowing is not income.' }
                 ],
-                answer: 'Dr Cash 50,000 / Cr Bank Loan Payable 50,000'
+                answer: 'Dr Cash 50,000 / Cr Bank Loan Payable 50,000', answerWords: true
               }
             ],
             pitfalls: [
@@ -9324,7 +9327,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
                   { do: 'What does it now owe? A note payable of 46,000 − 16,000 = 30,000', why: 'Credit Notes Payable 30,000.' },
                   { do: 'Check: debits 46,000; credits 16,000 + 30,000 = 46,000', why: 'One compound entry, balanced. Splitting it into two entries would imply two separate events.' }
                 ],
-                answer: 'Dr Equipment 46,000 / Cr Cash 16,000, Cr Notes Payable 30,000'
+                answer: 'Dr Equipment 46,000 / Cr Cash 16,000, Cr Notes Payable 30,000', answerWords: true
               }
             ],
             pitfalls: [
@@ -9358,7 +9361,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
                   { do: 'Credit side: 27,300 + 6,000 = 33,300', why: 'Payments reduce cash, so they are credits.' },
                   { do: 'Balance = 60,500 − 33,300 = 27,200 debit', why: 'The debit side is larger, so the balance is a debit — which is what an asset should be.' }
                 ],
-                answer: '$27,200 debit'
+                answer: '$27,200 debit', answerWords: true
               }
             ],
             pitfalls: [
@@ -9471,7 +9474,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
                   { do: 'Dr Insurance Expense 2,800 / Cr Prepaid Insurance 2,800', why: 'The expense is recognised; the asset falls to 5,600, which is the eight months still to run.' },
                   { do: 'Cash is untouched', why: 'It moved on 1 September. This entry only reallocates what that payment bought.' }
                 ],
-                answer: 'Dr Insurance Expense 2,800 / Cr Prepaid Insurance 2,800'
+                answer: 'Dr Insurance Expense 2,800 / Cr Prepaid Insurance 2,800', answerWords: true
               }
             ],
             pitfalls: [
@@ -9506,7 +9509,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
                   { do: 'Used = 4,600 − 900 = 3,700', why: 'What is not there was used. The count is the evidence.' },
                   { do: 'Dr Supplies Expense 3,700 / Cr Supplies 3,700', why: 'The asset falls to the 900 actually on hand.' }
                 ],
-                answer: 'Dr Supplies Expense 3,700 / Cr Supplies 3,700'
+                answer: 'Dr Supplies Expense 3,700 / Cr Supplies 3,700', answerWords: true
               },
               {
                 prompt: 'Five employees each earn $180 a day. The year ends on a Wednesday, and they were last paid the previous Friday. What is accrued?',
@@ -9515,7 +9518,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
                   { do: 'Accrual = 5 × 180 × 3 = 2,700', why: 'Five employees, three days each.' },
                   { do: 'Dr Salaries Expense 2,700 / Cr Salaries Payable 2,700', why: 'The work is done, so the cost belongs to this year even though payday is next year.' }
                 ],
-                answer: 'Dr Salaries Expense 2,700 / Cr Salaries Payable 2,700'
+                answer: 'Dr Salaries Expense 2,700 / Cr Salaries Payable 2,700', answerWords: true
               },
               {
                 prompt: 'Equipment cost $72,000, residual value $12,000, useful life 8 years. What is the annual straight-line charge?',
@@ -9524,7 +9527,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
                   { do: 'Annual charge = 60,000 ÷ 8 = 7,500', why: 'Straight line spreads the depreciable amount evenly.' },
                   { do: 'Dr Depreciation Expense 7,500 / Cr Accumulated Depreciation 7,500', why: 'Crediting the contra account keeps the 72,000 cost on the books where a reader can see it.' }
                 ],
-                answer: '$7,500 a year'
+                answer: '$7,500 a year', answerWords: true
               }
             ],
             pitfalls: [
@@ -9567,7 +9570,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
                   { do: 'Dr Income Summary 70,500 / Cr Retained Earnings 70,500', why: 'Profit joins the accumulated total.' },
                   { do: 'Dr Retained Earnings 20,000 / Cr Dividends 20,000', why: 'Straight to retained earnings, bypassing Income Summary.' }
                 ],
-                answer: 'Retained earnings rise by 70,500 − 20,000 = 50,500'
+                answer: 'Retained earnings rise by 70,500 − 20,000 = 50,500', answerWords: true
               }
             ],
             pitfalls: [
@@ -9686,7 +9689,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
                   { do: 'Less allowance 14,500', why: 'The estimated portion that will not arrive.' },
                   { do: 'Net realisable value = 225,500', why: 'The honest expectation, and the figure that matters to a reader.' }
                 ],
-                answer: '$225,500'
+                answer: '$225,500', answerWords: true
               }
             ],
             pitfalls: [
@@ -9714,7 +9717,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
                   { do: 'Expense = 486,000 × 2 ÷ 100 = 9,720', why: 'Straight multiplication.' },
                   { do: 'The existing 3,100 is ignored', why: 'It is not part of this calculation. The allowance simply becomes 3,100 + 9,720 = 12,820.' }
                 ],
-                answer: '$9,720'
+                answer: '$9,720', answerWords: true
               },
               {
                 prompt: 'An ageing schedule says the allowance should be $14,300. It currently has a $2,150 credit balance. What is bad debt expense?',
@@ -9723,7 +9726,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
                   { do: 'Expense = 14,300 − 2,150 = 12,150', why: 'Top up from where it is to where it must be.' },
                   { do: 'Check: 2,150 + 12,150 = 14,300', why: 'The allowance ends where the schedule said it should.' }
                 ],
-                answer: '$12,150'
+                answer: '$12,150', answerWords: true
               },
               {
                 prompt: 'Same schedule requiring $14,300, but write-offs have left the allowance with an $800 DEBIT balance. What is bad debt expense?',
@@ -9732,7 +9735,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
                   { do: 'Expense = 14,300 + 800 = 15,100', why: 'You must first cover the 800 overdraft, then build the 14,300.' },
                   { do: 'Check: −800 + 15,100 = 14,300', why: 'The arithmetic confirms the direction.' }
                 ],
-                answer: '$15,100'
+                answer: '$15,100', answerWords: true
               }
             ],
             pitfalls: [
@@ -9772,7 +9775,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
                   { do: 'Dr Allowance 3,600 / Cr Accounts Receivable 3,600', why: 'Both sides of the subtraction fall by the same amount.' },
                   { do: 'After: 236,400 − 10,900 = 225,500', why: 'Unchanged — which is the point. The loss was recognised when the allowance was created.' }
                 ],
-                answer: '$225,500 — unchanged'
+                answer: '$225,500 — unchanged', answerWords: true
               }
             ],
             pitfalls: [
@@ -9855,6 +9858,1303 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             ],
             hint: 'The estimate comes before anyone knows which account will fail.',
             solution: ['The expense is recognised at step 2, in the period of the sale', 'Step 3 carries no expense, because step 2 already did'] }
+        ]
+      },
+
+      /* ============================ UNIT 5 ============================ */
+      {
+        id: 'cash', n: 5,
+        title: 'Cash and inventory systems',
+        blurb: 'Why cash needs controls nothing else does, how to reconcile the bank to the books, and the two ways of keeping track of inventory.',
+        objectives: [
+          'State the principles of internal control and apply them to cash handling',
+          'Prepare a bank reconciliation and the adjusting entries that follow it',
+          'Distinguish a perpetual from a periodic inventory system',
+          'Record purchases, returns, freight and discount terms such as 2/10 n/30'
+        ],
+        lessons: [
+          {
+            id: 'f1', title: 'Internal control and cash', src: 'Module 4',
+            idea: `Cash is the asset that gets stolen, because it is the only one that is universally valuable and carries no name on it. <b>Internal control</b> is the set of procedures designed to protect assets and produce reliable records, and almost all of it reduces to one idea: <b>separation of duties</b>. Nobody who handles an asset should also record it, authorise transactions in it, or reconcile it.<br><br>The reason is not distrust of any individual. It is that a single person who both receives cash and records the receipt can make the theft invisible by simply not recording it, and no amount of honesty in that person is evidence that the system works. Separating the duties means concealing a theft requires two people to collude, which is far rarer and far easier to detect.<br><br>The other standard controls follow from the same logic: pre-numbered documents so a missing one is noticeable, daily deposit of all receipts intact, payment by cheque or transfer rather than from the till, authorisation limits, physical safeguards, and independent reconciliation by someone who touches neither the cash nor the records.<br><br>On the balance sheet, <b>cash</b> means unrestricted cash on hand and in the bank. <b>Cash equivalents</b> are short-term, highly liquid investments — typically maturing within three months — that are close enough to cash to be reported with it. Anything restricted, such as a sinking fund or a compensating balance, is not cash, however liquid it is: the test is availability, not form.`,
+            rules: [
+              { name: 'Separation of duties', expr: 'handling, recording, authorising and reconciling belong to different people', words: true, note: 'The single most important control, and the reason for most of the others.' },
+              { name: 'Standard cash controls', expr: 'pre-numbered documents · daily intact deposit · payment by cheque · independent reconciliation', words: true, note: 'Each one makes a concealed theft require more people.' },
+              { name: 'Cash equivalents', expr: 'short-term, highly liquid, normally within three months', words: true, note: 'Restricted balances are not cash, whatever their form.' }
+            ],
+            examples: [
+              {
+                prompt: 'In a small shop, one employee takes payments, records the sales, banks the takings and reconciles the bank statement. Name the control weakness and the minimum fix.',
+                steps: [
+                  { do: 'One person performs all four incompatible functions', why: 'Handling, recording, custody of the deposit, and reconciliation are the four duties that should never sit together.' },
+                  { do: 'A theft could be concealed by simply not recording the sale', why: 'With no independent record of what came in, there is nothing for the reconciliation to disagree with.' },
+                  { do: 'Minimum fix: someone else reconciles the bank statement', why: 'Reconciliation is the cheapest duty to separate in a small business, and it is the one that detects the others.' },
+                  { do: 'Better: a second person opens the mail and lists receipts before they reach the till', why: 'That creates an independent record of what should have been banked, which is what makes concealment hard rather than merely risky.' }
+                ],
+                answer: 'No separation of duties; at minimum, move the reconciliation to someone else.', answerWords: true
+              },
+              {
+                prompt: 'Classify for the balance sheet: $4,000 in the till; a 60-day term deposit of $20,000; $15,000 held in escrow for a property purchase.',
+                steps: [
+                  { do: 'Till float $4,000 — cash', why: 'Unrestricted and immediately available.' },
+                  { do: '60-day term deposit $20,000 — cash equivalent', why: 'Short-term, highly liquid, and within the three-month convention.' },
+                  { do: 'Escrow $15,000 — not cash', why: 'It is restricted to a specific purpose, so it fails the availability test however liquid it is.' },
+                  { do: 'Cash and cash equivalents: $24,000; escrow reported separately', why: 'Reporting the escrow inside cash would overstate the liquidity a reader relies on.' }
+                ],
+                answer: 'Cash and equivalents $24,000; the $15,000 escrow is reported separately.', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'acct-trusted-employee-control',
+                wrong: 'Treating a long-serving, trusted employee as a substitute for separation of duties',
+                right: 'Controls are about the system, not about any individual’s character.',
+                why: 'Long tenure and trust are exactly the conditions under which large frauds occur, because nobody looks. A control that depends on one person being honest is not a control — it is a hope, and it produces no evidence either way.'
+              },
+              {
+                id: 'acct-restricted-cash-included',
+                wrong: 'Reporting restricted balances inside cash and cash equivalents',
+                right: 'Restricted funds are reported separately, however liquid they are.',
+                why: 'A reader uses the cash figure to judge whether the business can meet its obligations. Money committed to something else cannot do that, so including it overstates liquidity — which is the one thing that figure exists to communicate.'
+              }
+            ]
+          },
+
+          {
+            id: 'f2', title: 'The bank reconciliation', src: 'Module 4',
+            idea: `The bank's balance and the company's cash account rarely agree, and neither is wrong. They differ because each party knows things the other does not yet.<br><br><b>Adjustments to the BANK side</b> are items the company knows about and the bank has not yet processed: <b>deposits in transit</b> (add) and <b>outstanding cheques</b> (subtract). Nothing on this side is ever journalised — the company's books are already right about these.<br><br><b>Adjustments to the BOOK side</b> are items the bank knows about and the company has not yet recorded: bank service charges and interest earned, notes collected by the bank on the company's behalf, and NSF cheques from customers that bounced. <b>Every book-side adjustment requires a journal entry</b>, because the books are genuinely wrong until it is made.<br><br>That split is the whole topic, and it is the thing to get right: <b>which side an item lands on decides whether you write an entry.</b> Both columns must reach the same <b>adjusted balance</b>, and that figure — not the bank statement figure and not the unadjusted book figure — is the cash reported on the balance sheet.<br><br>An <b>error</b> is adjusted on whichever side made it. A company that recorded a cheque as $540 when it was $450 adjusts its own books; a bank that posted another customer's cheque to this account adjusts the bank side.`,
+            rules: [
+              { name: 'Bank side', expr: 'add deposits in transit, subtract outstanding cheques', words: true, note: 'No journal entries. The books were already right.' },
+              { name: 'Book side', expr: 'service charges, interest, notes collected, NSF cheques', words: true, note: 'EVERY one needs a journal entry.' },
+              { name: 'The target', expr: 'both columns reach the same adjusted balance', words: true, note: 'That adjusted figure is the cash on the balance sheet.' },
+              { name: 'Errors', expr: 'adjusted on whichever side made the error', words: true, note: 'Not automatically the book side.' }
+            ],
+            examples: [
+              {
+                prompt: 'Bank statement $8,420. Deposits in transit $1,150. Outstanding cheques $940. Book balance $8,700. Service charge $30. Interest earned $60. Find the adjusted balance.',
+                steps: [
+                  { do: 'Bank side: 8,420 + 1,150 − 940 = 8,630', why: 'Deposits in transit add because the bank has not yet credited them; outstanding cheques subtract because it has not yet paid them.' },
+                  { do: 'Book side: 8,700 − 30 + 60 = 8,730', why: 'Which does not agree — so something is still missing.' },
+                  { do: 'The two must reconcile to the same figure, so re-check the data', why: 'A reconciliation that does not balance is unfinished, never "close enough". Here the difference of 100 signals an unrecorded item or an error, and it must be found before anything is journalised.' },
+                  { do: 'Once found and adjusted, both columns reach one figure, and that is the cash reported', why: 'The point of the exercise is the adjusted balance, not the tidy layout.' }
+                ],
+                answer: 'Bank side $8,630; the book side must be investigated until both agree.', answerWords: true
+              },
+              {
+                prompt: 'The reconciliation shows a $30 service charge, $60 interest earned, and a customer’s $200 cheque returned NSF. What entries are needed?',
+                steps: [
+                  { do: 'All three are book-side items', why: 'The bank knew about each of them; the company did not. That is the test.' },
+                  { do: 'Dr Bank Charges 30 / Cr Cash 30', why: 'An expense the company had not recorded.' },
+                  { do: 'Dr Cash 60 / Cr Interest Revenue 60', why: 'Revenue earned and already in the bank.' },
+                  { do: 'Dr Accounts Receivable 200 / Cr Cash 200', why: 'The NSF cheque means the customer never actually paid — the receivable comes back. Recording it as an expense instead would write off a debt that is still owed.' }
+                ],
+                answer: 'Three entries, all from the book side of the reconciliation.', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'acct-journalise-bank-side',
+                wrong: 'Writing journal entries for deposits in transit or outstanding cheques',
+                right: 'Bank-side items are never journalised. Only book-side items are.',
+                why: 'The company already recorded those transactions correctly — they are simply waiting on the bank. Journalising them records the same transaction twice and throws the cash account out by exactly the amount that was supposedly being corrected.'
+              },
+              {
+                id: 'acct-nsf-as-expense',
+                wrong: 'Recording a returned NSF cheque as a bad debt expense',
+                right: 'Dr Accounts Receivable, Cr Cash. The customer still owes the money.',
+                why: 'A bounced cheque means the payment never happened, not that the debt is uncollectible. Writing it off removes a receivable that may well be collected and understates both assets and income.'
+              },
+              {
+                id: 'acct-reconciliation-not-balanced',
+                wrong: 'Stopping when the two sides are close and calling the difference immaterial',
+                right: 'A reconciliation that does not balance is not finished.',
+                why: 'A small unexplained difference can be two large errors nearly cancelling, and it is exactly the shape a concealed theft takes. The point of the procedure is that it either balances or tells you something is wrong.'
+              }
+            ]
+          },
+
+          {
+            id: 'f3', title: 'Inventory systems and purchase transactions', src: 'Module 6',
+            idea: `A merchandising business buys goods and resells them, which introduces two accounts a service business never needs: <b>Inventory</b>, an asset, and <b>Cost of Goods Sold</b>, an expense.<br><br>Two systems track them. Under a <b>perpetual</b> system, inventory and cost of goods sold are updated at the moment of every purchase and every sale — the records always claim to know what is on hand. Under a <b>periodic</b> system, purchases go to a Purchases account, nothing is recorded against inventory during the year, and cost of goods sold is computed only at period end by a physical count:<br><br><b>COGS = opening inventory + purchases − closing inventory</b><br><br>Almost every business now uses perpetual, because scanners make it free. Periodic still matters because it is what the formula above describes, and because it shows plainly that closing inventory and cost of goods sold are two ends of one number: <b>overstate the closing inventory and you understate the expense, so profit rises</b>. That relationship is the reason inventory is audited so closely.<br><br><b>Purchase discounts</b> are written as terms such as <b>2/10 n/30</b>: 2% off if paid within 10 days, otherwise the full amount in 30. Taking it is almost always worth it — forgoing 2% to delay payment by 20 days is an annualised cost of roughly 37%.<br><br><b>Freight</b> depends on the shipping terms. <b>FOB shipping point</b> means title passes when the goods leave the seller, so the buyer pays the freight and adds it to the cost of inventory. <b>FOB destination</b> means title passes on arrival, so the seller pays and it is a selling expense.`,
+            rules: [
+              { name: 'Perpetual', expr: 'inventory and COGS updated at every purchase and sale', words: true, note: 'The records always claim to know what is on hand.' },
+              { name: 'Periodic', expr: 'COGS = opening + purchases - closing', note: 'Computed only at period end, from a physical count.' },
+              { name: 'Terms 2/10 n/30', expr: '2% off within 10 days, otherwise the full amount in 30', words: true, note: 'An annualised cost of about 37% to decline.' },
+              { name: 'Freight', expr: 'FOB shipping point — buyer pays, add to inventory cost', words: true, note: 'FOB destination — seller pays, and it is a selling expense.' }
+            ],
+            examples: [
+              {
+                prompt: 'Opening inventory $18,000, purchases $95,000, closing inventory $21,000. Find cost of goods sold.',
+                steps: [
+                  { do: 'Goods available for sale = 18,000 + 95,000 = 113,000', why: 'Everything that could have been sold during the period.' },
+                  { do: 'Less what is still on hand: 113,000 − 21,000', why: 'Whatever did not remain must have been sold.' },
+                  { do: 'COGS = 92,000', why: 'Note what this means: if the closing count were overstated by 1,000, COGS would fall to 91,000 and profit would rise by 1,000 with no sale having occurred.' }
+                ],
+                answer: '$92,000', answerWords: true
+              },
+              {
+                prompt: 'A company buys $10,000 of goods on terms 2/10 n/30, FOB shipping point, with $400 freight. It pays within 10 days. What is the cost of the inventory?',
+                steps: [
+                  { do: 'FOB shipping point means the buyer bears the freight', why: 'Title passed when the goods left the seller.' },
+                  { do: 'Freight to bring inventory to its location is part of its cost, not an expense', why: 'Cost includes everything necessary to get the asset ready for sale.' },
+                  { do: 'Discount taken: 2% of 10,000 = 200, so the goods cost 9,800', why: 'The discount reduces the cost of the inventory itself.' },
+                  { do: 'Inventory cost = 9,800 + 400 = 10,200', why: 'Treating the freight as a separate expense would understate inventory and overstate this period’s expenses.' }
+                ],
+                answer: '$10,200', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'acct-freight-in-as-expense',
+                wrong: 'Expensing freight-in on purchased inventory',
+                right: 'Freight to bring goods in is part of the cost of the inventory.',
+                why: 'Cost includes everything needed to get the asset ready for its intended use. Expensing it understates inventory on the balance sheet and overstates expenses now, then understates cost of goods sold when the item eventually sells.'
+              },
+              {
+                id: 'acct-closing-inventory-independent',
+                wrong: 'Treating closing inventory and cost of goods sold as unrelated figures',
+                right: 'They are two ends of one number: overstating one understates the other.',
+                why: 'COGS = opening + purchases − closing. An inventory count that is too high makes the expense too low and profit too high by exactly the same amount — which is why a count error never stays confined to the balance sheet.'
+              }
+            ]
+          }
+        ],
+        practice: [
+          { id: 'f1p1', kind: 'mc', lesson: 'f1',
+            prompt: 'Which pair of duties should NOT be performed by the same person?',
+            options: [
+              { t: 'Receiving cash and recording the receipt', ok: true },
+              { t: 'Recording a receipt and filing the paperwork' },
+              { t: 'Authorising a purchase and reading the budget report' },
+              { t: 'Reconciling the bank and preparing the trial balance' }
+            ],
+            hint: 'Which combination lets one person conceal a theft without anyone else’s help?',
+            solution: ['Handling an asset and recording it are the two incompatible duties',
+              'A person doing both can steal cash and simply not record the sale',
+              'Separating them means concealment needs collusion, which is rarer and easier to detect'] },
+
+          { id: 'f1p2', kind: 'numeric', lesson: 'f1',
+            prompt: 'A company holds $3,500 in the till, a 45-day term deposit of $12,000, and $8,000 restricted in escrow. What is reported as cash and cash equivalents, in dollars?',
+            answer: 15500, verify: { expr: '3500 + 12000' },
+            hint: 'Restricted funds are not cash, whatever their form.',
+            solution: ['Till $3,500 — unrestricted cash', '45-day deposit $12,000 — a cash equivalent, within three months',
+              'Escrow $8,000 — restricted, reported separately', 'Total = $15,500'] },
+
+          { id: 'f1p3', kind: 'numeric', lesson: 'f2',
+            prompt: 'Bank statement $9,200, deposits in transit $1,400, outstanding cheques $850. What is the adjusted bank balance, in dollars?',
+            answer: 9750, verify: { expr: '9200 + 1400 - 850' },
+            hint: 'Deposits in transit add; outstanding cheques subtract.',
+            solution: ['9,200 + 1,400 = 10,600', '10,600 − 850 = 9,750', 'No journal entries arise from either item'] },
+
+          { id: 'f1p4', kind: 'numeric', lesson: 'f2',
+            prompt: 'Book balance $7,400, service charge $45, interest earned $95, NSF cheque $310. What is the adjusted book balance, in dollars?',
+            answer: 7140, verify: { expr: '7400 - 45 + 95 - 310' },
+            hint: 'All three are book-side items — and each one needs an entry.',
+            solution: ['7,400 − 45 + 95 − 310', '= 7,140', 'Three journal entries are required, one per item'] },
+
+          { id: 'f1p5', kind: 'mc', lesson: 'f2',
+            prompt: 'Which reconciling item requires a journal entry?',
+            options: [
+              { t: 'A bank service charge', ok: true },
+              { t: 'A deposit in transit' },
+              { t: 'An outstanding cheque' },
+              { t: 'A cheque the bank has not yet cleared' }
+            ],
+            hint: 'Which side of the reconciliation does each item belong to?',
+            solution: ['Book-side items need entries; bank-side items never do',
+              'A service charge is known to the bank and not yet to the company',
+              'Deposits in transit and outstanding cheques are already correctly recorded in the books'] },
+
+          { id: 'f1p6', kind: 'spot', lesson: 'f2',
+            prompt: 'A student handles a customer’s NSF cheque of $260. One line is wrong.',
+            steps: [
+              { t: 'The bank returned the cheque, so the cash never arrived', bad: false },
+              { t: 'This is a book-side item, so a journal entry is needed', bad: false },
+              { t: 'Dr Bad Debt Expense 260 / Cr Cash 260', bad: true },
+              { t: 'The customer still owes the company $260', bad: false }
+            ],
+            why: 'A bounced cheque means the payment never happened, not that the debt is uncollectible. The correct entry is Dr Accounts Receivable 260 / Cr Cash 260, putting the receivable back. Writing it off as bad debt removes a debt the fourth line correctly says is still owed — the working contradicts itself, which is the quickest way to catch this in your own answer.',
+            hint: 'Does a returned cheque mean the customer cannot pay, or that they have not paid?',
+            solution: ['The receivable is reinstated: Dr Accounts Receivable, Cr Cash',
+              'Bad debt expense applies when an account is judged uncollectible, which is a separate later decision'] },
+
+          { id: 'f1p7', kind: 'numeric', lesson: 'f3',
+            prompt: 'Opening inventory $18,000, purchases $95,000, closing inventory $21,000. What is cost of goods sold, in dollars?',
+            answer: 92000, verify: { expr: '18000 + 95000 - 21000' },
+            hint: 'Goods available for sale, less what is still on hand.',
+            solution: ['Available = 18,000 + 95,000 = 113,000', 'Less closing 21,000', 'COGS = 92,000'] },
+
+          { id: 'f1p8', kind: 'numeric', lesson: 'f3',
+            prompt: 'A company buys $10,000 of goods on terms 2/10 n/30 and pays within 10 days, with $400 of freight it must bear. What is the cost of the inventory, in dollars?',
+            answer: 10200, verify: { expr: '10000 - 10000*2/100 + 400' },
+            hint: 'The discount reduces the cost; the freight adds to it.',
+            solution: ['Discount = 2% × 10,000 = 200, so goods cost 9,800', 'Freight-in is part of inventory cost: + 400',
+              'Inventory = 10,200'] },
+
+          { id: 'f1p9', kind: 'mc', lesson: 'f3',
+            prompt: 'Goods are shipped FOB shipping point. Who bears the freight, and how is it treated?',
+            options: [
+              { t: 'The buyer, and it is added to the cost of the inventory', ok: true },
+              { t: 'The buyer, and it is a selling expense' },
+              { t: 'The seller, and it is added to the cost of the inventory' },
+              { t: 'The seller, and it is a cost of goods sold' }
+            ],
+            hint: 'Where does title pass, and what does cost include?',
+            solution: ['FOB shipping point: title passes when the goods leave the seller',
+              'So the buyer bears the freight', 'Cost includes everything needed to get the asset ready for sale, so it is capitalised into inventory'] },
+
+          { id: 'f1p10', kind: 'order', lesson: 'f2',
+            prompt: 'Put the steps of a bank reconciliation in order.',
+            steps: [
+              'Adjust the bank balance for deposits in transit and outstanding cheques',
+              'Adjust the book balance for charges, interest, collections and NSF cheques',
+              'Confirm that both columns reach the same adjusted balance',
+              'Journalise every book-side adjustment, and nothing from the bank side'
+            ],
+            hint: 'The entries come last, and only from one side.',
+            solution: ['Both columns are adjusted before anything is compared',
+              'A reconciliation that does not balance is unfinished, not close enough',
+              'Only book-side items were unknown to the company, so only they need recording'] }
+        ]
+      },
+
+      /* ============================ UNIT 6 ============================ */
+      {
+        id: 'costing', n: 6,
+        title: 'Costing inventory',
+        blurb: 'When identical goods cost different amounts, which cost goes to the income statement — and the one method a Canadian student must not use.',
+        objectives: [
+          'Apply FIFO, weighted average and specific identification to a set of purchases',
+          'Say why LIFO appears in some workbooks and may not be used in Canada',
+          'Compute a weighted average cost correctly under a perpetual system',
+          'Apply lower of cost and net realisable value, and record the write-down'
+        ],
+        lessons: [
+          {
+            id: 'g1', title: 'The cost formulas', src: 'Module 7',
+            idea: `Identical units bought at different prices create a question that has no physical answer: when one is sold, <i>which</i> cost moves to the income statement? The units are interchangeable, so the answer is a <b>cost formula</b> — an assumption about cost flow, not a claim about which physical item left the shelf.<br><br><b>FIFO</b> (first in, first out) assigns the oldest costs to cost of goods sold and leaves the newest in inventory. In a period of rising prices this gives a <b>lower</b> cost of goods sold, a <b>higher</b> profit, and a closing inventory close to current replacement cost.<br><br><b>Weighted average</b> pools the costs: total cost of goods available divided by total units, applied to both what is sold and what remains. It smooths price swings and is the simplest to audit.<br><br><b>Specific identification</b> tracks each individual item's actual cost. It is required where items are not interchangeable — vehicles, serialised equipment, custom work — and is not permitted for ordinary interchangeable stock, because choosing which one "sold" would let a business pick its own profit.<br><br><b>LIFO is prohibited in Canada.</b> Last in, first out appears in the table of contents of several widely used workbooks, and it is banned under <b>IAS 2.25</b> and <b>ASPE 3031</b>. This matters more than the usual warning because the arithmetic of a LIFO answer is perfectly correct — no calculation check would ever flag it. It is the standard, not the sum, that makes it wrong, and a student who learns it from a workbook will lose the marks on the basis nothing in their working reveals.`,
+            rules: [
+              { name: 'FIFO', expr: 'oldest costs to COGS, newest to inventory', words: true, note: 'Rising prices: lower COGS, higher profit, current-value inventory.' },
+              { name: 'Weighted average', expr: 'total cost of goods available / total units', note: 'Applied to both what sold and what remains.' },
+              { name: 'Specific identification', expr: 'required for non-interchangeable items only', words: true, note: 'Not permitted for ordinary stock — it would let a business choose its profit.' },
+              { name: 'LIFO', expr: 'prohibited under IAS 2.25 and ASPE 3031', words: true, note: 'The arithmetic is fine; the standard forbids it.' }
+            ],
+            examples: [
+              {
+                prompt: 'Purchases: 100 units at $10, then 100 units at $14. 120 units are sold. Find cost of goods sold under FIFO.',
+                steps: [
+                  { do: 'FIFO takes the oldest costs first', why: 'A cost-flow assumption, not a claim about which physical units left.' },
+                  { do: 'First 100 units at $10 = 1,000', why: 'The whole of the first purchase is used up.' },
+                  { do: 'Remaining 20 units at $14 = 280', why: '120 − 100 = 20 units come from the second purchase.' },
+                  { do: 'COGS = 1,280, and closing inventory is 80 × 14 = 1,120', why: 'The newest costs stay in inventory, which is why FIFO inventory sits close to replacement cost.' }
+                ],
+                answer: 'COGS $1,280; closing inventory $1,120', answerWords: true
+              },
+              {
+                prompt: 'Same purchases — 100 at $10 and 100 at $14, 120 sold. Find cost of goods sold under weighted average.',
+                steps: [
+                  { do: 'Total cost available = 1,000 + 1,400 = 2,400', why: 'Pool every dollar of cost, regardless of when it was incurred.' },
+                  { do: 'Total units available = 200', why: 'Pool every unit too.' },
+                  { do: 'Average cost = 2,400 / 200 = $12 per unit', why: 'The average must be weighted by quantity. Averaging the two prices as (10 + 14)/2 gives 12 here only because the quantities happen to be equal.' },
+                  { do: 'COGS = 120 × 12 = 1,440; inventory = 80 × 12 = 960', why: 'Higher COGS and lower profit than FIFO, from exactly the same facts — which is why the chosen formula must be disclosed and applied consistently.' }
+                ],
+                answer: 'COGS $1,440; closing inventory $960', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'acct-lifo-in-canada',
+                wrong: 'Using LIFO because the workbook covers it',
+                right: 'LIFO is prohibited under IAS 2.25 and ASPE 3031.',
+                why: 'The arithmetic of a LIFO answer is correct, so nothing in the working looks wrong and no calculation check catches it. It is the standard that forbids it, which makes this the rare error that has to be known rather than spotted.'
+              },
+              {
+                id: 'acct-simple-average-cost',
+                wrong: 'Averaging the unit prices instead of weighting by quantity',
+                right: 'Weighted average = total cost available ÷ total units available.',
+                why: 'With 300 units at $10 and 100 at $14 the weighted average is $11, not $12. The two agree only when quantities are equal, which is exactly the case textbooks use to introduce it — so the error survives the worked example and appears in the exam.'
+              },
+              {
+                id: 'acct-specific-id-for-interchangeable',
+                wrong: 'Applying specific identification to ordinary interchangeable stock',
+                right: 'It is for genuinely distinguishable items only.',
+                why: 'If units are interchangeable, choosing which one "sold" is choosing the reported profit. That is why the standards restrict the method rather than leaving it as a free choice.'
+              }
+            ]
+          },
+
+          {
+            id: 'g2', title: 'Cost formulas under each system', src: 'Module 7',
+            idea: `The same cost formula gives different answers depending on whether the system is perpetual or periodic, and the reason is <i>when</i> the calculation happens.<br><br>Under a <b>periodic</b> system, everything is computed once at period end. The weighted average is a single figure for the whole period: total cost available divided by total units available.<br><br>Under a <b>perpetual</b> system, cost of goods sold is calculated at each sale, so a <b>moving average</b> is required — the average is recomputed after every purchase and applied to the next sale. Purchases made <i>after</i> a sale cannot affect the cost of that sale, because at the moment of sale they had not happened.<br><br><b>FIFO gives the same answer under both systems</b>, which is worth knowing because it saves work: the oldest costs are the oldest costs whether you identify them continuously or once at the end. <b>Weighted average does not</b>, and using the period-end average for a perpetual question is the standard error here.<br><br>A practical note on <b>rounding</b>: a moving average is rarely a round number. Carry the full unrounded figure through and round only the reported answer, or the error compounds over each sale in the period.`,
+            rules: [
+              { name: 'FIFO', expr: 'same answer under perpetual and periodic', words: true, note: 'The oldest costs do not depend on when you look.' },
+              { name: 'Weighted average', expr: 'differs — periodic is one average, perpetual is a moving one', words: true, note: 'Recomputed after each purchase.' },
+              { name: 'Moving average', expr: 'a purchase after a sale cannot affect that sale', words: true, note: 'At the moment of sale it had not happened.' },
+              { name: 'Rounding', expr: 'carry the unrounded average, round only the reported figure', words: true, note: 'Otherwise the error compounds over every sale.' }
+            ],
+            examples: [
+              {
+                prompt: 'Jan 1: 100 units at $10. Jan 10: sell 60. Jan 20: buy 100 at $14. Find cost of goods sold for the January 10 sale under a perpetual weighted average.',
+                steps: [
+                  { do: 'At 10 January, only the first purchase has happened', why: 'The moving average uses what is on hand at that moment.' },
+                  { do: 'Average = 1,000 / 100 = $10 per unit', why: 'Nothing else exists yet to average with.' },
+                  { do: 'COGS for that sale = 60 × 10 = 600', why: 'The 20 January purchase at $14 lies in the future and cannot affect it.' },
+                  { do: 'Under a PERIODIC average the answer would be 60 × 12 = 720', why: 'Same facts, same formula, different system — a difference of 120 on one sale, which is why the question always states the system.' }
+                ],
+                answer: '$600 perpetual; $720 periodic', answerWords: true
+              },
+              {
+                prompt: 'Continuing: after the 20 January purchase, what is the new moving average?',
+                steps: [
+                  { do: 'On hand after the sale: 40 units at $10 = 400', why: '100 bought less 60 sold, carried at the average then in force.' },
+                  { do: 'Add the purchase: 100 units at $14 = 1,400', why: 'A purchase always triggers a recomputation.' },
+                  { do: 'New pool: 140 units costing 1,800', why: 'Combine units and dollars, then divide.' },
+                  { do: 'Moving average = 1,800 / 140 ≈ $12.857 per unit', why: 'Carry this unrounded into the next sale. Rounding to $12.86 now, and again at every later sale, drifts the closing inventory by a visible amount over a full period.' }
+                ],
+                answer: 'About $12.857 per unit', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'acct-periodic-average-in-perpetual',
+                wrong: 'Using the whole-period average to cost a sale in a perpetual system',
+                right: 'Perpetual needs a moving average, recomputed after each purchase.',
+                why: 'It charges a sale with costs from purchases that had not yet happened. The answer is internally consistent and wrong by a predictable amount, and the question always names the system precisely because the two differ.'
+              },
+              {
+                id: 'acct-rounding-average-each-sale',
+                wrong: 'Rounding the moving average to cents after every recomputation',
+                right: 'Carry the unrounded figure and round only what is reported.',
+                why: 'Each rounding introduces a small error in the same direction, and a period with many sales accumulates them into a closing inventory that no longer ties to the cost of goods sold.'
+              }
+            ]
+          },
+
+          {
+            id: 'g3', title: 'Lower of cost and net realisable value', src: 'Module 7',
+            idea: `Inventory is carried at cost — until cost stops being recoverable. The rule is <b>lower of cost and net realisable value</b>: whichever is smaller.<br><br><b>Net realisable value</b> is the estimated selling price in the ordinary course of business, <b>less</b> the estimated costs to complete and to sell. It is not the selling price, and it is not the replacement cost; leaving out the costs to sell is the usual slip.<br><br>The rule is an application of <b>prudence</b>, and it is deliberately asymmetric. Inventory is written <i>down</i> when NRV falls below cost, and is <b>never written up above cost</b> when the market rises — because an unrealised gain would be recognised before any sale occurred. The write-down is recognised as an expense in the period the value falls, not in the period the goods are eventually sold.<br><br>The entry is <b>Dr Cost of Goods Sold (or Inventory Write-Down Expense), Cr Inventory</b>.<br><br>One genuine subtlety: a previous write-down <b>may be reversed</b> if the circumstances that caused it no longer exist — but only up to the original cost, never beyond it. So the asymmetry holds even in reversal.<br><br>The comparison is normally made <b>item by item</b>, not on the inventory as a whole. Comparing totals lets a gain on one line hide a loss on another, which defeats the purpose.`,
+            rules: [
+              { name: 'The rule', expr: 'carry at the lower of cost and net realisable value', words: true, note: 'Applied item by item, not to the total.' },
+              { name: 'Net realisable value', expr: 'selling price - costs to complete - costs to sell', note: 'Not the selling price, and not replacement cost.' },
+              { name: 'Asymmetric', expr: 'write down below cost; never write up above it', words: true, note: 'A rise above cost is an unrealised gain.' },
+              { name: 'Reversal', expr: 'permitted up to original cost only', words: true, note: 'If the cause of the write-down no longer exists.' }
+            ],
+            examples: [
+              {
+                prompt: 'Inventory cost $40,000. It can be sold for $38,000, but $3,000 of selling costs will be incurred. What is the carrying amount?',
+                steps: [
+                  { do: 'NRV = 38,000 − 3,000 = 35,000', why: 'Net realisable value is after the costs of selling, not the gross price.' },
+                  { do: 'Compare cost 40,000 with NRV 35,000', why: 'The rule takes the lower of the two.' },
+                  { do: 'Carry at 35,000, writing down by 5,000', why: 'Using the 38,000 selling price and writing down only 2,000 is the standard error, and it overstates the asset by 3,000.' },
+                  { do: 'Dr Cost of Goods Sold 5,000 / Cr Inventory 5,000', why: 'Recognised now, in the period the value fell — not deferred to the period of sale.' }
+                ],
+                answer: 'Carry at $35,000; write down $5,000', answerWords: true
+              },
+              {
+                prompt: 'Three lines: A cost 10,000 NRV 12,000; B cost 8,000 NRV 5,000; C cost 6,000 NRV 6,500. What is the total write-down?',
+                steps: [
+                  { do: 'Compare item by item, not in total', why: 'On totals, cost 24,000 against NRV 23,500 would suggest a write-down of only 500.' },
+                  { do: 'A: carry at cost 10,000 — inventory is never written up', why: 'The 2,000 excess is an unrealised gain and is not recognised.' },
+                  { do: 'B: NRV 5,000 is below cost 8,000, so write down 3,000', why: 'The only line that needs an entry.' },
+                  { do: 'C: carry at cost 6,000. Total write-down 3,000', why: 'Six times the figure the totals method suggested, because the gain on A was hiding most of the loss on B.' }
+                ],
+                answer: '$3,000', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'acct-nrv-gross-price',
+                wrong: 'Using the selling price as net realisable value',
+                right: 'NRV is the selling price LESS the costs to complete and to sell.',
+                why: 'It overstates inventory by exactly the selling costs, and understates the write-down by the same amount. The word "net" is doing all the work in the name, and it is the part most often dropped.'
+              },
+              {
+                id: 'acct-inventory-written-up',
+                wrong: 'Writing inventory up when net realisable value exceeds cost',
+                right: 'The rule is one-directional. Inventory is never carried above cost.',
+                why: 'It would recognise a profit before any sale, on an estimate of what the goods might fetch. A previous write-down may be reversed if its cause has gone, but only back up to the original cost.'
+              },
+              {
+                id: 'acct-lcnrv-on-totals',
+                wrong: 'Comparing total cost with total NRV across the whole inventory',
+                right: 'Compare item by item.',
+                why: 'On totals, an unrealised gain on one line offsets a real loss on another, so the write-down comes out far too small. In the worked example it was 500 instead of 3,000 — and the small answer is the one that looks reasonable.'
+              }
+            ]
+          }
+        ],
+        practice: [
+          { id: 'g1p1', kind: 'numeric', lesson: 'g1',
+            prompt: 'Purchases: 100 units at $10 then 100 at $14. 120 units are sold. What is cost of goods sold under FIFO, in dollars?',
+            answer: 1280, verify: { expr: '100*10 + 20*14' },
+            hint: 'The oldest costs go first.',
+            solution: ['First 100 units at $10 = 1,000', 'Next 20 units at $14 = 280', 'COGS = 1,280'] },
+
+          { id: 'g1p2', kind: 'numeric', lesson: 'g1',
+            prompt: 'Same facts — 100 at $10, 100 at $14, 120 sold. What is closing inventory under FIFO, in dollars?',
+            answer: 1120, verify: { expr: '80 * 14' },
+            hint: 'Whatever FIFO did not send to COGS stays, at the newest costs.',
+            solution: ['200 available less 120 sold = 80 units remain', 'All from the $14 purchase', '80 × 14 = 1,120'] },
+
+          { id: 'g1p3', kind: 'numeric', lesson: 'g1',
+            prompt: 'Same facts. What is the weighted average cost per unit, in dollars?',
+            answer: 12, verify: { expr: '(100*10 + 100*14) / 200' },
+            hint: 'Total cost available divided by total units available.',
+            solution: ['Total cost = 1,000 + 1,400 = 2,400', 'Total units = 200', '2,400 / 200 = $12'] },
+
+          { id: 'g1p4', kind: 'numeric', lesson: 'g1',
+            prompt: '300 units at $10 and 100 units at $14. What is the weighted average cost per unit, in dollars?',
+            answer: 11, verify: { expr: '(300*10 + 100*14) / 400' },
+            hint: 'Weight by quantity — this is where averaging the two prices goes wrong.',
+            solution: ['Total cost = 3,000 + 1,400 = 4,400', 'Total units = 400', '4,400 / 400 = $11, not the $12 a simple average of prices gives'] },
+
+          { id: 'g1p5', kind: 'mc', lesson: 'g1',
+            prompt: 'Your workbook has a chapter on LIFO. What should you do with it in a Canadian course?',
+            options: [
+              { t: 'Know that it is prohibited under IAS 2.25 and ASPE 3031, and do not use it', ok: true },
+              { t: 'Use it — if it is in the workbook it is examinable' },
+              { t: 'Use it only when prices are falling' },
+              { t: 'Use it for the balance sheet but not the income statement' }
+            ],
+            hint: 'Is the problem with the arithmetic, or with the standard?',
+            solution: ['LIFO arithmetic is perfectly correct, which is why no calculation check flags it',
+              'IAS 2.25 and ASPE 3031 prohibit it in Canada',
+              'It appears in several widely used workbooks, which is exactly why it needs saying out loud'] },
+
+          { id: 'g1p6', kind: 'numeric', lesson: 'g2',
+            prompt: 'Jan 1: 100 units at $10. Jan 10: sell 60. Jan 20: buy 100 at $14. Under a PERPETUAL weighted average, what is cost of goods sold for the January 10 sale, in dollars?',
+            answer: 600, verify: { expr: '60 * 10' },
+            hint: 'What had been purchased by 10 January?',
+            solution: ['At 10 January only the $10 purchase exists', 'Moving average is $10 per unit',
+              '60 × 10 = 600. The 20 January purchase cannot affect an earlier sale'] },
+
+          { id: 'g1p7', kind: 'numeric', lesson: 'g2',
+            prompt: 'Same facts, but a PERIODIC weighted average. What is cost of goods sold for the 60 units, in dollars?',
+            answer: 720, verify: { expr: '60 * (100*10 + 100*14) / 200' },
+            hint: 'Periodic uses one average for the whole period.',
+            solution: ['Period average = 2,400 / 200 = $12', '60 × 12 = 720',
+              '$120 more than the perpetual answer, from identical facts'] },
+
+          { id: 'g1p8', kind: 'numeric', lesson: 'g3',
+            prompt: 'Inventory cost $40,000. Expected selling price $38,000, with $3,000 of selling costs. What is the carrying amount, in dollars?',
+            answer: 35000, verify: { expr: '38000 - 3000' },
+            hint: 'Net realisable value is after the costs to sell.',
+            solution: ['NRV = 38,000 − 3,000 = 35,000', 'Lower than cost of 40,000', 'Carry at 35,000, writing down 5,000'] },
+
+          { id: 'g1p9', kind: 'numeric', lesson: 'g3',
+            prompt: 'Three lines: A cost 10,000 NRV 12,000; B cost 8,000 NRV 5,000; C cost 6,000 NRV 6,500. What is the total write-down, in dollars?',
+            answer: 3000, verify: { expr: '8000 - 5000' },
+            hint: 'Compare item by item — and remember inventory is never written up.',
+            solution: ['A and C are carried at cost; inventory is never written above cost',
+              'Only B is impaired: 8,000 − 5,000 = 3,000', 'Comparing totals would have given only 500'] },
+
+          { id: 'g1p10', kind: 'spot', lesson: 'g3',
+            prompt: 'A student applies lower of cost and NRV. One line is wrong.',
+            steps: [
+              { t: 'Inventory is carried at the lower of cost and net realisable value', bad: false },
+              { t: 'NRV is the selling price less the costs to complete and sell', bad: false },
+              { t: 'Where NRV exceeds cost, inventory is written up to NRV', bad: true },
+              { t: 'A write-down is recognised in the period the value falls', bad: false }
+            ],
+            why: 'The rule runs one way only. Inventory is written down when NRV falls below cost and is never carried above cost, because a rise would recognise a profit before any sale on nothing more than an estimate. A previous write-down may be reversed if its cause has gone, but only back up to the original cost — so even the reversal respects the asymmetry.',
+            hint: 'What would writing inventory up actually recognise, and has it happened yet?',
+            solution: ['Write down below cost; never write up above it',
+              'A reversal is permitted only up to the original cost',
+              'The asymmetry is deliberate — it is prudence, not an oversight'] }
+        ]
+      },
+
+      /* ============================ UNIT 7 ============================ */
+      {
+        id: 'ppe', n: 7,
+        title: 'Property, plant and equipment',
+        blurb: 'What counts as part of an asset’s cost, the three ways of spreading that cost over its life, and what happens when it is sold.',
+        objectives: [
+          'Decide whether an expenditure is capitalised or expensed',
+          'Compute depreciation under straight-line, units-of-production and declining-balance',
+          'Handle a partial first year, and revise an estimate part-way through an asset’s life',
+          'Record a disposal and compute the gain or loss on it'
+        ],
+        lessons: [
+          {
+            id: 'h1', title: 'What an asset costs', src: 'Module 8',
+            idea: `The cost of a long-lived asset is <b>everything necessary to bring it to the location and condition needed for its intended use</b>. That includes the purchase price, non-refundable taxes, freight, insurance in transit, installation, testing, and the cost of preparing the site.<br><br>Costs that meet that test are <b>capitalised</b> — added to the asset and expensed over its life through depreciation. Costs that do not are <b>expensed</b> immediately. The distinction matters because capitalising moves an expense out of this year's income statement and spreads it across many, so the choice changes reported profit in every affected year.<br><br>Two costs regularly caught out. A <b>parking fine</b> incurred while delivering equipment is not part of its cost — it was not necessary, and treating an avoidable penalty as an asset would let a business capitalise its own carelessness. And <b>ordinary repairs</b> after the asset is in use are expensed; only expenditures that extend the asset's life or increase its capacity — <b>betterments</b> — are capitalised.<br><br>When several assets are bought together for one price, the total is split by <b>relative fair value</b>. Land is the case that always appears, because <b>land is not depreciated</b> — it has an indefinite life — so anything allocated to land escapes depreciation permanently. Allocating too much to land understates expense in every subsequent year, which is why the split is scrutinised.<br><br><b>Land improvements</b> — fencing, paving, lighting — are a separate account and <i>are</i> depreciated, because they wear out even though the land does not.`,
+            rules: [
+              { name: 'Cost includes', expr: 'everything needed to get the asset ready for its intended use', words: true, note: 'Price, taxes, freight, installation, testing, site preparation.' },
+              { name: 'Capitalise or expense', expr: 'betterments capitalised; ordinary repairs expensed', words: true, note: 'A betterment extends life or increases capacity.' },
+              { name: 'Basket purchase', expr: 'allocate on relative fair value', words: true, note: 'Land is never depreciated, so the split changes every later year.' },
+              { name: 'Land improvements', expr: 'a separate account, and depreciated', words: true, note: 'Fencing and paving wear out; the land does not.' }
+            ],
+            examples: [
+              {
+                prompt: 'A machine costs $50,000 plus $2,000 freight, $3,000 installation, $1,200 testing, and a $300 parking fine incurred during delivery. What is the capitalised cost?',
+                steps: [
+                  { do: 'Purchase price 50,000 — necessary', why: 'Obviously part of the cost.' },
+                  { do: 'Freight 2,000, installation 3,000, testing 1,200 — all necessary', why: 'Each is required to get the machine to the location and condition for its intended use.' },
+                  { do: 'Parking fine 300 — expensed', why: 'The fine was avoidable, so it was not necessary. Capitalising a penalty would turn carelessness into an asset.' },
+                  { do: 'Capitalised cost = 56,200', why: 'The 300 hits this year’s income statement instead of being spread over the machine’s life.' }
+                ],
+                answer: '$56,200, with the $300 fine expensed', answerWords: true
+              },
+              {
+                prompt: 'Land and a building are bought together for $900,000. Appraised values are land $400,000 and building $600,000. Allocate the cost.',
+                steps: [
+                  { do: 'Total appraised value = 400,000 + 600,000 = 1,000,000', why: 'Allocation is by relative fair value, not by appraised value directly.' },
+                  { do: 'Land share = 400/1,000 = 40%, so 0.40 × 900,000 = 360,000', why: 'The purchase was below total appraised value, so each asset takes a proportionate share of the bargain.' },
+                  { do: 'Building share = 60%, so 540,000', why: 'The two must add back to the 900,000 actually paid.' },
+                  { do: 'Only the 540,000 building is depreciated', why: 'Land has an indefinite life. Shifting 50,000 from building to land would remove 50,000 of depreciation permanently, which is exactly why this split is examined.' }
+                ],
+                answer: 'Land $360,000; building $540,000', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'acct-capitalise-avoidable-cost',
+                wrong: 'Adding fines, damage during installation or wasted materials to the cost of an asset',
+                right: 'Only costs that were NECESSARY to get it ready are capitalised.',
+                why: 'Avoidable costs fail the necessity test. Capitalising them spreads this year’s carelessness over the asset’s whole life, flattering current profit — which is precisely the incentive the rule exists to remove.'
+              },
+              {
+                id: 'acct-land-depreciated',
+                wrong: 'Depreciating land, or depreciating land improvements as part of the land',
+                right: 'Land is never depreciated. Land improvements are separate and are depreciated.',
+                why: 'Land has an indefinite useful life, so there is nothing to allocate over. Fencing and paving do wear out, and burying them in the land account means they are never expensed at all.'
+              },
+              {
+                id: 'acct-repairs-capitalised',
+                wrong: 'Capitalising routine maintenance because it relates to a capital asset',
+                right: 'Ordinary repairs are expensed; only betterments are capitalised.',
+                why: 'Routine maintenance keeps the asset performing as originally expected — it does not extend life or add capacity. Capitalising it overstates assets and understates expenses year after year, and the effect compounds.'
+              }
+            ]
+          },
+
+          {
+            id: 'h2', title: 'The three depreciation methods', src: 'Module 8',
+            idea: `Depreciation allocates an asset's cost over the periods that benefit from it. It is an <b>allocation of cost, not a measure of value</b> — a fully depreciated machine still working is normal, not an error, and a rising market value changes nothing.<br><br><b>Straight-line</b> spreads the cost evenly: <b>(cost − residual value) ÷ useful life</b>. Simple, and appropriate where the benefit is even over time.<br><br><b>Units-of-production</b> charges by use: <b>(cost − residual) ÷ total expected units</b>, times units this period. Right where wear tracks output rather than time.<br><br><b>Declining-balance</b> charges more in early years: <b>carrying amount × rate</b>, where the rate is commonly double the straight-line rate. Two features trip people up. It ignores residual value <i>in the calculation</i> — but depreciation <b>stops once carrying amount reaches residual value</b>, so residual still sets the floor. And it applies to the <b>carrying amount</b>, which falls each year, not to the original cost.<br><br><b>Partial years.</b> An asset bought part-way through a year is depreciated only for the months held. Straight-line and declining-balance are pro-rated by months; units-of-production needs no adjustment because it already charges by actual use.<br><br>Whichever method is chosen, the <b>total depreciation over the asset's life is the same</b>. Only the timing differs — which is worth saying, because it is easy to think one method is cheaper than another.`,
+            rules: [
+              { name: 'Straight-line', expr: '(cost - residual) / useful life', note: 'Even benefit over time.' },
+              { name: 'Units-of-production', expr: '(cost - residual) / total units, times units used', note: 'No partial-year adjustment needed.' },
+              { name: 'Declining-balance', expr: 'carrying amount * rate', note: 'Ignores residual in the calculation, but stops at it.' },
+              { name: 'Total is the same', expr: 'only the timing differs between methods', words: true, note: 'Cost less residual, whichever route is taken.' }
+            ],
+            examples: [
+              {
+                prompt: 'Equipment costs $60,000, residual $6,000, useful life 6 years. Find straight-line depreciation, and the second-year charge under double-declining-balance.',
+                steps: [
+                  { do: 'Straight-line = (60,000 − 6,000) / 6 = 9,000 a year', why: 'Residual is subtracted before dividing — the asset is not expected to lose all its cost.' },
+                  { do: 'Double-declining rate = 2 × (1/6) = 33.33%', why: 'Twice the straight-line rate. Residual does not enter the rate.' },
+                  { do: 'Year 1: 60,000 × 1/3 = 20,000, leaving a carrying amount of 40,000', why: 'Applied to cost in year 1 because nothing has been depreciated yet.' },
+                  { do: 'Year 2: 40,000 × 1/3 = 13,333', why: 'Applied to the reduced CARRYING AMOUNT, not to the original 60,000 — which would give 20,000 again and never converge.' }
+                ],
+                answer: 'Straight-line $9,000; DDB year 2 about $13,333', answerWords: true
+              },
+              {
+                prompt: 'A vehicle costing $45,000 with residual $5,000 and a 5-year life is bought on 1 October. Find the first-year straight-line charge for a 31 December year end.',
+                steps: [
+                  { do: 'Full-year charge = (45,000 − 5,000) / 5 = 8,000', why: 'Compute the annual figure first, then pro-rate it.' },
+                  { do: 'Held from 1 October to 31 December — 3 months', why: 'Only the months of ownership benefit from the asset.' },
+                  { do: '8,000 × 3/12 = 2,000', why: 'Charging the full 8,000 would expense nine months the company did not own it.' },
+                  { do: 'The remaining 6,000 of that first annual slice falls into the following year', why: 'So the asset takes six years of calendar time to depreciate over a five-year life — normal, and worth expecting.' }
+                ],
+                answer: '$2,000', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'acct-ddb-on-original-cost',
+                wrong: 'Applying the declining-balance rate to the original cost every year',
+                right: 'It applies to the CARRYING AMOUNT, which falls each year.',
+                why: 'Applied to cost, the charge never declines and the asset would be fully written off in a fixed number of years regardless of the rate. The method is named after the balance that declines, which is the clue.'
+              },
+              {
+                id: 'acct-ddb-subtracts-residual',
+                wrong: 'Subtracting residual value before applying the declining-balance rate',
+                right: 'Residual is not in the calculation — but depreciation stops once carrying amount reaches it.',
+                why: 'Straight-line and units-of-production subtract residual up front; declining-balance does not. Residual acts as a floor in the last year instead, so it is not ignored, just applied differently.'
+              },
+              {
+                id: 'acct-depreciation-is-value',
+                wrong: 'Treating carrying amount as what the asset is worth',
+                right: 'Depreciation allocates cost. It does not measure market value.',
+                why: 'A fully depreciated machine that still works is completely normal, and a building whose market value has risen is still depreciated. Reading carrying amount as value leads to the expectation that a gain on disposal is an error, when it usually just means the estimate differed from what happened.'
+              }
+            ]
+          },
+
+          {
+            id: 'h3', title: 'Revising estimates, and disposal', src: 'Module 8',
+            idea: `Useful life and residual value are <b>estimates</b>, and estimates change. When they do, accounting does <b>not</b> restate the past. The change is applied <b>prospectively</b>: take the current carrying amount, subtract the new residual value, and spread it over the <b>remaining</b> useful life. Prior years' figures stay exactly as they were.<br><br>The reason is that the earlier statements were not wrong — they reflected the best estimate available at the time. Reopening them would make every prior-year figure provisional.<br><br><b>Disposal</b> has three steps, in this order, and skipping the first is the usual error.<br><br><b>1. Bring depreciation up to date</b> to the date of disposal, including any partial year. Without this the carrying amount is stale and the gain or loss is wrong by the missing depreciation.<br><b>2. Remove both the asset and its accumulated depreciation</b> from the books. Both accounts go, not just the net figure — this is why a disposal entry has more lines than people expect.<br><b>3. Compare proceeds with carrying amount</b>: proceeds above carrying amount give a <b>gain</b>, below give a <b>loss</b>.<br><br>A gain on disposal is not a sale profit in the ordinary sense. It says the asset was depreciated faster than it actually lost value — the estimate was conservative — which is why gains and losses on disposal are reported separately from operating results.`,
+            rules: [
+              { name: 'Revised estimates', expr: 'prospective only — never restate prior years', words: true, note: 'Remaining carrying amount less new residual, over remaining life.' },
+              { name: 'Disposal step 1', expr: 'bring depreciation up to the date of disposal', words: true, note: 'Including the partial year. The step most often skipped.' },
+              { name: 'Disposal step 2', expr: 'remove BOTH the asset and its accumulated depreciation', words: true, note: 'Two accounts, not one net figure.' },
+              { name: 'Gain or loss', expr: 'proceeds - carrying amount', note: 'A gain means depreciation ran ahead of the actual loss in value.' }
+            ],
+            examples: [
+              {
+                prompt: 'An asset cost $80,000 with a 10-year life and no residual. After 4 years the remaining life is revised to 4 more years. Find the new annual depreciation.',
+                steps: [
+                  { do: 'Depreciation so far = 80,000/10 × 4 = 32,000', why: 'Four years at the original estimate.' },
+                  { do: 'Carrying amount = 80,000 − 32,000 = 48,000', why: 'This is the starting point. The first four years are not touched.' },
+                  { do: 'Spread 48,000 over the 4 remaining years', why: 'Prospective treatment: the past stays as reported.' },
+                  { do: 'New annual depreciation = 12,000', why: 'Recomputing from the original cost over the new total life, and restating prior years, would be the wrong treatment and would make every earlier statement provisional.' }
+                ],
+                answer: '$12,000 a year', answerWords: true
+              },
+              {
+                prompt: 'A machine cost $50,000. Accumulated depreciation to the disposal date is $38,000. It is sold for $15,000. Find the gain or loss and the entry.',
+                steps: [
+                  { do: 'Depreciation is already up to date to the disposal date', why: 'Step 1 done — otherwise the carrying amount would be stale.' },
+                  { do: 'Carrying amount = 50,000 − 38,000 = 12,000', why: 'Cost less accumulated depreciation.' },
+                  { do: 'Proceeds 15,000 exceed carrying amount 12,000, so a gain of 3,000', why: 'The asset was depreciated faster than it actually lost value.' },
+                  { do: 'Dr Cash 15,000, Dr Accumulated Depreciation 38,000 / Cr Machine 50,000, Cr Gain 3,000', why: 'Both the asset and its accumulated depreciation are removed. Crediting only a net 12,000 leaves the accumulated depreciation of a machine the company no longer owns sitting on the books.' }
+                ],
+                answer: 'Gain of $3,000', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'acct-restate-prior-depreciation',
+                wrong: 'Recalculating past years when a useful life estimate changes',
+                right: 'Apply the change prospectively: carrying amount, less new residual, over remaining life.',
+                why: 'The earlier figures were the best estimate at the time and were not errors. Restating them would make every prior statement provisional, and it is a genuine misstatement rather than a harmless extra step.'
+              },
+              {
+                id: 'acct-disposal-without-catchup',
+                wrong: 'Computing the gain or loss without first bringing depreciation up to the disposal date',
+                right: 'Depreciate to the date of disposal first, then compare with proceeds.',
+                why: 'The carrying amount is stale until that entry is made, so the gain is overstated (or the loss understated) by exactly the missing depreciation. It is step one for a reason.'
+              },
+              {
+                id: 'acct-disposal-net-entry',
+                wrong: 'Crediting the asset at its net carrying amount and ignoring accumulated depreciation',
+                right: 'Remove both accounts: credit the asset at full cost, debit accumulated depreciation.',
+                why: 'Accumulated depreciation is a separate contra account, and leaving it behind means the books carry depreciation for an asset the company no longer owns. Every subsequent balance sheet is wrong by that amount.'
+              }
+            ]
+          }
+        ],
+        practice: [
+          { id: 'h1p1', kind: 'numeric', lesson: 'h1',
+            prompt: 'A machine costs $50,000 plus freight $2,000, installation $3,000, testing $1,200 and a $300 parking fine during delivery. What is the capitalised cost, in dollars?',
+            answer: 56200, verify: { expr: '50000 + 2000 + 3000 + 1200' },
+            hint: 'Which of those was not necessary?',
+            solution: ['Price, freight, installation and testing are all necessary to get it ready',
+              'The fine was avoidable, so it is expensed', '50,000 + 2,000 + 3,000 + 1,200 = 56,200'] },
+
+          { id: 'h1p2', kind: 'numeric', lesson: 'h1',
+            prompt: 'Land and a building are bought for $900,000 together. Appraisals: land $400,000, building $600,000. How much is allocated to the building, in dollars?',
+            answer: 540000, verify: { expr: '900000 * 600000 / (400000 + 600000)' },
+            hint: 'Allocate on relative fair value.',
+            solution: ['Total appraised = 1,000,000', 'Building share = 600/1,000 = 60%', '0.60 × 900,000 = 540,000'] },
+
+          { id: 'h1p3', kind: 'mc', lesson: 'h1',
+            prompt: 'Which of these is capitalised rather than expensed?',
+            options: [
+              { t: 'An upgrade that increases a machine’s output capacity', ok: true },
+              { t: 'Routine annual servicing of the machine' },
+              { t: 'A parking fine incurred delivering the machine' },
+              { t: 'Replacing a worn belt as part of normal maintenance' }
+            ],
+            hint: 'Does the expenditure extend life or add capacity, or just keep things going?',
+            solution: ['A betterment extends useful life or increases capacity — capitalise it',
+              'Ordinary repairs and maintenance keep the asset performing as expected — expense them',
+              'An avoidable fine fails the necessity test entirely'] },
+
+          { id: 'h1p4', kind: 'numeric', lesson: 'h2',
+            prompt: 'Equipment costs $60,000 with residual $6,000 and a 6-year life. What is the annual straight-line depreciation, in dollars?',
+            answer: 9000, verify: { expr: '(60000 - 6000) / 6' },
+            hint: 'Subtract residual before dividing.',
+            solution: ['(60,000 − 6,000) / 6', '= 54,000 / 6', '= 9,000 a year'] },
+
+          { id: 'h1p5', kind: 'numeric', lesson: 'h2',
+            prompt: 'Same equipment, double-declining-balance at 1/3 a year. What is the SECOND year’s depreciation, in dollars?',
+            answer: 13333.33, tol: 0.05, verify: { expr: '(60000 - 60000/3) / 3', dp: 2 },
+            hint: 'Apply the rate to the carrying amount, not to the original cost.',
+            solution: ['Year 1: 60,000 × 1/3 = 20,000, leaving a carrying amount of 40,000',
+              'Year 2: 40,000 × 1/3 = 13,333.33', 'Applying the rate to 60,000 again would give 20,000 and never converge'] },
+
+          { id: 'h1p6', kind: 'numeric', lesson: 'h2',
+            prompt: 'A vehicle costs $45,000, residual $5,000, life 5 years, bought on 1 October with a 31 December year end. What is the first-year straight-line charge, in dollars?',
+            answer: 2000, verify: { expr: '(45000 - 5000) / 5 * 3 / 12' },
+            hint: 'Compute the full year first, then pro-rate by months held.',
+            solution: ['Annual = (45,000 − 5,000)/5 = 8,000', 'Held 3 months of the year', '8,000 × 3/12 = 2,000'] },
+
+          { id: 'h1p7', kind: 'numeric', lesson: 'h3',
+            prompt: 'An asset cost $80,000, 10-year life, no residual. After 4 years the remaining life is revised to 4 more years. What is the new annual depreciation, in dollars?',
+            answer: 12000, verify: { expr: '(80000 - 80000/10*4) / 4' },
+            hint: 'Start from the current carrying amount and spread it over the remaining life.',
+            solution: ['Accumulated = 8,000 × 4 = 32,000', 'Carrying amount = 48,000',
+              '48,000 over 4 remaining years = 12,000. Prior years are not restated'] },
+
+          { id: 'h1p8', kind: 'numeric', lesson: 'h3',
+            prompt: 'A machine cost $50,000 with accumulated depreciation of $38,000 at the disposal date. It sells for $15,000. What is the gain, in dollars?',
+            answer: 3000, verify: { expr: '15000 - (50000 - 38000)' },
+            hint: 'Compare proceeds with carrying amount.',
+            solution: ['Carrying amount = 50,000 − 38,000 = 12,000', 'Proceeds 15,000 − 12,000', 'Gain of 3,000'] },
+
+          { id: 'h1p9', kind: 'spot', lesson: 'h3',
+            prompt: 'A student records the disposal of equipment. One line is wrong.',
+            steps: [
+              { t: 'Depreciation is first brought up to the date of disposal', bad: false },
+              { t: 'Carrying amount is cost less accumulated depreciation', bad: false },
+              { t: 'The entry credits Equipment at its carrying amount and ignores accumulated depreciation', bad: true },
+              { t: 'Proceeds above carrying amount give a gain', bad: false }
+            ],
+            why: 'Accumulated depreciation is a separate contra account and must be removed too. The entry credits Equipment at its FULL COST and debits Accumulated Depreciation for the whole amount built up against it. Crediting only the net figure leaves accumulated depreciation for an asset the company no longer owns sitting on the books, and every balance sheet after that is wrong by exactly that amount.',
+            hint: 'How many accounts does the asset occupy on the books?',
+            solution: ['Dr Cash for proceeds', 'Dr Accumulated Depreciation for the full amount accumulated',
+              'Cr the asset at full cost, with the difference as a gain or loss'] },
+
+          { id: 'h1p10', kind: 'order', lesson: 'h3',
+            prompt: 'Put the steps of recording a disposal in order.',
+            steps: [
+              'Bring depreciation up to date to the date of disposal',
+              'Compute the carrying amount as cost less accumulated depreciation',
+              'Remove both the asset and its accumulated depreciation from the books',
+              'Recognise the difference between proceeds and carrying amount as a gain or loss'
+            ],
+            hint: 'The carrying amount is stale until one thing has been done.',
+            solution: ['Skipping the catch-up depreciation overstates the gain by exactly the amount missed',
+              'Both accounts are removed, not the net figure',
+              'The gain or loss falls out of the entry rather than being computed separately'] }
+        ]
+      },
+
+      /* ============================ UNIT 8 ============================ */
+      {
+        id: 'liabilities', n: 8,
+        title: 'Liabilities and equity',
+        blurb: 'What a company owes and when it must say so, how a bond priced away from its face value unwinds, and the difference between borrowing and selling a share of the business.',
+        objectives: [
+          'Distinguish current from long-term liabilities, and a provision from a contingency',
+          'Record a warranty provision and the claims that draw on it',
+          'Explain why a bond is issued at a discount or premium, and how it amortises',
+          'Record share issuance and dividends, and distinguish common from preferred shares'
+        ],
+        lessons: [
+          {
+            id: 'i1', title: 'Current liabilities and provisions', src: 'Module 9',
+            idea: `A <b>liability</b> is a present obligation arising from a past event, whose settlement is expected to transfer resources. <b>Current</b> means due within one year or the operating cycle if longer; everything else is <b>long-term</b>. The split is what makes a balance sheet classified, and a reader compares current assets with current liabilities before looking at anything else.<br><br>Some current liabilities are certain in amount: accounts payable, wages payable, sales tax collected, the <b>current portion of long-term debt</b>. That last one catches people out — the portion of a mortgage or loan due within the next year is reclassified as current, even though the loan itself is long-term.<br><br>A <b>provision</b> is a liability of <b>uncertain timing or amount</b>. A warranty is the standard case: the company does not know which units will fail or when, but it knows some will. The obligation arises from the <i>sale</i>, so the expense belongs to the period of the sale, not the period of the repair — which is the matching principle doing exactly what it exists for.<br><br>The entry at the time of sale is <b>Dr Warranty Expense, Cr Warranty Provision</b>. When a claim is actually met, it draws on the provision: <b>Dr Warranty Provision, Cr Cash or Inventory</b>. <b>Meeting a claim creates no expense</b> — the expense was already recognised when the goods were sold, and recording it again would count the same obligation twice.<br><br>A <b>contingent liability</b> is not recognised at all, only disclosed, where an outflow is possible but not probable, or the amount cannot be reliably estimated. The line between provision and contingency is probability, and it is a judgement the notes must explain.`,
+            rules: [
+              { name: 'Current', expr: 'due within one year, or the operating cycle if longer', words: true, note: 'Includes the current portion of long-term debt.' },
+              { name: 'Provision', expr: 'a liability of uncertain timing or amount', words: true, note: 'Recognised when probable and reliably estimable.' },
+              { name: 'Warranty timing', expr: 'expense in the period of the SALE, not the repair', words: true, note: 'The obligation arises from the sale.' },
+              { name: 'Contingency', expr: 'disclosed, not recognised', words: true, note: 'Possible but not probable, or not reliably estimable.' }
+            ],
+            examples: [
+              {
+                prompt: 'A company sells 2,000 units in the year and expects 3% to need a repair costing $40 each. In the same year it repairs 25 units. What entries are needed?',
+                steps: [
+                  { do: 'Expected claims = 3% × 2,000 = 60 units', why: 'The estimate is made on the units sold, not on the units that have already failed.' },
+                  { do: 'Warranty expense = 60 × 40 = 2,400', why: 'Recognised in the year of sale, because that is when the obligation arose.' },
+                  { do: 'Dr Warranty Expense 2,400 / Cr Warranty Provision 2,400', why: 'The full estimate, not just the part already claimed.' },
+                  { do: 'Repairs of 25 × 40 = 1,000 draw on the provision: Dr Provision 1,000 / Cr Cash 1,000', why: 'No expense. Recording one here would count the same obligation twice and leave the provision permanently overstated.' }
+                ],
+                answer: 'Expense $2,400; the $1,000 of repairs reduces the provision, leaving $1,400.', answerWords: true
+              },
+              {
+                prompt: 'A company has a $300,000 five-year bank loan, of which $60,000 is repayable within the next twelve months. It is also being sued, with its lawyers saying a loss is possible but unlikely. How are both presented?',
+                steps: [
+                  { do: 'The loan is split, not classified as one thing', why: 'Classification follows when each portion falls due, not the original term of the instrument.' },
+                  { do: '$60,000 as the current portion of long-term debt', why: 'Due within a year, so it belongs among current liabilities where a reader compares it with current assets.' },
+                  { do: '$240,000 as a long-term liability', why: 'The balance, which is not due within the year and so does not bear on short-term liquidity.' },
+                  { do: 'The lawsuit is a contingent liability — disclosed in the notes, not recognised', why: 'Possible but not probable, so no provision is raised. Recognising it would overstate liabilities; saying nothing would hide a real risk.' }
+                ],
+                answer: 'Loan split $60,000 current and $240,000 long-term; lawsuit disclosed only.', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'acct-warranty-expense-on-repair',
+                wrong: 'Recording a warranty expense when a repair is actually carried out',
+                right: 'The repair draws on the provision. The expense was recognised at the time of sale.',
+                why: 'It double-counts the same obligation and leaves the provision growing without ever being used. The sale is what created the obligation, so the sale is where the expense belongs.'
+              },
+              {
+                id: 'acct-current-portion-missed',
+                wrong: 'Classifying a whole long-term loan as non-current',
+                right: 'The portion due within the next year is reclassified as current.',
+                why: 'It overstates working capital and understates short-term pressure, which is exactly what the current classification exists to reveal. A company with a large repayment due next quarter looks comfortable until the split is made.'
+              },
+              {
+                id: 'acct-contingency-recognised',
+                wrong: 'Raising a provision for every lawsuit that has been filed',
+                right: 'Recognise when probable and reliably estimable; otherwise disclose.',
+                why: 'A provision asserts that an outflow is probable. Raising one for a claim the lawyers think unlikely overstates liabilities and understates profit — and the notes exist precisely so the risk can be reported without being recognised.'
+              }
+            ]
+          },
+
+          {
+            id: 'i2', title: 'Notes payable and bonds', src: 'Module 9',
+            idea: `A <b>note payable</b> is a written promise to repay with interest. Interest is <b>accrued as it is incurred</b>, not when it is paid: <b>interest = principal × rate × time</b>, with time as a fraction of a year. A loan taken out in November with interest due in February still needs two months of interest accrued at 31 December.<br><br>A <b>bond</b> is debt divided into units and sold to many lenders. Two rates matter and confusing them is the whole difficulty. The <b>coupon rate</b> is printed on the bond and fixes the cash interest paid: face value × coupon rate, every period, for ever after. The <b>market rate</b> is what investors currently demand for that risk, and it moves.<br><br>A bond is priced so its yield matches the market rate, which means:<br><br>• coupon <b>above</b> market → investors pay <b>more</b> than face → issued at a <b>premium</b><br>• coupon <b>below</b> market → investors pay <b>less</b> than face → issued at a <b>discount</b><br>• coupon <b>equal</b> to market → issued <b>at par</b><br><br>A discount or premium is not a gain or a loss. It is an <b>adjustment to the effective cost of borrowing</b>, amortised over the bond's life. A discount <b>increases</b> interest expense above the cash paid; a premium <b>reduces</b> it. Either way the carrying amount moves toward face value, reaching it exactly at maturity.<br><br>The <b>effective interest method</b> computes interest expense as <b>carrying amount × market rate</b>, with the difference from the cash coupon being the amortisation. The cash paid never changes; the expense does.`,
+            rules: [
+              { name: 'Interest', expr: 'principal * rate * time', note: 'Time as a fraction of a year. Accrued as incurred, not when paid.' },
+              { name: 'Why a discount', expr: 'coupon below market rate', words: true, note: 'Investors pay less to lift their yield to the market rate.' },
+              { name: 'Why a premium', expr: 'coupon above market rate', words: true, note: 'Investors pay more; their yield falls to the market rate.' },
+              { name: 'Effective interest', expr: 'expense = carrying amount * market rate', note: 'The difference from the cash coupon is the amortisation.' }
+            ],
+            examples: [
+              {
+                prompt: 'A company borrows $60,000 on 1 November at 6%, with interest payable annually. What interest must be accrued at 31 December?',
+                steps: [
+                  { do: 'Annual interest = 60,000 × 6% = 3,600', why: 'The full-year figure first.' },
+                  { do: 'Two months have elapsed: November and December', why: 'Interest accrues with time, regardless of when cash changes hands.' },
+                  { do: '3,600 × 2/12 = 600', why: 'Dr Interest Expense 600 / Cr Interest Payable 600.' },
+                  { do: 'Recording nothing because no cash was paid would understate both expense and liabilities', why: 'This is precisely what accrual accounting exists to prevent.' }
+                ],
+                answer: '$600', answerWords: true
+              },
+              {
+                prompt: 'A $100,000 bond with a 5% coupon is issued when the market rate is 6%. Is it issued at a discount or a premium, and what happens to interest expense?',
+                steps: [
+                  { do: 'Coupon 5% is below the market rate of 6%', why: 'The bond pays less cash than investors currently demand.' },
+                  { do: 'So investors will pay less than face value — a discount', why: 'Paying less for the same $5,000 a year lifts their effective yield to 6%.' },
+                  { do: 'Cash interest stays 100,000 × 5% = 5,000 every period', why: 'The coupon is fixed by the certificate and never changes.' },
+                  { do: 'Interest expense is higher than 5,000, and the discount amortises', why: 'Expense = carrying amount × 6%. The difference increases the carrying amount, which climbs toward 100,000 and reaches it exactly at maturity.' }
+                ],
+                answer: 'A discount, with interest expense above the $5,000 cash coupon.', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'acct-coupon-is-expense',
+                wrong: 'Treating the cash coupon as the interest expense on a bond issued at a discount or premium',
+                right: 'Expense = carrying amount × market rate. The coupon is only the cash paid.',
+                why: 'The whole point of a discount or premium is that the effective cost of borrowing differs from the coupon. Using the coupon as the expense means the discount never amortises and the carrying amount never reaches face value at maturity.'
+              },
+              {
+                id: 'acct-discount-as-loss',
+                wrong: 'Recording a bond discount as a loss on issue',
+                right: 'It is an adjustment to the cost of borrowing, amortised over the bond’s life.',
+                why: 'Nothing was lost — the company simply borrowed at a rate above its coupon and received less cash to compensate. Expensing it at issue moves several years of interest into one, distorting every year involved.'
+              },
+              {
+                id: 'acct-interest-only-when-paid',
+                wrong: 'Recording interest only in the period it is paid',
+                right: 'Interest accrues with time: principal × rate × time.',
+                why: 'A loan taken out in November with interest due in February still incurred two months of cost by 31 December. Waiting for the cash understates both expense and liabilities in the year that bore them.'
+              }
+            ]
+          },
+
+          {
+            id: 'i3', title: 'Shares, dividends and equity', src: 'Module 10',
+            idea: `Issuing shares is not borrowing. A lender must be repaid with interest whether or not the business does well; a shareholder has bought a residual claim and can be paid only out of what is left over. That difference explains almost everything about how the two are reported.<br><br><b>Common shares</b> carry votes and the residual claim. <b>Preferred shares</b> rank ahead of common for dividends and on wind-up, usually carry no vote, and often carry a fixed rate. <b>Cumulative</b> preferred shares carry forward any dividend not declared in a year, and those <b>arrears must be paid before common shareholders receive anything</b> — arrears are disclosed, not recognised as a liability, because no dividend is owed until it is declared.<br><br>Under the Canada Business Corporations Act shares are <b>no par value</b>: the full amount received goes to the share account. There is no premium above par to account for separately.<br><br><b>Dividends have three dates.</b> On the <b>declaration date</b> the directors declare, and only now does a liability arise — <b>Dr Retained Earnings, Cr Dividends Payable</b>. On the <b>record date</b> the list of eligible shareholders is fixed, and <b>no entry is made</b>. On the <b>payment date</b> the cash goes out: <b>Dr Dividends Payable, Cr Cash</b>.<br><br>Dividends are <b>never an expense</b>. They are a distribution of profit and reduce retained earnings directly, which is the same point unit 1 made about the accounting equation, now with the entries attached.<br><br>A <b>stock dividend</b> or a <b>share split</b> changes nothing about the company's resources — it divides the same equity into more pieces. Total equity is unchanged, and a shareholder holding more shares of a proportionately smaller value is no better off.`,
+            rules: [
+              { name: 'Preferred v common', expr: 'preferred ranks ahead for dividends and on wind-up', words: true, note: 'Usually no vote; often a fixed rate.' },
+              { name: 'Cumulative arrears', expr: 'disclosed, not a liability, until declared', words: true, note: 'But must be paid before common shareholders get anything.' },
+              { name: 'The three dates', expr: 'declaration (entry) · record (no entry) · payment (entry)', words: true, note: 'The liability arises only on declaration.' },
+              { name: 'Never an expense', expr: 'dividends reduce retained earnings directly', words: true, note: 'A distribution of profit, not a cost of earning it.' }
+            ],
+            examples: [
+              {
+                prompt: 'A company has 5,000 cumulative $2 preferred shares with one year of arrears, and 40,000 common shares. It declares $50,000 of dividends. How is it split?',
+                steps: [
+                  { do: 'Annual preferred entitlement = 5,000 × $2 = 10,000', why: 'The fixed rate on the preferred shares.' },
+                  { do: 'Arrears from last year = another 10,000', why: 'Cumulative means the unpaid year carries forward — it was never extinguished by not being declared.' },
+                  { do: 'Preferred receive 10,000 + 10,000 = 20,000 first', why: 'Arrears and the current year both rank ahead of any common dividend.' },
+                  { do: 'Common receive 50,000 − 20,000 = 30,000', why: 'Paying the common shareholders first, or ignoring the arrears, is the standard error and shortchanges the preferred by 10,000.' }
+                ],
+                answer: 'Preferred $20,000; common $30,000', answerWords: true
+              },
+              {
+                prompt: 'Directors declare a $30,000 dividend on 15 March, payable 15 April to shareholders of record on 31 March. What entries fall on each date?',
+                steps: [
+                  { do: '15 March — declaration: Dr Retained Earnings 30,000 / Cr Dividends Payable 30,000', why: 'The declaration creates a legal obligation. Before it, no dividend was owed at all.' },
+                  { do: '31 March — record date: no entry', why: 'It only fixes who is entitled. Nothing about the company’s position changes.' },
+                  { do: '15 April — payment: Dr Dividends Payable 30,000 / Cr Cash 30,000', why: 'The liability is settled.' },
+                  { do: 'At no point is an expense recorded', why: 'Retained earnings fall by 30,000 and net income is untouched — which is what makes a dividend a distribution rather than a cost.' }
+                ],
+                answer: 'Entries on declaration and payment only; none on the record date.', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'acct-dividend-as-expense-entry',
+                wrong: 'Debiting a dividend to an expense account',
+                right: 'Dr Retained Earnings. A dividend is a distribution of profit.',
+                why: 'It understates net income by the amount distributed and then understates retained earnings again at closing — the same figure removed twice. This is the equation point from unit 1 with the journal entry attached.'
+              },
+              {
+                id: 'acct-arrears-as-liability',
+                wrong: 'Recording cumulative preferred arrears as a liability',
+                right: 'Arrears are disclosed. No dividend is owed until it is declared.',
+                why: 'Directors are not obliged to declare a dividend, so nothing is payable. But the arrears must be satisfied before any common dividend, which is why they are disclosed rather than ignored.'
+              },
+              {
+                id: 'acct-split-creates-value',
+                wrong: 'Treating a share split or stock dividend as increasing shareholder wealth',
+                right: 'Total equity is unchanged. The same claim is divided into more pieces.',
+                why: 'No resources enter the company and none leave. A shareholder holding twice as many shares at half the value each is in exactly the same position, which is why no entry affects total equity.'
+              }
+            ]
+          }
+        ],
+        practice: [
+          { id: 'i1p1', kind: 'numeric', lesson: 'i1',
+            prompt: 'A company sells 2,000 units and expects 3% to need a $40 repair. What is the warranty expense for the year, in dollars?',
+            answer: 2400, verify: { expr: '2000 * 3/100 * 40' },
+            hint: 'The estimate is on units sold, in the period of the sale.',
+            solution: ['Expected claims = 3% × 2,000 = 60 units', '60 × $40 = $2,400',
+              'Recognised now, because the obligation arose from the sale'] },
+
+          { id: 'i1p2', kind: 'numeric', lesson: 'i1',
+            prompt: 'The warranty provision stands at $2,400. Repairs of $1,000 are carried out. What is the closing provision, in dollars?',
+            answer: 1400, verify: { expr: '2400 - 1000' },
+            hint: 'The repair draws on the provision — it creates no new expense.',
+            solution: ['Dr Warranty Provision 1,000 / Cr Cash 1,000', '2,400 − 1,000 = 1,400',
+              'No expense is recorded; it was recognised at the time of sale'] },
+
+          { id: 'i1p3', kind: 'mc', lesson: 'i1',
+            prompt: 'Lawyers say a loss on a claim is possible but not probable, and the amount cannot be reliably estimated. How is it reported?',
+            options: [
+              { t: 'Disclosed in the notes, not recognised', ok: true },
+              { t: 'Recognised as a provision at the best estimate' },
+              { t: 'Recognised as a current liability in full' },
+              { t: 'Not reported at all' }
+            ],
+            hint: 'What does recognising a provision actually assert?',
+            solution: ['A provision asserts an outflow is probable and estimable',
+              'Neither condition is met here, so recognising one would overstate liabilities',
+              'Saying nothing would hide a real risk — which is what the notes are for'] },
+
+          { id: 'i1p4', kind: 'numeric', lesson: 'i2',
+            prompt: 'A company borrows $60,000 on 1 November at 6%. How much interest must be accrued at a 31 December year end, in dollars?',
+            answer: 600, verify: { expr: '60000 * 6/100 * 2/12' },
+            hint: 'Interest accrues with time, not with payment.',
+            solution: ['Annual interest = 60,000 × 6% = 3,600', 'Two months elapsed: 3,600 × 2/12', '= 600'] },
+
+          { id: 'i1p5', kind: 'mc', lesson: 'i2',
+            prompt: 'A $100,000 bond has a 5% coupon and is issued when the market rate is 6%. How is it issued?',
+            options: [
+              { t: 'At a discount — the coupon is below the market rate', ok: true },
+              { t: 'At a premium — the coupon is below the market rate' },
+              { t: 'At par — the face value is $100,000' },
+              { t: 'At a discount, and the company records a loss on issue' }
+            ],
+            hint: 'What must the price do so an investor earns the market rate on a below-market coupon?',
+            solution: ['The bond pays less cash than investors currently demand',
+              'So they pay less than face value, lifting their effective yield to 6%',
+              'The discount is not a loss — it is an adjustment to the cost of borrowing, amortised over the life'] },
+
+          { id: 'i1p6', kind: 'numeric', lesson: 'i2',
+            prompt: 'A bond has a carrying amount of $94,000 and a market rate of 6%. What is the interest expense for the period, in dollars?',
+            answer: 5640, verify: { expr: '94000 * 6/100' },
+            hint: 'Effective interest: carrying amount times the market rate.',
+            solution: ['Expense = 94,000 × 6% = 5,640', 'The cash coupon is lower, and the difference amortises the discount',
+              'The carrying amount rises toward face value, reaching it at maturity'] },
+
+          { id: 'i1p7', kind: 'numeric', lesson: 'i3',
+            prompt: '5,000 cumulative $2 preferred shares have one year of arrears. Total dividends of $50,000 are declared. How much goes to the common shareholders, in dollars?',
+            answer: 30000, verify: { expr: '50000 - (5000*2 + 5000*2)' },
+            hint: 'Arrears and the current year both rank ahead of common.',
+            solution: ['Current year preferred = 5,000 × $2 = 10,000', 'Arrears = another 10,000',
+              'Common = 50,000 − 20,000 = 30,000'] },
+
+          { id: 'i1p8', kind: 'mc', lesson: 'i3',
+            prompt: 'On which of the three dividend dates is NO journal entry made?',
+            options: [
+              { t: 'The record date', ok: true },
+              { t: 'The declaration date' },
+              { t: 'The payment date' },
+              { t: 'An entry is made on all three' }
+            ],
+            hint: 'Which date changes the company’s obligations or its cash?',
+            solution: ['Declaration creates the liability: Dr Retained Earnings, Cr Dividends Payable',
+              'The record date only fixes who is entitled — nothing changes',
+              'Payment settles the liability: Dr Dividends Payable, Cr Cash'] },
+
+          { id: 'i1p9', kind: 'spot', lesson: 'i3',
+            prompt: 'A student records a $30,000 dividend declaration. One line is wrong.',
+            steps: [
+              { t: 'The directors have declared, so a liability now exists', bad: false },
+              { t: 'Dr Dividend Expense 30,000 / Cr Dividends Payable 30,000', bad: true },
+              { t: 'No entry is required on the record date', bad: false },
+              { t: 'On payment: Dr Dividends Payable 30,000 / Cr Cash 30,000', bad: false }
+            ],
+            why: 'A dividend is a distribution of profit, not a cost of earning it, so the debit is to Retained Earnings and never to an expense account. Treating it as an expense understates net income by 30,000 and then reduces retained earnings again at closing — the same amount removed twice. This is the point unit 1 made about the accounting equation, now with the entry attached.',
+            hint: 'Does paying the owners their own profit make the company less profitable?',
+            solution: ['Dr Retained Earnings 30,000 / Cr Dividends Payable 30,000',
+              'Net income is untouched', 'Retained earnings fall by exactly the amount distributed'] },
+
+          { id: 'i1p10', kind: 'order', lesson: 'i1',
+            prompt: 'Put the warranty accounting steps in order.',
+            steps: [
+              'Goods are sold, creating the obligation',
+              'Estimate the claims expected from those sales',
+              'Dr Warranty Expense, Cr Warranty Provision for the full estimate',
+              'As claims arise, Dr Warranty Provision, Cr Cash — with no expense'
+            ],
+            hint: 'When does the obligation arise, and when is the expense recognised?',
+            solution: ['The sale creates the obligation, so the sale is where the expense belongs',
+              'The estimate covers all expected claims, not just those already made',
+              'A repair draws on the provision; recording an expense there would count it twice'] }
+        ]
+      },
+
+      /* ============================ UNIT 9 ============================ */
+      {
+        id: 'cashflow', n: 9,
+        title: 'Cash flows and analysis',
+        blurb: 'Why a profitable company can run out of money, how the cash flow statement explains it, and the ratios a reader computes before anything else.',
+        objectives: [
+          'Classify a cash flow as operating, investing or financing',
+          'Prepare the operating section by the indirect method',
+          'Compute the main liquidity, solvency and profitability ratios',
+          'Say what a ratio does not tell you without a comparison'
+        ],
+        lessons: [
+          {
+            id: 'j1', title: 'The statement of cash flows', src: 'Module 11',
+            idea: `Profit is not cash. A sale on credit raises income and no money; depreciation reduces income and moves no money; buying equipment consumes cash and is not an expense at all. A company can be profitable and insolvent at the same time, and the statement of cash flows is what makes that visible.<br><br>Every cash flow is classified into one of three sections. <b>Operating</b> covers the day-to-day trading activities that produce profit. <b>Investing</b> covers buying and selling long-lived assets and investments. <b>Financing</b> covers raising and repaying capital — borrowings, share issues and dividends paid.<br><br>Two classifications regularly cause trouble. <b>Interest paid</b> is normally operating, even though the loan itself is financing — because interest is a cost of doing business, while the principal is capital. And <b>dividends paid</b> are financing, because they are a return of capital to owners rather than a trading cost.<br><br>The <b>indirect method</b> builds the operating section by starting from net income and undoing everything in it that was not cash:<br><br>• <b>add back non-cash expenses</b> — depreciation, amortisation, losses on disposal<br>• <b>subtract non-cash gains</b> — gains on disposal, which belong in investing, not operating<br>• <b>adjust for changes in working capital</b>: an <b>increase</b> in a current asset such as receivables <b>uses</b> cash (subtract); an <b>increase</b> in a current liability such as payables <b>provides</b> cash (add)<br><br>Depreciation is added back because it was subtracted in computing income without any money leaving — not because depreciation is a source of cash. It is not; it is an adjustment being reversed.`,
+            rules: [
+              { name: 'Three sections', expr: 'operating · investing · financing', words: true, note: 'Trading, long-lived assets, and capital.' },
+              { name: 'Two that catch people', expr: 'interest paid is operating; dividends paid are financing', words: true, note: 'Interest is a cost of business; a dividend is a return to owners.' },
+              { name: 'Indirect method', expr: 'net income + non-cash expenses - non-cash gains +/- working capital changes', words: true, note: 'Undo everything in income that moved no money.' },
+              { name: 'Working capital', expr: 'current asset up uses cash; current liability up provides cash', words: true, note: 'The direction people reverse.' }
+            ],
+            examples: [
+              {
+                prompt: 'Net income $80,000. Depreciation $15,000. Receivables rose $12,000. Payables rose $7,000. Gain on sale of equipment $4,000. Find operating cash flow.',
+                steps: [
+                  { do: 'Start at net income 80,000', why: 'The indirect method begins with profit and removes everything non-cash.' },
+                  { do: 'Add depreciation 15,000', why: 'It reduced income and moved no money. Added back because it is being reversed, not because it generates cash.' },
+                  { do: 'Subtract the 4,000 gain', why: 'The whole proceeds of the sale belong in investing. Leaving the gain in operating would count part of it twice.' },
+                  { do: 'Receivables up 12,000 — subtract; payables up 7,000 — add', why: 'Sales were made without collecting; purchases were made without paying. 80,000 + 15,000 − 4,000 − 12,000 + 7,000 = 86,000.' }
+                ],
+                answer: '$86,000', answerWords: true
+              },
+              {
+                prompt: 'Classify: cash from issuing shares; equipment purchased; interest paid on a loan; dividends paid; loan principal repaid.',
+                steps: [
+                  { do: 'Issuing shares — financing', why: 'Raising capital from owners.' },
+                  { do: 'Equipment purchased — investing', why: 'Acquiring a long-lived asset.' },
+                  { do: 'Interest paid — operating', why: 'A cost of doing business, even though the loan itself is financing. This is the split that gets missed.' },
+                  { do: 'Dividends paid — financing; loan principal repaid — financing', why: 'Both are returns of capital rather than trading costs. Interest and principal on the same loan land in different sections, which is the point worth remembering.' }
+                ],
+                answer: 'Financing, investing, operating, financing, financing', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'acct-depreciation-is-cash',
+                wrong: 'Describing depreciation as a source of cash because it is added back',
+                right: 'It is added back because it was deducted without any cash moving.',
+                why: 'Depreciation generates nothing. A company with no revenue and large depreciation has no cash coming in at all. Reading the add-back as a source leads to the belief that increasing depreciation improves cash flow, which it does not.'
+              },
+              {
+                id: 'acct-working-capital-direction',
+                wrong: 'Adding an increase in receivables to operating cash flow',
+                right: 'A rise in a current asset USES cash: subtract it.',
+                why: 'Receivables grew because sales were made without the money being collected — income went up and cash did not. Getting the direction backwards moves the operating figure by twice the change, and it is the commonest arithmetic error in the statement.'
+              },
+              {
+                id: 'acct-interest-as-financing',
+                wrong: 'Classifying interest paid as financing because the loan is financing',
+                right: 'Interest paid is normally operating; the principal is financing.',
+                why: 'Interest is a cost of running the business, and it appears in the income statement. Moving it to financing flatters operating cash flow — the figure most readers use to judge whether the business funds itself.'
+              }
+            ]
+          },
+
+          {
+            id: 'j2', title: 'Liquidity and solvency ratios', src: 'Module 12',
+            idea: `A financial statement figure alone means very little. $2 million of debt is trivial for one company and fatal for another, so analysis is built on <b>ratios</b> — relationships between figures — and on comparison over time and against peers.<br><br><b>Liquidity</b> asks whether short-term obligations can be met. The <b>current ratio</b> is current assets ÷ current liabilities. The <b>quick ratio</b> removes inventory and prepayments from the numerator, because inventory has to be sold before it can pay anything, and a company whose current ratio is healthy only because of slow-moving stock is not liquid at all.<br><br>Two turnover ratios say how quickly working capital converts. <b>Receivables turnover</b> is credit sales ÷ average receivables, and <b>inventory turnover</b> is cost of goods sold ÷ average inventory. Note that inventory turnover uses <b>cost of goods sold, not sales</b> — both the numerator and denominator must be at cost, or the ratio is inflated by the profit margin.<br><br><b>Solvency</b> asks about the long term. The <b>debt-to-equity ratio</b> is total liabilities ÷ total equity: how much of the business is financed by lenders rather than owners. <b>Times interest earned</b> is operating income ÷ interest expense: how many times over the profits cover the interest bill.<br><br>Every ratio carries the same warning. A ratio is a <b>question, not an answer</b>. A current ratio of 3 might be strong liquidity or idle cash that should be invested. Nothing can be concluded from one ratio at one date without a trend, an industry comparison, or both.`,
+            rules: [
+              { name: 'Current ratio', expr: 'current assets / current liabilities', note: 'The first thing most readers compute.' },
+              { name: 'Quick ratio', expr: '(current assets - inventory - prepaid) / current liabilities', note: 'Removes what cannot pay a bill quickly.' },
+              { name: 'Inventory turnover', expr: 'cost of goods sold / average inventory', note: 'COGS, not sales — both sides must be at cost.' },
+              { name: 'Debt to equity', expr: 'total liabilities / total equity', note: 'How much of the business belongs to lenders.' }
+            ],
+            examples: [
+              {
+                prompt: 'Current assets $240,000, of which inventory is $90,000 and prepayments $10,000. Current liabilities $100,000. Find the current and quick ratios.',
+                steps: [
+                  { do: 'Current ratio = 240,000 / 100,000 = 2.4', why: 'Comfortable on its face.' },
+                  { do: 'Quick assets = 240,000 − 90,000 − 10,000 = 140,000', why: 'Inventory must be sold before it can pay anything, and prepayments will never be cash again.' },
+                  { do: 'Quick ratio = 140,000 / 100,000 = 1.4', why: 'Still adequate, but a full point lower.' },
+                  { do: 'The gap is the point of computing both', why: 'A company with a current ratio of 2.4 and a quick ratio of 0.6 would be relying entirely on selling stock, and only the second ratio reveals it.' }
+                ],
+                answer: 'Current 2.4; quick 1.4', answerWords: true
+              },
+              {
+                prompt: 'Cost of goods sold $600,000, average inventory $75,000. Find inventory turnover and days in inventory.',
+                steps: [
+                  { do: 'Turnover = 600,000 / 75,000 = 8 times', why: 'Both figures are at cost, which is why COGS is used rather than sales.' },
+                  { do: 'Days = 365 / 8 ≈ 46 days', why: 'Stock sits for about six and a half weeks on average.' },
+                  { do: 'Whether that is good depends entirely on the industry', why: 'A grocer turning stock 8 times a year is in trouble; a furniture retailer is doing well. The number alone says nothing.' },
+                  { do: 'Using sales instead of COGS would inflate the turnover by the gross margin', why: 'And make the company look faster than it is, consistently and in one direction.' }
+                ],
+                answer: '8 times, about 46 days', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'acct-inventory-turnover-uses-sales',
+                wrong: 'Computing inventory turnover as sales ÷ average inventory',
+                right: 'Use cost of goods sold. Both sides of the ratio must be at cost.',
+                why: 'Sales include the gross margin and inventory does not, so the ratio is inflated by the markup — consistently, and always in the flattering direction. The same principle is why receivables turnover uses credit sales rather than total sales.'
+              },
+              {
+                id: 'acct-ratio-without-comparison',
+                wrong: 'Concluding a company is healthy from one ratio at one date',
+                right: 'A ratio is a question. It needs a trend, an industry comparison, or both.',
+                why: 'A current ratio of 3 may be strong liquidity or idle cash earning nothing; inventory turnover of 8 is disastrous for a grocer and excellent for a jeweller. Without a benchmark a ratio has no direction.'
+              },
+              {
+                id: 'acct-quick-ratio-keeps-inventory',
+                wrong: 'Including inventory in the quick ratio',
+                right: 'The quick ratio exists precisely to exclude it.',
+                why: 'Inventory must first be sold, and then the receivable collected, before it can settle a liability. Leaving it in makes the quick ratio identical to the current ratio and removes the only reason to compute it.'
+              }
+            ]
+          },
+
+          {
+            id: 'j3', title: 'Profitability, and the limits of analysis', src: 'Module 12',
+            idea: `<b>Profitability</b> ratios ask how effectively the business turns resources into profit.<br><br><b>Gross margin</b> is gross profit ÷ sales: what proportion of each sales dollar survives the cost of the goods. <b>Profit margin</b> is net income ÷ sales: what survives everything. <b>Return on assets</b> is net income ÷ average total assets: how hard the asset base works. <b>Return on equity</b> is net income ÷ average equity: what the owners earn on their stake.<br><br>The relationship between the last two is worth understanding rather than memorising. <b>Return on equity exceeds return on assets whenever borrowing earns more than it costs</b> — that is <b>leverage</b>, and it magnifies returns in both directions. A company with a high ROE and a high debt-to-equity ratio is not necessarily performing better; it may simply be taking more risk, and the same leverage that lifts returns in a good year deepens losses in a bad one.<br><br>Analysis has limits that must be stated with any conclusion. Financial statements are at <b>historical cost</b>, so assets bought decades ago are carried at figures that mean little today. Companies apply <b>different accounting policies</b> — depreciation methods, inventory cost formulas — so two identical businesses can report different profits legitimately. Statements are a <b>snapshot</b>, and a seasonal business looks entirely different in June and December. And they are <b>backward-looking</b>: they report what happened, not what will.<br><br>The most useful habit is to ask what a figure is being compared with. A ratio computed once, in isolation, has told you nothing yet.`,
+            rules: [
+              { name: 'Gross margin', expr: 'gross profit / sales', note: 'What survives the cost of the goods.' },
+              { name: 'Profit margin', expr: 'net income / sales', note: 'What survives everything.' },
+              { name: 'Return on assets', expr: 'net income / average total assets', note: 'How hard the asset base works.' },
+              { name: 'Leverage', expr: 'ROE exceeds ROA when borrowing earns more than it costs', words: true, note: 'It magnifies returns in both directions.' }
+            ],
+            examples: [
+              {
+                prompt: 'Sales $800,000, cost of goods sold $520,000, net income $64,000, average total assets $400,000. Find gross margin, profit margin and return on assets.',
+                steps: [
+                  { do: 'Gross profit = 800,000 − 520,000 = 280,000', why: 'Sales less the cost of what was sold.' },
+                  { do: 'Gross margin = 280,000 / 800,000 = 35%', why: '35 cents of every sales dollar survives the cost of the goods.' },
+                  { do: 'Profit margin = 64,000 / 800,000 = 8%', why: 'Only 8 cents survives everything else as well.' },
+                  { do: 'Return on assets = 64,000 / 400,000 = 16%', why: 'The gap between 35% and 8% is where the operating costs are, and that is usually the more interesting question than either figure alone.' }
+                ],
+                answer: 'Gross margin 35%; profit margin 8%; ROA 16%', answerWords: true
+              },
+              {
+                prompt: 'Company A has ROA 10% and ROE 12%. Company B has ROA 10% and ROE 25%. Is B the better performer?',
+                steps: [
+                  { do: 'Both earn the same return on their assets', why: 'ROA measures operating performance independently of how the assets were funded.' },
+                  { do: 'B’s much higher ROE must come from leverage', why: 'It has funded more of the same asset base with debt, so the same profit is spread over a smaller equity stake.' },
+                  { do: 'That is more risk, not more skill', why: 'Leverage magnifies returns in both directions.' },
+                  { do: 'In a bad year B’s losses on equity will be correspondingly worse', why: 'So the answer needs the debt-to-equity ratio and the interest cover alongside. ROE alone cannot distinguish performance from risk-taking.' }
+                ],
+                answer: 'Not necessarily — B is more leveraged, which is more risk rather than better performance.', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'acct-roe-means-better',
+                wrong: 'Reading a higher return on equity as better performance',
+                right: 'Check the leverage. Identical operating performance gives a higher ROE with more debt.',
+                why: 'ROE divides by equity, so funding the same assets with more debt raises it without the business earning a cent more. The same leverage deepens losses in a bad year, which is why ROE is read alongside debt-to-equity and interest cover.'
+              },
+              {
+                id: 'acct-comparing-different-policies',
+                wrong: 'Comparing two companies’ profits without checking their accounting policies',
+                right: 'Different depreciation methods and cost formulas give different profits legitimately.',
+                why: 'One company using declining-balance and another using straight-line will report different profits from identical operations for years. The notes disclose the policies precisely so comparisons can be adjusted rather than made naively.'
+              },
+              {
+                id: 'acct-statements-predict',
+                wrong: 'Treating financial statements as a forecast',
+                right: 'They report what happened, at historical cost, at one date.',
+                why: 'A snapshot of a seasonal business looks entirely different in June and December, and historical cost means long-held assets are carried at figures with little current meaning. Analysis supports a judgement about the future; it does not supply one.'
+              }
+            ]
+          }
+        ],
+        practice: [
+          { id: 'j1p1', kind: 'numeric', lesson: 'j1',
+            prompt: 'Net income $80,000, depreciation $15,000, receivables up $12,000, payables up $7,000, gain on sale $4,000. What is operating cash flow, in dollars?',
+            answer: 86000, verify: { expr: '80000 + 15000 - 4000 - 12000 + 7000' },
+            hint: 'Add back non-cash expenses, subtract non-cash gains, then adjust working capital.',
+            solution: ['80,000 + 15,000 (depreciation) − 4,000 (gain belongs in investing)',
+              '− 12,000 (receivables up uses cash) + 7,000 (payables up provides cash)', '= 86,000'] },
+
+          { id: 'j1p2', kind: 'mc', lesson: 'j1',
+            prompt: 'In which section does interest PAID on a bank loan normally appear?',
+            options: [
+              { t: 'Operating — it is a cost of doing business', ok: true },
+              { t: 'Financing — the loan itself is financing' },
+              { t: 'Investing — it relates to a financial instrument' },
+              { t: 'It is excluded, being a non-cash item' }
+            ],
+            hint: 'Where does interest appear on the income statement?',
+            solution: ['Interest is a cost of running the business and appears in the income statement',
+              'The loan principal is financing, but the interest on it is operating',
+              'Moving it to financing would flatter operating cash flow — the figure readers trust most'] },
+
+          { id: 'j1p3', kind: 'numeric', lesson: 'j1',
+            prompt: 'Net income $50,000, depreciation $9,000, inventory rose $6,000, payables fell $3,000. What is operating cash flow, in dollars?',
+            answer: 50000, verify: { expr: '50000 + 9000 - 6000 - 3000' },
+            hint: 'A current asset rising uses cash; a current liability falling also uses cash.',
+            solution: ['50,000 + 9,000 = 59,000', '− 6,000 (inventory up) − 3,000 (payables down)', '= 50,000'] },
+
+          { id: 'j1p4', kind: 'spot', lesson: 'j1',
+            prompt: 'A student prepares the operating section. One line is wrong.',
+            steps: [
+              { t: 'Start from net income and undo everything that moved no cash', bad: false },
+              { t: 'Add back depreciation, which reduced income without any cash leaving', bad: false },
+              { t: 'Add the increase in accounts receivable, since receivables are an asset', bad: true },
+              { t: 'Add the increase in accounts payable, since the goods were not paid for', bad: false }
+            ],
+            why: 'A rise in receivables USES cash and must be subtracted. Receivables grew because sales were recorded in income without the money being collected — so income is higher than cash by exactly that amount. Getting the direction backwards moves the operating figure by twice the change, and the fourth line states the correct logic for payables, which should make the inconsistency visible.',
+            hint: 'If receivables grew, did more or less cash come in than the income statement shows?',
+            solution: ['Current asset up → cash used → subtract',
+              'Current liability up → cash retained → add', 'The two directions are opposite, not the same'] },
+
+          { id: 'j1p5', kind: 'numeric', lesson: 'j2',
+            prompt: 'Current assets $240,000 including inventory $90,000 and prepayments $10,000. Current liabilities $100,000. What is the quick ratio, to 1 decimal place?',
+            answer: 1.4, tol: 0.005, verify: { expr: '(240000 - 90000 - 10000) / 100000', dp: 1 },
+            hint: 'Remove what cannot settle a bill quickly.',
+            solution: ['Quick assets = 240,000 − 90,000 − 10,000 = 140,000', '140,000 / 100,000', '= 1.4'] },
+
+          { id: 'j1p6', kind: 'numeric', lesson: 'j2',
+            prompt: 'Cost of goods sold $600,000 and average inventory $75,000. What is inventory turnover, in times per year?',
+            answer: 8, verify: { expr: '600000 / 75000' },
+            hint: 'Both sides of the ratio must be at cost.',
+            solution: ['Turnover = COGS / average inventory', '600,000 / 75,000 = 8 times',
+              'Using sales would inflate the ratio by the gross margin'] },
+
+          { id: 'j1p7', kind: 'numeric', lesson: 'j2',
+            prompt: 'Total liabilities $360,000 and total equity $240,000. What is the debt-to-equity ratio, to 1 decimal place?',
+            answer: 1.5, tol: 0.005, verify: { expr: '360000 / 240000', dp: 1 },
+            hint: 'Liabilities over equity.',
+            solution: ['360,000 / 240,000', '= 1.5', 'Lenders have funded one and a half times what the owners have'] },
+
+          { id: 'j1p8', kind: 'numeric', lesson: 'j3',
+            prompt: 'Sales $800,000 and cost of goods sold $520,000. What is the gross margin, as a percentage?',
+            answer: 35, verify: { expr: '(800000 - 520000) / 800000 * 100' },
+            hint: 'Gross profit over sales.',
+            solution: ['Gross profit = 800,000 − 520,000 = 280,000', '280,000 / 800,000 = 0.35', '= 35%'] },
+
+          { id: 'j1p9', kind: 'mc', lesson: 'j3',
+            prompt: 'Company A: ROA 10%, ROE 12%. Company B: ROA 10%, ROE 25%. What does this most likely show?',
+            options: [
+              { t: 'B is more leveraged — more risk, not better performance', ok: true },
+              { t: 'B uses its assets more efficiently than A' },
+              { t: 'B is more profitable on every sale than A' },
+              { t: 'A has made an error, since ROE should equal ROA' }
+            ],
+            hint: 'They earn the same return on assets. What differs is how those assets were funded.',
+            solution: ['Identical ROA means identical operating performance on the asset base',
+              'A higher ROE on the same ROA comes from funding more of it with debt',
+              'Leverage magnifies returns in both directions — in a bad year B fares correspondingly worse'] },
+
+          { id: 'j1p10', kind: 'order', lesson: 'j1',
+            prompt: 'Put the steps of the indirect method in order.',
+            steps: [
+              'Start from net income',
+              'Add back non-cash expenses such as depreciation',
+              'Remove non-cash gains and losses that belong in another section',
+              'Adjust for the changes in working capital accounts'
+            ],
+            hint: 'The method undoes the income statement one layer at a time.',
+            solution: ['Net income is the starting point because it is what the statement reconciles from',
+              'Non-cash items go first, then items belonging to investing or financing',
+              'Working capital changes convert the remainder from accrual to cash'] }
         ]
       }
     ]
@@ -12270,7 +13570,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.39', date: '15 September 2026', year: 2026 };
+  const BUILD = { v: '2.40', date: '15 September 2026', year: 2026 };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonandy242', ['gmail', 'com'].join('.')].join('@');
   /* The one sentence that says what this is. It appears under the wordmark, and build.js uses
@@ -12283,6 +13583,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      because the person who needs it is the one who just watched the app refresh itself and wants to
      know what moved. Trim the tail when it gets past a dozen; nobody reads further back than that. */
   const WHATS_NEW = [
+    ['2.40', '<b>Financial Accounting is finished.</b> It shipped in v2.37 with four of its twelve modules built and the other eight listed as gaps; all twelve are now taught. Five new units: <b>cash</b> &mdash; internal control, the bank reconciliation and which side of it needs a journal entry; <b>inventory</b> &mdash; perpetual against periodic, purchase discounts and freight; <b>costing</b> &mdash; FIFO, weighted average and specific identification, the moving average a perpetual system needs, and lower of cost and net realisable value; <b>property, plant and equipment</b> &mdash; what counts as cost, the three depreciation methods, revised estimates and disposal; <b>liabilities and equity</b> &mdash; warranty provisions, why a bond is issued at a discount, shares and dividends; and <b>cash flows and analysis</b> &mdash; the indirect method and the ratios a reader starts from. Fifteen new lessons, 30 worked examples, 50 practice questions and 42 more named misconceptions. <b>LIFO stays in the gaps list on purpose:</b> it is prohibited under IAS 2.25 and ASPE 3031, and because its arithmetic is perfectly correct nothing in this app would ever flag it &mdash; so it is named rather than quietly left out.'],
     ['2.39', '<b>The courses that were already here got the rest of themselves.</b> <b>Precalculus</b> stopped at section 3.2 &mdash; the end of Midterm 1 and nowhere near the end of precalculus. It now runs the whole syllabus: the rest of polynomials and rational functions, exponentials and logarithms, and trigonometry from radians and the unit circle through identities and equations to the law of cosines. Fifteen new lessons, 30 worked examples and 45 practice questions. <b>Commercial Law</b> had one lesson covering the whole of tort and one covering the whole of contract; tort now runs through the defences, the intentional torts, vicarious liability and what a successful plaintiff actually collects, and contract through terms and exclusion clauses, the vitiating factors, and discharge, breach and remedies. <b>Environmental Law</b> gains section 35 rights and Aboriginal title alongside the duty to consult, and a lesson on enforcement &mdash; strict liability, the due diligence defence, and when a director is personally on the hook. Every course now also prints what it does <i>not</i> cover.'],
     ['2.38', '<b>Physics and Chemistry are taught here now.</b> <b>Mechanics</b> &mdash; measurement and dimensional analysis, describing motion, Newton&rsquo;s laws and free-body diagrams, and work, energy and power. <b>General Chemistry</b> &mdash; atoms, the mole and stoichiometry, reactions in solution, gases, and thermochemistry. Four units each, 24 lessons, 48 worked examples, 79 practice questions and 59 named misconceptions between them, every one of which is a mistake students actually make rather than a generic warning. Physics needed one new guarantee: real answers are reported to a stated precision, so the computer algebra check now evaluates each expression <i>exactly</i> and rounds only at the comparison &mdash; a rounded answer stays a checked answer rather than becoming an unchecked one. Both courses list on their own page what they do not cover.'],
     ['2.37', '<b>Accounting is taught here now.</b> A first <b>Financial Accounting</b> course &mdash; the accounting equation and the statements, recording transactions, adjusting and closing entries, and receivables &mdash; built from a twelve-module outline checked against a real ACCT 2210 course rather than invented. Every figure in its practice is recomputed by a computer algebra system before the page is allowed to ship, the same guard the maths course has. Courses now also say <b>what comes before them</b> and, just as importantly, <b>what they do not cover</b>: the topics left out are listed by name on the course page instead of being discovered the night before an exam.'],

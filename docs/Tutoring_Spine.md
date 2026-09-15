@@ -1,7 +1,7 @@
 # Curriculum spine — ten disciplines, forty course slots
 
 **Status: all five decisions taken. Decisions 1–3 shipped in v2.37; 4 and 5 answered 15 September 2026.**
-Prepared 14 September 2026 against build v2.36; updated 15 September 2026 for v2.38.
+Prepared 14 September 2026 against build v2.36; updated 15 September 2026 for v2.40.
 
 This is step 1 of the tutoring expansion brief. It is a map, not a course. Its job is to let you
 reject a shape before several hundred lessons are written to it.
@@ -12,10 +12,10 @@ reject a shape before several hundred lessons are written to it.
 
 | Discipline | Course | Level | Prereq | Units | Lessons | Practice |
 |---|---|---|---|---|---|---|
-| Mathematics | Precalculus | `Preparatory` | — | 3 | 10 | 32 |
-| Law | BLAW 2910 Commercial Law | `Intermediate` | — | 6 | 10 | 22 |
-| Law | BLAW 3930 Environmental Law | `Advanced` | BLAW 2910 | 5 | 9 | 18 |
-| Accounting | Financial Accounting | `Foundation` | — | 4 | 12 | 31 |
+| Mathematics | Precalculus | `Preparatory` | — | 6 | 25 | 77 |
+| Law | BLAW 2910 Commercial Law | `Intermediate` | — | 6 | 15 | 32 |
+| Law | BLAW 3930 Environmental Law | `Advanced` | BLAW 2910 | 5 | 11 | 24 |
+| Accounting | Financial Accounting | `Foundation` | — | 9 | 27 | 81 |
 | Physics | Mechanics | `Foundation` | Precalculus | 4 | 12 | 39 |
 | Chemistry | General Chemistry | `Foundation` | — | 4 | 12 | 40 |
 
@@ -27,7 +27,11 @@ That is the number that makes the staging non-negotiable.
 The Accounting course is the first one built to the shape this document proposes: a level from the
 one vocabulary, a `prereq` field, and a `gaps` list that names on the page what the course does not
 teach. It is also the first transferred rather than authored here — see the twelve-module table in
-the Accounting section below for what came across and what did not.
+the Accounting section below.
+
+As of v2.40 it is the first course to be **finished**: all twelve modules of its outline are built.
+Precalculus and the two Law courses were completed in v2.39. The remaining depth work is Physics and
+Chemistry, each of which teaches four units of a longer syllabus, with the rest named in their gaps.
 
 ---
 
@@ -263,7 +267,7 @@ apply here".
 
 | Level | Title | Prerequisite | Units |
 |---|---|---|---|
-| Foundation | **Financial Accounting** ✅ **built, v2.37** | — | The equation and the statements; Recording transactions; Adjusting and closing entries; Receivables |
+| Foundation | **Financial Accounting** ✅ **complete, v2.40** | — | The equation and the statements; Recording transactions; Adjusting and closing entries; Receivables; Cash and inventory systems; Costing inventory; Property, plant and equipment; Liabilities and equity; Cash flows and analysis |
 | Intermediate | **Intermediate Financial Reporting** | Financial Accounting | Revenue recognition; Property, plant and equipment; Intangibles and impairment; Liabilities and provisions; Leases; Income taxes and deferred tax |
 | Advanced | **Advanced Financial Reporting** | Intermediate Financial Reporting | Business combinations; Consolidation; Investments and equity accounting; Foreign currency; Financial instruments; Statement of cash flows, prepared not read |
 | Professional | **Assurance and Professional Judgement** | Advanced Financial Reporting | The assurance engagement; Risk and materiality; Evidence and sampling; Internal control; The audit report; Ethics and independence |
