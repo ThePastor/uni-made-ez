@@ -5106,8 +5106,14 @@ const tfHint = (a, id) => hintFrom(a, id, null, 'Check the statement against the
 
   /* ============================== PRECALCULUS ==============================
      Chapter 1 Functions (1.1–1.6) · Chapter 2 Linear Functions (2.1–2.2) ·
-     Chapter 3 Polynomial and Rational Functions (3.1–3.2).
-     Midterm 1 covers 1.1 through 2.2. */
+     Chapter 3 Polynomial and Rational Functions (3.1–3.6) · Chapter 4 Exponential and
+     Logarithmic Functions (4.1–4.4) · Chapter 5 Trigonometric Functions (5.1–5.4) ·
+     Chapter 6 Identities, Equations and Triangles (6.1–6.3).
+
+     Midterm 1 covers 1.1 through 2.2 — that is Anndy's own course. Chapters 3 to 6 follow the
+     standard precalculus syllabus past the end of his midterm, because a student who finishes
+     the course needs the rest of it and a course that stops at the midterm is not a course.
+     What a full syllabus still leaves out is named in `gaps` and printed on the course page. */
   const MATH = { id: 'math', name: 'Math', blurb: 'Courses written out in full, from the notation up.' };
 
   const PRECALC = {
@@ -5115,10 +5121,20 @@ const tfHint = (a, id) => hintFrom(a, id, null, 'Check the statement against the
     id: 'precalc',
     code: 'Precalculus',
     title: 'Precalculus',
-    blurb: 'Functions, linear functions, and the start of polynomials — following the same chapters and section numbers as the course slides.',
+    blurb: 'The whole of precalculus: functions and their transformations, lines, polynomials and rational functions, exponentials and logarithms, and trigonometry from the unit circle to the law of cosines.',
     level: 'Preparatory',
     prereq: null,
-    exam: 'Midterm 1 covers sections 1.1 – 2.2.',
+    exam: 'Midterm 1 covers sections 1.1 – 2.2. The later units go beyond it, to the end of the standard precalculus syllabus.',
+    gaps: [
+      'Systems of equations and inequalities — substitution, elimination, and systems of three variables',
+      'Matrices — matrix arithmetic, the inverse, and solving systems with row reduction',
+      'Conic sections — the ellipse, the hyperbola and the parabola in their standard forms',
+      'Polar coordinates and polar graphs, and complex numbers in polar form',
+      'Vectors in two dimensions — components, magnitude, the dot product',
+      'Sequences and series — arithmetic and geometric, sigma notation, the binomial theorem',
+      'Counting and probability — permutations, combinations and basic probability',
+      'Limits and the idea of a derivative, which is where Calculus begins rather than where Precalculus ends'
+    ],
     units: [
 
       /* ============================ UNIT 1 ============================ */
@@ -5802,12 +5818,15 @@ const tfHint = (a, id) => hintFrom(a, id, null, 'Check the statement against the
         id: 'poly',
         n: 3,
         title: 'Polynomial and rational functions',
-        blurb: 'Sections 3.1 – 3.2. Power functions, polynomial degree and end behaviour, and everything a quadratic tells you about its vertex.',
+        blurb: 'Sections 3.1 – 3.6. Power functions and end behaviour, quadratics and their vertex, what a graph does at each zero, dividing polynomials to find the zeros, and the asymptotes of a rational function.',
         objectives: [
           'Identify a power function and a polynomial, and state degree and leading coefficient',
           'Predict end behaviour from the degree and the leading coefficient alone',
           'Move between the standard and vertex forms of a quadratic',
-          'Find a vertex, and use it for the range and for maximum or minimum problems'
+          'Find a vertex, and use it for the range and for maximum or minimum problems',
+          'Read multiplicity off a factored polynomial and say what the graph does at that zero',
+          'Divide polynomials, and use the factor and remainder theorems to find zeros',
+          'Find the vertical, horizontal and slant asymptotes of a rational function'
         ],
 
         lessons: [
@@ -5926,6 +5945,212 @@ const tfHint = (a, id) => hintFrom(a, id, null, 'Check the statement against the
                 why: '−b/(2a) is only the x-coordinate. The question is not finished until it has been substituted back to get the height.'
               }
             ]
+          },
+
+          {
+            id: 's33',
+            title: 'Graphs of polynomial functions',
+            src: 'Section 3.3',
+            idea: `Once a polynomial is <b>factored</b>, its graph can be drawn without plotting a single point. Each factor (x − c) gives a <b>zero</b> at x = c, and the power on that factor — its <b>multiplicity</b> — decides what the curve does there.<br><br><b>Odd multiplicity: the graph crosses.</b> Multiplicity 1 crosses straight; multiplicity 3 or 5 flattens as it crosses, like a cubic through the origin. <b>Even multiplicity: the graph touches and turns back</b> without changing sign, like a parabola sitting on the axis.<br><br>That sign rule is the useful part. Between consecutive zeros the sign of the polynomial cannot change, so testing one value in each interval tells you whether the whole interval is above or below the axis.<br><br>Two counting facts finish the picture. A degree-n polynomial has <b>at most n zeros</b> and <b>at most n − 1 turning points</b> — so a cubic can wiggle once up and once down and no more. And a continuous polynomial that is negative at a and positive at b must cross somewhere between them; that is the <b>Intermediate Value Theorem</b>, and it is how a zero gets located when it will not factor.`,
+            rules: [
+              { name: 'Multiplicity', expr: '(x - c)^m', note: 'm odd → crosses. m even → touches and turns back.' },
+              { name: 'How many zeros', expr: 'at most n', words: true, note: 'A degree-n polynomial has at most n real zeros.' },
+              { name: 'How many turns', expr: 'at most n - 1', words: true, note: 'Degree 3 can turn twice at most.' },
+              { name: 'Sign between zeros', expr: 'Test one point in each interval', words: true, note: 'The sign cannot change except at a zero of odd multiplicity.' }
+            ],
+            examples: [
+              {
+                prompt: 'Describe the behaviour of f(x) = (x − 2)²(x + 1) at each zero.',
+                steps: [
+                  { do: 'Zeros at x = 2 and x = −1', why: 'Set each factor to zero. The factor (x − 2) gives +2, not −2.' },
+                  { do: 'At x = 2 the multiplicity is 2 — even', why: 'The exponent on that factor is the multiplicity.' },
+                  { do: 'So the graph touches the axis at x = 2 and turns back', why: 'It does not change sign there, the way a parabola sitting on the axis does not.' },
+                  { do: 'At x = −1 the multiplicity is 1 — odd, so it crosses', why: 'Degree 3 overall, so the ends go opposite ways, and there are at most 2 turning points.' }
+                ],
+                answer: 'touches at x = 2, crosses at x = -1', answerWords: true
+              },
+              {
+                prompt: 'Where is f(x) = (x − 3)(x + 2) positive?',
+                steps: [
+                  { do: 'Zeros at x = 3 and x = −2 split the line into three intervals', why: 'The sign can only change at a zero of odd multiplicity, and both of these are multiplicity 1.' },
+                  { do: 'Test x = −3: (−6)(−1) = +6, positive', why: 'One test value settles the whole interval to the left of −2.' },
+                  { do: 'Test x = 0: (−3)(2) = −6, negative', why: 'The middle interval.' },
+                  { do: 'Test x = 4: (1)(6) = +6, positive', why: 'So f > 0 on x < −2 and on x > 3 — which is also what an upward parabola has to do.' }
+                ],
+                answer: 'x < -2 or x > 3', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                wrong: 'Reading the factor (x − 2) as a zero at x = −2.',
+                right: 'The zero is where the factor equals zero: x = 2.',
+                why: 'The sign in the bracket is always the opposite of the zero, exactly as it is in vertex form. Setting the factor to zero and solving it — rather than reading the number off — makes the error impossible.'
+              },
+              {
+                wrong: 'Assuming the graph crosses the axis at every zero.',
+                right: 'Even multiplicity touches and turns back without crossing.',
+                why: 'A sketch that crosses at a double root has the polynomial negative where it is in fact positive, so every sign question after it is wrong too. The exponent on the factor is what tells you, and it takes one glance.'
+              },
+              {
+                wrong: 'Expecting a degree-4 polynomial to have four turning points.',
+                right: 'Degree n has at most n − 1 turning points.',
+                why: 'Degree 4 turns at most three times. The count is a ceiling and not a promise — a quartic may turn only once — but a sketch with more turns than the degree allows is definitely wrong.'
+              }
+            ]
+          },
+
+          {
+            id: 's34',
+            title: 'Dividing polynomials',
+            src: 'Section 3.4',
+            idea: `Dividing polynomials works exactly like long division of numbers, and it produces the same shape of answer: a quotient and a remainder, with<br><br><b>dividend = divisor × quotient + remainder</b><br><br>Two theorems make it worth doing. The <b>Remainder Theorem</b>: dividing f(x) by (x − c) leaves a remainder of exactly <b>f(c)</b>. So evaluating a polynomial and dividing it are the same calculation, and you may pick whichever is easier.<br><br>The <b>Factor Theorem</b> is the case where that remainder is zero: <b>(x − c) is a factor of f(x) if and only if f(c) = 0</b>. This is the tool that turns a cubic you cannot factor by inspection into a quadratic you can — find one zero by trial, divide it out, and solve what is left.<br><br><b>Synthetic division</b> is a shorthand for dividing by (x − c) that drops the x's and works with the coefficients alone. Its one hard rule: write a <b>zero for every missing power</b>. A cubic with no x² term is 1, 0, −4, 3 — not 1, −4, 3 — and skipping the placeholder shifts every subsequent column and corrupts the whole answer.`,
+            rules: [
+              { name: 'Division', expr: 'f(x) = d(x)*q(x) + r(x)', note: 'The remainder has lower degree than the divisor.' },
+              { name: 'Remainder Theorem', expr: 'f(x) / (x - c) leaves f(c)', words: true, note: 'Dividing and evaluating give the same number.' },
+              { name: 'Factor Theorem', expr: 'f(c) = 0  <=>  (x - c) is a factor', words: true, note: 'The way to break a cubic down to a quadratic.' },
+              { name: 'Synthetic division', expr: 'Write a 0 for every missing power', words: true, note: 'x³ − 4x + 3 is 1, 0, −4, 3.' }
+            ],
+            examples: [
+              {
+                prompt: 'Find the remainder when f(x) = x³ − 4x + 3 is divided by (x − 2).',
+                steps: [
+                  { do: 'The Remainder Theorem says the remainder is f(2)', why: 'No division is needed at all — this is the whole point of the theorem.' },
+                  { do: 'f(2) = 8 − 8 + 3', why: 'Substitute 2 for every x.' },
+                  { do: '= 3', why: 'So the remainder is 3, and (x − 2) is therefore NOT a factor.' }
+                ],
+                answer: '3', answerWords: true
+              },
+              {
+                prompt: 'Show that (x − 1) is a factor of f(x) = x³ − 4x + 3, and factor f completely.',
+                steps: [
+                  { do: 'f(1) = 1 − 4 + 3 = 0, so (x − 1) is a factor', why: 'The Factor Theorem: zero remainder means it divides exactly.' },
+                  { do: 'Divide synthetically by 1 using coefficients 1, 0, −4, 3', why: 'The 0 holds the place of the missing x² term. Omitting it is the standard error here.' },
+                  { do: 'Quotient: x² + x − 3', why: 'Bring down 1; 1×1 + 0 = 1; 1×1 + (−4) = −3; 1×(−3) + 3 = 0 remainder.' },
+                  { do: 'f(x) = (x − 1)(x² + x − 3)', why: 'The quadratic does not factor over the integers, so its zeros come from the quadratic formula. The cubic is now solvable either way.' }
+                ],
+                answer: 'f(x) = (x - 1)(x^2 + x - 3)', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                wrong: 'Writing the coefficients of x³ − 4x + 3 as 1, −4, 3.',
+                right: 'Write 1, 0, −4, 3 — a zero for the missing x² term.',
+                why: 'Synthetic division works by position, so a missing placeholder shifts every column left and produces a quotient of the wrong degree with wrong coefficients throughout. Nothing about the result looks suspicious.'
+              },
+              {
+                wrong: 'Dividing by (x + 3) using c = 3.',
+                right: '(x + 3) is (x − (−3)), so c = −3.',
+                why: 'Synthetic division wants the value that makes the divisor zero, not the number printed in it. This is the same sign flip as vertex form and as reading zeros off factors — one habit fixes all three.'
+              },
+              {
+                wrong: 'Concluding a polynomial has no factors because (x − 1) and (x + 1) both fail.',
+                right: 'Test every factor of the constant term, positive and negative.',
+                why: 'The Rational Zero Theorem narrows the candidates to ± factors of the constant over factors of the leading coefficient. For x³ − 4x + 3 that is ±1 and ±3, so ±3 still has to be tried before giving up.'
+              }
+            ]
+          },
+
+          {
+            id: 's35',
+            title: 'Zeros of polynomial functions',
+            src: 'Section 3.5',
+            idea: `To solve a polynomial that will not factor by inspection, you need a list of candidates. The <b>Rational Zero Theorem</b> supplies one: any rational zero of a polynomial with integer coefficients has the form <b>p/q</b>, where p divides the constant term and q divides the leading coefficient.<br><br>For a monic polynomial — leading coefficient 1 — that collapses to something very usable: <b>the only possible rational zeros are the whole-number factors of the constant term, positive and negative</b>. For x³ − 4x + 3 the candidates are ±1 and ±3, and that is four values to test rather than infinitely many.<br><br>The method: list the candidates, test them with the Remainder Theorem until one gives zero, divide it out with synthetic division, and repeat on the smaller quotient until you reach a quadratic, which the formula finishes.<br><br>Two facts about how many zeros to expect. The <b>Fundamental Theorem of Algebra</b> says a degree-n polynomial has exactly n zeros counted with multiplicity, once complex numbers are allowed. And for real coefficients, <b>complex zeros come in conjugate pairs</b> — if 2 + 3i is a zero then so is 2 − 3i. So an odd-degree polynomial with real coefficients always has at least one real zero, because the complex ones pair off and cannot account for an odd count.`,
+            rules: [
+              { name: 'Rational Zero Theorem', expr: 'p/q', note: 'p divides the constant term, q divides the leading coefficient.' },
+              { name: 'Monic case', expr: 'Candidates are the factors of the constant, plus and minus', words: true, note: 'Leading coefficient 1 makes q = 1.' },
+              { name: 'Fundamental Theorem', expr: 'exactly n zeros, with multiplicity', words: true, note: 'Counting complex zeros, and counting repeats.' },
+              { name: 'Conjugate pairs', expr: 'a + bi is a zero  =>  a - bi is a zero', words: true, note: 'For real coefficients only. So odd degree guarantees a real zero.' }
+            ],
+            examples: [
+              {
+                prompt: 'List the possible rational zeros of f(x) = 2x³ + 3x² − 8x + 3.',
+                steps: [
+                  { do: 'Constant term 3, so p ∈ {1, 3}', why: 'The numerator divides the constant term.' },
+                  { do: 'Leading coefficient 2, so q ∈ {1, 2}', why: 'The denominator divides the leading coefficient.' },
+                  { do: 'Candidates: ±1, ±3, ±1/2, ±3/2', why: 'Every p/q combination, both signs. Eight values, not infinitely many.' },
+                  { do: 'f(1) = 2 + 3 − 8 + 3 = 0, so x = 1 is a zero', why: 'Test the easiest candidates first — ±1 costs almost nothing to check.' }
+                ],
+                answer: '±1, ±3, ±1/2, ±3/2', answerWords: true
+              },
+              {
+                prompt: 'A degree-3 polynomial with real coefficients has zeros 4 and 1 + 2i. Find the third zero.',
+                steps: [
+                  { do: 'Real coefficients, so complex zeros come in conjugate pairs', why: 'This is only true because the coefficients are real — the question says so deliberately.' },
+                  { do: '1 + 2i is a zero, so 1 − 2i is a zero', why: 'The conjugate flips the sign of the imaginary part only.' },
+                  { do: 'That is three zeros: 4, 1 + 2i, 1 − 2i', why: 'Which matches degree 3 exactly, as the Fundamental Theorem requires.' }
+                ],
+                answer: '1 - 2i', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                wrong: 'Listing only the positive candidates.',
+                right: 'Every candidate has a ± in front of it.',
+                why: 'Half the candidates are negative, and the zero being looked for is as likely to be one of those. A search that gives up after testing 1 and 3 has tested a quarter of the list.'
+              },
+              {
+                wrong: 'Treating the Rational Zero Theorem as a list of actual zeros.',
+                right: 'It lists CANDIDATES. Most of them will not be zeros, and a polynomial may have none of them.',
+                why: 'x² − 2 has candidates ±1 and ±2 and no rational zeros at all — its zeros are ±√2. The theorem narrows the search; it does not promise the search will succeed.'
+              },
+              {
+                wrong: 'Giving 2 + 3i as a zero without its conjugate.',
+                right: 'With real coefficients they come in pairs: 2 − 3i is a zero too.',
+                why: 'A polynomial with only one member of a conjugate pair would have to have a complex coefficient. If the question says the coefficients are real, the pairing is forced and is usually the whole point of the question.'
+              }
+            ]
+          },
+
+          {
+            id: 's36',
+            title: 'Rational functions',
+            src: 'Section 3.6',
+            idea: `A <b>rational function</b> is one polynomial over another. Everything interesting about its graph comes from two places: where the denominator is zero, and what happens for very large |x|.<br><br><b>Vertical asymptotes</b> occur where the denominator is zero <i>and</i> the numerator is not. Factor both first: a factor that cancels is not an asymptote at all but a <b>hole</b> — a single missing point in an otherwise ordinary curve. That distinction is what the factoring is for.<br><br><b>End behaviour</b> is decided by comparing degrees. If the denominator's degree is higher, y → 0, so <b>y = 0</b> is the horizontal asymptote. If the degrees are <b>equal</b>, the ratio of the leading coefficients is the horizontal asymptote. If the numerator is exactly <b>one degree higher</b>, there is no horizontal asymptote but a <b>slant</b> one, found by dividing.<br><br>One thing worth saying plainly because it is widely mis-taught: a graph <b>may cross a horizontal asymptote</b>. The asymptote describes behaviour far out, not a barrier. It is the <i>vertical</i> asymptote that can never be crossed, because the function is undefined there.`,
+            rules: [
+              { name: 'Vertical asymptote', expr: 'denominator zero, numerator not zero', words: true, note: 'A factor that cancels gives a hole instead.' },
+              { name: 'Degree of bottom bigger', expr: 'y = 0', note: 'The denominator wins, so the function is squeezed to zero.' },
+              { name: 'Degrees equal', expr: 'y = a/b', note: 'Ratio of the leading coefficients.' },
+              { name: 'Top one degree bigger', expr: 'slant asymptote — divide to find it', words: true, note: 'No horizontal asymptote in this case.' }
+            ],
+            examples: [
+              {
+                prompt: 'Find the asymptotes of f(x) = (2x² + 1)/(x² − 4).',
+                steps: [
+                  { do: 'Factor the denominator: x² − 4 = (x − 2)(x + 2)', why: 'Always factor first, to see whether anything cancels.' },
+                  { do: 'Neither factor cancels with 2x² + 1, so both are asymptotes', why: 'The numerator is not zero at x = ±2, so these are genuine asymptotes and not holes.' },
+                  { do: 'Vertical asymptotes at x = 2 and x = −2', why: 'The function is undefined there and shoots off.' },
+                  { do: 'Degrees are equal (2 and 2), so y = 2/1 = 2', why: 'Ratio of leading coefficients. And the graph may well cross y = 2 somewhere in the middle — that is allowed.' }
+                ],
+                answer: 'x = 2, x = -2, y = 2', answerWords: true
+              },
+              {
+                prompt: 'Describe f(x) = (x² − 9)/(x − 3) at x = 3.',
+                steps: [
+                  { do: 'Factor the numerator: x² − 9 = (x − 3)(x + 3)', why: 'A difference of two squares. This is why factoring comes first.' },
+                  { do: 'The (x − 3) cancels, leaving f(x) = x + 3', why: 'But only for x ≠ 3 — cancelling does not make the original function defined there.' },
+                  { do: 'So there is a HOLE at x = 3, not an asymptote', why: 'The graph is the line y = x + 3 with one point missing.' },
+                  { do: 'The missing point is (3, 6)', why: 'Substitute 3 into the simplified form to find the height of the gap.' }
+                ],
+                answer: 'a hole at the point (3, 6)', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                wrong: 'Calling every zero of the denominator a vertical asymptote.',
+                right: 'Factor first. A factor that cancels gives a hole, not an asymptote.',
+                why: 'For (x² − 9)/(x − 3) the denominator is zero at x = 3, but the graph is a straight line with one point removed. Drawing an asymptote there describes a completely different function.'
+              },
+              {
+                wrong: 'Believing a graph can never cross a horizontal asymptote.',
+                right: 'It can, and often does. Only VERTICAL asymptotes cannot be crossed.',
+                why: 'A horizontal asymptote describes behaviour as x → ±∞ and says nothing about the middle of the graph. The rule people remember is the vertical one, where the function is genuinely undefined, and it does not transfer.'
+              },
+              {
+                wrong: 'Looking for a horizontal asymptote when the numerator has the higher degree.',
+                right: 'There is none. One degree higher gives a slant asymptote; more than that gives neither.',
+                why: 'The function grows without bound, so it cannot level off. Writing y = 0 or y = a/b anyway states that a function heading to infinity settles down — the two answers describe opposite behaviour.'
+              }
+            ]
           }
         ],
 
@@ -6004,7 +6229,1011 @@ const tfHint = (a, id) => hintFrom(a, id, null, 'Check the statement against the
               'Vertex (2, −1)'
             ],
             hint: 'Coefficients, then the formula, then substitute, then evaluate.',
-            solution: ['The x-coordinate has to be found before it can be substituted back for the height.'] }
+            solution: ['The x-coordinate has to be found before it can be substituted back for the height.'] },
+
+          { id: 'u3p10', kind: 'numeric', lesson: 's33',
+            prompt: 'f(x) = (x − 4)³(x + 2). What is the multiplicity of the zero at x = 4?',
+            answer: 3, verify: { expr: '3' },
+            hint: 'The multiplicity is the exponent on that factor.',
+            solution: ['The factor (x − 4) is raised to the power 3', 'So the multiplicity is 3',
+              'Odd, so the graph crosses — flattening as it goes through'] },
+
+          { id: 'u3p11', kind: 'mc', lesson: 's33',
+            prompt: 'At a zero of multiplicity 2, what does the graph do?',
+            options: [
+              { t: 'Touches the axis and turns back without changing sign', ok: true },
+              { t: 'Crosses straight through, changing sign' },
+              { t: 'Flattens out as it crosses, changing sign' },
+              { t: 'Has a vertical asymptote' }
+            ],
+            hint: 'Even or odd is what decides it.',
+            solution: ['Even multiplicity means the factor appears an even number of times',
+              'Two sign changes at the same point cancel, so no sign change happens',
+              'The graph touches and turns back, the way a parabola sits on the axis'] },
+
+          { id: 'u3p12', kind: 'numeric', lesson: 's33',
+            prompt: 'At most how many turning points can a degree-5 polynomial have?',
+            answer: 4, verify: { expr: '5 - 1' },
+            hint: 'One fewer than the degree.',
+            solution: ['A degree-n polynomial turns at most n − 1 times', '5 − 1 = 4',
+              'It may turn fewer times — the count is a ceiling, not a promise'] },
+
+          { id: 'u3p13', kind: 'numeric', lesson: 's34',
+            prompt: 'What is the remainder when f(x) = x³ − 4x + 3 is divided by (x − 2)?',
+            answer: 3, verify: { expr: '2**3 - 4*2 + 3' },
+            hint: 'The Remainder Theorem — no division needed.',
+            solution: ['Remainder = f(2)', 'f(2) = 8 − 8 + 3', '= 3, so (x − 2) is not a factor'] },
+
+          { id: 'u3p14', kind: 'numeric', lesson: 's34',
+            prompt: 'For f(x) = x³ + 2x² − 5x − 6, evaluate f(−1) to test whether (x + 1) is a factor.',
+            answer: 0, verify: { expr: '(-1)**3 + 2*(-1)**2 - 5*(-1) - 6' },
+            hint: '(x + 1) is (x − (−1)), so substitute −1.',
+            solution: ['f(−1) = −1 + 2 + 5 − 6', '= 0', 'Zero remainder, so (x + 1) IS a factor'] },
+
+          { id: 'u3p15', kind: 'spot', lesson: 's34',
+            prompt: 'A student divides x³ − 4x + 3 by (x − 1) synthetically. One line is wrong.',
+            steps: [
+              { t: 'The divisor is (x − 1), so c = 1', bad: false },
+              { t: 'The coefficients are 1, −4, 3', bad: true },
+              { t: 'Bring down the leading 1 to start', bad: false },
+              { t: 'A zero remainder would mean (x − 1) is a factor', bad: false }
+            ],
+            why: 'The x² term is missing, so its place must be held by a zero: the coefficients are 1, 0, −4, 3. Synthetic division works by position, so leaving the placeholder out shifts every column left and produces a quadratic quotient with entirely wrong coefficients — and a remainder that means nothing. Nothing about the result looks suspicious, which is what makes this the error worth naming.',
+            hint: 'Write the polynomial out in full descending order first: which power is missing?',
+            solution: ['x³ − 4x + 3 has no x² term', 'Write a 0 in its place: 1, 0, −4, 3',
+              'The quotient is then x² + x − 3 with remainder 0'] },
+
+          { id: 'u3p16', kind: 'numeric', lesson: 's35',
+            prompt: 'How many possible rational zeros does the Rational Zero Theorem list for f(x) = x³ − 4x + 3?',
+            answer: 4, verify: { expr: '2 * 2' },
+            hint: 'Leading coefficient 1, constant 3 — and remember both signs.',
+            solution: ['Monic, so the candidates are the factors of 3: 1 and 3', 'Both signs: ±1 and ±3',
+              'Four candidates in total'] },
+
+          { id: 'u3p17', kind: 'mc', lesson: 's35',
+            prompt: 'A degree-3 polynomial with real coefficients has 2 + 5i as a zero. Which must also be a zero?',
+            options: [
+              { t: '2 − 5i', ok: true },
+              { t: '−2 + 5i' },
+              { t: '−2 − 5i' },
+              { t: '5 + 2i' }
+            ],
+            hint: 'Complex zeros of a real polynomial come in conjugate pairs.',
+            solution: ['The conjugate flips the sign of the imaginary part only',
+              'So 2 + 5i pairs with 2 − 5i', 'The real part is unchanged — that is what makes it a conjugate'] },
+
+          { id: 'u3p18', kind: 'numeric', lesson: 's36',
+            prompt: 'For f(x) = (3x² + 1)/(x² − 9), what is the y-value of the horizontal asymptote?',
+            answer: 3, verify: { expr: '3/1' },
+            hint: 'The degrees are equal — compare the leading coefficients.',
+            solution: ['Numerator and denominator are both degree 2', 'Horizontal asymptote is the ratio of leading coefficients',
+              'y = 3/1 = 3'] },
+
+          { id: 'u3p19', kind: 'mc', lesson: 's36',
+            prompt: 'For f(x) = (x² − 4)/(x − 2), what happens at x = 2?',
+            options: [
+              { t: 'A hole — the factor cancels', ok: true },
+              { t: 'A vertical asymptote' },
+              { t: 'A horizontal asymptote' },
+              { t: 'Nothing — the function is defined there' }
+            ],
+            hint: 'Factor the numerator before deciding.',
+            solution: ['x² − 4 = (x − 2)(x + 2), so the (x − 2) cancels',
+              'f(x) = x + 2 for every x except 2', 'A hole at (2, 4), not an asymptote'] },
+
+          { id: 'u3p20', kind: 'order', lesson: 's34',
+            prompt: 'Put the steps for factoring a cubic completely in order.',
+            steps: [
+              'List the candidate rational zeros from the constant and leading coefficients',
+              'Test candidates with the Remainder Theorem until one gives zero',
+              'Divide that factor out synthetically, writing a zero for any missing power',
+              'Solve the remaining quadratic with the formula'
+            ],
+            hint: 'You cannot divide out a factor before you have found one.',
+            solution: ['The candidate list turns an infinite search into a handful of tests',
+              'The Factor Theorem is what makes a zero and a factor the same discovery',
+              'Dividing reduces the degree by one, and a quadratic is always solvable'] }
+        ]
+      },
+
+      /* ============================ UNIT 4 ============================ */
+      {
+        id: 'explog',
+        n: 4,
+        title: 'Exponential and logarithmic functions',
+        blurb: 'Sections 4.1 – 4.5. The functions that model growth and decay, the inverse that undoes them, and the three properties that turn a hard equation into an easy one.',
+        objectives: [
+          'Tell an exponential function from a power function, and read growth or decay off the base',
+          'Convert between exponential and logarithmic form',
+          'Apply the product, quotient and power properties of logarithms',
+          'Solve exponential and logarithmic equations, and check for extraneous solutions'
+        ],
+        lessons: [
+          {
+            id: 's41',
+            title: 'Exponential functions',
+            src: 'Section 4.1',
+            idea: `An <b>exponential function</b> is f(x) = ab<sup>x</sup> — the variable is now the <i>exponent</i>, with a constant base. That single swap is the whole difference from a power function like x², and it changes everything: x² grows by adding, while 2<sup>x</sup> grows by multiplying.<br><br><b>a</b> is the value at x = 0, the starting amount. <b>b</b> is the growth factor per unit of x. If <b>b &gt; 1</b> the function grows; if <b>0 &lt; b &lt; 1</b> it decays. The base is required to be positive and not 1 — a negative base would jump between positive and negative at fractional exponents, and b = 1 is just the constant a.<br><br>Written as a percentage change, b = 1 + r. A 7% annual increase is b = 1.07; a 7% decrease is b = 0.93, not −0.07.<br><br>The horizontal asymptote is <b>y = 0</b> for the basic form: the function approaches zero on one side and never reaches it, because a positive number raised to any power is still positive. That is why an exponential model never predicts a population of exactly zero, however long you wait.<br><br>The base <b>e ≈ 2.71828</b> appears everywhere in continuous growth. It is not chosen for convenience but because it is the base at which the function equals its own rate of change, which is what makes it the natural choice once calculus arrives.`,
+            rules: [
+              { name: 'Exponential function', expr: 'f(x) = a*b^x', note: 'Variable in the EXPONENT. b > 0 and b ≠ 1.' },
+              { name: 'Growth or decay', expr: 'b > 1 grows; 0 < b < 1 decays', words: true, note: 'b = 1 + r, so a 7% fall is b = 0.93.' },
+              { name: 'Starting value', expr: 'f(0) = a', note: 'Because b^0 = 1 for any allowed b.' },
+              { name: 'Asymptote', expr: 'y = 0', note: 'Approached, never reached — a positive base stays positive.' }
+            ],
+            examples: [
+              {
+                prompt: 'A population of 500 grows by 8% a year. Write the model and find the population after 3 years.',
+                steps: [
+                  { do: 'a = 500, and b = 1 + 0.08 = 1.08', why: 'The growth factor is 1 plus the rate, not the rate itself.' },
+                  { do: 'P(t) = 500(1.08)^t', why: 'The variable t is the exponent, which is what makes this growth compound.' },
+                  { do: 'P(3) = 500(1.08)³ = 500 × 1.259712', why: 'Cube the factor first, then multiply.' },
+                  { do: '≈ 630', why: 'Not 500 + 3×40 = 620. Compounding adds growth on the growth, and the gap widens every year.' }
+                ],
+                answer: 'P(t) = 500(1.08)^t, and P(3) is about 630', answerWords: true
+              },
+              {
+                prompt: 'Is f(x) = 3(0.5)^x growth or decay, and what is f(0)?',
+                steps: [
+                  { do: 'The base is 0.5, which is between 0 and 1', why: 'Each step multiplies by a number smaller than 1.' },
+                  { do: 'So the function decays — it halves each time x rises by 1', why: 'A growth factor of 0.5 is a 50% decrease per step.' },
+                  { do: 'f(0) = 3(0.5)⁰ = 3 × 1 = 3', why: 'Anything to the power zero is 1, so f(0) is always a.' }
+                ],
+                answer: 'decay, and f(0) = 3', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                wrong: 'Writing a 7% decrease as b = −0.07 or b = −1.07.',
+                right: 'b = 1 − 0.07 = 0.93.',
+                why: 'The base must stay positive. A negative base is not even a valid exponential function, and b = 0.93 is what "93% of what you had before" actually looks like.'
+              },
+              {
+                wrong: 'Treating 2^x and x² as the same kind of function.',
+                right: 'x² is a power function; 2^x is exponential. Look at where the variable sits.',
+                why: 'At x = 10 they are 100 and 1024; at x = 50 they are 2500 and about 10¹⁵. Exponential growth overtakes any power eventually, and confusing them makes every long-run prediction wrong by orders of magnitude.'
+              },
+              {
+                wrong: 'Computing 8% growth over 3 years as 500 + 3 × 40.',
+                right: 'Multiply by 1.08 three times: 500(1.08)³.',
+                why: 'That is linear growth, not exponential. The second year grows on 540, not on 500, and the difference compounds — over 30 years the two models differ by a factor of about four.'
+              }
+            ]
+          },
+
+          {
+            id: 's42',
+            title: 'Logarithmic functions',
+            src: 'Section 4.2',
+            idea: `A logarithm answers the question an exponential poses backwards: <b>what power do I raise the base to, to get this number?</b><br><br><b>log<sub>b</sub>(x) = y means exactly b<sup>y</sup> = x.</b> Those two lines say the same thing, and being able to switch between them instantly is most of what this section is for. log₂(8) = 3 because 2³ = 8.<br><br>Because it is the inverse of an exponential, the domain and range swap. An exponential takes any x and returns a positive number, so a logarithm takes only <b>positive</b> x and returns any real number. <b>The domain of log<sub>b</sub>(x) is x &gt; 0</b> — you cannot take the log of zero or of a negative, because no power of a positive base produces one.<br><br>That domain restriction is not a technicality. It is why solving a logarithmic equation always ends with checking the solutions back in the original equation: the algebra can produce a value that makes an argument negative, and that value is not a solution however correctly it was derived.<br><br>Two bases get their own notation: <b>log(x)</b> means base 10, and <b>ln(x)</b> means base e.`,
+            rules: [
+              { name: 'Definition', expr: 'log_b(x) = y  <=>  b^y = x', words: true, note: 'The two forms say the same thing. Switch freely.' },
+              { name: 'Domain', expr: 'x > 0', note: 'No log of zero or of a negative number. Ever.' },
+              { name: 'Two special bases', expr: 'log means base 10; ln means base e', words: true, note: 'Written without a subscript.' },
+              { name: 'Inverses', expr: 'log_b(b^x) = x  and  b^(log_b x) = x', words: true, note: 'Each undoes the other, which is how equations get solved.' }
+            ],
+            examples: [
+              {
+                prompt: 'Evaluate log₃(81) without a calculator.',
+                steps: [
+                  { do: 'The question is: 3 to what power gives 81?', why: 'Reading the log as a question is faster than any rule.' },
+                  { do: '3¹ = 3, 3² = 9, 3³ = 27, 3⁴ = 81', why: 'Build up the powers until you hit the target.' },
+                  { do: 'log₃(81) = 4', why: 'And the check is immediate: 3⁴ = 81.' }
+                ],
+                answer: '4', answerWords: true
+              },
+              {
+                prompt: 'Find the domain of f(x) = log(x − 3).',
+                steps: [
+                  { do: 'The argument of a log must be strictly positive', why: 'This is the whole domain restriction, and it applies to the argument, not to x.' },
+                  { do: 'x − 3 > 0', why: 'Set the argument greater than zero and solve.' },
+                  { do: 'x > 3', why: 'At x = 3 the argument is zero, which is still not allowed — the inequality is strict.' }
+                ],
+                answer: 'x > 3', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                wrong: 'Taking the log of a negative number or of zero.',
+                right: 'The domain is strictly positive: the argument must be > 0.',
+                why: 'No power of a positive base produces a negative number or zero, so the value does not exist. A solution that makes an argument negative has to be discarded no matter how correct the algebra that produced it was.'
+              },
+              {
+                wrong: 'Reading log(x − 3) as having domain x > 0.',
+                right: 'The restriction applies to the ARGUMENT: x − 3 > 0, so x > 3.',
+                why: 'The function is not log of x, it is log of x − 3. At x = 1 the argument is −2 and the function is undefined, even though x itself is positive.'
+              },
+              {
+                wrong: 'Writing log(a + b) = log(a) + log(b).',
+                right: 'That is the product rule misapplied. log(ab) = log(a) + log(b).',
+                why: 'A sum inside a logarithm cannot be broken up at all. log(2 + 8) = log(10) = 1, while log(2) + log(8) = log(16) ≈ 1.2. There is no property for the log of a sum, and inventing one is the commonest error in the topic.'
+              }
+            ]
+          },
+
+          {
+            id: 's43',
+            title: 'Properties of logarithms',
+            src: 'Section 4.3',
+            idea: `Three properties do all the work, and each one is an exponent rule wearing different clothes.<br><br><b>Product:</b> log<sub>b</sub>(MN) = log<sub>b</sub>(M) + log<sub>b</sub>(N). Multiplying inside becomes adding outside — because multiplying powers of the same base adds the exponents.<br><br><b>Quotient:</b> log<sub>b</sub>(M/N) = log<sub>b</sub>(M) − log<sub>b</sub>(N).<br><br><b>Power:</b> log<sub>b</sub>(M<sup>p</sup>) = p·log<sub>b</sub>(M). This is the one that solves equations: it brings an exponent down to ground level where ordinary algebra can reach it.<br><br>The <b>change of base</b> formula, log<sub>b</sub>(x) = ln(x)/ln(b), exists because calculators only carry log and ln. It turns any base into one you can actually compute.<br><br>Every one of these applies to a product, a quotient or a power <b>inside a single logarithm</b>. None of them says anything about a sum inside, and none of them lets you split log(a + b). Checking what operation is actually inside before reaching for a property prevents nearly every mistake in this section.`,
+            rules: [
+              { name: 'Product', expr: 'log_b(M*N) = log_b(M) + log_b(N)', note: 'Multiplying inside becomes adding outside.' },
+              { name: 'Quotient', expr: 'log_b(M/N) = log_b(M) - log_b(N)', note: 'Dividing inside becomes subtracting outside.' },
+              { name: 'Power', expr: 'log_b(M^p) = p*log_b(M)', note: 'The one that makes exponential equations solvable.' },
+              { name: 'Change of base', expr: 'log_b(x) = ln(x)/ln(b)', note: 'For a calculator that only has log and ln.' }
+            ],
+            examples: [
+              {
+                prompt: 'Expand log(x³y/z) completely.',
+                steps: [
+                  { do: 'Quotient first: log(x³y) − log(z)', why: 'Deal with the outermost operation first, exactly as with order of operations.' },
+                  { do: 'Product on the first part: log(x³) + log(y) − log(z)', why: 'The x³y is a product, so it splits into a sum.' },
+                  { do: 'Power on the x term: 3log(x) + log(y) − log(z)', why: 'The exponent comes down as a coefficient. Note the minus stays with the z term only.' }
+                ],
+                answer: '3log(x) + log(y) - log(z)', answerWords: true
+              },
+              {
+                prompt: 'Condense 2log(x) − log(y) into a single logarithm.',
+                steps: [
+                  { do: 'Power rule backwards: 2log(x) = log(x²)', why: 'A coefficient in front goes up as an exponent — every property runs both ways.' },
+                  { do: 'log(x²) − log(y)', why: 'Now it is a difference of two logs.' },
+                  { do: 'Quotient rule backwards: log(x²/y)', why: 'Subtracting outside becomes dividing inside. Condensing to one log is the step that makes an equation solvable.' }
+                ],
+                answer: 'log(x^2/y)', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                wrong: 'Writing log(x + y) = log(x) + log(y).',
+                right: 'There is no property for the log of a sum. It cannot be split.',
+                why: 'The product rule turns multiplication into addition, which is the opposite direction. Testing with numbers settles it in seconds: log(1 + 1) = log 2 ≈ 0.301, while log 1 + log 1 = 0.'
+              },
+              {
+                wrong: 'Writing log(M)/log(N) = log(M) − log(N).',
+                right: 'The quotient rule is about division INSIDE one logarithm: log(M/N).',
+                why: 'A ratio of two separate logs is what change of base produces, and it does not simplify at all. The two expressions are unrelated, and confusing them makes change-of-base problems come out wrong in a way that is hard to trace.'
+              },
+              {
+                wrong: 'Applying the power rule to 3log(x) + log(y) as though the 3 affected both terms.',
+                right: 'Each coefficient belongs to its own logarithm only.',
+                why: 'The 3 goes up as an exponent on x alone, giving log(x³) + log(y) = log(x³y). Spreading it across the sum produces log(x³y³), which is a different expression entirely.'
+              }
+            ]
+          },
+
+          {
+            id: 's44',
+            title: 'Exponential and logarithmic equations',
+            src: 'Section 4.4',
+            idea: `Two shapes, two methods.<br><br><b>Unknown in the exponent.</b> Take the logarithm of both sides, then use the power rule to bring the exponent down where ordinary algebra can reach it. 3<sup>x</sup> = 20 becomes x·ln 3 = ln 20, so x = ln 20 / ln 3.<br><br><b>Unknown inside a logarithm.</b> Condense to a single logarithm, then rewrite in exponential form. log(x) + log(x − 3) = 1 becomes log(x(x − 3)) = 1, which becomes x(x − 3) = 10¹.<br><br>There is a shortcut worth knowing: if you can write both sides with the <b>same base</b>, the exponents must be equal and no logarithms are needed at all. 2<sup>x</sup> = 8 is 2<sup>x</sup> = 2³, so x = 3.<br><br><b>Always check logarithmic solutions in the original equation.</b> Condensing two logs into one quietly enlarges the domain — log(x) + log(x − 3) requires both x > 0 and x > 3, but log(x(x−3)) is happy with any x where the product is positive, including negative x. So the algebra can hand you a value that was never in the domain of the question. Such a value is called <b>extraneous</b>, and discarding it is part of the answer, not an afterthought.`,
+            rules: [
+              { name: 'Unknown in the exponent', expr: 'Take ln of both sides, then bring the power down', words: true, note: 'b^x = k gives x = ln(k)/ln(b).' },
+              { name: 'Unknown inside a log', expr: 'Condense to one log, then rewrite exponentially', words: true, note: 'log_b(M) = k gives M = b^k.' },
+              { name: 'Same base shortcut', expr: 'b^m = b^n  =>  m = n', words: true, note: 'No logarithms needed when both sides match.' },
+              { name: 'Always check', expr: 'Substitute back; discard anything making an argument <= 0', words: true, note: 'Condensing enlarges the domain, so extraneous roots appear.' }
+            ],
+            examples: [
+              {
+                prompt: 'Solve 3^x = 20, to three decimal places.',
+                steps: [
+                  { do: 'The unknown is in the exponent, so take ln of both sides', why: 'Any base of logarithm works; ln is on every calculator.' },
+                  { do: 'ln(3^x) = ln(20)', why: 'Whatever is done to one side is done to the other.' },
+                  { do: 'x·ln 3 = ln 20 — the power rule brings x down', why: 'This is the step the whole method exists for.' },
+                  { do: 'x = ln 20 / ln 3 ≈ 2.996 / 1.0986 ≈ 2.727', why: 'A sanity check: 3² = 9 and 3³ = 27, and 20 sits between them nearer 27, so an answer just under 3 is right.' }
+                ],
+                answer: 'x is about 2.727', answerWords: true
+              },
+              {
+                prompt: 'Solve log(x) + log(x − 3) = 1.',
+                steps: [
+                  { do: 'Condense with the product rule: log(x(x − 3)) = 1', why: 'One logarithm is needed before the exponential form can be used.' },
+                  { do: 'Rewrite exponentially: x(x − 3) = 10¹ = 10', why: 'Base 10, because log without a subscript means base 10.' },
+                  { do: 'x² − 3x − 10 = 0, so (x − 5)(x + 2) = 0, giving x = 5 or x = −2', why: 'An ordinary quadratic now.' },
+                  { do: 'Check both: x = 5 works; x = −2 makes log(−2) undefined, so it is extraneous', why: 'The only solution is x = 5. Reporting both would be reporting a value that is not in the domain of the original equation.' }
+                ],
+                answer: 'x = 5 only', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                wrong: 'Reporting every algebraic solution of a logarithmic equation.',
+                right: 'Substitute each one back and discard any that makes an argument zero or negative.',
+                why: 'Condensing logs enlarges the domain, so the quadratic that comes out can have roots the original equation never allowed. The check is not optional politeness — it is where half the marks on these questions are.'
+              },
+              {
+                wrong: 'Writing ln(3^x) = (ln 3)^x.',
+                right: 'The power rule gives x·ln 3 — the exponent comes down as a multiplier.',
+                why: 'Taking the log is precisely what turns the exponent into a coefficient, and that is the only reason the method works. Leaving x upstairs leaves the equation exactly as unsolvable as it started.'
+              },
+              {
+                wrong: 'Reaching for logarithms on 2^x = 8.',
+                right: 'Write 8 as 2³ and match the exponents: x = 3.',
+                why: 'It is not wrong, just slower and a chance to make an arithmetic slip. Checking whether both sides can be written to the same base first costs one glance and often finishes the problem outright.'
+              }
+            ]
+          }
+        ],
+        practice: [
+          { id: 'u4p1', kind: 'numeric', lesson: 's41',
+            prompt: 'For f(x) = 7(3)^x, what is f(0)?',
+            answer: 7, verify: { expr: '7 * 3**0' },
+            hint: 'Any allowed base raised to the power 0 is 1.',
+            solution: ['f(0) = 7 × 3⁰', '3⁰ = 1', 'f(0) = 7 — the starting value is always a'] },
+
+          { id: 'u4p2', kind: 'numeric', lesson: 's41',
+            prompt: 'A quantity grows 5% per year from 200. What is the growth factor b, to 2 decimal places?',
+            answer: 1.05, tol: 0.005, verify: { expr: '1 + 5/100', dp: 2 },
+            hint: 'b = 1 + r, with r as a decimal.',
+            solution: ['r = 0.05', 'b = 1 + 0.05', 'b = 1.05 — not 0.05, and not 5'] },
+
+          { id: 'u4p3', kind: 'numeric', lesson: 's41',
+            prompt: 'A population of 400 grows by 10% a year. What is it after 2 years?',
+            answer: 484, verify: { expr: '400 * (11/10)**2' },
+            hint: 'Multiply by 1.10 twice — the second year grows on the first year’s total.',
+            solution: ['P(2) = 400(1.10)²', '= 400 × 1.21', '= 484, not 400 + 2×40 = 480'] },
+
+          { id: 'u4p4', kind: 'mc', lesson: 's41',
+            prompt: 'Which of these decays?',
+            options: [
+              { t: 'f(x) = 5(0.8)^x', ok: true },
+              { t: 'f(x) = 5(1.8)^x' },
+              { t: 'f(x) = 0.5(2)^x' },
+              { t: 'f(x) = 5x²' }
+            ],
+            hint: 'Decay is decided by the base, not by the coefficient in front.',
+            solution: ['Decay needs 0 < b < 1', '0.8 is between 0 and 1, so it decays',
+              '0.5(2)^x has a small starting value but base 2, so it grows; 5x² is not exponential at all'] },
+
+          { id: 'u4p5', kind: 'numeric', lesson: 's42',
+            prompt: 'Evaluate log₂(32).',
+            answer: 5, verify: { expr: '5' },
+            hint: '2 to what power gives 32?',
+            solution: ['2⁵ = 32', 'So log₂(32) = 5'] },
+
+          { id: 'u4p6', kind: 'numeric', lesson: 's42',
+            prompt: 'Evaluate log₅(125).',
+            answer: 3, verify: { expr: '3' },
+            hint: 'Build up the powers of 5 until you reach 125.',
+            solution: ['5¹ = 5, 5² = 25, 5³ = 125', 'So log₅(125) = 3'] },
+
+          { id: 'u4p7', kind: 'mc', lesson: 's42',
+            prompt: 'What is the domain of f(x) = log(x − 4)?',
+            options: [
+              { t: 'x > 4', ok: true },
+              { t: 'x > 0' },
+              { t: 'x ≥ 4' },
+              { t: 'all real numbers' }
+            ],
+            hint: 'The restriction applies to the argument, and it is strict.',
+            solution: ['The argument must be strictly positive: x − 4 > 0', 'x > 4',
+              'At x = 4 the argument is 0, which is still undefined'] },
+
+          { id: 'u4p8', kind: 'numeric', lesson: 's43',
+            prompt: 'If log(x) = 0.6, what is log(x³)?',
+            answer: 1.8, tol: 0.005, verify: { expr: '3 * 6/10', dp: 2 },
+            hint: 'The power rule brings the exponent down as a coefficient.',
+            solution: ['log(x³) = 3log(x)', '= 3 × 0.6', '= 1.8'] },
+
+          { id: 'u4p9', kind: 'spot', lesson: 's43',
+            prompt: 'A student expands log(x + y). One line is wrong.',
+            steps: [
+              { t: 'The three properties cover products, quotients and powers', bad: false },
+              { t: 'x + y is a sum, so none of them applies directly', bad: false },
+              { t: 'But log(x + y) = log(x) + log(y) by the product rule', bad: true },
+              { t: 'So the expression cannot be expanded at all', bad: false }
+            ],
+            why: 'The product rule turns multiplication inside into addition outside: log(xy) = log(x) + log(y). A sum inside a logarithm cannot be split by anything. Numbers settle it: log(2 + 8) = log 10 = 1, while log 2 + log 8 = log 16 ≈ 1.204. The second line already said no property applies, and the third contradicts it — a correct working never contains both.',
+            hint: 'Test it with x = 2 and y = 8.',
+            solution: ['No property applies to the log of a sum', 'log(xy) = log(x) + log(y) is about a PRODUCT',
+              'log(x + y) stays as it is'] },
+
+          { id: 'u4p10', kind: 'numeric', lesson: 's44',
+            prompt: 'Solve 2^x = 64.',
+            answer: 6, verify: { expr: '6' },
+            hint: 'Write 64 as a power of 2 — no logarithms needed.',
+            solution: ['64 = 2⁶', '2^x = 2⁶', 'Same base, so x = 6'] },
+
+          { id: 'u4p11', kind: 'numeric', lesson: 's44',
+            prompt: 'Solve log₃(x) = 4.',
+            answer: 81, verify: { expr: '3**4' },
+            hint: 'Rewrite in exponential form.',
+            solution: ['log₃(x) = 4 means 3⁴ = x', '3⁴ = 81', 'x = 81'] },
+
+          { id: 'u4p12', kind: 'order', lesson: 's44',
+            prompt: 'Put the steps of solving a logarithmic equation in order.',
+            steps: [
+              'Condense both sides to a single logarithm',
+              'Rewrite the equation in exponential form',
+              'Solve the resulting algebraic equation',
+              'Substitute each solution back and discard any extraneous one'
+            ],
+            hint: 'The check is part of the method, not an optional extra.',
+            solution: ['Exponential form needs one logarithm, not several',
+              'What is left is an ordinary equation — often a quadratic',
+              'Condensing enlarged the domain, so some roots may not be in the original one'] }
+        ]
+      },
+
+      /* ============================ UNIT 5 ============================ */
+      {
+        id: 'trig',
+        n: 5,
+        title: 'Trigonometric functions',
+        blurb: 'Sections 5.1 – 5.4. Measuring angles the way mathematics does, the unit circle the values come from, right-triangle ratios, and the graphs that repeat for ever.',
+        objectives: [
+          'Convert between degrees and radians, and find coterminal and reference angles',
+          'Read sine, cosine and tangent off the unit circle for the common angles',
+          'Apply SOH-CAH-TOA to a right triangle and solve for a missing side',
+          'Identify amplitude, period, phase shift and midline from a sine or cosine equation'
+        ],
+        lessons: [
+          {
+            id: 's51',
+            title: 'Angles and radian measure',
+            src: 'Section 5.1',
+            idea: `A <b>radian</b> is the angle that cuts off an arc equal in length to the radius. That definition makes it a pure ratio of two lengths, so a radian is dimensionless — which is exactly why calculus and every physical formula use it and not degrees.<br><br>The bridge is one fact: a full turn is 2π radians and also 360°, so <b>π radians = 180°</b>. Everything converts from that single equation. Multiply by π/180 to go from degrees to radians, and by 180/π to come back.<br><br>Angles in <b>standard position</b> start at the positive x-axis, with positive angles measured counter-clockwise and negative angles clockwise. <b>Coterminal</b> angles land in the same place: adding or subtracting a full turn — 360° or 2π — changes the number without moving the ray, which is why 30°, 390° and −330° all have the same sine.<br><br>The <b>reference angle</b> is the acute angle between the terminal ray and the x-axis. It is what makes the whole circle memorisable: every trigonometric value anywhere on the circle is the value at its reference angle, with a sign decided by the quadrant. So there are really only three sets of numbers to know — those at 30°, 45° and 60° — plus a sign rule.<br><br>Arc length is <b>s = rθ</b> and sector area is <b>A = ½r²θ</b>, both with θ in radians. Using degrees in either gives nonsense, and this is the most common reason those formulas "do not work".`,
+            rules: [
+              { name: 'The bridge', expr: 'pi radians = 180 degrees', words: true, note: 'Every conversion comes from this one equation.' },
+              { name: 'Degrees to radians', expr: 'multiply by pi/180', words: true, note: 'And by 180/pi to come back.' },
+              { name: 'Coterminal', expr: 'add or subtract 360 degrees, or 2*pi', words: true, note: 'Same terminal ray, so all trig values are identical.' },
+              { name: 'Arc and sector', expr: 's = r*theta  and  A = r^2*theta/2', note: 'θ in RADIANS. Degrees give nonsense.' }
+            ],
+            examples: [
+              {
+                prompt: 'Convert 135° to radians.',
+                steps: [
+                  { do: 'Multiply by π/180', why: 'Degrees on top cancel against degrees on the bottom, leaving radians — the same unit-cancelling habit as any conversion.' },
+                  { do: '135 × π/180 = 135π/180', why: 'Keep π symbolic; a decimal here loses the exact answer.' },
+                  { do: 'Divide both by 45: 3π/4', why: 'Simplify the fraction. 135 = 3 × 45 and 180 = 4 × 45.' },
+                  { do: '135° = 3π/4 radians', why: 'Sanity check: 3π/4 is just under π, and 135° is just under 180°.' }
+                ],
+                answer: '3*pi/4', answerWords: true
+              },
+              {
+                prompt: 'Find the reference angle for 210°, and use it to find sin(210°).',
+                steps: [
+                  { do: '210° is in the third quadrant, between 180° and 270°', why: 'The quadrant decides the sign of the answer.' },
+                  { do: 'Reference angle = 210° − 180° = 30°', why: 'In the third quadrant the reference angle is measured back to the negative x-axis.' },
+                  { do: 'sin(30°) = 1/2', why: 'One of the three values worth memorising.' },
+                  { do: 'Sine is negative in the third quadrant, so sin(210°) = −1/2', why: 'The reference angle gives the size; the quadrant gives the sign. Two separate decisions.' }
+                ],
+                answer: 'reference 30 degrees, sin = -1/2', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                wrong: 'Using degrees in s = rθ or A = ½r²θ.',
+                right: 'Both formulas require radians.',
+                why: 'They are that simple only because a radian is defined as arc over radius. In degrees the arc length of a 60° sector of radius 2 would come out as 120 instead of about 2.09 — an answer nearly sixty times too large, and the formula is not at fault.'
+              },
+              {
+                wrong: 'Thinking 390° and 30° are different angles with different sines.',
+                right: 'They are coterminal: 390° − 360° = 30°, the same ray.',
+                why: 'The terminal side is in exactly the same place, so every trigonometric value is identical. This is what makes the functions periodic, and it is worth seeing as the reason rather than as a coincidence.'
+              },
+              {
+                wrong: 'Giving the reference angle as the answer without fixing the sign.',
+                right: 'The reference angle gives the magnitude. The quadrant gives the sign.',
+                why: 'sin(210°) is −1/2, not +1/2. Half the marks on these questions are the sign, and it is a separate decision made after the value — which is why doing them in that order stops the two from being confused.'
+              }
+            ]
+          },
+
+          {
+            id: 's52',
+            title: 'The unit circle',
+            src: 'Section 5.2',
+            idea: `On the <b>unit circle</b> — radius 1, centred at the origin — every point on the circle is <b>(cos θ, sin θ)</b> for the angle θ that reaches it. Cosine is the x-coordinate; sine is the y-coordinate. That is the definition, and it is worth holding onto because it explains every property that follows.<br><br>Both coordinates live between −1 and 1, so <b>sine and cosine are never outside [−1, 1]</b>. An answer of sin θ = 1.4 is not a hard case; it has no solution.<br><br>The signs follow straight from the coordinates. In the second quadrant x is negative and y is positive, so cosine is negative and sine is positive. Quadrant I everything positive, II sine only, III tangent only, IV cosine only — and if you forget, reading it off the coordinates takes two seconds and needs no mnemonic.<br><br><b>tan θ = sin θ / cos θ</b>, which makes tangent undefined wherever cosine is zero — at 90° and 270°, where the point is at the top or bottom of the circle and has no x-component to divide by.<br><br>And because x² + y² = 1 on a unit circle, we get <b>sin²θ + cos²θ = 1</b> for free. The most-used identity in trigonometry is just Pythagoras written in different letters.`,
+            rules: [
+              { name: 'The definition', expr: 'A point on the circle is (cos t, sin t)', words: true, note: 'Cosine is x; sine is y.' },
+              { name: 'Range', expr: '-1 <= sin(t) <= 1', note: 'Same for cosine. Nothing outside is possible.' },
+              { name: 'Tangent', expr: 'tan(t) = sin(t)/cos(t)', note: 'Undefined where cosine is zero: 90° and 270°.' },
+              { name: 'Pythagorean identity', expr: 'sin(t)^2 + cos(t)^2 = 1', note: 'Just x² + y² = 1 on a circle of radius 1.' }
+            ],
+            examples: [
+              {
+                prompt: 'Find cos(120°) and sin(120°) exactly.',
+                steps: [
+                  { do: '120° is in the second quadrant', why: 'Between 90° and 180°.' },
+                  { do: 'Reference angle: 180° − 120° = 60°', why: 'Measured back to the negative x-axis.' },
+                  { do: 'cos 60° = 1/2 and sin 60° = √3/2', why: 'The values at the reference angle give the magnitudes.' },
+                  { do: 'In quadrant II, x is negative and y is positive: cos(120°) = −1/2, sin(120°) = √3/2', why: 'Read straight off the coordinates. No mnemonic needed.' }
+                ],
+                answer: 'cos = -1/2, sin = sqrt(3)/2', answerWords: true
+              },
+              {
+                prompt: 'If sin θ = 3/5 and θ is in the second quadrant, find cos θ.',
+                steps: [
+                  { do: 'sin²θ + cos²θ = 1', why: 'The Pythagorean identity relates the two without needing the angle itself.' },
+                  { do: '(3/5)² + cos²θ = 1, so cos²θ = 1 − 9/25 = 16/25', why: 'Substitute and rearrange.' },
+                  { do: 'cos θ = ±4/5', why: 'Taking a square root always gives two possibilities, and the identity cannot tell them apart.' },
+                  { do: 'Quadrant II means x is negative, so cos θ = −4/5', why: 'The quadrant is what settles the sign, and it is the only reason the question mentioned it.' }
+                ],
+                answer: '-4/5', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                wrong: 'Accepting sin θ = 1.4 as a value to work with.',
+                right: 'Sine and cosine are bounded by −1 and 1.',
+                why: 'They are coordinates on a circle of radius 1, so nothing outside that range exists. A value above 1 means an earlier step is wrong, and spotting it there saves the rest of the question.'
+              },
+              {
+                wrong: 'Swapping sine and cosine on the unit circle.',
+                right: 'Cosine is the x-coordinate; sine is the y-coordinate.',
+                why: 'The alphabetical order helps: cosine comes first and x comes first. Swapping them makes every quadrant sign wrong as well, since the signs are read off the coordinates.'
+              },
+              {
+                wrong: 'Taking the positive root when the identity gives ±.',
+                right: 'The quadrant decides the sign, and the question always tells you the quadrant.',
+                why: 'sin²θ + cos²θ = 1 is symmetric and genuinely cannot distinguish +4/5 from −4/5. If a question specifies a quadrant, that information exists precisely because it is needed at this step.'
+              }
+            ]
+          },
+
+          {
+            id: 's53',
+            title: 'Right-triangle trigonometry',
+            src: 'Section 5.3',
+            idea: `For an acute angle in a right triangle, the three basic ratios are <b>SOH-CAH-TOA</b>:<br><br><b>sin θ = opposite/hypotenuse · cos θ = adjacent/hypotenuse · tan θ = opposite/adjacent</b><br><br>"Opposite" and "adjacent" are relative to the angle you chose, and swapping which acute angle you are working from swaps which side is which. The hypotenuse never changes — it is always opposite the right angle, and it is always the longest side.<br><br>To find a missing <b>side</b>: pick the ratio that involves the two sides you care about and the angle you know, then solve. To find a missing <b>angle</b>: use the inverse functions sin⁻¹, cos⁻¹, tan⁻¹.<br><br>The <b>calculator mode</b> is the single most common source of a wrong answer here. A calculator in radians computes sin(30) as sin of 30 radians ≈ −0.988, not 0.5. Nothing about the number looks obviously wrong, and it silently corrupts everything after it. Check the mode before starting, not after getting a strange answer.<br><br>A useful sanity check: sine and cosine of an acute angle are always between 0 and 1, because a leg is always shorter than the hypotenuse.`,
+            rules: [
+              { name: 'SOH', expr: 'sin(theta) = opposite/hypotenuse', note: 'Opposite is relative to the angle chosen.' },
+              { name: 'CAH', expr: 'cos(theta) = adjacent/hypotenuse', note: 'Adjacent is the leg touching the angle, not the hypotenuse.' },
+              { name: 'TOA', expr: 'tan(theta) = opposite/adjacent', note: 'The only one with no hypotenuse in it.' },
+              { name: 'Finding an angle', expr: 'theta = sin^-1(opposite/hypotenuse)', note: 'And likewise cos⁻¹ and tan⁻¹.' }
+            ],
+            examples: [
+              {
+                prompt: 'A right triangle has hypotenuse 10 and an angle of 30°. Find the side opposite that angle.',
+                steps: [
+                  { do: 'Opposite and hypotenuse are involved, so use sine', why: 'Choose the ratio that contains exactly what you know and what you want.' },
+                  { do: 'sin 30° = opposite/10', why: 'Write the ratio before substituting anything.' },
+                  { do: 'opposite = 10 sin 30° = 10 × 0.5', why: 'sin 30° = 1/2 exactly — no calculator needed for the common angles.' },
+                  { do: 'opposite = 5', why: 'Check: the leg is shorter than the hypotenuse, as it must be.' }
+                ],
+                answer: '5', answerWords: true
+              },
+              {
+                prompt: 'A ladder leans against a wall. Its foot is 3 m from the wall and it reaches 4 m up. What angle does it make with the ground?',
+                steps: [
+                  { do: 'Relative to the ground angle: opposite = 4 (up the wall), adjacent = 3 (along the ground)', why: 'Deciding which is which relative to the chosen angle comes before choosing a ratio.' },
+                  { do: 'Opposite and adjacent, so use tangent: tan θ = 4/3', why: 'The hypotenuse — the ladder — was not given, so avoid any ratio needing it.' },
+                  { do: 'θ = tan⁻¹(4/3)', why: 'The inverse function is what turns a ratio back into an angle.' },
+                  { do: 'θ ≈ 53.1°', why: 'Sensible: the ladder rises more than it runs, so the angle should exceed 45°.' }
+                ],
+                answer: 'about 53.1 degrees', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                wrong: 'Computing sin(30) with the calculator in radian mode.',
+                right: 'Set degree mode for a degree question. sin(30°) = 0.5.',
+                why: 'In radians the calculator returns about −0.988, and the result is a plausible-looking number that silently corrupts everything after it. Checking the mode takes one second and is the single highest-value habit in this section.'
+              },
+              {
+                wrong: 'Treating "adjacent" as fixed for the triangle.',
+                right: 'Opposite and adjacent are relative to the angle you chose.',
+                why: 'Switch to the other acute angle and the two legs swap roles, so sine and cosine swap values. Labelling the sides for the specific angle in the question, before writing any ratio, removes the error.'
+              },
+              {
+                wrong: 'Accepting cos θ = 1.25 for an acute angle.',
+                right: 'Sine and cosine of an acute angle are between 0 and 1.',
+                why: 'A leg is always shorter than the hypotenuse, so the ratio cannot exceed 1. A value above 1 usually means the hypotenuse and a leg were swapped, and the check catches it immediately.'
+              }
+            ]
+          },
+
+          {
+            id: 's54',
+            title: 'Graphs of sine and cosine',
+            src: 'Section 5.4',
+            idea: `Sine and cosine graphs are waves that repeat for ever, and four numbers describe any of them. In<br><br><b>y = A sin(B(x − C)) + D</b><br><br><b>|A| is the amplitude</b> — half the distance from peak to trough. A negative A flips the wave upside down without changing the amplitude, which is why the absolute value is there.<br><br><b>B sets the period</b>: <b>period = 2π/B</b>. B is a frequency, not a period, so a larger B squeezes more waves into the same space. This is the one people invert.<br><br><b>C is the phase shift</b>, a horizontal slide, and it only reads correctly when B has been <b>factored out</b> first. In y = sin(2x − π) the shift is not π; factoring gives sin(2(x − π/2)), so the shift is π/2.<br><br><b>D is the midline</b>, a vertical slide. The wave oscillates between D − |A| and D + |A|, which is where the range comes from.<br><br>The only difference between sine and cosine is where they start: sine begins at the midline heading up, cosine begins at a maximum. Cosine is sine shifted left by π/2 — the same curve with a different starting point.`,
+            rules: [
+              { name: 'General form', expr: 'y = A*sin(B*(x - C)) + D', note: 'Four numbers, four separate effects.' },
+              { name: 'Amplitude', expr: '|A|', note: 'Half of peak-to-trough. Negative A flips, it does not shrink.' },
+              { name: 'Period', expr: '2*pi/B', note: 'B is frequency. Larger B means a SHORTER period.' },
+              { name: 'Range', expr: 'D - |A| to D + |A|', note: 'The midline plus or minus the amplitude.' }
+            ],
+            examples: [
+              {
+                prompt: 'For y = 3sin(2x) + 1, find the amplitude, period, midline and range.',
+                steps: [
+                  { do: 'A = 3, so the amplitude is 3', why: 'The wave reaches 3 above and 3 below its midline.' },
+                  { do: 'B = 2, so the period is 2π/2 = π', why: 'Doubling B halves the period — it completes a full cycle in half the usual space.' },
+                  { do: 'D = 1, so the midline is y = 1', why: 'The whole wave is lifted one unit.' },
+                  { do: 'Range: 1 − 3 to 1 + 3, so [−2, 4]', why: 'Midline ± amplitude. Without the D the range would be [−3, 3].' }
+                ],
+                answer: 'amplitude 3, period pi, midline y = 1, range -2 to 4', answerWords: true
+              },
+              {
+                prompt: 'Find the phase shift of y = sin(2x − π).',
+                steps: [
+                  { do: 'The form needs B factored out of the bracket', why: 'The shift can only be read once the expression looks like B(x − C).' },
+                  { do: '2x − π = 2(x − π/2)', why: 'Take the 2 out: 2 × π/2 = π, so this is an identity, not an approximation.' },
+                  { do: 'So C = π/2', why: 'Reading π straight out of the unfactored form would double the answer.' },
+                  { do: 'The graph shifts π/2 to the right', why: 'A minus inside the bracket is a shift to the right, exactly as it is for any function transformation.' }
+                ],
+                answer: 'pi/2 to the right', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                wrong: 'Reading the phase shift straight out of y = sin(2x − π) as π.',
+                right: 'Factor B out first: sin(2(x − π/2)), so the shift is π/2.',
+                why: 'The formula reads the shift from B(x − C), and an unfactored expression is not in that form. The error scales with B, so it is worst exactly where B is large and the graph is most compressed.'
+              },
+              {
+                wrong: 'Taking B to be the period.',
+                right: 'The period is 2π/B. B is a frequency.',
+                why: 'They move in opposite directions: B = 4 gives a period of π/2, not 4. This is the most frequent error in the topic, and sketching one cycle of y = sin(2x) once makes it stick permanently.'
+              },
+              {
+                wrong: 'Saying a negative A makes the amplitude negative.',
+                right: 'Amplitude is |A|. A negative A reflects the wave.',
+                why: 'Amplitude is a distance, so it cannot be negative. y = −3sin(x) has amplitude 3 and is the ordinary wave turned upside down — a different graph with the same height.'
+              }
+            ]
+          }
+        ],
+        practice: [
+          { id: 'u5p1', kind: 'numeric', lesson: 's51',
+            prompt: 'Convert 90° to radians. Give the answer as a decimal to 4 places (π/2).',
+            answer: 1.5708, tol: 0.00005, verify: { expr: 'pi/2', dp: 4 },
+            hint: 'Multiply by π/180.',
+            solution: ['90 × π/180 = π/2', 'π/2 ≈ 1.5708 radians'] },
+
+          { id: 'u5p2', kind: 'numeric', lesson: 's51',
+            prompt: 'What is the reference angle for 210°, in degrees?',
+            answer: 30, verify: { expr: '210 - 180' },
+            hint: 'Third quadrant — measure back to the negative x-axis.',
+            solution: ['210° is in quadrant III', 'Reference = 210 − 180', '= 30°'] },
+
+          { id: 'u5p3', kind: 'numeric', lesson: 's51',
+            prompt: 'Find the smallest positive angle coterminal with 430°, in degrees.',
+            answer: 70, verify: { expr: '430 - 360' },
+            hint: 'Subtract full turns until you land between 0° and 360°.',
+            solution: ['430 − 360 = 70', '70° is between 0° and 360°, so that is the answer',
+              'Every trig value of 430° equals that of 70°'] },
+
+          { id: 'u5p4', kind: 'numeric', lesson: 's51',
+            prompt: 'A sector has radius 4 and angle 1.5 radians. What is its arc length?',
+            answer: 6, verify: { expr: '4 * 15/10' },
+            hint: 's = rθ, and the angle is already in radians.',
+            solution: ['s = rθ = 4 × 1.5', 's = 6'] },
+
+          { id: 'u5p5', kind: 'mc', lesson: 's52',
+            prompt: 'What is cos(120°)?',
+            options: [
+              { t: '−1/2', ok: true },
+              { t: '1/2' },
+              { t: '−√3/2' },
+              { t: '√3/2' }
+            ],
+            hint: 'Reference angle 60°, and cosine is the x-coordinate.',
+            solution: ['120° is in quadrant II, reference angle 60°', 'cos 60° = 1/2',
+              'In quadrant II the x-coordinate is negative, so cos(120°) = −1/2'] },
+
+          { id: 'u5p6', kind: 'mc', lesson: 's52',
+            prompt: 'sin θ = 4/5 and θ is in the second quadrant. What is cos θ?',
+            options: [
+              { t: '−3/5', ok: true },
+              { t: '3/5' },
+              { t: '−4/5' },
+              { t: '5/3' }
+            ],
+            hint: 'Use sin²θ + cos²θ = 1, then let the quadrant fix the sign.',
+            solution: ['cos²θ = 1 − 16/25 = 9/25, so cos θ = ±3/5',
+              'Quadrant II means the x-coordinate is negative', 'cos θ = −3/5'] },
+
+          { id: 'u5p7', kind: 'numeric', lesson: 's53',
+            prompt: 'A right triangle has hypotenuse 10 and an angle of 30°. How long is the side opposite that angle?',
+            answer: 5, verify: { expr: '10 * 1/2' },
+            hint: 'Opposite and hypotenuse — that is sine, and sin 30° = 1/2.',
+            solution: ['sin 30° = opposite/10', 'opposite = 10 × 0.5', 'opposite = 5'] },
+
+          { id: 'u5p8', kind: 'numeric', lesson: 's53',
+            prompt: 'A right triangle has legs 3 and 4. What is tan θ for the angle whose opposite side is 4, as a decimal to 4 places?',
+            answer: 1.3333, tol: 0.00005, verify: { expr: '4/3', dp: 4 },
+            hint: 'Tangent is opposite over adjacent — no hypotenuse involved.',
+            solution: ['tan θ = opposite/adjacent = 4/3', '≈ 1.3333'] },
+
+          { id: 'u5p9', kind: 'numeric', lesson: 's54',
+            prompt: 'For y = 3sin(2x) + 1, what is the amplitude?',
+            answer: 3, verify: { expr: 'Abs(3)' },
+            hint: 'Amplitude is |A|.',
+            solution: ['A = 3', 'Amplitude = |3| = 3', 'The wave reaches 3 above and 3 below the midline'] },
+
+          { id: 'u5p10', kind: 'numeric', lesson: 's54',
+            prompt: 'For y = 3sin(2x) + 1, what is the period, as a decimal to 4 places?',
+            answer: 3.1416, tol: 0.00005, verify: { expr: '2*pi/2', dp: 4 },
+            hint: 'Period = 2π/B, and B = 2.',
+            solution: ['B = 2', 'Period = 2π/2 = π', '≈ 3.1416'] },
+
+          { id: 'u5p11', kind: 'spot', lesson: 's54',
+            prompt: 'A student finds the phase shift of y = sin(3x − π). One line is wrong.',
+            steps: [
+              { t: 'The general form is y = A sin(B(x − C)) + D', bad: false },
+              { t: 'Here B = 3, and the bracket contains 3x − π', bad: false },
+              { t: 'So C = π and the shift is π to the right', bad: true },
+              { t: 'A minus inside the bracket means a shift to the right', bad: false }
+            ],
+            why: 'The shift can only be read once B has been factored out. 3x − π = 3(x − π/3), so C = π/3, not π. Reading the unfactored constant makes the answer wrong by a factor of B — here three times too far — and the error grows with B, which is exactly when the graph is most compressed and the mistake hardest to see.',
+            hint: 'Put the bracket into the form B(x − C) before reading anything off it.',
+            solution: ['Factor the 3 out: 3x − π = 3(x − π/3)', 'C = π/3',
+              'The shift is π/3 to the right'] },
+
+          { id: 'u5p12', kind: 'order', lesson: 's51',
+            prompt: 'Put the steps for finding a trigonometric value of an angle beyond 90° in order.',
+            steps: [
+              'Reduce the angle to one between 0° and 360° if necessary',
+              'Identify which quadrant the terminal ray lands in',
+              'Find the reference angle to the nearest part of the x-axis',
+              'Take the value at the reference angle and give it the quadrant’s sign'
+            ],
+            hint: 'The size and the sign are two separate decisions, and the size comes first.',
+            solution: ['Coterminal angles have identical values, so reduce first',
+              'The quadrant is what supplies the sign at the end',
+              'The reference angle supplies the magnitude from the three known values'] }
+        ]
+      },
+
+      /* ============================ UNIT 6 ============================ */
+      {
+        id: 'identities',
+        n: 6,
+        title: 'Identities, equations and triangles',
+        blurb: 'Sections 6.1 – 6.3. The identities worth knowing by heart, how to solve a trigonometric equation without losing half the answers, and the two laws that handle triangles with no right angle.',
+        objectives: [
+          'State and apply the Pythagorean, sum-and-difference and double-angle identities',
+          'Solve a trigonometric equation over a stated interval and find every solution in it',
+          'Choose between the law of sines and the law of cosines from what is given',
+          'Recognise the ambiguous case of the law of sines'
+        ],
+        lessons: [
+          {
+            id: 's61',
+            title: 'Fundamental identities',
+            src: 'Section 6.1',
+            idea: `An <b>identity</b> is true for every value of the variable, unlike an equation, which is true only for particular ones. That distinction matters: identities are tools you use to rewrite expressions, equations are problems you solve.<br><br>The <b>Pythagorean identity</b> <b>sin²θ + cos²θ = 1</b> is the one everything else leans on. Dividing it through by cos²θ gives <b>1 + tan²θ = sec²θ</b>, and dividing by sin²θ gives <b>1 + cot²θ = csc²θ</b> — so there is really one identity here, not three, and the other two are derivable in a line if forgotten.<br><br>The <b>sum and difference</b> identities are the ones that must be memorised, because nothing generates them quickly:<br><br><b>sin(A ± B) = sin A cos B ± cos A sin B</b><br><b>cos(A ± B) = cos A cos B ∓ sin A sin B</b><br><br>Note the sign in the cosine version is <i>opposite</i> to the one in the bracket — cos(A + B) uses a minus. That inversion is the single most common slip in the topic.<br><br>The <b>double-angle</b> identities follow by setting B = A: <b>sin 2θ = 2 sin θ cos θ</b> and <b>cos 2θ = cos²θ − sin²θ</b>. The second has two other forms, obtained by substituting the Pythagorean identity, and you choose whichever leaves you with the function you want.<br><br>What no identity ever says is that sin(A + B) = sin A + sin B. Trigonometric functions do not distribute over addition, and testing with A = B = 30° settles it in a moment.`,
+            rules: [
+              { name: 'Pythagorean', expr: 'sin(t)^2 + cos(t)^2 = 1', note: 'Divide by cos² or sin² to get the other two.' },
+              { name: 'Sine of a sum', expr: 'sin(A + B) = sin(A)cos(B) + cos(A)sin(B)', note: 'Signs match the bracket here.' },
+              { name: 'Cosine of a sum', expr: 'cos(A + B) = cos(A)cos(B) - sin(A)sin(B)', note: 'Sign is OPPOSITE to the bracket. The usual slip.' },
+              { name: 'Double angle', expr: 'sin(2t) = 2*sin(t)*cos(t)', note: 'And cos 2t = cos²t − sin²t, with two other forms.' }
+            ],
+            examples: [
+              {
+                prompt: 'Find the exact value of cos(75°) using a sum identity.',
+                steps: [
+                  { do: 'Write 75° as 45° + 30°, both of which have known values', why: 'Choosing a decomposition into known angles is the whole trick.' },
+                  { do: 'cos(45° + 30°) = cos45 cos30 − sin45 sin30', why: 'Minus, because the bracket has a plus. This is the sign to be careful about.' },
+                  { do: '= (√2/2)(√3/2) − (√2/2)(1/2)', why: 'Substitute the four known values.' },
+                  { do: '= (√6 − √2)/4', why: 'Common denominator 4. About 0.259, and cos 75° should indeed be small and positive.' }
+                ],
+                answer: '(sqrt(6) - sqrt(2))/4', answerWords: true
+              },
+              {
+                prompt: 'Simplify (1 − cos²θ)/sin θ.',
+                steps: [
+                  { do: 'sin²θ + cos²θ = 1, so 1 − cos²θ = sin²θ', why: 'Rearranging the Pythagorean identity is usually the first thing to try.' },
+                  { do: 'The expression becomes sin²θ/sin θ', why: 'Substitute the rewritten numerator.' },
+                  { do: '= sin θ', why: 'Valid wherever sin θ ≠ 0. An expression that started with two functions collapses to one.' }
+                ],
+                answer: 'sin(theta)', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                wrong: 'Writing cos(A + B) = cos A cos B + sin A sin B.',
+                right: 'The sign is opposite to the bracket: cos(A + B) uses a MINUS.',
+                why: 'It is the only identity where the sign inverts, which is exactly why it is the one that gets remembered wrong. A quick check with A = B = 0 does not catch it, but A = B = 45° does: cos 90° = 0, and only the minus version gives that.'
+              },
+              {
+                wrong: 'Writing sin(A + B) = sin A + sin B.',
+                right: 'Trigonometric functions do not distribute over addition.',
+                why: 'sin(30° + 30°) = sin 60° ≈ 0.866, while sin 30° + sin 30° = 1. The functions are not linear, and any step that treats them as if they were is wrong before the arithmetic begins.'
+              },
+              {
+                wrong: 'Trying to memorise all three Pythagorean identities separately.',
+                right: 'Learn sin² + cos² = 1 and divide by cos² or sin² to get the others.',
+                why: 'It is one identity, and deriving the other two takes a single line. Memorising three independently means three chances to misremember one, and no way to check which version is right.'
+              }
+            ]
+          },
+
+          {
+            id: 's62',
+            title: 'Trigonometric equations',
+            src: 'Section 6.2',
+            idea: `A trigonometric equation differs from an algebraic one in a way that costs marks: because the functions repeat, <b>every solution has infinitely many companions</b>, and a question almost always asks for all of them within a stated interval.<br><br>The method: isolate the trigonometric function, take the inverse to get one solution, then use symmetry to find its partner in the other quadrant where the function takes the same value, and finally add or subtract full periods to sweep up everything in the interval.<br><br>The inverse function on a calculator returns only <b>one</b> value — its principal value — and for sine that is always between −90° and 90°. So sin⁻¹(0.5) gives 30° and says nothing about 150°, which is equally a solution. Finding the second solution is your job, not the calculator's, and forgetting it is the characteristic error of this topic.<br><br>Where the second solution lives: for <b>sine</b>, at 180° − θ. For <b>cosine</b>, at 360° − θ. For <b>tangent</b>, at θ + 180°, because tangent repeats every half turn rather than every full one.<br><br>When the argument is not just θ — as in sin(2x) = 1/2 — solve for the whole argument <b>first</b>, across the correspondingly wider interval, and only divide at the end. Dividing too early throws away half the solutions.`,
+            rules: [
+              { name: 'Second solution, sine', expr: '180 - theta', words: true, note: 'Same sine value, other quadrant.' },
+              { name: 'Second solution, cosine', expr: '360 - theta', words: true, note: 'Cosine is symmetric about the x-axis.' },
+              { name: 'Second solution, tangent', expr: 'theta + 180', words: true, note: 'Tangent has period 180°, not 360°.' },
+              { name: 'Compound argument', expr: 'Solve for the whole argument first, divide last', words: true, note: 'sin(2x) over 0–360° means 2x runs over 0–720°.' }
+            ],
+            examples: [
+              {
+                prompt: 'Solve sin θ = 1/2 for 0° ≤ θ < 360°.',
+                steps: [
+                  { do: 'θ = sin⁻¹(0.5) = 30°', why: 'The calculator’s principal value, and the only one it will give you.' },
+                  { do: 'Sine is also positive in quadrant II', why: 'The y-coordinate is positive in both the first and second quadrants.' },
+                  { do: 'Second solution: 180° − 30° = 150°', why: 'The reference angle is 30° in both cases; only the quadrant differs.' },
+                  { do: 'θ = 30° and 150°', why: 'Both are in the interval, and adding 360° to either leaves it. Reporting only 30° would be half an answer.' }
+                ],
+                answer: '30 and 150 degrees', answerWords: true
+              },
+              {
+                prompt: 'Solve 2cos θ + 1 = 0 for 0° ≤ θ < 360°.',
+                steps: [
+                  { do: 'Isolate first: cos θ = −1/2', why: 'Nothing can be done until the trigonometric function stands alone.' },
+                  { do: 'The reference angle is 60°, since cos 60° = 1/2', why: 'Work with the magnitude, then place it.' },
+                  { do: 'Cosine is negative in quadrants II and III', why: 'The x-coordinate is negative on the left half of the circle.' },
+                  { do: '180° − 60° = 120° and 180° + 60° = 240°', why: 'Two solutions, symmetric about the negative x-axis. Both lie in the interval.' }
+                ],
+                answer: '120 and 240 degrees', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                wrong: 'Reporting only the value the calculator’s inverse function gives.',
+                right: 'Find the second solution by symmetry, then add periods across the interval.',
+                why: 'sin⁻¹ returns a principal value between −90° and 90° and knows nothing about the interval in your question. On a question asking for all solutions in 0°–360°, giving one is scoring half the marks at best.'
+              },
+              {
+                wrong: 'Dividing by 2 before solving sin(2x) = 1/2.',
+                right: 'Solve for 2x over the doubled interval first, then divide every solution by 2.',
+                why: 'If x runs over 0°–360°, then 2x runs over 0°–720° and there are four solutions, not two. Dividing first discards half of them before they are ever found.'
+              },
+              {
+                wrong: 'Using 360° − θ to find the second solution for a sine equation.',
+                right: 'For sine it is 180° − θ. The 360° − θ rule belongs to cosine.',
+                why: 'The two functions are symmetric about different axes — sine about the vertical, cosine about the horizontal. Using cosine’s rule on a sine equation gives a value where the sine is negative rather than positive, so it is not a solution at all.'
+              }
+            ]
+          },
+
+          {
+            id: 's63',
+            title: 'The laws of sines and cosines',
+            src: 'Section 6.3',
+            idea: `SOH-CAH-TOA needs a right angle. Two laws handle every other triangle, and choosing between them is a matter of what you were given.<br><br><b>Law of sines:</b> a/sin A = b/sin B = c/sin C. Each side over the sine of the angle opposite it. Use it when you have a <b>matched pair</b> — a side and its opposite angle — plus one more piece: that is the AAS, ASA and SSA cases.<br><br><b>Law of cosines:</b> c² = a² + b² − 2ab·cos C. Use it when there is no matched pair: <b>SAS</b> (two sides and the angle between them) or <b>SSS</b> (three sides). Notice that when C = 90°, cos C = 0 and the formula collapses to Pythagoras — it is a generalisation, not a separate idea.<br><br>The rule of thumb: <b>if you can pair a side with its opposite angle, use sines; otherwise use cosines.</b><br><br><b>The ambiguous case.</b> Given two sides and an angle <i>not</i> between them (SSA), there may be two triangles, one, or none — because the side opposite the known angle can swing to meet the base in two places. If you find an angle θ by the law of sines, always check whether 180° − θ also gives a valid triangle, by testing that the three angles still sum to less than 180°. This is the only place in the topic where a correct calculation can still give an incomplete answer.`,
+            rules: [
+              { name: 'Law of sines', expr: 'a/sin(A) = b/sin(B) = c/sin(C)', note: 'Needs a side paired with its opposite angle.' },
+              { name: 'Law of cosines', expr: 'c^2 = a^2 + b^2 - 2*a*b*cos(C)', note: 'For SAS and SSS. Becomes Pythagoras when C = 90°.' },
+              { name: 'Which to use', expr: 'Matched pair? sines. Otherwise cosines.', words: true, note: 'One question settles it every time.' },
+              { name: 'Ambiguous case', expr: 'SSA may give two triangles, one, or none', words: true, note: 'Always test 180° − θ as well.' }
+            ],
+            examples: [
+              {
+                prompt: 'In a triangle, A = 30°, a = 5 and b = 8. Find angle B.',
+                steps: [
+                  { do: 'A pairs with a, so the law of sines applies', why: 'A side and its opposite angle are both known — that is the test.' },
+                  { do: '5/sin 30° = 8/sin B', why: 'Write the two matched ratios equal to each other.' },
+                  { do: 'sin B = 8 sin 30° / 5 = 8 × 0.5 / 5 = 0.8', why: 'Cross-multiply and isolate sin B.' },
+                  { do: 'B = sin⁻¹(0.8) ≈ 53.1°, and also possibly 180° − 53.1° = 126.9°', why: 'This is SSA, the ambiguous case. Both work: 30 + 53.1 + 96.9 = 180, and 30 + 126.9 + 23.1 = 180. There are genuinely two triangles.' }
+                ],
+                answer: 'B is about 53.1 degrees or about 126.9 degrees', answerWords: true
+              },
+              {
+                prompt: 'A triangle has sides a = 7 and b = 9 with the angle between them C = 60°. Find side c.',
+                steps: [
+                  { do: 'No angle is paired with a known opposite side, so use the law of cosines', why: 'C sits between a and b — this is SAS.' },
+                  { do: 'c² = 7² + 9² − 2(7)(9)cos 60°', why: 'The angle in the formula must be the one opposite the side being found.' },
+                  { do: 'c² = 49 + 81 − 126 × 0.5 = 130 − 63 = 67', why: 'cos 60° = 1/2 exactly.' },
+                  { do: 'c = √67 ≈ 8.19', why: 'Sensible: c lies between 2 and 16, which is the range any third side must fall in.' }
+                ],
+                answer: 'c = sqrt(67), about 8.19', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                wrong: 'Using the law of sines on an SAS triangle.',
+                right: 'With no side paired to its opposite angle, only the law of cosines works.',
+                why: 'The law of sines needs a complete ratio to anchor the others, and SAS gives none. Trying it produces one equation with two unknowns, which is why the problem then appears to have insufficient information.'
+              },
+              {
+                wrong: 'Reporting one answer in the ambiguous case.',
+                right: 'With SSA, test 180° − θ as well and keep every arrangement whose angles sum to 180°.',
+                why: 'The side opposite the known angle can swing to meet the base in two places, and both are genuine triangles. The calculation is correct and the answer is still incomplete — the only place in this topic where that happens.'
+              },
+              {
+                wrong: 'Putting the wrong angle into the law of cosines.',
+                right: 'The angle must be the one OPPOSITE the side you are finding.',
+                why: 'c² = a² + b² − 2ab·cos C pairs c with C specifically. Using a different angle mixes an unrelated pair and produces a length that satisfies no triangle, and because the arithmetic is fine nothing flags it.'
+              }
+            ]
+          }
+        ],
+        practice: [
+          { id: 'u6p1', kind: 'numeric', lesson: 's61',
+            prompt: 'If sin θ = 0.6, what is sin²θ + cos²θ?',
+            answer: 1, verify: { expr: '1' },
+            hint: 'This is an identity — true for every θ.',
+            solution: ['sin²θ + cos²θ = 1 for every angle', 'The value of sin θ is irrelevant', 'The answer is 1'] },
+
+          { id: 'u6p2', kind: 'numeric', lesson: 's61',
+            prompt: 'Use a double-angle identity: if sin θ = 0.6 and cos θ = 0.8, what is sin(2θ)?',
+            answer: 0.96, tol: 0.005, verify: { expr: '2 * 6/10 * 8/10', dp: 2 },
+            hint: 'sin 2θ = 2 sin θ cos θ.',
+            solution: ['sin 2θ = 2 sin θ cos θ', '= 2 × 0.6 × 0.8', '= 0.96'] },
+
+          { id: 'u6p3', kind: 'mc', lesson: 's61',
+            prompt: 'Which is the correct expansion of cos(A + B)?',
+            options: [
+              { t: 'cos A cos B − sin A sin B', ok: true },
+              { t: 'cos A cos B + sin A sin B' },
+              { t: 'cos A + cos B' },
+              { t: 'sin A cos B + cos A sin B' }
+            ],
+            hint: 'The sign in the cosine identity is opposite to the one in the bracket.',
+            solution: ['cos(A + B) = cos A cos B − sin A sin B',
+              'The plus in the bracket becomes a minus in the expansion — the one inversion in the topic',
+              'The last option is the expansion of sin(A + B)'] },
+
+          { id: 'u6p4', kind: 'numeric', lesson: 's62',
+            prompt: 'Solve sin θ = 1/2 for 0° ≤ θ < 360°. Give the LARGER of the two solutions, in degrees.',
+            answer: 150, verify: { expr: '180 - 30' },
+            hint: 'The second sine solution is at 180° − θ.',
+            solution: ['sin⁻¹(0.5) = 30°', 'Second solution: 180 − 30 = 150°', 'The two solutions are 30° and 150°'] },
+
+          { id: 'u6p5', kind: 'numeric', lesson: 's62',
+            prompt: 'Solve 2cos θ + 1 = 0 for 0° ≤ θ < 360°. Give the SMALLER solution, in degrees.',
+            answer: 120, verify: { expr: '180 - 60' },
+            hint: 'Isolate cos θ first, then use the reference angle.',
+            solution: ['cos θ = −1/2, reference angle 60°', 'Cosine is negative in quadrants II and III',
+              '180 − 60 = 120° and 180 + 60 = 240°'] },
+
+          { id: 'u6p6', kind: 'numeric', lesson: 's62',
+            prompt: 'How many solutions does sin(2x) = 1/2 have for 0° ≤ x < 360°?',
+            answer: 4, verify: { expr: '2 * 2' },
+            hint: 'If x runs over 0°–360°, over what interval does 2x run?',
+            solution: ['2x runs over 0°–720°, which is two full turns',
+              'sin = 1/2 has two solutions per turn', '2 × 2 = 4 solutions'] },
+
+          { id: 'u6p7', kind: 'mc', lesson: 's63',
+            prompt: 'You know two sides and the angle between them. Which law applies?',
+            options: [
+              { t: 'The law of cosines — there is no matched pair', ok: true },
+              { t: 'The law of sines — it works for every triangle' },
+              { t: 'Either one works equally well here' },
+              { t: 'Neither — there is not enough information' }
+            ],
+            hint: 'Is any side paired with its opposite angle?',
+            solution: ['SAS gives no side paired with its opposite angle',
+              'The law of sines needs one complete ratio to anchor the others',
+              'The law of cosines is built for exactly this case'] },
+
+          { id: 'u6p8', kind: 'numeric', lesson: 's63',
+            prompt: 'A triangle has a = 7, b = 9 and the angle between them C = 60°. Find c², using cos 60° = 1/2.',
+            answer: 67, verify: { expr: '7**2 + 9**2 - 2*7*9*(1/2)' },
+            hint: 'c² = a² + b² − 2ab cos C.',
+            solution: ['c² = 49 + 81 − 2(7)(9)(0.5)', '= 130 − 63', 'c² = 67, so c ≈ 8.19'] },
+
+          { id: 'u6p9', kind: 'spot', lesson: 's62',
+            prompt: 'A student solves sin θ = 0.5 for 0° ≤ θ < 360°. One line is wrong.',
+            steps: [
+              { t: 'sin⁻¹(0.5) = 30°, so θ = 30° is a solution', bad: false },
+              { t: 'Sine is also positive in the second quadrant', bad: false },
+              { t: 'The second solution is 360° − 30° = 330°', bad: true },
+              { t: 'Both solutions must lie in the stated interval', bad: false }
+            ],
+            why: 'The 360° − θ rule belongs to cosine. For sine the second solution is 180° − θ = 150°. The two functions are symmetric about different axes, and 330° is in the fourth quadrant where sine is negative — so sin(330°) = −0.5, which does not solve the equation at all. The second line already said quadrant II, and 330° is not in it.',
+            hint: 'Which quadrant is 330° in, and what sign does sine have there?',
+            solution: ['For sine the companion solution is 180° − θ', '180 − 30 = 150°',
+              'The solutions are 30° and 150°'] },
+
+          { id: 'u6p10', kind: 'order', lesson: 's63',
+            prompt: 'Put the steps for solving a non-right triangle in order.',
+            steps: [
+              'List what is given and label it as AAS, ASA, SSA, SAS or SSS',
+              'Choose the law of sines if a side is paired with its opposite angle, otherwise the law of cosines',
+              'Solve for the unknown side or angle',
+              'If the case was SSA, test the supplementary angle for a second valid triangle'
+            ],
+            hint: 'Naming the case is what chooses the law.',
+            solution: ['The given configuration is what decides which law can be used at all',
+              'The matched-pair test takes one glance and settles it',
+              'Only SSA is ambiguous, and only there is a second check needed'] }
         ]
       }
     ]
@@ -6101,10 +7330,20 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     id: 'blaw2910',
     code: 'BLAW 2910',
     title: 'Commercial Law',
-    blurb: 'The legal environment a business operates in: where Canadian law comes from, how disputes get resolved, tort, and the contract rules that run through everything else.',
+    blurb: 'The legal environment a business operates in: where Canadian law comes from, how disputes get resolved, tort from the four elements through to what a plaintiff collects, and contract from formation through terms and vitiating factors to breach and remedy.',
     level: 'Intermediate',
     prereq: null,
     exam: 'Midterm 1 covers chapters 1–5. Midterm 2 covers chapters 6–9. The final is comprehensive, and you must pass it to pass the course.',
+    gaps: [
+      'Employment law — the contract of employment, wrongful and constructive dismissal, notice and severance, human rights in the workplace',
+      'Agency — actual and apparent authority, the agent’s duties, and when a principal is bound',
+      'Intellectual property — copyright, trade marks, patents, trade secrets and confidential information',
+      'Privacy law — PIPEDA and BC’s PIPA, consent, breach notification and the tort of intrusion upon seclusion',
+      'Real property and commercial leases — interests in land, registration, and the landlord and tenant relationship',
+      'Insurance, and the allocation of risk by contract',
+      'Insolvency and bankruptcy in detail — proposals, receivership, and the priority of claims',
+      'International business transactions — the CISG, Incoterms and cross-border dispute resolution'
+    ],
     text: 'Bhalloo & Alexander, Canadian Business Law: A British Columbia Perspective, 2nd ed (Emond, 2024)',
     legalNote: NOTE,
     /* A law course is written in sentences, not expressions. The renderer uses this to set the
@@ -6219,12 +7458,15 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
         id: 'tort', n: 2,
         title: 'Tort law',
         read: 'Chapter 3',
-        blurb: 'A civil wrong that is not a breach of contract. Negligence is the one that reaches most businesses, and it has four elements that must be taken in order.',
+        blurb: 'A civil wrong that is not a breach of contract. Negligence is the one that reaches most businesses, and it has four elements that must be taken in order — then the defences, and then what the plaintiff actually collects.',
         objectives: [
           'Distinguish a tort from a crime and from a breach of contract',
           'State and apply the four elements of negligence in order',
           'Separate the standard of care from the duty of care',
-          'Identify the common business torts and the main defences'
+          'Identify the common business torts and the main defences',
+          'Say whether a defence defeats a claim or merely reduces the award',
+          'Explain when an employer is vicariously liable for an employee’s tort',
+          'Separate causation from remoteness, and apply mitigation to an award'
         ],
         lessons: [
           {
@@ -6256,9 +7498,127 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
                 answer: 'No — causation is not established.', answerWords: true
               }
             ]
+          },
+
+          {
+            id: 'c3b', title: 'Defences, and the torts that are not negligence', src: 'Chapter 3',
+            idea: `Proving the four elements is not the end of the case. A defendant who cannot dispute them may still reduce or defeat the claim with a <b>defence</b>, and a business studying its exposure needs both halves.<br><br><b>Contributory negligence</b> is the common one and it is <i>partial</i>: where the plaintiff's own carelessness contributed to the loss, the court apportions responsibility and reduces the damages by that percentage. It does not end the claim. <b>Voluntary assumption of risk</b> — <i>volenti non fit injuria</i> — is a complete defence but a narrow one: the plaintiff must have accepted both the physical risk and the legal risk, and courts are reluctant to find it. <b>Illegality</b> bars a plaintiff injured while committing a crime, and is narrower still.<br><br>Separately, some torts are <b>intentional</b>, and these are strict about conduct rather than carelessness. <b>Battery</b> is unwanted physical contact; <b>assault</b> is causing apprehension of it, so the two are distinct and either can occur without the other. <b>False imprisonment</b> is total confinement without lawful authority, which is why store detentions are legally risky. <b>Defamation</b> is a false statement lowering reputation in the eyes of a reasonable person — with truth as a complete defence.<br><br>Finally, a business is <b>vicariously liable</b> for torts its employees commit in the course of employment, whether or not the business was itself at fault. That is a policy choice, not a finding of blame: the employer takes the benefit of the work and is better placed to insure against the risk.`,
+            rules: [
+              { name: 'Contributory negligence', expr: 'partial — damages reduced by the plaintiff’s share', words: true, note: 'It apportions; it does not defeat the claim.' },
+              { name: 'Voluntary assumption of risk', expr: 'complete, but rarely made out', words: true, note: 'Needs acceptance of the LEGAL risk too, not just the physical one.' },
+              { name: 'Intentional torts', expr: 'battery · assault · false imprisonment · defamation', words: true, note: 'Conduct-based. Carelessness is not the question.' },
+              { name: 'Vicarious liability', expr: 'employer liable for employee torts in the course of employment', words: true, note: 'No fault by the employer is required.' }
+            ],
+            examples: [
+              {
+                prompt: 'A customer slips on an unmarked wet floor while running through the shop looking at her phone. She breaks a wrist. How does the court deal with it?',
+                steps: [
+                  { do: 'The four elements are still made out against the shop', why: 'Duty, breach, causation and damages are unaffected by what the plaintiff was doing — defences are considered after liability, not instead of it.' },
+                  { do: 'Her running and phone use fall below the care a reasonable customer takes for their own safety', why: 'This is contributory negligence, which is about the plaintiff’s standard rather than the defendant’s.' },
+                  { do: 'The court apportions — say 70% shop, 30% customer', why: 'Apportionment is a factual judgement on the evidence, not a tariff.' },
+                  { do: 'She recovers 70% of her damages', why: 'The claim succeeds and is reduced. Answering "the claim fails because she was careless" is the standard error and misses the word "partial".' }
+                ],
+                answer: 'The claim succeeds; damages are reduced by her share of the responsibility.', answerWords: true
+              },
+              {
+                prompt: 'A delivery driver, running late on his employer’s route, drives carelessly and injures a cyclist. Who is liable?',
+                steps: [
+                  { do: 'The driver is personally liable in negligence', why: 'He owed the duty, breached it, and caused the loss. Vicarious liability never removes the employee’s own liability.' },
+                  { do: 'Was he acting in the course of employment?', why: 'This is the only question that matters for the employer’s exposure.' },
+                  { do: 'Yes — he was on the employer’s route doing the employer’s work, badly', why: 'Doing the job badly is still doing the job. It would be different on a personal detour of his own.' },
+                  { do: 'The employer is vicariously liable, without any fault of its own', why: 'The cyclist may sue either or both. In practice the employer is sued, because it is the one with the insurance.' }
+                ],
+                answer: 'Both — the driver personally, and the employer vicariously.', answerWords: true
+              }
+            ]
+          },
+
+          {
+            id: 'c3c', title: 'What a successful plaintiff actually gets', src: 'Chapter 3',
+            idea: `The remedy in tort is <b>damages</b>, and the governing principle is <b>restoration, not punishment</b>: the award aims to put the plaintiff back in the position they would have been in had the tort not occurred. That single idea explains most of what follows.<br><br><b>Special damages</b> are the calculable out-of-pocket losses up to trial — medical bills, lost wages, repairs — and they are proved with receipts. <b>General damages</b> are the losses that resist arithmetic: pain and suffering, loss of future earning capacity, loss of enjoyment of life. In Canada non-pecuniary damages for pain and suffering are subject to a <b>rough upper limit</b> set by the Supreme Court in 1978 and indexed for inflation since, which is why catastrophic injury awards here are far smaller than American ones.<br><br><b>Punitive damages</b> exist but are exceptional. They punish rather than compensate, and are reserved for conduct that is malicious, high-handed or a marked departure from ordinary decency. A business will rarely meet them for carelessness alone.<br><br>Two limits deserve emphasis. <b>Mitigation</b>: a plaintiff must take reasonable steps to limit their loss, and cannot recover for losses they could reasonably have avoided. And <b>remoteness</b>: even a loss actually caused by the breach is not recoverable if it was not a reasonably foreseeable kind of loss. Causation asks whether the breach produced the loss; remoteness asks whether the law will make the defendant pay for it. They are separate questions and both must be answered.`,
+            rules: [
+              { name: 'The principle', expr: 'restore, do not punish', words: true, note: 'Put the plaintiff where they would have been but for the tort.' },
+              { name: 'Special v general', expr: 'calculable out-of-pocket v losses that resist arithmetic', words: true, note: 'Receipts prove the first; judgement assesses the second.' },
+              { name: 'Mitigation', expr: 'the plaintiff must reasonably limit the loss', words: true, note: 'Avoidable losses are not recoverable.' },
+              { name: 'Remoteness', expr: 'the KIND of loss must be reasonably foreseeable', words: true, note: 'Separate from causation, and asked after it.' }
+            ],
+            examples: [
+              {
+                prompt: 'A cyclist injured by a negligent driver is off work for three months, has $4,000 of physiotherapy bills, and turns down light office work she could have done after one month. What does she recover?',
+                steps: [
+                  { do: 'Special damages: the $4,000 in bills, proved by receipts', why: 'Calculable out-of-pocket loss up to trial.' },
+                  { do: 'Lost wages — but only for the period she could not reasonably work', why: 'Mitigation. She was offered suitable light duties after one month.' },
+                  { do: 'So roughly one month of lost wages, not three', why: 'The two further months were avoidable, and avoidable losses are not recoverable however genuinely they were suffered.' },
+                  { do: 'Plus general damages for pain and suffering, assessed by the court', why: 'Not arithmetic, and subject to the Canadian rough upper limit.' }
+                ],
+                answer: 'Bills, one month of wages, and general damages — not three months.', answerWords: true
+              },
+              {
+                prompt: 'A supplier negligently delivers faulty wiring. The building burns down, and the owner also loses a uniquely lucrative contract nobody could have known about. Is all of it recoverable?',
+                steps: [
+                  { do: 'Causation: but for the faulty wiring, neither loss occurs', why: 'Factual causation is satisfied for both heads of loss.' },
+                  { do: 'Remoteness of the fire damage: fire is a reasonably foreseeable consequence of faulty wiring', why: 'The kind of loss is foreseeable, which is the test — the precise extent need not be.' },
+                  { do: 'Remoteness of the lost contract: an unusually lucrative arrangement nobody could know of is a different question', why: 'A court asks whether this KIND of loss was foreseeable to a reasonable supplier.' },
+                  { do: 'The fire damage is recoverable; the exceptional contract loss is likely too remote', why: 'Causation and remoteness give different answers on the same facts, which is exactly why they are two questions and not one.' }
+                ],
+                answer: 'The fire damage, yes; the exceptional contract loss, probably not.', answerWords: true
+              }
+            ]
           }
         ],
         practice: [
+          { id: 'l2p4', kind: 'mc', lesson: 'c3b',
+            prompt: 'A plaintiff is found 30% responsible for her own injury. What happens to her claim?',
+            options: [
+              { t: 'It succeeds, and her damages are reduced by 30%', ok: true },
+              { t: 'It fails entirely — she contributed to the loss' },
+              { t: 'It succeeds in full — contributory negligence is not a defence in Canada' },
+              { t: 'It is adjourned until her share is agreed' }
+            ],
+            hint: 'Is contributory negligence a complete defence or a partial one?',
+            solution: ['Contributory negligence apportions responsibility; it does not defeat the claim',
+              'The court reduces the award by the plaintiff’s share',
+              'A complete defence would be voluntary assumption of risk, which is much harder to make out'] },
+
+          { id: 'l2p5', kind: 'mc', lesson: 'c3b',
+            prompt: 'A delivery driver injures a pedestrian while carelessly driving his employer’s route. Who can the pedestrian sue?',
+            options: [
+              { t: 'Both the driver personally and the employer vicariously', ok: true },
+              { t: 'Only the driver — the employer was not careless' },
+              { t: 'Only the employer — employees are not personally liable' },
+              { t: 'Neither, unless the employer knew he drove badly' }
+            ],
+            hint: 'Does vicarious liability require fault by the employer?',
+            solution: ['The driver is personally liable: he owed the duty and breached it',
+              'The employer is vicariously liable because the tort occurred in the course of employment',
+              'No fault by the employer is required — that is the point of the doctrine'] },
+
+          { id: 'l2p6', kind: 'spot', lesson: 'c3c',
+            prompt: 'One step of this damages analysis is wrong. Which one?',
+            steps: [
+              { t: 'The defendant’s breach factually caused the plaintiff’s loss', bad: false },
+              { t: 'Damages aim to restore the plaintiff, not to punish the defendant', bad: false },
+              { t: 'Because causation is established, every loss that followed is recoverable', bad: true },
+              { t: 'The plaintiff must also have taken reasonable steps to mitigate', bad: false }
+            ],
+            why: 'Causation and remoteness are separate questions. Causation asks whether the breach produced the loss; remoteness asks whether the law will make the defendant pay for that kind of loss, and a loss that was not a reasonably foreseeable kind is not recoverable even though it was genuinely caused. Treating causation as settling both is how an answer awards damages for a consequence no reasonable defendant could have anticipated.',
+            hint: 'How many separate questions stand between a breach and a payment?',
+            solution: ['Causation: did the breach produce this loss?', 'Remoteness: was this KIND of loss reasonably foreseeable?',
+              'Mitigation: could the plaintiff reasonably have avoided part of it?'] },
+
+          { id: 'l2p7', kind: 'order', lesson: 'c3c',
+            prompt: 'Put the stages of a complete tort analysis in order.',
+            steps: [
+              'Establish duty, breach, causation and damages',
+              'Consider whether remoteness excludes any head of loss',
+              'Consider any defence, such as contributory negligence',
+              'Assess the award, reduced for anything the plaintiff could reasonably have mitigated'
+            ],
+            hint: 'Liability is settled before anything is deducted from it.',
+            solution: ['The four elements decide whether there is liability at all',
+              'Remoteness filters which caused losses the law will pay for',
+              'Defences and mitigation then adjust the size of the award'] },
+
           { id: 'l2p1', kind: 'order', lesson: 'c3a',
             prompt: 'Put the four elements of negligence into the order they must be analysed.',
             steps: ['Duty of care', 'Breach of the standard of care', 'Causation', 'Damages'],
@@ -6337,9 +7697,184 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
                 answer: 'Specific performance, because damages are inadequate.', answerWords: true
               }
             ]
+          },
+
+          {
+            id: 'c5a', title: 'The terms of the contract', src: 'Chapters 4–5',
+            idea: `Formation asks <i>whether</i> there is a contract. Terms ask <b>what it says</b>, and in practice that is where commercial disputes actually live.<br><br>Not everything said during negotiation becomes a term. A <b>representation</b> induces the contract but sits outside it; a <b>term</b> is part of the bargain. The difference decides the remedy: breach of a term is a contractual claim, while a false representation is misrepresentation, which is a different action with different relief.<br><br>Terms are ranked by importance. A <b>condition</b> goes to the root of the contract — breach lets the innocent party <b>terminate and sue for damages</b>. A <b>warranty</b> is a lesser term — breach gives <b>damages only</b>, and the contract continues. Calling every term a condition is how a party wrongly walks away from a contract and finds itself the one in breach.<br><br>Some terms are <b>implied</b> rather than written: by statute (BC's <i>Sale of Goods Act</i> implies that goods are of merchantable quality and fit for their purpose), by custom in a trade, or by a court giving effect to what the parties obviously intended.<br><br><b>Exclusion clauses</b> try to limit liability. Canadian courts control them in three stages: was the clause properly <b>incorporated</b> into the contract; on its true <b>construction</b> does it cover what happened; and is it <b>unconscionable</b> or contrary to public policy to enforce it. Ambiguity is read against the party relying on the clause.`,
+            rules: [
+              { name: 'Term or representation', expr: 'part of the bargain, or merely an inducement to it', words: true, note: 'Decides whether the claim is breach or misrepresentation.' },
+              { name: 'Condition', expr: 'goes to the root — terminate AND damages', words: true, note: 'Only a genuinely fundamental term.' },
+              { name: 'Warranty', expr: 'lesser term — damages only, contract continues', words: true, note: 'Terminating for breach of a warranty is itself a breach.' },
+              { name: 'Exclusion clauses', expr: 'incorporation, construction, unconscionability', words: true, note: 'All three stages. Ambiguity is read against the party relying on it.' }
+            ],
+            examples: [
+              {
+                prompt: 'A supply contract says delivery is "on or before 1 March, time being of the essence". Delivery arrives on 3 March. What can the buyer do?',
+                steps: [
+                  { do: '"Time is of the essence" signals that the date is a condition', why: 'The parties have said in terms that timing goes to the root of the bargain.' },
+                  { do: 'Breach of a condition allows termination as well as damages', why: 'The innocent party may treat the contract as at an end.' },
+                  { do: 'So the buyer may terminate and claim its losses', why: 'It may also choose to affirm and sue only for damages — termination is an election, not an obligation.' },
+                  { do: 'Without that phrase, a two-day delay would likely be a warranty breach', why: 'Damages only, and the contract carries on. One clause changes the whole answer, which is why the drafting matters.' }
+                ],
+                answer: 'Terminate and claim damages, because the term is a condition.', answerWords: true
+              },
+              {
+                prompt: 'A car park ticket says on the back that the operator is "not liable for any loss howsoever caused". A car is damaged by a negligent attendant. Is the clause effective?',
+                steps: [
+                  { do: 'Incorporation: was the clause part of the contract?', why: 'Notice on the back of a ticket handed over after payment is often too late — the contract formed at the barrier.' },
+                  { do: 'Construction: does the wording cover negligence?', why: 'General words are read narrowly, and ambiguity is resolved against the party relying on the clause.' },
+                  { do: 'Unconscionability: is it unfair to enforce it here?', why: 'A standard-form clause imposed on a consumer with no bargaining power attracts scrutiny.' },
+                  { do: 'Likely ineffective on incorporation alone', why: 'All three stages must be passed. Failing the first one ends the question, and clauses like this commonly fail it.' }
+                ],
+                answer: 'Probably not — it fails at incorporation.', answerWords: true
+              }
+            ]
+          },
+
+          {
+            id: 'c5b', title: 'When a contract can be undone', src: 'Chapters 4–5',
+            idea: `A contract may be properly formed and still be attacked, because something about how the agreement was reached was defective. These are the <b>vitiating factors</b>, and the important distinction is between <b>void</b> and <b>voidable</b>. A <b>void</b> contract never existed and no rights pass under it. A <b>voidable</b> one is valid until the innocent party chooses to <b>rescind</b> it — and that right is lost by delay, by affirming the contract, or if an innocent third party has acquired an interest.<br><br><b>Misrepresentation</b> is a false statement of fact that induced the contract. It comes in three grades — <b>fraudulent</b> (known to be false), <b>negligent</b> (careless), and <b>innocent</b> — and the grade decides whether damages accompany rescission. A statement of opinion or a sales puff is not a representation of fact.<br><br><b>Mistake</b> is narrow. A <b>common</b> mistake, where both parties are wrong about something fundamental, can make a contract void. A <b>unilateral</b> mistake usually does not, unless the other party knew of it — which is why the mispriced laptop does not become a bargain.<br><br><b>Duress</b> is improper pressure, historically physical but now including economic duress. <b>Undue influence</b> is subtler: a relationship of trust and dependence exploited to procure the agreement, which the law may presume in certain relationships.<br><br><b>Unconscionability</b> combines an <b>inequality of bargaining power</b> with a <b>substantially unfair bargain</b>. Both limbs are needed: a hard bargain freely made between equals is enforceable, and courts do not rewrite improvident contracts merely because one side did badly.`,
+            rules: [
+              { name: 'Void v voidable', expr: 'never existed, or valid until rescinded', words: true, note: 'Rescission is lost by delay, affirmation, or third-party rights.' },
+              { name: 'Misrepresentation', expr: 'fraudulent · negligent · innocent', words: true, note: 'A false statement of FACT that induced the contract. Opinion and puff do not count.' },
+              { name: 'Mistake', expr: 'common mistake may void; unilateral usually does not', words: true, note: 'Unless the other party knew of the mistake.' },
+              { name: 'Unconscionability', expr: 'unequal bargaining power AND a substantially unfair bargain', words: true, note: 'Both limbs. A hard bargain between equals stands.' }
+            ],
+            examples: [
+              {
+                prompt: 'A seller tells a buyer the machine "has done about 200 hours" when its meter reads 2,000 and the seller knows it. The buyer discovers this a week after purchase. What can she do?',
+                steps: [
+                  { do: 'A false statement of fact that induced the contract', why: 'Hours on a meter is a verifiable fact, not an opinion or a sales puff.' },
+                  { do: 'The seller knew it was false, so this is fraudulent misrepresentation', why: 'The grade matters because it decides what accompanies rescission.' },
+                  { do: 'The contract is voidable, not void', why: 'It was valid and effective until the buyer elects to undo it.' },
+                  { do: 'She may rescind and claim damages, if she acts promptly', why: 'A week is prompt. Waiting months, or continuing to use the machine, would affirm the contract and lose the right.' }
+                ],
+                answer: 'Rescind and claim damages — the contract is voidable for fraudulent misrepresentation.', answerWords: true
+              },
+              {
+                prompt: 'A small supplier, facing insolvency if the contract is cancelled, agrees to a large price cut demanded at the last minute by a dominant buyer with no justification. Is the variation enforceable?',
+                steps: [
+                  { do: 'Consider economic duress', why: 'Improper pressure leaving no practical alternative, not merely hard commercial bargaining.' },
+                  { do: 'Was there a realistic alternative?', why: 'Insolvency if it refused means there was not, which is the heart of economic duress.' },
+                  { do: 'Consider unconscionability as well', why: 'Both limbs are arguable: a marked inequality of bargaining power, and a substantially unfair variation.' },
+                  { do: 'Likely voidable, and the supplier should protest and move quickly', why: 'Continuing to perform without objection risks affirming the variation, which is how a good claim is lost on the facts rather than the law.' }
+                ],
+                answer: 'Likely voidable for economic duress, if the supplier acts promptly.', answerWords: true
+              }
+            ]
+          },
+
+          {
+            id: 'c5c', title: 'Discharge, breach and remedies', src: 'Chapters 4–5',
+            idea: `Most contracts end without a dispute. <b>Discharge by performance</b> — both sides do what they promised — is the ordinary case. Others end by <b>agreement</b>, by operation of a term such as an expiry date, or by <b>frustration</b>: an unforeseen event, through no party's fault, makes performance radically different from what was undertaken. Frustration is narrow, and it is not available merely because performance became more expensive or less profitable.<br><br><b>Breach</b> is failure to perform without lawful excuse. Breach of a <b>condition</b> allows the innocent party to terminate and sue; breach of a <b>warranty</b> gives damages only. <b>Anticipatory breach</b> occurs when one party makes clear in advance that it will not perform — the innocent party may sue immediately rather than waiting for the date to pass.<br><br>The default remedy is <b>damages</b>, and the contractual measure differs from the tort one: contract damages put the plaintiff where they <b>would have been had the contract been performed</b>, which includes the profit they expected. Tort restores the position before the wrong; contract delivers the position after performance.<br><br>Two familiar limits apply here too. <b>Remoteness</b>: recoverable losses are those arising naturally from the breach, or those both parties could contemplate at the time of contracting given what was known. And <b>mitigation</b>: the innocent party must take reasonable steps to limit its loss, so a buyer whose supplier fails must look for a replacement rather than sit and let losses accumulate.<br><br>Where damages are inadequate, <b>equitable remedies</b> may be available — <b>specific performance</b> for something unique, or an <b>injunction</b> to restrain a breach. Both are discretionary, and neither is a right.`,
+            rules: [
+              { name: 'Discharge', expr: 'performance · agreement · a term of the contract · frustration', words: true, note: 'Frustration is narrow: not mere added expense.' },
+              { name: 'Contract damages', expr: 'the position had the contract been PERFORMED', words: true, note: 'Including expected profit — unlike tort, which restores the position before.' },
+              { name: 'Anticipatory breach', expr: 'sue at once, without waiting for the date', words: true, note: 'A clear refusal to perform in advance.' },
+              { name: 'Equitable remedies', expr: 'specific performance · injunction — discretionary', words: true, note: 'Only where damages are inadequate.' }
+            ],
+            examples: [
+              {
+                prompt: 'A supplier contracts to deliver 1,000 units at $50. It refuses. The buyer sources them elsewhere at $62. What are the damages?',
+                steps: [
+                  { do: 'Contract damages put the buyer where performance would have', why: 'Not where it was before the contract — that is the tort measure and it gives a different number.' },
+                  { do: 'The loss is the extra cost of cover: $12 per unit', why: '62 − 50. This is the difference between the contract price and the market replacement.' },
+                  { do: '1,000 × $12 = $12,000', why: 'Plus any additional losses that are not too remote.' },
+                  { do: 'And the buyer had to go and source them — that is mitigation', why: 'Sitting idle and claiming lost production instead would fail: those further losses were reasonably avoidable.' }
+                ],
+                answer: '$12,000, being the extra cost of covering the shortfall.', answerWords: true
+              },
+              {
+                prompt: 'A venue contracts to host an event. Two weeks before, the building is destroyed by fire through nobody’s fault. Separately, a caterer claims its ingredient costs have risen 30% and wants out. How does each fare?',
+                steps: [
+                  { do: 'The venue: performance is now impossible, through no party’s fault and unforeseen', why: 'This is the paradigm case of frustration — the subject matter of the contract is gone.' },
+                  { do: 'The venue contract is discharged by frustration; neither side is in breach', why: 'Frustration ends the contract rather than creating liability. Statute governs the adjustment of sums already paid.' },
+                  { do: 'The caterer: performance is more expensive, not radically different', why: 'Cost increases are an ordinary commercial risk, and allocating that risk is exactly what a fixed price does.' },
+                  { do: 'The caterer is not discharged, and walking away would be a breach', why: 'The doctrine is narrow on purpose — if mere unprofitability discharged contracts, fixed-price contracts would mean nothing.' }
+                ],
+                answer: 'The venue is frustrated; the caterer is not and must perform.', answerWords: true
+              }
+            ]
           }
         ],
         practice: [
+          { id: 'l3p5', kind: 'mc', lesson: 'c5a',
+            prompt: 'A supplier breaches a warranty in a contract. What may the innocent party do?',
+            options: [
+              { t: 'Claim damages, with the contract continuing', ok: true },
+              { t: 'Terminate the contract and claim damages' },
+              { t: 'Terminate, but claim nothing further' },
+              { t: 'Nothing — only conditions are enforceable' }
+            ],
+            hint: 'Which kind of term goes to the root of the contract?',
+            solution: ['A warranty is a lesser term, so the remedy is damages only',
+              'The contract continues in force', 'Purporting to terminate for a warranty breach would itself be a repudiation'] },
+
+          { id: 'l3p6', kind: 'order', lesson: 'c5a',
+            prompt: 'Put the three stages of testing an exclusion clause in order.',
+            steps: [
+              'Incorporation — was the clause actually part of the contract?',
+              'Construction — on its true meaning, does it cover what happened?',
+              'Unconscionability — would it be unfair or contrary to public policy to enforce it?'
+            ],
+            hint: 'A clause that was never in the contract never needs interpreting.',
+            solution: ['Incorporation first: notice given after the contract formed is too late',
+              'Then construction, with ambiguity read against the party relying on the clause',
+              'Only a clause that survives both is tested for unconscionability'] },
+
+          { id: 'l3p7', kind: 'mc', lesson: 'c5b',
+            prompt: 'A contract induced by fraudulent misrepresentation is best described as:',
+            options: [
+              { t: 'Voidable — valid until the innocent party rescinds', ok: true },
+              { t: 'Void — it never existed at all' },
+              { t: 'Unenforceable by either party' },
+              { t: 'Valid and binding, with no remedy available' }
+            ],
+            hint: 'Does the innocent party have a choice about whether the contract stands?',
+            solution: ['Misrepresentation makes a contract voidable, not void',
+              'It is effective until the innocent party elects to rescind',
+              'And that right is lost by delay, by affirmation, or if a third party has acquired rights'] },
+
+          { id: 'l3p8', kind: 'mc', lesson: 'c5b',
+            prompt: 'Which pair must BOTH be present for a contract to be set aside as unconscionable?',
+            options: [
+              { t: 'Inequality of bargaining power and a substantially unfair bargain', ok: true },
+              { t: 'A written contract and a consumer on one side' },
+              { t: 'A mistake by one party and knowledge of it by the other' },
+              { t: 'Improper pressure and a signature obtained in haste' }
+            ],
+            hint: 'One limb is about the process, the other about the result.',
+            solution: ['Unconscionability needs both an unequal relationship and an unfair outcome',
+              'A hard bargain freely struck between equals is enforceable',
+              'The third option describes unilateral mistake; the fourth describes duress'] },
+
+          { id: 'l3p9', kind: 'spot', lesson: 'c5c',
+            prompt: 'One step of this contract damages analysis is wrong. Which one?',
+            steps: [
+              { t: 'The supplier refused to deliver, which is a breach', bad: false },
+              { t: 'Contract damages put the buyer where performance would have left it', bad: false },
+              { t: 'So the buyer may sit and accumulate losses and claim all of them', bad: true },
+              { t: 'The buyer sourced replacements and claims the extra cost', bad: false }
+            ],
+            why: 'The innocent party must mitigate — take reasonable steps to limit the loss — and cannot recover for losses it could reasonably have avoided. Sitting idle while losses mount converts an avoidable loss into an unrecoverable one, however genuinely it was suffered. The fourth line describes what the buyer must in fact do, and the third contradicts it.',
+            hint: 'What is the innocent party obliged to do after a breach?',
+            solution: ['Contract damages give the position after performance, including expected profit',
+              'But avoidable losses are not recoverable', 'The measure here is the extra cost of cover'] },
+
+          { id: 'l3p10', kind: 'mc', lesson: 'c5c',
+            prompt: 'A caterer’s ingredient costs rise 30% after signing a fixed-price contract. Is the contract frustrated?',
+            options: [
+              { t: 'No — performance is more expensive, not radically different', ok: true },
+              { t: 'Yes — the cost increase was unforeseen' },
+              { t: 'Yes — no party is at fault for market prices' },
+              { t: 'Only if the increase exceeds 50%' }
+            ],
+            hint: 'What is a fixed price for, if not to allocate exactly this risk?',
+            solution: ['Frustration requires performance to become radically different, not merely dearer',
+              'Allocating the risk of price movement is precisely what a fixed price does',
+              'Walking away would be a breach, not a discharge'] },
+
           { id: 'l3p1', kind: 'mc', lesson: 'c4',
             prompt: 'A laptop is displayed at $200 by mistake. The customer takes it to the till. Must the shop sell at that price?',
             options: [
@@ -6387,9 +7922,18 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     id: 'blaw3930',
     code: 'BLAW 3930',
     title: 'Environmental Law',
-    blurb: 'How environmental regulation is made, who has authority to make it, and the duty owed to Indigenous peoples when a decision may affect their rights.',
+    blurb: 'How environmental regulation is made, who has authority to make it, the rights owed to Indigenous peoples when a decision may affect them, and what happens to a company that gets it wrong.',
     level: 'Advanced',
     prereq: 'blaw2910',
+    gaps: [
+      'Climate law in detail — carbon pricing litigation, emissions trading design, and climate-related disclosure obligations',
+      'Contaminated sites — the remediation regime, liability of former owners, and site profiles',
+      'Species at risk and biodiversity protection, federal and provincial',
+      'Water law — licensing, allocation, groundwater regulation and transboundary agreements',
+      'Waste, toxics and product regulation — CEPA substance assessment and extended producer responsibility',
+      'Environmental rights litigation — standing, public interest litigation and the role of the courts',
+      'Comparative and transboundary regimes beyond Canada’s international commitments'
+    ],
     exam: 'Midterm 1 covers chapters 1–5. Midterm 2 covers chapters 6–9. The final is comprehensive, and you must pass it to pass the course.',
     text: 'Muldoon & Williams, An Introduction to Environmental Law and Policy in Canada, 4th ed (Emond, 2025)',
     legalNote: NOTE,
@@ -6541,9 +8085,82 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
                 answer: 'No — the duty stays with the Crown.', answerWords: true
               }
             ]
+          },
+
+          {
+            id: 'e3b', title: 'Section 35 rights, title, and what consultation must produce', src: 'Chapter 3',
+            idea: `The duty to consult sits on top of the rights it protects, and those rights need separating.<br><br><b>Aboriginal rights</b> are practices, customs or traditions integral to the distinctive culture of the group before European contact — fishing a particular river, harvesting a particular resource. They are <b>site- and activity-specific</b>. <b>Treaty rights</b> come from an agreement with the Crown, historic or modern, and their content is whatever the treaty says. <b>Aboriginal title</b> is different in kind: it is a right to the land <i>itself</i>, exclusive use and occupation, and it was first declared over a specific territory in <i>Tsilhqot'in Nation v British Columbia</i> in 2014.<br><br>Title carries an <b>inherent limit</b>: the land cannot be used in a way that would deprive future generations of the benefit of it. And where title is established, the Crown generally needs <b>consent</b> — consultation alone is no longer sufficient, which is the practical difference between a title claim and a rights claim.<br><br>Section 35 rights are <b>not absolute</b>. The Crown may justify an infringement, but the <i>Sparrow</i> test sets a high bar: there must be a <b>compelling and substantial objective</b>, and the Crown must act consistently with its <b>fiduciary duty</b> — which asks about priority, minimal impairment, consultation and compensation.<br><br><b>UNDRIP</b> and BC's <i>Declaration on the Rights of Indigenous Peoples Act</i> (2019) sit alongside, not instead of, section 35. The Act commits BC to align its laws with the Declaration and introduces the language of <b>free, prior and informed consent</b>. What it does not do is replace the constitutional duty or, by itself, create a veto — and stating either is the error most commonly made about it.`,
+            rules: [
+              { name: 'Three things, not one', expr: 'Aboriginal rights · treaty rights · Aboriginal title', words: true, note: 'Title is a right to the land itself, not to an activity on it.' },
+              { name: 'Title changes the test', expr: 'consent is generally required, not merely consultation', words: true, note: 'Declared in Tsilhqot’in (2014).' },
+              { name: 'Justifying an infringement', expr: 'compelling and substantial objective + fiduciary duty', words: true, note: 'The Sparrow test. Rights are protected, not absolute.' },
+              { name: 'UNDRIP and the Declaration Act', expr: 'alongside section 35, not instead of it', words: true, note: 'Introduces FPIC language; does not itself create a veto.' }
+            ],
+            examples: [
+              {
+                prompt: 'A First Nation has proven Aboriginal title over an area. The province wants to authorise logging there and offers deep consultation. Is that enough?',
+                steps: [
+                  { do: 'Established title, not a claim', why: 'The analysis changes once title is declared rather than asserted — that is the whole significance of Tsilhqot’in.' },
+                  { do: 'Title is a right to the land itself, including the right to decide how it is used', why: 'It is exclusive use and occupation, not a right to carry on a particular activity.' },
+                  { do: 'So the Crown generally needs consent, not merely consultation', why: 'Deep consultation is what a strong CLAIM attracts. Established title attracts more.' },
+                  { do: 'Without consent, the Crown must justify the infringement under Sparrow', why: 'A compelling and substantial objective, plus conduct consistent with the fiduciary duty. That is a high bar and rarely the easier path.' }
+                ],
+                answer: 'No — with established title the Crown generally needs consent, or must justify under Sparrow.', answerWords: true
+              },
+              {
+                prompt: 'A company argues that because BC passed the Declaration Act, the constitutional duty to consult no longer applies and FPIC is now the only test. Is that right?',
+                steps: [
+                  { do: 'The duty to consult comes from section 35 of the Constitution', why: 'Constitutional obligations are not displaced by ordinary provincial legislation.' },
+                  { do: 'The Declaration Act commits BC to align its laws with UNDRIP over time', why: 'It is a framework and a commitment, operating alongside the constitutional duty.' },
+                  { do: 'So both operate — the Act adds to the landscape rather than replacing it', why: 'Treating one as having repealed the other misstates the hierarchy between a constitution and a statute.' },
+                  { do: 'And FPIC is not, by itself, a statutory veto in Canadian law as it stands', why: 'Saying that it is, or that the Act changed nothing at all, are the two opposite errors here.' }
+                ],
+                answer: 'No — section 35 still governs, and the Act operates alongside it.', answerWords: true
+              }
+            ]
           }
         ],
         practice: [
+          { id: 'e2p4', kind: 'mc', lesson: 'e3b',
+            prompt: 'What distinguishes Aboriginal title from an Aboriginal right?',
+            options: [
+              { t: 'Title is a right to the land itself; a right is to a practice or activity', ok: true },
+              { t: 'Title applies only to treaty nations' },
+              { t: 'A right is constitutional; title is statutory' },
+              { t: 'There is no difference — the terms are interchangeable' }
+            ],
+            hint: 'One is about what you may do; the other is about what you hold.',
+            solution: ['An Aboriginal right is site- and activity-specific — fishing a particular river, say',
+              'Aboriginal title is exclusive use and occupation of the land itself',
+              'Both are protected by section 35, but title attracts a consent requirement that a claim does not'] },
+
+          { id: 'e2p5', kind: 'mc', lesson: 'e3b',
+            prompt: 'Under the Sparrow test, what must the Crown show to justify infringing a section 35 right?',
+            options: [
+              { t: 'A compelling and substantial objective, and conduct consistent with its fiduciary duty', ok: true },
+              { t: 'That the infringement is economically beneficial to the province' },
+              { t: 'That the affected nation was given notice' },
+              { t: 'Nothing — section 35 rights are absolute and cannot be infringed' }
+            ],
+            hint: 'Two limbs: the purpose, and how the Crown went about it.',
+            solution: ['Section 35 rights are protected but not absolute',
+              'The first limb tests the objective; the second tests the Crown’s conduct',
+              'The fiduciary limb asks about priority, minimal impairment, consultation and compensation'] },
+
+          { id: 'e2p6', kind: 'spot', lesson: 'e3b',
+            prompt: 'One step of this analysis of BC’s Declaration Act is wrong. Which one?',
+            steps: [
+              { t: 'The Act commits BC to align its laws with UNDRIP', bad: false },
+              { t: 'It introduces the language of free, prior and informed consent', bad: false },
+              { t: 'So the constitutional duty to consult no longer applies in BC', bad: true },
+              { t: 'Section 35 remains the constitutional source of the duty', bad: false }
+            ],
+            why: 'A provincial statute cannot displace a constitutional obligation. The Declaration Act operates alongside section 35, adding a framework and a commitment to align legislation over time; it does not repeal the duty to consult and does not by itself create a veto. The fourth line states the correct position and the third contradicts it — an answer that says both cannot be right.',
+            hint: 'Where does the duty to consult come from, and can a province legislate that away?',
+            solution: ['The duty to consult flows from section 35 of the Constitution Act, 1982',
+              'The Declaration Act is provincial legislation operating alongside it',
+              'Both apply; neither replaces the other'] },
+
           { id: 'e2p1', kind: 'mc', lesson: 'e3',
             prompt: 'When is the Crown\'s duty to consult triggered?',
             options: [
@@ -7256,9 +8873,81 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
               answer: 'Yes — an unsubstantiated environmental claim is reviewable conduct.', answerWords: true
             }
           ]
+        },
+
+        {
+          id: 'e9b', title: 'Enforcement: offences, penalties and who is personally liable', src: 'Chapter 9',
+          idea: `A regulatory regime is worth what its enforcement is worth, and environmental enforcement has features a business needs to understand before it is investigated rather than after.<br><br>Most environmental offences are <b>strict liability</b>. The prosecution proves the prohibited act; it need not prove intent. The defendant may then escape liability by establishing <b>due diligence</b> — that it took all reasonable care to prevent the event — on the balance of probabilities. That structure is why environmental management systems, training records and audit trails matter: they are the evidence of the only defence available, and they have to exist <i>before</i> the incident.<br><br>A few offences are <b>absolute liability</b>, where not even due diligence answers, and a few are <b>full mens rea</b> offences requiring proof of intent, which carry the heaviest penalties. Knowing which category an offence falls into decides what the defence actually is.<br><br><b>Directors and officers can be personally liable.</b> Many statutes make them liable where they directed, authorised, assented to, or acquiesced in the offence — and some impose a positive duty to take reasonable care to prevent it. Corporate limited liability does not shield a director from a statute that names directors.<br><br>The <b>enforcement ladder</b> runs from warnings and orders, through administrative monetary penalties, to prosecution. Administrative penalties are attractive to regulators because they avoid the criminal standard of proof. On conviction, <b>creative sentencing</b> is common in Canada: courts order restoration, research funding or community projects rather than only fines. And the <b>polluter-pays principle</b> means the cost of remediation follows the polluter, sometimes to parties who never operated the site themselves.`,
+          rules: [
+            { name: 'Strict liability', expr: 'act proved; due diligence is the defence', words: true, note: 'The commonest category. Intent is not an element.' },
+            { name: 'Three categories', expr: 'absolute · strict · full mens rea', words: true, note: 'Which one it is decides what defence exists at all.' },
+            { name: 'Directors and officers', expr: 'personally liable where they directed, authorised, assented or acquiesced', words: true, note: 'Limited liability does not answer a statute that names directors.' },
+            { name: 'The ladder', expr: 'warning · order · administrative penalty · prosecution', words: true, note: 'Administrative penalties avoid the criminal standard of proof.' }
+          ],
+          examples: [
+            {
+              prompt: 'A plant discharges effluent above its permit limit because a valve failed. The company says it did not intend to pollute. Is that an answer?',
+              steps: [
+                { do: 'Identify the category of the offence', why: 'Most environmental offences are strict liability, so the category is the first question, not the facts.' },
+                { do: 'Intent is not an element of a strict liability offence', why: 'So "we did not mean to" is not a defence and does not need to be rebutted by the Crown.' },
+                { do: 'The available defence is due diligence', why: 'Did the company take all reasonable care — maintenance schedule, inspections, alarms, trained staff, documented procedures?' },
+                { do: 'The answer turns on the records, not the intention', why: 'And those records must predate the failure. A company that starts documenting after the discharge has the wrong evidence.' }
+              ],
+              answer: 'No — but due diligence is, if the records support it.', answerWords: true
+            },
+            {
+              prompt: 'A director knew the treatment system was failing, was told twice, and approved deferring the repair to the next budget year. The company is prosecuted. Is she exposed?',
+              steps: [
+                { do: 'Is there a provision making directors personally liable?', why: 'Many environmental statutes do, and that is what displaces the usual corporate shield.' },
+                { do: 'Did she direct, authorise, assent to or acquiesce in the offence?', why: 'Knowing of the failure and approving deferral is squarely within "authorised or assented to".' },
+                { do: 'The corporate veil does not help', why: 'Limited liability protects shareholders from the company’s debts; it does not protect a director from a statute that names directors.' },
+                { do: 'She is personally exposed, and her own due diligence is a separate question from the company’s', why: 'Each defendant must establish its own reasonable care — the company succeeding does not automatically clear her.' }
+              ],
+              answer: 'Yes — personally liable, with her own due diligence to establish separately.', answerWords: true
+            }
+          ]
         }
       ],
       practice: [
+        { id: 'e5p5', kind: 'mc', lesson: 'e9b',
+          prompt: 'Most environmental offences are strict liability. What does the Crown have to prove?',
+          options: [
+            { t: 'The prohibited act — intent is not an element', ok: true },
+            { t: 'The act and that the defendant intended it' },
+            { t: 'The act and that the defendant was careless' },
+            { t: 'Only that harm occurred, whoever caused it' }
+          ],
+          hint: 'What does the defendant then get to raise?',
+          solution: ['Strict liability: the Crown proves the act only',
+            'The defendant may then establish due diligence on the balance of probabilities',
+            'That is why documented systems and training records matter before an incident, not after'] },
+
+        { id: 'e5p6', kind: 'mc', lesson: 'e9b',
+          prompt: 'A director knew of a failing treatment system and approved deferring repairs. Can she be personally liable?',
+          options: [
+            { t: 'Yes — many statutes make directors liable where they authorised or acquiesced', ok: true },
+            { t: 'No — the corporate veil protects directors from company offences' },
+            { t: 'No — only the company can be prosecuted for a regulatory offence' },
+            { t: 'Only if she personally operated the equipment' }
+          ],
+          hint: 'What is limited liability actually a shield against?',
+          solution: ['Limited liability protects shareholders from the company’s debts',
+            'It does not answer a statute that names directors personally',
+            'Directing, authorising, assenting to or acquiescing in the offence is enough'] },
+
+        { id: 'e5p7', kind: 'order', lesson: 'e9b',
+          prompt: 'Put the rungs of the enforcement ladder in order, from lightest to heaviest.',
+          steps: [
+            'A warning or a compliance advisory',
+            'An order requiring specified action',
+            'An administrative monetary penalty',
+            'Prosecution, with the possibility of creative sentencing on conviction'
+          ],
+          hint: 'The heaviest rung is the one that needs the criminal standard of proof.',
+          solution: ['Regulators escalate, and most matters are resolved well below prosecution',
+            'Administrative penalties are attractive because they avoid the criminal standard',
+            'Creative sentencing — restoration, research funding, community projects — is common in Canada on conviction'] },
+
         { id: 'e5p1', kind: 'mc', lesson: 'e8',
           prompt: 'What is the cumulative effects problem?',
           options: [
@@ -10581,7 +12270,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.38', date: '15 September 2026', year: 2026 };
+  const BUILD = { v: '2.39', date: '15 September 2026', year: 2026 };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonandy242', ['gmail', 'com'].join('.')].join('@');
   /* The one sentence that says what this is. It appears under the wordmark, and build.js uses
@@ -10594,6 +12283,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      because the person who needs it is the one who just watched the app refresh itself and wants to
      know what moved. Trim the tail when it gets past a dozen; nobody reads further back than that. */
   const WHATS_NEW = [
+    ['2.39', '<b>The courses that were already here got the rest of themselves.</b> <b>Precalculus</b> stopped at section 3.2 &mdash; the end of Midterm 1 and nowhere near the end of precalculus. It now runs the whole syllabus: the rest of polynomials and rational functions, exponentials and logarithms, and trigonometry from radians and the unit circle through identities and equations to the law of cosines. Fifteen new lessons, 30 worked examples and 45 practice questions. <b>Commercial Law</b> had one lesson covering the whole of tort and one covering the whole of contract; tort now runs through the defences, the intentional torts, vicarious liability and what a successful plaintiff actually collects, and contract through terms and exclusion clauses, the vitiating factors, and discharge, breach and remedies. <b>Environmental Law</b> gains section 35 rights and Aboriginal title alongside the duty to consult, and a lesson on enforcement &mdash; strict liability, the due diligence defence, and when a director is personally on the hook. Every course now also prints what it does <i>not</i> cover.'],
     ['2.38', '<b>Physics and Chemistry are taught here now.</b> <b>Mechanics</b> &mdash; measurement and dimensional analysis, describing motion, Newton&rsquo;s laws and free-body diagrams, and work, energy and power. <b>General Chemistry</b> &mdash; atoms, the mole and stoichiometry, reactions in solution, gases, and thermochemistry. Four units each, 24 lessons, 48 worked examples, 79 practice questions and 59 named misconceptions between them, every one of which is a mistake students actually make rather than a generic warning. Physics needed one new guarantee: real answers are reported to a stated precision, so the computer algebra check now evaluates each expression <i>exactly</i> and rounds only at the comparison &mdash; a rounded answer stays a checked answer rather than becoming an unchecked one. Both courses list on their own page what they do not cover.'],
     ['2.37', '<b>Accounting is taught here now.</b> A first <b>Financial Accounting</b> course &mdash; the accounting equation and the statements, recording transactions, adjusting and closing entries, and receivables &mdash; built from a twelve-module outline checked against a real ACCT 2210 course rather than invented. Every figure in its practice is recomputed by a computer algebra system before the page is allowed to ship, the same guard the maths course has. Courses now also say <b>what comes before them</b> and, just as importantly, <b>what they do not cover</b>: the topics left out are listed by name on the course page instead of being discovered the night before an exam.'],
     ['2.36', '<b>The database was audited, and one lock became two.</b> Supabase flagged the two views the owner\u2019s figures are read through: both ran with the database owner\u2019s rights, which is how they returned counts without exposing rows, but a view is a wide surface for a privilege that ought to be narrow. Those rights now sit in one small function each, with a fixed shape and nothing a caller can bolt onto it. Auditing that turned up something more worth fixing: the tables holding sign-ups and the visitor count were protected only by their row rules \u2014 the key in this page still had <i>permission</i> to read them, so one accidental change to those rules would have opened them. It has no permission now either. Nothing about what the app sends changed; <a href="#/rights">the full account</a> says what the two locks are.'],
