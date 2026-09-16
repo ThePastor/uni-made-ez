@@ -3678,7 +3678,7 @@ const GENERIC = new Set('information data process system method result results s
      Turns "SE = s / sqrt(n)" or "t = (xbar - mu) / SE" into real typeset maths — fractions, roots,
      powers, subscripts, Greek letters, chemical subscripts — which every current browser renders with no
      library. Returns null when the expression cannot be parsed, so the caller falls back to plain text. */
-  const GREEK = { alpha: 'α', beta: 'β', gamma: 'γ', delta: 'δ', epsilon: 'ε', theta: 'θ', lambda: 'λ', mu: 'μ', nu: 'ν', pi: 'π', rho: 'ρ', sigma: 'σ', tau: 'τ', phi: 'φ', chi: 'χ', psi: 'ψ', omega: 'ω', Delta: 'Δ', Sigma: 'Σ', Omega: 'Ω', Pi: 'Π', Theta: 'Θ', Lambda: 'Λ', infinity: '∞', inf: '∞' };
+  const GREEK = { alpha: 'α', beta: 'β', gamma: 'γ', delta: 'δ', epsilon: 'ε', theta: 'θ', lambda: 'λ', mu: 'μ', nu: 'ν', pi: 'π', rho: 'ρ', sigma: 'σ', tau: 'τ', phi: 'φ', chi: 'χ', psi: 'ψ', omega: 'ω', Delta: 'Δ', Sigma: 'Σ', Omega: 'Ω', Pi: 'Π', Theta: 'Θ', Lambda: 'Λ', infinity: '∞', inf: '∞', partial: '∂' };
   const MATH_FNS = new Set(['sqrt', 'log', 'ln', 'exp', 'sin', 'cos', 'tan', 'sum', 'max', 'min', 'abs', 'mod']);
   const mesc = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   function mathTokens(expr) {
@@ -16037,12 +16037,12 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     blurb: 'The calculus half of the book: limits and what they say about a function near a point, continuity, the derivative from first principles, the rules that make it fast, and what a derivative means when the function is a cost, a revenue or a demand — then what its sign says about the shape of a curve, and how the same tests find the cheapest fence and the best price.',
     level: 'Foundation',
     prereq: 'precalc',
-    exam: 'Follows the TRU course outline: chapters 0, 1, 2 and 4 are self-study review, then sections 10.1–10.4, 11.1–11.5, 12.1, 12.2, 12.4, 12.5, 12.7, 13.1–13.6 and 17.1–17.5. Chapters 14–16 are not in the course. Built so far: chapters 10, 11, 12 and 13. Quizzes weekly, midterms October 14 and November 18, final cumulative.',
+    exam: 'Follows the TRU course outline: chapters 0, 1, 2 and 4 are self-study review, then sections 10.1–10.4, 11.1–11.5, 12.1, 12.2, 12.4, 12.5, 12.7, 13.1–13.6 and 17.1–17.5. Chapters 14–16 are not in the course. Every section on the outline is built: chapters 10, 11, 12, 13 and 17. Quizzes weekly, midterms October 14 and November 18, final cumulative.',
     text: TEXT,
     legalNote: NOTE,
     gaps: [
-      'Chapter 17 — multivariable calculus: partial derivatives and their applications, higher-order partials, maxima and minima of functions of two variables, and Lagrange multipliers',
-      'Not part of MATH 1170 at TRU, so not built for it: section 12.3 elasticity of demand, section 12.6 Newton’s method, and chapters 14–16 (integration, its methods and applications, and continuous random variables)'
+      'Not part of MATH 1170 at TRU, so not built for it: section 12.3 elasticity of demand, section 12.6 Newton’s method, section 17.6 multiple integrals, and chapters 14–16 (integration, its methods and applications, and continuous random variables)',
+      'Planned as extra material beyond the course, after MATH 1070 chapters 1–8: chapter 14 integration, chapter 15 methods and applications of integration, and chapter 16 continuous random variables'
     ],
     units: [
 
@@ -18018,6 +18018,624 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             solution: ['Set up', 'Reduce to one variable', 'Optimise', 'Answer'] }
         ]
       },
+      /* ============================ CHAPTER 17 ============================ */
+      {
+        id: 'multi', n: 5,
+        title: 'Multivariable calculus',
+        blurb: 'Functions of two or more inputs — cost that depends on two products, output that depends on labour and capital — differentiated one variable at a time, tested for highs and lows on a surface, and optimised under a budget with a Lagrange multiplier.',
+        read: 'Chapter 17',
+        objectives: [
+          'Find partial derivatives of functions of two or more variables, and evaluate them at a point',
+          'Interpret partial derivatives as marginal cost, marginal productivity and marginal demand, and classify products as competitive or complementary',
+          'Compute second-order and mixed partial derivatives',
+          'Find critical points of a function of two variables and classify them with the D-test',
+          'Optimise a function subject to a constraint by the method of Lagrange multipliers'
+        ],
+        lessons: [
+          {
+            id: 'e1', title: 'Partial derivatives', src: 'Section 17.1',
+            idea: `A cost that depends on how many of two products are made, an output that depends on both labour and capital, a demand that depends on two prices — most quantities in economics depend on more than one thing. z = f(x, y) is a function of two variables, and its graph is a surface over the xy-plane rather than a curve over a line. A derivative of such a function has to say which input is changing, and the answer is: one at a time.<br><br>The <b>partial derivative of f with respect to x</b>, written f<sub>x</sub>(x, y) or ∂z/∂x, is the ordinary derivative of f with respect to x <b>with y held constant</b>. The partial with respect to y, f<sub>y</sub> or ∂z/∂y, holds x constant instead. The curly ∂ (not d) is the signal that other variables are being frozen. Geometrically, ∂z/∂x is the slope of the surface in the x-direction — the slope of the curve cut from the surface by a plane of constant y — and ∂z/∂y is the slope in the y-direction.<br><br>Nothing new is needed to compute one. For f(x, y) = x³y − 2xy² + 5y, treat y as if it were the number 7: the derivative with respect to x is f<sub>x</sub> = 3x²y − 2y², because x³y is (constant)·x³, −2xy² is (constant)·x, and 5y is a constant that differentiates to 0. Now treat x as the constant: f<sub>y</sub> = x³ − 4xy + 5. Every rule from chapters 11 and 12 carries over — product, quotient, chain, logs and exponentials — applied with the other variable frozen. The one thing to watch is that "constant" does not mean "zero": x³y differentiated with respect to x is 3x²y, and the y stays.<br><br>Evaluating at a point is written f<sub>x</sub>(a, b) or ∂z/∂x |<sub>(a, b)</sub>: differentiate first, then substitute both coordinates. At (2, 1) the function above has f<sub>x</sub> = 12 − 2 = 10 and f<sub>y</sub> = 8 − 8 + 5 = 5, meaning that near (2, 1) the surface rises 10 units per unit of x and 5 per unit of y.<br><br>With three or more variables the idea is the same: w = f(x, y, z) has three partials, each holding the other two fixed, and a function of n variables has n of them. The bookkeeping grows; the calculus does not.`,
+            rules: [
+              { name: 'Partial with respect to x', expr: 'partial z/partial x', note: 'Written ∂z/∂x or f_x: differentiate with respect to x holding y constant. The ∂ marks a partial derivative.' },
+              { name: 'How to compute', expr: 'Treat every other variable as a constant and use the ordinary rules', words: true, note: 'Constant means frozen, not zero: the partial of x³y with respect to x is 3x²y.' },
+              { name: 'Meaning', expr: 'The slope of the surface in the direction of the variable being changed', words: true, note: 'The slope of the curve cut from the surface by a plane of constant y.' },
+              { name: 'At a point', expr: 'f_x evaluated at (a, b): differentiate first, then substitute both coordinates', words: true, note: 'Written f_x(a, b) or with a vertical bar and the point as a subscript.' },
+              { name: 'More variables', expr: 'w = f(x, y, z) has three partials, each holding the other two fixed', words: true, note: 'A function of n variables has n first partial derivatives.' }
+            ],
+            examples: [
+              {
+                prompt: 'For f(x, y) = x³y − 2xy² + 5y, find f_x and f_y, and evaluate both at (2, 1).',
+                steps: [
+                  { do: 'f_x: hold y constant. x³y gives 3x²y, −2xy² gives −2y², 5y gives 0. So f_x = 3x²y − 2y²', why: 'y is treated as a number, so x³y is a constant times x³ and 5y is a constant.' },
+                  { do: 'f_y: hold x constant. x³y gives x³, −2xy² gives −4xy, 5y gives 5. So f_y = x³ − 4xy + 5', why: 'Now x is the frozen one: x³y is a constant times y, and −2xy² is a constant times y².' },
+                  { do: 'At (2, 1): f_x = 3(4)(1) − 2(1) = 10', why: 'Substitute both coordinates after differentiating.' },
+                  { do: 'At (2, 1): f_y = 8 − 4(2)(1) + 5 = 5', why: 'The surface rises 10 per unit of x and 5 per unit of y near that point.' }
+                ],
+                answer: 'f_x = 3x²y − 2y² and f_y = x³ − 4xy + 5; at (2, 1) they are 10 and 5', answerWords: true
+              },
+              {
+                prompt: 'Find ∂z/∂x and ∂z/∂y for z = ln(x² + y²), and evaluate them at (3, 4).',
+                steps: [
+                  { do: '∂z/∂x = (1/(x² + y²)) · 2x = 2x/(x² + y²)', why: 'Chain rule for ln u with y held constant: the inside differentiates to 2x, since y² is a constant.' },
+                  { do: '∂z/∂y = 2y/(x² + y²)', why: 'The same with x frozen; the inside now differentiates to 2y.' },
+                  { do: 'At (3, 4): x² + y² = 25, so ∂z/∂x = 6/25 = 0.24 and ∂z/∂y = 8/25 = 0.32', why: 'Substitute after differentiating. The y-direction is steeper there because y is the larger coordinate.' }
+                ],
+                answer: '∂z/∂x = 2x/(x² + y²) and ∂z/∂y = 2y/(x² + y²); at (3, 4) they are 0.24 and 0.32', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'calc-partial-other-variable-zeroed',
+                wrong: 'Differentiating x³y with respect to x and writing 3x², dropping the y',
+                right: 'Held constant means kept as a factor. The partial is 3x²y.',
+                why: 'Treating y as a constant makes x³y behave like 7x³, whose derivative is 21x² — the 7 survives. Only a term with no x in it at all, like 5y, differentiates to zero. Losing the frozen variable is the most common error in the chapter and it corrupts every later step.'
+              },
+              {
+                id: 'calc-partial-both-variables-differentiated',
+                wrong: 'Differentiating xy² with respect to x as y² + 2xy, treating y as a function of x',
+                right: 'In a partial derivative y is a constant, not a function of x. The partial of xy² with respect to x is y².',
+                why: 'Implicit differentiation from chapter 12 made y depend on x. A partial derivative is the opposite convention: every other variable is frozen. The chain-rule factor dy/dx does not appear, because y is not changing.'
+              },
+              {
+                id: 'calc-partial-substituted-before-differentiating',
+                wrong: 'Finding f_x(2, 1) by substituting x = 2 and y = 1 into f and then differentiating',
+                right: 'Differentiate first, holding the other variable constant, then substitute both coordinates.',
+                why: 'After substitution there is nothing left to differentiate — f(2, 1) is a number and its derivative is 0. The point is where the slope is measured, not something to plug into the function before measuring.'
+              }
+            ]
+          },
+
+          {
+            id: 'e2', title: 'Applications of partial derivatives', src: 'Section 17.2',
+            idea: `Every partial derivative is a marginal something. The three applications the course uses share one grammar: hold everything else fixed, change one input by a small amount, and the partial derivative is the approximate change in the output.<br><br><b>Marginal cost.</b> If c = f(x, y) is the cost of making x units of one product and y of another — a joint-cost function — then ∂c/∂x is the marginal cost with respect to x: the approximate cost of one more unit of the first product with production of the second unchanged. For c = 0.05x² + 40x + 60y + 0.1xy + 2000, ∂c/∂x = 0.1x + 40 + 0.1y depends on both outputs, because the interaction term 0.1xy means the products share resources; at (80, 30) it is 51 dollars.<br><br><b>Marginal productivity.</b> A production function P = f(l, k) gives output from l units of labour and k of capital. ∂P/∂l is the marginal productivity of labour — extra output from one more unit of labour with capital fixed — and ∂P/∂k the marginal productivity of capital. For a Cobb–Douglas function like P = 20 l<sup>0.75</sup> k<sup>0.25</sup>, the exponents are the shares, and the partials are found by the power rule with the other factor frozen.<br><br><b>Competitive and complementary products.</b> When the demand for each of two products depends on both prices, q<sub>A</sub> = f(p<sub>A</sub>, p<sub>B</sub>) and q<sub>B</sub> = g(p<sub>A</sub>, p<sub>B</sub>), there are four marginal demands. The two "own-price" partials ∂q<sub>A</sub>/∂p<sub>A</sub> and ∂q<sub>B</sub>/∂p<sub>B</sub> are normally negative — a dearer product sells less — and say nothing about the relationship. The two <b>cross-price</b> partials are the test:<br><br><b>∂q<sub>A</sub>/∂p<sub>B</sub> &gt; 0 and ∂q<sub>B</sub>/∂p<sub>A</sub> &gt; 0: competitive (substitutes)</b> — a rise in the price of one sends buyers to the other, like butter and margarine.<br><b>∂q<sub>A</sub>/∂p<sub>B</sub> &lt; 0 and ∂q<sub>B</sub>/∂p<sub>A</sub> &lt; 0: complementary</b> — a rise in the price of one reduces demand for both, like cars and fuel.<br><br>Mixed signs mean neither. The classification needs both cross partials, and it needs their signs at the prices in question, which for the demand functions in this course are positive numbers.<br><br>In each application, the interpretation is a sentence, not a number: "increasing labour from 81 to 82 hours with capital held at 16 raises output by about 10 units." The "held at" clause is what makes it a partial derivative, and an exam answer without it is incomplete.`,
+            rules: [
+              { name: 'Marginal cost', expr: 'partial c/partial x', note: 'For a joint cost c = f(x, y): the approximate cost of one more unit of x with y held fixed.' },
+              { name: 'Marginal productivity', expr: 'partial P/partial l', note: 'For a production function P of labour l and capital k: the marginal productivity of labour, capital held fixed. Of capital, the partial with respect to k.' },
+              { name: 'Competitive products', expr: 'Both cross-price partials positive: a rise in one price raises demand for the other', words: true, note: 'Substitutes, like butter and margarine.' },
+              { name: 'Complementary products', expr: 'Both cross-price partials negative: a rise in one price lowers demand for the other', words: true, note: 'Like cars and fuel. Mixed signs mean neither.' },
+              { name: 'Own-price partials', expr: 'Normally negative and irrelevant to the classification', words: true, note: 'The relationship between products is read only from the cross partials.' }
+            ],
+            examples: [
+              {
+                prompt: 'A firm’s joint cost of producing x units of product 1 and y of product 2 is c = 0.05x² + 40x + 60y + 0.1xy + 2000 dollars. Find both marginal costs at x = 80, y = 30, and interpret them.',
+                steps: [
+                  { do: '∂c/∂x = 0.1x + 40 + 0.1y; at (80, 30): 8 + 40 + 3 = 51', why: 'Hold y constant. The term 0.1xy contributes 0.1y, so the marginal cost of product 1 depends on how much of product 2 is being made.' },
+                  { do: '∂c/∂y = 60 + 0.1x; at (80, 30): 60 + 8 = 68', why: 'Hold x constant. The terms 0.05x², 40x and 2000 are constants and vanish.' },
+                  { do: 'Interpretation: with product 2 held at 30 units, the 81st unit of product 1 adds about $51; with product 1 held at 80, the 31st unit of product 2 adds about $68', why: 'Each marginal cost is a one-unit change in one output with the other frozen. The "held at" clause is part of the answer.' }
+                ],
+                answer: 'Marginal costs $51 per unit of product 1 and $68 per unit of product 2 at (80, 30), each with the other output held fixed', answerWords: true
+              },
+              {
+                prompt: 'Output is P = 20 l^0.75 k^0.25. Find the marginal productivities of labour and capital at l = 81, k = 16.',
+                steps: [
+                  { do: '∂P/∂l = 20(0.75) l^(−0.25) k^0.25 = 15 (k/l)^0.25', why: 'Power rule in l with k frozen; the result is written as a single quarter-power to make the arithmetic easy.' },
+                  { do: 'At (81, 16): (16/81)^0.25 = 2/3, so ∂P/∂l = 15 × 2/3 = 10', why: 'The fourth root of 16 is 2 and of 81 is 3.' },
+                  { do: '∂P/∂k = 20(0.25) l^0.75 k^(−0.75) = 5 (l/k)^0.75', why: 'Power rule in k with l frozen.' },
+                  { do: 'At (81, 16): (81/16)^0.75 = (3/2)³ = 27/8, so ∂P/∂k = 5 × 27/8 = 16.875', why: 'One more unit of labour adds about 10 units of output with capital at 16; one more unit of capital adds about 16.9 with labour at 81.' }
+                ],
+                answer: 'Marginal productivity of labour 10 and of capital 16.875 at (81, 16)', answerWords: true
+              },
+              {
+                prompt: 'Demand for products A and B is qA = 200 − 4pA + 3pB and qB = 150 + 2pA − 5pB. Are A and B competitive, complementary, or neither?',
+                steps: [
+                  { do: '∂qA/∂pB = 3 and ∂qB/∂pA = 2', why: 'The two cross-price partials are the only ones that matter for the classification.' },
+                  { do: 'Both are positive, so A and B are competitive products', why: 'A rise in B’s price raises the demand for A, and a rise in A’s price raises the demand for B: buyers switch between them.' },
+                  { do: 'The own-price partials −4 and −5 are negative, as expected, and play no part in the decision', why: 'They say each product obeys the law of demand, which is true of substitutes and complements alike.' }
+                ],
+                answer: 'Competitive (substitutes), because both cross-price partial derivatives are positive', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'calc-competitive-read-from-own-price',
+                wrong: 'Classifying two products from the signs of the own-price partials',
+                right: 'Only the cross-price partials decide: both positive is competitive, both negative is complementary.',
+                why: 'The own-price partials are negative for almost every product, so they carry no information about the relationship between two of them. The question is what a change in the other product’s price does to demand, which is what the cross partials measure.'
+              },
+              {
+                id: 'calc-marginal-interpretation-without-held-fixed',
+                wrong: 'Interpreting a marginal cost of 51 as "each extra unit costs $51"',
+                right: 'It is the approximate cost of one more unit of that product with the other product’s output held fixed, at the stated output levels.',
+                why: 'The value changes with both outputs — here it depends on y through the interaction term — and it is a rate at a point, not a price list. The answer is a sentence naming the product, the point and what is held constant.'
+              },
+              {
+                id: 'calc-cross-partials-mixed-signs-forced',
+                wrong: 'Calling products complementary when one cross partial is negative and the other positive',
+                right: 'Both cross partials must share a sign. Mixed signs mean the products are neither competitive nor complementary.',
+                why: 'The definitions require agreement in both directions. A pair with one positive and one negative cross effect does not fit either category, and the correct answer is to say so rather than to pick the nearer label.'
+              }
+            ]
+          },
+
+          {
+            id: 'e3', title: 'Higher-order partial derivatives', src: 'Section 17.3',
+            idea: `A partial derivative of z = f(x, y) is itself a function of x and y, so it can be differentiated again — with respect to either variable. That gives four <b>second-order partial derivatives</b>:<br><br><b>f<sub>xx</sub> = (f<sub>x</sub>)<sub>x</sub></b>, the partial of f<sub>x</sub> with respect to x, also written ∂²z/∂x²<br><b>f<sub>xy</sub> = (f<sub>x</sub>)<sub>y</sub></b>, the partial of f<sub>x</sub> with respect to y, written ∂²z/∂y∂x<br><b>f<sub>yx</sub> = (f<sub>y</sub>)<sub>x</sub></b>, written ∂²z/∂x∂y<br><b>f<sub>yy</sub> = (f<sub>y</sub>)<sub>y</sub></b>, written ∂²z/∂y²<br><br>The subscript notation reads left to right: f<sub>xy</sub> means differentiate with respect to x first, then y. The ∂-notation reads right to left, from the variable nearest the function outward: ∂²z/∂y∂x also means x first, then y. The two notations agree; they just spell the order in opposite directions.<br><br>f<sub>xy</sub> and f<sub>yx</sub> are the <b>mixed partials</b>, and for every function in this course they are <b>equal</b>: the order of differentiation does not matter. That is a useful check — compute both, and if they differ, something upstream is wrong — and it will matter in the next section, where the second-derivative test uses f<sub>xy</sub> once and does not care which way it was found.<br><br>For f(x, y) = x³y² + 2xy: f<sub>x</sub> = 3x²y² + 2y and f<sub>y</sub> = 2x³y + 2x. Then f<sub>xx</sub> = 6xy², f<sub>xy</sub> = 6x²y + 2, f<sub>yx</sub> = 6x²y + 2 (equal, as promised) and f<sub>yy</sub> = 2x³.<br><br>Third and higher orders follow the same pattern: f<sub>xxy</sub> is f differentiated twice in x and then once in y, and ∂³w/∂z∂y∂x is x first, then y, then z. With three variables there are nine second partials and the mixed ones still pair up. The technique never changes — freeze, differentiate, repeat — but the labelling deserves care, because the one thing the test in section 17.4 cannot forgive is a wrong f<sub>xy</sub>.`,
+            rules: [
+              { name: 'Second partials', expr: 'f_xx, f_xy, f_yx, f_yy', note: 'Each first partial differentiated again with respect to x or y: four second-order partial derivatives.' },
+              { name: 'Reading the order', expr: 'f_xy = partial^2 z/(partial y partial x)', note: 'Subscripts read left to right, x first then y; the ∂-form reads right to left, nearest the function first. Both mean x first.' },
+              { name: 'Mixed partials are equal', expr: 'f_xy = f_yx', note: 'For every function in this course. Compute both as a check.' },
+              { name: 'Higher orders', expr: 'f_xxy = (f_xx)_y', note: 'Third and higher orders repeat the process; ∂³w/∂z∂y∂x is x, then y, then z.' }
+            ],
+            examples: [
+              {
+                prompt: 'Find the four second-order partial derivatives of f(x, y) = x³y² + 2xy, and evaluate f_xx, f_xy and f_yy at (1, 2).',
+                steps: [
+                  { do: 'f_x = 3x²y² + 2y and f_y = 2x³y + 2x', why: 'First partials, each with the other variable frozen.' },
+                  { do: 'f_xx = 6xy²; f_xy = 6x²y + 2', why: 'Differentiate f_x with respect to x, then separately with respect to y.' },
+                  { do: 'f_yx = 6x²y + 2; f_yy = 2x³', why: 'Differentiate f_y with respect to x, then y. The mixed partials agree, as they must.' },
+                  { do: 'At (1, 2): f_xx = 6(1)(4) = 24, f_xy = 6(1)(2) + 2 = 14, f_yy = 2', why: 'Substitute after differentiating.' }
+                ],
+                answer: 'f_xx = 6xy², f_xy = f_yx = 6x²y + 2, f_yy = 2x³; at (1, 2) they are 24, 14 and 2', answerWords: true
+              },
+              {
+                prompt: 'For w = x²y e^(3z), find ∂³w/∂z∂y∂x and evaluate it at (1, 2, 0).',
+                steps: [
+                  { do: 'Read the order: x first, then y, then z', why: 'The ∂-notation is read from the variable nearest w outward.' },
+                  { do: '∂w/∂x = 2xy e^(3z)', why: 'y and e^(3z) are constants when differentiating in x.' },
+                  { do: '∂²w/∂y∂x = 2x e^(3z)', why: 'Now differentiate in y with x and z frozen: the factor y becomes 1.' },
+                  { do: '∂³w/∂z∂y∂x = 6x e^(3z); at (1, 2, 0): 6(1)(1) = 6', why: 'Differentiate in z: e^(3z) gives 3e^(3z). At z = 0 the exponential is 1, and y no longer appears.' }
+                ],
+                answer: '∂³w/∂z∂y∂x = 6x e^(3z), which is 6 at (1, 2, 0)', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'calc-mixed-partial-order-misread',
+                wrong: 'Reading ∂²z/∂y∂x as "y first, then x"',
+                right: 'The ∂-notation reads from the variable nearest the function outward: ∂²z/∂y∂x is x first, then y, the same as f_xy.',
+                why: 'Because the mixed partials are equal for these functions the final answer survives the misreading, but a third-order derivative like ∂³w/∂z∂y∂x done in the wrong order can go astray in the intermediate steps, and an exam that asks for the intermediate partial will mark it wrong.'
+              },
+              {
+                id: 'calc-second-partial-from-f-not-fx',
+                wrong: 'Finding f_xy by differentiating f itself with respect to y',
+                right: 'f_xy is the partial of f_x with respect to y. Find f_x first, then differentiate that.',
+                why: 'Differentiating the original function with respect to y gives f_y, a first partial, not a second one. The subscripts stack: each letter is one more differentiation of the result so far.'
+              },
+              {
+                id: 'calc-mixed-partials-differ-accepted',
+                wrong: 'Getting different expressions for f_xy and f_yx and reporting both',
+                right: 'They must be equal. A difference means an error in one of the first partials — go back and find it.',
+                why: 'The equality of mixed partials is a free check on the whole computation. Using it catches a dropped term or a lost frozen variable before it reaches the second-derivative test, where a wrong f_xy changes the classification of every critical point.'
+              }
+            ]
+          },
+
+          {
+            id: 'e4', title: 'Maxima and minima for functions of two variables', src: 'Section 17.4',
+            idea: `A surface z = f(x, y) has a <b>relative maximum</b> at (a, b) if f(a, b) is at least as large as f(x, y) at every nearby point — a hilltop on the surface — and a relative minimum if it is at least as small. At a hilltop the surface is level in every direction, so in particular the slope in the x-direction and the slope in the y-direction are both zero:<br><br><b>Critical point: f<sub>x</sub>(a, b) = 0 and f<sub>y</sub>(a, b) = 0, both at once.</b><br><br>Finding critical points therefore means solving a <b>system</b> of two equations in two unknowns. Often each equation involves only one variable and the system falls apart; sometimes it is a pair of linear equations; occasionally one equation has to be substituted into the other. Every solution is a critical point and every relative extremum is at one — but, exactly as in one variable, a critical point can be a maximum, a minimum, or neither.<br><br>The "neither" case has a new shape. On the surface z = y² − x², the origin is a minimum along the y-axis and a maximum along the x-axis at the same time: a <b>saddle point</b>. Both first partials are zero there and there is no extremum. One-variable intuition does not see saddles coming, which is why the test that follows has three outcomes rather than two.<br><br><b>Second-derivative test.</b> With the second partials continuous near a critical point (a, b), form<br><br><b>D = f<sub>xx</sub> · f<sub>yy</sub> − (f<sub>xy</sub>)²</b>, evaluated at (a, b).<br><br>If <b>D &gt; 0 and f<sub>xx</sub> &lt; 0</b>: relative maximum. If <b>D &gt; 0 and f<sub>xx</sub> &gt; 0</b>: relative minimum. If <b>D &lt; 0</b>: saddle point, no extremum. If <b>D = 0</b>: the test says nothing. The order of the checks matters: D is computed first, and the sign of f<sub>xx</sub> is consulted only when D is positive. (When D &gt; 0, f<sub>xx</sub> and f<sub>yy</sub> have the same sign, so either may be used.) A negative D is not "a maximum because something is negative" — it is a saddle, whatever the sign of f<sub>xx</sub>.<br><br>The applications are the ones from chapter 13 with a second decision variable. A firm choosing the outputs of two products, or the prices of two products, has a profit function P(x, y); the best pair of choices is a critical point that passes the test as a maximum. A production function P(l, k) is maximised the same way. As before, the last step is to answer the question: the outputs, the prices, the maximum profit itself.`,
+            rules: [
+              { name: 'Critical point', expr: 'f_x = 0, f_y = 0', note: 'Both first partials zero at once: a system of two equations. Every relative extremum is at one.' },
+              { name: 'The discriminant', expr: 'D = f_xx f_yy - (f_xy)^2', note: 'Evaluated at the critical point, from the second partials.' },
+              { name: 'Second-derivative test', expr: 'D > 0 with f_xx < 0 is a maximum; D > 0 with f_xx > 0 is a minimum; D < 0 is a saddle point; D = 0 says nothing', words: true, note: 'Compute D first; the sign of f_xx is consulted only when D is positive.' },
+              { name: 'Saddle point', expr: 'z = y^2 - x^2', note: 'A minimum along one axis and a maximum along the other. Both first partials are zero and there is no extremum.' },
+              { name: 'Applications', expr: 'Profit or output in two decision variables: find the critical point, confirm a maximum with D, answer the question', words: true, note: 'The same guide as section 13.6, with a system of two equations in place of one.' }
+            ],
+            examples: [
+              {
+                prompt: 'Find and classify the critical points of f(x, y) = x² + 3y² − 4x + 6y + 2.',
+                steps: [
+                  { do: 'f_x = 2x − 4 = 0 gives x = 2; f_y = 6y + 6 = 0 gives y = −1. Critical point (2, −1)', why: 'Each equation involves one variable only, so the system separates.' },
+                  { do: 'f_xx = 2, f_yy = 6, f_xy = 0, so D = (2)(6) − 0² = 12', why: 'Second partials are constants here; D is positive everywhere.' },
+                  { do: 'D > 0 and f_xx = 2 > 0: relative minimum', why: 'Positive D says it is an extremum; positive f_xx says the surface bends up, a valley.' },
+                  { do: 'f(2, −1) = 4 + 3 − 8 − 6 + 2 = −5', why: 'The minimum value comes from f. Since this is the only critical point and the surface is a bowl, it is also the absolute minimum.' }
+                ],
+                answer: 'One critical point, (2, −1), a relative (and absolute) minimum with value −5', answerWords: true
+              },
+              {
+                prompt: 'Find and classify the critical points of f(x, y) = x³ − 3x + y² − 2y.',
+                steps: [
+                  { do: 'f_x = 3x² − 3 = 0 gives x = ±1; f_y = 2y − 2 = 0 gives y = 1. Critical points (1, 1) and (−1, 1)', why: 'Two solutions in x, one in y: two critical points.' },
+                  { do: 'f_xx = 6x, f_yy = 2, f_xy = 0, so D = 12x', why: 'D now depends on the point, so it is evaluated at each critical point separately.' },
+                  { do: 'At (1, 1): D = 12 > 0 and f_xx = 6 > 0, relative minimum, f(1, 1) = 1 − 3 + 1 − 2 = −3', why: 'Positive D, positive f_xx: a valley.' },
+                  { do: 'At (−1, 1): D = −12 < 0, saddle point', why: 'Negative D means no extremum, regardless of f_xx (which is −6 here — the sign of f_xx is not consulted).' }
+                ],
+                answer: 'Relative minimum −3 at (1, 1); saddle point at (−1, 1)', answerWords: true
+              },
+              {
+                prompt: 'A firm’s weekly profit from selling x units of one product and y of another is P(x, y) = −2x² − y² + 2xy + 40x + 20y − 200. Find the outputs that maximise profit, and the maximum profit.',
+                steps: [
+                  { do: 'P_x = −4x + 2y + 40 = 0 and P_y = 2x − 2y + 20 = 0', why: 'Both first partials zero: a linear system.' },
+                  { do: 'From the second, y = x + 10. Substituting: −4x + 2x + 20 + 40 = 0, so x = 30 and y = 40', why: 'Solve by substitution; check both equations: −120 + 80 + 40 = 0 and 60 − 80 + 20 = 0.' },
+                  { do: 'P_xx = −4, P_yy = −2, P_xy = 2, so D = (−4)(−2) − 2² = 4 > 0 and P_xx < 0: relative maximum', why: 'Positive D and negative P_xx: a hilltop. The only critical point, so it is the best the firm can do.' },
+                  { do: 'P(30, 40) = −1,800 − 1,600 + 2,400 + 1,200 + 800 − 200 = 800', why: 'Answer the question: 30 and 40 units, for a profit of $800 a week.' }
+                ],
+                answer: 'Make 30 units of the first product and 40 of the second, for a maximum weekly profit of $800', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'calc-critical-point-from-one-partial',
+                wrong: 'Setting only f_x = 0 and calling its solutions the critical points',
+                right: 'A critical point makes both f_x and f_y zero at once. Solve the system.',
+                why: 'The surface must be level in every direction at a hilltop, and f_x = 0 alone only makes it level in the x-direction. Points with f_x = 0 and f_y ≠ 0 lie on a curve across the surface, not at its peaks.'
+              },
+              {
+                id: 'calc-d-negative-read-as-maximum',
+                wrong: 'Seeing D < 0 and concluding "negative, so a maximum"',
+                right: 'D < 0 is a saddle point — no extremum at all. The sign of f_xx is only consulted when D is positive.',
+                why: 'The test has three outcomes. A negative discriminant means the surface curves up in one direction and down in another, which is a saddle. Maximum versus minimum is decided by f_xx, and only after D has confirmed there is an extremum to classify.'
+              },
+              {
+                id: 'calc-fxy-squared-dropped-from-d',
+                wrong: 'Computing D as f_xx · f_yy and forgetting to subtract (f_xy)²',
+                right: 'D = f_xx f_yy − (f_xy)². The mixed partial is squared and subtracted.',
+                why: 'When f_xy is not zero the interaction between the variables can turn a product of two negatives into a saddle: for P = −2x² − y² + 2xy + …, f_xx f_yy = 8 but D = 4, and a larger cross term would have made D negative. Omitting the square misclassifies exactly the cases where the two variables interact.'
+              }
+            ]
+          },
+
+          {
+            id: 'e5', title: 'Lagrange multipliers', src: 'Section 17.5',
+            idea: `Most real optimisation has a constraint. Minimise cost subject to producing a fixed output; maximise output subject to a fixed budget; split a production quota between two plants as cheaply as possible. One way is to solve the constraint for one variable, substitute, and optimise what is left — chapter 13's method. When the constraint will not solve cleanly, or there are many variables, there is a more systematic route.<br><br><b>The method of Lagrange multipliers.</b> To find the critical points of f(x, y) subject to a constraint written as g(x, y) = 0, build a new function of three variables:<br><br><b>F(x, y, λ) = f(x, y) − λ g(x, y)</b><br><br>where λ (lambda) is a new unknown, the <b>Lagrange multiplier</b>. Then find the critical points of F in the ordinary way, by setting all of its partials to zero:<br><br><b>F<sub>x</sub> = 0, F<sub>y</sub> = 0, F<sub>λ</sub> = 0.</b><br><br>The last of these is just −g(x, y) = 0: the constraint itself. So the system says "the partials of f are proportional to the partials of g, and the constraint holds." Any (x, y) that solves it is a critical point of f subject to the constraint. The theory is that at a constrained extremum the level curve of f is tangent to the constraint curve, so their gradients are parallel — which is what f<sub>x</sub> = λ g<sub>x</sub>, f<sub>y</sub> = λ g<sub>y</sub> says.<br><br>Solving the system is where ingenuity is needed. Two habits cover almost every case. If each of the first equations can be solved for a variable in terms of λ, substitute all of them into the constraint and solve for λ. If not, <b>divide one equation by another</b> so that λ cancels, which gives a relation between the variables to feed into the constraint — and then λ is never needed at all. For xy subject to 2x + 3y = 60, the equations y = 2λ and x = 3λ divide to y/x = 2/3, the constraint then gives x = 15, y = 10, and λ was never found.<br><br>The method finds critical points; it does not say whether they are maxima or minima. In the problems of this course, the nature of the problem settles it — a cost has a minimum and no maximum, an output on a budget has a maximum — and the single critical point is taken as the answer.<br><br>The economics inside the multiplier is worth knowing. When the cost of running two plants is minimised subject to a fixed total output, the two equations F<sub>q1</sub> = 0 and F<sub>q2</sub> = 0 say ∂c/∂q<sub>1</sub> = λ = ∂c/∂q<sub>2</sub>: <b>the marginal costs of the plants are equal</b> at the optimum, and λ is that common marginal cost. Shifting a unit from one plant to the other would save nothing. For a least-cost input combination — minimum spending on labour and capital for a given output — the same equations say the marginal productivity per dollar is the same for every input.`,
+            rules: [
+              { name: 'The Lagrange function', expr: 'F = f - lambda g', note: 'To optimise f subject to g(x, y) = 0. λ is a new unknown, the multiplier.' },
+              { name: 'The system', expr: 'F_x = 0, F_y = 0, F_lambda = 0', note: 'The last equation is the constraint itself. Solutions (x, y) are the constrained critical points.' },
+              { name: 'Eliminating lambda', expr: 'Divide one equation by another so lambda cancels, then use the constraint', words: true, note: 'Usually faster than solving for λ, and λ is often not needed.' },
+              { name: 'What the method does not do', expr: 'It finds critical points; the nature of the problem decides maximum or minimum', words: true, note: 'A cost has a minimum, an output on a budget a maximum.' },
+              { name: 'Meaning of lambda', expr: 'lambda = partial c/partial q_1 = partial c/partial q_2', note: 'Splitting output between plants at least cost equalises their marginal costs; λ is that common marginal cost.' }
+            ],
+            examples: [
+              {
+                prompt: 'Minimise f(x, y) = x² + y² subject to x + 2y = 10.',
+                steps: [
+                  { do: 'Constraint as g = x + 2y − 10 = 0. F = x² + y² − λ(x + 2y − 10)', why: 'Move everything to one side, then subtract λ times it from f.' },
+                  { do: 'F_x = 2x − λ = 0, F_y = 2y − 2λ = 0, F_λ = −(x + 2y − 10) = 0', why: 'All three partials zero. The third is the constraint.' },
+                  { do: 'From the first two, λ = 2x and λ = y, so y = 2x', why: 'Both give λ; equate them to eliminate it.' },
+                  { do: 'x + 2(2x) = 10 gives x = 2, y = 4; f(2, 4) = 4 + 16 = 20', why: 'The single critical point is the constrained minimum: a sum of squares on a line has a lowest point and no highest. It is the closest point of the line to the origin, squared distance 20.' }
+                ],
+                answer: 'Minimum 20 at (2, 4)', answerWords: true
+              },
+              {
+                prompt: 'Maximise xy subject to 2x + 3y = 60, with x and y positive.',
+                steps: [
+                  { do: 'F = xy − λ(2x + 3y − 60); F_x = y − 2λ = 0, F_y = x − 3λ = 0, F_λ = −(2x + 3y − 60) = 0', why: 'The system for the constrained critical points.' },
+                  { do: 'y = 2λ and x = 3λ; dividing, y/x = 2/3, so y = 2x/3', why: 'λ cancels in the quotient and is never needed.' },
+                  { do: '2x + 3(2x/3) = 60 gives 4x = 60, x = 15, y = 10', why: 'Substitute the relation into the constraint.' },
+                  { do: 'Maximum product 15 × 10 = 150', why: 'The nature of the problem decides: the product is 0 at either end of the segment and positive between, so the single critical point is the maximum.' }
+                ],
+                answer: 'Maximum 150 at x = 15, y = 10', answerWords: true
+              },
+              {
+                prompt: 'A firm must produce 120 units across two plants. Its cost is c = 3q₁² + q₁q₂ + 2q₂² + 500. How should output be split to minimise cost, and what is the minimum?',
+                steps: [
+                  { do: 'F = 3q₁² + q₁q₂ + 2q₂² + 500 − λ(q₁ + q₂ − 120)', why: 'Cost minus λ times the constraint q₁ + q₂ − 120 = 0.' },
+                  { do: 'F_q₁ = 6q₁ + q₂ − λ = 0 and F_q₂ = q₁ + 4q₂ − λ = 0, so 6q₁ + q₂ = q₁ + 4q₂', why: 'Both equal λ; equating them eliminates it. Each side is a marginal cost, so this says the marginal costs of the two plants are equal.' },
+                  { do: '5q₁ = 3q₂, so q₂ = 5q₁/3. Then q₁ + 5q₁/3 = 120 gives 8q₁/3 = 120, q₁ = 45, q₂ = 75', why: 'The relation between the outputs goes into the constraint.' },
+                  { do: 'c = 3(2,025) + 45(75) + 2(5,625) + 500 = 6,075 + 3,375 + 11,250 + 500 = 21,200; λ = 6(45) + 75 = 345', why: 'Answer the question: 45 and 75 units, minimum cost $21,200. The common marginal cost is $345, which is what one more unit of the order would cost.' }
+                ],
+                answer: 'Plant 1 makes 45 units and plant 2 makes 75, for a minimum cost of $21,200; the marginal cost at each plant is $345', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'calc-lagrange-constraint-equation-dropped',
+                wrong: 'Solving only F_x = 0 and F_y = 0 and reporting the result',
+                right: 'F_λ = 0 is the constraint, and it is part of the system. Two equations in three unknowns do not determine the point.',
+                why: 'Without the constraint the first two equations only give the ratio of the variables, or expressions in λ. It is substituting into the constraint that fixes actual numbers. A solution that never used the constraint has not solved the constrained problem.'
+              },
+              {
+                id: 'calc-lagrange-lambda-must-be-found',
+                wrong: 'Refusing to proceed without a numerical value for λ',
+                right: 'λ often cancels when one equation is divided by another. Find the point; find λ only if the question asks for it or it has a meaning worth reporting.',
+                why: 'The multiplier is a device for getting the equations, not an output of the problem. In the plant problem it happens to be the common marginal cost, which is worth stating; in xy subject to 2x + 3y = 60 it is never needed.'
+              },
+              {
+                id: 'calc-lagrange-decides-max-or-min',
+                wrong: 'Claiming the Lagrange method has shown the point is a minimum',
+                right: 'The method finds constrained critical points only. Whether it is a maximum or a minimum comes from the nature of the problem.',
+                why: 'There is no D-test in the version of the method this course uses. A cost function on a fixed quota has a minimum and no maximum; a product on a line segment has a maximum and is 0 at the ends. That reasoning, stated in one sentence, is what justifies calling the critical point the answer.'
+              },
+              {
+                id: 'calc-lagrange-sign-of-constraint-matters',
+                wrong: 'Worrying that writing g = 10 − x − 2y instead of x + 2y − 10 changes the answer',
+                right: 'It only changes the sign of λ. The critical point (x, y) is the same either way.',
+                why: 'F = f − λg with g replaced by −g is F = f + λg, and λ is a free unknown, so the solutions for x and y are unchanged. Consistency matters within one problem; the choice of side does not.'
+              }
+            ]
+          }
+        ],
+        practice: [
+          { id: 'u1', kind: 'numeric', lesson: 'e1',
+            prompt: 'f(x, y) = x³y − 2xy² + 5y. What is f_x(2, 1)?',
+            answer: 10, verify: { expr: 'diff(x**3*y - 2*x*y**2 + 5*y, x).subs(x, 2).subs(y, 1)' },
+            hint: 'Hold y constant, differentiate in x, then substitute.',
+            solution: ['f_x = 3x²y − 2y²', 'At (2, 1): 3(4)(1) − 2(1)', '= 10'] },
+
+          { id: 'u2', kind: 'numeric', lesson: 'e1',
+            prompt: 'f(x, y) = x³y − 2xy² + 5y. What is f_y(2, 1)?',
+            answer: 5, verify: { expr: 'diff(x**3*y - 2*x*y**2 + 5*y, y).subs(x, 2).subs(y, 1)' },
+            hint: 'Now x is the constant.',
+            solution: ['f_y = x³ − 4xy + 5', 'At (2, 1): 8 − 8 + 5', '= 5'] },
+
+          { id: 'u3', kind: 'numeric', lesson: 'e1',
+            prompt: 'z = ln(x² + y²). What is ∂z/∂y at (3, 4)?',
+            answer: 0.32, verify: { expr: 'diff(log(x**2 + y**2), y).subs(x, 3).subs(y, 4)' },
+            hint: 'Chain rule with x frozen.',
+            solution: ['∂z/∂y = 2y/(x² + y²)', 'At (3, 4): 8/25', '= 0.32'] },
+
+          { id: 'u4', kind: 'numeric', lesson: 'e1',
+            prompt: 'w = x e^(xy). What is ∂w/∂x at (1, 0)?',
+            answer: 1, verify: { expr: 'diff(x*exp(x*y), x).subs(x, 1).subs(y, 0)' },
+            hint: 'A product of two functions of x, with y a constant.',
+            solution: ['∂w/∂x = e^(xy) + x · y e^(xy) = (1 + xy) e^(xy)', 'At (1, 0): (1 + 0) e⁰', '= 1'] },
+
+          { id: 'u5', kind: 'numeric', lesson: 'e1',
+            prompt: 'f(x, y, z) = xy²z³ + 2xz. What is f_z(1, 2, 1)?',
+            answer: 14, verify: { expr: 'diff(x*y**2*z**3 + 2*x*z, z).subs(x, 1).subs(y, 2).subs(z, 1)' },
+            hint: 'Hold x and y constant.',
+            solution: ['f_z = 3xy²z² + 2x', 'At (1, 2, 1): 3(1)(4)(1) + 2', '= 14'] },
+
+          { id: 'u6', kind: 'numeric', lesson: 'e1',
+            prompt: 'z = x²/y + y/x. What is ∂z/∂x at (2, 4)?',
+            answer: 0, verify: { expr: 'diff(x**2/y + y/x, x).subs(x, 2).subs(y, 4)' },
+            hint: 'x²/y is (1/y) x² and y/x is y x⁻¹.',
+            solution: ['∂z/∂x = 2x/y − y/x²', 'At (2, 4): 4/4 − 4/4', '= 0'] },
+
+          { id: 'u7', kind: 'mc', lesson: 'e1',
+            prompt: 'f(x, y) = x²y³. Which is f_x?',
+            options: [
+              { t: '2xy³', ok: true },
+              { t: '2x', ok: false },
+              { t: '2xy³ + 3x²y²', ok: false },
+              { t: '6xy²', ok: false }
+            ],
+            hint: 'y is a frozen constant, and it survives.',
+            solution: ['Treat y³ as a constant coefficient', 'd/dx of x² is 2x', 'f_x = 2xy³'] },
+
+          { id: 'u8', kind: 'spot', lesson: 'e1',
+            prompt: 'A student finds f_y(1, 2) for f(x, y) = x²y + y². Which step is wrong?',
+            steps: [
+              { t: 'Hold x constant', bad: false },
+              { t: 'f_y = x² + 2y', bad: false },
+              { t: 'Substitute x = 1 and y = 2 into f first: f(1, 2) = 2 + 4 = 6', bad: true },
+              { t: 'f_y(1, 2) = 1 + 4 = 5', bad: false }
+            ],
+            why: 'Substituting into f before differentiating produces a number whose derivative is 0. The point is substituted into the partial derivative, after it has been found — which the last step does correctly.',
+            hint: 'When does the point go in?',
+            solution: ['Differentiate first', 'f_y = x² + 2y', 'Then substitute: 1 + 4 = 5'] },
+
+          { id: 'u9', kind: 'numeric', lesson: 'e2',
+            prompt: 'Joint cost c = 0.05x² + 40x + 60y + 0.1xy + 2000. What is the marginal cost with respect to x at x = 80, y = 30?',
+            answer: 51, verify: { expr: 'diff(Rational(5,100)*x**2 + 40*x + 60*y + Rational(1,10)*x*y + 2000, x).subs(x, 80).subs(y, 30)' },
+            hint: '∂c/∂x with y frozen; the xy term contributes.',
+            solution: ['∂c/∂x = 0.1x + 40 + 0.1y', 'At (80, 30): 8 + 40 + 3', '= 51'] },
+
+          { id: 'u10', kind: 'numeric', lesson: 'e2',
+            prompt: 'For the same cost function, what is the marginal cost with respect to y at x = 80, y = 30?',
+            answer: 68, verify: { expr: 'diff(Rational(5,100)*x**2 + 40*x + 60*y + Rational(1,10)*x*y + 2000, y).subs(x, 80).subs(y, 30)' },
+            hint: 'Only the terms with y survive.',
+            solution: ['∂c/∂y = 60 + 0.1x', 'At x = 80: 60 + 8', '= 68'] },
+
+          { id: 'u11', kind: 'numeric', lesson: 'e2',
+            prompt: 'P = 20 l^0.75 k^0.25. What is the marginal productivity of labour at l = 81, k = 16?',
+            answer: 10, verify: { expr: 'diff(20*l**Rational(3,4)*k**Rational(1,4), l).subs(l, 81).subs(k, 16)' },
+            hint: '∂P/∂l = 15 (k/l)^0.25.',
+            solution: ['∂P/∂l = 15 l^(−0.25) k^0.25 = 15 (k/l)^(1/4)', '(16/81)^(1/4) = 2/3', '15 × 2/3 = 10'] },
+
+          { id: 'u12', kind: 'numeric', lesson: 'e2',
+            prompt: 'P = 20 l^0.75 k^0.25. What is the marginal productivity of capital at l = 81, k = 16? Give 3 decimal places.',
+            answer: 16.875, tol: 0.0005, verify: { expr: 'diff(20*l**Rational(3,4)*k**Rational(1,4), k).subs(l, 81).subs(k, 16)', dp: 3 },
+            hint: '∂P/∂k = 5 (l/k)^0.75, and (81/16)^0.75 = (3/2)³.',
+            solution: ['∂P/∂k = 5 l^0.75 k^(−0.75) = 5 (l/k)^(3/4)', '(81/16)^(3/4) = 27/8', '5 × 27/8 = 16.875'] },
+
+          { id: 'u13', kind: 'mc', lesson: 'e2',
+            prompt: 'Demand: qA = 100 − 2pA − pB and qB = 80 − pA − 3pB. The products are',
+            options: [
+              { t: 'complementary, because both cross-price partials are negative', ok: true },
+              { t: 'competitive, because both own-price partials are negative', ok: false },
+              { t: 'competitive, because a price rise in one lowers the other’s demand', ok: false },
+              { t: 'neither, because the signs differ', ok: false }
+            ],
+            hint: '∂qA/∂pB and ∂qB/∂pA.',
+            solution: ['∂qA/∂pB = −1 and ∂qB/∂pA = −1', 'Both negative', 'Complementary: dearer B means less A bought, and vice versa'] },
+
+          { id: 'u14', kind: 'mc', lesson: 'e2',
+            prompt: 'Demand: qA = 300 − 5pA + 2pB and qB = 250 − pA − 4pB. The products are',
+            options: [
+              { t: 'neither competitive nor complementary: the cross partials have different signs', ok: true },
+              { t: 'competitive, because ∂qA/∂pB = 2 > 0', ok: false },
+              { t: 'complementary, because ∂qB/∂pA = −1 < 0', ok: false },
+              { t: 'competitive, because the own-price partials are both negative', ok: false }
+            ],
+            hint: 'Both cross partials must agree.',
+            solution: ['∂qA/∂pB = 2 > 0 but ∂qB/∂pA = −1 < 0', 'The definitions need the same sign in both directions', 'Neither'] },
+
+          { id: 'u15', kind: 'numeric', lesson: 'e2',
+            prompt: 'Heat loss H = (10 + 8√w − w)(30 − t), with w wind speed in m/s and t temperature in °C. What is ∂H/∂t at w = 4, t = 10?',
+            answer: -22, verify: { expr: 'diff((10 + 8*sqrt(w) - w)*(30 - t), t).subs(w, 4).subs(t, 10)' },
+            hint: 'The first bracket is a constant when differentiating in t.',
+            solution: ['∂H/∂t = −(10 + 8√w − w)', 'At w = 4: −(10 + 16 − 4)', '= −22: each extra degree cuts heat loss by about 22 units at that wind speed'] },
+
+          { id: 'u16', kind: 'numeric', lesson: 'e3',
+            prompt: 'f(x, y) = x³y² + 2xy. What is f_xx at (1, 2)?',
+            answer: 24, verify: { expr: 'diff(x**3*y**2 + 2*x*y, x, 2).subs(x, 1).subs(y, 2)' },
+            hint: 'Differentiate f_x = 3x²y² + 2y again in x.',
+            solution: ['f_x = 3x²y² + 2y', 'f_xx = 6xy²', 'At (1, 2): 6(1)(4) = 24'] },
+
+          { id: 'u17', kind: 'numeric', lesson: 'e3',
+            prompt: 'f(x, y) = x³y² + 2xy. What is f_xy at (1, 2)?',
+            answer: 14, verify: { expr: 'diff(x**3*y**2 + 2*x*y, x, y).subs(x, 1).subs(y, 2)' },
+            hint: 'f_x first, then differentiate that in y.',
+            solution: ['f_x = 3x²y² + 2y', 'f_xy = 6x²y + 2', 'At (1, 2): 12 + 2 = 14'] },
+
+          { id: 'u18', kind: 'numeric', lesson: 'e3',
+            prompt: 'f(x, y) = x³y² + 2xy. What is f_yy at (1, 2)?',
+            answer: 2, verify: { expr: 'diff(x**3*y**2 + 2*x*y, y, 2).subs(x, 1).subs(y, 2)' },
+            hint: 'f_y = 2x³y + 2x, then again in y.',
+            solution: ['f_y = 2x³y + 2x', 'f_yy = 2x³', 'At x = 1: 2'] },
+
+          { id: 'u19', kind: 'numeric', lesson: 'e3',
+            prompt: 'w = x²y e^(3z). What is ∂³w/∂z∂y∂x at (1, 2, 0)?',
+            answer: 6, verify: { expr: 'diff(x**2*y*exp(3*z), x, y, z).subs(x, 1).subs(y, 2).subs(z, 0)' },
+            hint: 'x first, then y, then z.',
+            solution: ['∂w/∂x = 2xy e^(3z)', '∂²w/∂y∂x = 2x e^(3z)', '∂³w/∂z∂y∂x = 6x e^(3z) = 6 at (1, 2, 0)'] },
+
+          { id: 'u20', kind: 'numeric', lesson: 'e3',
+            prompt: 'z = e^(xy). What is ∂²z/∂y∂x at (0, 2)?',
+            answer: 1, verify: { expr: 'diff(exp(x*y), x, y).subs(x, 0).subs(y, 2)' },
+            hint: '∂z/∂x = y e^(xy); now a product in y.',
+            solution: ['∂z/∂x = y e^(xy)', '∂²z/∂y∂x = e^(xy) + xy e^(xy) = (1 + xy) e^(xy)', 'At (0, 2): 1'] },
+
+          { id: 'u21', kind: 'mc', lesson: 'e3',
+            prompt: 'For z = f(x, y), which of these means "differentiate with respect to x first, then y"?',
+            options: [
+              { t: 'Both f_xy and ∂²z/∂y∂x', ok: true },
+              { t: 'f_yx only', ok: false },
+              { t: '∂²z/∂x∂y only', ok: false },
+              { t: 'f_xy but not ∂²z/∂y∂x', ok: false }
+            ],
+            hint: 'Subscripts read left to right; the ∂-form reads from the function outward.',
+            solution: ['f_xy: x then y', '∂²z/∂y∂x: the ∂x nearest z is applied first, then ∂y', 'Same order, opposite spelling'] },
+
+          { id: 'u22', kind: 'spot', lesson: 'e3',
+            prompt: 'A student finds the second partials of f(x, y) = x²y + y³. Which step is wrong?',
+            steps: [
+              { t: 'f_x = 2xy and f_y = x² + 3y²', bad: false },
+              { t: 'f_xx = 2y', bad: false },
+              { t: 'f_xy = 2x and f_yx = 2x', bad: false },
+              { t: 'f_yy = x² + 6y', bad: true }
+            ],
+            why: 'f_yy is the partial of f_y = x² + 3y² with respect to y. The x² is a constant in y and differentiates to 0, so f_yy = 6y. Keeping the x² is the frozen-variable error in reverse: a term with no y at all does vanish.',
+            hint: 'What happens to x² when differentiating in y?',
+            solution: ['f_y = x² + 3y²', 'In y, x² is a constant', 'f_yy = 6y'] },
+
+          { id: 'u23', kind: 'numeric', lesson: 'e4',
+            prompt: 'f(x, y) = x² + 3y² − 4x + 6y + 2. What is the x-coordinate of its critical point?',
+            answer: 2, verify: { expr: 'solve([diff(x**2 + 3*y**2 - 4*x + 6*y + 2, x), diff(x**2 + 3*y**2 - 4*x + 6*y + 2, y)], [x, y])[x]' },
+            hint: 'f_x = 2x − 4 = 0.',
+            solution: ['f_x = 2x − 4 = 0 gives x = 2', 'f_y = 6y + 6 = 0 gives y = −1', 'Critical point (2, −1)'] },
+
+          { id: 'u24', kind: 'numeric', lesson: 'e4',
+            prompt: 'f(x, y) = x² + 3y² − 4x + 6y + 2. What is the value of f at its critical point?',
+            answer: -5, verify: { expr: '(x**2 + 3*y**2 - 4*x + 6*y + 2).subs(x, 2).subs(y, -1)' },
+            hint: 'The critical point is (2, −1).',
+            solution: ['f(2, −1) = 4 + 3 − 8 − 6 + 2', '= −5', 'D = 12 > 0 and f_xx = 2 > 0, so it is a minimum'] },
+
+          { id: 'u25', kind: 'numeric', lesson: 'e4',
+            prompt: 'f(x, y) = x³ − 3x + y² − 2y. What is D = f_xx f_yy − (f_xy)² at the point (1, 1)?',
+            answer: 12, verify: { expr: '(diff(x**3 - 3*x + y**2 - 2*y, x, 2)*diff(x**3 - 3*x + y**2 - 2*y, y, 2) - diff(x**3 - 3*x + y**2 - 2*y, x, y)**2).subs(x, 1).subs(y, 1)' },
+            hint: 'f_xx = 6x, f_yy = 2, f_xy = 0.',
+            solution: ['D = (6x)(2) − 0 = 12x', 'At x = 1: 12', 'Positive with f_xx > 0: relative minimum'] },
+
+          { id: 'u26', kind: 'numeric', lesson: 'e4',
+            prompt: 'f(x, y) = x³ − 3x + y² − 2y. What is the relative minimum value?',
+            answer: -3, verify: { expr: '(x**3 - 3*x + y**2 - 2*y).subs(x, 1).subs(y, 1)' },
+            hint: 'The minimum is at (1, 1).',
+            solution: ['f(1, 1) = 1 − 3 + 1 − 2', '= −3'] },
+
+          { id: 'u27', kind: 'mc', lesson: 'e4',
+            prompt: 'At a critical point, D = −12 and f_xx = −6. What is there?',
+            options: [
+              { t: 'A saddle point; the sign of f_xx is not consulted when D < 0', ok: true },
+              { t: 'A relative maximum, because f_xx < 0', ok: false },
+              { t: 'A relative minimum, because D < 0', ok: false },
+              { t: 'Nothing can be said', ok: false }
+            ],
+            hint: 'D comes first.',
+            solution: ['D < 0 means the surface curves up one way and down another', 'A saddle point, no extremum', 'f_xx only matters when D > 0'] },
+
+          { id: 'u28', kind: 'numeric', lesson: 'e4',
+            prompt: 'P(x, y) = −2x² − y² + 2xy + 40x + 20y − 200. What is D at its critical point?',
+            answer: 4, verify: { expr: 'diff(-2*x**2 - y**2 + 2*x*y + 40*x + 20*y - 200, x, 2)*diff(-2*x**2 - y**2 + 2*x*y + 40*x + 20*y - 200, y, 2) - diff(-2*x**2 - y**2 + 2*x*y + 40*x + 20*y - 200, x, y)**2' },
+            hint: 'P_xx = −4, P_yy = −2, P_xy = 2.',
+            solution: ['D = (−4)(−2) − 2²', '= 8 − 4', '= 4 > 0, and P_xx < 0: a maximum'] },
+
+          { id: 'u29', kind: 'numeric', lesson: 'e4',
+            prompt: 'P(x, y) = −2x² − y² + 2xy + 40x + 20y − 200. What is the maximum profit?',
+            answer: 800, verify: { expr: '(-2*x**2 - y**2 + 2*x*y + 40*x + 20*y - 200).subs(x, 30).subs(y, 40)' },
+            hint: 'The critical point is (30, 40).',
+            solution: ['P_x = −4x + 2y + 40 = 0 and P_y = 2x − 2y + 20 = 0 give (30, 40)', 'P(30, 40) = −1,800 − 1,600 + 2,400 + 1,200 + 800 − 200', '= 800'] },
+
+          { id: 'u30', kind: 'numeric', lesson: 'e4',
+            prompt: 'f(x, y) = 2x² + y² − 2xy + 6x. What is the y-coordinate of its critical point?',
+            answer: -3, verify: { expr: 'solve([diff(2*x**2 + y**2 - 2*x*y + 6*x, x), diff(2*x**2 + y**2 - 2*x*y + 6*x, y)], [x, y])[y]' },
+            hint: 'f_x = 4x − 2y + 6 and f_y = 2y − 2x: a linear system.',
+            solution: ['f_y = 0 gives y = x', 'f_x = 0: 4x − 2x + 6 = 0, x = −3', 'y = −3; D = (4)(2) − (−2)² = 4 > 0, f_xx > 0: a minimum'] },
+
+          { id: 'u31', kind: 'spot', lesson: 'e4',
+            prompt: 'A student classifies the critical point (0, 0) of f(x, y) = x² − y² + xy. Which step is wrong?',
+            steps: [
+              { t: 'f_x = 2x + y and f_y = −2y + x, both zero at (0, 0)', bad: false },
+              { t: 'f_xx = 2, f_yy = −2, f_xy = 1', bad: false },
+              { t: 'D = f_xx f_yy = −4', bad: true },
+              { t: 'D < 0, so (0, 0) is a saddle point', bad: false }
+            ],
+            why: 'D = f_xx f_yy − (f_xy)² = −4 − 1 = −5. The conclusion happens to survive because the product was already negative, but the mixed partial must be squared and subtracted every time; with f_xx f_yy positive, forgetting it can turn a saddle into a false extremum.',
+            hint: 'Which term of D is missing?',
+            solution: ['D includes −(f_xy)²', 'D = −4 − 1 = −5', 'Still a saddle, but by the right formula'] },
+
+          { id: 'u32', kind: 'order', lesson: 'e4',
+            prompt: 'Put the steps for finding and classifying the extrema of z = f(x, y) in order.',
+            steps: [
+              'Find f_x and f_y and solve f_x = 0, f_y = 0 together for the critical points',
+              'Find f_xx, f_yy and f_xy',
+              'Evaluate D = f_xx f_yy − (f_xy)² at each critical point',
+              'If D > 0, use the sign of f_xx: negative is a maximum, positive a minimum; if D < 0, a saddle point',
+              'Substitute into f for the extreme values'
+            ],
+            hint: 'Critical points before second partials; D before f_xx.',
+            solution: ['Critical points first', 'Then the second partials', 'Then D', 'Then f_xx only if D is positive', 'Then the values'] },
+
+          { id: 'u33', kind: 'numeric', lesson: 'e5',
+            prompt: 'Minimise f = x² + y² subject to x + 2y = 10. What is the minimum value?',
+            answer: 20, verify: { expr: '(x**2 + y**2).subs(solve([2*x - L, 2*y - 2*L, x + 2*y - 10], [x, y, L]))' },
+            hint: 'λ = 2x and λ = y, so y = 2x.',
+            solution: ['F = x² + y² − λ(x + 2y − 10)', '2x = λ, 2y = 2λ gives y = 2x; then 5x = 10, x = 2, y = 4', 'f(2, 4) = 4 + 16 = 20'] },
+
+          { id: 'u34', kind: 'numeric', lesson: 'e5',
+            prompt: 'Maximise xy subject to 2x + 3y = 60. What is the maximum value?',
+            answer: 150, verify: { expr: '(x*y).subs(solve([y - 2*L, x - 3*L, 2*x + 3*y - 60], [x, y, L]))' },
+            hint: 'y = 2λ and x = 3λ; divide to lose λ.',
+            solution: ['y/x = 2/3, so y = 2x/3', '2x + 2x = 60, x = 15, y = 10', 'xy = 150'] },
+
+          { id: 'u35', kind: 'numeric', lesson: 'e5',
+            prompt: 'c = 3q₁² + q₁q₂ + 2q₂² + 500 with q₁ + q₂ = 120. How many units should plant 1 make to minimise cost?',
+            answer: 45, verify: { expr: 'solve([6*a + b - L, a + 4*b - L, a + b - 120], [a, b, L])[a]' },
+            hint: 'Equal marginal costs: 6q₁ + q₂ = q₁ + 4q₂.',
+            solution: ['F_q₁ = 6q₁ + q₂ − λ = 0 and F_q₂ = q₁ + 4q₂ − λ = 0', '5q₁ = 3q₂, so q₂ = 5q₁/3', 'q₁ + 5q₁/3 = 120 gives q₁ = 45 (and q₂ = 75)'] },
+
+          { id: 'u36', kind: 'numeric', lesson: 'e5',
+            prompt: 'For the same two plants, what is the minimum total cost?',
+            answer: 21200, verify: { expr: '(3*a**2 + a*b + 2*b**2 + 500).subs(a, 45).subs(b, 75)' },
+            hint: 'Evaluate c at (45, 75).',
+            solution: ['c = 3(2,025) + 45(75) + 2(5,625) + 500', '= 6,075 + 3,375 + 11,250 + 500', '= 21,200'] },
+
+          { id: 'u37', kind: 'numeric', lesson: 'e5',
+            prompt: 'For the same two plants, what is λ at the optimum — the common marginal cost?',
+            answer: 345, verify: { expr: 'solve([6*a + b - L, a + 4*b - L, a + b - 120], [a, b, L])[L]' },
+            hint: 'λ = ∂c/∂q₁ = 6q₁ + q₂ at (45, 75).',
+            solution: ['λ = 6(45) + 75 = 345', 'Check: ∂c/∂q₂ = 45 + 4(75) = 345', 'One more unit of the order would cost about $345 at either plant'] },
+
+          { id: 'u38', kind: 'numeric', lesson: 'e5',
+            prompt: 'Maximise output P = 10 l k subject to the budget 4l + 5k = 200. What is the maximum output?',
+            answer: 5000, verify: { expr: '(10*l*k).subs(solve([10*k - 4*L, 10*l - 5*L, 4*l + 5*k - 200], [l, k, L]))' },
+            hint: '10k = 4λ and 10l = 5λ; divide.',
+            solution: ['k/l = 4/5, so k = 4l/5', '4l + 4l = 200, l = 25, k = 20', 'P = 10(25)(20) = 5,000'] },
+
+          { id: 'u39', kind: 'mc', lesson: 'e5',
+            prompt: 'The method of Lagrange multipliers has produced a single critical point for a cost function subject to a fixed output. What justifies calling it the minimum cost?',
+            options: [
+              { t: 'The nature of the problem: a cost of this kind has a minimum and no maximum, so the one critical point must be it', ok: true },
+              { t: 'The method proves it is a minimum whenever λ is positive', ok: false },
+              { t: 'D = f_xx f_yy − (f_xy)² was positive', ok: false },
+              { t: 'Nothing; it could equally be a maximum', ok: false }
+            ],
+            hint: 'What does the method itself decide?',
+            solution: ['Lagrange finds constrained critical points only', 'The D-test is for unconstrained problems', 'The argument is about the problem, stated in a sentence'] },
+
+          { id: 'u40', kind: 'order', lesson: 'e5',
+            prompt: 'Put the steps of the method of Lagrange multipliers in order.',
+            steps: [
+              'Write the constraint as g(x, y) = 0',
+              'Form F(x, y, λ) = f(x, y) − λ g(x, y)',
+              'Set F_x = 0, F_y = 0 and F_λ = 0',
+              'Eliminate λ, usually by dividing one equation by another, and substitute into the constraint',
+              'Decide from the nature of the problem whether the critical point is the maximum or the minimum, and answer the question'
+            ],
+            hint: 'Constraint to one side first; the decision about max or min last.',
+            solution: ['g = 0', 'Build F', 'Three equations', 'Solve', 'Interpret'] }
+        ]
+      },
     ]
   };
 
@@ -18642,7 +19260,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.46', date: '16 September 2026', year: 2026 };
+  const BUILD = { v: '2.47', date: '16 September 2026', year: 2026 };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonandy242', ['gmail', 'com'].join('.')].join('@');
   /* The one sentence that says what this is. It appears under the wordmark, and build.js uses
@@ -18655,6 +19273,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      because the person who needs it is the one who just watched the app refresh itself and wants to
      know what moved. Trim the tail when it gets past a dozen; nobody reads further back than that. */
   const WHATS_NEW = [
+    ['2.47', '<b>Chapter 17 of the calculus course &mdash; multivariable calculus, sections 17.1&ndash;17.5, which completes the MATH 1170 outline.</b> Partial derivatives and how to read the &part; notation; marginal cost, marginal productivity and the cross-price test for competitive and complementary products; second-order and mixed partials and why the mixed ones agree; critical points of a surface and the D-test with its three outcomes, saddle points included; and Lagrange multipliers, with the trick of dividing equations so &lambda; cancels and the economics of why the multiplier is a marginal cost. Five lessons, 13 worked examples, 40 practice questions and 16 named misconceptions, every number recomputed by a computer algebra system. Every section the TRU outline lists for MATH 1170 is now built; the course page says so. Next: MATH 1070, chapters 1&ndash;8, then chapters 14&ndash;16 of the book as extra material.'],
     ['2.46', '<b>Chapter 13 of the calculus course &mdash; curve sketching, all six sections of the TRU outline.</b> Relative extrema with the first-derivative test and the sign chart that drives it; absolute extrema on a closed interval and the extreme-value theorem behind the endpoint check; concavity and inflection points from the second derivative, including the two ways a zero of it fails to be one; the second-derivative test and exactly when it says nothing; vertical, horizontal and oblique asymptotes, holes that are not asymptotes, and the full sketching procedure; and applied maxima and minima &mdash; fencing, revenue on a closed interval, average cost, a subscription price, profit at marginal revenue equal to marginal cost, and the economic lot size. Six lessons, 13 worked examples, 42 practice questions and 19 named misconceptions, every number recomputed by a computer algebra system. Chapter 17 follows.'],
     ['2.45', '<b>Chapter 12 of the calculus course, in the five sections the TRU outline sets.</b> <b>Additional differentiation topics</b>: derivatives of logarithms (ln u, other bases, and the laws of logarithms used before differentiating), derivatives of exponentials (e&#7512;, other bases, and which rule applies when the base or the exponent is the variable), implicit differentiation with tangents to curves that never solve for y, logarithmic differentiation for stacked products and for the form u&#8319; with both base and exponent varying, and higher-order derivatives, explicitly and implicitly. Five lessons, 10 worked examples, 30 practice questions and 15 named misconceptions; every derivative recomputed by a computer algebra system, the implicit ones included. Sections 12.3 and 12.6 are left out on purpose &mdash; they are not in MATH 1170 &mdash; and the course page now says which parts of the book the course does not use, instead of listing them as not yet built. Read from the course outline on Moodle, which also fixed the unit order for what follows: chapter 13 next, then 17.'],
     ['2.44', '<b>A rendering bug in the new calculus course, fixed the same morning.</b> Forty practice questions and worked-example lines in MATH 1170 were showing raw markup to the student &mdash; <code>lim&lt;sub&gt;x&rarr;3&lt;/sub&gt;</code> printed exactly like that instead of a limit, and <code>&amp;lt;</code> instead of a less-than sign &mdash; because those fields are shown as text on purpose (a question is never injected as HTML) and the new course had been written as if they were not. Every one is rewritten in plain notation, every lesson and practice page in the library (491 of them) was rendered and scanned for stray markup, and a build-time check now reads every question, step, option, solution and pitfall in every course and fails if any of them carries a tag or an entity. The check was proved against the original defect before it was kept.'],
