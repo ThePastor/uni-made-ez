@@ -18647,15 +18647,14 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     id: 'math-1070',
     code: 'MATH 1070',
     title: 'Mathematics for Business and Economics',
-    blurb: 'The first half of the book. Built so far: chapters 1 and 2 — equations and inequalities put to work, absolute value, summation and sequences, then functions and their graphs — and chapter 9 — random variables, the binomial distribution, and Markov chains.',
+    blurb: 'The first half of the book. Built so far: chapters 1 to 3 — equations and inequalities put to work, functions and their graphs, lines, parabolas and systems with equilibrium and break-even — and chapter 9 — random variables, the binomial distribution, and Markov chains.',
     level: 'Foundation',
     prereq: 'precalc',
-    exam: 'Follows the set text, chapters 1 to 9. Chapters 1, 2 and 9 are built; chapters 3 to 8 are listed on this page as not yet covered and follow in later releases, one chapter at a time. Precalculus here covers the review algebra of chapter 0 and much of chapters 2 to 4.',
+    exam: 'Follows the set text, chapters 1 to 9. Chapters 1, 2, 3 and 9 are built; chapters 4 to 8 are listed on this page as not yet covered and follow in later releases, one chapter at a time. Precalculus here covers the review algebra of chapter 0 and much of chapters 2 to 4.',
     text: TEXT,
     legalNote: NOTE,
     gaps: [
       'Chapter 0 — review of algebra: covered by the Precalculus course rather than built here',
-      'Chapter 3 — lines, parabolas and systems: supply and demand curves, break-even, systems of equations',
       'Chapter 4 — exponential and logarithmic functions and their properties',
       'Chapter 5 — mathematics of finance: compound interest, present value, annuities, amortisation and perpetuities',
       'Chapter 6 — matrix algebra: matrix multiplication, row reduction, inverses and input–output analysis',
@@ -20138,9 +20137,664 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             solution: ['2x = 6', 'x = 3', 'The point (3, 0, 0)'] }
         ]
       },
+      /* ============================ CHAPTER 3 ============================ */
+      {
+        id: 'lines', n: 3,
+        title: 'Lines, parabolas and systems',
+        blurb: 'Straight lines in every form they come in, the linear functions that model demand, supply and depreciation, the parabola and its vertex, systems of equations solved and interpreted, and the two intersections a business cares about most — market equilibrium and break-even.',
+        read: 'Chapter 3',
+        objectives: [
+          'Find the slope of a line and write its equation in point-slope, slope-intercept and general form; recognise parallel and perpendicular lines',
+          'Build linear functions from data — demand and supply equations, depreciation, production levels — and interpret the slope',
+          'Graph a quadratic function from its vertex and intercepts, and use the vertex to maximise revenue',
+          'Solve systems of linear equations in two and three variables by elimination and substitution, and recognise systems with no solution or infinitely many',
+          'Solve a nonlinear system by substitution',
+          'Find market equilibrium, the effect of a tax on it, and break-even quantities'
+        ],
+        lessons: [
+          {
+            id: 'd1', title: 'Lines', src: 'Section 3.1',
+            idea: `A straight line is described by its steepness and one point on it. The <b>slope</b> of the line through (x₁, y₁) and (x₂, y₂) is<br><br><b>m = (y₂ − y₁)/(x₂ − x₁)</b>, the rise over the run<br><br>— the change in y for each unit increase in x. Positive slope rises to the right, negative falls, zero is horizontal. A <b>vertical line</b> has no slope at all: the run is 0 and the quotient is undefined. The order of the points does not matter as long as it is the same in numerator and denominator.<br><br>Three forms of the equation are used, and converting between them is routine. <b>Point-slope form</b>, y − y₁ = m(x − x₁), is the one to write first when a slope and a point are known, or two points. <b>Slope-intercept form</b>, y = mx + b, exposes the slope m and the y-intercept b at a glance and is the form for graphing and for reading a rate of change. <b>General form</b>, Ax + By + C = 0, covers every line including the vertical ones, which the other two cannot write. The line through (2, −3) and (6, 5) has m = 8/4 = 2, point-slope y + 3 = 2(x − 2), slope-intercept y = 2x − 7, general 2x − y − 7 = 0.<br><br>A <b>horizontal line</b> is y = b, slope 0; a <b>vertical line</b> is x = a, no slope. Both are lines; only one is a function.<br><br>Two lines are <b>parallel</b> exactly when they have the same slope (or are both vertical). They are <b>perpendicular</b> exactly when the product of their slopes is −1 — each slope is the negative reciprocal of the other — or one is horizontal and the other vertical. So a line perpendicular to one of slope 3/4 has slope −4/3, and the line perpendicular to 3x − 4y = 12 through (4, 1) is y − 1 = −(4/3)(x − 4). "Negative reciprocal" means both the sign flips and the fraction inverts; forgetting either half gives a line that is not perpendicular.<br><br>To graph a line from general form, find the two intercepts and join them, or convert to slope-intercept and step off the slope from the y-intercept.`,
+            rules: [
+              { name: 'Slope', expr: 'm = (y_2 - y_1)/(x_2 - x_1)', note: 'Rise over run: the change in y per unit increase in x. Undefined for a vertical line.' },
+              { name: 'Point-slope form', expr: 'y - y_1 = m (x - x_1)', note: 'The form to write first from a slope and a point.' },
+              { name: 'Slope-intercept form', expr: 'y = m x + b', note: 'Slope m, y-intercept b. The form for graphing and for reading a rate.' },
+              { name: 'General form', expr: 'A x + B y + C = 0', note: 'Covers every line, including vertical ones (B = 0).' },
+              { name: 'Horizontal and vertical', expr: 'y = b, x = a', note: 'Slope 0, and no slope.' },
+              { name: 'Parallel and perpendicular', expr: 'Parallel: equal slopes. Perpendicular: slopes multiply to -1, each the negative reciprocal of the other', words: true, note: 'Or a horizontal with a vertical.' }
+            ],
+            examples: [
+              {
+                prompt: 'Find the equation of the line through (2, −3) and (6, 5) in slope-intercept form and in general form.',
+                steps: [
+                  { do: 'm = (5 − (−3))/(6 − 2) = 8/4 = 2', why: 'Rise over run, the same order of points top and bottom.' },
+                  { do: 'Point-slope with (2, −3): y + 3 = 2(x − 2)', why: 'Either point works; y − (−3) is y + 3.' },
+                  { do: 'y = 2x − 7', why: 'Expand and isolate y: slope 2, y-intercept −7.' },
+                  { do: '2x − y − 7 = 0', why: 'Move everything to one side for general form. Check (6, 5): 12 − 5 − 7 = 0.' }
+                ],
+                answer: 'y = 2x − 7, or 2x − y − 7 = 0', answerWords: true
+              },
+              {
+                prompt: 'For the line 3x − 4y = 12, find the slope and y-intercept, and the equation of the line through (4, 1) perpendicular to it.',
+                steps: [
+                  { do: '−4y = −3x + 12, so y = (3/4)x − 3: slope 3/4, y-intercept −3', why: 'Convert to slope-intercept by isolating y.' },
+                  { do: 'Perpendicular slope: −4/3', why: 'The negative reciprocal: flip the fraction and the sign, so that (3/4)(−4/3) = −1.' },
+                  { do: 'y − 1 = −(4/3)(x − 4), that is, y = −(4/3)x + 19/3', why: 'Point-slope through (4, 1), then simplify: −(4/3)(−4) + 1 = 16/3 + 3/3.' }
+                ],
+                answer: 'Slope 3/4, y-intercept −3; perpendicular line y = −(4/3)x + 19/3', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'bus-slope-run-over-rise',
+                wrong: 'Computing the slope as (x₂ − x₁)/(y₂ − y₁), or mixing the order of the points between numerator and denominator',
+                right: 'Slope is the change in y over the change in x, with the points in the same order in both.',
+                why: 'Slope is the rate at which y changes per unit of x, so y goes on top. And (5 − (−3))/(2 − 6) has the points in opposite orders and gives −2 instead of 2 — the sign of a slope is the direction of the line, and it must be right.'
+              },
+              {
+                id: 'bus-perpendicular-only-sign-flipped',
+                wrong: 'Taking the perpendicular slope to 3/4 as −3/4',
+                right: 'The negative reciprocal: −4/3. Both the sign and the fraction change.',
+                why: 'Perpendicular slopes multiply to −1, and (3/4)(−3/4) = −9/16 does not. Flipping only the sign gives a reflection of the line, not a right angle to it.'
+              },
+              {
+                id: 'bus-vertical-line-slope-zero',
+                wrong: 'Saying a vertical line has slope 0',
+                right: 'A horizontal line has slope 0. A vertical line has no slope — the run is 0 and the quotient is undefined.',
+                why: 'Slope measures rise per unit run, and a vertical line has no run. Its equation x = a cannot be written as y = mx + b at all, which is why general form exists. Zero and undefined are different answers.'
+              }
+            ]
+          },
+
+          {
+            id: 'd2', title: 'Applications and linear functions', src: 'Section 3.2',
+            idea: `A <b>linear function</b> is f(x) = ax + b with a ≠ 0, and its graph is a line of slope a. In an application the slope is a <b>rate</b> — dollars per unit, grams per day, units of B given up per unit of A — and the intercept is a starting value. Reading those two numbers out of a situation, or building the function from two data points, is the skill of this section.<br><br><b>Demand and supply equations.</b> A demand equation relates the price p of a product to the quantity q that buyers take at that price; a supply equation relates p to the quantity producers offer. By convention p is written as a function of q, so a q, p-plane with q horizontal. Demand slopes down (a lower price sells more); supply slopes up. When the relation is assumed linear, two observations fix it: if 900 units sell at $40 and 1,500 at $28, the slope is (28 − 40)/(1,500 − 900) = −0.02 dollars per unit, and point-slope gives p − 40 = −0.02(q − 900), so p = −0.02q + 58. The intercept 58 is the price at which demand falls to zero; the slope says each extra unit sold requires the price to drop two cents.<br><br><b>Linear depreciation.</b> An asset bought for $24,000 and worth $4,000 after 8 years loses (24,000 − 4,000)/8 = 2,500 a year, so its value is V(t) = 24,000 − 2,500t for 0 ≤ t ≤ 8: intercept the purchase price, slope the negative of the annual depreciation.<br><br><b>Production levels.</b> If 120 lb of material makes products A and B at 3 lb and 2 lb per unit, every feasible pair (x, y) satisfies 3x + 2y = 120, so y = −1.5x + 60. The slope −1.5 is the trade-off: each extra unit of A costs 1.5 units of B.<br><br>In every case, once the function is written the questions are the ones of section 2.1: evaluate it (the value after 3 years is 24,000 − 7,500 = 16,500), solve it for the input (at what price is demand 1,200?), and state the domain the situation allows.`,
+            rules: [
+              { name: 'Linear function', expr: 'f(x) = a x + b', note: 'Slope a is a rate; b is the starting value. Domain restricted by the situation.' },
+              { name: 'From two points', expr: 'm = (p_2 - p_1)/(q_2 - q_1), p - p_1 = m (q - q_1)', note: 'Slope from the two observations, then point-slope.' },
+              { name: 'Demand and supply', expr: 'p as a function of q: demand slopes down, supply slopes up', words: true, note: 'Plotted in the q, p-plane with q horizontal.' },
+              { name: 'Linear depreciation', expr: 'V(t) = V_0 - d t', note: 'Purchase price V₀, annual depreciation d = (V₀ − scrap value)/lifetime.' },
+              { name: 'Slope as trade-off', expr: '3x + 2y = 120 gives y = -1.5 x + 60', words: true, note: 'Each extra unit of A costs 1.5 units of B.' }
+            ],
+            examples: [
+              {
+                prompt: 'A product sells 900 units a week at $40 and 1,500 at $28. Find the linear demand equation, and the price at which 1,200 units sell.',
+                steps: [
+                  { do: 'Points (900, 40) and (1,500, 28); m = (28 − 40)/(1,500 − 900) = −12/600 = −0.02', why: 'q first, p second. The slope is negative: demand falls as price rises.' },
+                  { do: 'p − 40 = −0.02(q − 900), so p = −0.02q + 58', why: 'Point-slope, then slope-intercept: p as a function of q.' },
+                  { do: 'At q = 1,200: p = −24 + 58 = 34', why: 'Evaluate. Halfway between the data points in q, and halfway in p, as a line must be.' }
+                ],
+                answer: 'p = −0.02q + 58; 1,200 units sell at $34', answerWords: true
+              },
+              {
+                prompt: 'A machine bought for $24,000 will be worth $4,000 after 8 years. Assuming linear depreciation, write its value V as a function of t years, and find the value after 3 years.',
+                steps: [
+                  { do: 'Annual depreciation (24,000 − 4,000)/8 = 2,500', why: 'The total drop spread evenly over the lifetime.' },
+                  { do: 'V(t) = 24,000 − 2,500t, 0 ≤ t ≤ 8', why: 'Intercept the purchase price, slope −2,500. The domain ends at the scrap date.' },
+                  { do: 'V(3) = 24,000 − 7,500 = 16,500', why: 'Evaluate at t = 3.' }
+                ],
+                answer: 'V(t) = 24,000 − 2,500t; worth $16,500 after 3 years', answerWords: true
+              },
+              {
+                prompt: 'A plant has 120 lb of material a day; product A uses 3 lb per unit and B uses 2 lb. Write the relation between the daily outputs x of A and y of B, and interpret the slope.',
+                steps: [
+                  { do: '3x + 2y = 120, with x, y ≥ 0', why: 'All the material is used; outputs cannot be negative.' },
+                  { do: 'y = −1.5x + 60', why: 'Solve for y: slope −1.5, y-intercept 60 (all material to B).' },
+                  { do: 'Each additional unit of A reduces the output of B by 1.5 units', why: 'The slope is the trade-off between the two products; the x-intercept 40 is all material to A.' }
+                ],
+                answer: '3x + 2y = 120, or y = −1.5x + 60: each extra unit of A costs 1.5 units of B', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'bus-demand-points-as-p-q',
+                wrong: 'Writing the demand data as points (40, 900) and (28, 1,500)',
+                right: 'By convention p is a function of q: the points are (q, p) = (900, 40) and (1,500, 28), and the slope is in dollars per unit.',
+                why: 'Reversing the coordinates gives the reciprocal slope and a demand equation in the wrong variable. The convention is fixed by the way equilibrium and revenue are computed later, both of which need p in terms of q.'
+              },
+              {
+                id: 'bus-depreciation-slope-positive',
+                wrong: 'Writing the value of a depreciating asset as V(t) = 24,000 + 2,500t',
+                right: 'Value falls, so the slope is negative: V(t) = 24,000 − 2,500t.',
+                why: 'The sign of a slope is the direction of change. A positive slope would make the machine worth more each year, and the check V(8) = 4,000 fails immediately with the wrong sign.'
+              },
+              {
+                id: 'bus-linear-function-domain-unbounded',
+                wrong: 'Giving V(t) = 24,000 − 2,500t a domain of all real t',
+                right: 'The situation limits it: 0 ≤ t ≤ 8, from purchase to the scrap date.',
+                why: 'Beyond t = 8 the formula gives values below scrap and eventually negative, which the asset never has. The algebra is happy with any t; the domain is a statement about the world, and it is part of the model.'
+              }
+            ]
+          },
+
+          {
+            id: 'd3', title: 'Quadratic functions', src: 'Section 3.3',
+            idea: `A <b>quadratic function</b> is f(x) = ax² + bx + c with a ≠ 0. Its graph is a <b>parabola</b>: opening upward when a &gt; 0, downward when a &lt; 0, and symmetric about a vertical line through its turning point, the <b>vertex</b>. Everything about the graph follows from the vertex, and the vertex has a formula:<br><br><b>x = −b/(2a)</b>, with the y-coordinate found by substituting back<br><br>For f(x) = x² − 6x + 5, the vertex is at x = 6/2 = 3, where f(3) = 9 − 18 + 5 = −4. Since a = 1 &gt; 0 the parabola opens up, so −4 is the <b>minimum</b> value of f and the range is [−4, ∞). The y-intercept is c = 5, and the x-intercepts, where x² − 6x + 5 = (x − 1)(x − 5) = 0, are 1 and 5 — one on each side of the axis of symmetry x = 3, as they must be. Vertex, intercepts and the direction of opening are enough to sketch any parabola. When the quadratic does not factor, the x-intercepts come from the quadratic formula, or there are none if the discriminant b² − 4ac is negative.<br><br>The formula for the vertex is worth a sentence of explanation, because it is used constantly. The x-intercepts of ax² + bx + c are symmetric about the axis, and their average is −b/(2a) by the quadratic formula; the vertex sits on that axis whether or not the intercepts exist.<br><br>Because a parabola has exactly one turning point, a quadratic model has one best value, and the vertex is where it is. <b>Revenue</b> from a linear demand p = 800 − 4q is r = pq = 800q − 4q², a quadratic in q with a = −4 &lt; 0, opening down, so its vertex is a maximum: q = −800/(2 · −4) = 100 units, where r = 80,000 − 40,000 = 40,000 and the price is 800 − 400 = 400. The maximum revenue is not at the highest price — at p = 800 nothing sells — nor at the largest quantity, where the price is zero; it is at the vertex, halfway between.<br><br>A quadratic function is not one-to-one, but restricted to one side of its vertex it is, and its inverse is a square-root function; that is the restriction of section 2.4 again.`,
+            rules: [
+              { name: 'Quadratic function', expr: 'f(x) = a x^2 + b x + c', note: 'For a ≠ 0. The graph is a parabola, opening up when a > 0 and down when a < 0.' },
+              { name: 'Vertex', expr: 'x = -b/(2a)', note: 'Then substitute for the y-coordinate. The minimum if a > 0, the maximum if a < 0.' },
+              { name: 'Intercepts', expr: 'y-intercept c; x-intercepts where a x^2 + b x + c = 0', words: true, note: 'Factor, or use the quadratic formula; none if b² − 4ac < 0.' },
+              { name: 'Axis of symmetry', expr: 'x = -b/(2a)', note: 'The x-intercepts, if any, sit symmetrically about it.' },
+              { name: 'Maximum revenue', expr: 'r = p q with a linear demand is a downward parabola in q; the vertex gives the maximum', words: true, note: 'Not at the highest price and not at the largest quantity.' }
+            ],
+            examples: [
+              {
+                prompt: 'For f(x) = x² − 6x + 5, find the vertex, the intercepts, the direction of opening and the range.',
+                steps: [
+                  { do: 'a = 1 > 0: opens upward', why: 'The sign of a decides.' },
+                  { do: 'Vertex: x = −(−6)/(2 · 1) = 3; f(3) = 9 − 18 + 5 = −4. Vertex (3, −4)', why: 'The formula for x, then substitute. The minimum value is −4.' },
+                  { do: 'y-intercept 5; x-intercepts from (x − 1)(x − 5) = 0: 1 and 5', why: 'c is the y-intercept; factoring gives the x-intercepts, one either side of x = 3.' },
+                  { do: 'Range [−4, ∞)', why: 'Opens up from its minimum.' }
+                ],
+                answer: 'Vertex (3, −4), opening upward; intercepts (0, 5), (1, 0), (5, 0); range [−4, ∞)', answerWords: true
+              },
+              {
+                prompt: 'The demand for a product is p = 800 − 4q. Find the quantity, price and revenue at maximum revenue.',
+                steps: [
+                  { do: 'r = pq = (800 − 4q)q = 800q − 4q²', why: 'Revenue is price times quantity; a quadratic in q with a = −4.' },
+                  { do: 'a < 0, so the vertex is the maximum: q = −800/(2 · −4) = 100', why: 'The vertex formula with b = 800.' },
+                  { do: 'r(100) = 80,000 − 40,000 = 40,000; p = 800 − 400 = 400', why: 'Substitute for the revenue, and the demand equation for the price.' }
+                ],
+                answer: '100 units at $400 each, for a maximum revenue of $40,000', answerWords: true
+              },
+              {
+                prompt: 'Find the maximum value of f(x) = −2x² + 8x − 3 and where it occurs.',
+                steps: [
+                  { do: 'a = −2 < 0: opens down, so the vertex is a maximum', why: 'The sign of a decides which the vertex is.' },
+                  { do: 'x = −8/(2 · −2) = 2', why: 'Vertex formula.' },
+                  { do: 'f(2) = −8 + 16 − 3 = 5', why: 'Substitute. Maximum value 5 at x = 2; range (−∞, 5].' }
+                ],
+                answer: 'Maximum 5 at x = 2', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'bus-vertex-sign-dropped',
+                wrong: 'Taking the vertex of x² − 6x + 5 at x = b/(2a) = −3',
+                right: 'The vertex is at x = −b/(2a) = 3. The minus sign is part of the formula.',
+                why: 'The formula averages the two roots (6 ± 4)/2 of the quadratic formula, whose first term is −b/(2a). With the sign dropped the vertex lands on the wrong side of the y-axis and the intercepts 1 and 5 are no longer symmetric about it — a check that would have caught it.'
+              },
+              {
+                id: 'bus-max-revenue-at-max-price',
+                wrong: 'Claiming maximum revenue is earned at the highest price the demand equation allows',
+                right: 'Revenue is a downward parabola in q; its maximum is at the vertex, q = −b/(2a), where the price is in the middle of its range.',
+                why: 'At the highest price, p = 800, the quantity demanded is 0 and revenue is 0; at q = 200 the price is 0. Revenue is the product, largest at the vertex q = 100 with p = 400. Price and revenue are different things.'
+              },
+              {
+                id: 'bus-parabola-direction-ignored',
+                wrong: 'Calling the vertex a minimum without checking the sign of a',
+                right: 'a > 0 opens up and the vertex is a minimum; a < 0 opens down and it is a maximum.',
+                why: 'The formula −b/(2a) locates the vertex either way; only the sign of a says whether it is the top or the bottom. For a revenue function the answer is always a maximum, and for a cost function usually a minimum, and the sign of a confirms which.'
+              }
+            ]
+          },
+
+          {
+            id: 'd4', title: 'Systems of linear equations', src: 'Section 3.4',
+            idea: `Two lines in a plane either cross once, never, or lie on top of each other, and a <b>system</b> of two linear equations in two unknowns has correspondingly <b>exactly one solution</b>, <b>none</b>, or <b>infinitely many</b>. Solving means finding the point or points common to both.<br><br><b>Elimination by addition</b>: multiply one or both equations by constants so that the coefficients of one variable are opposites, add the equations to remove that variable, solve for the other, and substitute back. For 3x + 2y = 16 and 5x − 4y = 12, doubling the first gives 6x + 4y = 32; adding to the second gives 11x = 44, so x = 4, and then y = 2. <b>Elimination by substitution</b>: solve one equation for one variable and substitute into the other. Both methods give the same answer; substitution is natural when a coefficient is already 1.<br><br>The two degenerate cases announce themselves during elimination. If every variable disappears and what remains is <b>false</b>, like 0 = 9, the system is <b>inconsistent</b>: the lines are parallel and there is no solution. If what remains is <b>true</b>, like 0 = 0, the two equations were the same line in disguise and there are infinitely many solutions, described by a <b>parameter</b>: from x − 3y = 4, let y = r, then x = 4 + 3r for any real r. That is a one-parameter family, and every value of r gives one solution.<br><br><b>Three variables</b> work the same way with one more round: eliminate one variable from two different pairs of equations to leave a two-variable system, solve it, and substitute back for the third. For x + y + z = 6, 2x − y + z = 3 and x + 2y − z = 2, adding the first and third gives 2x + 3y = 8 and adding the second and third gives 3x + y = 5; then y = 5 − 3x, so 2x + 15 − 9x = 8, x = 1, y = 2, z = 3. Geometrically each equation is a plane, and three planes typically meet in a point.<br><br>Always check the solution in every original equation, especially after several multiplications; a sign slip in one line survives the rest of the algebra unnoticed.`,
+            rules: [
+              { name: 'Three possibilities', expr: 'One solution (lines cross), none (parallel), or infinitely many (the same line)', words: true, note: 'Elimination tells which: a variable value, a false statement, or a true one.' },
+              { name: 'Elimination by addition', expr: 'Scale so one variable has opposite coefficients, add, solve, substitute back', words: true, note: 'Multiply whole equations, both sides.' },
+              { name: 'Substitution', expr: 'Solve one equation for a variable and substitute into the other', words: true, note: 'Natural when a coefficient is 1.' },
+              { name: 'Parametric solution', expr: 'x = 4 + 3r, y = r', note: 'A one-parameter family for a dependent system: every r gives a solution.' },
+              { name: 'Three variables', expr: 'Eliminate one variable from two pairs of equations, solve the two-variable system, substitute back', words: true, note: 'Three planes usually meet in a point.' }
+            ],
+            examples: [
+              {
+                prompt: 'Solve 3x + 2y = 16 and 5x − 4y = 12.',
+                steps: [
+                  { do: 'Double the first: 6x + 4y = 32', why: 'To make the y-coefficients opposites, 4 and −4.' },
+                  { do: 'Add to the second: 11x = 44, so x = 4', why: 'The y-terms cancel.' },
+                  { do: '3(4) + 2y = 16 gives y = 2. Check: 5(4) − 4(2) = 12', why: 'Substitute back, then verify in the equation not yet used.' }
+                ],
+                answer: 'x = 4, y = 2', answerWords: true
+              },
+              {
+                prompt: 'Solve x − 3y = 4 together with −2x + 6y = 1, and then x − 3y = 4 together with −2x + 6y = −8.',
+                steps: [
+                  { do: 'First system: double the first equation, 2x − 6y = 8, and add: 0 = 9', why: 'Every variable vanishes and a false statement remains.' },
+                  { do: 'Inconsistent: no solution. The lines are parallel (both have slope 1/3) with different intercepts', why: 'A false remainder means parallel lines.' },
+                  { do: 'Second system: the same step gives 0 = 0. The equations are the same line; let y = r, then x = 4 + 3r', why: 'A true remainder means one line twice. The solution is a one-parameter family: r = 0 gives (4, 0), r = 1 gives (7, 1).' }
+                ],
+                answer: 'The first system has no solution; the second has infinitely many, x = 4 + 3r, y = r', answerWords: true
+              },
+              {
+                prompt: 'Solve x + y + z = 6, 2x − y + z = 3, x + 2y − z = 2.',
+                steps: [
+                  { do: 'First + third: 2x + 3y = 8. Second + third: 3x + y = 5', why: 'z has coefficient −1 in the third equation, so adding it to each of the others eliminates z twice.' },
+                  { do: 'From the second: y = 5 − 3x. Substitute: 2x + 15 − 9x = 8, so x = 1, y = 2', why: 'The two-variable system by substitution.' },
+                  { do: 'z = 6 − 1 − 2 = 3. Check: 2 − 2 + 3 = 3 and 1 + 4 − 3 = 2', why: 'Back into the first equation for z, then verify in the other two.' }
+                ],
+                answer: 'x = 1, y = 2, z = 3', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'bus-equation-scaled-one-side',
+                wrong: 'Doubling the left side of 3x + 2y = 16 to 6x + 4y = 16',
+                right: 'Multiply both sides: 6x + 4y = 32.',
+                why: 'An equation stays true only when the same thing is done to both sides. Scaling one side changes the line and the resulting "solution" satisfies neither original equation — the check at the end catches it, if the check is done.'
+              },
+              {
+                id: 'bus-inconsistent-read-as-zero-solution',
+                wrong: 'Reporting the solution of a system that reduces to 0 = 9 as x = 0, y = 0',
+                right: '0 = 9 is false for every x and y: the system has no solution. The lines are parallel.',
+                why: 'When all the variables cancel, what remains is a statement about the system, not a value. False means inconsistent; true means dependent with infinitely many solutions. Neither is the origin.'
+              },
+              {
+                id: 'bus-dependent-system-one-answer',
+                wrong: 'Giving a single point as the solution of a system that reduces to 0 = 0',
+                right: 'There are infinitely many solutions: express them with a parameter, x = 4 + 3r, y = r.',
+                why: 'Both equations describe the same line, and every point on it is a solution. Picking one point answers a different question; the parametric form gives all of them and is what the marker expects.'
+              }
+            ]
+          },
+
+          {
+            id: 'd5', title: 'Nonlinear systems', src: 'Section 3.5',
+            idea: `When one equation of a system is not linear — a parabola, a circle, a rational curve — the picture changes: a line can meet a parabola in two points, one, or none, and a circle and a line likewise. The method does not change much: <b>substitute</b> one equation into the other to get a single equation in one variable, solve it, and find the matching values of the other variable.<br><br>For y = x² − 2x − 3 and y = x + 1, equate the two expressions for y: x² − 2x − 3 = x + 1, so x² − 3x − 4 = (x − 4)(x + 1) = 0 and x = 4 or x = −1. Each x has its own y from the line: (4, 5) and (−1, 0). Two intersections, and both must be reported as points — an x alone is half an answer.<br><br>For x² + y² = 25 and y = x + 1, substitute the line into the circle: x² + (x + 1)² = 25, so 2x² + 2x − 24 = 0, x² + x − 12 = (x + 4)(x − 3) = 0, giving (3, 4) and (−4, −3). Had the line been y = x + 10, the substituted quadratic would have had a negative discriminant and the line would miss the circle: no solution. A zero discriminant means the line is tangent, touching once.<br><br>Two cautions. When a substitution involves squaring both sides — as with a square root — the result can acquire <b>extraneous roots</b> that satisfy the squared equation but not the original, so every solution is checked in both original equations. And a solution of the one-variable equation is only a candidate until its partner has been found and the pair verified.<br><br>Graphically, solving f(x) = g(x) is finding where the two graphs cross, and a calculator or plotting tool does it to any accuracy needed. The algebra is what gives exact answers.`,
+            rules: [
+              { name: 'Method', expr: 'Substitute one equation into the other, solve the single equation, then find each partner value', words: true, note: 'Report solutions as points.' },
+              { name: 'Line and parabola', expr: 'x^2 - 2x - 3 = x + 1', note: 'Equating two expressions for y gives a quadratic: two, one or no intersections by the discriminant.' },
+              { name: 'Line and circle', expr: 'x^2 + (x + 1)^2 = 25', note: 'The line substituted into the circle; a negative discriminant means the line misses.' },
+              { name: 'Check every solution', expr: 'Substitute each pair into both original equations', words: true, note: 'Squaring can introduce extraneous roots.' }
+            ],
+            examples: [
+              {
+                prompt: 'Solve the system y = x² − 2x − 3 and y = x + 1.',
+                steps: [
+                  { do: 'x² − 2x − 3 = x + 1, so x² − 3x − 4 = 0', why: 'Both equal y; equate them and collect on one side.' },
+                  { do: '(x − 4)(x + 1) = 0, so x = 4 or x = −1', why: 'Factor the quadratic; the two roots are the two crossings.' },
+                  { do: 'From y = x + 1: (4, 5) and (−1, 0). Check in the parabola: 16 − 8 − 3 = 5 and 1 + 2 − 3 = 0', why: 'Each x has its partner y; verify in the equation not used to find it.' }
+                ],
+                answer: '(4, 5) and (−1, 0)', answerWords: true
+              },
+              {
+                prompt: 'Solve x² + y² = 25 and y = x + 1, and explain what happens with y = x + 10 instead.',
+                steps: [
+                  { do: 'x² + (x + 1)² = 25, so 2x² + 2x − 24 = 0, x² + x − 12 = 0', why: 'Substitute the line into the circle and simplify; divide by 2.' },
+                  { do: '(x + 4)(x − 3) = 0: x = 3, y = 4 and x = −4, y = −3', why: 'Factor, then partners from the line. Both satisfy 9 + 16 = 25 and 16 + 9 = 25.' },
+                  { do: 'With y = x + 10: x² + (x + 10)² = 25 gives 2x² + 20x + 75 = 0, discriminant 400 − 600 < 0: no solution', why: 'The line passes outside the circle of radius 5; a negative discriminant is the algebraic sign of a miss.' }
+                ],
+                answer: '(3, 4) and (−4, −3); the line y = x + 10 does not meet the circle', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'bus-nonlinear-x-values-only',
+                wrong: 'Answering "x = 4 or x = −1" for the intersection of a line and a parabola',
+                right: 'The solutions are points: (4, 5) and (−1, 0). Find each y and report the pairs.',
+                why: 'A system in two variables is solved by pairs of values. The x-values are where the crossings happen, and the y-values are the other half of where; a graph could not be marked from the x-values alone.'
+              },
+              {
+                id: 'bus-extraneous-root-kept',
+                wrong: 'Keeping every root after squaring both sides of an equation with a square root',
+                right: 'Squaring can create roots the original did not have. Check each solution in the original equations and discard the ones that fail.',
+                why: 'Squaring both sides of √x = −2 gives x = 4, but √4 is 2, not −2. Whenever a step is not reversible, the candidates it produces must be tested against what was actually asked.'
+              },
+              {
+                id: 'bus-negative-discriminant-called-error',
+                wrong: 'Treating a negative discriminant as a mistake in the algebra',
+                right: 'A negative discriminant means the curves do not meet: the system has no real solution, and that is the answer.',
+                why: 'A line can miss a circle or a parabola entirely. The algebra reports it faithfully by producing a quadratic with no real roots, and "no solution" is a complete, correct answer to the question.'
+              }
+            ]
+          },
+
+          {
+            id: 'd6', title: 'Applications of systems', src: 'Section 3.6',
+            idea: `The two most important intersections in the course are both solved as systems.<br><br><b>Equilibrium.</b> A market has a demand equation (price buyers pay for each quantity, sloping down) and a supply equation (price at which producers offer each quantity, sloping up). Where the two curves cross is the <b>equilibrium point</b>: the <b>equilibrium quantity</b> is the amount that clears the market, and the <b>equilibrium price</b> is the price at which buyers take exactly what producers offer. With demand p = 60 − 0.05q and supply p = 20 + 0.03q, equate them: 40 = 0.08q, q = 500, p = 35. At any higher price, supply exceeds demand and there is a surplus; at any lower, a shortage.<br><br><b>A tax on the producer</b> of t dollars per unit raises the price producers need for each quantity by t, so the supply equation becomes p = (original) + t while demand is unchanged. A $2 tax makes supply p = 22 + 0.03q; the new equilibrium is 38 = 0.08q, q = 475, p = 36.25. The price rises by $1.25, less than the $2 tax — buyers pay part of it and producers absorb the rest — and the quantity falls. That split depends on the slopes.<br><br><b>Break-even.</b> A firm's <b>total revenue</b> is price times quantity, y<sub>TR</sub> = pq, and its <b>total cost</b> is variable cost plus fixed cost, y<sub>TC</sub> = vq + F. The <b>break-even point</b> is where they are equal, profit zero: with a price of $12, variable cost $7.50 and fixed cost $9,000, 12q = 7.5q + 9,000 gives 4.5q = 9,000, q = 2,000 units, with revenue $24,000. Below that output the firm makes a loss, above it a profit, and profit at any output is y<sub>TR</sub> − y<sub>TC</sub>: at 3,000 units, 36,000 − 31,500 = 4,500. The output for a target profit is found by setting y<sub>TR</sub> − y<sub>TC</sub> equal to the target. When revenue is not linear — a revenue curve like 100√q, say — there can be two break-even quantities, with profit only between them.<br><br>Both problems end in a sentence with units: a quantity of units per week and a price in dollars, or an output and a revenue. The system is the tool; the sentence is the answer.`,
+            rules: [
+              { name: 'Equilibrium', expr: 'Set demand price equal to supply price and solve for q, then find p', words: true, note: 'The point where the market clears; surplus above it, shortage below.' },
+              { name: 'Tax on the producer', expr: 'p = (supply price) + t', words: true, note: 'Demand is unchanged. The equilibrium price rises by less than t and the quantity falls.' },
+              { name: 'Total revenue and total cost', expr: 'y_TR = p q, y_TC = v q + F', note: 'Price p, variable cost v per unit, fixed cost F.' },
+              { name: 'Break-even', expr: 'p q = v q + F', note: 'Profit zero. Solve for the break-even quantity q = F/(p − v).' },
+              { name: 'Profit', expr: 'profit = y_TR - y_TC', note: 'Negative is a loss. For a target profit, set the difference equal to the target.' }
+            ],
+            examples: [
+              {
+                prompt: 'Demand is p = 60 − 0.05q and supply is p = 20 + 0.03q. Find the equilibrium quantity and price.',
+                steps: [
+                  { do: '60 − 0.05q = 20 + 0.03q', why: 'At equilibrium the two prices agree.' },
+                  { do: '40 = 0.08q, so q = 500', why: 'Collect terms and solve for the quantity.' },
+                  { do: 'p = 20 + 0.03(500) = 35; check the demand side: 60 − 25 = 35', why: 'Substitute into either equation and confirm with the other.' }
+                ],
+                answer: 'Equilibrium quantity 500 units at a price of $35', answerWords: true
+              },
+              {
+                prompt: 'A tax of $2 per unit is imposed on the producer in the market above. Find the new equilibrium, and how much of the tax the buyer pays.',
+                steps: [
+                  { do: 'New supply: p = 22 + 0.03q; demand unchanged', why: 'Producers need $2 more per unit at every quantity to end up where they were.' },
+                  { do: '60 − 0.05q = 22 + 0.03q gives 38 = 0.08q, q = 475', why: 'Equate and solve.' },
+                  { do: 'p = 60 − 0.05(475) = 36.25. The price rose 1.25 of the 2.00 tax; the quantity fell from 500 to 475', why: 'Buyers pay $1.25 of the tax, producers absorb $0.75. The split depends on the slopes of the two curves.' }
+                ],
+                answer: 'New equilibrium 475 units at $36.25; the buyer pays $1.25 of the $2 tax', answerWords: true
+              },
+              {
+                prompt: 'A firm sells at $12 per unit, with variable cost $7.50 per unit and fixed cost $9,000. Find the break-even output and revenue, the profit at 3,000 units, and the output for a profit of $13,500.',
+                steps: [
+                  { do: 'y_TR = 12q and y_TC = 7.5q + 9,000', why: 'Revenue and total cost as functions of output.' },
+                  { do: 'Break-even: 12q = 7.5q + 9,000, so 4.5q = 9,000, q = 2,000, revenue 24,000', why: 'Each unit contributes $4.50 toward the fixed cost; 2,000 of them cover it.' },
+                  { do: 'Profit at 3,000: 36,000 − (22,500 + 9,000) = 4,500', why: 'Revenue minus total cost.' },
+                  { do: 'Target 13,500: 4.5q − 9,000 = 13,500, so q = 5,000', why: 'Set profit equal to the target and solve.' }
+                ],
+                answer: 'Break-even at 2,000 units ($24,000 revenue); profit $4,500 at 3,000 units; 5,000 units for a $13,500 profit', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'bus-equilibrium-quantity-reported-as-price',
+                wrong: 'Answering "the equilibrium is 500" without saying whether that is the quantity or the price',
+                right: 'The equilibrium is a point: quantity 500 units at a price of $35. Report both, with units.',
+                why: 'The system is solved for q first, and stopping there gives half the answer. The equilibrium price is what the question usually cares about, and it comes from substituting q back into either equation.'
+              },
+              {
+                id: 'bus-tax-added-to-demand',
+                wrong: 'Modelling a producer tax by adding it to the demand equation',
+                right: 'A tax on the producer shifts the supply equation up by the tax; demand does not change.',
+                why: 'Buyers still pay what the demand curve says at each quantity; it is the producer who must receive more to cover the tax. Shifting the wrong curve reverses the direction of the price change and gets the split of the tax wrong.'
+              },
+              {
+                id: 'bus-breakeven-confused-with-profit-target',
+                wrong: 'Using the break-even quantity when asked for the output that earns a given profit',
+                right: 'Break-even is profit zero. For a target profit, set revenue minus cost equal to the target and solve.',
+                why: 'Break-even is the special case of profit 0. A target of $13,500 needs 13,500/4.50 = 3,000 units beyond break-even, so 5,000 in all. The same equation, a different right-hand side.'
+              }
+            ]
+          }
+        ],
+        practice: [
+          { id: 'm1', kind: 'numeric', lesson: 'd1',
+            prompt: 'What is the slope of the line through (2, −3) and (6, 5)?',
+            answer: 2, verify: { expr: '(5 - (-3))/(6 - 2)' },
+            hint: 'Rise over run.',
+            solution: ['(5 − (−3))/(6 − 2)', '= 8/4', '= 2'] },
+
+          { id: 'm2', kind: 'numeric', lesson: 'd1',
+            prompt: 'What is the y-intercept of the line through (2, −3) and (6, 5)?',
+            answer: -7, verify: { expr: '(-3) - 2*2' },
+            hint: 'y = 2x + b through (2, −3).',
+            solution: ['−3 = 2(2) + b', 'b = −7', 'y = 2x − 7'] },
+
+          { id: 'm3', kind: 'numeric', lesson: 'd1',
+            prompt: 'What is the slope of the line 3x − 4y = 12? Give 2 decimal places.',
+            answer: 0.75, verify: { expr: 'Rational(3, 4)' },
+            hint: 'Solve for y.',
+            solution: ['−4y = −3x + 12', 'y = (3/4)x − 3', 'Slope 0.75'] },
+
+          { id: 'm4', kind: 'numeric', lesson: 'd1',
+            prompt: 'What is the slope of a line perpendicular to 3x − 4y = 12? Give 3 decimal places.',
+            answer: -1.333, tol: 0.0005, verify: { expr: '-Rational(4, 3)', dp: 3 },
+            hint: 'Negative reciprocal of 3/4.',
+            solution: ['Original slope 3/4', 'Negative reciprocal −4/3', '≈ −1.333'] },
+
+          { id: 'm5', kind: 'mc', lesson: 'd1',
+            prompt: 'Which pair of lines is parallel?',
+            options: [
+              { t: 'y = 2x − 7 and 4x − 2y = 3', ok: true },
+              { t: 'y = 2x − 7 and y = −2x + 1', ok: false },
+              { t: 'y = 2x − 7 and 2x + y = 5', ok: false },
+              { t: 'y = 2x − 7 and x = 2', ok: false }
+            ],
+            hint: 'Equal slopes.',
+            solution: ['4x − 2y = 3 is y = 2x − 1.5, slope 2', 'Same slope, different intercept: parallel', 'The others have slopes −2, −2 and none'] },
+
+          { id: 'm6', kind: 'numeric', lesson: 'd1',
+            prompt: 'A line passes through (1, 4) with slope −3. What is its x-intercept? Give 3 decimal places.',
+            answer: 2.333, tol: 0.0005, verify: { expr: 'solve(-3*(x - 1) + 4, x)[0]', dp: 3 },
+            hint: 'y − 4 = −3(x − 1); set y = 0.',
+            solution: ['y = −3x + 7', '0 = −3x + 7', 'x = 7/3 ≈ 2.333'] },
+
+          { id: 'm7', kind: 'spot', lesson: 'd1',
+            prompt: 'A student finds the line perpendicular to y = (2/5)x + 1 through (0, 3). Which step is wrong?',
+            steps: [
+              { t: 'The given slope is 2/5', bad: false },
+              { t: 'The perpendicular slope is −2/5', bad: true },
+              { t: 'The line passes through (0, 3), so b = 3', bad: false },
+              { t: 'Write y = mx + 3 with the perpendicular slope', bad: false }
+            ],
+            why: 'The perpendicular slope is the negative reciprocal, −5/2, so that (2/5)(−5/2) = −1. Changing only the sign gives −2/5, whose product with 2/5 is −4/25.',
+            hint: 'Flip and negate.',
+            solution: ['−5/2', 'y = −(5/2)x + 3', 'Check the product of slopes is −1'] },
+
+          { id: 'm8', kind: 'numeric', lesson: 'd2',
+            prompt: '900 units sell at $40 and 1,500 at $28. What is the slope of the linear demand equation, in dollars per unit?',
+            answer: -0.02, verify: { expr: 'Rational(28 - 40, 1500 - 900)' },
+            hint: 'Points (q, p).',
+            solution: ['(28 − 40)/(1,500 − 900)', '= −12/600', '= −0.02'] },
+
+          { id: 'm9', kind: 'numeric', lesson: 'd2',
+            prompt: 'For that demand equation p = −0.02q + 58, what price sells 1,200 units?',
+            answer: 34, verify: { expr: '-Rational(2,100)*1200 + 58' },
+            hint: 'Substitute q = 1,200.',
+            solution: ['−0.02(1,200) + 58', '= −24 + 58', '= 34'] },
+
+          { id: 'm10', kind: 'numeric', lesson: 'd2',
+            prompt: 'A machine costs $24,000 and is worth $4,000 after 8 years, depreciating linearly. What is it worth after 3 years, in dollars?',
+            answer: 16500, verify: { expr: '24000 - Rational(24000 - 4000, 8)*3' },
+            hint: 'V(t) = 24,000 − 2,500t.',
+            solution: ['Depreciation 20,000/8 = 2,500 a year', '24,000 − 3(2,500)', '= 16,500'] },
+
+          { id: 'm11', kind: 'numeric', lesson: 'd2',
+            prompt: 'A plant has 120 lb of material; product A uses 3 lb per unit and B uses 2 lb. If 20 units of A are made, how many units of B can be made?',
+            answer: 30, verify: { expr: 'solve(3*20 + 2*y - 120, y)[0]' },
+            hint: '3x + 2y = 120.',
+            solution: ['60 + 2y = 120', '2y = 60', 'y = 30'] },
+
+          { id: 'm12', kind: 'numeric', lesson: 'd2',
+            prompt: 'Supply is 300 units at $9 and 600 at $10. What is the price, in dollars, at which 900 units are supplied, assuming a linear supply equation?',
+            answer: 11, verify: { expr: '9 + Rational(10 - 9, 600 - 300)*(900 - 300)' },
+            hint: 'Slope 1/300 per unit.',
+            solution: ['m = (10 − 9)/(600 − 300) = 1/300', 'p = 9 + (1/300)(q − 300)', 'At q = 900: 9 + 2 = 11'] },
+
+          { id: 'm13', kind: 'mc', lesson: 'd2',
+            prompt: 'In the production relation y = −1.5x + 60, the slope −1.5 means',
+            options: [
+              { t: 'each extra unit of A reduces the possible output of B by 1.5 units', ok: true },
+              { t: 'product B costs 1.5 times as much as A', ok: false },
+              { t: 'at most 1.5 units of A can be made', ok: false },
+              { t: 'the plant loses 1.5 lb of material per unit', ok: false }
+            ],
+            hint: 'Slope is change in y per unit change in x.',
+            solution: ['x is units of A, y units of B', 'y falls by 1.5 when x rises by 1', 'A trade-off, fixed by the material each product uses'] },
+
+          { id: 'm14', kind: 'numeric', lesson: 'd3',
+            prompt: 'What is the x-coordinate of the vertex of f(x) = x² − 6x + 5?',
+            answer: 3, verify: { expr: '-(-6)/(2*1)' },
+            hint: 'x = −b/(2a).',
+            solution: ['−(−6)/(2 · 1)', '= 3'] },
+
+          { id: 'm15', kind: 'numeric', lesson: 'd3',
+            prompt: 'What is the minimum value of f(x) = x² − 6x + 5?',
+            answer: -4, verify: { expr: '(x**2 - 6*x + 5).subs(x, 3)' },
+            hint: 'Evaluate at the vertex.',
+            solution: ['f(3) = 9 − 18 + 5', '= −4', 'a > 0, so it is the minimum'] },
+
+          { id: 'm16', kind: 'numeric', lesson: 'd3',
+            prompt: 'Demand is p = 800 − 4q. At what quantity is revenue a maximum?',
+            answer: 100, verify: { expr: 'solve(diff((800 - 4*q)*q, q), q)[0]' },
+            hint: 'r = 800q − 4q²; vertex.',
+            solution: ['r = 800q − 4q²', 'q = −800/(2 · −4)', '= 100'] },
+
+          { id: 'm17', kind: 'numeric', lesson: 'd3',
+            prompt: 'For that demand, what is the maximum revenue, in dollars?',
+            answer: 40000, verify: { expr: '((800 - 4*q)*q).subs(q, 100)' },
+            hint: 'r(100).',
+            solution: ['800(100) − 4(100)²', '= 80,000 − 40,000', '= 40,000'] },
+
+          { id: 'm18', kind: 'numeric', lesson: 'd3',
+            prompt: 'What is the maximum value of f(x) = −2x² + 8x − 3?',
+            answer: 5, verify: { expr: '(-2*x**2 + 8*x - 3).subs(x, solve(diff(-2*x**2 + 8*x - 3, x), x)[0])' },
+            hint: 'Vertex at x = 2.',
+            solution: ['x = −8/(2 · −2) = 2', 'f(2) = −8 + 16 − 3', '= 5'] },
+
+          { id: 'm19', kind: 'mc', lesson: 'd3',
+            prompt: 'The parabola y = 3x² − 12x + 7',
+            options: [
+              { t: 'opens upward with vertex at x = 2', ok: true },
+              { t: 'opens downward with vertex at x = 2', ok: false },
+              { t: 'opens upward with vertex at x = −2', ok: false },
+              { t: 'opens downward with vertex at x = −2', ok: false }
+            ],
+            hint: 'Sign of a, and −b/(2a).',
+            solution: ['a = 3 > 0: upward', 'x = −(−12)/(2 · 3) = 2', 'Vertex (2, −5)'] },
+
+          { id: 'm20', kind: 'numeric', lesson: 'd3',
+            prompt: 'How many x-intercepts does y = x² + 2x + 5 have?',
+            answer: 0, verify: { expr: 'len(solveset(x**2 + 2*x + 5, x, S.Reals))' },
+            hint: 'Discriminant b² − 4ac.',
+            solution: ['b² − 4ac = 4 − 20 = −16', 'Negative: no real roots', 'The parabola stays above the x-axis'] },
+
+          { id: 'm21', kind: 'numeric', lesson: 'd4',
+            prompt: 'Solve 3x + 2y = 16 and 5x − 4y = 12. What is x?',
+            answer: 4, verify: { expr: 'solve([3*x + 2*y - 16, 5*x - 4*y - 12], [x, y])[x]' },
+            hint: 'Double the first and add.',
+            solution: ['6x + 4y = 32', '11x = 44', 'x = 4 (and y = 2)'] },
+
+          { id: 'm22', kind: 'numeric', lesson: 'd4',
+            prompt: 'Solve x + y + z = 6, 2x − y + z = 3, x + 2y − z = 2. What is z?',
+            answer: 3, verify: { expr: 'solve([x + y + z - 6, 2*x - y + z - 3, x + 2*y - z - 2], [x, y, z])[z]' },
+            hint: 'Eliminate z using the third equation twice.',
+            solution: ['2x + 3y = 8 and 3x + y = 5', 'x = 1, y = 2', 'z = 6 − 1 − 2 = 3'] },
+
+          { id: 'm23', kind: 'mc', lesson: 'd4',
+            prompt: 'Eliminating x from x − 3y = 4 and −2x + 6y = 1 leaves 0 = 9. The system',
+            options: [
+              { t: 'has no solution: the lines are parallel', ok: true },
+              { t: 'has the solution x = 0, y = 9', ok: false },
+              { t: 'has infinitely many solutions', ok: false },
+              { t: 'has the solution x = 0, y = 0', ok: false }
+            ],
+            hint: 'Is 0 = 9 true or false?',
+            solution: ['A false remainder', 'Inconsistent', 'Both lines have slope 1/3 with different intercepts'] },
+
+          { id: 'm24', kind: 'mc', lesson: 'd4',
+            prompt: 'The system x − 3y = 4 and −2x + 6y = −8 reduces to 0 = 0. Its solutions are',
+            options: [
+              { t: 'x = 4 + 3r, y = r for any real r', ok: true },
+              { t: 'x = 4, y = 0 only', ok: false },
+              { t: 'none', ok: false },
+              { t: 'x = 0, y = 0 only', ok: false }
+            ],
+            hint: 'Same line twice.',
+            solution: ['A true remainder means the equations coincide', 'Let y = r and solve for x', 'A one-parameter family'] },
+
+          { id: 'm25', kind: 'numeric', lesson: 'd4',
+            prompt: 'Solve 2x + 5y = 1 and 3x − y = 10. What is y?',
+            answer: -1, verify: { expr: 'solve([2*x + 5*y - 1, 3*x - y - 10], [x, y])[y]' },
+            hint: 'Substitute y = 3x − 10.',
+            solution: ['2x + 5(3x − 10) = 1', '17x = 51, x = 3', 'y = 9 − 10 = −1'] },
+
+          { id: 'm26', kind: 'spot', lesson: 'd4',
+            prompt: 'A student solves 4x + y = 9 and 2x − 3y = 1. Which step is wrong?',
+            steps: [
+              { t: 'Multiply the first equation by 3: 12x + 3y = 9', bad: true },
+              { t: 'Add to the second to eliminate y', bad: false },
+              { t: 'Solve for x', bad: false },
+              { t: 'Substitute back to find y', bad: false }
+            ],
+            why: 'Multiplying by 3 must be done to both sides: 12x + 3y = 27. Scaling only the left side changes the equation, and the rest of the method, though correct in form, then produces a wrong point. Correctly: 14x = 28, x = 2, y = 1.',
+            hint: 'Both sides.',
+            solution: ['12x + 3y = 27', '14x = 28, x = 2', 'y = 1'] },
+
+          { id: 'm27', kind: 'numeric', lesson: 'd5',
+            prompt: 'The line y = x + 1 meets the parabola y = x² − 2x − 3 at two points. What is the larger x-coordinate?',
+            answer: 4, verify: { expr: 'Max(*solve(x**2 - 2*x - 3 - (x + 1), x))' },
+            hint: 'Equate and factor.',
+            solution: ['x² − 3x − 4 = 0', '(x − 4)(x + 1) = 0', 'x = 4 (point (4, 5))'] },
+
+          { id: 'm28', kind: 'numeric', lesson: 'd5',
+            prompt: 'At the intersection of y = x + 1 and x² + y² = 25 with positive coordinates, what is y?',
+            answer: 4, verify: { expr: 'Max(*solve(x**2 + (x + 1)**2 - 25, x)) + 1' },
+            hint: 'x = 3 there.',
+            solution: ['x² + x − 12 = 0', 'x = 3 or −4', 'y = 3 + 1 = 4'] },
+
+          { id: 'm29', kind: 'numeric', lesson: 'd5',
+            prompt: 'How many points does the line y = x + 10 share with the circle x² + y² = 25?',
+            answer: 0, verify: { expr: 'len(solveset(2*x**2 + 20*x + 75, x, S.Reals))' },
+            hint: 'Discriminant of 2x² + 20x + 75.',
+            solution: ['x² + (x + 10)² = 25 gives 2x² + 20x + 75 = 0', 'Discriminant 400 − 600 < 0', 'No intersection'] },
+
+          { id: 'm30', kind: 'numeric', lesson: 'd5',
+            prompt: 'Solve y = x² and y = 2x + 3. What is the sum of the two x-coordinates?',
+            answer: 2, verify: { expr: 'sum(solve(x**2 - 2*x - 3, x))' },
+            hint: 'x² − 2x − 3 = 0.',
+            solution: ['(x − 3)(x + 1) = 0', 'x = 3 and −1', 'Sum 2; points (3, 9) and (−1, 1)'] },
+
+          { id: 'm31', kind: 'mc', lesson: 'd5',
+            prompt: 'Solving y = √x and y = x − 2 by squaring gives x² − 5x + 4 = 0, so x = 1 or x = 4. The solutions of the system are',
+            options: [
+              { t: '(4, 2) only; x = 1 is extraneous', ok: true },
+              { t: '(1, −1) and (4, 2)', ok: false },
+              { t: '(1, 1) and (4, 2)', ok: false },
+              { t: 'none', ok: false }
+            ],
+            hint: 'Check each candidate in both original equations.',
+            solution: ['At x = 1: √1 = 1 but 1 − 2 = −1', 'Fails the original', 'At x = 4: 2 = 2, kept'] },
+
+          { id: 'm32', kind: 'numeric', lesson: 'd6',
+            prompt: 'Demand p = 60 − 0.05q and supply p = 20 + 0.03q. What is the equilibrium quantity?',
+            answer: 500, verify: { expr: 'solve(60 - Rational(5,100)*q - (20 + Rational(3,100)*q), q)[0]' },
+            hint: 'Equate the prices.',
+            solution: ['40 = 0.08q', 'q = 500'] },
+
+          { id: 'm33', kind: 'numeric', lesson: 'd6',
+            prompt: 'In that market, what is the equilibrium price, in dollars?',
+            answer: 35, verify: { expr: '20 + Rational(3,100)*500' },
+            hint: 'Substitute q = 500.',
+            solution: ['20 + 0.03(500)', '= 35'] },
+
+          { id: 'm34', kind: 'numeric', lesson: 'd6',
+            prompt: 'A $2 per unit tax is imposed on the producer. What is the new equilibrium price, in dollars? Give 2 decimal places.',
+            answer: 36.25, tol: 0.005, verify: { expr: '(60 - Rational(5,100)*q).subs(q, solve(60 - Rational(5,100)*q - (22 + Rational(3,100)*q), q)[0])', dp: 2 },
+            hint: 'Supply becomes p = 22 + 0.03q.',
+            solution: ['38 = 0.08q, q = 475', 'p = 60 − 23.75', '= 36.25'] },
+
+          { id: 'm35', kind: 'numeric', lesson: 'd6',
+            prompt: 'How much of that $2 tax is paid by the buyer, in dollars? Give 2 decimal places.',
+            answer: 1.25, tol: 0.005, verify: { expr: 'Rational(3625, 100) - 35', dp: 2 },
+            hint: 'New price minus old price.',
+            solution: ['36.25 − 35', '= 1.25', 'Producers absorb the other 0.75'] },
+
+          { id: 'm36', kind: 'numeric', lesson: 'd6',
+            prompt: 'Price $12, variable cost $7.50, fixed cost $9,000. What is the break-even quantity?',
+            answer: 2000, verify: { expr: 'solve(12*q - (Rational(15,2)*q + 9000), q)[0]' },
+            hint: 'Revenue = total cost.',
+            solution: ['12q = 7.5q + 9,000', '4.5q = 9,000', 'q = 2,000'] },
+
+          { id: 'm37', kind: 'numeric', lesson: 'd6',
+            prompt: 'For that firm, what is the profit at 3,000 units, in dollars?',
+            answer: 4500, verify: { expr: '12*3000 - (Rational(15,2)*3000 + 9000)' },
+            hint: 'Revenue minus total cost.',
+            solution: ['36,000 − (22,500 + 9,000)', '= 4,500'] },
+
+          { id: 'm38', kind: 'numeric', lesson: 'd6',
+            prompt: 'What output gives that firm a profit of $13,500?',
+            answer: 5000, verify: { expr: 'solve(12*q - (Rational(15,2)*q + 9000) - 13500, q)[0]' },
+            hint: '4.5q − 9,000 = 13,500.',
+            solution: ['4.5q = 22,500', 'q = 5,000'] },
+
+          { id: 'm39', kind: 'numeric', lesson: 'd6',
+            prompt: 'Revenue is 100√q and total cost is 2q + 1,200. What is the smaller break-even quantity?',
+            answer: 400, verify: { expr: 'Min(*solve(q**2 - 1300*q + 360000, q))' },
+            hint: '50√q = q + 600; square both sides.',
+            solution: ['2,500q = q² + 1,200q + 360,000', 'q² − 1,300q + 360,000 = 0', 'q = 400 or 900; the smaller is 400'] },
+
+          { id: 'm40', kind: 'mc', lesson: 'd6',
+            prompt: 'At a price above the equilibrium price,',
+            options: [
+              { t: 'quantity supplied exceeds quantity demanded: a surplus', ok: true },
+              { t: 'quantity demanded exceeds quantity supplied: a shortage', ok: false },
+              { t: 'the market still clears', ok: false },
+              { t: 'revenue is necessarily maximised', ok: false }
+            ],
+            hint: 'Supply slopes up, demand slopes down.',
+            solution: ['Higher price: producers offer more, buyers take less', 'Supply above demand', 'A surplus that pushes the price back down'] }
+        ]
+      },
       /* ============================ CHAPTER 9 ============================ */
       {
-        id: 'prob', n: 3,
+        id: 'prob', n: 4,
         title: 'Additional topics in probability',
         blurb: 'A number attached to every outcome, the average you should expect over many trials and how far a single trial strays from it, the distribution that counts successes, and matrices that predict where a system settles.',
         read: 'Chapter 9',
@@ -20733,7 +21387,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.49', date: '16 September 2026', year: 2026 };
+  const BUILD = { v: '2.50', date: '16 September 2026', year: 2026 };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonandy242', ['gmail', 'com'].join('.')].join('@');
   /* The one sentence that says what this is. It appears under the wordmark, and build.js uses
@@ -20746,6 +21400,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      because the person who needs it is the one who just watched the app refresh itself and wants to
      know what moved. Trim the tail when it gets past a dozen; nobody reads further back than that. */
   const WHATS_NEW = [
+    ['2.50', '<b>MATH 1070 chapter 3, Lines, Parabolas and Systems, all six sections.</b> Slope and the three forms of a line, parallel and perpendicular done properly; linear demand and supply equations built from two observations, straight-line depreciation and production trade-offs; the parabola with its vertex formula and the maximum-revenue argument; systems of two and three linear equations by elimination and substitution, with the parallel and coincident cases read off the algebra; nonlinear systems and extraneous roots; and the two intersections that matter most &mdash; market equilibrium, with what a per-unit tax does to it, and break-even with profit targets. Six lessons, 16 worked examples, 40 practice questions and 18 named misconceptions, every number recomputed by a computer algebra system. Chapter 4 follows.'],
     ['2.49', '<b>MATH 1070 chapter 2, Functions and Graphs, all eight sections.</b> What a function is, its natural domain and the difference quotient that becomes the derivative; constant, polynomial, rational, case-defined and absolute-value functions, factorials, and a tax-bracket function that shows why a raise never lowers take-home pay; sums, products, quotients and composition of functions, read in the right order, and decomposing a function for the chain rule to come; one-to-one functions and inverses, with the domain restriction that makes the square root undo squaring; intercepts, the vertical-line test and domain and range from a graph; the four symmetry tests; translations, reflections and stretches in the order they apply; and functions of two variables with level curves. Eight lessons, 19 worked examples, 41 practice questions and 24 named misconceptions, every number recomputed by a computer algebra system. Chapter 3 follows.'],
     ['2.48', '<b>MATH 1070 begins at the beginning: chapter 1, Applications and More Algebra, all six sections.</b> Word problems turned into one equation and answered in the question&rsquo;s own words (mixtures, profit targets, tag prices, split investments, a compound-interest rate with its impossible root rejected); linear inequalities with the one rule that costs the most marks and interval notation done properly; profit, rent-versus-buy and current-ratio conditions read as thresholds; absolute value as a distance, with the between/outside split for inequalities and tolerances written in one line; summation notation, its properties and the three formulas; and arithmetic and geometric sequences with their sums, the infinite geometric sum, repeating decimals and a perpetuity &mdash; the foundation of the finance chapter to come. Six lessons, 17 worked examples, 40 practice questions and 18 named misconceptions, every number recomputed by a computer algebra system. Chapter 2 follows.'],
     ['2.47', '<b>Chapter 17 of the calculus course &mdash; multivariable calculus, sections 17.1&ndash;17.5, which completes the MATH 1170 outline.</b> Partial derivatives and how to read the &part; notation; marginal cost, marginal productivity and the cross-price test for competitive and complementary products; second-order and mixed partials and why the mixed ones agree; critical points of a surface and the D-test with its three outcomes, saddle points included; and Lagrange multipliers, with the trick of dividing equations so &lambda; cancels and the economics of why the multiplier is a marginal cost. Five lessons, 13 worked examples, 40 practice questions and 16 named misconceptions, every number recomputed by a computer algebra system. Every section the TRU outline lists for MATH 1170 is now built; the course page says so. Next: MATH 1070, chapters 1&ndash;8, then chapters 14&ndash;16 of the book as extra material.'],
