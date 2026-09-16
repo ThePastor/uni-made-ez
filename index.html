@@ -18647,14 +18647,14 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     id: 'math-1070',
     code: 'MATH 1070',
     title: 'Mathematics for Business and Economics',
-    blurb: 'The first half of the book. Built so far: chapter 9 — random variables and what to expect from them, the binomial distribution, and Markov chains, where a matrix carries a system from one week to the next.',
+    blurb: 'The first half of the book. Built so far: chapter 1 — equations and inequalities put to work, absolute value, summation notation and sequences — and chapter 9 — random variables and what to expect from them, the binomial distribution, and Markov chains.',
     level: 'Foundation',
     prereq: 'precalc',
-    exam: 'Follows the set text, chapters 1 to 9. Chapter 9 is built; chapters 1 to 8 are listed on this page as not yet covered and follow in later releases. Precalculus here covers much of the algebra of chapters 0 to 4.',
+    exam: 'Follows the set text, chapters 1 to 9. Chapters 1 and 9 are built; chapters 2 to 8 are listed on this page as not yet covered and follow in later releases, one chapter at a time. Precalculus here covers the review algebra of chapter 0 and much of chapters 2 to 4.',
     text: TEXT,
     legalNote: NOTE,
     gaps: [
-      'Chapter 0 and 1 — review of algebra, and applications: linear inequalities, absolute value, summation notation and sequences',
+      'Chapter 0 — review of algebra: covered by the Precalculus course rather than built here',
       'Chapter 2 — functions and graphs: combinations of functions, inverse functions, symmetry and translations',
       'Chapter 3 — lines, parabolas and systems: supply and demand curves, break-even, systems of equations',
       'Chapter 4 — exponential and logarithmic functions and their properties',
@@ -18665,9 +18665,695 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     ],
     units: [
 
+      /* ============================ CHAPTER 1 ============================ */
+      {
+        id: 'algebra', n: 1,
+        title: 'Applications and more algebra',
+        blurb: 'Word problems turned into equations and inequalities, the absolute value as a distance, the Σ that replaces a row of dots, and the two sequences — arithmetic and geometric — that every finance formula in the course is built from.',
+        read: 'Chapter 1',
+        objectives: [
+          'Translate a business or mixture problem into an equation in one unknown, solve it, and answer the question that was asked',
+          'Solve linear inequalities, reversing the sense when multiplying or dividing by a negative, and write the answer in interval notation',
+          'Set up inequalities for profit, rent-versus-buy and ratio conditions, and read integer answers correctly',
+          'Solve absolute-value equations and inequalities by treating the absolute value as a distance',
+          'Read, write and evaluate sums in summation notation using its properties and the three standard formulas',
+          'Find the kth term and the sum of arithmetic and geometric sequences, including the sum of an infinite geometric sequence'
+        ],
+        lessons: [
+          {
+            id: 'b1', title: 'Applications of equations', src: 'Section 1.1',
+            idea: `Most of the algebra in this course is done in the service of a sentence. A word problem gives a situation; the work is to name an unknown, write one equation that the situation forces, solve it, and then — the step most often skipped — go back and answer the question that was actually asked.<br><br>The routine is the same every time. <b>Read the question at the end first</b>, so the unknown is chosen to make it easy to answer. <b>Let a letter stand for the unknown</b>, with its units: let q be the number of units sold, let x be the amount invested at 4%. <b>Express every other quantity in terms of it</b>: if $12,000 is split between two ventures and x goes to the first, 12,000 − x goes to the second. <b>Write the equation</b> from one fact the problem states — a total, a required profit, a ratio. <b>Solve</b>, and then <b>translate back</b>. A diagram helps whenever there is one to draw.<br><br>Three patterns cover most of the chapter. In a <b>mixture</b> or parts problem, the parts are multiples of one unknown: two parts alcohol to three parts acid in 350 ml means 2n + 3n = 350, so n = 70 — but the answer is 140 ml of alcohol and 210 ml of acid, not 70 of anything. In a <b>profit</b> problem the model is always<br><br><b>profit = total revenue − total cost</b>, with total cost = variable cost per unit × q + fixed cost<br><br>so a firm with variable cost $8, fixed cost $50,000 and price $14 that wants a profit of $40,000 solves 14q − (8q + 50,000) = 40,000 and needs q = 15,000 units. In an <b>investment</b> problem the interest from each part is rate × amount and the parts sum to the total: 0.04x + 0.065(12,000 − x) = 630.<br><br>Percentages are where care is needed. "Reduce the tag price by 25%" means the customer pays 0.75p, a percentage of the <i>tag price</i>; "a profit of 20% on cost" means 0.20 × cost, a percentage of the <i>cost</i>. The two bases are different numbers, and putting the percentage on the wrong one is the standard error. And when an equation turns out quadratic — compound interest over two years, or a rent that can be reached from two directions — it has two roots, and the problem decides which survive: an interest rate cannot be −205%.`,
+            rules: [
+              { name: 'The routine', expr: 'Read the question, name the unknown with units, write everything else in terms of it, write one equation, solve, translate back', words: true, note: 'The last step is the one that is skipped, and it is where the marks are.' },
+              { name: 'Profit', expr: 'profit = r - c', note: 'Revenue r is price times quantity; total cost c is variable cost per unit times quantity plus fixed cost.' },
+              { name: 'Total cost', expr: 'c = v q + F', note: 'v the variable cost per unit, F the fixed cost, q the quantity.' },
+              { name: 'Splitting a total', expr: 'x and T - x', words: true, note: 'If x goes to one part, the total T minus x goes to the other. One unknown, not two.' },
+              { name: 'Percent of what', expr: 'A percentage is always of a stated base: a discount is of the price, a markup is of the cost', words: true, note: 'Different bases, different numbers.' },
+              { name: 'Two roots', expr: 'A quadratic model gives two roots; the situation decides which are answers', words: true, note: 'A negative rate, length or quantity is discarded.' }
+            ],
+            examples: [
+              {
+                prompt: 'A firm has a variable cost of $8 per unit and fixed costs of $50,000. It sells each unit for $14. How many units must it sell to earn a profit of $40,000?',
+                steps: [
+                  { do: 'Let q be the number of units sold. Revenue 14q; total cost 8q + 50,000', why: 'The question asks for a number of units, so q is the unknown, and every other quantity is written in terms of it.' },
+                  { do: 'profit = revenue − cost: 14q − (8q + 50,000) = 40,000', why: 'One equation from the one fact given — the required profit.' },
+                  { do: '6q − 50,000 = 40,000, so 6q = 90,000 and q = 15,000', why: 'Collect terms and solve. Each unit contributes $6 toward the $90,000 that fixed costs plus the target profit require.' },
+                  { do: 'The firm must sell 15,000 units', why: 'Answer the question in its own words and units.' }
+                ],
+                answer: '15,000 units', answerWords: true
+              },
+              {
+                prompt: 'A retailer’s cost for a jacket is $40. What tag price should be marked so that after a 25% sale discount the retailer still makes a 20% profit on cost?',
+                steps: [
+                  { do: 'Let p be the tag price. After 25% off, the customer pays 0.75p', why: 'The discount is a percentage of the tag price, so it comes off p.' },
+                  { do: 'The retailer needs cost plus profit: 40 + 0.20(40) = 48', why: 'The profit is a percentage of the cost, so it is 20% of 40, not of the tag price.' },
+                  { do: '0.75p = 48, so p = 64', why: 'Selling price equals cost plus profit.' },
+                  { do: 'Mark the tag at $64', why: 'Check: 25% off $64 is $48, which is $40 cost plus $8 profit, and 8/40 = 20%.' }
+                ],
+                answer: 'A tag price of $64', answerWords: true
+              },
+              {
+                prompt: '$12,000 is invested, part at 4% and the rest at 6.5%. The total interest after one year is $630. How much was invested at each rate?',
+                steps: [
+                  { do: 'Let x be the amount at 4%; then 12,000 − x is at 6.5%', why: 'One unknown: the second part is the total less the first.' },
+                  { do: '0.04x + 0.065(12,000 − x) = 630', why: 'Interest from each part is rate times amount, and the two interests sum to the total.' },
+                  { do: '0.04x + 780 − 0.065x = 630, so −0.025x = −150 and x = 6,000', why: 'Collect the x terms and solve.' },
+                  { do: '$6,000 at 4% and $6,000 at 6.5%', why: 'Both parts, as the question asked. Check: 240 + 390 = 630.' }
+                ],
+                answer: '$6,000 at 4% and $6,000 at 6.5%', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'bus-unknown-reported-as-answer',
+                wrong: 'Solving 2n + 3n = 350 and answering "70"',
+                right: 'n = 70 is one part. The question asked for the amounts of alcohol and acid: 140 ml and 210 ml.',
+                why: 'The unknown is chosen for convenience, not because it is what the question wants. After solving, go back to the sentence at the end of the problem and answer that. A solution that stops at the unknown has answered a question nobody asked.'
+              },
+              {
+                id: 'bus-percent-on-wrong-base',
+                wrong: 'Taking a 20% profit on cost as 20% of the tag price',
+                right: 'Each percentage is of its own stated base: the discount is of the tag price, the profit is of the cost.',
+                why: 'For a $40 cost, 20% profit is $8 whatever the tag price says. Reading the base wrong changes the equation from 0.75p = 48 to 0.75p = 40 + 0.2p, which gives a different, wrong answer that looks just as tidy.'
+              },
+              {
+                id: 'bus-impossible-root-kept',
+                wrong: 'Reporting both roots of a quadratic model, including a negative interest rate or a negative length',
+                right: 'Solve the equation, then discard any root the situation rules out, and say why.',
+                why: 'The model (1 + r)² = 1.1025 has roots r = 0.05 and r = −2.05, and only one is a rate. A quadratic always produces two candidates; the problem, not the algebra, chooses between them. State the rejection in one clause so the marker sees it was deliberate.'
+              }
+            ]
+          },
+
+          {
+            id: 'b2', title: 'Linear inequalities', src: 'Section 1.2',
+            idea: `An inequality is solved much like an equation, with one exception that costs more marks than any other single rule in the chapter. The permitted moves are: add or subtract the same quantity on both sides; multiply or divide both sides by the same <b>positive</b> number; and multiply or divide both sides by the same <b>negative</b> number <b>provided the inequality symbol is reversed</b>. The reversal is not a convention; it is forced. 2 &lt; 5 is true, and multiplying both sides by −1 gives −2 and −5, of which −2 is the larger: −2 &gt; −5.<br><br>So 7 − 2x ≥ 3x + 22 becomes −5x ≥ 15 and then, dividing by −5, x ≤ −3. Anyone who writes x ≥ −3 has kept the algebra and lost the answer. A way to avoid the reversal altogether is to move the x-terms to whichever side leaves a positive coefficient: 7 − 22 ≥ 3x + 2x, so −15 ≥ 5x, so −3 ≥ x — the same thing, read from the right.<br><br>The solution of a linear inequality is a whole interval of numbers, and the answer is written in <b>interval notation</b>. A round bracket excludes the endpoint and a square bracket includes it: x &lt; 10 is (−∞, 10); x ≤ −3 is (−∞, −3]; −2 ≤ x &lt; 1 is [−2, 1). Infinity always gets a round bracket, because it is not a number that can be reached. On a number line the same distinction is drawn with an open circle or a filled one.<br><br>A <b>double inequality</b> like 2 &lt; 5 − 3x ≤ 11 is solved by doing the same thing to all three parts at once: subtract 5 throughout to get −3 &lt; −3x ≤ 6, divide by −3 and reverse both symbols to get 1 &gt; x ≥ −2, and rewrite in increasing order as −2 ≤ x &lt; 1, which is [−2, 1). The rewrite matters because interval notation lists the smaller number first.<br><br>Two things about the answer. It is a set, not a number: "x = 10" is never the solution of an inequality. And an inequality can have every real number as its solution (4 + x &gt; x is always true, solution (−∞, ∞)) or none at all (x &gt; x + 1, solution the empty set); both are legitimate answers when the variable cancels out.`,
+            rules: [
+              { name: 'Adding and subtracting', expr: 'The same quantity may be added to or subtracted from both sides', words: true, note: 'The sense of the inequality is unchanged.' },
+              { name: 'Positive multiplier', expr: 'a < b gives a c < b c when c > 0', words: true, note: 'Multiplying or dividing by a positive number keeps the sense.' },
+              { name: 'Negative multiplier', expr: 'a < b gives a c > b c when c < 0', words: true, note: 'Multiplying or dividing by a negative number reverses the sense. This is the rule that is missed.' },
+              { name: 'Interval notation', expr: 'Round bracket excludes the endpoint, square bracket includes it; infinity always takes a round bracket', words: true, note: 'x ≤ −3 is (−∞, −3]; −2 ≤ x < 1 is [−2, 1).' },
+              { name: 'Double inequality', expr: 'Do the same operation to all three parts, then rewrite with the smaller number on the left', words: true, note: 'Reversing applies to both symbols at once.' }
+            ],
+            examples: [
+              {
+                prompt: 'Solve 3(x − 2) + 5 < 2x + 9 and write the answer in interval notation.',
+                steps: [
+                  { do: '3x − 6 + 5 < 2x + 9, so 3x − 1 < 2x + 9', why: 'Expand and simplify the left side first.' },
+                  { do: 'x < 10', why: 'Subtract 2x and add 1 to both sides — moves that never change the sense.' },
+                  { do: 'Solution (−∞, 10)', why: 'Strict inequality: round bracket at 10, and infinity always gets a round bracket.' }
+                ],
+                answer: 'x < 10, the interval (−∞, 10)', answerWords: true
+              },
+              {
+                prompt: 'Solve 7 − 2x ≥ 3x + 22.',
+                steps: [
+                  { do: '−5x ≥ 15', why: 'Subtract 3x and 7 from both sides.' },
+                  { do: 'x ≤ −3', why: 'Dividing by −5 reverses the sense. This is the whole point of the example.' },
+                  { do: 'Solution (−∞, −3]', why: 'The endpoint is included, so a square bracket. Check with x = −4: 15 ≥ 10, true; with x = 0: 7 ≥ 22, false.' }
+                ],
+                answer: 'x ≤ −3, the interval (−∞, −3]', answerWords: true
+              },
+              {
+                prompt: 'Solve 2 < 5 − 3x ≤ 11.',
+                steps: [
+                  { do: '−3 < −3x ≤ 6', why: 'Subtract 5 from all three parts.' },
+                  { do: '1 > x ≥ −2', why: 'Divide all three parts by −3 and reverse both symbols.' },
+                  { do: '−2 ≤ x < 1, the interval [−2, 1)', why: 'Rewrite with the smaller number on the left. The −2 is included and the 1 is not.' }
+                ],
+                answer: '−2 ≤ x < 1, the interval [−2, 1)', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'bus-inequality-not-reversed',
+                wrong: 'Dividing −5x ≥ 15 by −5 and writing x ≥ −3',
+                right: 'Dividing by a negative number reverses the inequality: x ≤ −3.',
+                why: 'Test a value: x = 0 gives −5(0) ≥ 15, which is false, so 0 is not a solution and the answer cannot include it. Every reversal can be checked this way in five seconds, and the check is worth doing on an exam.'
+              },
+              {
+                id: 'bus-interval-bracket-wrong',
+                wrong: 'Writing x ≤ −3 as (−∞, −3) or −2 ≤ x < 1 as [−2, 1]',
+                right: 'Square bracket for an endpoint that satisfies the inequality (≤ or ≥), round for one that does not (< or >), and always round at ±∞.',
+                why: 'The bracket is the only place the answer records whether the boundary itself counts. −3 satisfies x ≤ −3 and must be inside; 1 does not satisfy x < 1 and must be outside. Infinity is not a number and is never inside anything.'
+              },
+              {
+                id: 'bus-inequality-answered-as-number',
+                wrong: 'Giving the solution of 3x − 1 < 2x + 9 as "x = 10"',
+                right: 'The solution is every x less than 10, written x < 10 or (−∞, 10).',
+                why: 'An inequality is solved by an interval of numbers, and 10 itself is the one value at the boundary that is not a solution here. Replacing the inequality symbol by an equals sign at the last step throws away everything that was being asked.'
+              }
+            ]
+          },
+
+          {
+            id: 'b3', title: 'Applications of inequalities', src: 'Section 1.3',
+            idea: `The word problems of section 1.1 set a quantity equal to a target. Many decisions instead ask when one quantity is <b>larger</b> than another — when does the firm make a profit, when is renting cheaper than buying, how much can be borrowed without breaking a required ratio — and those are inequalities. The setting-up is identical; the solving follows section 1.2; and the reading of the answer has one extra step.<br><br><b>Profit.</b> With cost $18 per unit, fixed costs $60,000 and a price of $30, profit is 30q − (18q + 60,000) = 12q − 60,000, and the firm profits when 12q − 60,000 &gt; 0, that is, q &gt; 5,000. But units are whole numbers, and 5,000 exactly gives zero profit, so the answer is <b>at least 5,001 units</b>. Whenever the unknown is a count, the strict inequality has to be converted: q &gt; 5,000 means q ≥ 5,001, and d &gt; 240 days means 241 days at least.<br><br><b>Renting versus buying.</b> Write the annual cost of each option as a function of the number of days d the machine is used, and ask when one is less than the other: 12(2,500) + 150d &lt; 18,000 + 200d gives 12,000 &lt; 50d, so d &gt; 240. Renting is the better choice only if the machine is used at least 241 days a year; the crossing point is where the two costs are equal.<br><br><b>A required ratio.</b> The current ratio of a business is current assets over current liabilities, and a lender may require it to stay at or above some level. If a loan of x is added to both assets and liabilities, the condition is (420,000 + x)/(120,000 + x) ≥ 2. This is not linear as written, but since x is positive the denominator is positive, so both sides can be multiplied by it without reversing: 420,000 + x ≥ 240,000 + 2x, so x ≤ 180,000. That multiplication is legal only because the sign of the denominator is known; with an unknown sign, chapter 10's sign chart would be needed instead.<br><br>The answer to an applied inequality is a sentence with a threshold in it: "at least 5,001 units", "no more than $180,000", "241 days or more". The number alone, without "at least" or "at most", is not yet an answer.`,
+            rules: [
+              { name: 'Profit condition', expr: 'r - c > 0', note: 'Revenue exceeds total cost. Solve for the quantity.' },
+              { name: 'Counts are whole numbers', expr: 'q > 5000 means at least 5001 units', words: true, note: 'A strict inequality on a count is read as the next whole number.' },
+              { name: 'Comparing two options', expr: 'cost of option A < cost of option B', words: true, note: 'Write each cost as a function of the deciding variable and solve for where one is smaller.' },
+              { name: 'Ratio conditions', expr: '(A + x)/(L + x) >= k', note: 'Multiply through by the denominator only when its sign is known — here positive.' },
+              { name: 'The answer is a threshold', expr: 'At least, at most, more than, no more than: the words are part of the answer', words: true, note: 'A bare number is not a solution to an inequality.' }
+            ],
+            examples: [
+              {
+                prompt: 'A product costs $18 per unit to make, with fixed costs of $60,000, and sells for $30. How many units must be sold for the firm to make a profit?',
+                steps: [
+                  { do: 'Profit = 30q − (18q + 60,000) = 12q − 60,000', why: 'Revenue minus total cost, in terms of the quantity q.' },
+                  { do: 'Profit > 0 means 12q − 60,000 > 0, so q > 5,000', why: 'Solve the inequality; dividing by the positive 12 keeps the sense.' },
+                  { do: 'At least 5,001 units', why: 'q is a count. 5,000 units gives exactly zero profit, so the first profitable number is 5,001.' }
+                ],
+                answer: 'At least 5,001 units', answerWords: true
+              },
+              {
+                prompt: 'Renting a machine costs $2,500 a month plus $150 per day used; buying costs $18,000 a year plus $200 per day used. For how many days of use per year is renting the cheaper choice?',
+                steps: [
+                  { do: 'Annual rent cost 12(2,500) + 150d = 30,000 + 150d; annual purchase cost 18,000 + 200d', why: 'Each option as a function of the days used, d, on a yearly basis.' },
+                  { do: '30,000 + 150d < 18,000 + 200d gives 12,000 < 50d, so d > 240', why: 'Renting is cheaper when its cost is less. Collecting terms leaves a positive coefficient, so no reversal.' },
+                  { do: 'Renting is cheaper if the machine is used at least 241 days a year', why: 'At exactly 240 days the two costs are equal; beyond that, the lower daily rate of renting wins.' }
+                ],
+                answer: 'Renting is cheaper for 241 or more days of use a year', answerWords: true
+              },
+              {
+                prompt: 'A company has current assets of $420,000 and current liabilities of $120,000. How much can it borrow (the loan adds to both) while keeping its current ratio at least 2?',
+                steps: [
+                  { do: '(420,000 + x)/(120,000 + x) ≥ 2', why: 'Current ratio is assets over liabilities; the loan x is added to both.' },
+                  { do: 'Since x > 0 the denominator is positive, so multiply through: 420,000 + x ≥ 240,000 + 2x', why: 'Multiplying by a known-positive quantity keeps the sense. This is what makes the inequality linear.' },
+                  { do: '180,000 ≥ x', why: 'Collect terms.' },
+                  { do: 'The company can borrow at most $180,000', why: 'At exactly $180,000 the ratio is 600,000/300,000 = 2, the limit.' }
+                ],
+                answer: 'At most $180,000', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'bus-strict-inequality-count-rounded-down',
+                wrong: 'Answering "5,000 units" to "how many must be sold to make a profit" when the inequality is q > 5,000',
+                right: 'A count with a strict inequality starts at the next whole number: at least 5,001.',
+                why: 'At q = 5,000 the profit is exactly zero — the firm breaks even, which is not a profit. The strict symbol excludes the boundary, and for a whole-number quantity the first value that satisfies it is one more.'
+              },
+              {
+                id: 'bus-ratio-multiplied-without-sign',
+                wrong: 'Multiplying an inequality through by a denominator whose sign is unknown',
+                right: 'Multiply through only when the denominator is known to be positive (or negative, reversing). Otherwise put everything on one side and use a sign chart.',
+                why: 'In the current-ratio problem the denominator 120,000 + x is positive because x is a loan amount, and that fact has to be stated. Without it the multiplication may or may not reverse the inequality, and the answer is unreliable.'
+              },
+              {
+                id: 'bus-threshold-word-omitted',
+                wrong: 'Answering "241" or "180,000" with no indication of direction',
+                right: 'The answer to an inequality is a threshold with its direction: at least 241 days, at most $180,000.',
+                why: 'The number alone does not say whether more or less is allowed, and the whole content of the problem is which side of the boundary is acceptable. The words "at least" and "at most" are the answer; the number is where they apply.'
+              }
+            ]
+          },
+
+          {
+            id: 'b4', title: 'Absolute value', src: 'Section 1.4',
+            idea: `The absolute value |x| is the distance from x to 0 on the number line: |5| = 5 and |−5| = 5. Formally, |x| = x if x ≥ 0 and |x| = −x if x &lt; 0, which is why |x| is never negative — the second case flips a negative number to a positive one. The idea that makes every problem in this section mechanical is the extension to a difference:<br><br><b>|a − b| is the distance between a and b.</b><br><br>So |x − 3| = 2 says "x is 2 units from 3", and there are exactly two such points, 1 and 5. In general an <b>absolute-value equation</b> |u| = d with d &gt; 0 splits into two ordinary equations, u = d or u = −d, each solved separately; |2x − 5| = 7 gives 2x − 5 = 7 or 2x − 5 = −7, so x = 6 or x = −1. If d is negative there is no solution at all, because no distance is negative.<br><br><b>Absolute-value inequalities</b> come in two shapes, and the shape decides the answer:<br><br><b>|u| &lt; d</b> means u is within d of 0: <b>−d &lt; u &lt; d</b>, a single interval. |x + 3| ≤ 4 becomes −4 ≤ x + 3 ≤ 4, so −7 ≤ x ≤ 1, the interval [−7, 1].<br><b>|u| &gt; d</b> means u is more than d from 0: <b>u &lt; −d or u &gt; d</b>, two separate pieces. |4 − 3x| &gt; 2 becomes 4 − 3x &lt; −2 or 4 − 3x &gt; 2, so x &gt; 2 or x &lt; 2/3, written (−∞, 2/3) ∪ (2, ∞) with the union symbol ∪ joining the two intervals.<br><br>The "less than" case is a between; the "greater than" case is an outside. The two never merge into one interval and never become one equation, and the dividing by a negative inside them reverses the symbols exactly as in section 1.2.<br><br>Absolute values also express <b>tolerances</b> in a single line. "The weight w of a box must be within 0.3 oz of 22 oz" is |w − 22| ≤ 0.3. "x differs from 6 by at least 7" is |x − 6| ≥ 7. Being able to write a sentence like that as an inequality, and read one back into a sentence, is what the section is for.<br><br>Five properties are worth knowing: |ab| = |a||b|; |a/b| = |a|/|b|; |a − b| = |b − a|; −|a| ≤ a ≤ |a|; and the triangle inequality |a + b| ≤ |a| + |b|. The first two let a factor be pulled out — |−3x| = 3|x| — and the third is the "distance is symmetric" fact used above.`,
+            rules: [
+              { name: 'Definition', expr: '|x| = x for x >= 0 and |x| = -x for x < 0', words: true, note: 'Never negative: the distance from x to 0.' },
+              { name: 'Distance', expr: '|a - b|', note: 'The distance between a and b on the number line; equal to |b − a|.' },
+              { name: 'Equation', expr: '|u| = d gives u = d or u = -d', words: true, note: 'For d > 0: two equations, two solutions. For d < 0: no solution.' },
+              { name: 'Less than', expr: '|u| < d gives -d < u < d', words: true, note: 'A single interval: u is within d of 0.' },
+              { name: 'Greater than', expr: '|u| > d gives u < -d or u > d', words: true, note: 'Two pieces joined by the union symbol ∪: u is more than d from 0.' },
+              { name: 'Properties', expr: '|a b| = |a| |b|, |a/b| = |a|/|b|, |a + b| <= |a| + |b|', words: true, note: 'Products and quotients split; sums only obey the triangle inequality.' }
+            ],
+            examples: [
+              {
+                prompt: 'Solve |2x − 5| = 7.',
+                steps: [
+                  { do: '2x − 5 = 7 or 2x − 5 = −7', why: 'The quantity inside is 7 units from 0, on one side or the other.' },
+                  { do: 'x = 6 or x = −1', why: 'Solve each linear equation.' },
+                  { do: 'Check: |12 − 5| = 7 and |−2 − 5| = 7', why: 'Both work. An absolute-value equation with a positive right side has two solutions.' }
+                ],
+                answer: 'x = 6 or x = −1', answerWords: true
+              },
+              {
+                prompt: 'Solve |x + 3| ≤ 4 and |4 − 3x| > 2, writing each answer in interval notation.',
+                steps: [
+                  { do: '|x + 3| ≤ 4 means −4 ≤ x + 3 ≤ 4, so −7 ≤ x ≤ 1: the interval [−7, 1]', why: '"Less than or equal" is a between: x is within 4 of −3.' },
+                  { do: '|4 − 3x| > 2 means 4 − 3x < −2 or 4 − 3x > 2', why: '"Greater than" is an outside: two separate inequalities.' },
+                  { do: 'First: −3x < −6, so x > 2. Second: −3x > −2, so x < 2/3', why: 'Dividing by −3 reverses each symbol.' },
+                  { do: 'Solution (−∞, 2/3) ∪ (2, ∞)', why: 'Two pieces joined by the union symbol; they never merge into one interval.' }
+                ],
+                answer: '|x + 3| ≤ 4 gives [−7, 1]; |4 − 3x| > 2 gives (−∞, 2/3) ∪ (2, ∞)', answerWords: true
+              },
+              {
+                prompt: 'Write each as an absolute-value statement: (a) the weight w of a box is within 0.3 oz of 22 oz; (b) x differs from 6 by at least 7; (c) x is more than 1 unit from −2.',
+                steps: [
+                  { do: '(a) |w − 22| ≤ 0.3', why: 'The distance between w and 22 is at most 0.3.' },
+                  { do: '(b) |x − 6| ≥ 7', why: '"Differs by at least" is a distance of 7 or more.' },
+                  { do: '(c) |x − (−2)| > 1, that is, |x + 2| > 1', why: 'Distance from −2, and the double negative becomes a plus.' }
+                ],
+                answer: '|w − 22| ≤ 0.3; |x − 6| ≥ 7; |x + 2| > 1', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'bus-absolute-value-one-case-only',
+                wrong: 'Solving |2x − 5| = 7 as 2x − 5 = 7 alone and answering x = 6',
+                right: 'The inside can be 7 or −7. Solve both: x = 6 or x = −1.',
+                why: 'Two numbers are 7 units from 0. Dropping the negative case loses exactly half the answer, and the check |−2 − 5| = 7 shows the missing solution is real.'
+              },
+              {
+                id: 'bus-greater-than-written-as-between',
+                wrong: 'Turning |4 − 3x| > 2 into −2 < 4 − 3x < 2',
+                right: 'A "greater than" absolute value is an outside: 4 − 3x < −2 or 4 − 3x > 2, two separate pieces.',
+                why: 'The between form is for |u| < d, where u is close to 0. For |u| > d, u is far from 0 in either direction, so the solution is two intervals joined by ∪. Using the wrong shape gives the complement of the right answer.'
+              },
+              {
+                id: 'bus-absolute-value-equals-negative',
+                wrong: 'Solving |x − 4| = −3 by writing x − 4 = −3',
+                right: 'No absolute value is negative. The equation has no solution.',
+                why: '|x − 4| is a distance, and a distance cannot be −3. The correct answer is the empty set, and writing it is worth full marks; producing x = 1 is worth none, since |1 − 4| = 3, not −3.'
+              }
+            ]
+          },
+
+          {
+            id: 'b5', title: 'Summation notation', src: 'Section 1.5',
+            idea: `A sum with a pattern, like 1 + 2 + 3 + ⋯ + 105, is written with dots that rely on the reader to guess the rule. <b>Summation notation</b> replaces the guess with a formula:<br><br><b>Σ<sub>i=m</sub><sup>n</sup> a<sub>i</sub> = a<sub>m</sub> + a<sub>m+1</sub> + ⋯ + a<sub>n</sub></b><br><br>The capital sigma stands for "sum"; i is the <b>index of summation</b>, which runs through the integers from the <b>lower bound</b> m to the <b>upper bound</b> n; and a<sub>i</sub> is the formula for the ith term. To evaluate a sum, substitute each value of the index in turn and add: Σ<sub>k=2</sub><sup>6</sup> (3k − 1) = 5 + 8 + 11 + 14 + 17 = 55. The name of the index is immaterial — i, k, j all mean the same — and the lower bound need not be 1.<br><br>Going the other way, a written-out sum is put into notation by finding the rule for the terms and the range of the index: 6 + 9 + 12 + ⋯ + 60 is 3k for k from 2 to 20, so it is Σ<sub>k=2</sub><sup>20</sup> 3k. There is usually more than one correct way; Σ<sub>j=1</sub><sup>19</sup> (3j + 3) is the same sum.<br><br>Three <b>properties</b> let a sum be broken into simpler ones: a constant factor comes out, Σ c a<sub>i</sub> = c Σ a<sub>i</sub>; a sum of two rules splits, Σ (a<sub>i</sub> + b<sub>i</sub>) = Σ a<sub>i</sub> + Σ b<sub>i</sub>; and a constant summed n times is n times the constant, Σ<sub>i=1</sub><sup>n</sup> c = nc. With these, three <b>formulas</b> do the rest:<br><br><b>Σ<sub>i=1</sub><sup>n</sup> i = n(n + 1)/2 · Σ<sub>i=1</sub><sup>n</sup> i² = n(n + 1)(2n + 1)/6 · Σ<sub>i=1</sub><sup>n</sup> i³ = n²(n + 1)²/4</b><br><br>So Σ<sub>k=1</sub><sup>50</sup> (4k + 2) = 4 · (50 · 51/2) + 2 · 50 = 5,100 + 100 = 5,200, without adding fifty numbers. The first formula has a two-line proof worth remembering: write the sum forwards and backwards and add — every column is n + 1, there are n columns, so twice the sum is n(n + 1).<br><br>The formulas start at 1. A sum that starts elsewhere is either shifted or handled as a difference: Σ<sub>j=30</sub><sup>100</sup> 4 has 100 − 30 + 1 = 71 terms, not 70, so it is 284. Counting the terms is the small arithmetic that goes wrong most often.`,
+            rules: [
+              { name: 'The notation', expr: 'Sigma_(i=m)^n a_i = a_m + a_(m+1) + ... + a_n', words: true, note: 'Index i runs from the lower bound m to the upper bound n; a_i is the rule for each term.' },
+              { name: 'Constant factor', expr: 'Sigma c a_i = c Sigma a_i', note: 'A multiplier comes out of the sum.' },
+              { name: 'Sum of rules', expr: 'Sigma (a_i + b_i) = Sigma a_i + Sigma b_i', note: 'A sum of two rules splits into two sums.' },
+              { name: 'Constant term', expr: 'Sigma_(i=1)^n c = n c', words: true, note: 'A constant added n times. From m to n there are n − m + 1 terms.' },
+              { name: 'The three formulas', expr: 'Sigma i = n(n+1)/2, Sigma i^2 = n(n+1)(2n+1)/6, Sigma i^3 = n^2 (n+1)^2/4', note: 'All from i = 1 to n.' }
+            ],
+            examples: [
+              {
+                prompt: 'Evaluate Σ from k = 2 to 6 of (3k − 1), and write 6 + 9 + 12 + ⋯ + 60 in summation notation.',
+                steps: [
+                  { do: 'k = 2, 3, 4, 5, 6 gives 5, 8, 11, 14, 17', why: 'Substitute each index value in turn. The lower bound is 2, so k = 1 is not included.' },
+                  { do: 'Sum = 55', why: 'Five terms added.' },
+                  { do: '6 + 9 + ⋯ + 60 is 3k for k = 2 to 20: Σ from k = 2 to 20 of 3k', why: 'Each term is a multiple of 3; 6 = 3 · 2 and 60 = 3 · 20 fix the bounds.' }
+                ],
+                answer: '55, and Σ from k = 2 to 20 of 3k', answerWords: true
+              },
+              {
+                prompt: 'Evaluate Σ from k = 1 to 50 of (4k + 2) and Σ from k = 1 to 30 of k² using the properties and formulas.',
+                steps: [
+                  { do: 'Σ (4k + 2) = 4 Σ k + Σ 2 = 4 · (50 · 51/2) + 2 · 50', why: 'Split the sum, pull out the 4, and use the formula for Σ k with n = 50 and the constant rule.' },
+                  { do: '= 4 · 1,275 + 100 = 5,200', why: 'Arithmetic: 50 × 51/2 is 1,275, and the constant 2 is added fifty times.' },
+                  { do: 'Σ k² for n = 30: 30 · 31 · 61/6 = 9,455', why: 'The second formula: n(n + 1)(2n + 1)/6 with 2n + 1 = 61.' }
+                ],
+                answer: '5,200 and 9,455', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'bus-sum-lower-bound-ignored',
+                wrong: 'Evaluating Σ from k = 2 to 6 by starting at k = 1',
+                right: 'The index starts at the lower bound written under the sigma. Here the first term is k = 2.',
+                why: 'The formulas Σ i = n(n + 1)/2 and its companions start at 1, and a sum that starts at 2 is the formula minus the k = 1 term. Starting at the wrong place adds a term the sum does not contain.'
+              },
+              {
+                id: 'bus-constant-summed-once',
+                wrong: 'Treating Σ from k = 1 to 50 of 2 as 2',
+                right: 'A constant is added once for each value of the index: 50 × 2 = 100.',
+                why: 'The sigma says "add this up for every k", and the constant does not stop being a term because it has no k in it. From m to n there are n − m + 1 copies — 71 terms from 30 to 100, not 70.'
+              },
+              {
+                id: 'bus-sum-of-product-split',
+                wrong: 'Writing Σ (a_k b_k) as (Σ a_k)(Σ b_k)',
+                right: 'Sums split over addition and constant factors only. A product of two rules does not split.',
+                why: '(1 · 2) + (2 · 3) = 8, but (1 + 2)(2 + 3) = 15. The properties are linear — they mirror the distributive law — and multiplication of two varying terms is not linear. The three formulas exist precisely because Σ k² cannot be found from Σ k.'
+              }
+            ]
+          },
+
+          {
+            id: 'b6', title: 'Sequences', src: 'Section 1.6',
+            idea: `A <b>sequence</b> is a list of numbers in order — a<sub>1</sub>, a<sub>2</sub>, a<sub>3</sub>, … — given either by a formula for the kth term, or <b>recursively</b>, by a starting value and a rule for getting each term from the one before. The factorial is recursive: 1! = 1 and k! = k · (k − 1)!, so 5! = 120. So is the Fibonacci sequence, F<sub>1</sub> = F<sub>2</sub> = 1 and F<sub>k</sub> = F<sub>k−1</sub> + F<sub>k−2</sub>. Two families matter for the rest of the course, because chapter 5's finance formulas are their sums.<br><br>An <b>arithmetic sequence</b> adds the same number each time: start at a, and each term is the previous term plus the <b>common difference</b> d. Its kth term is<br><br><b>b<sub>k</sub> = a + (k − 1)d</b><br><br>— the first term plus (k − 1) steps, not k, because the first term has taken no steps. An enrolment of 1,500 falling by 40 a year is arithmetic with a = 1,500 and d = −40, and the eighth year's enrolment is 1,500 + 7(−40) = 1,220.<br><br>A <b>geometric sequence</b> multiplies by the same number each time: start at a, and each term is the previous term times the <b>common ratio</b> r. Its kth term is<br><br><b>c<sub>k</sub> = a r<sup>k−1</sup></b><br><br>An amount of $2,000 growing 5% a year is geometric with r = 1.05, and the tenth year's amount is 2,000(1.05)⁹. Compound interest is a geometric sequence; that is the whole of section 5.1 in one sentence.<br><br><b>Sums.</b> The sum of the first n terms of an arithmetic sequence is n times the average of the first and last terms:<br><br><b>s<sub>n</sub> = (n/2)(a + z)</b>, where z = a + (n − 1)d is the last term, or equivalently <b>s<sub>n</sub> = (n/2)(2a + (n − 1)d)</b><br><br>For a geometric sequence with r ≠ 1,<br><br><b>s<sub>n</sub> = a(1 − r<sup>n</sup>)/(1 − r)</b>, or the same thing written a(r<sup>n</sup> − 1)/(r − 1) when r &gt; 1<br><br>The derivation is two lines: write s<sub>n</sub>, write r s<sub>n</sub>, subtract, and everything cancels except the first and last terms. Eight years of enrolments total (8/2)(1,500 + 1,220) = 10,880; ten years of the growing deposit total 2,000(1.05<sup>10</sup> − 1)/0.05 ≈ 25,155.79.<br><br><b>Infinite geometric sums.</b> When |r| &lt; 1, r<sup>n</sup> shrinks toward 0 as n grows, and the sum of all the terms settles to<br><br><b>a/(1 − r)</b>, for |r| &lt; 1 only<br><br>This is how a repeating decimal becomes a fraction — 0.272727… = 0.27 + 0.0027 + ⋯ has a = 0.27 and r = 0.01, so it equals 0.27/0.99 = 3/11 — and how a <b>perpetuity</b> is priced: $50,000 a year forever, starting now, at 4% is worth 50,000 + 50,000/1.04 + 50,000/1.04² + ⋯ = 50,000/(1 − 1/1.04) = 50,000 × 1.04/0.04 = $1,300,000 today. If |r| ≥ 1 the terms do not shrink and there is no sum; the formula must not be used.`,
+            rules: [
+              { name: 'Arithmetic kth term', expr: 'b_k = a + (k - 1) d', note: 'First term a, common difference d. The first term has taken no steps, so k − 1.' },
+              { name: 'Geometric kth term', expr: 'c_k = a r^(k - 1)', note: 'First term a, common ratio r. Compound growth is a geometric sequence.' },
+              { name: 'Arithmetic sum', expr: 's_n = (n/2)(a + z)', note: 'n times the average of the first term a and the last term z = a + (n − 1)d.' },
+              { name: 'Geometric sum', expr: 's_n = a (1 - r^n)/(1 - r)', note: 'For r ≠ 1. Equivalent to a(rⁿ − 1)/(r − 1), which is tidier when r > 1.' },
+              { name: 'Infinite geometric sum', expr: 'a/(1 - r)', note: 'Only when |r| < 1, so that rⁿ shrinks to 0. For |r| ≥ 1 there is no sum.' },
+              { name: 'Recursive definition', expr: 'A starting value and a rule giving each term from the previous ones', words: true, note: 'k! = k × (k − 1)! with 1! = 1; Fibonacci adds the two before.' }
+            ],
+            examples: [
+              {
+                prompt: 'A school’s enrolment is 1,500 and falls by 40 students a year. What is the enrolment in the eighth year, and what is the total enrolment over the eight years?',
+                steps: [
+                  { do: 'Arithmetic: a = 1,500, d = −40', why: 'The same amount is subtracted each year: a common difference.' },
+                  { do: 'b₈ = 1,500 + (8 − 1)(−40) = 1,500 − 280 = 1,220', why: 'kth term with k = 8: seven steps down from the first term.' },
+                  { do: 's₈ = (8/2)(1,500 + 1,220) = 4 × 2,720 = 10,880', why: 'n times the average of the first and last terms.' }
+                ],
+                answer: 'Eighth-year enrolment 1,220; total over eight years 10,880', answerWords: true
+              },
+              {
+                prompt: '$2,000 grows by 5% a year. What is the amount in the tenth year, and what is the total of the ten yearly amounts? Give 2 decimal places.',
+                steps: [
+                  { do: 'Geometric: a = 2,000, r = 1.05', why: 'Growing by 5% is multiplying by 1.05 each year: a common ratio.' },
+                  { do: 'c₁₀ = 2,000(1.05)⁹ ≈ 3,102.66', why: 'kth term with k = 10: nine multiplications after the first term.' },
+                  { do: 's₁₀ = 2,000(1.05¹⁰ − 1)/(1.05 − 1) = 2,000(0.628895)/0.05 ≈ 25,155.79', why: 'Geometric sum formula, written with rⁿ − 1 over r − 1 since r > 1.' }
+                ],
+                answer: 'Tenth-year amount about $3,102.66; ten-year total about $25,155.79', answerWords: true
+              },
+              {
+                prompt: 'Write 0.272727… as a fraction, and find the present value of $50,000 a year forever, starting now, at 4% compounded annually.',
+                steps: [
+                  { do: '0.272727… = 0.27 + 0.0027 + 0.000027 + ⋯: a = 0.27, r = 0.01', why: 'Each block is the previous one divided by 100.' },
+                  { do: 'Sum = 0.27/(1 − 0.01) = 0.27/0.99 = 27/99 = 3/11', why: '|r| < 1, so the infinite sum formula applies.' },
+                  { do: 'Perpetuity: 50,000 + 50,000/1.04 + 50,000/1.04² + ⋯, with a = 50,000 and r = 1/1.04', why: 'Each payment’s present value is the previous one divided by 1.04.' },
+                  { do: 'Sum = 50,000/(1 − 1/1.04) = 50,000 × 1.04/0.04 = 1,300,000', why: 'r = 1/1.04 < 1, so the sum exists: $1,300,000 invested today funds the payments forever.' }
+                ],
+                answer: '0.272727… = 3/11; the perpetuity is worth $1,300,000 today', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'bus-kth-term-off-by-one',
+                wrong: 'Using a + kd or a rᵏ for the kth term',
+                right: 'The kth term is a + (k − 1)d or a r^(k − 1): the first term has taken no steps.',
+                why: 'With k = 1 the formula must give a itself, and a + d or ar does not. The off-by-one produces the (k + 1)th term instead, so the eighth year’s enrolment comes out as 1,180 rather than 1,220 and every sum built on it is wrong.'
+              },
+              {
+                id: 'bus-geometric-ratio-treated-as-difference',
+                wrong: 'Treating 5% growth as an arithmetic sequence with d = 100',
+                right: 'Percentage growth multiplies: r = 1.05, a geometric sequence.',
+                why: 'Adding $100 a year is a constant amount; 5% a year is a constant proportion of a growing base, so the increments grow too. The two sequences agree for one year and separate thereafter — which is exactly the difference between simple and compound interest in chapter 5.'
+              },
+              {
+                id: 'bus-infinite-sum-with-large-ratio',
+                wrong: 'Applying a/(1 − r) to a geometric sequence with r = 1.05',
+                right: 'The infinite sum exists only for |r| < 1. With r ≥ 1 the terms do not shrink and there is no sum.',
+                why: 'The formula comes from rⁿ → 0, which fails when |r| ≥ 1. Plugging r = 1.05 into a/(1 − r) gives a negative number for a sum of positive terms, which is the sign that the formula has been used where it does not apply.'
+              }
+            ]
+          }
+        ],
+        practice: [
+          { id: 'v1', kind: 'numeric', lesson: 'b1',
+            prompt: 'Variable cost $8 per unit, fixed costs $50,000, price $14. How many units give a profit of $40,000?',
+            answer: 15000, verify: { expr: 'solve(14*q - (8*q + 50000) - 40000, q)[0]' },
+            hint: 'profit = revenue − total cost.',
+            solution: ['14q − 8q − 50,000 = 40,000', '6q = 90,000', 'q = 15,000'] },
+
+          { id: 'v2', kind: 'numeric', lesson: 'b1',
+            prompt: 'A jacket costs the retailer $40. What tag price, in dollars, lets the retailer take 25% off and still make 20% on cost?',
+            answer: 64, verify: { expr: 'solve(Rational(3,4)*p - (40 + Rational(1,5)*40), p)[0]' },
+            hint: 'The discount is of the tag price; the profit is of the cost.',
+            solution: ['0.75p = 40 + 0.20(40) = 48', 'p = 64'] },
+
+          { id: 'v3', kind: 'numeric', lesson: 'b1',
+            prompt: '$12,000 is split between 4% and 6.5% and earns $630 in a year. How much, in dollars, is at 4%?',
+            answer: 6000, verify: { expr: 'solve(Rational(4,100)*x + Rational(65,1000)*(12000 - x) - 630, x)[0]' },
+            hint: 'Let x be at 4%; then 12,000 − x is at 6.5%.',
+            solution: ['0.04x + 0.065(12,000 − x) = 630', '780 − 0.025x = 630', 'x = 6,000'] },
+
+          { id: 'v4', kind: 'numeric', lesson: 'b1',
+            prompt: 'A solution of 450 ml is two parts water to seven parts syrup. How many ml of syrup?',
+            answer: 350, verify: { expr: '7*solve(2*n + 7*n - 450, n)[0]' },
+            hint: 'Let n be one part: 2n + 7n = 450, and then answer the question.',
+            solution: ['9n = 450, n = 50', 'Syrup is 7n', '= 350 ml'] },
+
+          { id: 'v5', kind: 'numeric', lesson: 'b1',
+            prompt: 'A firm sets aside $500,000 to grow to $551,250 in two years at rate r compounded annually. What is r, as a percentage?',
+            answer: 5, verify: { expr: '100*Max(*solve(500000*(1 + r)**2 - 551250, r))' },
+            hint: '(1 + r)² = 1.1025; reject the negative root.',
+            solution: ['500,000(1 + r)² = 551,250', '(1 + r)² = 1.1025, 1 + r = ±1.05', 'r = 0.05 = 5% (the root −2.05 is rejected)'] },
+
+          { id: 'v6', kind: 'numeric', lesson: 'b1',
+            prompt: 'A block has 120 apartments, all rented at $800 a month; each $20 increase causes 2 vacancies. The owner wants $99,000 a month. What is the lower of the two rents that achieve this, in dollars?',
+            answer: 900, verify: { expr: 'Min(*solve(r*(120 - 2*(r - 800)/20) - 99000, r))' },
+            hint: 'Rented apartments: 120 − 2(r − 800)/20 = 200 − r/10.',
+            solution: ['r(200 − r/10) = 99,000', 'r² − 2,000r + 990,000 = 0', 'r = 900 or 1,100; the lower is 900'] },
+
+          { id: 'v7', kind: 'spot', lesson: 'b1',
+            prompt: 'A student prices a product costing $50 so that a 10% discount still leaves a 30% profit on cost. Which step is wrong?',
+            steps: [
+              { t: 'Let p be the tag price; the customer pays 0.9p', bad: false },
+              { t: 'Required amount: cost plus 30% profit on cost = 50 + 15 = 65', bad: false },
+              { t: '0.9p = 65, so p = 72.22', bad: false },
+              { t: 'Check: 30% of 72.22 is 21.67, so the profit is 21.67', bad: true }
+            ],
+            why: 'The profit is 30% of the cost ($15), not 30% of the tag price. The check should be that 0.9 × 72.22 = 65 = 50 + 15. Putting the percentage on the wrong base in the check is the same error as putting it there in the setup.',
+            hint: 'Which base does "profit on cost" use?',
+            solution: ['Profit on cost is 0.30 × 50 = 15', 'The customer pays 65', 'p ≈ $72.22'] },
+
+          { id: 'v8', kind: 'numeric', lesson: 'b2',
+            prompt: 'Solve 3(x − 2) + 5 < 2x + 9. What is the boundary value of x (the number at the end of the interval)?',
+            answer: 10, verify: { expr: 'solve(3*(x - 2) + 5 - (2*x + 9), x)[0]' },
+            hint: 'The solution is x < (something).',
+            solution: ['3x − 1 < 2x + 9', 'x < 10', 'Interval (−∞, 10); the boundary is 10'] },
+
+          { id: 'v9', kind: 'numeric', lesson: 'b2',
+            prompt: 'Solve 7 − 2x ≥ 3x + 22. What is the largest value of x in the solution?',
+            answer: -3, verify: { expr: 'solve(7 - 2*x - (3*x + 22), x)[0]' },
+            hint: 'Dividing by −5 reverses the sense.',
+            solution: ['−5x ≥ 15', 'x ≤ −3', 'The largest solution is −3, which is included'] },
+
+          { id: 'v10', kind: 'mc', lesson: 'b2',
+            prompt: 'The solution of 2 < 5 − 3x ≤ 11 in interval notation is',
+            options: [
+              { t: '[−2, 1)', ok: true },
+              { t: '(−2, 1]', ok: false },
+              { t: '[1, −2)', ok: false },
+              { t: '(−∞, −2] ∪ [1, ∞)', ok: false }
+            ],
+            hint: 'Subtract 5, divide by −3 and reverse both symbols, then reorder.',
+            solution: ['−3 < −3x ≤ 6', '1 > x ≥ −2', '−2 ≤ x < 1: square bracket at −2, round at 1'] },
+
+          { id: 'v11', kind: 'mc', lesson: 'b2',
+            prompt: 'Which interval represents x ≤ −3?',
+            options: [
+              { t: '(−∞, −3]', ok: true },
+              { t: '(−∞, −3)', ok: false },
+              { t: '[−∞, −3]', ok: false },
+              { t: '[−3, ∞)', ok: false }
+            ],
+            hint: '−3 satisfies the inequality; infinity never gets a square bracket.',
+            solution: ['Everything to the left of −3, including −3', 'Square bracket at −3', 'Round bracket at −∞'] },
+
+          { id: 'v12', kind: 'spot', lesson: 'b2',
+            prompt: 'A student solves 4 − x > 2x + 13. Which step is wrong?',
+            steps: [
+              { t: '4 − x − 2x > 13', bad: false },
+              { t: '−3x > 9', bad: false },
+              { t: 'x > −3', bad: true },
+              { t: 'Check with x = 0: 4 > 13 is false, so something is wrong', bad: false }
+            ],
+            why: 'Dividing by −3 reverses the inequality: x < −3. The student’s own check catches it — 0 would be in the claimed solution but does not satisfy the original inequality.',
+            hint: 'What happens when both sides are divided by a negative number?',
+            solution: ['−3x > 9', 'Divide by −3 and reverse', 'x < −3, the interval (−∞, −3)'] },
+
+          { id: 'v13', kind: 'numeric', lesson: 'b3',
+            prompt: 'A product costs $18 per unit with fixed costs $60,000 and sells for $30. What is the smallest whole number of units that gives a profit?',
+            answer: 5001, verify: { expr: 'floor(solve(30*q - (18*q + 60000), q)[0]) + 1' },
+            hint: 'Profit > 0 gives q > 5,000; q is a count.',
+            solution: ['12q − 60,000 > 0', 'q > 5,000', 'The first whole number above 5,000 is 5,001'] },
+
+          { id: 'v14', kind: 'numeric', lesson: 'b3',
+            prompt: 'Renting costs $2,500 a month plus $150 per day of use; buying costs $18,000 a year plus $200 per day. What is the least number of days of use per year for which renting is cheaper?',
+            answer: 241, verify: { expr: 'floor(solve(30000 + 150*d - (18000 + 200*d), d)[0]) + 1' },
+            hint: '30,000 + 150d < 18,000 + 200d.',
+            solution: ['12,000 < 50d', 'd > 240', 'At least 241 days'] },
+
+          { id: 'v15', kind: 'numeric', lesson: 'b3',
+            prompt: 'Current assets $420,000, current liabilities $120,000. What is the largest loan, in dollars, that keeps the current ratio at least 2 when the loan is added to both?',
+            answer: 180000, verify: { expr: 'solve((420000 + x)/(120000 + x) - 2, x)[0]' },
+            hint: 'The denominator is positive, so multiply through.',
+            solution: ['420,000 + x ≥ 2(120,000 + x)', '180,000 ≥ x', 'At most $180,000'] },
+
+          { id: 'v16', kind: 'numeric', lesson: 'b3',
+            prompt: 'A retailer pays $12 per unit and sells at $20, with fixed costs of $2,400 a month. What is the smallest whole number of units per month for a profit of at least $1,000?',
+            answer: 425, verify: { expr: 'ceiling(solve(20*q - (12*q + 2400) - 1000, q)[0])' },
+            hint: '8q − 2,400 ≥ 1,000.',
+            solution: ['8q ≥ 3,400', 'q ≥ 425', 'Not strict, so 425 itself counts'] },
+
+          { id: 'v17', kind: 'mc', lesson: 'b3',
+            prompt: 'A profit condition gives q > 2,000 where q is a number of units. The correct answer is',
+            options: [
+              { t: 'at least 2,001 units', ok: true },
+              { t: 'at least 2,000 units', ok: false },
+              { t: 'exactly 2,000 units', ok: false },
+              { t: 'at most 2,000 units', ok: false }
+            ],
+            hint: 'Strict inequality on a count.',
+            solution: ['2,000 exactly gives zero profit', 'The first whole number that satisfies q > 2,000 is 2,001', 'At least 2,001'] },
+
+          { id: 'v18', kind: 'numeric', lesson: 'b4',
+            prompt: 'Solve |2x − 5| = 7. What is the larger solution?',
+            answer: 6, verify: { expr: 'Max(solve(2*x - 5 - 7, x)[0], solve(2*x - 5 + 7, x)[0])' },
+            hint: '2x − 5 = 7 or 2x − 5 = −7.',
+            solution: ['2x − 5 = 7 gives x = 6', '2x − 5 = −7 gives x = −1', 'The larger is 6'] },
+
+          { id: 'v19', kind: 'numeric', lesson: 'b4',
+            prompt: 'Solve |2x − 5| = 7. What is the smaller solution?',
+            answer: -1, verify: { expr: 'Min(solve(2*x - 5 - 7, x)[0], solve(2*x - 5 + 7, x)[0])' },
+            hint: 'The negative case.',
+            solution: ['2x − 5 = −7', '2x = −2', 'x = −1'] },
+
+          { id: 'v20', kind: 'mc', lesson: 'b4',
+            prompt: 'The solution of |x + 3| ≤ 4 is',
+            options: [
+              { t: '[−7, 1]', ok: true },
+              { t: '(−∞, −7] ∪ [1, ∞)', ok: false },
+              { t: '[−1, 7]', ok: false },
+              { t: '[1, 7]', ok: false }
+            ],
+            hint: '"Less than or equal" is a between.',
+            solution: ['−4 ≤ x + 3 ≤ 4', 'Subtract 3 throughout', '−7 ≤ x ≤ 1'] },
+
+          { id: 'v21', kind: 'mc', lesson: 'b4',
+            prompt: 'The solution of |4 − 3x| > 2 is',
+            options: [
+              { t: '(−∞, 2/3) ∪ (2, ∞)', ok: true },
+              { t: '(2/3, 2)', ok: false },
+              { t: '(−2, 2/3)', ok: false },
+              { t: '(2, ∞)', ok: false }
+            ],
+            hint: '"Greater than" is an outside: two pieces.',
+            solution: ['4 − 3x < −2 gives x > 2', '4 − 3x > 2 gives x < 2/3', 'Union of the two'] },
+
+          { id: 'v22', kind: 'numeric', lesson: 'b4',
+            prompt: 'How many solutions does |x − 4| = −3 have?',
+            answer: 0, verify: { expr: 'len(solve(Abs(Symbol("t", real=True) - 4) + 3, Symbol("t", real=True)))' },
+            hint: 'Can a distance be negative?',
+            solution: ['An absolute value is never negative', 'No x makes it −3', 'Zero solutions'] },
+
+          { id: 'v23', kind: 'mc', lesson: 'b4',
+            prompt: '"The weight w must be within 0.3 oz of 22 oz" in absolute-value notation is',
+            options: [
+              { t: '|w − 22| ≤ 0.3', ok: true },
+              { t: '|w − 0.3| ≤ 22', ok: false },
+              { t: '|w + 22| ≤ 0.3', ok: false },
+              { t: '|w − 22| ≥ 0.3', ok: false }
+            ],
+            hint: 'Distance between w and 22, at most 0.3.',
+            solution: ['|w − 22| is the distance from w to 22', 'Within means at most', '|w − 22| ≤ 0.3'] },
+
+          { id: 'v24', kind: 'numeric', lesson: 'b4',
+            prompt: 'What is |(−6)(3)| / |−9|?',
+            answer: 2, verify: { expr: 'Abs((-6)*3)/Abs(-9)' },
+            hint: '|ab| = |a||b| and |a/b| = |a|/|b|.',
+            solution: ['|−18| = 18', '|−9| = 9', '18/9 = 2'] },
+
+          { id: 'v25', kind: 'numeric', lesson: 'b5',
+            prompt: 'Evaluate Σ from k = 2 to 6 of (3k − 1).',
+            answer: 55, verify: { expr: 'Sum(3*k - 1, (k, 2, 6)).doit()' },
+            hint: 'Five terms, starting at k = 2.',
+            solution: ['5 + 8 + 11 + 14 + 17', '= 55'] },
+
+          { id: 'v26', kind: 'numeric', lesson: 'b5',
+            prompt: 'Evaluate Σ from k = 1 to 50 of (4k + 2).',
+            answer: 5200, verify: { expr: 'Sum(4*k + 2, (k, 1, 50)).doit()' },
+            hint: '4 Σ k + Σ 2 with the formula for Σ k.',
+            solution: ['4 × (50 × 51/2) + 2 × 50', '= 5,100 + 100', '= 5,200'] },
+
+          { id: 'v27', kind: 'numeric', lesson: 'b5',
+            prompt: 'Evaluate Σ from k = 1 to 30 of k².',
+            answer: 9455, verify: { expr: 'Sum(k**2, (k, 1, 30)).doit()' },
+            hint: 'n(n + 1)(2n + 1)/6.',
+            solution: ['30 × 31 × 61/6', '= 56,730/6', '= 9,455'] },
+
+          { id: 'v28', kind: 'numeric', lesson: 'b5',
+            prompt: 'Evaluate Σ from j = 30 to 100 of 4.',
+            answer: 284, verify: { expr: 'Sum(4, (j, 30, 100)).doit()' },
+            hint: 'How many terms are there from 30 to 100?',
+            solution: ['100 − 30 + 1 = 71 terms', '71 × 4', '= 284'] },
+
+          { id: 'v29', kind: 'numeric', lesson: 'b5',
+            prompt: 'Evaluate Σ from i = 1 to 10 of i³.',
+            answer: 3025, verify: { expr: 'Sum(i**3, (i, 1, 10)).doit()' },
+            hint: 'n²(n + 1)²/4.',
+            solution: ['100 × 121/4', '= 3,025', 'Which is (1 + 2 + ⋯ + 10)² = 55²'] },
+
+          { id: 'v30', kind: 'mc', lesson: 'b5',
+            prompt: 'Which sum equals 6 + 9 + 12 + ⋯ + 60?',
+            options: [
+              { t: 'Σ from k = 2 to 20 of 3k', ok: true },
+              { t: 'Σ from k = 1 to 20 of 3k', ok: false },
+              { t: 'Σ from k = 6 to 60 of k', ok: false },
+              { t: 'Σ from k = 2 to 60 of 3k', ok: false }
+            ],
+            hint: 'Each term is 3 times an integer; 6 = 3 × 2 and 60 = 3 × 20.',
+            solution: ['Terms are 3k', 'k runs from 2 to 20', 'Starting at 1 would add a term of 3 that is not in the sum'] },
+
+          { id: 'v31', kind: 'spot', lesson: 'b5',
+            prompt: 'A student evaluates Σ from k = 1 to 20 of (2k + 5). Which step is wrong?',
+            steps: [
+              { t: 'Split: Σ 2k + Σ 5', bad: false },
+              { t: 'Σ 2k = 2 Σ k = 2 × (20 × 21/2) = 420', bad: false },
+              { t: 'Σ 5 = 5', bad: true },
+              { t: 'Total 425', bad: false }
+            ],
+            why: 'The constant 5 is added once for each of the 20 values of k, so Σ 5 = 20 × 5 = 100 and the total is 520. A constant term does not disappear because it lacks a k.',
+            hint: 'How many times is the 5 added?',
+            solution: ['Σ from 1 to 20 of 5 = 100', '420 + 100', '= 520'] },
+
+          { id: 'v32', kind: 'numeric', lesson: 'b6',
+            prompt: 'An enrolment of 1,500 falls by 40 a year. What is the enrolment in the eighth year?',
+            answer: 1220, verify: { expr: '1500 + (8 - 1)*(-40)' },
+            hint: 'a + (k − 1)d with k = 8.',
+            solution: ['b₈ = 1,500 + 7(−40)', '= 1,500 − 280', '= 1,220'] },
+
+          { id: 'v33', kind: 'numeric', lesson: 'b6',
+            prompt: 'For the same enrolment, what is the total over the eight years?',
+            answer: 10880, verify: { expr: 'Rational(8,2)*(1500 + 1220)' },
+            hint: '(n/2)(first + last).',
+            solution: ['s₈ = (8/2)(1,500 + 1,220)', '= 4 × 2,720', '= 10,880'] },
+
+          { id: 'v34', kind: 'numeric', lesson: 'b6',
+            prompt: '$2,000 grows by 5% a year. What is the amount in the tenth year? Give 2 decimal places.',
+            answer: 3102.66, tol: 0.005, verify: { expr: '2000*Rational(105,100)**9', dp: 2 },
+            hint: 'a r^(k − 1) with k = 10.',
+            solution: ['c₁₀ = 2,000(1.05)⁹', '1.05⁹ ≈ 1.551328', '≈ 3,102.66'] },
+
+          { id: 'v35', kind: 'numeric', lesson: 'b6',
+            prompt: 'For the same growth, what is the sum of the first ten yearly amounts? Give 2 decimal places.',
+            answer: 25155.79, tol: 0.005, verify: { expr: '2000*(Rational(105,100)**10 - 1)/(Rational(105,100) - 1)', dp: 2 },
+            hint: 'a(rⁿ − 1)/(r − 1).',
+            solution: ['s₁₀ = 2,000(1.05¹⁰ − 1)/0.05', '1.05¹⁰ ≈ 1.628895', '≈ 25,155.79'] },
+
+          { id: 'v36', kind: 'numeric', lesson: 'b6',
+            prompt: 'Write 0.272727… as a fraction in lowest terms. Enter the denominator.',
+            answer: 11, verify: { expr: 'denom(Rational(27,100)/(1 - Rational(1,100)))' },
+            hint: 'a = 0.27, r = 0.01, sum a/(1 − r).',
+            solution: ['0.27/0.99 = 27/99', '= 3/11', 'Denominator 11'] },
+
+          { id: 'v37', kind: 'numeric', lesson: 'b6',
+            prompt: '$50,000 a year forever, starting now, at 4% compounded annually. What is the present value, in dollars?',
+            answer: 1300000, verify: { expr: '50000/(1 - 1/Rational(104,100))' },
+            hint: 'a = 50,000, r = 1/1.04.',
+            solution: ['50,000/(1 − 1/1.04)', '= 50,000 × 1.04/0.04', '= 1,300,000'] },
+
+          { id: 'v38', kind: 'numeric', lesson: 'b6',
+            prompt: 'A sequence is defined by a₁ = 3 and a_(k+1) = 2a_k − 1. What is a₅?',
+            answer: 33, verify: { expr: '2*(2*(2*(2*3 - 1) - 1) - 1) - 1' },
+            hint: 'Apply the rule four times.',
+            solution: ['a₂ = 5, a₃ = 9, a₄ = 17', 'a₅ = 2(17) − 1', '= 33'] },
+
+          { id: 'v39', kind: 'mc', lesson: 'b6',
+            prompt: 'Which sequence has an infinite sum?',
+            options: [
+              { t: '10, 5, 2.5, 1.25, … (r = 0.5)', ok: true },
+              { t: '2, 4, 8, 16, … (r = 2)', ok: false },
+              { t: '5, 5, 5, 5, … (r = 1)', ok: false },
+              { t: '1, 4, 7, 10, … (d = 3)', ok: false }
+            ],
+            hint: 'Geometric with |r| < 1.',
+            solution: ['Only a geometric sequence with |r| < 1 has terms shrinking to 0', 'Sum = 10/(1 − 0.5) = 20', 'The others grow without bound'] },
+
+          { id: 'v40', kind: 'order', lesson: 'b6',
+            prompt: 'Put the steps for finding the sum of the first n terms of a geometric sequence in order, as the formula is derived.',
+            steps: [
+              'Write s_n = a + ar + ar² + ⋯ + ar^(n−1)',
+              'Multiply both sides by r to get r s_n = ar + ar² + ⋯ + arⁿ',
+              'Subtract: s_n − r s_n = a − arⁿ, since every middle term cancels',
+              'Factor and divide by 1 − r: s_n = a(1 − rⁿ)/(1 − r)'
+            ],
+            hint: 'Write it, multiply it, subtract, divide.',
+            solution: ['The sum', 'Times r', 'The difference telescopes', 'Divide by 1 − r, which needs r ≠ 1'] }
+        ]
+      },
       /* ============================ CHAPTER 9 ============================ */
       {
-        id: 'prob', n: 1,
+        id: 'prob', n: 2,
         title: 'Additional topics in probability',
         blurb: 'A number attached to every outcome, the average you should expect over many trials and how far a single trial strays from it, the distribution that counts successes, and matrices that predict where a system settles.',
         read: 'Chapter 9',
@@ -19260,7 +19946,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.47', date: '16 September 2026', year: 2026 };
+  const BUILD = { v: '2.48', date: '16 September 2026', year: 2026 };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonandy242', ['gmail', 'com'].join('.')].join('@');
   /* The one sentence that says what this is. It appears under the wordmark, and build.js uses
@@ -19273,6 +19959,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      because the person who needs it is the one who just watched the app refresh itself and wants to
      know what moved. Trim the tail when it gets past a dozen; nobody reads further back than that. */
   const WHATS_NEW = [
+    ['2.48', '<b>MATH 1070 begins at the beginning: chapter 1, Applications and More Algebra, all six sections.</b> Word problems turned into one equation and answered in the question&rsquo;s own words (mixtures, profit targets, tag prices, split investments, a compound-interest rate with its impossible root rejected); linear inequalities with the one rule that costs the most marks and interval notation done properly; profit, rent-versus-buy and current-ratio conditions read as thresholds; absolute value as a distance, with the between/outside split for inequalities and tolerances written in one line; summation notation, its properties and the three formulas; and arithmetic and geometric sequences with their sums, the infinite geometric sum, repeating decimals and a perpetuity &mdash; the foundation of the finance chapter to come. Six lessons, 17 worked examples, 40 practice questions and 18 named misconceptions, every number recomputed by a computer algebra system. Chapter 2 follows.'],
     ['2.47', '<b>Chapter 17 of the calculus course &mdash; multivariable calculus, sections 17.1&ndash;17.5, which completes the MATH 1170 outline.</b> Partial derivatives and how to read the &part; notation; marginal cost, marginal productivity and the cross-price test for competitive and complementary products; second-order and mixed partials and why the mixed ones agree; critical points of a surface and the D-test with its three outcomes, saddle points included; and Lagrange multipliers, with the trick of dividing equations so &lambda; cancels and the economics of why the multiplier is a marginal cost. Five lessons, 13 worked examples, 40 practice questions and 16 named misconceptions, every number recomputed by a computer algebra system. Every section the TRU outline lists for MATH 1170 is now built; the course page says so. Next: MATH 1070, chapters 1&ndash;8, then chapters 14&ndash;16 of the book as extra material.'],
     ['2.46', '<b>Chapter 13 of the calculus course &mdash; curve sketching, all six sections of the TRU outline.</b> Relative extrema with the first-derivative test and the sign chart that drives it; absolute extrema on a closed interval and the extreme-value theorem behind the endpoint check; concavity and inflection points from the second derivative, including the two ways a zero of it fails to be one; the second-derivative test and exactly when it says nothing; vertical, horizontal and oblique asymptotes, holes that are not asymptotes, and the full sketching procedure; and applied maxima and minima &mdash; fencing, revenue on a closed interval, average cost, a subscription price, profit at marginal revenue equal to marginal cost, and the economic lot size. Six lessons, 13 worked examples, 42 practice questions and 19 named misconceptions, every number recomputed by a computer algebra system. Chapter 17 follows.'],
     ['2.45', '<b>Chapter 12 of the calculus course, in the five sections the TRU outline sets.</b> <b>Additional differentiation topics</b>: derivatives of logarithms (ln u, other bases, and the laws of logarithms used before differentiating), derivatives of exponentials (e&#7512;, other bases, and which rule applies when the base or the exponent is the variable), implicit differentiation with tangents to curves that never solve for y, logarithmic differentiation for stacked products and for the form u&#8319; with both base and exponent varying, and higher-order derivatives, explicitly and implicitly. Five lessons, 10 worked examples, 30 practice questions and 15 named misconceptions; every derivative recomputed by a computer algebra system, the implicit ones included. Sections 12.3 and 12.6 are left out on purpose &mdash; they are not in MATH 1170 &mdash; and the course page now says which parts of the book the course does not use, instead of listing them as not yet built. Read from the course outline on Moodle, which also fixed the unit order for what follows: chapter 13 next, then 17.'],
