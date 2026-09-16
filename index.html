@@ -1978,6 +1978,49 @@ math mi[mathvariant="normal"] { font-style: normal; }
 .fade-note .small { color: var(--ink-2); flex: 1 1 240px; line-height: 1.5; }
 .worked > [data-act="ex-close"] { margin: 0 var(--pad-in) var(--pad-in); }
 
+/* ---- figures in the courses (v2.53) ----
+   Inline SVG drawn from the actual function, in the page's own tokens, so a graph reads in both
+   themes and reflows on a phone. Curves take the accent; a second curve takes the ink; the third a
+   softer accent. Axes and grid are recessive. A sign chart is an HTML table because it IS a table. */
+.fig { margin: 0; display: grid; gap: 8px; padding: 12px var(--pad-in); border-top: 1px solid var(--line-soft); border-bottom: 1px solid var(--line-soft); background: var(--surface); }
+.lesson-body > .fig { border: 1px solid var(--line); max-width: 560px; }
+.worked .fig { border-left: 0; border-right: 0; }
+.fig svg { width: 100%; max-width: 520px; height: auto; display: block; font-family: var(--font-mono); }
+.fig figcaption { font-size: .85rem; color: var(--ink-2); line-height: 1.5; max-width: 60ch; }
+.fig-grid { stroke: var(--line-soft); stroke-width: 1; }
+.fig-axis { stroke: var(--ink-3); stroke-width: 1.2; }
+.fig-tick { fill: var(--ink-3); font-size: 10.5px; }
+.fig-lbl { fill: var(--ink); font-size: 11px; }
+.fig-curve { fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.fig-curve.c0, .fig-key.c0 i { stroke: var(--accent); background: var(--accent); }
+.fig-curve.c1, .fig-key.c1 i { stroke: var(--ink); background: var(--ink); }
+.fig-curve.c2, .fig-key.c2 i { stroke: var(--coral, #D9682E); background: var(--coral, #D9682E); }
+.fig-curve.dashed, .fig-seg.dashed { stroke-dasharray: 6 5; }
+.fig-seg { stroke: var(--ink-2); stroke-width: 1.8; }
+.fig-asym { stroke: var(--ink-2); stroke-width: 1.2; stroke-dasharray: 4 4; }
+.fig-pt { fill: var(--ink); stroke: var(--surface); stroke-width: 1.5; }
+.fig-pt.open { fill: var(--surface); stroke: var(--ink); stroke-width: 2; }
+.fig-shade { fill: var(--accent-soft); opacity: .55; }
+.fig-legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: .82rem; color: var(--ink-2); font-family: var(--font-mono); }
+.fig-key { display: inline-flex; align-items: center; gap: 7px; }
+.fig-key i { display: inline-block; width: 18px; height: 3px; border-radius: 2px; }
+.fig-key.dashed i { background: repeating-linear-gradient(90deg, currentColor 0 5px, transparent 5px 9px); }
+.signchart { border-collapse: collapse; font-family: var(--font-mono); font-size: .86rem; width: 100%; max-width: 560px; }
+.signchart th, .signchart td { padding: 5px 6px; text-align: center; border-bottom: 1px solid var(--line-soft); white-space: nowrap; }
+.signchart th:first-child { text-align: left; font-weight: 500; color: var(--ink-2); }
+.signchart thead th { color: var(--ink); border-bottom: 1.5px solid var(--ink-3); }
+.signchart .sc-inf { color: var(--ink-3); }
+.signchart .sc-mark span { display: inline-block; padding: 1px 6px; border: 1px solid var(--ink-3); border-radius: 3px; }
+.signchart .sc-mark.undef span { border-style: dashed; }
+.signchart .sc-sign { font-size: 1rem; }
+.signchart .sc-at { color: var(--ink-3); font-size: .78rem; }
+.signchart .sc-result th, .signchart .sc-result td { border-top: 1.5px solid var(--ink-3); font-weight: 600; color: var(--ink); }
+.signchart .sc-shape td { font-size: 1.05rem; color: var(--accent); }
+.worked .approach { margin: 0; padding: 11px var(--pad-in); border-bottom: 1px solid var(--line-soft); display: grid; gap: 4px; font-size: .92rem; line-height: 1.55; color: var(--ink-2); max-width: 72ch; }
+.worked .approach .label, .worked .check .label { display: block; }
+.worked .check { margin: 0; padding: 11px var(--pad-in); border-top: 1px solid var(--line-soft); background: var(--surface-2); display: grid; gap: 4px; font-size: .9rem; line-height: 1.55; color: var(--ink-2); max-width: 72ch; }
+.fig-int { stroke: var(--accent); stroke-width: 5; stroke-linecap: butt; }
+
 /* ---- say it your way (v2.28) ----
    It sits between the card and the rating row, which is the one moment the student has just seen
    the answer and has not yet moved on. It must not look like a wall: no border box around the
@@ -16062,6 +16105,12 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
           {
             id: 'a1', title: 'Limits and their properties', src: 'Section 10.1',
             idea: `A limit describes where a function is <b>heading</b>, not where it is. <b>lim<sub>x→a</sub> f(x) = L</b> means that f(x) can be made as close to L as you like, and kept that close, by taking x close enough to a — but <b>not equal to a</b>. What happens at x = a itself is deliberately ignored. The function may be undefined there, or defined with a value different from L, and the limit is unaffected either way.<br><br>That is the whole subtlety, and it is worth an example. Take g(x) = (x² − 4)/(x − 2). At x = 2 it is 0/0 and does not exist. But for every other x, g(x) = (x − 2)(x + 2)/(x − 2) = x + 2, so as x closes in on 2 from either side, g(x) closes in on 4. The limit is 4; the value does not exist; both statements are true at once.<br><br>Most limits are found not from a table but from <b>properties</b>, which say that limits respect arithmetic: the limit of a sum, difference, product or quotient is the sum, difference, product or quotient of the limits — the quotient only when the denominator's limit is not zero — and the limit of an nth root is the nth root of the limit. The single most useful consequence:<br><br><b>if f is a polynomial, then lim<sub>x→a</sub> f(x) = f(a)</b><br><br>So a polynomial limit is found by substitution, and so is a rational function's whenever the denominator does not go to zero. <b>That is a rule, not a habit.</b> Substituting into a function that is not covered by a rule can give a value that is not the limit — a graph with a hole and a dot above it is the standard picture — so "I substituted" is only a valid method when you can say which property allows it.<br><br>When substitution gives the <b>form 0/0</b>, nothing is decided yet: the form is meaningless, not zero and not undefined. The move is algebra. Because the limit only cares about x ≠ a, you may <b>factor and cancel</b>, or rationalise a square root, to reach a simpler function that agrees with the original everywhere except at a — and then take that function's limit by evaluation. The justification is a fundamental fact: <b>if f(x) = g(x) for all x ≠ a, then their limits at a are equal.</b><br><br>The limit that the rest of the course is built on has exactly that form:<br><br><b>lim<sub>h→0</sub> (f(x + h) − f(x)) / h</b><br><br>This is the <b>difference quotient</b>, and substituting h = 0 always gives 0/0. Expanding the numerator, cancelling the h, and then letting h → 0 is the routine of chapter 11 in miniature, so it is worth being fluent before the derivative is named. One special limit is also recorded here: <b>lim<sub>x→0</sub> (1 + x)<sup>1/x</sup> = e</b>, which can be taken as the definition of the number e ≈ 2.71828.`,
+            figure: {
+              kind: 'graph', x: [-1, 6], y: [0, 9],
+              fns: [{ expr: '(x**2 - 9)/(x - 3)', label: 'g(x) = (x² − 9)/(x − 3)' }],
+              points: [{ x: 3, y: 6, open: true, label: 'hole at (3, 6)' }],
+              caption: 'The graph of g(x) = (x² − 9)/(x − 3) is the line y = x + 3 with one point missing. Nothing is at x = 3, yet from both sides the curve closes in on height 6: the limit is 6 and the value does not exist.'
+            },
             rules: [
               { name: 'What a limit says', expr: 'lim f(x) = L', note: 'As x approaches a, f(x) approaches L. The value f(a), if it exists at all, is ignored.' },
               { name: 'Polynomials', expr: 'lim f(x) = f(a)', note: 'Substitution is allowed for a polynomial, and for a rational function whose denominator does not go to 0.' },
@@ -16072,23 +16121,44 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             examples: [
               {
                 prompt: 'Find lim x→3 (x² − 9)/(x − 3).',
+                approach: 'Try substitution first, because for a polynomial or a rational function with a non-zero denominator that is the whole method. If it produces 0/0, the quotient has to be rewritten for x ≠ 3 — factor the numerator, cancel the factor that is causing the zero, and substitute into what remains. The graph below shows what the algebra is doing: the curve is a straight line with one point missing, and the limit is the height of the missing point.',
+                figure: {
+                  kind: 'graph', x: [-1, 6], y: [0, 9],
+                  fns: [{ expr: '(x**2 - 9)/(x - 3)', label: '(x² − 9)/(x − 3)' }, { expr: 'x + 3', label: 'x + 3', dashed: true }],
+                  points: [{ x: 3, y: 6, open: true, label: '(3, 6): the limit, not a value' }],
+                  caption: 'The two functions agree at every x except 3, so their limits at 3 agree. The dashed line x + 3 fills the hole; the limit is its height there, 6.'
+                },
                 steps: [
-                  { do: 'Substituting x = 3 gives (9 − 9)/(3 − 3) = 0/0', why: 'This is not the answer and not a failure. It is the signal that the quotient must be rewritten for x ≠ 3.' },
-                  { do: 'Factor the numerator: x² − 9 = (x − 3)(x + 3)', why: 'A difference of squares. Whenever substitution gives 0/0 in a rational function, the denominator’s zero is also a factor of the numerator.' },
-                  { do: 'For x ≠ 3, (x − 3)(x + 3)/(x − 3) = x + 3', why: 'Cancelling is legal because the limit never uses x = 3, which is the only place the cancelled factor is zero.' },
-                  { do: 'lim x→3 (x + 3) = 3 + 3 = 6', why: 'x + 3 is a polynomial, so its limit is found by substitution — the rule that could not be used one step earlier now applies.' }
+                  { do: 'Substitute x = 3: (3² − 9)/(3 − 3) = (9 − 9)/0 = 0/0', why: 'This is not the answer and not a failure. It is the signal that the quotient must be rewritten for x ≠ 3. A polynomial limit could be read off by substitution; this is a quotient whose denominator goes to 0, so no rule allows it.' },
+                  { do: 'Factor the numerator as a difference of squares: x² − 9 = x² − 3² = (x − 3)(x + 3)', why: 'Whenever substitution gives 0/0 in a rational function, the denominator’s zero is also a zero of the numerator, so (x − 3) must be a factor of x² − 9. Recognising the difference of squares is the fastest way to pull it out.' },
+                  { do: 'Rewrite: (x² − 9)/(x − 3) = (x − 3)(x + 3)/(x − 3)', why: 'The same function, written so the troublesome factor is visible on top and bottom.' },
+                  { do: 'Cancel: for every x ≠ 3, (x − 3)(x + 3)/(x − 3) = x + 3', why: 'Cancelling divides top and bottom by (x − 3), which is legal only when that factor is not zero, that is, when x ≠ 3. The limit never uses x = 3, so the restriction costs nothing.' },
+                  { do: 'lim x→3 (x² − 9)/(x − 3) = lim x→3 (x + 3)', why: 'Two functions that agree at every x other than 3 have the same limit at 3. That fact is what turns the cancellation into a statement about the limit.' },
+                  { do: 'lim x→3 (x + 3) = 3 + 3 = 6', why: 'x + 3 is a polynomial, so its limit is found by substitution — the rule that could not be used at step 1 now applies.' }
                 ],
-                answer: '6', answerWords: true
+                answer: '6', answerWords: true,
+                check: 'Take x close to 3 on each side: at x = 2.99, (2.99² − 9)/(2.99 − 3) = (−0.0599)/(−0.01) = 5.99; at x = 3.01 it is 0.0601/0.01 = 6.01. Both sides are closing in on 6, and the graph shows the hole at exactly that height.'
               },
               {
                 prompt: 'If f(x) = 2x² − 5x, find lim h→0 (f(x + h) − f(x)) / h.',
+                approach: 'This is the difference quotient, and substituting h = 0 always gives 0/0, so the plan is fixed in advance: expand f(x + h) in full, subtract f(x) so that only terms containing h survive, factor the h out and cancel it, and then let h → 0 in what is left. Throughout, x is a fixed number and h is the variable that is shrinking. The picture is a secant line through two points on the parabola sliding toward a tangent line as h shrinks.',
+                figure: {
+                  kind: 'graph', x: [-1, 4], y: [-4, 8],
+                  fns: [{ expr: '2*x**2 - 5*x', label: 'f(x) = 2x² − 5x' }],
+                  segments: [{ from: [1, -3], to: [3, 3], label: 'secant, h = 2', dashed: true }, { from: [-0.5, -1.5], to: [3, -5], label: 'tangent at x = 1' }],
+                  points: [{ x: 1, y: -3, label: '(1, f(1))' }, { x: 3, y: 3, label: '(1 + h, f(1 + h)), h = 2' }],
+                  caption: 'At x = 1: the difference quotient is the slope of the dashed secant through (1, f(1)) and (1 + h, f(1 + h)). As h → 0 the second point slides down to the first and the secant becomes the tangent, whose slope 4(1) − 5 = −1 is the limit.'
+                },
                 steps: [
-                  { do: 'f(x + h) = 2(x + h)² − 5(x + h) = 2x² + 4xh + 2h² − 5x − 5h', why: 'Treat x as a constant throughout: h is the variable that is changing. Expanding (x + h)² fully is where most slips happen.' },
-                  { do: 'f(x + h) − f(x) = 4xh + 2h² − 5h', why: 'The 2x² and −5x cancel against f(x). Every surviving term contains an h — as it must, since substituting h = 0 gave 0/0.' },
-                  { do: 'Divide by h: (4xh + 2h² − 5h)/h = 4x + 2h − 5 for h ≠ 0', why: 'Factor h out of the numerator and cancel. This is the step that removes the 0/0.' },
-                  { do: 'lim h→0 (4x + 2h − 5) = 4x − 5', why: 'Now a polynomial in h, so let h → 0 by substitution. The result, 4x − 5, will be called the derivative of f in the next chapter.' }
+                  { do: 'Write out f(x + h): f(x + h) = 2(x + h)² − 5(x + h)', why: 'Every x in the rule for f is replaced by the whole expression (x + h), in brackets. This is the substitution of section 2.1, with x + h as the input.' },
+                  { do: 'Expand the square: (x + h)² = x² + 2xh + h², so f(x + h) = 2x² + 4xh + 2h² − 5x − 5h', why: 'Treat x as a constant throughout: h is the variable that is changing. Expanding (x + h)² fully — three terms, not two — is where most slips happen.' },
+                  { do: 'Subtract f(x): f(x + h) − f(x) = (2x² + 4xh + 2h² − 5x − 5h) − (2x² − 5x) = 4xh + 2h² − 5h', why: 'The 2x² and −5x cancel against f(x). Every surviving term contains an h, as it must, since substituting h = 0 gave 0/0.' },
+                  { do: 'Factor h from the numerator: 4xh + 2h² − 5h = h(4x + 2h − 5)', why: 'This makes the common factor with the denominator visible, exactly as factoring x² − 9 did in the previous example.' },
+                  { do: 'Divide by h: h(4x + 2h − 5)/h = 4x + 2h − 5 for h ≠ 0', why: 'Cancel the h. This is the step that removes the 0/0; the restriction h ≠ 0 is harmless because the limit never uses h = 0.' },
+                  { do: 'lim h→0 (4x + 2h − 5) = 4x + 2(0) − 5 = 4x − 5', why: 'Now a polynomial in h, so let h → 0 by substitution. The result, 4x − 5, will be called the derivative of f in the next chapter.' }
                 ],
-                answer: '4x − 5', answerWords: true
+                answer: '4x − 5', answerWords: true,
+                check: 'At x = 1 the result is 4(1) − 5 = −1. Take h = 0.01: f(1.01) = 2(1.0201) − 5.05 = −3.0098 and f(1) = −3, so the secant slope is (−3.0098 + 3)/0.01 = −0.98, already close to −1 and closing in as h shrinks. The tangent drawn in the figure has slope −1.'
               }
             ],
             pitfalls: [
@@ -16116,6 +16186,12 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
           {
             id: 'a2', title: 'One-sided limits, infinite limits and limits at infinity', src: 'Section 10.2',
             idea: `A limit has to be the same whichever way x arrives. <b>One-sided limits</b> make the two directions separate objects: <b>lim<sub>x→a⁺</sub> f(x)</b> is the limit as x approaches a from the right (x &gt; a) and <b>lim<sub>x→a⁻</sub> f(x)</b> from the left (x &lt; a). The two-sided limit exists <b>if and only if both one-sided limits exist and are equal</b>, and then it equals their common value. A function that approaches 1 from the right and −1 from the left has both one-sided limits and no limit.<br><br>Some functions are only defined on one side: √(x − 3) exists only for x ≥ 3, so lim<sub>x→3⁺</sub> √(x − 3) = 0 makes sense and the left-hand limit is not a question at all.<br><br><b>Infinite limits.</b> As x → 0, 1/x² grows without bound. The limit <b>does not exist</b> — there is no number it approaches — but we write lim<sub>x→0</sub> 1/x² = ∞ to say <i>how</i> it fails. The sign matters and can differ by side: 1/x goes to +∞ from the right and −∞ from the left. The general pattern is the <b>form k/0 with k ≠ 0</b>: numerator heading to a nonzero number, denominator to zero. That is never 0/0, never a candidate for cancelling, and always an infinite limit on each side; the only work is finding the sign on each side.<br><br><b>Limits at infinity</b> ask what f does as x itself grows without bound, written x → ∞ or x → −∞. The basic fact is <b>lim<sub>x→∞</sub> 1/x<sup>p</sup> = 0</b> for any p &gt; 0, and the same as x → −∞. For a <b>rational function</b> there is a shortcut worth memorising: as x → ±∞, only the <b>dominant term</b> — the highest power — in the numerator and in the denominator matters:<br><br><b>lim (a<sub>n</sub>x<sup>n</sup> + …)/(b<sub>m</sub>x<sup>m</sup> + …) = lim (a<sub>n</sub>x<sup>n</sup>)/(b<sub>m</sub>x<sup>m</sup>)</b><br><br>Three cases fall out. Degrees equal: the limit is a<sub>n</sub>/b<sub>m</sub>, the ratio of leading coefficients. Numerator degree lower: the limit is 0. Numerator degree higher: no limit — the function goes to ±∞. A polynomial is a rational function with denominator 1, so its limit at infinity is that of its leading term alone.<br><br>Two cautions. The dominant-term shortcut is for <b>rational functions only</b>; applied to something like √(x² + x) − x it gives the wrong answer. And a <b>case-defined function</b> needs the one-sided limits computed from the correct piece on each side of every break point, then compared — which is where these three ideas meet.`,
+            figure: {
+              kind: 'graph', x: [-3, 3], y: [-6, 6],
+              fns: [{ expr: '1/x', label: '1/x' }, { expr: '1/x**2', label: '1/x²', dashed: true }],
+              vlines: [{ x: 0, label: 'x = 0' }],
+              caption: 'Two infinite limits at 0. 1/x² goes to +∞ from both sides, so it is written lim 1/x² = ∞. 1/x goes to +∞ from the right and −∞ from the left: the one-sided limits disagree in sign, and only the one-sided statements can be made.'
+            },
             rules: [
               { name: 'One-sided limits', expr: 'The limit exists if and only if the left-hand and right-hand limits exist and are equal', words: true, note: 'Then the limit is their common value.' },
               { name: 'The form k/0', expr: 'Numerator to a nonzero k, denominator to 0: an infinite limit on each side', words: true, note: 'Never cancel. Find the sign from each side separately.' },
@@ -16125,23 +16201,42 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             examples: [
               {
                 prompt: 'Find lim x→∞ (6x² − x)/(2x² + 3), and lim x→∞ (5x + 1)/(x³ − 4).',
+                approach: 'Both are rational functions, so the dominant-term shortcut applies: as x grows without bound only the highest power on top and the highest power on the bottom matter. Compare the two degrees. Equal degrees give the ratio of the leading coefficients; a lower degree on top gives 0; a higher degree on top gives no limit. The graphs show each function flattening onto a horizontal line, which is what a limit at infinity looks like.',
+                figure: {
+                  kind: 'graph', x: [0, 30], y: [-1, 4],
+                  fns: [{ expr: '(6*x**2 - x)/(2*x**2 + 3)', label: '(6x² − x)/(2x² + 3)' }, { expr: '(5*x + 1)/(x**3 - 4)', label: '(5x + 1)/(x³ − 4)', domain: [2, 30] }],
+                  hlines: [{ y: 3, label: 'y = 3' }, { y: 0, label: 'y = 0' }],
+                  caption: 'As x grows, the first quotient settles onto the line y = 3 and the second onto y = 0. Each dashed line is the limit at infinity; the curves never need to reach it, only to close in on it.'
+                },
                 steps: [
-                  { do: 'Both are rational functions, so keep only the dominant term top and bottom', why: 'As x grows, the highest power swamps every lower one. The shortcut is only valid for a quotient of polynomials.' },
-                  { do: 'First: (6x²)/(2x²) = 3, so the limit is 3', why: 'Equal degrees. The limit is the ratio of leading coefficients, and the −x and +3 have no effect at all.' },
-                  { do: 'Second: (5x)/(x³) = 5/x², and lim x→∞ 5/x² = 0', why: 'The numerator’s degree is lower, so the dominant terms reduce to a reciprocal power, which goes to 0.' },
+                  { do: 'Both are rational functions, so keep only the dominant term top and bottom', why: 'As x grows, the highest power swamps every lower one: at x = 1,000 the term 6x² is 6,000,000 while x is 1,000. The shortcut is only valid for a quotient of polynomials.' },
+                  { do: 'First quotient: dominant terms 6x² over 2x², so lim x→∞ (6x² − x)/(2x² + 3) = lim x→∞ 6x²/2x² = 6/2 = 3', why: 'Equal degrees, 2 and 2. The x² cancels and the limit is the ratio of leading coefficients; the −x and +3 have no effect at all.' },
+                  { do: 'Second quotient: dominant terms 5x over x³, so the limit is lim x→∞ 5x/x³ = lim x→∞ 5/x²', why: 'Cancel one x from top and bottom. The numerator’s degree, 1, is lower than the denominator’s, 3, so the dominant terms reduce to a reciprocal power.' },
+                  { do: 'lim x→∞ 5/x² = 5 × lim x→∞ 1/x² = 5 × 0 = 0', why: 'The basic fact lim 1/x^p = 0 for p > 0: a fixed number over an ever-larger number shrinks to nothing.' },
                   { do: 'Limits: 3 and 0', why: 'Had the degrees been reversed in the second — x³ on top — there would be no limit; the function would grow without bound.' }
                 ],
-                answer: '3 and 0', answerWords: true
+                answer: '3 and 0', answerWords: true,
+                check: 'Substitute a large x. At x = 100: (60,000 − 100)/(20,000 + 3) = 59,900/20,003 ≈ 2.995, near 3; and (501)/(999,996) ≈ 0.0005, near 0. At x = 1,000 both are nearer still, which is what a limit at infinity means.'
               },
               {
                 prompt: 'f(x) = x + 2 for x < 1 and f(x) = 4x for x ≥ 1. Find lim x→1⁻ f(x), lim x→1⁺ f(x), and decide whether lim x→1 f(x) exists.',
+                approach: 'A case-defined function changes rule at x = 1, so the two sides have to be handled separately: the left-hand limit uses the rule for x < 1 and the right-hand limit uses the rule for x > 1. Each piece is a polynomial, so each one-sided limit is a substitution into the correct piece. Then compare: the two-sided limit exists only if the two agree. The value f(1) itself is not consulted at any point.',
+                figure: {
+                  kind: 'graph', x: [-2, 3], y: [-1, 9],
+                  fns: [{ expr: 'x + 2', label: 'x + 2 (for x < 1)', domain: [-2, 1] }, { expr: '4*x', label: '4x (for x ≥ 1)', domain: [1, 3] }],
+                  points: [{ x: 1, y: 3, open: true, label: 'left side heads to 3' }, { x: 1, y: 4, label: 'f(1) = 4, and the right side heads to 4' }],
+                  vlines: [{ x: 1, label: 'x = 1' }],
+                  caption: 'A jump at x = 1. Approaching from the left along x + 2 the height closes in on 3; approaching from the right along 4x it closes in on 4. Two different one-sided limits mean no two-sided limit, whatever value sits at x = 1.'
+                },
                 steps: [
-                  { do: 'From the left, x < 1, so the first piece applies: lim x→1⁻ (x + 2) = 3', why: 'Which formula to use is decided by which side of 1 the x-values are on, not by the value at 1.' },
-                  { do: 'From the right, x ≥ 1, so the second piece applies: lim x→1⁺ 4x = 4', why: 'Each piece is a polynomial, so each one-sided limit is found by substitution into the right piece.' },
-                  { do: '3 ≠ 4', why: 'The two-sided limit requires the one-sided limits to agree; here they do not.' },
+                  { do: 'From the left, x < 1, so the first piece applies: lim x→1⁻ f(x) = lim x→1⁻ (x + 2)', why: 'Which formula to use is decided by which side of 1 the x-values are on, not by the value at 1. Values slightly less than 1, such as 0.99, are governed by x + 2.' },
+                  { do: 'lim x→1⁻ (x + 2) = 1 + 2 = 3', why: 'x + 2 is a polynomial, so its one-sided limit is found by substitution.' },
+                  { do: 'From the right, x > 1, so the second piece applies: lim x→1⁺ f(x) = lim x→1⁺ 4x = 4(1) = 4', why: 'Values slightly more than 1, such as 1.01, are governed by 4x, another polynomial, so substitute again.' },
+                  { do: 'Compare: 3 ≠ 4', why: 'The two-sided limit requires the one-sided limits to agree; here they do not.' },
                   { do: 'lim x→1 f(x) does not exist', why: 'Note that f(1) = 4 exists and is irrelevant. The graph has a jump at x = 1, and a jump is exactly a point where the two sides disagree.' }
                 ],
-                answer: '3 from the left, 4 from the right, so the limit does not exist', answerWords: true
+                answer: '3 from the left, 4 from the right, so the limit does not exist', answerWords: true,
+                check: 'f(0.99) = 2.99 and f(0.999) = 2.999, heading to 3; f(1.01) = 4.04 and f(1.001) = 4.004, heading to 4. The gap between the two sides is 1 unit and does not close, which is the jump in the figure.'
               }
             ],
             pitfalls: [
@@ -16169,6 +16264,13 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
           {
             id: 'a3', title: 'Continuity', src: 'Section 10.3',
             idea: `A function is <b>continuous at a</b> when its graph has no break there — when the value it has and the value it is heading for are the same thing. The definition has <b>three conditions</b>, and all three must hold:<br><br><b>1. f(a) exists</b> — a is in the domain.<br><b>2. lim<sub>x→a</sub> f(x) exists</b> — both one-sided limits exist and agree.<br><b>3. f(a) = lim<sub>x→a</sub> f(x)</b> — the value is the limit.<br><br>If any one fails, f is <b>discontinuous at a</b>, and a is a <b>point of discontinuity</b>. The three conditions are also the three ways to fail: the function is undefined at a (a hole, or a vertical asymptote); the limit does not exist (a jump, or an infinite limit on some side); or the limit exists but the function has been assigned some other value at a (a hole with a dot floating above it).<br><br>Two large families are continuous wherever they are defined, and knowing this saves most of the work: <b>every polynomial is continuous at every number</b>, and <b>every rational function is continuous at every number in its domain</b> — that is, everywhere except where the denominator is zero. So for a rational function, finding the discontinuities means solving <b>denominator = 0</b> and nothing else. A discontinuity where a one-sided limit is ±∞ is called an <b>infinite discontinuity</b>.<br><br>The interesting cases are <b>case-defined functions</b>, because each piece is usually a polynomial and therefore continuous on its own interval. The only places to check are the <b>boundary points</b> between pieces, and the check is the three conditions with the one-sided limits from the previous lesson: does each side approach the same number, and is that number the value the function was given there?<br><br>A function is <b>continuous on an interval</b> if it is continuous at every point of it. This is the property that lets the next lesson turn a hard inequality into a few substitutions, and it is why the chapter ends there rather than here.`,
+            figure: {
+              kind: 'graph', x: [-2, 4], y: [-6, 6],
+              fns: [{ expr: '(x**2 - 1)/(x - 1)', label: 'hole: (x² − 1)/(x − 1)' }, { expr: '1/(x - 2)', label: 'asymptote: 1/(x − 2)', dashed: true }],
+              points: [{ x: 1, y: 2, open: true, label: 'hole at x = 1' }],
+              vlines: [{ x: 2, label: 'x = 2' }],
+              caption: 'Two ways to be discontinuous. At x = 1 the first function has a hole: the limit exists (it is 2) but f(1) does not, so condition 1 fails. At x = 2 the second function has an infinite discontinuity: the one-sided limits are −∞ and +∞, so condition 2 fails as well.'
+            },
             rules: [
               { name: 'Continuity at a point', expr: 'f(a) exists, lim f(x) exists, f(a) = lim f(x)', note: 'All three, in that order. Failing any one is a discontinuity.' },
               { name: 'Polynomials', expr: 'Continuous at every real number', words: true, note: 'Nothing to check.' },
@@ -16178,23 +16280,43 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             examples: [
               {
                 prompt: 'Find every point of discontinuity of f(x) = (x + 3)/(x² − 5x + 6).',
+                approach: 'A rational function is continuous everywhere it is defined, so the only candidates for discontinuity are the zeros of the denominator. Factor the denominator, read off its zeros, and then say what kind of discontinuity each one is by looking at what the numerator does there: a non-zero numerator over a vanishing denominator is the form k/0, an infinite discontinuity with a vertical asymptote.',
+                figure: {
+                  kind: 'graph', x: [-1, 5], y: [-12, 12],
+                  fns: [{ expr: '(x + 3)/(x**2 - 5*x + 6)', label: '(x + 3)/(x² − 5x + 6)' }],
+                  vlines: [{ x: 2, label: 'x = 2' }, { x: 3, label: 'x = 3' }],
+                  caption: 'The graph blows up beside x = 2 and x = 3, the zeros of the denominator. Everywhere else the curve is unbroken: a rational function is continuous on its whole domain.'
+                },
                 steps: [
-                  { do: 'f is a rational function, so it is continuous wherever it is defined', why: 'The theorem for rational functions means the only candidates are zeros of the denominator. The numerator plays no part.' },
-                  { do: 'Solve x² − 5x + 6 = 0: (x − 2)(x − 3) = 0', why: 'Factoring finds where the denominator vanishes and the function is undefined.' },
-                  { do: 'x = 2 and x = 3', why: 'At each, condition 1 fails — f(2) and f(3) do not exist — so nothing further needs checking.' },
-                  { do: 'Both are infinite discontinuities', why: 'Near each, the numerator approaches a nonzero number (5 or 6) while the denominator approaches 0 — the form k/0 — so a one-sided limit is ±∞ on each side.' }
+                  { do: 'f is a rational function, so it is continuous at every number in its domain', why: 'The theorem for rational functions means the only candidates are zeros of the denominator. The numerator plays no part in finding them.' },
+                  { do: 'Set the denominator to zero: x² − 5x + 6 = 0', why: 'Where the denominator vanishes, f is undefined, so condition 1 of continuity fails there.' },
+                  { do: 'Factor: x² − 5x + 6 = (x − 2)(x − 3), so (x − 2)(x − 3) = 0', why: 'Two numbers with product 6 and sum 5 are 2 and 3.' },
+                  { do: 'x = 2 and x = 3', why: 'At each, f(2) and f(3) do not exist, so nothing further needs checking to call them discontinuities.' },
+                  { do: 'Classify: at x = 2 the numerator is 2 + 3 = 5 ≠ 0 and the denominator → 0; at x = 3 the numerator is 6 ≠ 0. Both are the form k/0', why: 'A non-zero numerator over a vanishing denominator means the function grows without bound on each side.' },
+                  { do: 'Both are infinite discontinuities, with vertical asymptotes x = 2 and x = 3', why: 'A one-sided limit is ±∞ on each side of each point, which is the definition of an infinite discontinuity — the curve in the figure shoots off beside each dashed line.' }
                 ],
-                answer: 'Discontinuous at x = 2 and x = 3, both infinite discontinuities', answerWords: true
+                answer: 'Discontinuous at x = 2 and x = 3, both infinite discontinuities', answerWords: true,
+                check: 'Try a value just beside each point: f(1.99) = 4.99/((−0.01)(−1.01)) ≈ 494, large; f(2.01) = 5.01/((0.01)(−0.99)) ≈ −506, large and negative. The function is not settling on any number near 2, as the graph shows. Elsewhere, say f(0) = 3/6 = 0.5, it is perfectly well behaved.'
               },
               {
                 prompt: 'f(x) = x² + 1 for x < 2 and f(x) = 3x − 1 for x ≥ 2. Is f continuous at 2?',
+                approach: 'Each piece is a polynomial, so f is continuous everywhere except possibly at the seam x = 2, and the seam is checked with the three-part definition in order: is f(2) defined, does the limit exist (do the two one-sided limits, each from its own piece, agree), and is that limit equal to f(2)? The picture shows whether the two pieces actually meet.',
+                figure: {
+                  kind: 'graph', x: [-1, 4], y: [-1, 12],
+                  fns: [{ expr: 'x**2 + 1', label: 'x² + 1 (for x < 2)', domain: [-1, 2] }, { expr: '3*x - 1', label: '3x − 1 (for x ≥ 2)', domain: [2, 4] }],
+                  points: [{ x: 2, y: 5, label: '(2, 5): both pieces arrive here' }],
+                  caption: 'The parabola on the left and the line on the right meet at (2, 5). Left-hand limit, right-hand limit and value all equal 5, so there is no break: f is continuous at 2.'
+                },
                 steps: [
                   { do: 'Condition 1: f(2) = 3(2) − 1 = 5, so f is defined at 2', why: 'x = 2 falls in the second piece because of the ≥. The value comes from that piece.' },
-                  { do: 'Condition 2: from the left, lim x→2⁻ (x² + 1) = 5; from the right, lim x→2⁺ (3x − 1) = 5', why: 'Each side uses its own piece. Both are polynomials, so both limits are substitutions.' },
+                  { do: 'Condition 2, left side: lim x→2⁻ f(x) = lim x→2⁻ (x² + 1) = 2² + 1 = 5', why: 'Values below 2 use the first piece, a polynomial, so the one-sided limit is a substitution.' },
+                  { do: 'Condition 2, right side: lim x→2⁺ f(x) = lim x→2⁺ (3x − 1) = 3(2) − 1 = 5', why: 'Values above 2 use the second piece, also a polynomial.' },
                   { do: 'The one-sided limits agree, so lim x→2 f(x) = 5', why: 'Condition 2 holds. Had the sides differed, f would have a jump and the check would end here.' },
-                  { do: 'Condition 3: f(2) = 5 = lim x→2 f(x), so f is continuous at 2', why: 'All three conditions hold. Away from 2 each piece is a polynomial, so f is in fact continuous everywhere.' }
+                  { do: 'Condition 3: f(2) = 5 and lim x→2 f(x) = 5, so they are equal', why: 'The value is the limit: the third condition holds.' },
+                  { do: 'All three conditions hold, so f is continuous at 2', why: 'Away from 2 each piece is a polynomial, so f is in fact continuous everywhere — the graph is one unbroken curve.' }
                 ],
-                answer: 'Yes — f(2) = 5 and the limit is 5', answerWords: true
+                answer: 'Yes — f(2) = 5 and the limit is 5', answerWords: true,
+                check: 'f(1.99) = 4.9601 and f(2.01) = 5.03: both within a few hundredths of 5, and f(2) = 5 itself. Change the second piece to 3x + 1 and the right side would head to 7 while the left still heads to 5 — a jump — which shows the check is doing real work.'
               }
             ],
             pitfalls: [
@@ -16222,6 +16344,12 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
           {
             id: 'a4', title: 'Continuity applied to inequalities', src: 'Section 10.4',
             idea: `Linear inequalities are solved by algebra. A nonlinear one — <b>x² − 3x − 10 &gt; 0</b>, or <b>(x + 1)/(x − 4) ≤ 0</b> — usually cannot be, and the tool that replaces algebra is continuity.<br><br>The reasoning is short. If f is continuous on an interval and is <b>never zero</b> on it, then f cannot change sign there: to get from positive to negative a continuous function would have to pass through zero, and it does not. So <b>the sign of f is constant on any interval that contains no zero of f and no point of discontinuity</b>. Test one point in the interval, and you know the sign everywhere in it.<br><br>That gives a procedure, the <b>sign chart</b>:<br><br><b>1.</b> Rewrite the inequality with 0 on one side: f(x) &gt; 0, or f(x) ≤ 0, and so on.<br><b>2.</b> Find the <b>zeros</b> of f and the <b>points of discontinuity</b> of f (for a rational function, the zeros of the denominator). These are the only places the sign can change.<br><b>3.</b> Mark them on a number line. They split it into intervals.<br><b>4.</b> Pick one test value inside each interval, and record the sign of f there.<br><b>5.</b> Read off the intervals with the sign the inequality asks for, and decide the endpoints.<br><br>The <b>endpoints</b> are the part that needs care. A zero of f is included when the inequality is ≤ or ≥ (f is 0 there, and 0 satisfies "≤ 0"), and excluded when it is strict. A <b>point of discontinuity is never included</b>, whatever the inequality says, because f has no value there to satisfy anything. That single rule is the reason rational inequalities are set on exams: (x + 1)/(x − 4) ≤ 0 has solution −1 ≤ x &lt; 4, with the −1 in and the 4 out, and a student who "solves" it by multiplying through by (x − 4) has multiplied by something that may be negative and has lost the answer.<br><br>The sign chart is also how a "greater than" with a polynomial of degree three or four is done, and how a square root's domain, √(f(x)), is found — because that is just f(x) ≥ 0.`,
+            figure: {
+              kind: 'signchart', caption: 'The sign chart for (x + 1)/(x − 4): a zero of the numerator at −1 (solid box) and a zero of the denominator at 4 (dashed box, where the function has no value). One test point per interval fixes the sign there, because a continuous function cannot change sign without passing through zero.',
+              marks: [{ x: '−1', kind: 'zero' }, { x: '4', kind: 'undef' }],
+              rows: [{ label: 'x + 1', signs: ['−', '+', '+'], at: ['0', '+'] }, { label: 'x − 4', signs: ['−', '−', '+'], at: ['−', '0'] }],
+              result: { label: '(x + 1)/(x − 4)', signs: ['+', '−', '+'], at: ['0', '×'] }
+            },
             rules: [
               { name: 'Why the method works', expr: 'A continuous function with no zero on an interval keeps one sign on it', words: true, note: 'To change sign it would have to cross zero, and it does not.' },
               { name: 'Where the sign can change', expr: 'Only at a zero of f or a point of discontinuity of f', words: true, note: 'For a rational function: zeros of the numerator and zeros of the denominator.' },
@@ -16231,23 +16359,49 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             examples: [
               {
                 prompt: 'Solve x² − 3x − 10 > 0.',
+                approach: 'Zero is already on one side, so find where the left side can change sign — a polynomial has no discontinuities, so only at its zeros — mark those on a number line, test one point in each interval, and keep the intervals with the sign the inequality asks for. Because the inequality is strict, the zeros themselves are left out. The graph makes the answer visible: the parabola is above the x-axis outside its two roots.',
+                figure: {
+                  kind: 'graph', x: [-5, 8], y: [-14, 12],
+                  fns: [{ expr: 'x**2 - 3*x - 10', label: 'x² − 3x − 10' }],
+                  points: [{ x: -2, y: 0, open: true, label: '−2' }, { x: 5, y: 0, open: true, label: '5' }],
+                  shade: [{ from: -5, to: -2 }, { from: 5, to: 8 }],
+                  caption: 'The shaded regions are where the parabola is above the x-axis, x < −2 and x > 5. The open circles at the roots mark that the zeros are excluded by the strict inequality.'
+                },
                 steps: [
-                  { do: 'Zeros: x² − 3x − 10 = (x − 5)(x + 2) = 0, so x = −2 and x = 5', why: 'A polynomial has no discontinuities, so its zeros are the only places its sign can change.' },
+                  { do: 'The inequality already has 0 on the right: x² − 3x − 10 > 0', why: 'The method needs the form f(x) compared with 0, so that the question is about the sign of f.' },
+                  { do: 'Zeros: x² − 3x − 10 = (x − 5)(x + 2) = 0, so x = −2 and x = 5', why: 'A polynomial has no discontinuities, so its zeros are the only places its sign can change. Two numbers with product −10 and sum −3 are −5 and 2.' },
                   { do: 'Intervals: x < −2, then −2 < x < 5, then x > 5', why: 'Two zeros split the line into three intervals, and on each the sign is constant by continuity.' },
-                  { do: 'Test values: at x = −3, (−8)(−1) = +; at x = 0, (−5)(2) = −; at x = 6, (1)(8) = +', why: 'One test point per interval is enough — the sign cannot change within it. Using the factored form makes the sign of each factor visible.' },
-                  { do: 'The inequality asks for > 0: x < −2 or x > 5', why: 'Strict inequality, so the zeros themselves are excluded. In interval notation, (−∞, −2) ∪ (5, ∞).' }
+                  { do: 'Test x = −3: (−3 − 5)(−3 + 2) = (−8)(−1) = +8, positive', why: 'One test point per interval is enough — the sign cannot change within it. Using the factored form makes the sign of each factor visible.' },
+                  { do: 'Test x = 0: (0 − 5)(0 + 2) = (−5)(2) = −10, negative', why: 'The middle interval, between the roots, is where the parabola dips below the axis.' },
+                  { do: 'Test x = 6: (6 − 5)(6 + 2) = (1)(8) = +8, positive', why: 'The last interval.' },
+                  { do: 'The inequality asks for > 0: keep the positive intervals, x < −2 or x > 5', why: 'Strict inequality, so the zeros themselves are excluded. In interval notation, (−∞, −2) ∪ (5, ∞).' }
                 ],
-                answer: 'x < −2 or x > 5', answerWords: true
+                answer: 'x < −2 or x > 5', answerWords: true,
+                check: 'x = −3 gives 9 + 9 − 10 = 8 > 0 and x = 6 gives 36 − 18 − 10 = 8 > 0, both in the solution; x = 0 gives −10, not in it; and x = 5 gives exactly 0, which does not satisfy a strict inequality, so 5 is rightly excluded.'
               },
               {
                 prompt: 'Solve (x + 1)/(x − 4) ≤ 0.',
+                approach: 'Do not multiply through by x − 4: its sign is unknown, so that would flip the inequality on part of the line. Instead treat the quotient as a single function whose sign is wanted. It can change sign at a zero of the numerator or at a zero of the denominator, so both go on the chart. Test each interval, keep the ones where the quotient is negative, and then decide the endpoints: the numerator’s zero gives the value 0, which satisfies ≤ 0, while the denominator’s zero gives no value at all and is always excluded.',
+                figure: {
+                  kind: 'graph', x: [-5, 9], y: [-6, 6],
+                  fns: [{ expr: '(x + 1)/(x - 4)', label: '(x + 1)/(x − 4)' }],
+                  vlines: [{ x: 4, label: 'x = 4 (no value)' }],
+                  hlines: [{ y: 1, label: 'y = 1' }],
+                  points: [{ x: -1, y: 0, label: '(−1, 0) included' }],
+                  shade: [{ from: -1, to: 4 }],
+                  caption: 'The quotient is at or below the x-axis only between −1 and 4. It touches zero at −1 (included, solid dot) and has no value at 4 (the dashed asymptote, always excluded).'
+                },
                 steps: [
-                  { do: 'Zero of the numerator: x = −1. Zero of the denominator (a discontinuity): x = 4', why: 'Both kinds of point go on the chart, because the sign can change at either. Nothing is multiplied through — that would flip the inequality wherever x − 4 is negative.' },
+                  { do: 'Zero of the numerator: x + 1 = 0, so x = −1. Zero of the denominator, a discontinuity: x − 4 = 0, so x = 4', why: 'Both kinds of point go on the chart, because the sign can change at either. Nothing is multiplied through — that would flip the inequality wherever x − 4 is negative.' },
                   { do: 'Intervals: x < −1, then −1 < x < 4, then x > 4', why: 'Two marked points, three intervals.' },
-                  { do: 'Test values: at x = −2, (−1)/(−6) = +; at x = 0, (1)/(−4) = −; at x = 5, (6)/(1) = +', why: 'The sign of a quotient is the product of the signs, so the factored form shows it directly.' },
-                  { do: 'Wanted ≤ 0: the middle interval, with −1 included and 4 excluded: −1 ≤ x < 4', why: 'At x = −1 the expression is 0, which satisfies ≤ 0. At x = 4 the expression does not exist, so 4 can never be part of the solution.' }
+                  { do: 'Test x = −2: (−2 + 1)/(−2 − 4) = (−1)/(−6) = +1/6, positive', why: 'A negative over a negative is positive.' },
+                  { do: 'Test x = 0: (0 + 1)/(0 − 4) = 1/(−4) = −1/4, negative', why: 'The sign of a quotient is the product of the signs, so the factored form shows it directly.' },
+                  { do: 'Test x = 5: (5 + 1)/(5 − 4) = 6/1 = 6, positive', why: 'Both factors positive beyond 4.' },
+                  { do: 'Wanted ≤ 0: the middle interval, −1 < x < 4, plus any endpoint where the expression is 0', why: 'Only the middle interval is negative.' },
+                  { do: 'Endpoints: at x = −1 the value is 0/(−5) = 0, which satisfies ≤ 0, so include it; at x = 4 the expression is 5/0, undefined, so exclude it. Solution −1 ≤ x < 4', why: 'A zero of the numerator is included for ≤; a discontinuity can never be included, whatever the inequality says. In interval notation, [−1, 4).' }
                 ],
-                answer: '−1 ≤ x < 4', answerWords: true
+                answer: '−1 ≤ x < 4', answerWords: true,
+                check: 'x = 3 gives 4/(−1) = −4 ≤ 0, in the solution; x = −1 gives 0 ≤ 0, in; x = 5 gives 6, out; x = −2 gives 1/6, out. And the wrong method — multiplying through by (x − 4) to get x ≤ −1 — would wrongly exclude x = 3 and wrongly include x = −2.'
               }
             ],
             pitfalls: [
@@ -22459,6 +22613,217 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 
 </script>
 <script>
+/* UNI Made EZ — figures for the built-in courses (v2.53)
+   Copyright (c) 2026 JohnsonXCorp. All rights reserved.
+
+   A lesson or a worked example may carry a `figure`: a small declarative spec that this file turns
+   into inline SVG (or, for a sign chart, a small HTML table). Nothing is drawn by hand and nothing is
+   an image: a graph is sampled from the actual function the example uses, so the picture cannot
+   disagree with the numbers, and it is drawn in the page's own colours, so it reads in light and
+   dark mode and reflows on a phone.
+
+   Three kinds:
+     { kind: 'graph', x: [a, b], y: [c, d]?, fns: [{ expr, label?, dashed?, domain?: [a, b] }],
+       points?: [{ x, y, label?, open? }], vlines?: [{ x, label? }], hlines?: [{ y, label? }],
+       segments?: [{ from: [x, y], to: [x, y], label?, dashed? }], shade?: [{ from, to }], caption? }
+     { kind: 'signchart', marks: [{ x: '−3', kind: 'zero' | 'undef' }], rows: [{ label, signs: [...] }],
+       result?: { label, signs: [...] }, shape?: ['rise', 'fall', ...], caption? }
+     { kind: 'numberline', x: [a, b], intervals?: [{ from, to, closedL?, closedR? }],
+       points?: [{ x, open?, label? }], caption? }
+
+   Expressions are written the way the practice `verify` fields are (x**2 - 4, sqrt(x), exp(x), ln(x),
+   abs(x), 1/(x - 2)) and are parsed by a small recursive-descent evaluator: no eval, no Function,
+   nothing outside the grammar runs. An expression that does not parse throws at build time, which
+   the test suite turns into a failed build rather than a blank picture. */
+(function (root) {
+  'use strict';
+
+  /* ---------- expression parser: numbers, x, + - * / ^ (or **), unary minus, functions ---------- */
+  const FN = {
+    sqrt: Math.sqrt, abs: Math.abs, exp: Math.exp, ln: Math.log, log: Math.log, log10: Math.log10,
+    log2: Math.log2, cbrt: Math.cbrt, sin: Math.sin, cos: Math.cos, tan: Math.tan, floor: Math.floor,
+    ceil: Math.ceil
+  };
+  const CONST = { e: Math.E, pi: Math.PI, E: Math.E };
+
+  function tokenize(src) {
+    const out = []; let i = 0; const s = String(src);
+    while (i < s.length) {
+      const c = s[i];
+      if (/\s/.test(c)) { i++; continue; }
+      if (/[0-9.]/.test(c)) { let j = i; while (j < s.length && /[0-9.]/.test(s[j])) j++; out.push({ t: 'num', v: parseFloat(s.slice(i, j)) }); i = j; continue; }
+      if (/[A-Za-z_]/.test(c)) { let j = i; while (j < s.length && /[A-Za-z0-9_]/.test(s[j])) j++; out.push({ t: 'id', v: s.slice(i, j) }); i = j; continue; }
+      if (s.startsWith('**', i)) { out.push({ t: 'op', v: '^' }); i += 2; continue; }
+      if ('+-*/^(),'.includes(c)) { out.push({ t: 'op', v: c }); i++; continue; }
+      throw new Error(`figure expression: unexpected "${c}" in ${src}`);
+    }
+    return out;
+  }
+  // grammar: expr := term (('+'|'-') term)* ; term := unary (('*'|'/') unary)* ;
+  //          unary := '-' unary | power ; power := atom ('^' unary)? ; atom := num | x | const | fn '(' expr ')' | '(' expr ')'
+  function compile(src) {
+    const toks = tokenize(src); let p = 0;
+    const peek = () => toks[p]; const take = () => toks[p++];
+    const isOp = v => peek() && peek().t === 'op' && peek().v === v;
+    function expr() { let f = term(); while (isOp('+') || isOp('-')) { const o = take().v; const g = term(); const a = f; f = o === '+' ? x => a(x) + g(x) : x => a(x) - g(x); } return f; }
+    function term() { let f = unary(); while (isOp('*') || isOp('/')) { const o = take().v; const g = unary(); const a = f; f = o === '*' ? x => a(x) * g(x) : x => a(x) / g(x); } return f; }
+    function unary() { if (isOp('-')) { take(); const g = unary(); return x => -g(x); } if (isOp('+')) { take(); return unary(); } return power(); }
+    function power() { const b = atom(); if (isOp('^')) { take(); const e = unary(); return x => Math.pow(b(x), e(x)); } return b; }
+    function atom() {
+      const t = take(); if (!t) throw new Error(`figure expression: unexpected end of ${src}`);
+      if (t.t === 'num') { const v = t.v; return () => v; }
+      if (t.t === 'op' && t.v === '(') { const f = expr(); if (!isOp(')')) throw new Error(`figure expression: missing ) in ${src}`); take(); return f; }
+      if (t.t === 'id') {
+        if (t.v === 'x') return x => x;
+        if (t.v in CONST) { const v = CONST[t.v]; return () => v; }
+        if (t.v in FN) { if (!isOp('(')) throw new Error(`figure expression: ${t.v} needs ( in ${src}`); take(); const f = expr(); if (!isOp(')')) throw new Error(`figure expression: missing ) in ${src}`); take(); const fn = FN[t.v]; return x => fn(f(x)); }
+        throw new Error(`figure expression: unknown name "${t.v}" in ${src}`);
+      }
+      throw new Error(`figure expression: unexpected "${t.v}" in ${src}`);
+    }
+    const f = expr();
+    if (p !== toks.length) throw new Error(`figure expression: trailing input in ${src}`);
+    return f;
+  }
+
+  /* ---------- helpers ---------- */
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const fmt = n => { const r = Math.round(n * 100) / 100; return String(r).replace('-', '−'); };
+  const num = (v, d) => (typeof v === 'number' && isFinite(v)) ? v : d;
+  // a tick step that gives 4–9 ticks across a range
+  function tickStep(span) {
+    const raw = span / 6; const mag = Math.pow(10, Math.floor(Math.log10(raw)));
+    for (const m of [1, 2, 2.5, 5, 10]) if (raw <= m * mag) return m * mag;
+    return 10 * mag;
+  }
+
+  /* ---------- graph ---------- */
+  function graph(spec) {
+    const W = 440, H = 280, PAD = { l: 38, r: 16, t: 14, b: 30 };
+    const [x0, x1] = spec.x;
+    const fns = (spec.fns || []).map(f => ({ ...f, f: compile(f.expr) }));
+    // y-range: given, or from the samples (ignoring blow-ups)
+    let y0, y1;
+    if (spec.y) [y0, y1] = spec.y;
+    else {
+      const ys = [];
+      for (const f of fns) for (let i = 0; i <= 200; i++) { const x = x0 + (x1 - x0) * i / 200; const y = f.f(x); if (isFinite(y)) ys.push(y); }
+      for (const p of spec.points || []) ys.push(p.y);
+      ys.sort((a, b) => a - b);
+      const lo = ys[Math.floor(ys.length * 0.03)] ?? -5, hi = ys[Math.floor(ys.length * 0.97)] ?? 5;
+      const padY = (hi - lo || 2) * 0.12; y0 = Math.floor(lo - padY); y1 = Math.ceil(hi + padY);
+      if (y0 > 0 && y0 < 3) y0 = 0; if (y1 < 0 && y1 > -3) y1 = 0;
+    }
+    const sx = x => PAD.l + (x - x0) / (x1 - x0) * (W - PAD.l - PAD.r);
+    const sy = y => H - PAD.b - (y - y0) / (y1 - y0) * (H - PAD.t - PAD.b);
+    const inY = y => y >= y0 && y <= y1;
+    const parts = [];
+    // grid + ticks
+    const tx = tickStep(x1 - x0), ty = tickStep(y1 - y0);
+    for (let x = Math.ceil(x0 / tx) * tx; x <= x1 + 1e-9; x += tx) {
+      if (Math.abs(x) < 1e-9) continue;
+      parts.push(`<line class="fig-grid" x1="${sx(x)}" y1="${PAD.t}" x2="${sx(x)}" y2="${H - PAD.b}"/>`);
+      parts.push(`<text class="fig-tick" x="${sx(x)}" y="${H - PAD.b + 14}" text-anchor="middle">${fmt(x)}</text>`);
+    }
+    for (let y = Math.ceil(y0 / ty) * ty; y <= y1 + 1e-9; y += ty) {
+      if (Math.abs(y) < 1e-9) continue;
+      parts.push(`<line class="fig-grid" x1="${PAD.l}" y1="${sy(y)}" x2="${W - PAD.r}" y2="${sy(y)}"/>`);
+      parts.push(`<text class="fig-tick" x="${PAD.l - 6}" y="${sy(y) + 4}" text-anchor="end">${fmt(y)}</text>`);
+    }
+    // axes: through the origin when it is in view, else along the edges
+    const ax = inY(0) ? sy(0) : (y0 > 0 ? H - PAD.b : PAD.t);
+    const ay = (x0 <= 0 && x1 >= 0) ? sx(0) : (x0 > 0 ? PAD.l : W - PAD.r);
+    parts.push(`<line class="fig-axis" x1="${PAD.l}" y1="${ax}" x2="${W - PAD.r}" y2="${ax}"/>`);
+    parts.push(`<line class="fig-axis" x1="${ay}" y1="${PAD.t}" x2="${ay}" y2="${H - PAD.b}"/>`);
+    parts.push(`<text class="fig-tick" x="${W - PAD.r}" y="${ax - 5}" text-anchor="end">x</text>`);
+    parts.push(`<text class="fig-tick" x="${ay + 6}" y="${PAD.t + 10}">y</text>`);
+    // shaded intervals on the x-axis
+    for (const s of spec.shade || []) {
+      const a = Math.max(x0, s.from), b = Math.min(x1, s.to);
+      parts.push(`<rect class="fig-shade" x="${sx(a)}" y="${PAD.t}" width="${Math.max(0, sx(b) - sx(a))}" height="${H - PAD.t - PAD.b}"/>`);
+    }
+    // curves: sampled; broken at non-finite values and at asymptotic jumps
+    fns.forEach((f, k) => {
+      const [d0, d1] = f.domain || [x0, x1];
+      const a = Math.max(x0, d0), b = Math.min(x1, d1);
+      const N = 400; let d = ''; let prev = null; const span = y1 - y0;
+      for (let i = 0; i <= N; i++) {
+        const x = a + (b - a) * i / N; let y = f.f(x);
+        if (!isFinite(y)) { prev = null; continue; }
+        // clamp far outside the window so a near-asymptote sample still points the right way
+        const yc = Math.max(y0 - span, Math.min(y1 + span, y));
+        if (prev !== null && Math.abs(yc - prev) > span * 0.9) prev = null;   // an asymptotic jump: lift the pen
+        d += (prev === null ? 'M' : 'L') + sx(x).toFixed(1) + ' ' + sy(yc).toFixed(1) + ' ';
+        prev = yc;
+      }
+      parts.push(`<path class="fig-curve c${k % 3}${f.dashed ? ' dashed' : ''}" d="${d.trim()}"/>`);
+    });
+    for (const s of spec.segments || []) {
+      parts.push(`<line class="fig-seg${s.dashed ? ' dashed' : ''}" x1="${sx(s.from[0])}" y1="${sy(s.from[1])}" x2="${sx(s.to[0])}" y2="${sy(s.to[1])}"/>`);
+      if (s.label) { const right = sx(s.to[0]) + 4 + s.label.length * 6.4 <= W - PAD.r; parts.push(`<text class="fig-lbl" x="${sx(s.to[0]) + (right ? 4 : -4)}" y="${sy(s.to[1]) - 4}" text-anchor="${right ? 'start' : 'end'}">${esc(s.label)}</text>`); }
+    }
+    for (const v of spec.vlines || []) {
+      parts.push(`<line class="fig-asym" x1="${sx(v.x)}" y1="${PAD.t}" x2="${sx(v.x)}" y2="${H - PAD.b}"/>`);
+      if (v.label) { const right = sx(v.x) + 4 + v.label.length * 6.4 <= W - PAD.r; parts.push(`<text class="fig-lbl" x="${sx(v.x) + (right ? 4 : -4)}" y="${PAD.t + 12}" text-anchor="${right ? 'start' : 'end'}">${esc(v.label)}</text>`); }
+    }
+    for (const h of spec.hlines || []) {
+      parts.push(`<line class="fig-asym" x1="${PAD.l}" y1="${sy(h.y)}" x2="${W - PAD.r}" y2="${sy(h.y)}"/>`);
+      if (h.label) parts.push(`<text class="fig-lbl" x="${W - PAD.r - 4}" y="${sy(h.y) - 4}" text-anchor="end">${esc(h.label)}</text>`);
+    }
+    for (const p of spec.points || []) {
+      parts.push(`<circle class="fig-pt${p.open ? ' open' : ''}" cx="${sx(p.x)}" cy="${sy(p.y)}" r="4"/>`);
+      if (p.label) { const right = sx(p.x) + 7 + p.label.length * 6.4 <= W - PAD.r; parts.push(`<text class="fig-lbl" x="${sx(p.x) + (right ? 7 : -7)}" y="${sy(p.y) - 7}" text-anchor="${right ? 'start' : 'end'}">${esc(p.label)}</text>`); }
+    }
+    const legend = fns.filter(f => f.label).map((f, k) => `<span class="fig-key c${k % 3}${f.dashed ? ' dashed' : ''}"><i></i>${esc(f.label)}</span>`).join('');
+    return `<figure class="fig fig-graph"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(spec.alt || spec.caption || 'graph')}">${parts.join('')}</svg>${legend ? `<div class="fig-legend">${legend}</div>` : ''}${spec.caption ? `<figcaption>${esc(spec.caption)}</figcaption>` : ''}</figure>`;
+  }
+
+  /* ---------- sign chart (HTML: it is a table, and a table reads best as one) ---------- */
+  function signchart(spec) {
+    const marks = spec.marks || []; const cols = marks.length + 1;
+    const head = `<tr><th></th><th class="sc-inf">−∞</th>${marks.map(m => `<th class="sc-mark${m.kind === 'undef' ? ' undef' : ''}"><span>${esc(m.x)}</span></th><th></th>`).join('')}<th class="sc-inf">∞</th></tr>`;
+    const row = (r, cls) => `<tr class="${cls}"><th>${esc(r.label)}</th>${(r.signs || []).map((s, i) => `<td class="sc-sign">${esc(s)}</td>${i < cols - 1 ? `<td class="sc-at">${esc((r.at || [])[i] ?? (marks[i] && marks[i].kind === 'undef' ? '×' : '0'))}</td>` : ''}`).join('')}<td></td></tr>`;
+    const shapes = { rise: '↗', fall: '↘', up: '⌣', down: '⌢' };
+    const shape = spec.shape ? `<tr class="sc-shape"><th>${esc(spec.shapeLabel || 'shape')}</th>${spec.shape.map((s, i) => `<td class="sc-sign">${shapes[s] || esc(s)}</td>${i < cols - 1 ? '<td class="sc-at"></td>' : ''}`).join('')}<td></td></tr>` : '';
+    return `<figure class="fig fig-sign"><table class="signchart"><thead>${head}</thead><tbody>${(spec.rows || []).map(r => row(r, 'sc-row')).join('')}${spec.result ? row(spec.result, 'sc-result') : ''}${shape}</tbody></table>${spec.caption ? `<figcaption>${esc(spec.caption)}</figcaption>` : ''}</figure>`;
+  }
+
+  /* ---------- number line ---------- */
+  function numberline(spec) {
+    const W = 440, H = 64, L = 24, R = 24, Y = 34;
+    const [x0, x1] = spec.x; const sx = x => L + (x - x0) / (x1 - x0) * (W - L - R);
+    const parts = [`<line class="fig-axis" x1="${L}" y1="${Y}" x2="${W - R}" y2="${Y}"/>`];
+    const t = tickStep(x1 - x0);
+    for (let x = Math.ceil(x0 / t) * t; x <= x1 + 1e-9; x += t) parts.push(`<line class="fig-axis" x1="${sx(x)}" y1="${Y - 4}" x2="${sx(x)}" y2="${Y + 4}"/><text class="fig-tick" x="${sx(x)}" y="${Y + 18}" text-anchor="middle">${fmt(x)}</text>`);
+    for (const iv of spec.intervals || []) {
+      const a = iv.from === '-inf' ? x0 : iv.from, b = iv.to === 'inf' ? x1 : iv.to;
+      parts.push(`<line class="fig-int" x1="${sx(a)}" y1="${Y}" x2="${sx(b)}" y2="${Y}"/>`);
+      if (iv.from !== '-inf') parts.push(`<circle class="fig-pt${iv.closedL ? '' : ' open'}" cx="${sx(a)}" cy="${Y}" r="5"/>`);
+      if (iv.to !== 'inf') parts.push(`<circle class="fig-pt${iv.closedR ? '' : ' open'}" cx="${sx(b)}" cy="${Y}" r="5"/>`);
+    }
+    for (const p of spec.points || []) {
+      parts.push(`<circle class="fig-pt${p.open ? ' open' : ''}" cx="${sx(p.x)}" cy="${Y}" r="5"/>`);
+      if (p.label) parts.push(`<text class="fig-lbl" x="${sx(p.x)}" y="${Y - 10}" text-anchor="middle">${esc(p.label)}</text>`);
+    }
+    return `<figure class="fig fig-line"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(spec.alt || spec.caption || 'number line')}">${parts.join('')}</svg>${spec.caption ? `<figcaption>${esc(spec.caption)}</figcaption>` : ''}</figure>`;
+  }
+
+  function render(spec) {
+    if (!spec) return '';
+    if (Array.isArray(spec)) return spec.map(render).join('');
+    switch (spec.kind) {
+      case 'graph': return graph(spec);
+      case 'signchart': return signchart(spec);
+      case 'numberline': return numberline(spec);
+      default: throw new Error(`figure: unknown kind ${spec.kind}`);
+    }
+  }
+
+  root.Figures = { render, compile, tokenize };
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+<script>
 /* UNI Made EZ — application
    Copyright © 2026 JohnsonXCorp. All rights reserved.
    Proprietary. Not open source: see LICENSE. Third-party components: THIRD-PARTY-NOTICES.md */
@@ -22466,7 +22831,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.52', date: '16 September 2026', year: 2026 };
+  const BUILD = { v: '2.53', date: '16 September 2026', year: 2026 };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonandy242', ['gmail', 'com'].join('.')].join('@');
   /* The one sentence that says what this is. It appears under the wordmark, and build.js uses
@@ -22479,6 +22844,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      because the person who needs it is the one who just watched the app refresh itself and wants to
      know what moved. Trim the tail when it gets past a dozen; nobody reads further back than that. */
   const WHATS_NEW = [
+    ['2.53', '<b>MATH 1170 gets pictures, and its worked examples get a plan, fuller working and a check.</b> Starting with chapter 10, every lesson opens with a graph and every worked example carries one: the hole at (3, 6) that a limit sees and a value does not, the secant sliding into the tangent as h shrinks, the jump at a seam between two pieces, the two vertical asymptotes of a rational function, and the parabola shaded where the inequality holds. The graphs are not images &mdash; each is drawn from the actual function in the example, in the page&rsquo;s own colours, so it matches the numbers and reads in dark mode and on a phone &mdash; and sign charts are laid out as tables with the zeros and the excluded values marked differently. Each example now begins with <b>How to approach it</b>, shows the algebra between the lines instead of jumping (six steps where there were four), and ends with a <b>Check</b> that tests the answer against numbers near the point. Chapters 11, 12, 13 and 17 follow, one per release. MATH 1070 pauses at chapter 5 for now.'],
     ['2.52', '<b>MATH 1070 chapter 5, Mathematics of Finance, all six sections.</b> Compound interest with periodic and effective rates and doubling time; present value, equations of value at a comparison date, and net present value as the test of an investment; continuous compounding and its effective-rate ceiling; ordinary annuities and annuities due, the periodic payment and sinking funds; amortisation &mdash; the payment, the schedule line by line, total interest and the number of payments; and perpetuities as the limit of an annuity. Six lessons, 15 worked examples, 36 practice questions and 18 named misconceptions, every dollar figure recomputed by a computer algebra system to the cent. Chapter 6, matrix algebra, follows.'],
     ['2.51', '<b>MATH 1070 chapter 4, Exponential and Logarithmic Functions, all four sections.</b> Exponential functions and their graphs, compound amounts at a periodic rate with the nominal-versus-periodic distinction spelled out, growth and decay with base e; the logarithm as an exponent, converting between forms, common and natural logs, and the half-life formula; the product, quotient and power rules with the non-rule for sums named, and the change-of-base formula; and exponential and logarithmic equations &mdash; isolate first, take logs, combine, convert, and check the domain for extraneous solutions &mdash; with doubling time and a demand equation solved for quantity. Four lessons, 9 worked examples, 34 practice questions and 12 named misconceptions, every number recomputed by a computer algebra system. Chapter 5, the mathematics of finance, follows.'],
     ['2.50', '<b>MATH 1070 chapter 3, Lines, Parabolas and Systems, all six sections.</b> Slope and the three forms of a line, parallel and perpendicular done properly; linear demand and supply equations built from two observations, straight-line depreciation and production trade-offs; the parabola with its vertex formula and the maximum-revenue argument; systems of two and three linear equations by elimination and substitution, with the parallel and coincident cases read off the algebra; nonlinear systems and extraneous roots; and the two intersections that matter most &mdash; market equilibrium, with what a per-unit tax does to it, and break-even with profit targets. Six lessons, 16 worked examples, 40 practice questions and 18 named misconceptions, every number recomputed by a computer algebra system. Chapter 4 follows.'],
@@ -24601,13 +24967,21 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     const n = FADE_AT[Math.max(0, Math.min(4, skillLevel(c.id, l.id)))] || 0;
     return Math.min(n, ex.steps.length - 1);          // the first step is never taken away
   }
+  /* A figure spec (see src/figures.js) rendered in place. A bad spec is a build-time error in the
+     test suite; at run time it degrades to nothing rather than to a broken page. */
+  function figHtml(spec) {
+    try { return window.Figures.render(spec); } catch (e) { console.error('figure', e); return ''; }
+  }
   function workedHtml(c, l, ex, num, key) {
     const open = state.openEx && state.openEx[key];
     const hide = open ? 0 : fadeFor(c, l, ex);
     const shown = ex.steps.length - hide;
     const lvl = LEVELS[Math.max(0, Math.min(4, skillLevel(c.id, l.id)))];
+    const fig = ex.figure ? figHtml(ex.figure) : '';
     return `<figure class="worked${hide ? ' faded' : ''}">
       <figcaption><span class="label">Worked example ${num}</span><b>${esc(ex.prompt)}</b></figcaption>
+      ${ex.approach ? `<p class="approach"><span class="label">How to approach it</span>${esc(ex.approach)}</p>` : ''}
+      ${fig}
       <ol class="wsteps">${ex.steps.map((st, i) => i < shown
         ? `<li><span class="do">${esc(st.do)}</span><span class="why">${esc(st.why)}</span></li>`
         : `<li class="blank"><span class="do">${i === shown ? 'Your turn — finish it' : '&hellip;'}</span><span class="why">${i === shown ? 'Work the rest out, then open the example to check.' : ''}</span></li>`).join('')}</ol>
@@ -24615,6 +24989,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
         ? `<div class="fade-note"><span class="small">${plural(hide, 'step')} left for you, because this skill is at <b>${esc(lvl)}</b>. Finishing a partial example teaches more than reading a whole one.</span>
            <button type="button" class="btn sm" data-act="ex-open" data-k="${esc(key)}">Show every step and the answer <span class="arr">&darr;</span></button></div>`
         : `<p class="ans"><span class="label">Answer</span> <span class="fx${ex.answerWords ? ' words' : ''}">${fxHtml(ex.answer, ex.answerWords ? 'words' : '')}</span></p>
+           ${ex.check ? `<p class="check"><span class="label">Check</span>${esc(ex.check)}</p>` : ''}
            ${fadeFor(c, l, ex) ? `<button type="button" class="btn sm ghost" data-act="ex-close" data-k="${esc(key)}">Hide the last ${plural(fadeFor(c, l, ex), 'step')} again</button>` : ''}`}
     </figure>`;
   }
@@ -24626,6 +25001,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
         <div class="lesson-head"><span class="label">${u.n}.${li + 1}</span><h2>${esc(l.title)}</h2>${l.src ? `<span class="src-chip" title="Follows this part of the course material">${esc(l.src)}</span>` : ''}</div>
         <div class="lesson-body">
           <p class="idea">${l.idea}</p>
+          ${l.figure ? figHtml(l.figure) : ''}
           ${l.rules && l.rules.length ? `<div class="rules">${l.rules.map(rr => `<div class="rule">
               <span class="label">${esc(rr.name)}</span>
               <div class="fx${rr.words ? ' words' : ''}">${fxHtml(rr.expr, rr.words ? 'words' : '')}</div>
