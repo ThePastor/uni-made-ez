@@ -16037,16 +16037,13 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     blurb: 'The calculus half of the book: limits and what they say about a function near a point, continuity, the derivative from first principles, the rules that make it fast, and what a derivative means when the function is a cost, a revenue or a demand.',
     level: 'Foundation',
     prereq: 'precalc',
-    exam: 'Follows the set text from chapter 10. At TRU the chapters before it are MATH 1070; Precalculus here covers the algebra assumed. Built so far: chapter 10 (limits and continuity) and chapter 11 (differentiation) — the first quiz.',
+    exam: 'Follows the TRU course outline: chapters 0, 1, 2 and 4 are self-study review, then sections 10.1–10.4, 11.1–11.5, 12.1, 12.2, 12.4, 12.5, 12.7, 13.1–13.6 and 17.1–17.5. Chapters 14–16 are not in the course. Built so far: chapters 10, 11 and 12. Quizzes weekly, midterms October 14 and November 18, final cumulative.',
     text: TEXT,
     legalNote: NOTE,
     gaps: [
-      'Chapter 12 — derivatives of logarithmic and exponential functions, elasticity of demand, implicit and logarithmic differentiation, Newton’s method, higher-order derivatives',
-      'Chapter 13 — curve sketching: relative extrema, the first- and second-derivative tests, concavity, asymptotes, and applied maxima and minima',
-      'Chapter 14 — integration: the indefinite integral, integration with initial conditions, substitution, the definite integral and the Fundamental Theorem',
-      'Chapter 15 — methods and applications of integration: integration by parts, tables, average value, consumers’ and producers’ surplus',
-      'Chapter 16 — continuous random variables and the normal distribution',
-      'Chapter 17 — multivariable calculus: partial derivatives, applications, and maxima and minima of functions of two variables'
+      'Chapter 13 — curve sketching: relative extrema, absolute extrema on a closed interval, concavity, the second-derivative test, asymptotes, and applied maxima and minima',
+      'Chapter 17 — multivariable calculus: partial derivatives and their applications, higher-order partials, maxima and minima of functions of two variables, and Lagrange multipliers',
+      'Not part of MATH 1170 at TRU, so not built for it: section 12.3 elasticity of demand, section 12.6 Newton’s method, and chapters 14–16 (integration, its methods and applications, and continuous random variables)'
     ],
     units: [
 
@@ -16847,6 +16844,508 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             hint: 'dr/dq has to be evaluated at an output, not at a number of employees.',
             solution: ['Revenue must be a function of one variable before it is differentiated', 'The chain rule needs both rates', 'Each rate is evaluated at the value of its own variable', 'The product of the two rates is dr/dm'] }
         ]
+      },
+
+      /* ============================ CHAPTER 12 ============================ */
+      {
+        id: 'moretech', n: 3,
+        title: 'Additional differentiation topics',
+        blurb: 'The derivatives the power rule cannot reach — logarithms and exponentials — then curves that never solve for y, a logarithm trick that turns products into sums, and the derivative of the derivative.',
+        read: 'Chapter 12',
+        objectives: [
+          'Differentiate ln u and log_b u, simplifying with the laws of logarithms first',
+          'Differentiate e^u and b^u, and combine them with the product, quotient and chain rules',
+          'Find dy/dx by implicit differentiation and use it for tangent lines on curves not solved for y',
+          'Use logarithmic differentiation for products, quotients and powers, and for the form u^v',
+          'Find and interpret second and higher-order derivatives, explicitly and implicitly'
+        ],
+        lessons: [
+          {
+            id: 'c1', title: 'Derivatives of logarithmic functions', src: 'Section 12.1',
+            idea: `Nothing so far differentiates ln x, because ln x is not a power of x and cannot be built from one. Its derivative comes from the definition and one limit — the limit that defines e — and the result is as clean as any in the course:<br><br><b>d/dx (ln x) = 1/x</b>, for x &gt; 0<br><br>The slope of the natural-log curve at any point is the reciprocal of the x-coordinate: steep near 0, flattening forever but never level. Combined with the chain rule this becomes the form that is actually used:<br><br><b>d/dx (ln u) = (1/u) · (du/dx)</b><br><br>— one over the inside, times the derivative of the inside. For y = ln(x² + 4), u = x² + 4 and du/dx = 2x, so dy/dx = 2x/(x² + 4). The chain-rule factor is as easy to drop here as it was with powers, and it is dropped just as often.<br><br>A logarithm to another base is a natural log in disguise, since <b>log<sub>b</sub> x = ln x / ln b</b> and ln b is a constant. So:<br><br><b>d/dx (log<sub>b</sub> u) = (1 / (u ln b)) · (du/dx)</b><br><br>The only difference from the natural log is the constant ln b in the denominator, which is why every derivative in this chapter is done in base e and converted at the end if a question insists.<br><br>The technique that saves the most work in this section is <b>rewriting with the laws of logarithms before differentiating</b>:<br><br><b>ln(uv) = ln u + ln v</b> · <b>ln(u/v) = ln u − ln v</b> · <b>ln(u<sup>r</sup>) = r ln u</b><br><br>Faced with y = ln((x + 1)/(x − 1)), a direct chain-and-quotient-rule attack produces a fraction inside a fraction. Rewriting first, y = ln(x + 1) − ln(x − 1), and the derivative is 1/(x + 1) − 1/(x − 1) in one line. The laws turn products into sums and powers into coefficients, and sums and coefficients are what differentiation handles best. The rewriting is legal only where every logarithm is defined, so it is done for the values of x the question actually concerns.<br><br>One more reading of the same derivative is worth fixing now, because chapter 12 returns to it: d/dx (ln y) = (dy/dx)/y, which is the <b>relative rate of change</b> of y from section 11.3. Differentiating the log of a quantity gives its proportional growth rate directly — a fact economics uses constantly.`,
+            rules: [
+              { name: 'Natural logarithm', expr: 'd/dx (ln x) = 1/x', note: 'For x > 0. The slope is the reciprocal of the x-coordinate.' },
+              { name: 'With the chain rule', expr: 'd/dx (ln u) = (1/u) × du/dx', note: 'One over the inside, times the derivative of the inside. The last factor is the one that gets forgotten.' },
+              { name: 'Other bases', expr: 'd/dx (log_b u) = (1/(u ln b)) × du/dx', note: 'Because log_b x = ln x / ln b, and ln b is a constant.' },
+              { name: 'Rewrite first', expr: 'ln(u v) = ln u + ln v, ln(u/v) = ln u - ln v, ln(u^r) = r ln u', note: 'Products become sums and powers become coefficients before anything is differentiated.' },
+              { name: 'Relative rate of change', expr: 'relative rate = d/dx (ln y) = (dy/dx) / y', note: 'Differentiating the log of a quantity gives its proportional rate of change.' }
+            ],
+            examples: [
+              {
+                prompt: 'Differentiate y = ln(x² + 4), and find dy/dx at x = 2.',
+                steps: [
+                  { do: 'The inside is u = x² + 4, so du/dx = 2x', why: 'Identify the inside before differentiating anything. ln of something is a chain-rule problem whenever the something is not x itself.' },
+                  { do: 'dy/dx = (1/u)(du/dx) = 2x/(x² + 4)', why: 'One over the inside, times the derivative of the inside. Writing just 1/(x² + 4) drops the factor 2x and is the standard error.' },
+                  { do: 'At x = 2: 2(2)/(4 + 4) = 4/8', why: 'Substitute after differentiating, never before.' },
+                  { do: 'dy/dx = 0.5 at x = 2', why: 'Positive, as it must be: x² + 4 is increasing for x > 0 and ln is increasing, so the composition rises.' }
+                ],
+                answer: 'dy/dx = 2x/(x² + 4), which is 0.5 at x = 2', answerWords: true
+              },
+              {
+                prompt: 'Differentiate y = ln((x + 1)/(x − 1)) for x > 1, and evaluate at x = 3.',
+                steps: [
+                  { do: 'Rewrite with the laws of logarithms: y = ln(x + 1) − ln(x − 1)', why: 'The log of a quotient is a difference of logs. Differentiating the original form needs the chain rule wrapped around the quotient rule; this needs neither.' },
+                  { do: 'Differentiate term by term: dy/dx = 1/(x + 1) − 1/(x − 1)', why: 'Each term is ln of a linear inside whose derivative is 1, so each gives one over the inside.' },
+                  { do: 'At x = 3: 1/4 − 1/2 = −1/4', why: 'Substitute into the simplified derivative.' },
+                  { do: 'dy/dx = −0.25 at x = 3', why: 'Negative: the quotient (x + 1)/(x − 1) falls toward 1 as x grows, so its log falls toward 0. The rewriting was valid because both x + 1 and x − 1 are positive for x > 1.' }
+                ],
+                answer: 'dy/dx = 1/(x + 1) − 1/(x − 1), which is −0.25 at x = 3', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'calc-ln-chain-dropped',
+                wrong: 'Differentiating ln(x² + 4) as 1/(x² + 4)',
+                right: 'Multiply by the derivative of the inside: 2x/(x² + 4).',
+                why: 'It is the chain-rule omission again, in its most common disguise. The test is the same as for powers: if what sits inside the log is not x itself, its derivative is a factor of the answer. The reciprocal alone is only right for ln x.'
+              },
+              {
+                id: 'calc-ln-of-sum-split',
+                wrong: 'Writing ln(x² + 4) as ln(x²) + ln 4',
+                right: 'The laws of logarithms split products, quotients and powers — never sums.',
+                why: 'There is no rule for the log of a sum, and inventing one produces a wrong derivative that looks tidy. The three laws are the only three: ln(uv), ln(u/v) and ln(u^r). If the inside is a sum, the chain rule is the route, and rewriting is not available.'
+              },
+              {
+                id: 'calc-log-base-forgotten',
+                wrong: 'Differentiating log₂ x as 1/x',
+                right: 'It is 1/(x ln 2). A logarithm to base b carries the constant ln b in its derivative.',
+                why: 'log₂ x is ln x divided by the constant ln 2, so its derivative is 1/x divided by the same constant. Only the natural logarithm has the clean 1/x, which is exactly why the natural logarithm is the one used in calculus.'
+              }
+            ]
+          },
+
+          {
+            id: 'c2', title: 'Derivatives of exponential functions', src: 'Section 12.2',
+            idea: `The number e was chosen to make one derivative trivial, and it does:<br><br><b>d/dx (e<sup>x</sup>) = e<sup>x</sup></b><br><br>The exponential function is its own derivative — at every point the slope equals the height. It is the only function (up to a constant multiple) with that property, and it is the reason continuous growth, compound interest and decay are all written with e. With the chain rule:<br><br><b>d/dx (e<sup>u</sup>) = e<sup>u</sup> · (du/dx)</b><br><br>— the exponential unchanged, times the derivative of the exponent. For y = e<sup>3x</sup> the derivative is 3e<sup>3x</sup>; for y = e<sup>−x²</sup> it is −2x e<sup>−x²</sup>. As with logs, the last factor is where the marks are lost.<br><br>Other bases reduce to base e, because b = e<sup>ln b</sup> and so b<sup>u</sup> = e<sup>u ln b</sup>. Differentiating that with the chain rule gives:<br><br><b>d/dx (b<sup>u</sup>) = b<sup>u</sup> · ln b · (du/dx)</b><br><br>So d/dx (4<sup>x</sup>) = 4<sup>x</sup> ln 4, not x · 4<sup>x−1</sup>. That wrong answer is the power rule applied to a function that is not a power, and it is worth being able to say exactly why it fails: the power rule needs a constant exponent, and here the exponent is the variable. A useful check is which of base and exponent is changing — <b>variable base, constant exponent: power rule; constant base, variable exponent: exponential rule.</b> When both vary, as in x<sup>x</sup>, neither applies and section 12.5 is needed.<br><br>The rules combine with everything before them. y = x² e<sup>x</sup> is a product: (2x)e<sup>x</sup> + x²e<sup>x</sup> = (2x + x²)e<sup>x</sup>. y = e<sup>x</sup>/x is a quotient. And an exponent that is itself a composite — e<sup>ln(x² + 1)</sup>, say — simplifies to x² + 1 before differentiation, because e and ln undo each other; recognising that saves a page of work.<br><br>The economic application is anything that grows continuously. An amount A = P e<sup>rt</sup> growing at rate r has dA/dt = rA — its rate of change is proportional to its size, which is what "growing at 5% a year, continuously" means. The derivative of an exponential does not merely describe such growth; it is the definition of it.`,
+            rules: [
+              { name: 'The exponential function', expr: 'd/dx (e^x) = e^x', note: 'Its own derivative: at every point the slope equals the height.' },
+              { name: 'With the chain rule', expr: 'd/dx (e^u) = e^u × du/dx', note: 'The exponential unchanged, times the derivative of the exponent.' },
+              { name: 'Other bases', expr: 'd/dx (b^u) = b^u × ln b × du/dx', note: 'From b^u = e^(u ln b). The constant ln b appears, as it did for logs.' },
+              { name: 'Which rule', expr: 'Variable base and constant exponent: power rule. Constant base and variable exponent: exponential rule.', words: true, note: 'Both varying, as in x^x, needs logarithmic differentiation.' },
+              { name: 'Continuous growth', expr: 'A = P e^(r t) gives dA/dt = r A', note: 'The rate of change is proportional to the amount. That proportionality is what continuous growth means.' }
+            ],
+            examples: [
+              {
+                prompt: 'Differentiate y = x² e^x, and find dy/dx at x = 1 to three decimal places.',
+                steps: [
+                  { do: 'This is a product of f = x² and g = e^x, with f′ = 2x and g′ = e^x', why: 'Two factors that each depend on x. The product rule is required; nothing here simplifies away.' },
+                  { do: 'dy/dx = f′g + fg′ = 2x e^x + x² e^x', why: 'Derivative of the first times the second, plus the first times the derivative of the second. The e^x is unchanged by differentiation.' },
+                  { do: 'Factor: dy/dx = (2x + x²) e^x = x(x + 2) e^x', why: 'Factoring the common e^x is what makes the derivative usable — for instance, to see it is zero at x = 0 and x = −2.' },
+                  { do: 'At x = 1: 3e ≈ 8.155', why: 'e ≈ 2.71828, and 3 × 2.71828 = 8.1548. Three decimal places: 8.155.' }
+                ],
+                answer: 'dy/dx = x(x + 2) e^x, which is 3e ≈ 8.155 at x = 1', answerWords: true
+              },
+              {
+                prompt: 'Differentiate y = 4^x and y = e^(−x²), and evaluate each at x = 1.',
+                steps: [
+                  { do: 'y = 4^x has a constant base and a variable exponent, so d/dx (4^x) = 4^x ln 4', why: 'The exponential rule, with the constant ln 4 that every non-e base carries. The power rule would give x · 4^(x−1), which is wrong because the exponent is not constant.' },
+                  { do: 'At x = 1: 4 ln 4 ≈ 5.545', why: 'ln 4 ≈ 1.3863, times 4.' },
+                  { do: 'y = e^(−x²) has inside u = −x² with du/dx = −2x, so dy/dx = e^(−x²) · (−2x) = −2x e^(−x²)', why: 'The exponential rule with the chain rule. Forgetting the −2x is the error to watch for.' },
+                  { do: 'At x = 1: −2/e ≈ −0.736', why: 'Negative: this bell-shaped curve is falling for x > 0. The sign is a quick check on whether the chain-rule factor was included, because without it the answer would be positive.' }
+                ],
+                answer: '4 ln 4 ≈ 5.545, and −2/e ≈ −0.736', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'calc-power-rule-on-exponential',
+                wrong: 'Differentiating 4^x as x · 4^(x−1)',
+                right: 'The exponent is the variable, so it is the exponential rule: 4^x ln 4.',
+                why: 'The power rule was derived for a constant exponent, and applying it to a variable one gives a function of the wrong kind entirely. Ask which of base and exponent is moving before choosing the rule; when the base is a constant, the answer is the function itself times ln of the base.'
+              },
+              {
+                id: 'calc-exp-chain-dropped',
+                wrong: 'Differentiating e^(3x) as e^(3x), or e^(−x²) as e^(−x²)',
+                right: 'Multiply by the derivative of the exponent: 3e^(3x), and −2x e^(−x²).',
+                why: '"e^x is its own derivative" is true only when the exponent is x itself. Any other exponent is a chain-rule problem, and the factor from the inside is the entire content of the calculation. The sign of the result — negative where the curve falls — is the fastest check that the factor was included.'
+              },
+              {
+                id: 'calc-e-ln-not-cancelled',
+                wrong: 'Attacking e^(ln(x² + 1)) with the chain rule',
+                right: 'e and ln undo each other: e^(ln(x² + 1)) = x² + 1, whose derivative is 2x.',
+                why: 'The chain rule gives the right answer here after a page of simplification, and a shorter route that gives it in one line is not a trick but an identity. Looking for e-and-ln cancellation before differentiating is a habit worth having, because examiners set it deliberately.'
+              }
+            ]
+          },
+
+          {
+            id: 'c3', title: 'Implicit differentiation', src: 'Section 12.4',
+            idea: `Not every curve is given as y = f(x). The circle x² + y² = 25 and the curve y³ + y − x = 7 define y in terms of x <b>implicitly</b> — the relation holds, but y is not isolated and sometimes cannot be. Implicit differentiation finds dy/dx anyway, without ever solving for y.<br><br>The idea is a single sentence: <b>treat y as an unknown function of x, and differentiate both sides of the equation with respect to x.</b> Whenever a term contains y, the chain rule applies, and every derivative of a y-term picks up a factor of dy/dx. Then solve the resulting equation for dy/dx.<br><br>The procedure:<br><br><b>1.</b> Differentiate both sides with respect to x. A term in x alone is differentiated as usual. A term in y is differentiated as a function of x — so d/dx (y²) = 2y · dy/dx, d/dx (y³) = 3y² · dy/dx, d/dx (ln y) = (1/y) · dy/dx, and d/dx (y) = dy/dx.<br><b>2.</b> A term with both, like xy, is a <b>product</b>: d/dx (xy) = x · dy/dx + y.<br><b>3.</b> Collect every term containing dy/dx on one side and everything else on the other.<br><b>4.</b> Factor out dy/dx and divide.<br><br>For x² + y² = 25: 2x + 2y · dy/dx = 0, so <b>dy/dx = −x/y</b>. The answer contains y as well as x, and that is normal: on an implicit curve the slope at a point depends on both coordinates, because the same x can sit at two different y-values with two different slopes. The circle at x = 3 has slope −3/4 at (3, 4) and +3/4 at (3, −4).<br><br>So a slope from implicit differentiation is always evaluated at a <b>point</b>, not at an x-value alone. From there, a tangent line is point-slope form exactly as before: at (3, 4) the tangent to the circle is y − 4 = −(3/4)(x − 3).<br><br>Economics meets this technique wherever a relation between two quantities is given as an equation rather than a formula — an isoquant relating two inputs that produce a fixed output, a demand relation that has not been solved for price, a budget constraint. The derivative of one variable with respect to the other along the curve is the trade-off between them, and implicit differentiation is how it is found.`,
+            rules: [
+              { name: 'The idea', expr: 'Treat y as a function of x and differentiate both sides', words: true, note: 'Every y-term is a chain-rule term and produces a factor dy/dx.' },
+              { name: 'Derivatives of y-terms', expr: 'd/dx (y^n) = n y^(n-1) × dy/dx', note: 'And d/dx (ln y) = (1/y) dy/dx, d/dx (e^y) = e^y dy/dx. A term in x alone is differentiated as usual.' },
+              { name: 'A term with both', expr: 'd/dx (x y) = x × dy/dx + y', note: 'Product rule. This is the term most often differentiated wrongly.' },
+              { name: 'Then solve', expr: 'Collect the dy/dx terms on one side, factor dy/dx out, divide', words: true, note: 'The result usually contains both x and y; evaluate it at a point.' }
+            ],
+            examples: [
+              {
+                prompt: 'Find dy/dx for x² + y² = 25, then the slope and the tangent line at (3, 4).',
+                steps: [
+                  { do: 'Differentiate both sides with respect to x: 2x + 2y · dy/dx = 0', why: 'x² differentiates as usual. y² is a function of x squared, so the chain rule gives 2y times dy/dx. The constant 25 gives 0.' },
+                  { do: 'Solve: 2y · dy/dx = −2x, so dy/dx = −x/y', why: 'Collect the dy/dx term, then divide. The slope depends on both coordinates.' },
+                  { do: 'At (3, 4): dy/dx = −3/4 = −0.75', why: 'Both coordinates are substituted. At (3, −4) the slope would be +0.75 — same x, different point, different tangent.' },
+                  { do: 'Tangent: y − 4 = −0.75(x − 3), that is, y = −0.75x + 6.25', why: 'Point-slope form with the given point and the slope just found. Check: the point (3, 4) is on the circle, since 9 + 16 = 25.' }
+                ],
+                answer: 'dy/dx = −x/y; slope −0.75 at (3, 4); tangent y = −0.75x + 6.25', answerWords: true
+              },
+              {
+                prompt: 'Find dy/dx for xy + y³ = 2x + 6, and evaluate it at the point (−5, 1).',
+                steps: [
+                  { do: 'Check the point first: (−5)(1) + 1³ = −4 and 2(−5) + 6 = −4, so (−5, 1) is on the curve', why: 'An implicit slope is only meaningful at a point that satisfies the equation. One line of arithmetic, and it catches a mis-copied question before any work is wasted.' },
+                  { do: 'Differentiate the xy term with the product rule: x · dy/dx + y', why: 'x and y are both functions of x here, so their product is a product of two functions. Writing just x · dy/dx, or just y, loses a term.' },
+                  { do: 'The rest: 3y² · dy/dx from y³, and 2 from 2x, 0 from 6. So x · dy/dx + y + 3y² · dy/dx = 2', why: 'Every y-term gets its dy/dx factor; every pure x-term is ordinary.' },
+                  { do: 'Collect: (x + 3y²) dy/dx = 2 − y, so dy/dx = (2 − y)/(x + 3y²). At (−5, 1): (2 − 1)/(−5 + 3) = −0.5', why: 'Move the term without dy/dx to the right, factor dy/dx out of the left, divide, then substitute both coordinates.' }
+                ],
+                answer: 'dy/dx = (2 − y)/(x + 3y²), which is −0.5 at (−5, 1)', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'calc-implicit-dydx-forgotten',
+                wrong: 'Differentiating y² as 2y with no dy/dx',
+                right: 'y is a function of x, so the chain rule gives 2y · dy/dx.',
+                why: 'Without the dy/dx factor there is nothing to solve for, and the "answer" that comes out is the derivative of a different relation. Every term containing y produces a dy/dx, without exception; the terms that do not are the pure x-terms and the constants.'
+              },
+              {
+                id: 'calc-implicit-xy-product',
+                wrong: 'Differentiating xy as y, or as dy/dx, or as x · dy/dx alone',
+                right: 'It is a product: x · dy/dx + y.',
+                why: 'Both factors depend on x, so both get differentiated in turn. Missing the y term is the single most common implicit-differentiation error, and it changes the final slope at every point — writing the product rule out explicitly for any term containing both variables is the reliable defence.'
+              },
+              {
+                id: 'calc-implicit-slope-at-x-only',
+                wrong: 'Evaluating an implicit derivative at an x-value without a y-value',
+                right: 'The slope formula contains y. It is evaluated at a point, and the point must lie on the curve.',
+                why: 'The circle has two points with x = 3 and they have opposite slopes, so "the slope at x = 3" is not a question. A point that does not satisfy the equation is worse: the formula returns a number that describes nothing. Checking the point against the equation takes one line and prevents both.'
+              }
+            ]
+          },
+
+          {
+            id: 'c4', title: 'Logarithmic differentiation', src: 'Section 12.5',
+            idea: `Some functions are products, quotients and powers stacked together: y = (2x + 1)³(x − 1)²/(x² + 1). The product and quotient rules will get there, at length and with room for error at every step. <b>Logarithmic differentiation</b> gets there faster by making the logarithm do the algebra.<br><br>The procedure:<br><br><b>1.</b> Take the natural logarithm of both sides: ln y = ln(f(x)).<br><b>2.</b> Use the laws of logarithms to break the right side into a sum: products become sums, quotients become differences, powers become coefficients. For the example: ln y = 3 ln(2x + 1) + 2 ln(x − 1) − ln(x² + 1).<br><b>3.</b> Differentiate both sides implicitly with respect to x. The left side is (1/y) · dy/dx by the chain rule; the right side is a sum of easy log derivatives: 6/(2x + 1) + 2/(x − 1) − 2x/(x² + 1).<br><b>4.</b> Multiply through by y, and put y back in terms of x: dy/dx = y · [6/(2x + 1) + 2/(x − 1) − 2x/(x² + 1)].<br><br>The answer is often left in that form, with y written as the original expression, and it is worth noticing what step 3 produced on its own: <b>(dy/dx)/y</b>, the <b>relative rate of change</b> of y. Logarithmic differentiation computes the relative rate directly, which is why it is the natural tool when a question asks for a percentage rate of change of a product of factors — and why, for such a product, the relative rate is simply the sum of the relative rates of the factors.<br><br>The technique is also the <b>only</b> method for a function of the form <b>y = u<sup>v</sup></b> where both base and exponent vary — x<sup>x</sup>, (x² + 1)<sup>x</sup>, x<sup>√x</sup>. Neither the power rule (constant exponent) nor the exponential rule (constant base) applies. Taking logs gives ln y = v ln u, a product that the product rule handles: (1/y) dy/dx = v′ ln u + v · (u′/u). For y = x<sup>x</sup>: ln y = x ln x, so (1/y) dy/dx = ln x + 1, and dy/dx = x<sup>x</sup>(ln x + 1). At x = 1 that is 1.<br><br>One caution: the logarithm is defined only for positive arguments, so strictly the method applies where f(x) &gt; 0. In practice the derivative formula it produces is correct wherever f is differentiable and nonzero, and that is how it is used.`,
+            rules: [
+              { name: 'The procedure', expr: 'Take ln of both sides, expand with the laws of logs, differentiate implicitly, multiply by y', words: true, note: 'Products become sums, quotients differences, powers coefficients — before differentiating.' },
+              { name: 'The left side', expr: 'd/dx (ln y) = (dy/dx) / y', note: 'It is the relative rate of change of y, computed directly.' },
+              { name: 'A product’s relative rate', expr: 'The relative rate of a product is the sum of the relative rates of its factors', words: true, note: 'And a quotient subtracts; a power multiplies by the exponent.' },
+              { name: 'The form u^v', expr: 'y = u^v gives ln y = v × ln u', note: 'Both base and exponent varying: neither the power rule nor the exponential rule applies. This is the only route.' }
+            ],
+            examples: [
+              {
+                prompt: 'Find dy/dx for y = (2x + 1)³(x − 1)²/(x² + 1) by logarithmic differentiation, and evaluate it at x = 2.',
+                steps: [
+                  { do: 'ln y = 3 ln(2x + 1) + 2 ln(x − 1) − ln(x² + 1)', why: 'Take logs of both sides and expand: the cube and the square become coefficients, the product becomes a sum, the quotient a difference.' },
+                  { do: 'Differentiate implicitly: (1/y) dy/dx = 6/(2x + 1) + 2/(x − 1) − 2x/(x² + 1)', why: 'Each term on the right is ln of something, so each gives the derivative of the inside over the inside. The 6 is 3 × 2, the 2 is 2 × 1.' },
+                  { do: 'At x = 2 the bracket is 6/5 + 2/1 − 4/5 = 2.4, and y(2) = 125 · 1/5 = 25', why: 'The bracket is the relative rate of change of y at x = 2: y is growing at 240% per unit of x there. y itself comes from the original formula.' },
+                  { do: 'dy/dx = y × 2.4 = 25 × 2.4 = 60', why: 'Multiply the relative rate by y. The quotient rule wrapped around a product rule would give the same 60 after a much longer calculation.' }
+                ],
+                answer: 'dy/dx = y [6/(2x + 1) + 2/(x − 1) − 2x/(x² + 1)], which is 60 at x = 2', answerWords: true
+              },
+              {
+                prompt: 'Differentiate y = x^x, and find dy/dx at x = 1.',
+                steps: [
+                  { do: 'Both the base and the exponent are x, so neither the power rule nor the exponential rule applies', why: 'The power rule needs a constant exponent; the exponential rule needs a constant base. x^x has neither, and applying either gives a wrong answer that looks plausible.' },
+                  { do: 'ln y = x ln x', why: 'Take logs of both sides; the exponent comes down as a coefficient. The right side is now a product of two ordinary functions.' },
+                  { do: '(1/y) dy/dx = (1) ln x + x (1/x) = ln x + 1', why: 'Product rule on x ln x. The x and the 1/x cancel to give the 1.' },
+                  { do: 'dy/dx = x^x (ln x + 1), which at x = 1 is 1 · (0 + 1) = 1', why: 'Multiply back by y = x^x. At x = 1, ln 1 = 0, so the slope is exactly 1.' }
+                ],
+                answer: 'dy/dx = x^x (ln x + 1), which is 1 at x = 1', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'calc-logdiff-forget-multiply-back',
+                wrong: 'Reporting the bracket — the derivative of ln y — as dy/dx',
+                right: 'That bracket is (dy/dx)/y. Multiply by y to get dy/dx.',
+                why: 'In the worked example the bracket is 2.4 and the derivative is 60; the two differ by the factor y = 25. The bracket has its own meaning as the relative rate of change, which is why it is worth keeping, but it is not the slope unless the question asked for a relative rate.'
+              },
+              {
+                id: 'calc-x-to-x-by-power-rule',
+                wrong: 'Differentiating x^x as x · x^(x−1), or as x^x ln x',
+                right: 'Take logs: ln y = x ln x, so dy/dx = x^x (ln x + 1).',
+                why: 'The first is the power rule with a variable exponent; the second is the exponential rule with a variable base. Each captures half of the truth — the correct derivative is the sum of those two wrong answers — and only logarithmic differentiation produces both halves.'
+              },
+              {
+                id: 'calc-logdiff-sum-not-split',
+                wrong: 'Splitting ln(x² + 1) into ln(x²) + ln 1 in step 2',
+                right: 'The laws of logarithms do not split a sum. ln(x² + 1) stays as it is and gives 2x/(x² + 1).',
+                why: 'The expansion step only works on products, quotients and powers. A sum inside a logarithm is left alone and differentiated with the chain rule. Splitting it produces 2/x in place of 2x/(x² + 1), which is wrong at every x.'
+              }
+            ]
+          },
+
+          {
+            id: 'c5', title: 'Higher-order derivatives', src: 'Section 12.7',
+            idea: `The derivative of a function is a function, so it can be differentiated again. The result is the <b>second derivative</b>, written <b>f″(x)</b>, <b>y″</b>, or <b>d²y/dx²</b>; differentiate once more for the <b>third derivative</b> f‴(x) or d³y/dx³, and so on. Beyond the third, primes are replaced by a bracketed number: f<sup>(4)</sup>(x). The Leibniz form d²y/dx² is read "the second derivative of y with respect to x"; it is not a square of anything.<br><br>Computing is repetition: each derivative is found from the one before with the rules already known. For f(x) = x⁴ − 3x³ + 2x, f′(x) = 4x³ − 9x² + 2, f″(x) = 12x² − 18x, f‴(x) = 24x − 18, f<sup>(4)</sup>(x) = 24, and every derivative after that is 0. A polynomial of degree n has a constant nth derivative and vanishes beyond. An exponential never does: every derivative of e<sup>2x</sup> is another multiple of e<sup>2x</sup> — 2e<sup>2x</sup>, 4e<sup>2x</sup>, 8e<sup>2x</sup>.<br><br>What the second derivative <b>means</b> is the rate of change of the rate of change. If s(t) is position, s′(t) is velocity and <b>s″(t) is acceleration</b> — how fast the velocity itself is changing. If c(q) is cost, c′(q) is marginal cost and c″(q) says whether marginal cost is rising or falling as output grows. The sign of f″ tells whether f′ is increasing or decreasing, which is the whole of chapter 13's concavity test, so this section is where that chapter's tool is built.<br><br>The second derivative can also be found <b>implicitly</b>, and the method has one step that catches people. Differentiate the relation once to get dy/dx in terms of x and y; differentiate that expression again with respect to x — using the quotient rule, and remembering that <b>every y in it is still a function of x</b> and produces a dy/dx; then <b>substitute the expression for dy/dx back in</b>, so that y″ is in terms of x and y alone. For x² + y² = 25: y′ = −x/y, so y″ = −(y − x y′)/y² = −(y + x²/y)/y² = −(y² + x²)/y³ = −25/y³, using the original equation at the last step. At (3, 4) that is −25/64 ≈ −0.3906.`,
+            rules: [
+              { name: 'Notation', expr: 'd^2 y/dx^2', note: 'The second derivative of y with respect to x — also f″(x) or y″. Not a square.' },
+              { name: 'How to compute', expr: 'Differentiate the previous derivative with the ordinary rules', words: true, note: 'A degree-n polynomial has a constant nth derivative and 0 after that.' },
+              { name: 'Acceleration', expr: 'acceleration = d^2 s/dt^2', note: 'The rate of change of velocity, which is itself the rate of change of position.' },
+              { name: 'Implicitly', expr: 'Differentiate dy/dx again, then substitute the expression for dy/dx back in', words: true, note: 'Every y in dy/dx is still a function of x. Use the original equation to simplify at the end.' }
+            ],
+            examples: [
+              {
+                prompt: 'f(x) = x⁴ − 3x³ + 2x. Find f″(x), f‴(x) and f″(2).',
+                steps: [
+                  { do: 'f′(x) = 4x³ − 9x² + 2', why: 'The first derivative, term by term. The 2x gives 2, which will vanish at the next step.' },
+                  { do: 'f″(x) = 12x² − 18x', why: 'Differentiate f′. The constant 2 is gone.' },
+                  { do: 'f‴(x) = 24x − 18', why: 'Differentiate f″. One more step would give 24, and then 0 forever — a quartic has four nonzero derivatives.' },
+                  { do: 'f″(2) = 12(4) − 18(2) = 48 − 36 = 12', why: 'Positive: at x = 2 the slope f′ is increasing, so the curve is bending upward there — concave up, in the language of the next chapter.' }
+                ],
+                answer: 'f″(x) = 12x² − 18x, f‴(x) = 24x − 18, and f″(2) = 12', answerWords: true
+              },
+              {
+                prompt: 'Find d²y/dx² for x² + y² = 25, and evaluate it at (3, 4).',
+                steps: [
+                  { do: 'First derivative implicitly: 2x + 2y y′ = 0, so y′ = −x/y', why: 'The result contains y, which must be remembered at the next step.' },
+                  { do: 'Differentiate y′ = −x/y by the quotient rule: y″ = −(y · 1 − x · y′)/y²', why: 'The denominator y is a function of x, so its derivative is y′, not 1 and not 0. This is the step that is most often skipped.' },
+                  { do: 'Substitute y′ = −x/y: y″ = −(y + x²/y)/y² = −(y² + x²)/y³', why: 'Multiply the numerator through by y/y to clear the inner fraction. The second derivative must end up in x and y only, with no y′ left in it.' },
+                  { do: 'Use the original equation, x² + y² = 25: y″ = −25/y³, so at (3, 4) it is −25/64 ≈ −0.3906', why: 'Simplifying with the curve’s own equation is legal because every point considered lies on it. Negative: the top of the circle is concave down.' }
+                ],
+                answer: 'd²y/dx² = −25/y³, which is −25/64 ≈ −0.3906 at (3, 4)', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'calc-second-derivative-squared',
+                wrong: 'Reading d²y/dx² as (dy/dx)² and squaring the first derivative',
+                right: 'It is the derivative of the derivative. Differentiate dy/dx again.',
+                why: 'The notation records that d/dx has been applied twice, and the superscript is a count, not a power. Squaring the first derivative of x³ gives 9x⁴ where the second derivative is 6x — different degree, different meaning, and the concavity tests of the next chapter come out wrong.'
+              },
+              {
+                id: 'calc-implicit-second-no-resub',
+                wrong: 'Leaving y′ inside the expression for y″',
+                right: 'Substitute the formula for y′ back in, so y″ is in x and y alone, then simplify with the original equation.',
+                why: 'An answer containing y′ is not finished: it cannot be evaluated at a point and it hides the simplification the original equation allows. The worked example collapses −(y² + x²)/y³ to −25/y³ only because x² + y² = 25 on the curve.'
+              },
+              {
+                id: 'calc-implicit-second-y-constant',
+                wrong: 'Differentiating y′ = −x/y as if y were a constant, giving −1/y',
+                right: 'y is a function of x throughout, so the quotient rule applies and the derivative of the denominator is y′.',
+                why: 'The same rule that produced the dy/dx factors in the first derivative still applies in the second. Treating y as constant halfway through produces a second derivative of the wrong sign in places and misses the term that the original equation later simplifies.'
+              }
+            ]
+          }
+        ],
+        practice: [
+          { id: 's1', kind: 'numeric', lesson: 'c1',
+            prompt: 'y = ln(x² + 4). What is dy/dx at x = 2?',
+            answer: 0.5, verify: { expr: 'diff(log(x**2 + 4), x).subs(x, 2)' },
+            hint: 'One over the inside, times the derivative of the inside.',
+            solution: ['dy/dx = 2x/(x² + 4)', 'At x = 2: 4/8', '= 0.5'] },
+
+          { id: 's2', kind: 'numeric', lesson: 'c1',
+            prompt: 'y = x ln x. What is dy/dx at x = e?',
+            answer: 2, verify: { expr: 'diff(x*log(x), x).subs(x, E)' },
+            hint: 'Product rule, and ln e = 1.',
+            solution: ['dy/dx = (1) ln x + x (1/x) = ln x + 1', 'At x = e: ln e + 1', '= 2'] },
+
+          { id: 's3', kind: 'numeric', lesson: 'c1',
+            prompt: 'y = log₂ x. What is dy/dx at x = 4? Give 4 decimal places.',
+            answer: 0.3607, tol: 0.00005, verify: { expr: 'diff(log(x, 2), x).subs(x, 4)', dp: 4 },
+            hint: 'A base-2 logarithm carries ln 2 in its derivative.',
+            solution: ['log₂ x = ln x / ln 2, so dy/dx = 1/(x ln 2)', 'At x = 4: 1/(4 × 0.6931)', '≈ 0.3607'] },
+
+          { id: 's4', kind: 'numeric', lesson: 'c1',
+            prompt: 'y = ln((x + 1)/(x − 1)) for x > 1. What is dy/dx at x = 3?',
+            answer: -0.25, verify: { expr: 'diff(log((x+1)/(x-1)), x).subs(x, 3)' },
+            hint: 'Rewrite as a difference of logs first.',
+            solution: ['y = ln(x + 1) − ln(x − 1)', 'dy/dx = 1/(x + 1) − 1/(x − 1)', 'At x = 3: 1/4 − 1/2 = −0.25'] },
+
+          { id: 's5', kind: 'numeric', lesson: 'c1',
+            prompt: 'y = x³. What is the relative rate of change of y with respect to x at x = 2?',
+            answer: 1.5, verify: { expr: '(diff(x**3, x)/x**3).subs(x, 2)' },
+            hint: 'Differentiate ln y, or divide dy/dx by y.',
+            solution: ['ln y = 3 ln x, so (dy/dx)/y = 3/x', 'At x = 2: 3/2', '= 1.5, that is, 150% per unit of x'] },
+
+          { id: 's6', kind: 'numeric', lesson: 'c2',
+            prompt: 'y = e^(3x). What is dy/dx at x = 0?',
+            answer: 3, verify: { expr: 'diff(exp(3*x), x).subs(x, 0)' },
+            hint: 'The exponential unchanged, times the derivative of the exponent.',
+            solution: ['dy/dx = 3e^(3x)', 'At x = 0: 3e⁰', '= 3'] },
+
+          { id: 's7', kind: 'numeric', lesson: 'c2',
+            prompt: 'y = x² e^x. What is dy/dx at x = 1? Give 3 decimal places.',
+            answer: 8.155, tol: 0.0005, verify: { expr: 'diff(x**2*exp(x), x).subs(x, 1)', dp: 3 },
+            hint: 'Product rule; e^x is its own derivative.',
+            solution: ['dy/dx = 2x e^x + x² e^x = (x² + 2x) e^x', 'At x = 1: 3e', '≈ 8.155'] },
+
+          { id: 's8', kind: 'numeric', lesson: 'c2',
+            prompt: 'y = 4^x. What is dy/dx at x = 1? Give 3 decimal places.',
+            answer: 5.545, tol: 0.0005, verify: { expr: 'diff(4**x, x).subs(x, 1)', dp: 3 },
+            hint: 'Constant base, variable exponent: which rule?',
+            solution: ['d/dx (4^x) = 4^x ln 4', 'At x = 1: 4 ln 4', '≈ 5.545'] },
+
+          { id: 's9', kind: 'numeric', lesson: 'c2',
+            prompt: 'y = e^(−x²). What is dy/dx at x = 1? Give 3 decimal places and the sign.',
+            answer: -0.736, tol: 0.0005, verify: { expr: 'diff(exp(-x**2), x).subs(x, 1)', dp: 3 },
+            hint: 'The derivative of the exponent is −2x.',
+            solution: ['dy/dx = e^(−x²) · (−2x) = −2x e^(−x²)', 'At x = 1: −2/e', '≈ −0.736'] },
+
+          { id: 's10', kind: 'numeric', lesson: 'c2',
+            prompt: 'An account grows continuously: A = 1000 e^(0.05t) dollars after t years. At what rate is it growing at t = 10, in dollars per year? Give 2 decimal places.',
+            answer: 82.44, tol: 0.005, verify: { expr: 'diff(1000*exp(Rational(5,100)*t), t).subs(t, 10)', dp: 2 },
+            hint: 'dA/dt = 0.05 A.',
+            solution: ['dA/dt = 1000 × 0.05 e^(0.05t) = 50 e^(0.05t)', 'At t = 10: 50 e^0.5 = 50 × 1.6487', '≈ $82.44 per year'] },
+
+          { id: 's11', kind: 'numeric', lesson: 'c3',
+            prompt: 'x² + y² = 25. What is dy/dx at the point (3, 4)?',
+            answer: -0.75, verify: { expr: 'idiff(x**2 + y**2 - 25, y, x).subs({x: 3, y: 4})' },
+            hint: 'Differentiate both sides; y² gives 2y dy/dx.',
+            solution: ['2x + 2y dy/dx = 0', 'dy/dx = −x/y', 'At (3, 4): −3/4 = −0.75'] },
+
+          { id: 's12', kind: 'numeric', lesson: 'c3',
+            prompt: 'y³ + y − x = 7. What is dy/dx at the point (3, 2)? Give 4 decimal places.',
+            answer: 0.0769, tol: 0.00005, verify: { expr: 'idiff(y**3 + y - x - 7, y, x).subs({x: 3, y: 2})', dp: 4 },
+            hint: 'Every y-term produces a dy/dx; the x-term does not.',
+            solution: ['3y² dy/dx + dy/dx − 1 = 0', 'dy/dx = 1/(3y² + 1)', 'At y = 2: 1/13 ≈ 0.0769'] },
+
+          { id: 's13', kind: 'numeric', lesson: 'c3',
+            prompt: 'xy = 12. What is the slope of the curve at (3, 4)? Give 3 decimal places.',
+            answer: -1.333, tol: 0.0005, verify: { expr: 'idiff(x*y - 12, y, x).subs({x: 3, y: 4})', dp: 3 },
+            hint: 'xy is a product of two functions of x.',
+            solution: ['x dy/dx + y = 0', 'dy/dx = −y/x', 'At (3, 4): −4/3 ≈ −1.333'] },
+
+          { id: 's14', kind: 'numeric', lesson: 'c3',
+            prompt: 'The tangent to x² + y² = 25 at (3, 4) has equation y = mx + b. What is b?',
+            answer: 6.25, verify: { expr: '4 - idiff(x**2 + y**2 - 25, y, x).subs({x: 3, y: 4}) * 3' },
+            hint: 'Slope from implicit differentiation, then point-slope form.',
+            solution: ['Slope at (3, 4) is −3/4', 'y − 4 = −0.75(x − 3)', 'y = −0.75x + 6.25, so b = 6.25'] },
+
+          { id: 's15', kind: 'numeric', lesson: 'c4',
+            prompt: 'y = x^x. What is dy/dx at x = 1?',
+            answer: 1, verify: { expr: 'diff(x**x, x).subs(x, 1)' },
+            hint: 'Neither the power rule nor the exponential rule applies. Take logs.',
+            solution: ['ln y = x ln x, so (1/y) dy/dx = ln x + 1', 'dy/dx = x^x (ln x + 1)', 'At x = 1: 1 × (0 + 1) = 1'] },
+
+          { id: 's16', kind: 'numeric', lesson: 'c4',
+            prompt: 'y = (2x + 1)³ (x − 1)² / (x² + 1). What is dy/dx at x = 2?',
+            answer: 60, verify: { expr: 'diff((2*x+1)**3*(x-1)**2/(x**2+1), x).subs(x, 2)' },
+            hint: 'Take logs, expand, differentiate, multiply back by y.',
+            solution: ['(1/y) dy/dx = 6/(2x + 1) + 2/(x − 1) − 2x/(x² + 1)', 'At x = 2 the bracket is 1.2 + 2 − 0.8 = 2.4 and y = 25', 'dy/dx = 25 × 2.4 = 60'] },
+
+          { id: 's17', kind: 'numeric', lesson: 'c4',
+            prompt: 'For the same y = (2x + 1)³ (x − 1)² / (x² + 1), what is the relative rate of change of y at x = 2?',
+            answer: 2.4, verify: { expr: '(diff((2*x+1)**3*(x-1)**2/(x**2+1), x)/((2*x+1)**3*(x-1)**2/(x**2+1))).subs(x, 2)' },
+            hint: 'It is the derivative of ln y — the bracket, before multiplying back.',
+            solution: ['(dy/dx)/y = 6/(2x + 1) + 2/(x − 1) − 2x/(x² + 1)', 'At x = 2: 6/5 + 2 − 4/5', '= 2.4'] },
+
+          { id: 's18', kind: 'numeric', lesson: 'c4',
+            prompt: 'y = (x² + 1)^x. What is dy/dx at x = 1? Give 3 decimal places.',
+            answer: 3.386, tol: 0.0005, verify: { expr: 'diff((x**2+1)**x, x).subs(x, 1)', dp: 3 },
+            hint: 'Variable base and variable exponent: ln y = x ln(x² + 1).',
+            solution: ['(1/y) dy/dx = ln(x² + 1) + x · 2x/(x² + 1)', 'At x = 1: ln 2 + 1, and y = 2', 'dy/dx = 2(ln 2 + 1) ≈ 3.386'] },
+
+          { id: 's19', kind: 'numeric', lesson: 'c5',
+            prompt: 'f(x) = x⁴ − 3x³ + 2x. What is f″(2)?',
+            answer: 12, verify: { expr: 'diff(x**4 - 3*x**3 + 2*x, x, 2).subs(x, 2)' },
+            hint: 'Differentiate twice, then substitute.',
+            solution: ['f′(x) = 4x³ − 9x² + 2', 'f″(x) = 12x² − 18x', 'f″(2) = 48 − 36 = 12'] },
+
+          { id: 's20', kind: 'numeric', lesson: 'c5',
+            prompt: 'y = e^(2x). What is d³y/dx³ at x = 0?',
+            answer: 8, verify: { expr: 'diff(exp(2*x), x, 3).subs(x, 0)' },
+            hint: 'Each derivative multiplies by 2.',
+            solution: ['y′ = 2e^(2x), y″ = 4e^(2x), y‴ = 8e^(2x)', 'At x = 0: 8e⁰', '= 8'] },
+
+          { id: 's21', kind: 'numeric', lesson: 'c5',
+            prompt: 'y = ln x. What is y″ at x = 2?',
+            answer: -0.25, verify: { expr: 'diff(log(x), x, 2).subs(x, 2)' },
+            hint: 'y′ = 1/x = x⁻¹; differentiate once more.',
+            solution: ['y′ = x⁻¹', 'y″ = −x⁻² = −1/x²', 'At x = 2: −1/4 = −0.25'] },
+
+          { id: 's22', kind: 'numeric', lesson: 'c5',
+            prompt: 'A particle’s position is s = t³ − 6t² + 9t metres after t seconds. What is its acceleration at t = 3, in m/s²?',
+            answer: 6, verify: { expr: 'diff(t**3 - 6*t**2 + 9*t, t, 2).subs(t, 3)' },
+            hint: 'Acceleration is the second derivative of position.',
+            solution: ['Velocity: s′ = 3t² − 12t + 9', 'Acceleration: s″ = 6t − 12', 'At t = 3: 18 − 12 = 6 m/s²'] },
+
+          { id: 's23', kind: 'numeric', lesson: 'c5',
+            prompt: 'x² + y² = 25. What is d²y/dx² at the point (3, 4)? Give 4 decimal places and the sign.',
+            answer: -0.3906, tol: 0.00005, verify: { expr: 'idiff(x**2 + y**2 - 25, y, x, 2).subs({x: 3, y: 4})', dp: 4 },
+            hint: 'Differentiate y′ = −x/y again, substitute y′ back in, and use the original equation.',
+            solution: ['y″ = −(y − x y′)/y² = −(y² + x²)/y³', 'On the curve x² + y² = 25, so y″ = −25/y³', 'At (3, 4): −25/64 ≈ −0.3906'] },
+
+          { id: 's24', kind: 'mc', lesson: 'c2',
+            prompt: 'Which rule differentiates 4^x, and what is the result?',
+            options: [
+              { t: 'The exponential rule: 4^x ln 4', ok: true },
+              { t: 'The power rule: x · 4^(x−1)' },
+              { t: 'Both give the same answer, 4^x' },
+              { t: 'The chain rule alone: 4 · 4^(x−1)' }
+            ],
+            hint: 'Which of base and exponent is the variable?',
+            solution: ['The base is constant and the exponent varies', 'That is the exponential rule, and every non-e base carries ln b', 'The power rule needs a constant exponent, so it does not apply'] },
+
+          { id: 's25', kind: 'mc', lesson: 'c3',
+            prompt: 'For the circle x² + y² = 25, a student asks for "the slope at x = 3". What is the right response?',
+            options: [
+              { t: 'There are two points with x = 3, (3, 4) and (3, −4), with slopes −0.75 and +0.75 — a point is needed', ok: true },
+              { t: 'The slope is −3/4, from dy/dx = −x/y' },
+              { t: 'The slope is −3, from dy/dx = −x' },
+              { t: 'The curve has no slope because it is not a function' }
+            ],
+            hint: 'What does dy/dx = −x/y need in order to be evaluated?',
+            solution: ['An implicit derivative contains y as well as x', 'The same x sits at two points on the circle, with opposite slopes', 'So the slope is evaluated at a point, and the point must lie on the curve'] },
+
+          { id: 's26', kind: 'spot', lesson: 'c1',
+            prompt: 'A student differentiates y = ln(x² + 4). One line is wrong.',
+            steps: [
+              { t: 'The function is ln of an inside, u = x² + 4', bad: false },
+              { t: 'The derivative of ln u is 1/u times du/dx', bad: false },
+              { t: 'So dy/dx = 1/(x² + 4)', bad: true },
+              { t: 'At x = 2 the derivative should be positive, since both ln and x² + 4 are increasing there', bad: false }
+            ],
+            why: 'The second line states the rule correctly and the third line leaves out its second factor: du/dx = 2x, so dy/dx = 2x/(x² + 4), which is 0.5 at x = 2. The omitted factor is not a constant, so the error is not a matter of scale — it is a different function, and it is the single most common error with logarithmic derivatives.',
+            hint: 'What happened to du/dx?',
+            solution: ['u = x² + 4, du/dx = 2x', 'dy/dx = (1/u)(du/dx)', '= 2x/(x² + 4)'] },
+
+          { id: 's27', kind: 'spot', lesson: 'c3',
+            prompt: 'A student finds dy/dx for xy + y³ = 2x + 6. One line is wrong.',
+            steps: [
+              { t: 'y is treated as a function of x and both sides are differentiated with respect to x', bad: false },
+              { t: 'd/dx (xy) = x · dy/dx', bad: true },
+              { t: 'd/dx (y³) = 3y² · dy/dx', bad: false },
+              { t: 'd/dx (2x + 6) = 2', bad: false }
+            ],
+            why: 'xy is a product of two functions of x, so the product rule gives x · dy/dx + y — the second line has dropped the y. With it, the equation is x dy/dx + y + 3y² dy/dx = 2 and dy/dx = (2 − y)/(x + 3y²); without it the numerator is wrong at every point. Writing the product rule out in full for any term containing both variables is the reliable defence.',
+            hint: 'How many functions of x are multiplied together in xy?',
+            solution: ['d/dx (xy) = x dy/dx + y', 'Collect: (x + 3y²) dy/dx = 2 − y', 'dy/dx = (2 − y)/(x + 3y²)'] },
+
+          { id: 's28', kind: 'spot', lesson: 'c4',
+            prompt: 'A student differentiates y = x^x. One line is wrong.',
+            steps: [
+              { t: 'Neither the power rule nor the exponential rule applies, because both base and exponent vary', bad: false },
+              { t: 'Take logs: ln y = x ln x', bad: false },
+              { t: 'Differentiate: (1/y) dy/dx = ln x + 1', bad: false },
+              { t: 'So dy/dx = ln x + 1', bad: true }
+            ],
+            why: 'The third line gives the derivative of ln y, which is (dy/dx)/y. To get dy/dx it must be multiplied by y = x^x: dy/dx = x^x (ln x + 1). At x = 1 both happen to equal 1, which is why the slip can survive a single check — at x = 2 the correct value is 4(ln 2 + 1) ≈ 6.77, not 1.69.',
+            hint: 'What is on the left side after the logs are differentiated?',
+            solution: ['(1/y) dy/dx is the relative rate, not the derivative', 'Multiply by y = x^x', 'dy/dx = x^x (ln x + 1)'] },
+
+          { id: 's29', kind: 'order', lesson: 'c4',
+            prompt: 'Put the steps of logarithmic differentiation in order.',
+            steps: [
+              'Take the natural logarithm of both sides',
+              'Expand the right side with the laws of logarithms, so products become sums and powers become coefficients',
+              'Differentiate both sides implicitly, getting (1/y) dy/dx on the left',
+              'Multiply through by y and write y in terms of x'
+            ],
+            hint: 'The expansion has to happen before anything is differentiated, or there is no gain.',
+            solution: ['Logs turn the structure into a sum', 'The laws of logs are applied before differentiating', 'The left side is the relative rate of change', 'Multiplying back by y gives dy/dx'] },
+
+          { id: 's30', kind: 'order', lesson: 'c5',
+            prompt: 'Put the steps of finding d²y/dx² implicitly in order.',
+            steps: [
+              'Differentiate the relation once and solve for dy/dx in terms of x and y',
+              'Differentiate that expression again with respect to x, treating every y in it as a function of x',
+              'Substitute the expression for dy/dx back in, so no dy/dx remains',
+              'Simplify using the original equation of the curve'
+            ],
+            hint: 'The first derivative has to be in hand before it can be differentiated again.',
+            solution: ['The first derivative contains y', 'Its derivative therefore contains y′', 'y′ is replaced by its formula', 'The curve’s equation collapses the result'] }
+        ]
       }
     ]
   };
@@ -17472,7 +17971,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.44', date: '16 September 2026', year: 2026 };
+  const BUILD = { v: '2.45', date: '16 September 2026', year: 2026 };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonandy242', ['gmail', 'com'].join('.')].join('@');
   /* The one sentence that says what this is. It appears under the wordmark, and build.js uses
@@ -17485,6 +17984,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      because the person who needs it is the one who just watched the app refresh itself and wants to
      know what moved. Trim the tail when it gets past a dozen; nobody reads further back than that. */
   const WHATS_NEW = [
+    ['2.45', '<b>Chapter 12 of the calculus course, in the five sections the TRU outline sets.</b> <b>Additional differentiation topics</b>: derivatives of logarithms (ln u, other bases, and the laws of logarithms used before differentiating), derivatives of exponentials (e&#7512;, other bases, and which rule applies when the base or the exponent is the variable), implicit differentiation with tangents to curves that never solve for y, logarithmic differentiation for stacked products and for the form u&#8319; with both base and exponent varying, and higher-order derivatives, explicitly and implicitly. Five lessons, 10 worked examples, 30 practice questions and 15 named misconceptions; every derivative recomputed by a computer algebra system, the implicit ones included. Sections 12.3 and 12.6 are left out on purpose &mdash; they are not in MATH 1170 &mdash; and the course page now says which parts of the book the course does not use, instead of listing them as not yet built. Read from the course outline on Moodle, which also fixed the unit order for what follows: chapter 13 next, then 17.'],
     ['2.44', '<b>A rendering bug in the new calculus course, fixed the same morning.</b> Forty practice questions and worked-example lines in MATH 1170 were showing raw markup to the student &mdash; <code>lim&lt;sub&gt;x&rarr;3&lt;/sub&gt;</code> printed exactly like that instead of a limit, and <code>&amp;lt;</code> instead of a less-than sign &mdash; because those fields are shown as text on purpose (a question is never injected as HTML) and the new course had been written as if they were not. Every one is rewritten in plain notation, every lesson and practice page in the library (491 of them) was rendered and scanned for stray markup, and a build-time check now reads every question, step, option, solution and pitfall in every course and fails if any of them carries a tag or an entity. The check was proved against the original defect before it was kept.'],
     ['2.43', '<b>Business calculus, from the chapter the quiz is on.</b> Two new Math courses follow the set text for TRU&rsquo;s MATH 1070 and MATH 1170 &mdash; Haeussler, Paul &amp; Wood, <i>Introductory Mathematical Analysis</i>, 14th edition &mdash; section by section, in the book&rsquo;s order, with every explanation and every question written from scratch. <b>Calculus for Business and Economics</b> opens with chapter 10, limits and continuity (the form 0/0, one-sided and infinite limits, limits at infinity by dominant terms, the three-part test for continuity, and inequalities solved by sign chart), and chapter 11, differentiation (the derivative from its definition, the power rule and the rewriting it needs, marginal cost and marginal revenue, the product, quotient and chain rules, and the marginal-revenue product). <b>Mathematics for Business and Economics</b> opens with chapter 9: expected value and variance, the binomial distribution, and Markov chains with their steady-state vector. Twelve lessons, 24 worked examples, 53 practice questions and 36 named misconceptions &mdash; every limit, derivative, binomial probability and matrix product recomputed by a computer algebra system before the page ships. Each course prints the chapters it does not yet cover, and the rest follow in the same shape.'],
     ['2.42', '<b>Macroeconomics is taught here now &mdash; the whole course, not a first instalment.</b> <b>Principles of Macroeconomics</b> follows an eleven-lecture ECON 1950 series in its own order: scarcity, the production possibilities curve and comparative advantage; what GDP counts and the two ways of adding it up; unemployment, the CPI and the GDP deflator; aggregate demand against long-run aggregate supply; the classical model and the Keynesian answer to it; consumption, the multiplier and where output settles; public debt and fiscal policy; money, fractional reserve banking and the money multiplier; and the Bank of Canada&rsquo;s four levers. <b>Nine units, 27 lessons, 54 worked examples, 99 practice questions and 81 named misconceptions</b> &mdash; every one a mistake first-year macro students actually make, starting with the three that cost the most marks: dividing the unemployed by the employed, adding imports instead of subtracting them, and spending the whole recessionary gap instead of dividing it by the multiplier. Every figure is recomputed by a computer algebra system before the page ships. <b>And there is an eleventh subject profile</b>: set a subject to <b>Economics</b> and your own files are read as economics &mdash; identities and rates first, cause-and-effect sentences treated as definitions, arithmetic on. The set text is named and pointed at, as always, and never reproduced.'],
