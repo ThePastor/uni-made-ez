@@ -70,10 +70,10 @@ as a new device — a deliberate accuracy cost accepted in exchange for not foll
 
 ### 2.3 A subject name — collected with consent, stored unlinked
 
-The application reads a student's files using one of ten subject profiles (Mathematics, Physics,
-Chemistry, Biology, Computer Science, Statistics, Accounting, Law, Marketing, English). Ten
-profiles do not cover a university, so a student whose course is not among them sets the subject to
-**Other**, which uses the general engine and withholds nothing.
+The application reads a student's files using one of eleven subject profiles (Mathematics, Physics,
+Chemistry, Biology, Computer Science, Statistics, Accounting, Law, Marketing, Economics, English).
+Eleven profiles do not cover a university, so a student whose course is not among them sets the
+subject to **Other**, which uses the general engine and withholds nothing.
 
 Choosing **Other** asks one optional question: *what subject is this?* It exists to decide which
 profile is written next.

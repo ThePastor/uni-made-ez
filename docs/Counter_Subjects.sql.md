@@ -3,7 +3,7 @@
 **Run once, in the Supabase SQL editor, in the `Syllabus Desk` project
 (`gwwiaijfqovhizrmfxuk`, region `ca-central-1`).**
 
-UNI Made EZ ships ten subject profiles. A student whose course is not one of them sets the
+UNI Made EZ ships eleven subject profiles. A student whose course is not one of them sets the
 subject to **Other** and is asked one optional question: *what subject is this?* This is where
 the answers land, and it is the queue that decides which profile gets written next.
 

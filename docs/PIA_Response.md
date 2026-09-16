@@ -49,7 +49,7 @@ string, an IANA time-zone name. Server-side timestamp. **No IP address is stored
 [`Privacy_Notice.md`](Privacy_Notice.md) §2.1.
 
 **2.3 Non-identifying subject names** (added v2.34). The application reads a student's files using
-one of ten subject profiles. A student whose course is not among them sets the subject to **Other**,
+one of eleven subject profiles. A student whose course is not among them sets the subject to **Other**,
 which withholds nothing, and is asked one optional question: *what subject is this?* If they answer,
 **one field is transmitted — the subject name, 40 characters maximum** — and nothing else: no device
 id (not even the counter id in 2.2), no name, no email, no client timestamp, nothing from their

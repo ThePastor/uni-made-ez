@@ -1,7 +1,7 @@
-# Curriculum spine — ten disciplines, forty course slots
+# Curriculum spine — eleven disciplines, forty-four course slots
 
 **Status: all five decisions taken. Decisions 1–3 shipped in v2.37; 4 and 5 answered 15 September 2026.**
-Prepared 14 September 2026 against build v2.36; updated 15 September 2026 for v2.40.
+Prepared 14 September 2026 against build v2.36; updated 16 September 2026 for v2.42.
 
 This is step 1 of the tutoring expansion brief. It is a map, not a course. Its job is to let you
 reject a shape before several hundred lessons are written to it.
@@ -18,8 +18,9 @@ reject a shape before several hundred lessons are written to it.
 | Accounting | Financial Accounting | `Foundation` | — | 9 | 27 | 81 |
 | Physics | Mechanics | `Foundation` | Precalculus | 4 | 12 | 39 |
 | Chemistry | General Chemistry | `Foundation` | — | 4 | 12 | 40 |
+| Economics | ECON 1950 Principles of Macroeconomics | `Foundation` | — | 9 | 27 | 99 |
 
-Six courses across five disciplines. Four disciplines still have nothing: Biology, Computer
+Seven courses across six disciplines. Four disciplines still have nothing: Biology, Computer
 Science, Statistics and Marketing. English was taken off the list — see decision 5. At the fidelity of those four
 — roughly 600 to 1,000 lines of authored data each — forty courses is on the order of 30,000 lines.
 That is the number that makes the staging non-negotiable.
@@ -94,7 +95,7 @@ from a real ACCT 2210 outline. Still reversible in two lines if you want consist
 
 | Discipline | numeric | mc | order | spot | Practice kinds available to a course |
 |---|---|---|---|---|---|
-| math, physics, chem, bio, stats, acct | yes | yes | yes | yes | **numeric, mc, order, spot** |
+| math, physics, chem, bio, stats, acct, econ | yes | yes | yes | yes | **numeric, mc, order, spot** |
 | cs, law, mktg | **no** | yes | yes | yes | **mc, order, spot** |
 | eng | **no** | yes | **no** | yes | **mc, spot** |
 
@@ -158,7 +159,7 @@ student at any university reads the same five words:
 | Level | Means | Built at this level today |
 |---|---|---|
 | `Preparatory` | Below the first course: what you need before the sequence starts | Precalculus |
-| `Foundation` | Level 1 of 4: the methods named and practised | Financial Accounting |
+| `Foundation` | Level 1 of 4: the methods named and practised | Financial Accounting · General Chemistry · Mechanics · Principles of Macroeconomics |
 | `Intermediate` | Level 2 of 4: you choose the method, it is not handed to you | BLAW 2910 Commercial Law |
 | `Advanced` | Level 3 of 4: you justify the choice against alternatives | BLAW 3930 Environmental Law |
 | `Professional` | Level 4 of 4: the edges, the disputes, and what the method cannot settle | — |
@@ -174,7 +175,7 @@ where the standard answer stops working. The difference has to show up in the qu
 
 ---
 
-## The ten disciplines
+## The eleven disciplines
 
 Entries marked **exists** are already built. Everything else is a slot, not a promise.
 
@@ -348,6 +349,27 @@ their codes.
 taught by recognition. Marketing is also the discipline most prone to confident-sounding emptiness,
 so every framework in these courses is introduced with what it predicts and what would falsify it,
 and the units on strategy present competing schools rather than picking one.
+
+### Economics — `econ` · numeric, mc, order, spot
+
+Added in v2.42 as the **eleventh** profile. It was not in the original ten, and the omission showed
+the moment a macroeconomics lecture series arrived: the app had no profile that put identities and
+rates first, and a student typing "Economics" into the *Other* box was the queue this was meant to
+answer.
+
+| Level | Title | Prerequisite | Units |
+|---|---|---|---|
+| Foundation | **Principles of Macroeconomics** ✅ **built, v2.42** | — | Scarcity, choice and trade; Measuring output; Unemployment and inflation; Aggregate demand and aggregate supply; Classical and Keynesian analysis; The Keynesian model and the multiplier; Public debt and fiscal policy; Money and the banking system; The Bank of Canada and monetary policy |
+| Foundation | **Principles of Microeconomics** | — | Demand, supply and equilibrium; Elasticity; Consumer choice and utility; Production and cost; Perfect competition; Monopoly and imperfect competition |
+| Intermediate | **Intermediate Macroeconomics** | Principles of Macroeconomics | The IS–LM model; Aggregate demand with a price level; The Phillips curve and expectations; Open-economy macro and exchange rates; Growth theory; Consumption and investment theory |
+| Advanced | **Econometrics** | Intermediate Macroeconomics | The classical linear regression model; Inference and specification; Heteroskedasticity and autocorrelation; Instrumental variables and endogeneity; Panel data; Time series and stationarity |
+| Professional | **Monetary Theory and Policy** | Econometrics | Money demand and supply theory; Central bank objectives and rules; The transmission mechanism; Inflation targeting and its critics; The zero lower bound and unconventional policy |
+
+**Honest note.** Macroeconomics is the built course because that is the lecture series that existed.
+Microeconomics is listed at the same level rather than below it, because neither is a prerequisite
+for the other and most programmes teach them in either order. The macro course's own `gaps` list
+names what it leaves out, and the first item on it is the whole of microeconomics — which is the
+next course in this ladder and not a hole in this one.
 
 ### English — `eng` · mc, spot **(no numeric, no order — see decision 5)**
 
