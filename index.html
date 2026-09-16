@@ -18647,15 +18647,14 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     id: 'math-1070',
     code: 'MATH 1070',
     title: 'Mathematics for Business and Economics',
-    blurb: 'The first half of the book. Built so far: chapters 1 to 3 — equations and inequalities put to work, functions and their graphs, lines, parabolas and systems with equilibrium and break-even — and chapter 9 — random variables, the binomial distribution, and Markov chains.',
+    blurb: 'The first half of the book. Built so far: chapters 1 to 4 — equations and inequalities put to work, functions and their graphs, lines, parabolas and systems, exponential and logarithmic functions — and chapter 9 — random variables, the binomial distribution, and Markov chains.',
     level: 'Foundation',
     prereq: 'precalc',
-    exam: 'Follows the set text, chapters 1 to 9. Chapters 1, 2, 3 and 9 are built; chapters 4 to 8 are listed on this page as not yet covered and follow in later releases, one chapter at a time. Precalculus here covers the review algebra of chapter 0 and much of chapters 2 to 4.',
+    exam: 'Follows the set text, chapters 1 to 9. Chapters 1 to 4 and 9 are built; chapters 5 to 8 are listed on this page as not yet covered and follow in later releases, one chapter at a time. Precalculus here covers the review algebra of chapter 0 and much of chapters 2 to 4.',
     text: TEXT,
     legalNote: NOTE,
     gaps: [
       'Chapter 0 — review of algebra: covered by the Precalculus course rather than built here',
-      'Chapter 4 — exponential and logarithmic functions and their properties',
       'Chapter 5 — mathematics of finance: compound interest, present value, annuities, amortisation and perpetuities',
       'Chapter 6 — matrix algebra: matrix multiplication, row reduction, inverses and input–output analysis',
       'Chapter 7 — linear programming: graphical solution, the simplex method, duality',
@@ -20792,9 +20791,489 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             solution: ['Higher price: producers offer more, buyers take less', 'Supply above demand', 'A surplus that pushes the price back down'] }
         ]
       },
+      /* ============================ CHAPTER 4 ============================ */
+      {
+        id: 'explog', n: 4,
+        title: 'Exponential and logarithmic functions',
+        blurb: 'The function that grows by a fixed proportion — compound interest, populations, radioactive decay — and its inverse, the logarithm, which answers "how long" and "what rate"; the properties that make logarithms work, and the equations that need them.',
+        read: 'Chapter 4',
+        objectives: [
+          'Graph exponential functions, compute compound amounts at a periodic rate, and model growth and decay including with base e',
+          'Convert between logarithmic and exponential form, evaluate logarithms, and solve simple logarithmic and exponential equations',
+          'Use the properties of logarithms to expand, combine and evaluate logarithmic expressions, and change the base',
+          'Solve exponential equations by taking logarithms and logarithmic equations by converting to exponential form, checking for extraneous solutions'
+        ],
+        lessons: [
+          {
+            id: 'e1', title: 'Exponential functions', src: 'Section 4.1',
+            idea: `An <b>exponential function</b> is f(x) = b<sup>x</sup> with a constant base b &gt; 0, b ≠ 1, and the variable in the exponent. That placement is the whole point: each unit increase in x multiplies the output by b, so the function grows (or shrinks) by a fixed <i>proportion</i> rather than a fixed amount. Its domain is all real numbers and its range is (0, ∞); the graph passes through (0, 1), never touches the x-axis, which is a horizontal asymptote, and rises to the right when b &gt; 1 and falls to the right when 0 &lt; b &lt; 1. y = (1/2)<sup>x</sup> is the mirror image of y = 2<sup>x</sup> in the y-axis, since (1/2)<sup>x</sup> = 2<sup>−x</sup>. The transformations of section 2.7 apply unchanged: y = 2<sup>x</sup> − 3 is shifted down 3, asymptote y = −3.<br><br>The rules of exponents drive everything: b<sup>x</sup>b<sup>y</sup> = b<sup>x+y</sup>, b<sup>x</sup>/b<sup>y</sup> = b<sup>x−y</sup>, (b<sup>x</sup>)<sup>y</sup> = b<sup>xy</sup>, b<sup>0</sup> = 1, b<sup>−x</sup> = 1/b<sup>x</sup>.<br><br><b>Compound interest</b> is an exponential function of time. A principal P at a periodic rate r for n periods grows to the <b>compound amount</b><br><br><b>S = P(1 + r)<sup>n</sup></b><br><br>and the <b>compound interest</b> is S − P. The quoted <b>nominal rate</b> (or APR) is annual; the <b>periodic rate</b> is the nominal rate divided by the number of periods a year, and n counts periods, not years. So $2,500 at 8% compounded quarterly for 6 years has r = 0.02 and n = 24: S = 2,500(1.02)<sup>24</sup> ≈ 4,021.09. More frequent compounding earns more, but the effect is bounded — chapter 5 takes this further.<br><br><b>Population growth</b> at a fixed percentage a year is the same formula: a town of 40,000 growing 3% a year has P(t) = 40,000(1.03)<sup>t</sup>.<br><br>The base <b>e ≈ 2.71828</b> is the natural base — the limit of (1 + 1/n)<sup>n</sup> as n grows, and the base for which continuous growth is simplest. Growth and decay in nature are written with it: <b>N = N₀e<sup>kt</sup></b> grows for k &gt; 0, and <b>N = N₀e<sup>−λt</sup></b> decays, with N₀ the initial amount (t = 0) and λ the <b>decay constant</b>. For N = 80e<sup>−0.05t</sup> milligrams after t days, 80 mg are present initially and 80e<sup>−0.6</sup> ≈ 43.9 mg after 12 days. A calculator with an e<sup>x</sup> key evaluates these; the algebra of finding t, the time, needs the next section.`,
+            rules: [
+              { name: 'Exponential function', expr: 'f(x) = b^x', note: 'Base b > 0, b ≠ 1, variable in the exponent. Domain all reals, range (0, ∞), through (0, 1), asymptote y = 0.' },
+              { name: 'Rules of exponents', expr: 'b^x b^y = b^(x + y), b^x/b^y = b^(x - y), (b^x)^y = b^(x y)', note: 'And b⁰ = 1, b⁻ˣ = 1/bˣ.' },
+              { name: 'Compound amount', expr: 'S = P (1 + r)^n', note: 'Periodic rate r = nominal rate ÷ periods per year; n = number of periods. Compound interest is S − P.' },
+              { name: 'Growth by a percentage', expr: 'P(t) = P_0 (1 + r)^t', note: 'A population, a price, anything growing by a fixed proportion per period.' },
+              { name: 'Base e growth and decay', expr: 'N = N_0 e^(k t)', note: 'e ≈ 2.71828. Decay is N = N₀e^(−λt), with N₀ the initial amount and λ the decay constant.' }
+            ],
+            examples: [
+              {
+                prompt: '$2,500 is invested for 6 years at 8% compounded quarterly. Find the compound amount and the compound interest.',
+                steps: [
+                  { do: 'Periodic rate r = 0.08/4 = 0.02; periods n = 6 × 4 = 24', why: 'The nominal 8% is annual; quarterly compounding means 2% per quarter, 24 quarters.' },
+                  { do: 'S = 2,500(1.02)²⁴ ≈ 2,500 × 1.608437 ≈ 4,021.09', why: 'The compound amount formula.' },
+                  { do: 'Compound interest = 4,021.09 − 2,500 = 1,521.09', why: 'Interest is the growth over the principal.' }
+                ],
+                answer: 'Compound amount about $4,021.09; compound interest about $1,521.09', answerWords: true
+              },
+              {
+                prompt: 'A town of 40,000 grows 3% a year. Find its population in 5 years. A radioactive sample follows N = 80e^(−0.05t) milligrams after t days; find the initial amount and the amount after 12 days.',
+                steps: [
+                  { do: 'P(t) = 40,000(1.03)ᵗ; P(5) = 40,000(1.03)⁵ ≈ 40,000 × 1.159274 ≈ 46,371', why: 'Growth by a fixed percentage is compound growth with r = 0.03 and t = 5.' },
+                  { do: 'Initial amount: t = 0 gives N = 80e⁰ = 80 mg', why: 'N₀ is the coefficient; e⁰ = 1.' },
+                  { do: 'After 12 days: N = 80e^(−0.6) ≈ 80 × 0.548812 ≈ 43.9 mg', why: 'Substitute t = 12 and use the eˣ key.' }
+                ],
+                answer: 'About 46,371 people; 80 mg initially and about 43.9 mg after 12 days', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'bus-nominal-rate-used-per-period',
+                wrong: 'Computing quarterly compounding as 2,500(1.08)⁶',
+                right: 'Use the periodic rate and the number of periods: 2,500(1.02)²⁴.',
+                why: 'The quoted 8% is a nominal annual rate. With four periods a year each period earns 2%, and there are 24 of them in 6 years. Using the annual rate with the number of years gives annual compounding, a different and smaller answer.'
+              },
+              {
+                id: 'bus-exponential-confused-with-power',
+                wrong: 'Treating f(x) = 2ˣ like the power function x²',
+                right: 'In 2ˣ the variable is the exponent. It doubles with each unit increase in x; x² does not.',
+                why: 'Variable base with constant exponent is a power function; constant base with variable exponent is exponential. They have different shapes, different rules, and, in the calculus course, different derivatives. 2³ = 8 but 3² = 9; the order matters.'
+              },
+              {
+                id: 'bus-negative-exponent-negative-value',
+                wrong: 'Thinking e^(−0.6) or 2^(−3) is negative',
+                right: 'A negative exponent means a reciprocal: 2^(−3) = 1/8 and e^(−0.6) ≈ 0.549. An exponential function is never negative.',
+                why: 'The range of bˣ is (0, ∞) for every real x. Decay functions like N₀e^(−λt) shrink toward zero but stay positive, which is exactly why the x-axis is an asymptote and not a crossing.'
+              }
+            ]
+          },
+
+          {
+            id: 'e2', title: 'Logarithmic functions', src: 'Section 4.2',
+            idea: `The exponential function b<sup>x</sup> is one-to-one, so it has an inverse, and that inverse is the <b>logarithm</b>:<br><br><b>y = log<sub>b</sub> x means b<sup>y</sup> = x</b><br><br>A logarithm is an exponent — log<sub>b</sub> x is the power to which b must be raised to give x. So log<sub>2</sub> 32 = 5 because 2<sup>5</sup> = 32, log<sub>3</sub> 81 = 4, and log<sub>4</sub>(1/16) = −2 because 4<sup>−2</sup> = 1/16. Converting between the two forms is the first skill: 5<sup>−2</sup> = 1/25 is log<sub>5</sub>(1/25) = −2, and log<sub>3</sub> 81 = 4 is 3<sup>4</sup> = 81. The base of a logarithm must be positive and not 1, and <b>only positive numbers have logarithms</b>: log<sub>b</sub> x is defined for x &gt; 0 only, because b<sup>y</sup> is never zero or negative.<br><br>Two bases have their own notation. <b>log x</b> with no base written means log<sub>10</sub> x, the <b>common logarithm</b>. <b>ln x</b> means log<sub>e</sub> x, the <b>natural logarithm</b>, and it is the one used throughout the calculus course. Both are on every calculator; log 1000 = 3 and ln e<sup>3</sup> = 3.<br><br>Since the logarithm undoes the exponential, log<sub>b</sub> 1 = 0, log<sub>b</sub> b = 1, log<sub>b</sub> b<sup>r</sup> = r and b<sup>log<sub>b</sub> m</sup> = m. The graph of y = log<sub>b</sub> x for b &gt; 1 is the reflection of y = b<sup>x</sup> in the line y = x: it passes through (1, 0), rises slowly, has domain (0, ∞) and range all real numbers, and the y-axis is a vertical asymptote.<br><br>Converting form is also how the simplest equations are solved. log<sub>3</sub> x = 4 becomes 3<sup>4</sup> = x, so x = 81. e<sup>2x</sup> = 9 becomes 2x = ln 9, so x = (ln 9)/2 ≈ 1.099. log<sub>x</sub> 64 = 3 becomes x<sup>3</sup> = 64, so x = 4 (a base must be positive). Whichever form has the unknown trapped in an exponent or a logarithm, the other form frees it.<br><br>The natural logarithm answers the "how long" question for base-e decay. From N = N₀e<sup>−λt</sup>, the <b>half-life</b> T — the time for half the amount to decay — satisfies 1/2 = e<sup>−λT</sup>, so e<sup>λT</sup> = 2 and<br><br><b>T = (ln 2)/λ</b><br><br>For λ = 0.023 per day, T = 0.6931/0.023 ≈ 30.1 days.`,
+            rules: [
+              { name: 'Definition', expr: 'y = log_b x, b^y = x', note: 'A logarithm is an exponent. Base b > 0, b ≠ 1; defined only for x > 0.' },
+              { name: 'Common and natural', expr: 'log x = log_10 x, ln x = log_e x', note: 'Both on a calculator. ln is the one the calculus course uses.' },
+              { name: 'Special values', expr: 'log_b 1 = 0, log_b b = 1, log_b b^r = r', note: 'And b raised to log_b m gives back m: the two functions undo each other.' },
+              { name: 'Graph', expr: 'Reflection of y = b^x in the line y = x: through (1, 0), domain (0, infinity), the y-axis a vertical asymptote', words: true, note: 'Rises slowly for b > 1.' },
+              { name: 'Half-life', expr: 'T = ln 2/lambda', note: 'From N = N₀e^(−λT) = N₀/2. Independent of the starting amount.' }
+            ],
+            examples: [
+              {
+                prompt: 'Write log₃ 81 = 4 in exponential form and 5⁻² = 1/25 in logarithmic form. Then evaluate log₂ 32, log 1000, ln e³ and log₄(1/16).',
+                steps: [
+                  { do: 'log₃ 81 = 4 is 3⁴ = 81; 5⁻² = 1/25 is log₅(1/25) = −2', why: 'The base stays the base; the logarithm is the exponent.' },
+                  { do: 'log₂ 32 = 5, since 2⁵ = 32; log 1000 = 3, since 10³ = 1000', why: 'Ask: what power of the base gives the number?' },
+                  { do: 'ln e³ = 3; log₄(1/16) = −2, since 4⁻² = 1/16', why: 'log_b b^r = r, and a fraction less than 1 has a negative logarithm.' }
+                ],
+                answer: '3⁴ = 81; log₅(1/25) = −2; the values are 5, 3, 3 and −2', answerWords: true
+              },
+              {
+                prompt: 'Solve log₃ x = 4, e^(2x) = 9 and log_x 64 = 3. Then find the half-life of a substance with decay constant λ = 0.023 per day.',
+                steps: [
+                  { do: 'log₃ x = 4: x = 3⁴ = 81', why: 'Exponential form frees x.' },
+                  { do: 'e^(2x) = 9: 2x = ln 9, so x = (ln 9)/2 ≈ 1.099', why: 'Logarithmic form frees the exponent.' },
+                  { do: 'log_x 64 = 3: x³ = 64, so x = 4', why: 'Exponential form; the base must be positive, and 4 is the only real cube root.' },
+                  { do: 'T = (ln 2)/0.023 ≈ 0.6931/0.023 ≈ 30.1 days', why: 'The half-life formula; it does not depend on how much there was to begin with.' }
+                ],
+                answer: 'x = 81; x ≈ 1.099; x = 4; half-life about 30.1 days', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'bus-log-of-non-positive',
+                wrong: 'Trying to evaluate log(−100) or log 0',
+                right: 'Logarithms exist only for positive numbers. log(−100) and log 0 are undefined.',
+                why: 'log_b x is the exponent y with b^y = x, and a positive base to any real power is positive. There is no exponent that gives zero or a negative number, so the logarithm has no value there — and a solution of a log equation that makes an argument non-positive must be rejected.'
+              },
+              {
+                id: 'bus-log-and-exponent-roles-swapped',
+                wrong: 'Reading log₂ 32 = 5 as 5² = 32',
+                right: 'The base of the logarithm is the base of the power: 2⁵ = 32.',
+                why: 'The small subscript is the base in both forms; the value of the logarithm is the exponent. Keeping "a logarithm is an exponent" in mind prevents the swap: log₂ 32 asks for the power of 2 that gives 32.'
+              },
+              {
+                id: 'bus-half-life-depends-on-amount',
+                wrong: 'Recomputing the half-life for a larger initial sample',
+                right: 'T = (ln 2)/λ depends only on the decay constant. Any amount halves in the same time.',
+                why: 'In N₀/2 = N₀e^(−λT) the N₀ cancels. That is what makes half-life a property of the substance, not of the sample — 10 mg and 10 kg of the same element both halve in the same number of days.'
+              }
+            ]
+          },
+
+          {
+            id: 'e3', title: 'Properties of logarithms', src: 'Section 4.3',
+            idea: `Because a logarithm is an exponent, the rules of exponents become rules of logarithms. Multiplying powers adds exponents, so the log of a product is the sum of the logs; dividing subtracts; raising to a power multiplies. For positive m and n and any real r:<br><br><b>log<sub>b</sub>(mn) = log<sub>b</sub> m + log<sub>b</sub> n</b><br><b>log<sub>b</sub>(m/n) = log<sub>b</sub> m − log<sub>b</sub> n</b><br><b>log<sub>b</sub>(m<sup>r</sup>) = r log<sub>b</sub> m</b><br><br>together with log<sub>b</sub> 1 = 0, log<sub>b</sub> b = 1, log<sub>b</sub> b<sup>r</sup> = r and b<sup>log<sub>b</sub> m</sup> = m. There is <b>no rule for the log of a sum</b>: log(m + n) is not log m + log n, and log m · log n and log m / log n do not simplify either. The three rules cover products, quotients and powers, and nothing else.<br><br>Used forwards, the rules <b>expand</b> a complicated logarithm into simple ones, which is what calculus does before differentiating: ln(x²√y/z³) = 2 ln x + ½ ln y − 3 ln z. Used backwards, they <b>combine</b> a sum of logarithms into one, which is how logarithmic equations are solved: 2 log x − log(x + 1) = log(x²/(x + 1)). The power rule turns a coefficient into an exponent and back; a square root is the power ½.<br><br>They also let unknown logarithms be computed from known ones. With log 2 ≈ 0.3010 and log 3 ≈ 0.4771: log 12 = log(4 · 3) = 2 log 2 + log 3 ≈ 1.0791; log(9/4) = 2 log 3 − 2 log 2 ≈ 0.3522; log √8 = (3/2) log 2 ≈ 0.4515; and log 5 = log(10/2) = 1 − log 2 ≈ 0.6990.<br><br>Calculators have log and ln but no other bases. The <b>change-of-base formula</b> converts:<br><br><b>log<sub>b</sub> m = (log<sub>a</sub> m)/(log<sub>a</sub> b)</b><br><br>with a either 10 or e. So log<sub>5</sub> 2 = (ln 2)/(ln 5) ≈ 0.4307 — the same number by common logs. It is a quotient of two logarithms, not the logarithm of a quotient: (ln 2)/(ln 5) is not ln(2/5).`,
+            rules: [
+              { name: 'Product', expr: 'log_b (m n) = log_b m + log_b n', note: 'The log of a product is the sum of the logs.' },
+              { name: 'Quotient', expr: 'log_b (m/n) = log_b m - log_b n', note: 'The log of a quotient is the difference.' },
+              { name: 'Power', expr: 'log_b (m^r) = r log_b m', note: 'An exponent comes down as a coefficient; a square root is the power 1/2.' },
+              { name: 'No rule for sums', expr: 'log(m + n) is not log m + log n', words: true, note: 'Nor do log m × log n or log m ÷ log n simplify.' },
+              { name: 'Change of base', expr: 'log_b m = log_a m/log_a b', note: 'With a = 10 or e for a calculator. A quotient of logs, not the log of a quotient.' }
+            ],
+            examples: [
+              {
+                prompt: 'Given log 2 ≈ 0.3010 and log 3 ≈ 0.4771, find log 12, log(9/4), log √8 and log 5.',
+                steps: [
+                  { do: 'log 12 = log(2² · 3) = 2 log 2 + log 3 ≈ 0.6020 + 0.4771 = 1.0791', why: 'Factor 12, then product and power rules.' },
+                  { do: 'log(9/4) = log 3² − log 2² = 2(0.4771) − 2(0.3010) ≈ 0.3522', why: 'Quotient rule, then power rule on each part.' },
+                  { do: 'log √8 = log 2^(3/2) = (3/2)(0.3010) ≈ 0.4515', why: '8 = 2³ and a square root is the power 1/2.' },
+                  { do: 'log 5 = log(10/2) = log 10 − log 2 = 1 − 0.3010 = 0.6990', why: 'Quotient rule with log 10 = 1: 5 is not a product of 2s and 3s, but 10/2 is available.' }
+                ],
+                answer: 'log 12 ≈ 1.0791, log(9/4) ≈ 0.3522, log √8 ≈ 0.4515, log 5 ≈ 0.6990', answerWords: true
+              },
+              {
+                prompt: 'Expand ln(x²√y / z³) into simpler logarithms; combine 2 log x − log(x + 1) into one logarithm; and evaluate log₅ 2.',
+                steps: [
+                  { do: 'ln(x²√y / z³) = ln x² + ln y^(1/2) − ln z³ = 2 ln x + (1/2) ln y − 3 ln z', why: 'Product and quotient rules split it; the power rule brings each exponent down.' },
+                  { do: '2 log x − log(x + 1) = log x² − log(x + 1) = log(x²/(x + 1))', why: 'The coefficient becomes an exponent; the difference becomes a quotient. The log of x + 1 stays as it is: no rule splits a sum.' },
+                  { do: 'log₅ 2 = (ln 2)/(ln 5) ≈ 0.6931/1.6094 ≈ 0.4307', why: 'Change of base to e; check that 5^0.4307 ≈ 2.' }
+                ],
+                answer: '2 ln x + ½ ln y − 3 ln z; log(x²/(x + 1)); log₅ 2 ≈ 0.4307', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'bus-log-of-sum-split',
+                wrong: 'Writing log(x + 1) as log x + log 1, or ln(x² + y) as 2 ln x + ln y',
+                right: 'The rules split products, quotients and powers only. A sum inside a logarithm stays inside.',
+                why: 'log 2 + log 3 = log 6, not log 5. There is no identity for log(m + n), and inventing one gives expressions that are simply wrong. When the inside is a sum, the logarithm is left alone.'
+              },
+              {
+                id: 'bus-quotient-of-logs-as-log-of-quotient',
+                wrong: 'Simplifying (ln 2)/(ln 5) to ln(2/5)',
+                right: '(ln 2)/(ln 5) is log₅ 2 ≈ 0.4307 by change of base; ln(2/5) = ln 2 − ln 5 ≈ −0.916 is a different number.',
+                why: 'The quotient rule turns the log of a quotient into a difference of logs, never a quotient of logs. The change-of-base formula is a ratio of two separate logarithms, and it cannot be collapsed.'
+              },
+              {
+                id: 'bus-power-rule-on-wrong-part',
+                wrong: 'Writing (log x)² as 2 log x',
+                right: 'The power rule applies to a power inside the logarithm: log(x²) = 2 log x. (log x)² is the square of the logarithm and does not simplify.',
+                why: 'Position decides. An exponent on the argument comes down as a coefficient; an exponent on the whole logarithm stays. The two expressions differ at every x except where log x is 0 or 2.'
+              }
+            ]
+          },
+
+          {
+            id: 'e4', title: 'Logarithmic and exponential equations', src: 'Section 4.4',
+            idea: `An <b>exponential equation</b> has the unknown in an exponent; a <b>logarithmic equation</b> has it inside a logarithm. Each is solved by moving to the form where the unknown is free.<br><br><b>Exponential equations.</b> Isolate the exponential expression, take the logarithm of both sides — natural or common, either works — and bring the exponent down with the power rule. For 5 + 3 · 4<sup>x−1</sup> = 12: subtract 5 and divide by 3 to get 4<sup>x−1</sup> = 7/3; then (x − 1) ln 4 = ln(7/3), so x = 1 + (ln 7 − ln 3)/ln 4 ≈ 1.611. The isolation step comes first: taking logs of 5 + 3 · 4<sup>x−1</sup> as it stands does nothing, because there is no rule for the log of a sum. When the base is e or 10, converting directly to logarithmic form is the same thing in one step: e<sup>2x</sup> = 9 gives 2x = ln 9.<br><br>The "how long" questions are exponential equations. Money growing at 5% a year doubles when (1.05)<sup>t</sup> = 2, so t = ln 2/ln 1.05 ≈ 14.2 years; a demand equation p = 15<sup>1−0.2q</sup> is solved for q by taking logs: log p = (1 − 0.2q) log 15, so q = 5(1 − log p/log 15).<br><br><b>Logarithmic equations.</b> Gather the logarithms on one side, combine them into a single logarithm with the properties, and convert to exponential form. For log<sub>2</sub> x = 5 − log<sub>2</sub>(x + 4): log<sub>2</sub> x + log<sub>2</sub>(x + 4) = 5, so log<sub>2</sub>(x(x + 4)) = 5, so x(x + 4) = 32, x² + 4x − 32 = 0, x = 4 or x = −8. And then the step that is skipped at a cost: <b>check the domain</b>. Every logarithm in the original equation must have a positive argument, so x &gt; 0, and −8 is rejected. Combining logarithms can create solutions the original equation does not have, so every candidate is substituted back. When both sides are single logarithms of the same base, log A = log B gives A = B directly — again subject to A and B being positive.<br><br>Formulas in the sciences are rearranged the same way. From y = K(1 − e<sup>−ax</sup>), solving for the exponent gives e<sup>−ax</sup> = (K − y)/K and so ax = ln(K/(K − y)): isolate the exponential, convert, and tidy with the quotient rule.`,
+            rules: [
+              { name: 'Exponential equation', expr: 'Isolate the exponential, take logs of both sides, bring the exponent down', words: true, note: 'Isolate first: there is no log of a sum.' },
+              { name: 'Bringing the exponent down', expr: 'u ln b = ln c', note: 'From b^u = c, taking logs of both sides; so u = ln c/ln b. Any base of logarithm works.' },
+              { name: 'Doubling time', expr: 't = ln 2/ln(1 + r)', note: 'Time to double at rate r per period.' },
+              { name: 'Logarithmic equation', expr: 'Gather and combine into one logarithm, convert to exponential form, solve', words: true, note: 'log A = log B gives A = B.' },
+              { name: 'Check the domain', expr: 'Every argument of a logarithm in the original equation must be positive; reject solutions that make one non-positive', words: true, note: 'Combining logs can create extraneous solutions.' }
+            ],
+            examples: [
+              {
+                prompt: 'Solve 5 + 3 · 4^(x−1) = 12 to three decimal places, and find how long $3,000 takes to double at 5% compounded annually.',
+                steps: [
+                  { do: '3 · 4^(x−1) = 7, so 4^(x−1) = 7/3', why: 'Isolate the exponential expression before taking logarithms.' },
+                  { do: '(x − 1) ln 4 = ln(7/3), so x = 1 + (ln 7 − ln 3)/ln 4 ≈ 1 + 0.8473/1.3863 ≈ 1.611', why: 'Take ln of both sides; the power rule brings the exponent down.' },
+                  { do: '3,000(1.05)ᵗ = 6,000 gives 1.05ᵗ = 2, so t = ln 2/ln 1.05 ≈ 0.6931/0.04879 ≈ 14.2 years', why: 'The principal cancels; doubling time depends only on the rate.' }
+                ],
+                answer: 'x ≈ 1.611; about 14.2 years to double', answerWords: true
+              },
+              {
+                prompt: 'Solve log₂ x = 5 − log₂(x + 4).',
+                steps: [
+                  { do: 'log₂ x + log₂(x + 4) = 5, so log₂(x(x + 4)) = 5', why: 'Gather the logarithms on one side and combine with the product rule.' },
+                  { do: 'x(x + 4) = 2⁵ = 32, so x² + 4x − 32 = (x − 4)(x + 8) = 0', why: 'Exponential form, then a quadratic.' },
+                  { do: 'x = 4 or x = −8; the original needs x > 0 and x + 4 > 0, so x = 4 only', why: 'Check the domain: log₂(−8) does not exist. Verify: log₂ 4 = 2 and 5 − log₂ 8 = 2.' }
+                ],
+                answer: 'x = 4 (x = −8 is extraneous)', answerWords: true
+              },
+              {
+                prompt: 'The demand equation for a product is p = 15^(1 − 0.2q). Express q in terms of p, and find q when p = 5.',
+                steps: [
+                  { do: 'log p = (1 − 0.2q) log 15', why: 'Take common logs of both sides; the power rule brings the exponent down.' },
+                  { do: 'log p/log 15 = 1 − 0.2q, so q = 5(1 − log p/log 15)', why: 'Solve the linear equation for q.' },
+                  { do: 'At p = 5: log 5/log 15 ≈ 0.6990/1.1761 ≈ 0.5943, so q ≈ 5(0.4057) ≈ 2.03', why: 'Substitute. The demand curve falls: a higher price gives a smaller q.' }
+                ],
+                answer: 'q = 5(1 − log p/log 15); about 2.03 units at p = 5', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'bus-logs-taken-before-isolating',
+                wrong: 'Taking the logarithm of both sides of 5 + 3 · 4^(x−1) = 12 straight away',
+                right: 'Isolate the exponential first: 4^(x−1) = 7/3. Then take logs.',
+                why: 'ln(5 + 3 · 4^(x−1)) cannot be simplified, because there is no rule for the log of a sum. Logarithms only help once the exponential expression stands alone on one side.'
+              },
+              {
+                id: 'bus-extraneous-log-solution-kept',
+                wrong: 'Reporting x = 4 or x = −8 as the solutions of log₂ x = 5 − log₂(x + 4)',
+                right: 'Check each candidate in the original: log₂(−8) is undefined, so x = 4 is the only solution.',
+                why: 'Combining logarithms into one enlarges the domain — log₂(x(x + 4)) exists for x < −4 where log₂ x does not. The quadratic faithfully reports solutions of the combined equation, and the domain check removes the ones the original never allowed.'
+              },
+              {
+                id: 'bus-exponent-divided-instead-of-logged',
+                wrong: 'Solving 1.05ᵗ = 2 as t = 2/1.05',
+                right: 'The unknown is in the exponent: take logs, t = ln 2/ln 1.05 ≈ 14.2.',
+                why: 'Division undoes multiplication, and t is not multiplying anything. Only a logarithm undoes an exponent. The check is quick: 1.05^1.9 is nowhere near 2, while 1.05^14.2 is.'
+              }
+            ]
+          }
+        ],
+        practice: [
+          { id: 'g1', kind: 'numeric', lesson: 'e1',
+            prompt: '$2,500 is invested for 6 years at 8% compounded quarterly. What is the compound amount, in dollars? Give 2 decimal places.',
+            answer: 4021.09, tol: 0.005, verify: { expr: '2500*Rational(102,100)**24', dp: 2 },
+            hint: 'Periodic rate 2%, 24 periods.',
+            solution: ['S = 2,500(1.02)²⁴', '1.02²⁴ ≈ 1.608437', '≈ 4,021.09'] },
+
+          { id: 'g2', kind: 'numeric', lesson: 'e1',
+            prompt: 'For that investment, what is the compound interest, in dollars? Give 2 decimal places.',
+            answer: 1521.09, tol: 0.005, verify: { expr: '2500*Rational(102,100)**24 - 2500', dp: 2 },
+            hint: 'S − P.',
+            solution: ['4,021.09 − 2,500', '= 1,521.09'] },
+
+          { id: 'g3', kind: 'numeric', lesson: 'e1',
+            prompt: 'A town of 40,000 grows 3% a year. What is its population after 5 years, to the nearest person?',
+            answer: 46371, verify: { expr: 'round(40000*Rational(103,100)**5)' },
+            hint: '40,000(1.03)⁵.',
+            solution: ['1.03⁵ ≈ 1.159274', '40,000 × 1.159274', '≈ 46,371'] },
+
+          { id: 'g4', kind: 'numeric', lesson: 'e1',
+            prompt: 'N = 80e^(−0.05t) milligrams after t days. How many milligrams remain after 12 days? Give 1 decimal place.',
+            answer: 43.9, tol: 0.05, verify: { expr: '80*exp(-Rational(5,100)*12)', dp: 1 },
+            hint: '80e^(−0.6).',
+            solution: ['e^(−0.6) ≈ 0.5488', '80 × 0.5488', '≈ 43.9'] },
+
+          { id: 'g5', kind: 'numeric', lesson: 'e1',
+            prompt: '$1,000 at 6% for 10 years: how much more does daily compounding (365 periods a year) earn than annual compounding, in dollars? Give 2 decimal places.',
+            answer: 31.18, tol: 0.005, verify: { expr: '1000*(1 + Rational(6,100)/365)**3650 - 1000*Rational(106,100)**10', dp: 2 },
+            hint: 'Compare 1,000(1 + 0.06/365)^3650 with 1,000(1.06)^10.',
+            solution: ['Daily: ≈ 1,822.03', 'Annual: ≈ 1,790.85', 'Difference ≈ 31.18'] },
+
+          { id: 'g6', kind: 'mc', lesson: 'e1',
+            prompt: 'The graph of y = (1/3)ˣ',
+            options: [
+              { t: 'falls to the right, passes through (0, 1), and has the x-axis as an asymptote', ok: true },
+              { t: 'rises to the right and passes through (0, 0)', ok: false },
+              { t: 'is a straight line through (0, 1)', ok: false },
+              { t: 'crosses the x-axis at x = 3', ok: false }
+            ],
+            hint: 'Base between 0 and 1.',
+            solution: ['0 < b < 1: decreasing', 'b⁰ = 1 at x = 0', 'Never reaches 0'] },
+
+          { id: 'g7', kind: 'numeric', lesson: 'e1',
+            prompt: 'What is the value of 2^(−3) + 4^(1/2)?',
+            answer: 2.125, verify: { expr: 'Rational(1,8) + 2' },
+            hint: 'A negative exponent is a reciprocal; a half power is a square root.',
+            solution: ['2⁻³ = 1/8 = 0.125', '4^(1/2) = 2', 'Sum 2.125'] },
+
+          { id: 'g8', kind: 'numeric', lesson: 'e2',
+            prompt: 'What is log₂ 32?',
+            answer: 5, verify: { expr: 'log(32, 2)' },
+            hint: 'Which power of 2 is 32?',
+            solution: ['2⁵ = 32', 'log₂ 32 = 5'] },
+
+          { id: 'g9', kind: 'numeric', lesson: 'e2',
+            prompt: 'What is log₄(1/16)?',
+            answer: -2, verify: { expr: 'log(Rational(1,16), 4)' },
+            hint: '4 to what power is 1/16?',
+            solution: ['4⁻² = 1/16', 'log₄(1/16) = −2'] },
+
+          { id: 'g10', kind: 'numeric', lesson: 'e2',
+            prompt: 'Solve log₃ x = 4.',
+            answer: 81, verify: { expr: '3**4' },
+            hint: 'Exponential form.',
+            solution: ['x = 3⁴', '= 81'] },
+
+          { id: 'g11', kind: 'numeric', lesson: 'e2',
+            prompt: 'Solve e^(2x) = 9. Give 3 decimal places.',
+            answer: 1.099, tol: 0.0005, verify: { expr: 'log(9)/2', dp: 3 },
+            hint: 'Logarithmic form: 2x = ln 9.',
+            solution: ['2x = ln 9 ≈ 2.1972', 'x ≈ 1.0986', '≈ 1.099'] },
+
+          { id: 'g12', kind: 'numeric', lesson: 'e2',
+            prompt: 'Solve log_x 64 = 3.',
+            answer: 4, verify: { expr: 'Rational(64)**Rational(1,3)' },
+            hint: 'x³ = 64.',
+            solution: ['x³ = 64', 'x = 4', 'The base must be positive'] },
+
+          { id: 'g13', kind: 'numeric', lesson: 'e2',
+            prompt: 'A substance has decay constant λ = 0.023 per day. What is its half-life, in days? Give 1 decimal place.',
+            answer: 30.1, tol: 0.05, verify: { expr: 'log(2)/Rational(23,1000)', dp: 1 },
+            hint: 'T = ln 2/λ.',
+            solution: ['ln 2 ≈ 0.6931', '0.6931/0.023', '≈ 30.1 days'] },
+
+          { id: 'g14', kind: 'mc', lesson: 'e2',
+            prompt: 'Which of these is undefined?',
+            options: [
+              { t: 'log(−100)', ok: true },
+              { t: 'log 0.01', ok: false },
+              { t: 'ln 1', ok: false },
+              { t: 'log₂(1/2)', ok: false }
+            ],
+            hint: 'Only positive numbers have logarithms.',
+            solution: ['No power of 10 is negative', 'log 0.01 = −2, ln 1 = 0, log₂(1/2) = −1 all exist', 'log(−100) does not'] },
+
+          { id: 'g15', kind: 'numeric', lesson: 'e2',
+            prompt: 'What is ln e³ + log 1000 + log₇ 1?',
+            answer: 6, verify: { expr: 'log(exp(3)) + log(1000, 10) + log(1, 7)' },
+            hint: 'log_b b^r = r and log_b 1 = 0.',
+            solution: ['ln e³ = 3', 'log 1000 = 3', 'log₇ 1 = 0; total 6'] },
+
+          { id: 'g16', kind: 'numeric', lesson: 'e3',
+            prompt: 'What is log 12? Give 4 decimal places (log 2 ≈ 0.30103 and log 3 ≈ 0.47712).',
+            answer: 1.0792, tol: 0.0005, verify: { expr: 'log(12, 10)', dp: 4 },
+            hint: '12 = 2² × 3.',
+            solution: ['2 log 2 + log 3', '0.60206 + 0.47712', '= 1.0792'] },
+
+          { id: 'g17', kind: 'numeric', lesson: 'e3',
+            prompt: 'Using the same values, what is log(9/4)? Give 4 decimal places.',
+            answer: 0.3522, tol: 0.0005, verify: { expr: 'log(Rational(9,4), 10)', dp: 4 },
+            hint: '2 log 3 − 2 log 2.',
+            solution: ['0.9542 − 0.6020', '= 0.3522'] },
+
+          { id: 'g18', kind: 'numeric', lesson: 'e3',
+            prompt: 'What is log 5, using log 2 ≈ 0.3010? Give 4 decimal places.',
+            answer: 0.699, tol: 0.0005, verify: { expr: 'log(5, 10)', dp: 4 },
+            hint: '5 = 10/2.',
+            solution: ['log 10 − log 2', '1 − 0.3010', '= 0.6990'] },
+
+          { id: 'g19', kind: 'numeric', lesson: 'e3',
+            prompt: 'What is log₅ 2? Give 4 decimal places.',
+            answer: 0.4307, tol: 0.0005, verify: { expr: 'log(2, 5)', dp: 4 },
+            hint: 'Change of base: ln 2/ln 5.',
+            solution: ['0.6931/1.6094', '≈ 0.4307'] },
+
+          { id: 'g20', kind: 'mc', lesson: 'e3',
+            prompt: 'ln(x²√y / z³) expands to',
+            options: [
+              { t: '2 ln x + ½ ln y − 3 ln z', ok: true },
+              { t: '2 ln x + 2 ln y − 3 ln z', ok: false },
+              { t: '2 ln x + ½ ln y + 3 ln z', ok: false },
+              { t: 'ln x² + ln y − ln z³', ok: false }
+            ],
+            hint: 'Product, quotient and power rules; √y is y^(1/2).',
+            solution: ['Numerator factors add, denominator subtracts', 'Exponents come down: 2, 1/2, 3', '2 ln x + ½ ln y − 3 ln z'] },
+
+          { id: 'g21', kind: 'mc', lesson: 'e3',
+            prompt: '2 log x − log(x + 1) as a single logarithm is',
+            options: [
+              { t: 'log(x²/(x + 1))', ok: true },
+              { t: 'log(2x/(x + 1))', ok: false },
+              { t: 'log(x² − x − 1)', ok: false },
+              { t: 'log x² − log x − log 1', ok: false }
+            ],
+            hint: 'Coefficient to exponent, difference to quotient.',
+            solution: ['2 log x = log x²', 'Difference of logs is the log of the quotient', 'log(x + 1) cannot be split'] },
+
+          { id: 'g22', kind: 'spot', lesson: 'e3',
+            prompt: 'A student simplifies. Which step is wrong?',
+            steps: [
+              { t: 'log 50 = log(100/2) = log 100 − log 2', bad: false },
+              { t: '= 2 − log 2', bad: false },
+              { t: 'log(3 + 5) = log 3 + log 5', bad: true },
+              { t: 'log 8 = 3 log 2', bad: false }
+            ],
+            why: 'There is no rule for the logarithm of a sum: log 8 is 3 log 2 ≈ 0.903, while log 3 + log 5 = log 15 ≈ 1.176. The product rule splits products only.',
+            hint: 'Which rule was invented?',
+            solution: ['log(m + n) has no expansion', 'log 3 + log 5 = log 15', 'log 8 = log 2³ = 3 log 2'] },
+
+          { id: 'g23', kind: 'numeric', lesson: 'e3',
+            prompt: 'What is log₃ 7? Give 4 decimal places.',
+            answer: 1.7712, tol: 0.0005, verify: { expr: 'log(7, 3)', dp: 4 },
+            hint: 'ln 7/ln 3.',
+            solution: ['1.9459/1.0986', '≈ 1.7712'] },
+
+          { id: 'g24', kind: 'numeric', lesson: 'e4',
+            prompt: 'Solve 5 + 3 · 4^(x−1) = 12. Give 3 decimal places.',
+            answer: 1.611, tol: 0.0005, verify: { expr: '1 + log(Rational(7,3))/log(4)', dp: 3 },
+            hint: 'Isolate 4^(x−1) first.',
+            solution: ['4^(x−1) = 7/3', '(x − 1) ln 4 = ln(7/3)', 'x = 1 + 0.8473/1.3863 ≈ 1.611'] },
+
+          { id: 'g25', kind: 'numeric', lesson: 'e4',
+            prompt: 'How many years does money take to double at 5% compounded annually? Give 1 decimal place.',
+            answer: 14.2, tol: 0.05, verify: { expr: 'log(2)/log(Rational(105,100))', dp: 1 },
+            hint: '(1.05)ᵗ = 2.',
+            solution: ['t ln 1.05 = ln 2', 't = 0.6931/0.04879', '≈ 14.2 years'] },
+
+          { id: 'g26', kind: 'numeric', lesson: 'e4',
+            prompt: 'Solve log₂ x = 5 − log₂(x + 4).',
+            answer: 4, verify: { expr: 'Max(*solve(x**2 + 4*x - 32, x))' },
+            hint: 'Combine, convert, and reject the negative root.',
+            solution: ['log₂(x(x + 4)) = 5', 'x² + 4x − 32 = 0', 'x = 4 (−8 rejected)'] },
+
+          { id: 'g27', kind: 'numeric', lesson: 'e4',
+            prompt: 'Demand is p = 15^(1 − 0.2q). What is q when p = 5? Give 2 decimal places.',
+            answer: 2.03, tol: 0.005, verify: { expr: '5*(1 - log(5)/log(15))', dp: 2 },
+            hint: 'q = 5(1 − log p/log 15).',
+            solution: ['log 5/log 15 ≈ 0.5943', '5(1 − 0.5943)', '≈ 2.03'] },
+
+          { id: 'g28', kind: 'numeric', lesson: 'e4',
+            prompt: 'Solve 10^(2x) = 3. Give 4 decimal places.',
+            answer: 0.2386, tol: 0.0005, verify: { expr: 'log(3, 10)/2', dp: 4 },
+            hint: '2x = log 3.',
+            solution: ['2x = log 3 ≈ 0.4771', 'x ≈ 0.2386'] },
+
+          { id: 'g29', kind: 'numeric', lesson: 'e4',
+            prompt: 'A population P = 100,000e^(0.05t) reaches 250,000 after how many years? Give 1 decimal place.',
+            answer: 18.3, tol: 0.05, verify: { expr: 'log(Rational(5,2))/Rational(5,100)', dp: 1 },
+            hint: 'e^(0.05t) = 2.5.',
+            solution: ['0.05t = ln 2.5 ≈ 0.9163', 't ≈ 18.3'] },
+
+          { id: 'g30', kind: 'mc', lesson: 'e4',
+            prompt: 'Solving log(x − 3) + log x = 1 gives the quadratic x² − 3x − 10 = 0 with roots 5 and −2. The solution of the original equation is',
+            options: [
+              { t: 'x = 5 only; −2 makes log x undefined', ok: true },
+              { t: 'x = 5 and x = −2', ok: false },
+              { t: 'x = −2 only', ok: false },
+              { t: 'no solution', ok: false }
+            ],
+            hint: 'Check the domain of every logarithm in the original.',
+            solution: ['log x and log(x − 3) need x > 3', '−2 fails', '5 works: log 2 + log 5 = log 10 = 1'] },
+
+          { id: 'g31', kind: 'spot', lesson: 'e4',
+            prompt: 'A student solves 2 + 3ˣ = 20. Which step is wrong?',
+            steps: [
+              { t: 'Take logs of both sides: log(2 + 3ˣ) = log 20', bad: true },
+              { t: 'Isolate: 3ˣ = 18', bad: false },
+              { t: 'x log 3 = log 18', bad: false },
+              { t: 'x = log 18/log 3 ≈ 2.631', bad: false }
+            ],
+            why: 'Taking logarithms before isolating the exponential achieves nothing, since log(2 + 3ˣ) has no expansion. The correct first step is to subtract 2; the remaining steps then follow.',
+            hint: 'What comes first?',
+            solution: ['3ˣ = 18', 'x = log 18/log 3', '≈ 2.631'] },
+
+          { id: 'g32', kind: 'numeric', lesson: 'e4',
+            prompt: 'Solve 2 + 3ˣ = 20. Give 3 decimal places.',
+            answer: 2.631, tol: 0.0005, verify: { expr: 'log(18)/log(3)', dp: 3 },
+            hint: '3ˣ = 18.',
+            solution: ['x ln 3 = ln 18', 'x = 2.8904/1.0986', '≈ 2.631'] },
+
+          { id: 'g33', kind: 'order', lesson: 'e4',
+            prompt: 'Put the steps for solving a logarithmic equation in order.',
+            steps: [
+              'Gather all the logarithms on one side and combine them into a single logarithm',
+              'Convert to exponential form',
+              'Solve the resulting algebraic equation',
+              'Check each candidate in the original equation and reject any that makes an argument non-positive'
+            ],
+            hint: 'Combine, convert, solve, check.',
+            solution: ['One log', 'Exponential form', 'Algebra', 'Domain check last'] },
+
+          { id: 'g34', kind: 'numeric', lesson: 'e4',
+            prompt: 'From y = K(1 − e^(−ax)) with K = 100, y = 75 and a = 0.5, what is x? Give 3 decimal places.',
+            answer: 2.773, tol: 0.0005, verify: { expr: 'log(Rational(100, 25))/Rational(1,2)', dp: 3 },
+            hint: 'ax = ln(K/(K − y)).',
+            solution: ['e^(−0.5x) = 25/100', '0.5x = ln 4 ≈ 1.3863', 'x ≈ 2.773'] }
+        ]
+      },
       /* ============================ CHAPTER 9 ============================ */
       {
-        id: 'prob', n: 4,
+        id: 'prob', n: 5,
         title: 'Additional topics in probability',
         blurb: 'A number attached to every outcome, the average you should expect over many trials and how far a single trial strays from it, the distribution that counts successes, and matrices that predict where a system settles.',
         read: 'Chapter 9',
@@ -21387,7 +21866,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.50', date: '16 September 2026', year: 2026 };
+  const BUILD = { v: '2.51', date: '16 September 2026', year: 2026 };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonandy242', ['gmail', 'com'].join('.')].join('@');
   /* The one sentence that says what this is. It appears under the wordmark, and build.js uses
@@ -21400,6 +21879,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      because the person who needs it is the one who just watched the app refresh itself and wants to
      know what moved. Trim the tail when it gets past a dozen; nobody reads further back than that. */
   const WHATS_NEW = [
+    ['2.51', '<b>MATH 1070 chapter 4, Exponential and Logarithmic Functions, all four sections.</b> Exponential functions and their graphs, compound amounts at a periodic rate with the nominal-versus-periodic distinction spelled out, growth and decay with base e; the logarithm as an exponent, converting between forms, common and natural logs, and the half-life formula; the product, quotient and power rules with the non-rule for sums named, and the change-of-base formula; and exponential and logarithmic equations &mdash; isolate first, take logs, combine, convert, and check the domain for extraneous solutions &mdash; with doubling time and a demand equation solved for quantity. Four lessons, 9 worked examples, 34 practice questions and 12 named misconceptions, every number recomputed by a computer algebra system. Chapter 5, the mathematics of finance, follows.'],
     ['2.50', '<b>MATH 1070 chapter 3, Lines, Parabolas and Systems, all six sections.</b> Slope and the three forms of a line, parallel and perpendicular done properly; linear demand and supply equations built from two observations, straight-line depreciation and production trade-offs; the parabola with its vertex formula and the maximum-revenue argument; systems of two and three linear equations by elimination and substitution, with the parallel and coincident cases read off the algebra; nonlinear systems and extraneous roots; and the two intersections that matter most &mdash; market equilibrium, with what a per-unit tax does to it, and break-even with profit targets. Six lessons, 16 worked examples, 40 practice questions and 18 named misconceptions, every number recomputed by a computer algebra system. Chapter 4 follows.'],
     ['2.49', '<b>MATH 1070 chapter 2, Functions and Graphs, all eight sections.</b> What a function is, its natural domain and the difference quotient that becomes the derivative; constant, polynomial, rational, case-defined and absolute-value functions, factorials, and a tax-bracket function that shows why a raise never lowers take-home pay; sums, products, quotients and composition of functions, read in the right order, and decomposing a function for the chain rule to come; one-to-one functions and inverses, with the domain restriction that makes the square root undo squaring; intercepts, the vertical-line test and domain and range from a graph; the four symmetry tests; translations, reflections and stretches in the order they apply; and functions of two variables with level curves. Eight lessons, 19 worked examples, 41 practice questions and 24 named misconceptions, every number recomputed by a computer algebra system. Chapter 3 follows.'],
     ['2.48', '<b>MATH 1070 begins at the beginning: chapter 1, Applications and More Algebra, all six sections.</b> Word problems turned into one equation and answered in the question&rsquo;s own words (mixtures, profit targets, tag prices, split investments, a compound-interest rate with its impossible root rejected); linear inequalities with the one rule that costs the most marks and interval notation done properly; profit, rent-versus-buy and current-ratio conditions read as thresholds; absolute value as a distance, with the between/outside split for inequalities and tolerances written in one line; summation notation, its properties and the three formulas; and arithmetic and geometric sequences with their sums, the infinite geometric sum, repeating decimals and a perpetuity &mdash; the foundation of the finance chapter to come. Six lessons, 17 worked examples, 40 practice questions and 18 named misconceptions, every number recomputed by a computer algebra system. Chapter 2 follows.'],
