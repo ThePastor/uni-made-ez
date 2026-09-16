@@ -1,7 +1,7 @@
 # Curriculum spine — eleven disciplines, forty-four course slots
 
 **Status: all five decisions taken. Decisions 1–3 shipped in v2.37; 4 and 5 answered 15 September 2026.**
-Prepared 14 September 2026 against build v2.36; updated 16 September 2026 for v2.42.
+Prepared 14 September 2026 against build v2.36; updated 16 September 2026 for v2.43.
 
 This is step 1 of the tutoring expansion brief. It is a map, not a course. Its job is to let you
 reject a shape before several hundred lessons are written to it.
@@ -13,6 +13,8 @@ reject a shape before several hundred lessons are written to it.
 | Discipline | Course | Level | Prereq | Units | Lessons | Practice |
 |---|---|---|---|---|---|---|
 | Mathematics | Precalculus | `Preparatory` | — | 6 | 25 | 77 |
+| Mathematics | MATH 1170 Calculus for Business and Economics | `Foundation` | Precalculus | 2 | 9 | 36 |
+| Mathematics | MATH 1070 Mathematics for Business and Economics | `Foundation` | Precalculus | 1 | 3 | 17 |
 | Law | BLAW 2910 Commercial Law | `Intermediate` | — | 6 | 15 | 32 |
 | Law | BLAW 3930 Environmental Law | `Advanced` | BLAW 2910 | 5 | 11 | 24 |
 | Accounting | Financial Accounting | `Foundation` | — | 9 | 27 | 81 |
@@ -20,7 +22,7 @@ reject a shape before several hundred lessons are written to it.
 | Chemistry | General Chemistry | `Foundation` | — | 4 | 12 | 40 |
 | Economics | ECON 1950 Principles of Macroeconomics | `Foundation` | — | 9 | 27 | 99 |
 
-Seven courses across six disciplines. Four disciplines still have nothing: Biology, Computer
+Nine courses across six disciplines. Four disciplines still have nothing: Biology, Computer
 Science, Statistics and Marketing. English was taken off the list — see decision 5. At the fidelity of those four
 — roughly 600 to 1,000 lines of authored data each — forty courses is on the order of 30,000 lines.
 That is the number that makes the staging non-negotiable.
@@ -184,7 +186,8 @@ Entries marked **exists** are already built. Everything else is a slot, not a pr
 | Level | Title | Prerequisite | Units |
 |---|---|---|---|
 | Preparatory | **Precalculus** *(exists)* | — | Functions; Linear functions; Polynomial and rational functions |
-| Foundation | **Calculus for Business and Economics** ← *exemplar* | Precalculus | Limits and continuity; The derivative and its rules; Marginal analysis; Optimisation; Exponentials, logarithms and growth; The integral as accumulation |
+| Foundation | **Calculus for Business and Economics** ✅ **built, v2.43 (chapters 10–11 of Haeussler 14e; 12–17 listed as gaps)** | Precalculus | Limits and continuity; Differentiation; *to come:* Additional differentiation topics; Curve sketching; Integration; Methods and applications of integration; Continuous random variables; Multivariable calculus |
+| Foundation | **Mathematics for Business and Economics** ✅ **built, v2.43 (chapter 9 of Haeussler 14e; 0–8 listed as gaps)** | Precalculus | Additional topics in probability; *to come:* the algebra, finance, matrix, linear programming and probability chapters that precede it |
 | Intermediate | **Linear Algebra** | Calculus for Business and Economics | Systems and row reduction; Matrix algebra and inverses; Vector spaces, basis and rank; Determinants; Eigenvalues and diagonalisation |
 | Advanced | **Real Analysis** | Linear Algebra | The real numbers and completeness; Sequences and limits done properly; Continuity and uniform continuity; Differentiation theorems; The Riemann integral |
 | Professional | **Probability and Measure** | Real Analysis | Measure and σ-algebras; Integration and convergence theorems; Random variables and independence; Laws of large numbers; The central limit theorem |

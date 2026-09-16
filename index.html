@@ -15985,6 +15985,1218 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 
 </script>
 <script>
+/* UNI Made EZ — Mathematics for Business and Economics (MATH 1070) and Calculus for Business and
+   Economics (MATH 1170)
+   Copyright © 2026 JohnsonXCorp. All rights reserved.
+   Proprietary. Not open source: see LICENSE.
+
+   ---------------------------------------------------------------------------------------------
+   WHAT THIS IS. Two courses that follow the STRUCTURE of the set text for TRU's MATH 1070 and
+   MATH 1170 — Haeussler, Paul & Wood, "Introductory Mathematical Analysis for Business,
+   Economics, and the Life and Social Sciences", 14th edition (Pearson). Chapters 1–9 belong to
+   MATH 1070 and chapters 10–17 to MATH 1170; that split is a fact about the courses, and the
+   chapter and section numbering here is the book's, so `src` on a lesson is the section a student
+   would open alongside it.
+
+   THE BOOK IS NAMED AND POINTED AT, NEVER REPRODUCED. The topic order and the section headings
+   are the book's. Every explanation, every worked example, every practice question and every
+   figure in a question below is written here from scratch, with different functions and
+   different numbers from anything in the text. That is the same line every course in this app
+   holds: the mathematics is nobody's property, the publisher's wording is.
+
+   WHAT IS BUILT SO FAR. Chapter 9 (the end of MATH 1070) and chapters 10 and 11 (the start of
+   MATH 1170) — the material for the first quiz. Each course lists the chapters it does not yet
+   teach in `gaps`, printed on its page under "Not covered here", and the rest is written to the
+   same shape in later releases.
+
+   THE CHECK ON THE ARITHMETIC. Every numeric question carries `verify.expr`, a restatement that
+   SymPy evaluates on its own — `limit(...)`, `diff(...)`, `binomial(...)`, a `Matrix` product —
+   and test/math.js fails the build if the stated answer disagrees. Where an answer is reported
+   rounded, `verify.dp` makes the check round the exact value rather than trust a rounded one.
+   --------------------------------------------------------------------------------------------- */
+(function (root) {
+  'use strict';
+  if (!root.Courses || !root.Courses.register) return;
+
+  const MATH = { id: 'math', name: 'Math', blurb: 'Courses written out in full, from the notation up.' };
+
+  const TEXT = 'Haeussler, Paul & Wood, Introductory Mathematical Analysis for Business, Economics, and the Life and Social Sciences, 14th ed (Pearson)';
+
+  const NOTE = 'Study material for a university course. It follows the chapter and section order of the set ' +
+    'text so that a lesson here matches the section you would open alongside it, but every explanation, ' +
+    'example and question is written from scratch — nothing is copied from the book, and the book is not ' +
+    'replaced by this. Answers are recomputed by a computer algebra system before the page ships; where a ' +
+    'figure is rounded, the question says to how many places.';
+
+  /* =============================== MATH 1170 =============================== */
+  const CALC = {
+    subject: MATH,
+    id: 'math-1170',
+    code: 'MATH 1170',
+    title: 'Calculus for Business and Economics',
+    blurb: 'The calculus half of the book: limits and what they say about a function near a point, continuity, the derivative from first principles, the rules that make it fast, and what a derivative means when the function is a cost, a revenue or a demand.',
+    level: 'Foundation',
+    prereq: 'precalc',
+    exam: 'Follows the set text from chapter 10. At TRU the chapters before it are MATH 1070; Precalculus here covers the algebra assumed. Built so far: chapter 10 (limits and continuity) and chapter 11 (differentiation) — the first quiz.',
+    text: TEXT,
+    legalNote: NOTE,
+    gaps: [
+      'Chapter 12 — derivatives of logarithmic and exponential functions, elasticity of demand, implicit and logarithmic differentiation, Newton’s method, higher-order derivatives',
+      'Chapter 13 — curve sketching: relative extrema, the first- and second-derivative tests, concavity, asymptotes, and applied maxima and minima',
+      'Chapter 14 — integration: the indefinite integral, integration with initial conditions, substitution, the definite integral and the Fundamental Theorem',
+      'Chapter 15 — methods and applications of integration: integration by parts, tables, average value, consumers’ and producers’ surplus',
+      'Chapter 16 — continuous random variables and the normal distribution',
+      'Chapter 17 — multivariable calculus: partial derivatives, applications, and maxima and minima of functions of two variables'
+    ],
+    units: [
+
+      /* ============================ CHAPTER 10 ============================ */
+      {
+        id: 'limits', n: 1,
+        title: 'Limits and continuity',
+        blurb: 'What a function is doing as x closes in on a point, whether it gets there, and how the same idea solves inequalities that algebra alone cannot.',
+        read: 'Chapter 10',
+        objectives: [
+          'Find a limit by evaluation when a rule allows it, and by factoring or rationalising when the form is 0/0',
+          'Evaluate one-sided limits, recognise an infinite limit, and find limits at infinity by dominant terms',
+          'Test continuity at a point from the three-part definition and locate discontinuities of rational and case-defined functions',
+          'Solve a nonlinear inequality with a sign chart built from zeros and discontinuities'
+        ],
+        lessons: [
+          {
+            id: 'a1', title: 'Limits and their properties', src: 'Section 10.1',
+            idea: `A limit describes where a function is <b>heading</b>, not where it is. <b>lim<sub>x→a</sub> f(x) = L</b> means that f(x) can be made as close to L as you like, and kept that close, by taking x close enough to a — but <b>not equal to a</b>. What happens at x = a itself is deliberately ignored. The function may be undefined there, or defined with a value different from L, and the limit is unaffected either way.<br><br>That is the whole subtlety, and it is worth an example. Take g(x) = (x² − 4)/(x − 2). At x = 2 it is 0/0 and does not exist. But for every other x, g(x) = (x − 2)(x + 2)/(x − 2) = x + 2, so as x closes in on 2 from either side, g(x) closes in on 4. The limit is 4; the value does not exist; both statements are true at once.<br><br>Most limits are found not from a table but from <b>properties</b>, which say that limits respect arithmetic: the limit of a sum, difference, product or quotient is the sum, difference, product or quotient of the limits — the quotient only when the denominator's limit is not zero — and the limit of an nth root is the nth root of the limit. The single most useful consequence:<br><br><b>if f is a polynomial, then lim<sub>x→a</sub> f(x) = f(a)</b><br><br>So a polynomial limit is found by substitution, and so is a rational function's whenever the denominator does not go to zero. <b>That is a rule, not a habit.</b> Substituting into a function that is not covered by a rule can give a value that is not the limit — a graph with a hole and a dot above it is the standard picture — so "I substituted" is only a valid method when you can say which property allows it.<br><br>When substitution gives the <b>form 0/0</b>, nothing is decided yet: the form is meaningless, not zero and not undefined. The move is algebra. Because the limit only cares about x ≠ a, you may <b>factor and cancel</b>, or rationalise a square root, to reach a simpler function that agrees with the original everywhere except at a — and then take that function's limit by evaluation. The justification is a fundamental fact: <b>if f(x) = g(x) for all x ≠ a, then their limits at a are equal.</b><br><br>The limit that the rest of the course is built on has exactly that form:<br><br><b>lim<sub>h→0</sub> (f(x + h) − f(x)) / h</b><br><br>This is the <b>difference quotient</b>, and substituting h = 0 always gives 0/0. Expanding the numerator, cancelling the h, and then letting h → 0 is the routine of chapter 11 in miniature, so it is worth being fluent before the derivative is named. One special limit is also recorded here: <b>lim<sub>x→0</sub> (1 + x)<sup>1/x</sup> = e</b>, which can be taken as the definition of the number e ≈ 2.71828.`,
+            rules: [
+              { name: 'What a limit says', expr: 'lim f(x) = L', note: 'As x approaches a, f(x) approaches L. The value f(a), if it exists at all, is ignored.' },
+              { name: 'Polynomials', expr: 'lim f(x) = f(a)', note: 'Substitution is allowed for a polynomial, and for a rational function whose denominator does not go to 0.' },
+              { name: 'The form 0/0', expr: 'Substitution gives 0/0: factor and cancel, or rationalise, then evaluate', words: true, note: '0/0 is not an answer. It means the algebra is not finished.' },
+              { name: 'Why cancelling is legal', expr: 'If f(x) = g(x) for every x other than a, the two limits at a agree', words: true, note: 'The limit only looks at x near a, never at a itself.' },
+              { name: 'The difference quotient', expr: 'lim (f(x + h) - f(x)) / h', note: 'As h approaches 0. Always 0/0 on substitution; always expand, cancel h, then evaluate.' }
+            ],
+            examples: [
+              {
+                prompt: 'Find lim<sub>x→3</sub> (x² − 9)/(x − 3).',
+                steps: [
+                  { do: 'Substituting x = 3 gives (9 − 9)/(3 − 3) = 0/0', why: 'This is not the answer and not a failure. It is the signal that the quotient must be rewritten for x ≠ 3.' },
+                  { do: 'Factor the numerator: x² − 9 = (x − 3)(x + 3)', why: 'A difference of squares. Whenever substitution gives 0/0 in a rational function, the denominator’s zero is also a factor of the numerator.' },
+                  { do: 'For x ≠ 3, (x − 3)(x + 3)/(x − 3) = x + 3', why: 'Cancelling is legal because the limit never uses x = 3, which is the only place the cancelled factor is zero.' },
+                  { do: 'lim<sub>x→3</sub> (x + 3) = 3 + 3 = 6', why: 'x + 3 is a polynomial, so its limit is found by substitution — the rule that could not be used one step earlier now applies.' }
+                ],
+                answer: '6', answerWords: true
+              },
+              {
+                prompt: 'If f(x) = 2x² − 5x, find lim<sub>h→0</sub> (f(x + h) − f(x)) / h.',
+                steps: [
+                  { do: 'f(x + h) = 2(x + h)² − 5(x + h) = 2x² + 4xh + 2h² − 5x − 5h', why: 'Treat x as a constant throughout: h is the variable that is changing. Expanding (x + h)² fully is where most slips happen.' },
+                  { do: 'f(x + h) − f(x) = 4xh + 2h² − 5h', why: 'The 2x² and −5x cancel against f(x). Every surviving term contains an h — as it must, since substituting h = 0 gave 0/0.' },
+                  { do: 'Divide by h: (4xh + 2h² − 5h)/h = 4x + 2h − 5 for h ≠ 0', why: 'Factor h out of the numerator and cancel. This is the step that removes the 0/0.' },
+                  { do: 'lim<sub>h→0</sub> (4x + 2h − 5) = 4x − 5', why: 'Now a polynomial in h, so let h → 0 by substitution. The result, 4x − 5, will be called the derivative of f in the next chapter.' }
+                ],
+                answer: '4x − 5', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'calc-zero-over-zero-is-zero',
+                wrong: 'Reporting 0, or "undefined", when substitution gives 0/0',
+                right: '0/0 is a form, not a value. Factor, cancel or rationalise, then evaluate.',
+                why: 'Every 0/0 limit in this chapter has a finite answer that is not zero — the worked example gives 6 — so either reflex loses the question outright. The form is telling you the algebra is unfinished, and the standard moves are factoring, cancelling the common factor, and substituting into what is left.'
+              },
+              {
+                id: 'calc-limit-equals-value',
+                wrong: 'Assuming the limit at a is f(a) whenever f(a) exists',
+                right: 'The limit ignores x = a. It equals f(a) only when a rule says so — a polynomial, or a rational function with a nonzero denominator.',
+                why: 'A case-defined function can be defined at a with one value and approach a different one from both sides; then f(a) exists and the limit exists and they differ. Substitution is a method with a licence, and the licence is the polynomial rule. Without it, a substituted value is a guess.'
+              },
+              {
+                id: 'calc-cancel-then-forget-condition',
+                wrong: 'Writing (x² − 9)/(x − 3) = x + 3 with no condition, as if the two functions were identical',
+                right: 'They agree for x ≠ 3, which is exactly enough for the limit and no more.',
+                why: 'The original function has no value at 3 and the simplified one does; they are different functions with the same limit. Writing the condition keeps that straight, and it is also what justifies the cancellation — the limit never looks at the one point where the factor you cancelled is zero.'
+              }
+            ]
+          },
+
+          {
+            id: 'a2', title: 'One-sided limits, infinite limits and limits at infinity', src: 'Section 10.2',
+            idea: `A limit has to be the same whichever way x arrives. <b>One-sided limits</b> make the two directions separate objects: <b>lim<sub>x→a⁺</sub> f(x)</b> is the limit as x approaches a from the right (x &gt; a) and <b>lim<sub>x→a⁻</sub> f(x)</b> from the left (x &lt; a). The two-sided limit exists <b>if and only if both one-sided limits exist and are equal</b>, and then it equals their common value. A function that approaches 1 from the right and −1 from the left has both one-sided limits and no limit.<br><br>Some functions are only defined on one side: √(x − 3) exists only for x ≥ 3, so lim<sub>x→3⁺</sub> √(x − 3) = 0 makes sense and the left-hand limit is not a question at all.<br><br><b>Infinite limits.</b> As x → 0, 1/x² grows without bound. The limit <b>does not exist</b> — there is no number it approaches — but we write lim<sub>x→0</sub> 1/x² = ∞ to say <i>how</i> it fails. The sign matters and can differ by side: 1/x goes to +∞ from the right and −∞ from the left. The general pattern is the <b>form k/0 with k ≠ 0</b>: numerator heading to a nonzero number, denominator to zero. That is never 0/0, never a candidate for cancelling, and always an infinite limit on each side; the only work is finding the sign on each side.<br><br><b>Limits at infinity</b> ask what f does as x itself grows without bound, written x → ∞ or x → −∞. The basic fact is <b>lim<sub>x→∞</sub> 1/x<sup>p</sup> = 0</b> for any p &gt; 0, and the same as x → −∞. For a <b>rational function</b> there is a shortcut worth memorising: as x → ±∞, only the <b>dominant term</b> — the highest power — in the numerator and in the denominator matters:<br><br><b>lim (a<sub>n</sub>x<sup>n</sup> + …)/(b<sub>m</sub>x<sup>m</sup> + …) = lim (a<sub>n</sub>x<sup>n</sup>)/(b<sub>m</sub>x<sup>m</sup>)</b><br><br>Three cases fall out. Degrees equal: the limit is a<sub>n</sub>/b<sub>m</sub>, the ratio of leading coefficients. Numerator degree lower: the limit is 0. Numerator degree higher: no limit — the function goes to ±∞. A polynomial is a rational function with denominator 1, so its limit at infinity is that of its leading term alone.<br><br>Two cautions. The dominant-term shortcut is for <b>rational functions only</b>; applied to something like √(x² + x) − x it gives the wrong answer. And a <b>case-defined function</b> needs the one-sided limits computed from the correct piece on each side of every break point, then compared — which is where these three ideas meet.`,
+            rules: [
+              { name: 'One-sided limits', expr: 'The limit exists if and only if the left-hand and right-hand limits exist and are equal', words: true, note: 'Then the limit is their common value.' },
+              { name: 'The form k/0', expr: 'Numerator to a nonzero k, denominator to 0: an infinite limit on each side', words: true, note: 'Never cancel. Find the sign from each side separately.' },
+              { name: 'Reciprocal powers', expr: 'lim 1/x^p = 0', note: 'As x approaches ∞ or −∞, for any p > 0.' },
+              { name: 'Rational functions at infinity', expr: 'lim p(x)/q(x) = lim (a_n x^n)/(b_m x^m)', note: 'Keep only the highest-power term top and bottom. Equal degrees: a_n/b_m. Lower on top: 0. Higher on top: no limit.' }
+            ],
+            examples: [
+              {
+                prompt: 'Find lim<sub>x→∞</sub> (6x² − x)/(2x² + 3), and lim<sub>x→∞</sub> (5x + 1)/(x³ − 4).',
+                steps: [
+                  { do: 'Both are rational functions, so keep only the dominant term top and bottom', why: 'As x grows, the highest power swamps every lower one. The shortcut is only valid for a quotient of polynomials.' },
+                  { do: 'First: (6x²)/(2x²) = 3, so the limit is 3', why: 'Equal degrees. The limit is the ratio of leading coefficients, and the −x and +3 have no effect at all.' },
+                  { do: 'Second: (5x)/(x³) = 5/x², and lim<sub>x→∞</sub> 5/x² = 0', why: 'The numerator’s degree is lower, so the dominant terms reduce to a reciprocal power, which goes to 0.' },
+                  { do: 'Limits: 3 and 0', why: 'Had the degrees been reversed in the second — x³ on top — there would be no limit; the function would grow without bound.' }
+                ],
+                answer: '3 and 0', answerWords: true
+              },
+              {
+                prompt: 'f(x) = x + 2 for x &lt; 1 and f(x) = 4x for x ≥ 1. Find lim<sub>x→1⁻</sub> f(x), lim<sub>x→1⁺</sub> f(x), and decide whether lim<sub>x→1</sub> f(x) exists.',
+                steps: [
+                  { do: 'From the left, x &lt; 1, so the first piece applies: lim<sub>x→1⁻</sub> (x + 2) = 3', why: 'Which formula to use is decided by which side of 1 the x-values are on, not by the value at 1.' },
+                  { do: 'From the right, x ≥ 1, so the second piece applies: lim<sub>x→1⁺</sub> 4x = 4', why: 'Each piece is a polynomial, so each one-sided limit is found by substitution into the right piece.' },
+                  { do: '3 ≠ 4', why: 'The two-sided limit requires the one-sided limits to agree; here they do not.' },
+                  { do: 'lim<sub>x→1</sub> f(x) does not exist', why: 'Note that f(1) = 4 exists and is irrelevant. The graph has a jump at x = 1, and a jump is exactly a point where the two sides disagree.' }
+                ],
+                answer: '3 from the left, 4 from the right, so the limit does not exist', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'calc-k-over-zero-cancel',
+                wrong: 'Trying to factor and cancel when substitution gives a nonzero number over 0',
+                right: 'k/0 with k ≠ 0 is an infinite limit. There is nothing to cancel; find the sign on each side.',
+                why: 'The cancelling routine belongs to 0/0 only — it works there because the denominator’s zero is also a zero of the numerator. When the numerator is not zero, no common factor exists, the function is blowing up, and the only remaining question is whether it goes to +∞ or −∞ from each side.'
+              },
+              {
+                id: 'calc-dominant-terms-everywhere',
+                wrong: 'Using dominant terms on a function that is not a quotient of polynomials',
+                right: 'The shortcut is proved for rational functions. Anything with a root or a difference of large terms needs its own argument.',
+                why: 'Applied to √(x² + x) − x it suggests x − x = 0, and the true limit is 1/2. The shortcut is a theorem about rational functions with a hypothesis, and a hypothesis is not decoration.'
+              },
+              {
+                id: 'calc-wrong-piece-one-sided',
+                wrong: 'Substituting into the piece that includes the boundary value for both one-sided limits',
+                right: 'The left-hand limit uses the piece defined for x less than a; the right-hand limit uses the piece for x greater than a.',
+                why: 'The piece that contains x = a itself (the one with ≥ or ≤) tells you f(a), which the limit does not use. It is the inequality on each piece — not the equals sign — that decides which formula each side takes, and getting that backwards produces a limit that exists when it does not, or the reverse.'
+              }
+            ]
+          },
+
+          {
+            id: 'a3', title: 'Continuity', src: 'Section 10.3',
+            idea: `A function is <b>continuous at a</b> when its graph has no break there — when the value it has and the value it is heading for are the same thing. The definition has <b>three conditions</b>, and all three must hold:<br><br><b>1. f(a) exists</b> — a is in the domain.<br><b>2. lim<sub>x→a</sub> f(x) exists</b> — both one-sided limits exist and agree.<br><b>3. f(a) = lim<sub>x→a</sub> f(x)</b> — the value is the limit.<br><br>If any one fails, f is <b>discontinuous at a</b>, and a is a <b>point of discontinuity</b>. The three conditions are also the three ways to fail: the function is undefined at a (a hole, or a vertical asymptote); the limit does not exist (a jump, or an infinite limit on some side); or the limit exists but the function has been assigned some other value at a (a hole with a dot floating above it).<br><br>Two large families are continuous wherever they are defined, and knowing this saves most of the work: <b>every polynomial is continuous at every number</b>, and <b>every rational function is continuous at every number in its domain</b> — that is, everywhere except where the denominator is zero. So for a rational function, finding the discontinuities means solving <b>denominator = 0</b> and nothing else. A discontinuity where a one-sided limit is ±∞ is called an <b>infinite discontinuity</b>.<br><br>The interesting cases are <b>case-defined functions</b>, because each piece is usually a polynomial and therefore continuous on its own interval. The only places to check are the <b>boundary points</b> between pieces, and the check is the three conditions with the one-sided limits from the previous lesson: does each side approach the same number, and is that number the value the function was given there?<br><br>A function is <b>continuous on an interval</b> if it is continuous at every point of it. This is the property that lets the next lesson turn a hard inequality into a few substitutions, and it is why the chapter ends there rather than here.`,
+            rules: [
+              { name: 'Continuity at a point', expr: 'f(a) exists, lim f(x) exists, f(a) = lim f(x)', note: 'All three, in that order. Failing any one is a discontinuity.' },
+              { name: 'Polynomials', expr: 'Continuous at every real number', words: true, note: 'Nothing to check.' },
+              { name: 'Rational functions', expr: 'Continuous everywhere except where the denominator is 0', words: true, note: 'Solve denominator = 0 to find every discontinuity.' },
+              { name: 'Case-defined functions', expr: 'Check the three conditions at each boundary between pieces', words: true, note: 'Inside a piece, a polynomial is continuous; only the seams can fail.' }
+            ],
+            examples: [
+              {
+                prompt: 'Find every point of discontinuity of f(x) = (x + 3)/(x² − 5x + 6).',
+                steps: [
+                  { do: 'f is a rational function, so it is continuous wherever it is defined', why: 'The theorem for rational functions means the only candidates are zeros of the denominator. The numerator plays no part.' },
+                  { do: 'Solve x² − 5x + 6 = 0: (x − 2)(x − 3) = 0', why: 'Factoring finds where the denominator vanishes and the function is undefined.' },
+                  { do: 'x = 2 and x = 3', why: 'At each, condition 1 fails — f(2) and f(3) do not exist — so nothing further needs checking.' },
+                  { do: 'Both are infinite discontinuities', why: 'Near each, the numerator approaches a nonzero number (5 or 6) while the denominator approaches 0 — the form k/0 — so a one-sided limit is ±∞ on each side.' }
+                ],
+                answer: 'Discontinuous at x = 2 and x = 3, both infinite discontinuities', answerWords: true
+              },
+              {
+                prompt: 'f(x) = x² + 1 for x &lt; 2 and f(x) = 3x − 1 for x ≥ 2. Is f continuous at 2?',
+                steps: [
+                  { do: 'Condition 1: f(2) = 3(2) − 1 = 5, so f is defined at 2', why: 'x = 2 falls in the second piece because of the ≥. The value comes from that piece.' },
+                  { do: 'Condition 2: from the left, lim<sub>x→2⁻</sub> (x² + 1) = 5; from the right, lim<sub>x→2⁺</sub> (3x − 1) = 5', why: 'Each side uses its own piece. Both are polynomials, so both limits are substitutions.' },
+                  { do: 'The one-sided limits agree, so lim<sub>x→2</sub> f(x) = 5', why: 'Condition 2 holds. Had the sides differed, f would have a jump and the check would end here.' },
+                  { do: 'Condition 3: f(2) = 5 = lim<sub>x→2</sub> f(x), so f is continuous at 2', why: 'All three conditions hold. Away from 2 each piece is a polynomial, so f is in fact continuous everywhere.' }
+                ],
+                answer: 'Yes — f(2) = 5 and the limit is 5', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'calc-continuity-only-defined',
+                wrong: 'Concluding a function is continuous at a because f(a) exists',
+                right: 'That is one condition of three. The limit must also exist and equal f(a).',
+                why: 'A jump function is defined at its jump and is not continuous there; a function with a dot above a hole is defined at the hole and not continuous there. The definition has three parts because there are three distinct ways for a graph to break, and checking one of them proves nothing about the other two.'
+              },
+              {
+                id: 'calc-numerator-zero-discontinuity',
+                wrong: 'Listing the zeros of the numerator as discontinuities of a rational function',
+                right: 'Only zeros of the denominator can be discontinuities. Numerator zeros are just x-intercepts.',
+                why: 'A rational function is continuous everywhere in its domain, and its domain excludes only the denominator’s zeros. Where the numerator is zero and the denominator is not, the function is simply zero — continuously.'
+              },
+              {
+                id: 'calc-seams-not-checked',
+                wrong: 'Declaring a case-defined function continuous because each piece is a polynomial',
+                right: 'Each piece is continuous on its own interval. The boundary points between pieces still need the three-part check.',
+                why: 'Continuity is about the graph having no break, and the only place two polynomial pieces can fail to meet is where one hands over to the other. Checking the seams is the entire question with a case-defined function; the pieces themselves are never the problem.'
+              }
+            ]
+          },
+
+          {
+            id: 'a4', title: 'Continuity applied to inequalities', src: 'Section 10.4',
+            idea: `Linear inequalities are solved by algebra. A nonlinear one — <b>x² − 3x − 10 &gt; 0</b>, or <b>(x + 1)/(x − 4) ≤ 0</b> — usually cannot be, and the tool that replaces algebra is continuity.<br><br>The reasoning is short. If f is continuous on an interval and is <b>never zero</b> on it, then f cannot change sign there: to get from positive to negative a continuous function would have to pass through zero, and it does not. So <b>the sign of f is constant on any interval that contains no zero of f and no point of discontinuity</b>. Test one point in the interval, and you know the sign everywhere in it.<br><br>That gives a procedure, the <b>sign chart</b>:<br><br><b>1.</b> Rewrite the inequality with 0 on one side: f(x) &gt; 0, or f(x) ≤ 0, and so on.<br><b>2.</b> Find the <b>zeros</b> of f and the <b>points of discontinuity</b> of f (for a rational function, the zeros of the denominator). These are the only places the sign can change.<br><b>3.</b> Mark them on a number line. They split it into intervals.<br><b>4.</b> Pick one test value inside each interval, and record the sign of f there.<br><b>5.</b> Read off the intervals with the sign the inequality asks for, and decide the endpoints.<br><br>The <b>endpoints</b> are the part that needs care. A zero of f is included when the inequality is ≤ or ≥ (f is 0 there, and 0 satisfies "≤ 0"), and excluded when it is strict. A <b>point of discontinuity is never included</b>, whatever the inequality says, because f has no value there to satisfy anything. That single rule is the reason rational inequalities are set on exams: (x + 1)/(x − 4) ≤ 0 has solution −1 ≤ x &lt; 4, with the −1 in and the 4 out, and a student who "solves" it by multiplying through by (x − 4) has multiplied by something that may be negative and has lost the answer.<br><br>The sign chart is also how a "greater than" with a polynomial of degree three or four is done, and how a square root's domain, √(f(x)), is found — because that is just f(x) ≥ 0.`,
+            rules: [
+              { name: 'Why the method works', expr: 'A continuous function with no zero on an interval keeps one sign on it', words: true, note: 'To change sign it would have to cross zero, and it does not.' },
+              { name: 'Where the sign can change', expr: 'Only at a zero of f or a point of discontinuity of f', words: true, note: 'For a rational function: zeros of the numerator and zeros of the denominator.' },
+              { name: 'Endpoints', expr: 'A zero is included for ≤ or ≥, excluded for < or >; a discontinuity is never included', words: true, note: 'f has no value at a discontinuity, so it cannot satisfy anything there.' },
+              { name: 'Never multiply through by a variable', expr: 'Get 0 on one side and use a sign chart instead', words: true, note: 'Multiplying by (x − 4) flips the inequality wherever (x − 4) is negative.' }
+            ],
+            examples: [
+              {
+                prompt: 'Solve x² − 3x − 10 &gt; 0.',
+                steps: [
+                  { do: 'Zeros: x² − 3x − 10 = (x − 5)(x + 2) = 0, so x = −2 and x = 5', why: 'A polynomial has no discontinuities, so its zeros are the only places its sign can change.' },
+                  { do: 'Intervals: x &lt; −2, then −2 &lt; x &lt; 5, then x &gt; 5', why: 'Two zeros split the line into three intervals, and on each the sign is constant by continuity.' },
+                  { do: 'Test values: at x = −3, (−8)(−1) = +; at x = 0, (−5)(2) = −; at x = 6, (1)(8) = +', why: 'One test point per interval is enough — the sign cannot change within it. Using the factored form makes the sign of each factor visible.' },
+                  { do: 'The inequality asks for &gt; 0: x &lt; −2 or x &gt; 5', why: 'Strict inequality, so the zeros themselves are excluded. In interval notation, (−∞, −2) ∪ (5, ∞).' }
+                ],
+                answer: 'x &lt; −2 or x &gt; 5', answerWords: true
+              },
+              {
+                prompt: 'Solve (x + 1)/(x − 4) ≤ 0.',
+                steps: [
+                  { do: 'Zero of the numerator: x = −1. Zero of the denominator (a discontinuity): x = 4', why: 'Both kinds of point go on the chart, because the sign can change at either. Nothing is multiplied through — that would flip the inequality wherever x − 4 is negative.' },
+                  { do: 'Intervals: x &lt; −1, then −1 &lt; x &lt; 4, then x &gt; 4', why: 'Two marked points, three intervals.' },
+                  { do: 'Test values: at x = −2, (−1)/(−6) = +; at x = 0, (1)/(−4) = −; at x = 5, (6)/(1) = +', why: 'The sign of a quotient is the product of the signs, so the factored form shows it directly.' },
+                  { do: 'Wanted ≤ 0: the middle interval, with −1 included and 4 excluded: −1 ≤ x &lt; 4', why: 'At x = −1 the expression is 0, which satisfies ≤ 0. At x = 4 the expression does not exist, so 4 can never be part of the solution.' }
+                ],
+                answer: '−1 ≤ x &lt; 4', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'calc-multiply-through-denominator',
+                wrong: 'Clearing a rational inequality by multiplying both sides by the denominator',
+                right: 'Put 0 on one side and use a sign chart. The denominator’s sign is unknown, so multiplying by it may flip the inequality.',
+                why: 'For (x + 1)/(x − 4) ≤ 0, multiplying by (x − 4) gives x + 1 ≤ 0, so x ≤ −1 — which is wrong for every x between −1 and 4 and includes values below −1 that do not work. The sign chart exists precisely because the denominator is sometimes negative.'
+              },
+              {
+                id: 'calc-discontinuity-included',
+                wrong: 'Including the zero of the denominator in the solution when the inequality is ≤ or ≥',
+                right: 'A discontinuity is never included. The expression has no value there.',
+                why: '"≤ 0" is satisfied by a value that is 0 or negative; at x = 4 the expression is not a value at all. It is the single most common error on this section, and the ≤ is put there to invite it — the zero of the numerator goes in, the zero of the denominator stays out.'
+              },
+              {
+                id: 'calc-one-test-point-total',
+                wrong: 'Testing a single value and concluding the sign for the whole line',
+                right: 'One test value per interval, between consecutive marked points.',
+                why: 'The sign is constant only on an interval free of zeros and discontinuities. A single test says what f does on one such interval and nothing about the others; the number of tests is the number of intervals, which is one more than the number of marked points.'
+              }
+            ]
+          }
+        ],
+        practice: [
+          { id: 'q1', kind: 'numeric', lesson: 'a1',
+            prompt: 'Find lim<sub>x→3</sub> (x² − 9)/(x − 3).',
+            answer: 6, verify: { expr: 'limit((x**2 - 9)/(x - 3), x, 3)' },
+            hint: 'Substitution gives 0/0. Factor the numerator.',
+            solution: ['x² − 9 = (x − 3)(x + 3)', 'For x ≠ 3 the quotient equals x + 3', 'lim (x + 3) = 6'] },
+
+          { id: 'q2', kind: 'numeric', lesson: 'a1',
+            prompt: 'Find lim<sub>x→−2</sub> (x³ − 2x² + 5).',
+            answer: -11, verify: { expr: 'limit(x**3 - 2*x**2 + 5, x, -2)' },
+            hint: 'It is a polynomial.',
+            solution: ['A polynomial’s limit is found by substitution', '(−2)³ − 2(−2)² + 5 = −8 − 8 + 5', '= −11'] },
+
+          { id: 'q3', kind: 'numeric', lesson: 'a1',
+            prompt: 'Find lim<sub>x→4</sub> √(x² + 9).',
+            answer: 5, verify: { expr: 'limit(sqrt(x**2 + 9), x, 4)' },
+            hint: 'The limit of a root is the root of the limit.',
+            solution: ['lim (x² + 9) = 16 + 9 = 25', 'Take the square root of the limit', '√25 = 5'] },
+
+          { id: 'q4', kind: 'numeric', lesson: 'a1',
+            prompt: 'If f(x) = x², find lim<sub>h→0</sub> (f(3 + h) − f(3)) / h.',
+            answer: 6, verify: { expr: 'limit(((3 + h)**2 - 9)/h, h, 0)' },
+            hint: 'Expand (3 + h)², subtract 9, then cancel the h.',
+            solution: ['(3 + h)² − 9 = 9 + 6h + h² − 9 = 6h + h²', 'Divide by h: 6 + h for h ≠ 0', 'lim (6 + h) = 6'] },
+
+          { id: 'q5', kind: 'numeric', lesson: 'a2',
+            prompt: 'Find lim<sub>x→∞</sub> (6x² − x)/(2x² + 3).',
+            answer: 3, verify: { expr: 'limit((6*x**2 - x)/(2*x**2 + 3), x, oo)' },
+            hint: 'Keep only the dominant term top and bottom.',
+            solution: ['Dominant terms: 6x² over 2x²', 'Equal degrees, so the limit is the ratio of leading coefficients', '6/2 = 3'] },
+
+          { id: 'q6', kind: 'numeric', lesson: 'a2',
+            prompt: 'Find lim<sub>x→∞</sub> (5x + 1)/(x³ − 4).',
+            answer: 0, verify: { expr: 'limit((5*x + 1)/(x**3 - 4), x, oo)' },
+            hint: 'Which degree is larger?',
+            solution: ['Dominant terms: 5x over x³ = 5/x²', 'A reciprocal power goes to 0', 'The limit is 0'] },
+
+          { id: 'q7', kind: 'numeric', lesson: 'a2',
+            prompt: 'f(x) = x + 2 for x &lt; 1 and f(x) = 4x for x ≥ 1. Find lim<sub>x→1⁻</sub> f(x).',
+            answer: 3, verify: { expr: "limit(x + 2, x, 1, '-')" },
+            hint: 'From the left means x less than 1 — which piece is that?',
+            solution: ['For x &lt; 1 the function is x + 2', 'Substitute: 1 + 2', '= 3 (the right-hand limit is 4, so the two-sided limit does not exist)'] },
+
+          { id: 'q8', kind: 'numeric', lesson: 'a3',
+            prompt: 'f(x) = (x + 3)/(x² − 5x + 6) is discontinuous at two values of x. What is the larger one?',
+            answer: 3, verify: { expr: 'Max(*solve(x**2 - 5*x + 6, x))' },
+            hint: 'Only the denominator matters.',
+            solution: ['A rational function is discontinuous only where the denominator is 0', 'x² − 5x + 6 = (x − 2)(x − 3)', 'x = 2 and x = 3; the larger is 3'] },
+
+          { id: 'q9', kind: 'numeric', lesson: 'a4',
+            prompt: 'The solution of x² − 3x − 10 &gt; 0 is x &lt; a or x &gt; b. What is b?',
+            answer: 5, verify: { expr: 'Max(*solve(x**2 - 3*x - 10, x))' },
+            hint: 'Find the zeros first, then test each interval.',
+            solution: ['(x − 5)(x + 2) = 0 gives x = −2 and x = 5', 'Test values show + on the outer intervals and − between', 'Solution x &lt; −2 or x &gt; 5, so b = 5'] },
+
+          { id: 'q10', kind: 'mc', lesson: 'a2',
+            prompt: 'What is lim<sub>x→0</sub> 1/x²?',
+            options: [
+              { t: 'It does not exist — the values grow without bound, written as ∞', ok: true },
+              { t: '0, because 1/x² is very small near 0' },
+              { t: '1, because 1/1² = 1' },
+              { t: 'It does not exist because the two sides have opposite signs' }
+            ],
+            hint: 'What happens to 1/x² as x gets close to 0 from either side?',
+            solution: ['As x → 0, x² → 0 through positive values, so 1/x² grows without bound', 'Both sides go to +∞, so the sign is the same on each side', 'No number is approached, so the limit does not exist; we write ∞ to say how'] },
+
+          { id: 'q11', kind: 'mc', lesson: 'a3',
+            prompt: 'A function has f(2) = 7, lim<sub>x→2⁻</sub> f(x) = 5 and lim<sub>x→2⁺</sub> f(x) = 5. Which is true?',
+            options: [
+              { t: 'The limit at 2 exists and is 5, but f is discontinuous at 2', ok: true },
+              { t: 'f is continuous at 2 because f(2) exists' },
+              { t: 'The limit at 2 is 7 because that is the value of f' },
+              { t: 'The limit at 2 does not exist because f(2) ≠ 5' }
+            ],
+            hint: 'Check the three conditions one at a time.',
+            solution: ['The one-sided limits agree, so the limit exists and equals 5', 'f(2) = 7 is not equal to the limit, so condition 3 fails', 'f is discontinuous at 2 — a hole with a dot above it'] },
+
+          { id: 'q12', kind: 'spot', lesson: 'a4',
+            prompt: 'A student solves (x + 1)/(x − 4) ≤ 0. One line is wrong.',
+            steps: [
+              { t: 'The numerator is zero at x = −1 and the denominator is zero at x = 4', bad: false },
+              { t: 'Test values give + for x &lt; −1, − between −1 and 4, and + for x &gt; 4', bad: false },
+              { t: 'The expression is ≤ 0 on the middle interval, so the solution is −1 ≤ x ≤ 4', bad: true },
+              { t: 'A discontinuity can never be part of the solution set', bad: false }
+            ],
+            why: 'The zero of the numerator, −1, is included because the expression equals 0 there and 0 satisfies ≤ 0. The zero of the denominator, 4, is a point where the expression has no value at all, so it cannot satisfy any inequality and is excluded: the solution is −1 ≤ x &lt; 4. The fourth line states the rule that the third line breaks.',
+            hint: 'Does the expression have a value at x = 4?',
+            solution: ['Sign chart: + | − | + around −1 and 4', 'Include −1 (the expression is 0 there)', 'Exclude 4 (the expression is undefined there): −1 ≤ x &lt; 4'] },
+
+          { id: 'q13', kind: 'spot', lesson: 'a1',
+            prompt: 'A student finds lim<sub>x→2</sub> (x² − 4)/(x − 2). One line is wrong.',
+            steps: [
+              { t: 'Substituting x = 2 gives 0/0', bad: false },
+              { t: '0/0 is undefined, so the limit does not exist', bad: true },
+              { t: 'x² − 4 factors as (x − 2)(x + 2)', bad: false },
+              { t: 'For x ≠ 2 the quotient equals x + 2, whose limit at 2 is 4', bad: false }
+            ],
+            why: 'The form 0/0 is not a verdict — it means the algebra is unfinished. Because the limit ignores x = 2, the common factor (x − 2) may be cancelled, leaving x + 2, a polynomial whose limit is found by substitution: 4. The last two lines of the working are exactly right, and the second line abandons the question one step before they are used.',
+            hint: 'Is 0/0 an answer or a signal?',
+            solution: ['0/0 means factor and cancel', '(x − 2)(x + 2)/(x − 2) = x + 2 for x ≠ 2', 'lim (x + 2) = 4'] },
+
+          { id: 'q14', kind: 'order', lesson: 'a4',
+            prompt: 'Put the steps of solving a nonlinear inequality by sign chart in order.',
+            steps: [
+              'Rewrite the inequality with 0 on one side',
+              'Find the zeros of the expression and its points of discontinuity',
+              'Mark them on a number line and test one value in each interval',
+              'Select the intervals with the required sign and decide each endpoint'
+            ],
+            hint: 'Nothing can be marked on a line until the expression is compared with 0.',
+            solution: ['The sign of f only means something once the comparison is with 0', 'Zeros and discontinuities are the only places the sign can change', 'One test per interval, by continuity', 'Zeros go in for ≤ and ≥; discontinuities never go in'] },
+
+          { id: 'q15', kind: 'order', lesson: 'a3',
+            prompt: 'Put the steps of checking continuity of a case-defined function at a boundary point a in order.',
+            steps: [
+              'Find f(a) from the piece whose inequality includes a',
+              'Find the left-hand limit from the piece defined for x less than a',
+              'Find the right-hand limit from the piece defined for x greater than a',
+              'Compare: the two one-sided limits must agree, and their common value must equal f(a)'
+            ],
+            hint: 'The value and the two one-sided limits come from up to three different formulas.',
+            solution: ['Condition 1 is the value, from the piece that owns the point', 'Condition 2 needs both sides, each from its own piece', 'The sides must agree for the limit to exist', 'Condition 3 is the final comparison'] }
+        ]
+      },
+
+      /* ============================ CHAPTER 11 ============================ */
+      {
+        id: 'deriv', n: 2,
+        title: 'Differentiation',
+        blurb: 'The derivative from the limit that defines it, the rules that make it fast, and what it means when the function is a cost, a revenue, a position or a consumption schedule.',
+        read: 'Chapter 11',
+        objectives: [
+          'Find a derivative from the definition, and use it to write the equation of a tangent line',
+          'Differentiate with the constant, power, constant-multiple and sum rules, rewriting radicals and reciprocals as powers first',
+          'Interpret a derivative as an instantaneous rate of change, and compute marginal cost, marginal revenue and relative rates of change',
+          'Apply the product, quotient and chain rules, including the power rule for a function raised to a power'
+        ],
+        lessons: [
+          {
+            id: 'b1', title: 'The derivative', src: 'Section 11.1',
+            idea: `The slope of a curve at a point is defined through the slopes of lines that can be measured. Fix a point (a, f(a)) on the graph. A <b>secant line</b> through it and a second point (a + h, f(a + h)) has slope<br><br><b>(f(a + h) − f(a)) / h</b><br><br>— the difference quotient of the last chapter. As h → 0 the second point slides toward the first, the secant swings toward the <b>tangent line</b>, and its slope approaches the tangent's slope. So the slope of the tangent at a is <b>lim<sub>h→0</sub> (f(a + h) − f(a)) / h</b>, provided the limit exists.<br><br>Do this at a general x instead of a fixed a and the answer is a new function, the <b>derivative</b> of f:<br><br><b>f′(x) = lim<sub>h→0</sub> (f(x + h) − f(x)) / h</b><br><br>Finding it this way is called differentiating <b>from the definition</b>, and it is the same routine every time: form f(x + h), subtract f(x), divide by h, do the algebra that removes the 0/0, then let h → 0. The notation varies and it is all the same object: f′(x), y′, <b>dy/dx</b>, d/dx (f(x)), D<sub>x</sub>y. The value at a particular point is written f′(a) or dy/dx|<sub>x=a</sub>. The variable need not be x: if p depends on q, dp/dq is the derivative of p with respect to q.<br><br>Two things a derivative gives at once. The <b>slope of the curve</b> at x = a is f′(a). And the <b>tangent line</b> there is the line through (a, f(a)) with that slope: <b>y − f(a) = f′(a)(x − a)</b>, point-slope form.<br><br>A derivative can fail to exist at a point. The graph may have a <b>corner</b>, where the difference quotient has different limits from the two sides; it may have a <b>vertical tangent</b>, where the quotient grows without bound; or the function may be <b>discontinuous</b> there. That last one is a theorem: <b>if f is differentiable at a, then f is continuous at a.</b> The converse is false — |x| is continuous at 0 and has no derivative there — so continuity is necessary for differentiability and not sufficient. The word for a function that has a derivative at every point of an interval is <b>differentiable</b> on that interval.`,
+            rules: [
+              { name: 'The derivative', expr: 'dy/dx = lim (f(x + h) - f(x)) / h', note: 'As h approaches 0. It is the slope of the tangent, defined as the limit of secant slopes.' },
+              { name: 'Slope of the curve at a', expr: 'The value of the derivative at a', words: true, note: 'Written f′(a) or dy/dx evaluated at x = a.' },
+              { name: 'Tangent line at a', expr: 'y - y_1 = m (x - x_1)', note: 'Point-slope form with the point (a, f(a)) and slope m = f′(a).' },
+              { name: 'Differentiable implies continuous', expr: 'A function with a derivative at a is continuous at a, but not the other way round', words: true, note: 'A corner or a vertical tangent is continuous with no derivative.' }
+            ],
+            examples: [
+              {
+                prompt: 'Use the definition to find f′(x) for f(x) = 3x² − x, and then find the slope of the curve at x = 2.',
+                steps: [
+                  { do: 'f(x + h) = 3(x + h)² − (x + h) = 3x² + 6xh + 3h² − x − h', why: 'Expand carefully; the 6xh cross-term is the whole point of the calculation and it is the term most often dropped.' },
+                  { do: 'f(x + h) − f(x) = 6xh + 3h² − h', why: 'The terms without h cancel against f(x). Every remaining term has a factor of h, which is what makes the next step possible.' },
+                  { do: 'Divide by h and cancel: 6x + 3h − 1 for h ≠ 0', why: 'This removes the 0/0. The condition h ≠ 0 is what the limit needs and no more.' },
+                  { do: 'f′(x) = lim<sub>h→0</sub> (6x + 3h − 1) = 6x − 1, so the slope at x = 2 is f′(2) = 11', why: 'Substitute h = 0 in the polynomial, then x = 2 in the derivative. The order matters: differentiate first, then evaluate.' }
+                ],
+                answer: 'f′(x) = 6x − 1, and the slope at x = 2 is 11', answerWords: true
+              },
+              {
+                prompt: 'Find an equation of the tangent line to y = x² + 1 at the point where x = 3.',
+                steps: [
+                  { do: 'The point: y = 3² + 1 = 10, so the tangent passes through (3, 10)', why: 'A line needs a point and a slope. The point comes from the function, not the derivative.' },
+                  { do: 'The derivative from the definition: ((x + h)² + 1 − x² − 1)/h = (2xh + h²)/h = 2x + h → 2x', why: 'The +1 cancels immediately: a constant term never survives into the derivative.' },
+                  { do: 'The slope at x = 3 is f′(3) = 6', why: 'Evaluate the derivative at the point in question.' },
+                  { do: 'y − 10 = 6(x − 3), which is y = 6x − 8', why: 'Point-slope form with the point and slope found. Writing y = 6x − 8 is optional but it makes the y-intercept, −8, easy to check.' }
+                ],
+                answer: 'y − 10 = 6(x − 3), or y = 6x − 8', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'calc-evaluate-before-differentiating',
+                wrong: 'Substituting x = a into f before differentiating, then differentiating the number',
+                right: 'Differentiate first to get f′(x), then substitute x = a.',
+                why: 'The derivative of a constant is zero, so substituting first always gives a slope of 0 — which is wrong unless the tangent happens to be horizontal. The derivative is a function; the slope at a point is that function evaluated, and the two operations do not commute.'
+              },
+              {
+                id: 'calc-tangent-point-from-derivative',
+                wrong: 'Using f′(a) as the y-coordinate of the point of tangency',
+                right: 'The point is (a, f(a)). The derivative supplies only the slope.',
+                why: 'The tangent to y = x² + 1 at x = 3 passes through (3, 10), not (3, 6). Confusing the two produces a line with the right slope through the wrong point, which is not tangent to anything. Compute the point from f and the slope from f′, and label each.'
+              },
+              {
+                id: 'calc-continuous-implies-differentiable',
+                wrong: 'Concluding a function is differentiable at a because it is continuous there',
+                right: 'The implication runs the other way. Differentiable implies continuous; continuous does not imply differentiable.',
+                why: 'The absolute-value function is the standard counterexample: continuous everywhere, no derivative at 0 because the slope from the left is −1 and from the right is +1. A corner or a vertical tangent breaks differentiability without breaking continuity.'
+              }
+            ]
+          },
+
+          {
+            id: 'b2', title: 'Rules for differentiation', src: 'Section 11.2',
+            idea: `Differentiating from the definition works and is slow. The rules below are the definition applied once and for all to the shapes that keep recurring, so that a derivative becomes a matter of recognising shapes.<br><br><b>Constant rule.</b> If f(x) = c, then f′(x) = 0. A horizontal line has slope zero.<br><br><b>Power rule.</b> For any real number a, <b>d/dx (x<sup>a</sup>) = a x<sup>a−1</sup></b>. Bring the exponent down as a coefficient, then reduce the exponent by one. It holds for negative and fractional exponents as well as positive integers, which is what makes it so useful.<br><br><b>Constant-multiple rule.</b> <b>d/dx (c f(x)) = c f′(x)</b>. A constant factor rides along untouched.<br><br><b>Sum and difference rule.</b> <b>d/dx (f ± g) = f′ ± g′</b>. Differentiate term by term. This extends to any finite number of terms, so a polynomial is differentiated one term at a time with the power rule.<br><br>The practical skill this section is really about is <b>rewriting before differentiating</b>. The power rule wants x raised to a power, so anything else has to be put in that form first:<br><br><b>1/x = x<sup>−1</sup></b>, <b>1/x³ = x<sup>−3</sup></b>, <b>√x = x<sup>1/2</sup></b>, <b>1/√x = x<sup>−1/2</sup></b>, <b>³√x² = x<sup>2/3</sup></b>, and a coefficient in a denominator comes out as a reciprocal: <b>3/(2x⁴) = (3/2) x<sup>−4</sup></b>.<br><br>Then the rule applies mechanically: d/dx (x<sup>−1</sup>) = −x<sup>−2</sup> = −1/x², and d/dx (x<sup>1/2</sup>) = (1/2) x<sup>−1/2</sup> = 1/(2√x). Both results are worth knowing on sight.<br><br>Two cautions. The power rule is for a <b>variable base</b> and a constant exponent; it says nothing about 2<sup>x</sup>, which has a variable exponent and is a later chapter. And it is for a <b>single power of x</b>; a product like (x² + 1)(x³ − 2x) or a quotient is not a power and needs the rules of section 11.4 — or must be multiplied out first.`,
+            rules: [
+              { name: 'Constant', expr: 'd/dx (c) = 0', note: 'The slope of a horizontal line.' },
+              { name: 'Power', expr: 'd/dx (x^n) = n x^(n-1)', note: 'For any real exponent — negative and fractional included. Exponent down, exponent minus one.' },
+              { name: 'Constant multiple', expr: 'd/dx (c f) = c × df/dx', note: 'A constant factor is carried along.' },
+              { name: 'Sum and difference', expr: 'd/dx (f + g) = df/dx + dg/dx', note: 'Differentiate term by term. The same for a difference.' },
+              { name: 'Rewrite first', expr: '1/x^n is x^(-n) and the nth root of x is x^(1/n)', words: true, note: 'The power rule wants a power of x. Put every term in that form before touching it.' }
+            ],
+            examples: [
+              {
+                prompt: 'Differentiate y = 5x⁴ − 2/x + 3√x.',
+                steps: [
+                  { do: 'Rewrite: y = 5x⁴ − 2x<sup>−1</sup> + 3x<sup>1/2</sup>', why: 'The power rule needs each term as a coefficient times a power of x. Doing this first is the whole method.' },
+                  { do: 'Term 1: 5 · 4x³ = 20x³', why: 'Constant multiple and power rule: exponent down, exponent minus one.' },
+                  { do: 'Term 2: −2 · (−1)x<sup>−2</sup> = 2x<sup>−2</sup>; Term 3: 3 · (1/2)x<sup>−1/2</sup> = (3/2)x<sup>−1/2</sup>', why: 'A negative exponent minus one is more negative; a half minus one is minus a half. Watch the signs on the second term — two negatives make the result positive.' },
+                  { do: 'dy/dx = 20x³ + 2/x² + 3/(2√x)', why: 'Written back with positive exponents, which is how an answer is usually expected. At x = 1 this is 20 + 2 + 1.5 = 23.5.' }
+                ],
+                answer: 'dy/dx = 20x³ + 2/x² + 3/(2√x)', answerWords: true
+              },
+              {
+                prompt: 'Find the equation of the tangent line to y = x³ − 4x² at the point (2, −8).',
+                steps: [
+                  { do: 'dy/dx = 3x² − 8x', why: 'Term by term with the power rule — no definition needed now.' },
+                  { do: 'At x = 2: 3(4) − 8(2) = 12 − 16 = −4', why: 'Differentiate first, then evaluate. The slope of the tangent is −4.' },
+                  { do: 'The point (2, −8) is given, and checks: 8 − 16 = −8', why: 'Verifying the point lies on the curve catches a mis-copied question before any work is wasted.' },
+                  { do: 'y + 8 = −4(x − 2), so y = −4x', why: 'Point-slope form; this particular tangent happens to pass through the origin.' }
+                ],
+                answer: 'y = −4x', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'calc-reciprocal-not-rewritten',
+                wrong: 'Differentiating 2/x as if it were 2x, or leaving it alone because it "has no exponent"',
+                right: 'Rewrite 2/x as 2x⁻¹ first. Its derivative is −2x⁻² = −2/x².',
+                why: 'Every term has an exponent once it is written as a power, and the reciprocal’s is −1. The sign of the result is negative — 1/x is decreasing — which is a quick check that the rewriting was done. The same applies to roots: √x is x to the one-half, and its derivative has a square root in the denominator.'
+              },
+              {
+                id: 'calc-power-rule-on-2-to-x',
+                wrong: 'Applying the power rule to 2ˣ to get x · 2ˣ⁻¹',
+                right: 'The power rule needs a variable base and a constant exponent. 2ˣ has the reverse, and is differentiated in chapter 12.',
+                why: 'The rule was derived for x raised to a fixed number; swapping the roles of base and exponent gives a different kind of function with a different derivative involving ln 2. Recognising which one you have is the first step, before any rule is chosen.'
+              },
+              {
+                id: 'calc-power-rule-on-product',
+                wrong: 'Differentiating (x² + 1)(x³ − 2x) factor by factor and multiplying the results',
+                right: 'The derivative of a product is not the product of the derivatives. Expand first, or use the product rule.',
+                why: 'The power and sum rules apply to sums of single powers. A product of two polynomials is neither until it is multiplied out, and multiplying the derivatives gives an expression of the wrong degree entirely. Section 11.4 supplies the rule that handles it in place.'
+              }
+            ]
+          },
+
+          {
+            id: 'b3', title: 'The derivative as a rate of change', src: 'Section 11.3',
+            idea: `A derivative is a slope, and a slope is a rate: rise per run. That reading is where calculus meets economics.<br><br>Over an interval, the <b>average rate of change</b> of y with respect to x is <b>Δy/Δx</b>, the change in y divided by the change in x. Shrink the interval to nothing and the average rate becomes the <b>instantaneous rate of change</b>, which is the derivative: <b>dy/dx = lim<sub>Δx→0</sub> Δy/Δx</b>. The difference quotient was a rate all along.<br><br>The physical version is <b>velocity</b>. If s = f(t) is position at time t, then Δs/Δt is average velocity over an interval and <b>ds/dt is velocity at an instant</b>. The derivative also gives an <b>approximation</b> that is used constantly: for a small change Δx, <b>Δy ≈ (dy/dx) · Δx</b>, and in particular, when x increases by 1, y changes by approximately dy/dx.<br><br>That last sentence is the definition of everything called <b>marginal</b> in economics. If c is the total cost of producing q units, then<br><br><b>marginal cost = dc/dq</b><br><br>is the rate at which cost changes with output, and it is interpreted as the <b>approximate cost of producing one more unit</b>. The word approximate matters: the exact cost of the (q + 1)th unit is c(q + 1) − c(q), and the derivative is its tangent-line estimate — close when the cost curve is nearly straight over one unit, which it usually is.<br><br>Likewise, with r the total revenue from selling q units, <b>marginal revenue = dr/dq</b> is the approximate revenue from selling one more unit. Revenue comes from a demand equation: if the price at which q units sell is p = f(q), then <b>r = pq</b>, and marginal revenue is found by differentiating that product. Under a fixed price, r = pq gives a constant marginal revenue equal to the price; under a downward-sloping demand, marginal revenue falls below price, because selling one more unit means lowering the price on all of them.<br><br>Average and marginal are different: <b>average cost per unit</b> is c̄ = c/q, the total divided by the count, while marginal cost is the derivative. They coincide only when cost is exactly proportional to output.<br><br>Finally, a rate on its own can mislead — a change of 10 in something worth 1,000 is small, in something worth 20 is large. The <b>relative rate of change</b> is <b>(dy/dx) / y</b>, and the <b>percentage rate of change</b> is that times 100. It is the derivative in proportion to the size of the thing changing.`,
+            rules: [
+              { name: 'Average rate of change', expr: 'average rate = Delta y / Delta x', note: 'Over an interval: the change in y per unit change in x.' },
+              { name: 'Instantaneous rate', expr: 'dy/dx', note: 'The limit of the average rate as the interval shrinks. Velocity is ds/dt.' },
+              { name: 'The approximation', expr: 'Delta y ≈ dy/dx × Delta x', note: 'For small Δx. With Δx = 1, the change in y is approximately the derivative — the meaning of "marginal".' },
+              { name: 'Marginal cost', expr: 'marginal cost = dc/dq', note: 'The approximate cost of one more unit. Average cost is c/q, a different thing.' },
+              { name: 'Marginal revenue', expr: 'marginal revenue = dr/dq', note: 'Where r = pq, with p from the demand equation.' },
+              { name: 'Relative rate of change', expr: 'relative rate = (dy/dx) / y', note: 'Times 100 for the percentage rate. The rate in proportion to the size of y.' }
+            ],
+            examples: [
+              {
+                prompt: 'The total cost of producing q units is c = 0.01q² + 5q + 2000 dollars. Find the marginal-cost function, the marginal cost at q = 100, and compare it with the actual cost of the 101st unit.',
+                steps: [
+                  { do: 'Marginal cost is dc/dq = 0.02q + 5', why: 'Differentiate the total-cost function term by term. The 2000 — fixed cost — vanishes, as a constant always does.' },
+                  { do: 'At q = 100: 0.02(100) + 5 = $7', why: 'The rate at which cost is rising when output is 100. Interpretation: the 101st unit costs approximately $7.' },
+                  { do: 'Actual: c(101) − c(100) = (102.01 + 505 + 2000) − (100 + 500 + 2000) = 2607.01 − 2600 = $7.01', why: 'The exact cost of one more unit, from the total-cost function directly.' },
+                  { do: 'The marginal cost of $7 approximates the exact $7.01 to within a cent', why: 'The tangent line and the curve differ by 0.01(1)² over one unit. That is the sense in which marginal cost is "the cost of the next unit".' }
+                ],
+                answer: 'dc/dq = 0.02q + 5; $7 at q = 100, against an actual $7.01', answerWords: true
+              },
+              {
+                prompt: 'A product sells at the price p = 100 − 2q dollars when q units are demanded. Find the marginal-revenue function and the marginal revenue at q = 10.',
+                steps: [
+                  { do: 'Revenue is price times quantity: r = pq = (100 − 2q)q = 100q − 2q²', why: 'Substitute the demand equation for p so that r is a function of q alone. Marginal revenue is a derivative with respect to q.' },
+                  { do: 'dr/dq = 100 − 4q', why: 'Term by term with the power rule.' },
+                  { do: 'At q = 10: 100 − 40 = $60', why: 'Selling the 11th unit brings in approximately $60 of additional revenue.' },
+                  { do: 'Note the price at q = 10 is 100 − 20 = $80, and marginal revenue is less than that', why: 'To sell one more unit the price must fall by $2 on every unit sold, so the extra unit is worth less than its own price. Marginal revenue sits below the demand curve whenever demand slopes downward.' }
+                ],
+                answer: 'dr/dq = 100 − 4q, which is $60 at q = 10', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'calc-marginal-is-average',
+                wrong: 'Computing marginal cost as total cost divided by quantity',
+                right: 'Marginal cost is the derivative dc/dq. Total cost over quantity is AVERAGE cost.',
+                why: 'The two answer different questions — what each unit costs on average, and what the next unit will cost — and they differ whenever there is a fixed cost or the cost curve bends. The word marginal always means a derivative in this course, and the word average always means a division.'
+              },
+              {
+                id: 'calc-revenue-differentiate-price',
+                wrong: 'Taking the derivative of the demand equation and calling it marginal revenue',
+                right: 'Form r = pq first, with p replaced by its formula in q, then differentiate r.',
+                why: 'dp/dq is the rate at which price changes with quantity, which is not revenue at all. Marginal revenue requires the revenue function, and the revenue function requires the multiplication by q — which is exactly the step that makes marginal revenue fall below price.'
+              },
+              {
+                id: 'calc-marginal-is-exact',
+                wrong: 'Reporting the marginal cost as the exact cost of the next unit',
+                right: 'It is the approximate cost — the tangent-line estimate. The exact figure is c(q + 1) − c(q).',
+                why: 'The derivative is a rate at an instant, and one unit is a finite step along a curve. The approximation is usually excellent, and the worked example shows a gap of one cent, but a question that asks for the actual cost of the 101st unit is asking for a subtraction, not a derivative.'
+              }
+            ]
+          },
+
+          {
+            id: 'b4', title: 'The product rule and the quotient rule', src: 'Section 11.4',
+            idea: `The derivative of a sum is the sum of the derivatives; the derivative of a product is <b>not</b> the product of the derivatives. The correct rule has two terms:<br><br><b>Product rule: (fg)′ = f′g + fg′</b><br><br>— the derivative of the first times the second, plus the first times the derivative of the second. The symmetric shape means the order of the two terms does not matter, and the rule extends to three factors by grouping two of them or by the pattern f′gh + fg′h + fgh′.<br><br>Quotients have their own rule, and here the order does matter:<br><br><b>Quotient rule: (f/g)′ = (g f′ − f g′) / g²</b><br><br>— the denominator times the derivative of the numerator, minus the numerator times the derivative of the denominator, all over the denominator squared. The minus sign is the part to get right; "low d-high minus high d-low, over low squared" is one way people remember it.<br><br>Both rules can be avoided when it is cheaper to do so, and knowing when is a skill the section tests. A product of two polynomials can be <b>multiplied out</b> and differentiated term by term. A quotient with a single-term denominator can be <b>split</b>: (x³ + 4x)/x² = x + 4x<sup>−1</sup>, which is then the power rule. A constant over a power is a negative exponent: 5/x⁴ = 5x<sup>−4</sup>. The quotient rule is for when the denominator is a genuine sum, like (2x + 1)/(x − 3), and there is no way round it.<br><br>The economic application in this section is a <b>consumption function</b>: if national consumption C depends on national income I, then <b>dC/dI</b> is the <b>marginal propensity to consume</b> — the approximate fraction of one additional dollar of income that is spent. Because income is either consumed or saved, the <b>marginal propensity to save</b> is <b>1 − dC/dI</b>. A consumption function given as a quotient is the standard reason the quotient rule appears in an economics course at all.`,
+            rules: [
+              { name: 'Product rule', expr: 'd/dx (f g) = f × dg/dx + g × df/dx', note: 'Two terms. The order of the terms does not matter, so there is no sign to get wrong.' },
+              { name: 'Quotient rule', expr: 'd/dx (f / g) = (g × df/dx - f × dg/dx) / g^2', note: 'Denominator times derivative of numerator, MINUS numerator times derivative of denominator, over the denominator squared.' },
+              { name: 'Rewrite when you can', expr: 'Multiply out a product of polynomials; split a quotient with a one-term denominator', words: true, note: 'The rules are for products and quotients that cannot be simplified away.' },
+              { name: 'Marginal propensities', expr: 'MPC = dC/dI and MPS = 1 - dC/dI', note: 'The derivative of the consumption function with respect to income, and its complement.' }
+            ],
+            examples: [
+              {
+                prompt: 'Find dy/dx for y = (x² + 1)(x³ − 2x), and evaluate it at x = 2.',
+                steps: [
+                  { do: 'Let f = x² + 1 and g = x³ − 2x, so f′ = 2x and g′ = 3x² − 2', why: 'Name the two factors and differentiate each separately before assembling anything.' },
+                  { do: 'dy/dx = f′g + fg′ = 2x(x³ − 2x) + (x² + 1)(3x² − 2)', why: 'Derivative of the first times the second, plus the first times the derivative of the second.' },
+                  { do: 'At x = 2: 2(2)(8 − 4) + (4 + 1)(12 − 2) = 4(4) + 5(10) = 16 + 50', why: 'Substituting into the unexpanded form is less work than expanding first when only a value is wanted.' },
+                  { do: 'dy/dx = 66 at x = 2', why: 'Check by expanding: y = x⁵ − 2x³ + x³ − 2x = x⁵ − x³ − 2x, so dy/dx = 5x⁴ − 3x² − 2, which is 80 − 12 − 2 = 66. Both routes agree, as they must.' }
+                ],
+                answer: '66', answerWords: true
+              },
+              {
+                prompt: 'Find dy/dx for y = (2x + 1)/(x − 3), and the slope of the curve at x = 4.',
+                steps: [
+                  { do: 'Numerator f = 2x + 1 with f′ = 2; denominator g = x − 3 with g′ = 1', why: 'The denominator is a sum, so it cannot be split or rewritten as a power. The quotient rule is required.' },
+                  { do: 'dy/dx = (g f′ − f g′)/g² = ((x − 3)(2) − (2x + 1)(1)) / (x − 3)²', why: 'Denominator times derivative of the numerator first, then minus the numerator times the derivative of the denominator. The order fixes the sign.' },
+                  { do: 'Simplify the numerator: 2x − 6 − 2x − 1 = −7, so dy/dx = −7/(x − 3)²', why: 'The x-terms cancel here, which is typical for a quotient of two linear functions.' },
+                  { do: 'At x = 4: −7/1 = −7', why: 'A negative slope everywhere the function is defined: it is decreasing on both sides of its vertical asymptote at x = 3.' }
+                ],
+                answer: 'dy/dx = −7/(x − 3)², and the slope at x = 4 is −7', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'calc-product-of-derivatives',
+                wrong: 'Differentiating a product as f′ times g′',
+                right: 'The product rule has two terms: f′g + fg′.',
+                why: 'Multiplying the derivatives gives an expression of the wrong degree — for two quadratics it produces a quadratic where a cubic is correct. The rule can always be checked on a case that can be expanded, and the check fails immediately for the product of derivatives.'
+              },
+              {
+                id: 'calc-quotient-order-swapped',
+                wrong: 'Writing the quotient rule with the numerator’s derivative and the denominator’s derivative in the wrong places, or with a plus',
+                right: 'g f′ − f g′, over g². Denominator first, minus, then numerator.',
+                why: 'Swapping the two products or dropping the minus sign changes the sign of the answer. The product rule is symmetric and forgiving; the quotient rule is not, because division is not commutative. Naming f and g in writing, and their derivatives beside them, is what keeps the order straight.'
+              },
+              {
+                id: 'calc-quotient-rule-on-monomial-denominator',
+                wrong: 'Using the quotient rule on (x³ + 4x)/x²',
+                right: 'Split it: x + 4x⁻¹, then use the power rule.',
+                why: 'The quotient rule works here but produces a mess that must be simplified back to what the split gives in one line. A single-term denominator divides into every term of the numerator, and a constant over a power is a negative exponent — the rules of section 11.2 already cover it.'
+              }
+            ]
+          },
+
+          {
+            id: 'b5', title: 'The chain rule', src: 'Section 11.5',
+            idea: `Functions are often built by <b>composition</b>: y = (x² + 1)³ is the cube of something, and the something is x² + 1. Write it as y = u³ with u = x² + 1. The <b>chain rule</b> says the rate of change of y with respect to x is the rate of y with respect to u, times the rate of u with respect to x:<br><br><b>dy/dx = (dy/du) · (du/dx)</b><br><br>Here dy/du = 3u² and du/dx = 2x, so dy/dx = 3u² · 2x = 6x(x² + 1)². The inner function is differentiated too, and the factor it contributes — the 2x — is exactly what the power rule alone would miss.<br><br>The most-used special case is a <b>function raised to a power</b>, the <b>power rule for u<sup>n</sup></b>:<br><br><b>d/dx (u<sup>n</sup>) = n u<sup>n−1</sup> · (du/dx)</b><br><br>Read it as: the ordinary power rule applied to the outer power, then multiplied by the derivative of the inside. Nothing else in this course produces more lost marks than forgetting that last factor. It handles roots and reciprocals of expressions too, after rewriting: √(3x² + 4x) = (3x² + 4x)<sup>1/2</sup>, and 1/(x² + 5)² = (x² + 5)<sup>−2</sup>.<br><br>The chain rule composes with the earlier rules. A quotient raised to a power is the power rule for u<sup>n</sup> with the quotient rule applied to du/dx. A product of two powers, like (x + 1)⁴(2x − 3)⁵, is the product rule where each factor's derivative comes from the chain rule. The working is longer but it is only the rules applied in order, outermost operation first.<br><br>The economic form of the chain rule is a rate through an intermediate variable. If a firm's output q depends on its number of employees m, and revenue r depends on output through the demand equation, then <b>dr/dm = (dr/dq) · (dq/dm)</b>. This is the <b>marginal-revenue product</b>: the approximate change in revenue from employing one more person. It is computed by finding r as a function of q from r = pq, differentiating, then multiplying by dq/dm — or equivalently by substituting q(m) into r and differentiating directly with respect to m. Both routes give the same number, and doing it both ways is the check.`,
+            rules: [
+              { name: 'Chain rule', expr: 'dy/dx = dy/du × du/dx', note: 'For y a function of u and u a function of x. Outer rate times inner rate.' },
+              { name: 'Power rule for a function', expr: 'd/dx (u^n) = n u^(n-1) × du/dx', note: 'The power rule on the outside, times the derivative of the inside. The last factor is the one that gets forgotten.' },
+              { name: 'Roots and reciprocals of expressions', expr: 'Rewrite as (expression)^(1/2) or (expression)^(-1) first', words: true, note: 'Then the power rule for u^n applies.' },
+              { name: 'Marginal-revenue product', expr: 'dr/dm = dr/dq × dq/dm', note: 'Revenue per extra employee, through output. The chain rule with an economic name.' }
+            ],
+            examples: [
+              {
+                prompt: 'Differentiate y = (x² + 1)³, and find dy/dx at x = 1.',
+                steps: [
+                  { do: 'Let u = x² + 1, so y = u³', why: 'Identifying the inside function is the whole of the chain rule. Everything after that is mechanical.' },
+                  { do: 'dy/du = 3u² and du/dx = 2x', why: 'The ordinary power rule for each of the two pieces.' },
+                  { do: 'dy/dx = 3u² · 2x = 6x(x² + 1)²', why: 'Multiply, then put u back in terms of x. Without the factor 2x the answer is wrong by a factor that varies with x, not a constant.' },
+                  { do: 'At x = 1: 6(1)(2)² = 24', why: 'Expanding y = x⁶ + 3x⁴ + 3x² + 1 and differentiating gives 6x⁵ + 12x³ + 6x, which is 24 at x = 1. The chain rule agrees with the long way round.' }
+                ],
+                answer: 'dy/dx = 6x(x² + 1)², which is 24 at x = 1', answerWords: true
+              },
+              {
+                prompt: 'A manufacturer finds that m employees produce q = 10m units a day, and the product sells at p = 50 − q/10 dollars per unit. Find the marginal-revenue product when m = 5.',
+                steps: [
+                  { do: 'Revenue as a function of q: r = pq = (50 − q/10)q = 50q − q²/10', why: 'Price comes from demand, and revenue is price times quantity. Everything is now in one variable, q.' },
+                  { do: 'dr/dq = 50 − q/5, and dq/dm = 10', why: 'Two ordinary derivatives — the pieces the chain rule multiplies.' },
+                  { do: 'dr/dm = (dr/dq)(dq/dm) = (50 − q/5)(10). At m = 5, q = 50, so dr/dm = (50 − 10)(10) = 400', why: 'Evaluate dr/dq at the q that corresponds to m = 5, not at 5 itself. Then multiply.' },
+                  { do: 'Hiring a sixth employee raises daily revenue by approximately $400', why: 'Check by substitution: r = 50(10m) − (10m)²/10 = 500m − 10m², so dr/dm = 500 − 20m = 400 at m = 5. Same answer.' }
+                ],
+                answer: '$400 per additional employee', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'calc-chain-inner-derivative-dropped',
+                wrong: 'Differentiating (x² + 1)³ as 3(x² + 1)²',
+                right: 'Multiply by the derivative of the inside: 3(x² + 1)² · 2x.',
+                why: 'It is the commonest error in differential calculus, and it is an error of omission, which is why it survives checking. The test is to ask whether the base is x itself; if it is anything else, the derivative of that something else is a factor of the answer, always.'
+              },
+              {
+                id: 'calc-chain-evaluated-at-wrong-variable',
+                wrong: 'Evaluating dr/dq at q = 5 when the question gives m = 5',
+                right: 'Convert m to q through q(m) first, then evaluate dr/dq there.',
+                why: 'The chain rule multiplies two rates, and each is evaluated at the value of its own variable. With q = 10m, m = 5 means q = 50, and dr/dq at 50 is a different number from dr/dq at 5. Substituting q(m) into r and differentiating directly avoids the issue and is a good cross-check.'
+              },
+              {
+                id: 'calc-chain-order-of-rules',
+                wrong: 'Applying the quotient rule to ((x + 1)/(x − 1))⁴ before dealing with the power',
+                right: 'The outermost operation goes first: the power rule for u⁴, with du/dx from the quotient rule inside it.',
+                why: 'Rules nest from the outside in. Starting with the inner quotient produces a derivative of the wrong function, and cannot be repaired by raising the result to a power afterwards. Ask what the last operation performed on x was — here, raising to the fourth — and start with that.'
+              }
+            ]
+          }
+        ],
+        practice: [
+          { id: 'r1', kind: 'numeric', lesson: 'b1',
+            prompt: 'f(x) = 3x² − x. Using f′(x) from the definition, what is the slope of the curve at x = 2?',
+            answer: 11, verify: { expr: 'diff(3*x**2 - x, x).subs(x, 2)' },
+            hint: 'Find f′(x) first, then substitute.',
+            solution: ['(f(x + h) − f(x))/h = 6x + 3h − 1', 'f′(x) = 6x − 1', 'f′(2) = 11'] },
+
+          { id: 'r2', kind: 'numeric', lesson: 'b1',
+            prompt: 'The tangent line to y = x² + 1 at x = 3 has equation y = mx + b. What is b?',
+            answer: -8, verify: { expr: '(3**2 + 1) - diff(x**2 + 1, x).subs(x, 3) * 3' },
+            hint: 'Point (3, 10), slope f′(3). Then solve for the intercept.',
+            solution: ['f′(x) = 2x, so the slope is 6', 'y − 10 = 6(x − 3)', 'y = 6x − 8, so b = −8'] },
+
+          { id: 'r3', kind: 'numeric', lesson: 'b2',
+            prompt: 'y = 5x⁴ − 2/x + 3√x. What is dy/dx at x = 1?',
+            answer: 23.5, verify: { expr: 'diff(5*x**4 - 2/x + 3*sqrt(x), x).subs(x, 1)' },
+            hint: 'Rewrite 2/x and 3√x as powers first.',
+            solution: ['y = 5x⁴ − 2x⁻¹ + 3x^(1/2)', 'dy/dx = 20x³ + 2x⁻² + (3/2)x^(−1/2)', 'At x = 1: 20 + 2 + 1.5 = 23.5'] },
+
+          { id: 'r4', kind: 'numeric', lesson: 'b2',
+            prompt: 'y = x³ − 4x². What is the slope of the tangent line at the point (2, −8)?',
+            answer: -4, verify: { expr: 'diff(x**3 - 4*x**2, x).subs(x, 2)' },
+            hint: 'Differentiate, then substitute x = 2.',
+            solution: ['dy/dx = 3x² − 8x', 'At x = 2: 12 − 16', '= −4'] },
+
+          { id: 'r5', kind: 'numeric', lesson: 'b3',
+            prompt: 'Total cost is c = 0.01q² + 5q + 2000. What is the marginal cost at q = 100, in dollars?',
+            answer: 7, verify: { expr: 'diff(Rational(1,100)*q**2 + 5*q + 2000, q).subs(q, 100)' },
+            hint: 'Marginal cost is dc/dq.',
+            solution: ['dc/dq = 0.02q + 5', 'At q = 100: 2 + 5', '= $7 — the approximate cost of the 101st unit'] },
+
+          { id: 'r6', kind: 'numeric', lesson: 'b3',
+            prompt: 'The demand equation is p = 100 − 2q. What is the marginal revenue at q = 10, in dollars?',
+            answer: 60, verify: { expr: 'diff((100 - 2*q)*q, q).subs(q, 10)' },
+            hint: 'Form r = pq before differentiating anything.',
+            solution: ['r = (100 − 2q)q = 100q − 2q²', 'dr/dq = 100 − 4q', 'At q = 10: $60'] },
+
+          { id: 'r7', kind: 'numeric', lesson: 'b3',
+            prompt: 'A particle’s position is s = t² + 3t metres after t seconds. What is its velocity at t = 2, in m/s?',
+            answer: 7, verify: { expr: 'diff(t**2 + 3*t, t).subs(t, 2)' },
+            hint: 'Velocity is ds/dt.',
+            solution: ['ds/dt = 2t + 3', 'At t = 2: 4 + 3', '= 7 m/s'] },
+
+          { id: 'r8', kind: 'numeric', lesson: 'b3',
+            prompt: 'y = x². What is the percentage rate of change of y with respect to x at x = 5?',
+            answer: 40, verify: { expr: '(diff(x**2, x)/x**2).subs(x, 5) * 100' },
+            hint: 'Relative rate is the derivative divided by y; percentage is that times 100.',
+            solution: ['dy/dx = 2x = 10 at x = 5, and y = 25', 'Relative rate = 10/25 = 0.4', 'Percentage rate = 40%'] },
+
+          { id: 'r9', kind: 'numeric', lesson: 'b4',
+            prompt: 'y = (x² + 1)(x³ − 2x). What is dy/dx at x = 2?',
+            answer: 66, verify: { expr: 'diff((x**2 + 1)*(x**3 - 2*x), x).subs(x, 2)' },
+            hint: 'Product rule: f′g + fg′.',
+            solution: ['dy/dx = 2x(x³ − 2x) + (x² + 1)(3x² − 2)', 'At x = 2: 4(4) + 5(10)', '= 66'] },
+
+          { id: 'r10', kind: 'numeric', lesson: 'b4',
+            prompt: 'y = (2x + 1)/(x − 3). What is dy/dx at x = 4?',
+            answer: -7, verify: { expr: 'diff((2*x + 1)/(x - 3), x).subs(x, 4)' },
+            hint: 'Quotient rule: (g f′ − f g′)/g².',
+            solution: ['dy/dx = ((x − 3)(2) − (2x + 1)(1))/(x − 3)²', '= −7/(x − 3)²', 'At x = 4: −7'] },
+
+          { id: 'r11', kind: 'numeric', lesson: 'b4',
+            prompt: 'A consumption function is C = 6 + 0.8I − 0.001I², with I the national income in billions. What is the marginal propensity to save when I = 100?',
+            answer: 0.4, verify: { expr: '1 - diff(6 + Rational(8,10)*Y - Rational(1,1000)*Y**2, Y).subs(Y, 100)' },
+            hint: 'Find dC/dI first; the propensity to save is its complement.',
+            solution: ['dC/dI = 0.8 − 0.002I', 'At I = 100: 0.8 − 0.2 = 0.6 (the marginal propensity to consume)', 'MPS = 1 − 0.6 = 0.4'] },
+
+          { id: 'r12', kind: 'numeric', lesson: 'b5',
+            prompt: 'y = (x² + 1)³. What is dy/dx at x = 1?',
+            answer: 24, verify: { expr: 'diff((x**2 + 1)**3, x).subs(x, 1)' },
+            hint: 'Power rule on the outside, times the derivative of the inside.',
+            solution: ['dy/dx = 3(x² + 1)² · 2x = 6x(x² + 1)²', 'At x = 1: 6(1)(4)', '= 24'] },
+
+          { id: 'r13', kind: 'numeric', lesson: 'b5',
+            prompt: 'y = √(3x² + 4x). What is dy/dx at x = 2? Give 3 decimal places.',
+            answer: 1.789, tol: 0.0005, verify: { expr: 'diff(sqrt(3*x**2 + 4*x), x).subs(x, 2)', dp: 3 },
+            hint: 'Rewrite as (3x² + 4x)^(1/2) and use the power rule for uⁿ.',
+            solution: ['dy/dx = (1/2)(3x² + 4x)^(−1/2) · (6x + 4) = (6x + 4)/(2√(3x² + 4x))', 'At x = 2: 16/(2√20) = 8/√20', '≈ 1.789'] },
+
+          { id: 'r14', kind: 'numeric', lesson: 'b5',
+            prompt: 'm employees produce q = 10m units a day, sold at p = 50 − q/10 dollars each. What is the marginal-revenue product at m = 5, in dollars?',
+            answer: 400, verify: { expr: 'diff((50 - 10*m/10)*(10*m), m).subs(m, 5)' },
+            hint: 'dr/dm = (dr/dq)(dq/dm), with dr/dq evaluated at the q that m = 5 gives.',
+            solution: ['r = 50q − q²/10, so dr/dq = 50 − q/5; dq/dm = 10', 'At m = 5, q = 50: dr/dq = 40', 'dr/dm = 40 × 10 = $400'] },
+
+          { id: 'r15', kind: 'mc', lesson: 'b1',
+            prompt: 'f(x) = |x| is continuous at 0. What can be said about f′(0)?',
+            options: [
+              { t: 'It does not exist — the graph has a corner, with slope −1 on the left and +1 on the right', ok: true },
+              { t: 'It is 0, because the graph touches the x-axis there' },
+              { t: 'It exists because every continuous function is differentiable' },
+              { t: 'It is 1, the slope of the right-hand branch' }
+            ],
+            hint: 'Compute the difference quotient from each side separately.',
+            solution: ['From the right, (|h| − 0)/h = 1; from the left, (|h| − 0)/h = −1', 'The one-sided limits differ, so the limit defining f′(0) does not exist', 'Continuity does not imply differentiability; the converse holds'] },
+
+          { id: 'r16', kind: 'mc', lesson: 'b3',
+            prompt: 'Total cost is c = 0.01q² + 5q + 2000. Which is the AVERAGE cost per unit at q = 100?',
+            options: [
+              { t: '$26 — total cost 2600 divided by 100 units', ok: true },
+              { t: '$7 — the derivative dc/dq at q = 100' },
+              { t: '$20 — the fixed cost divided by 100' },
+              { t: '$5 — the coefficient of q' }
+            ],
+            hint: 'Average means total divided by count; marginal means derivative.',
+            solution: ['c(100) = 100 + 500 + 2000 = 2600', 'Average cost = 2600/100 = $26', 'The $7 is marginal cost — a different quantity'] },
+
+          { id: 'r17', kind: 'spot', lesson: 'b5',
+            prompt: 'A student differentiates y = (x² + 1)³. One line is wrong.',
+            steps: [
+              { t: 'Let u = x² + 1, so that y = u³', bad: false },
+              { t: 'By the power rule, dy/du = 3u²', bad: false },
+              { t: 'Therefore dy/dx = 3(x² + 1)²', bad: true },
+              { t: 'The derivative of the inside function, du/dx = 2x, is a factor of dy/dx', bad: false }
+            ],
+            why: 'The chain rule multiplies dy/du by du/dx, and the third line has stopped after dy/du. The correct derivative is 3(x² + 1)² · 2x = 6x(x² + 1)². The fourth line states exactly the factor that was dropped. Expanding y = x⁶ + 3x⁴ + 3x² + 1 and differentiating term by term gives 6x⁵ + 12x³ + 6x, which equals 6x(x² + 1)² and not 3(x² + 1)².',
+            hint: 'Is the base x itself?',
+            solution: ['dy/dx = (dy/du)(du/dx)', '= 3u² · 2x', '= 6x(x² + 1)²'] },
+
+          { id: 'r18', kind: 'spot', lesson: 'b4',
+            prompt: 'A student differentiates y = (2x + 1)/(x − 3). One line is wrong.',
+            steps: [
+              { t: 'Numerator f = 2x + 1 with f′ = 2; denominator g = x − 3 with g′ = 1', bad: false },
+              { t: 'The quotient rule gives ((2x + 1)(1) − (x − 3)(2)) / (x − 3)²', bad: true },
+              { t: 'The denominator of the result is the square of the original denominator', bad: false },
+              { t: 'The x-terms in the numerator cancel, leaving a constant', bad: false }
+            ],
+            why: 'The quotient rule is (g f′ − f g′)/g²: the DENOMINATOR times the derivative of the numerator comes first. The second line has the two products swapped, which flips the sign — it gives +7/(x − 3)² instead of the correct −7/(x − 3)². The function is decreasing on both sides of x = 3, so a positive derivative is wrong on sight.',
+            hint: 'Which product comes first in the quotient rule?',
+            solution: ['(g f′ − f g′)/g²', '((x − 3)(2) − (2x + 1)(1))/(x − 3)²', '= −7/(x − 3)²'] },
+
+          { id: 'r19', kind: 'spot', lesson: 'b1',
+            prompt: 'A student finds the tangent line to y = x² + 1 at x = 3. One line is wrong.',
+            steps: [
+              { t: 'dy/dx = 2x, so the slope at x = 3 is 6', bad: false },
+              { t: 'The point of tangency is (3, 6)', bad: true },
+              { t: 'A line is determined by a point and a slope', bad: false },
+              { t: 'Point-slope form is y − y₁ = m(x − x₁)', bad: false }
+            ],
+            why: 'The y-coordinate of the point comes from the FUNCTION, not from the derivative: y = 3² + 1 = 10, so the point is (3, 10). The derivative supplies only the slope, 6. Using (3, 6) gives y = 6x − 12, a line with the right slope that does not touch the curve at x = 3 at all; the correct tangent is y − 10 = 6(x − 3), or y = 6x − 8.',
+            hint: 'Which function gives the height of the curve at x = 3?',
+            solution: ['Point: (3, f(3)) = (3, 10)', 'Slope: f′(3) = 6', 'y − 10 = 6(x − 3)'] },
+
+          { id: 'r20', kind: 'order', lesson: 'b1',
+            prompt: 'Put the steps of finding a derivative from the definition in order.',
+            steps: [
+              'Write f(x + h) by replacing every x in the formula with x + h, and expand',
+              'Subtract f(x), so that every surviving term contains a factor of h',
+              'Divide by h and cancel the common factor, valid for h ≠ 0',
+              'Let h approach 0 in what remains'
+            ],
+            hint: 'The 0/0 has to be removed before the limit can be taken.',
+            solution: ['Forming f(x + h) is the substitution', 'The subtraction is what makes the h factor out', 'Cancelling the h removes the 0/0', 'Only then is the limit a substitution'] },
+
+          { id: 'r21', kind: 'order', lesson: 'b5',
+            prompt: 'Put the steps of a marginal-revenue-product calculation in order.',
+            steps: [
+              'Write revenue as a function of output: r = pq, with p from the demand equation',
+              'Differentiate to get dr/dq, and differentiate the production function to get dq/dm',
+              'Convert the given number of employees m into the corresponding output q',
+              'Evaluate dr/dq at that q, and multiply by dq/dm'
+            ],
+            hint: 'dr/dq has to be evaluated at an output, not at a number of employees.',
+            solution: ['Revenue must be a function of one variable before it is differentiated', 'The chain rule needs both rates', 'Each rate is evaluated at the value of its own variable', 'The product of the two rates is dr/dm'] }
+        ]
+      }
+    ]
+  };
+
+  root.Courses.register(CALC);
+
+  /* =============================== MATH 1070 =============================== */
+  const BUSMATH = {
+    subject: MATH,
+    id: 'math-1070',
+    code: 'MATH 1070',
+    title: 'Mathematics for Business and Economics',
+    blurb: 'The first half of the book. Built so far: chapter 9 — random variables and what to expect from them, the binomial distribution, and Markov chains, where a matrix carries a system from one week to the next.',
+    level: 'Foundation',
+    prereq: 'precalc',
+    exam: 'Follows the set text, chapters 1 to 9. Chapter 9 is built; chapters 1 to 8 are listed on this page as not yet covered and follow in later releases. Precalculus here covers much of the algebra of chapters 0 to 4.',
+    text: TEXT,
+    legalNote: NOTE,
+    gaps: [
+      'Chapter 0 and 1 — review of algebra, and applications: linear inequalities, absolute value, summation notation and sequences',
+      'Chapter 2 — functions and graphs: combinations of functions, inverse functions, symmetry and translations',
+      'Chapter 3 — lines, parabolas and systems: supply and demand curves, break-even, systems of equations',
+      'Chapter 4 — exponential and logarithmic functions and their properties',
+      'Chapter 5 — mathematics of finance: compound interest, present value, annuities, amortisation and perpetuities',
+      'Chapter 6 — matrix algebra: matrix multiplication, row reduction, inverses and input–output analysis',
+      'Chapter 7 — linear programming: graphical solution, the simplex method, duality',
+      'Chapter 8 — introduction to probability: counting, permutations and combinations, sample spaces, conditional probability, independence and Bayes’ formula'
+    ],
+    units: [
+
+      /* ============================ CHAPTER 9 ============================ */
+      {
+        id: 'prob', n: 1,
+        title: 'Additional topics in probability',
+        blurb: 'A number attached to every outcome, the average you should expect over many trials and how far a single trial strays from it, the distribution that counts successes, and matrices that predict where a system settles.',
+        read: 'Chapter 9',
+        objectives: [
+          'Write the distribution of a discrete random variable and compute its mean, variance and standard deviation',
+          'Recognise a binomial experiment, compute binomial probabilities, and find the mean and standard deviation of a binomial variable',
+          'Set up a transition matrix for a Markov chain, find later state vectors, and find the steady-state vector'
+        ],
+        lessons: [
+          {
+            id: 'a1', title: 'Discrete random variables and expected value', src: 'Section 9.1',
+            idea: `A <b>random variable</b> X is a rule that attaches a number to each outcome of an experiment: the number of heads in three tosses, the number of defective items in a box, the amount won on a lottery ticket. It is <b>discrete</b> when the values it can take can be listed — 0, 1, 2, 3 — rather than filling an interval.<br><br>The <b>distribution</b> of X is the list of its possible values together with the probability of each. Written as a function, <b>f(x) = P(X = x)</b>. Every f(x) is between 0 and 1, and <b>the probabilities sum to 1</b>, which is the check to make on any distribution before using it.<br><br>The <b>mean</b>, or <b>expected value</b>, of X is the long-run average of the values it takes, each weighted by how often it occurs:<br><br><b>μ = E(X) = Σ x f(x)</b><br><br>— multiply each value by its probability and add. It is a weighted average, and it need not be one of the values X can actually take: the expected number of heads in three fair tosses is 1.5, and no toss ever produces 1.5 heads. In a game, the expected value of the net gain says whether the game is favourable, fair or unfavourable over many plays; a negative expected gain is the definition of a bad bet.<br><br>The mean says where the values are centred. The <b>variance</b> says how spread out they are — the expected squared distance from the mean:<br><br><b>Var(X) = Σ (x − μ)² f(x)</b><br><br>There is an equivalent formula that is usually faster:<br><br><b>Var(X) = E(X²) − μ²</b> — that is, Σ x² f(x) minus the square of the mean.<br><br>Both give the same number; the second avoids subtracting μ from every value. Because variance is in squared units, its square root is reported alongside it: the <b>standard deviation</b> <b>σ = √Var(X)</b>, in the same units as X. A larger σ means the values are more dispersed about the mean. Chebyshev's inequality gives the guarantee behind that reading: whatever the distribution, the probability that X lies within k standard deviations of its mean is at least 1 − 1/k² — at least 3/4 within two, at least 8/9 within three.`,
+            rules: [
+              { name: 'A distribution', expr: 'f(x) = P(X = x), with every f(x) between 0 and 1 and the values summing to 1', words: true, note: 'Check the sum before using it.' },
+              { name: 'Mean (expected value)', expr: 'E(X) = Sigma x f(x)', note: 'Each value times its probability, added up. A weighted average.' },
+              { name: 'Variance', expr: 'Var(X) = Sigma (x - mu)^2 f(x)', note: 'The expected squared distance from the mean.' },
+              { name: 'The shortcut', expr: 'Var(X) = E(X^2) - mu^2', note: 'Σ x² f(x) minus the square of the mean. The same number, less arithmetic.' },
+              { name: 'Standard deviation', expr: 'sigma = sqrt(Var(X))', note: 'Back in the units of X.' }
+            ],
+            examples: [
+              {
+                prompt: 'A random variable X takes the values 0, 1 and 2 with probabilities 0.2, 0.5 and 0.3. Find its mean, variance and standard deviation.',
+                steps: [
+                  { do: 'Check the distribution: 0.2 + 0.5 + 0.3 = 1', why: 'If the probabilities did not sum to 1 nothing that follows would be meaningful.' },
+                  { do: 'μ = Σ x f(x) = 0(0.2) + 1(0.5) + 2(0.3) = 0 + 0.5 + 0.6 = 1.1', why: 'Each value weighted by its probability. The mean is not one of the values X takes, and need not be.' },
+                  { do: 'E(X²) = 0²(0.2) + 1²(0.5) + 2²(0.3) = 0 + 0.5 + 1.2 = 1.7, so Var(X) = 1.7 − 1.1² = 1.7 − 1.21 = 0.49', why: 'The shortcut formula: square the values, not the probabilities, weight and add, then subtract the square of the mean.' },
+                  { do: 'σ = √0.49 = 0.7', why: 'Check by the definition: (0 − 1.1)²(0.2) + (1 − 1.1)²(0.5) + (2 − 1.1)²(0.3) = 0.242 + 0.005 + 0.243 = 0.49. Both formulas agree.' }
+                ],
+                answer: 'μ = 1.1, Var(X) = 0.49, σ = 0.7', answerWords: true
+              },
+              {
+                prompt: 'A game costs $2 to play. A fair eight-sided die is rolled; if it shows 8 you win $10, otherwise nothing. What is the expected net gain per play, and is the game favourable?',
+                steps: [
+                  { do: 'Let G be the net gain: G = 10 − 2 = 8 with probability 1/8, and G = −2 with probability 7/8', why: 'Net gain subtracts the cost of playing in every case, including the winning one. Forgetting to subtract it from the win is the usual slip.' },
+                  { do: 'E(G) = 8(1/8) + (−2)(7/8) = 1 − 1.75', why: 'Values times probabilities, added — the same formula as for any random variable.' },
+                  { do: 'E(G) = −$0.75', why: 'On average a play loses 75 cents. Equivalently: expected winnings are 10/8 = $1.25 against a $2 stake.' },
+                  { do: 'The game is unfavourable to the player', why: 'A fair game has expected gain 0. A negative expected gain means that over many plays the player’s losses grow in proportion to the number of plays.' }
+                ],
+                answer: '−$0.75 per play — unfavourable', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'prob-mean-must-be-a-value',
+                wrong: 'Rejecting a mean of 1.1 because X can only be 0, 1 or 2',
+                right: 'The mean is a weighted average and need not be a possible value.',
+                why: 'The expected value is what the average of many observations settles toward, and averages are rarely whole numbers even when every observation is. Rounding 1.1 to 1 destroys the information the mean carries, and also makes the variance come out wrong.'
+              },
+              {
+                id: 'prob-variance-squared-probabilities',
+                wrong: 'Squaring the probabilities in the variance formula instead of the values',
+                right: 'E(X²) = Σ x² f(x): the values are squared, the probabilities are not.',
+                why: 'The variance measures how far the VALUES sit from the mean, so it is the values that are squared. Squaring probabilities produces a number that is always too small and that no longer sums to anything meaningful. Writing a column of x² beside the column of x before multiplying keeps the two straight.'
+              },
+              {
+                id: 'prob-net-gain-forgets-cost',
+                wrong: 'Using the prize as the gain when computing the expected value of a game',
+                right: 'The gain is prize minus cost, in every outcome including the winning one.',
+                why: 'The cost is paid whether or not you win, so it belongs on every branch. Leaving it off the winning branch overstates the expected gain by the cost times the winning probability, and can turn an unfavourable game into an apparently favourable one.'
+              }
+            ]
+          },
+
+          {
+            id: 'a2', title: 'The binomial distribution', src: 'Section 9.2',
+            idea: `Many experiments are a fixed number of identical yes-or-no trials: toss a coin eight times; inspect ten items and count defectives; ask twenty people whether they will vote. Each trial is a <b>Bernoulli trial</b> when it has exactly <b>two outcomes</b> — call them success and failure — the probability of success <b>p</b> is the <b>same on every trial</b>, and the trials are <b>independent</b>. Write <b>q = 1 − p</b> for the probability of failure.<br><br>Let X be the number of successes in <b>n</b> such trials. Then X has the <b>binomial distribution</b>:<br><br><b>P(X = x) = <sub>n</sub>C<sub>x</sub> p<sup>x</sup> q<sup>n−x</sup></b>, for x = 0, 1, …, n<br><br>The reasoning is worth having, because it makes the formula unforgettable. Any particular sequence with x successes and n − x failures has probability p<sup>x</sup>q<sup>n−x</sup>, by independence. The number of such sequences is the number of ways to choose which x of the n trials are the successes: <sub>n</sub>C<sub>x</sub> = n! / (x!(n − x)!). Multiply, and that is the formula. The name comes from the binomial theorem: these probabilities are exactly the terms in the expansion of (q + p)<sup>n</sup>, which is why they sum to 1<sup>n</sup> = 1.<br><br>A binomial variable's mean and standard deviation have closed forms that skip the distribution entirely:<br><br><b>μ = np</b> and <b>σ = √(npq)</b><br><br>The mean is what you would guess: n trials, each succeeding a fraction p of the time.<br><br>The phrase to watch for in a question is <b>"at least"</b> or <b>"at most"</b>. "At least two heads in eight tosses" means X = 2 or 3 or … or 8, seven separate probabilities. It is far quicker to use the <b>complement</b>: P(X ≥ 2) = 1 − P(X = 0) − P(X = 1), two terms instead of seven. "At most one" is P(X = 0) + P(X = 1) directly. "More than" and "fewer than" exclude the boundary; "at least" and "at most" include it — and that single word is where most binomial marks are lost.`,
+            rules: [
+              { name: 'A binomial experiment', expr: 'n independent trials, two outcomes each, the same success probability p every time', words: true, note: 'All three conditions. Drawing without replacement breaks the third.' },
+              { name: 'Binomial probability', expr: 'P(X = x) = nCx × p^x × q^(n - x)', note: 'nCx counts which trials succeed; p^x q^(n−x) is the probability of any one such arrangement. q = 1 − p.' },
+              { name: 'Mean', expr: 'mu = n p', note: 'The number of trials times the success probability.' },
+              { name: 'Standard deviation', expr: 'sigma = sqrt(n p q)', note: 'The variance is npq; the standard deviation is its square root.' },
+              { name: '"At least"', expr: 'P(X ≥ k) = 1 − P(X < k): use the complement', words: true, note: 'Two or three terms instead of many. "At least" includes the boundary; "more than" does not.' }
+            ],
+            examples: [
+              {
+                prompt: 'A fair four-sided spinner is spun 4 times. Success is landing on 1, so p = 1/3 is not right — use a spinner where success has probability 1/3 on each spin. Find P(X = 2), and the mean and standard deviation of X.',
+                steps: [
+                  { do: 'This is binomial with n = 4, p = 1/3, q = 2/3', why: 'Fixed number of independent spins, two outcomes each, the same p every time. Check all three before using the formula.' },
+                  { do: 'P(X = 2) = ₄C₂ (1/3)² (2/3)² = 6 · (1/9) · (4/9) = 24/81 = 8/27 ≈ 0.2963', why: '₄C₂ = 6 counts which two of the four spins succeed; (1/3)²(2/3)² is the probability of any one such pattern.' },
+                  { do: 'μ = np = 4(1/3) = 4/3 ≈ 1.33', why: 'Four spins, each succeeding a third of the time. No distribution needed.' },
+                  { do: 'σ = √(npq) = √(4 · 1/3 · 2/3) = √(8/9) ≈ 0.943', why: 'The variance is npq = 8/9; take the square root for the standard deviation, in the same units as X.' }
+                ],
+                answer: 'P(X = 2) = 8/27 ≈ 0.2963; μ = 4/3; σ ≈ 0.943', answerWords: true
+              },
+              {
+                prompt: 'A fair coin is tossed 8 times. Find the probability of at least two heads.',
+                steps: [
+                  { do: 'Binomial with n = 8, p = q = 1/2. "At least two" is X = 2, 3, 4, 5, 6, 7 or 8', why: 'Seven separate terms if done directly. That is the signal to use the complement.' },
+                  { do: 'P(X ≥ 2) = 1 − P(X = 0) − P(X = 1)', why: 'The only outcomes NOT in "at least two" are zero heads and one head. Subtracting them from 1 covers everything else.' },
+                  { do: 'P(X = 0) = ₈C₀ (1/2)⁸ = 1/256, and P(X = 1) = ₈C₁ (1/2)⁸ = 8/256', why: 'With p = q, every arrangement has the same probability (1/2)⁸, and only the count of arrangements differs.' },
+                  { do: 'P(X ≥ 2) = 1 − 9/256 = 247/256 ≈ 0.9648', why: 'Nearly certain, as it should be: two heads in eight tosses is a low bar. If "more than two" had been asked, P(X = 2) = 28/256 would also be subtracted.' }
+                ],
+                answer: '247/256 ≈ 0.9648', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'prob-binomial-without-replacement',
+                wrong: 'Using the binomial formula for draws from a small group without replacement',
+                right: 'Binomial needs the same p on every trial. Drawing without replacement changes p after each draw.',
+                why: 'Three defectives drawn from a box of ten is not binomial: after the first draw the box has nine items and a different fraction defective. The formula is only as good as its three conditions, and independence with constant p is the one that a "without replacement" question deliberately breaks.'
+              },
+              {
+                id: 'prob-at-least-boundary',
+                wrong: 'Treating "at least two" as "more than two", or the reverse',
+                right: '"At least two" includes 2; "more than two" starts at 3. "At most two" includes 2; "fewer than two" stops at 1.',
+                why: 'The difference is one whole term of the sum, and on a complement calculation it decides whether P(X = 2) is subtracted or not. Writing the list of values the phrase covers — X = 2, 3, …, n — before computing anything settles it every time.'
+              },
+              {
+                id: 'prob-combination-forgotten',
+                wrong: 'Computing P(X = 2) as p²q^(n−2) with no combination in front',
+                right: 'Multiply by nCx, the number of ways the x successes can be placed among the n trials.',
+                why: 'p²q^(n−2) is the probability of ONE specific arrangement — say successes on the first two trials and failures after. There are nCx arrangements, each equally likely, and the event "exactly two successes" is any of them. Leaving the factor out understates every probability except X = 0 and X = n, where nCx = 1.'
+              }
+            ]
+          },
+
+          {
+            id: 'a3', title: 'Markov chains', src: 'Section 9.3',
+            idea: `Some systems move between a fixed set of <b>states</b> — a customer uses station A or station B; a machine is working or broken; a region is urban or rural — and the probability of the next state depends <b>only on the current state</b>, not on the history before it. A sequence of observations with that property is a <b>Markov chain</b>.<br><br>Its whole behaviour is captured by a square <b>transition matrix</b> T. With k states, T is k × k, and the entry <b>T<sub>ij</sub> is the probability of moving to state i next, given that the system is in state j now</b>. So each <b>column</b> is a "from" state and each row is a "to" state, every entry is a probability in [0, 1], and <b>every column sums to 1</b>, because from any current state the system must go somewhere. Checking the column sums is the first thing to do with any transition matrix.<br><br>Where the system is at stage n is described by a <b>state vector</b> X<sub>n</sub>: a column with k entries, the entry i being the probability of being in state i at that stage. X<sub>0</sub> is the initial state vector. The next state vector is a matrix product:<br><br><b>X<sub>1</sub> = T X<sub>0</sub>, X<sub>2</sub> = T X<sub>1</sub>, and in general X<sub>n</sub> = T X<sub>n−1</sub> = T<sup>n</sup> X<sub>0</sub></b><br><br>Each entry of T X<sub>0</sub> is a sum of products — the probability of arriving in state i is the sum over every current state j of (probability of being in j) times (probability of moving from j to i) — and that sum of products is exactly what matrix multiplication computes. This is the reason the matrix is set up with columns as "from".<br><br>For many chains the state vectors settle down as n grows: X<sub>n</sub> approaches a fixed vector Q that no longer changes when T is applied. This is the <b>steady-state vector</b>, and it satisfies<br><br><b>TQ = Q</b>, with the entries of Q summing to 1<br><br>It is found without computing any powers of T: write out TQ = Q as equations in the unknown entries of Q (one of these equations is redundant), replace the redundant one with the condition that the entries sum to 1, and solve the resulting linear system. The steady-state vector is where the chain ends up in the long run, and it does <b>not depend on X<sub>0</sub></b> — the starting distribution is forgotten. That is what makes it the answer to questions like "what market share will each station have eventually".`,
+            rules: [
+              { name: 'Transition matrix', expr: 'Entry (i, j) is the probability of moving to state i from state j; every column sums to 1', words: true, note: 'Columns are "from", rows are "to". Check the column sums first.' },
+              { name: 'Next state vector', expr: 'X_n = T X_(n-1)', note: 'Multiply the current state vector on the left by T. Each entry is a sum of (probability of being in j) × (probability of j to i).' },
+              { name: 'Later stages', expr: 'X_n = T^n X_0', note: 'n applications of T. Compute step by step rather than raising T to a power by hand.' },
+              { name: 'Steady-state vector', expr: 'T Q = Q', note: 'With the entries of Q summing to 1. Solve the linear system; the answer does not depend on X_0.' }
+            ],
+            examples: [
+              {
+                prompt: 'Two streaming services share a market. Each month, 70% of service A\'s subscribers stay and 30% switch to B; 40% of B\'s subscribers switch to A and 60% stay. Currently each has half the market. Find the market shares after one month and after two.',
+                steps: [
+                  { do: 'Transition matrix, columns "from" and rows "to": T = [[0.7, 0.4], [0.3, 0.6]]', why: 'Column 1 is "from A": 0.7 stays (to A), 0.3 goes to B. Column 2 is "from B": 0.4 to A, 0.6 stays. Each column sums to 1, as it must.' },
+                  { do: 'X₀ = [0.5, 0.5]. X₁ = T X₀ = [0.7(0.5) + 0.4(0.5), 0.3(0.5) + 0.6(0.5)] = [0.55, 0.45]', why: 'A’s share next month is (A’s share now)(prob of staying) + (B’s share now)(prob of switching to A). That sum of products is the first row of T times X₀.' },
+                  { do: 'X₂ = T X₁ = [0.7(0.55) + 0.4(0.45), 0.3(0.55) + 0.6(0.45)] = [0.385 + 0.18, 0.165 + 0.27] = [0.565, 0.435]', why: 'Apply T again to the NEW vector, not to X₀. The entries still sum to 1, which is the arithmetic check at every stage.' },
+                  { do: 'After one month A has 55% and B 45%; after two, 56.5% and 43.5%', why: 'A is gaining, but by less each month — the shares are approaching a limit, which the next example finds directly.' }
+                ],
+                answer: 'X₁ = [0.55, 0.45] and X₂ = [0.565, 0.435]', answerWords: true
+              },
+              {
+                prompt: 'For the same transition matrix T = [[0.7, 0.4], [0.3, 0.6]], find the steady-state vector.',
+                steps: [
+                  { do: 'Let Q = [a, b] with a + b = 1, and require TQ = Q', why: 'The steady state is the vector T leaves unchanged. Its entries are probabilities, so they sum to 1.' },
+                  { do: 'First row of TQ = Q: 0.7a + 0.4b = a, so 0.4b = 0.3a, so b = 0.75a', why: 'The second row gives 0.3a + 0.6b = b, which simplifies to the same relation — one of the two equations is always redundant, and that is why the sum condition is needed.' },
+                  { do: 'Substitute into a + b = 1: a + 0.75a = 1, so a = 1/1.75 = 4/7 and b = 3/7', why: 'The sum condition replaces the redundant equation and pins down the scale.' },
+                  { do: 'Q = [4/7, 3/7] ≈ [0.5714, 0.4286]', why: 'In the long run A holds four-sevenths of the market whatever the starting shares were. Check: TQ = [0.7(4/7) + 0.4(3/7), …] = [(2.8 + 1.2)/7, …] = [4/7, …]. It is unchanged, as required.' }
+                ],
+                answer: 'Q = [4/7, 3/7] ≈ [0.5714, 0.4286]', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'prob-transition-rows-sum',
+                wrong: 'Building the transition matrix so that the ROWS sum to 1',
+                right: 'In this course, columns are "from" states and sum to 1; the state vector is a column multiplied on the left by T.',
+                why: 'Both conventions exist in the world, and they are transposes of each other. The one used here goes with X_n = T X_(n−1): a column state vector on the right. Mixing the conventions produces a matrix product that is either undefined or gives probabilities that do not sum to 1 — which is the check that catches it.'
+              },
+              {
+                id: 'prob-x2-from-x0',
+                wrong: 'Computing X₂ as T X₀ again, or as 2T X₀',
+                right: 'X₂ = T X₁ — apply T to the most recent state vector. Equivalently T² X₀.',
+                why: 'Each application of T advances the chain one stage, so the second month’s vector comes from the first month’s, not from the start. Multiplying by 2 has no meaning at all and gives entries that sum to 2.'
+              },
+              {
+                id: 'prob-steady-state-two-equations',
+                wrong: 'Solving TQ = Q using both rows and finding either no solution or only Q = 0',
+                right: 'One row of TQ = Q is redundant. Use one row together with the condition that the entries sum to 1.',
+                why: 'Because the columns of T sum to 1, the rows of TQ = Q are dependent, and the system on its own only says Q is proportional to something. The sum-to-1 condition is what makes Q a probability vector and makes the answer unique.'
+              }
+            ]
+          }
+        ],
+        practice: [
+          { id: 'q1', kind: 'numeric', lesson: 'a1',
+            prompt: 'X takes the values 0, 1 and 2 with probabilities 0.2, 0.5 and 0.3. What is E(X)?',
+            answer: 1.1, verify: { expr: '0*Rational(2,10) + 1*Rational(5,10) + 2*Rational(3,10)' },
+            hint: 'Each value times its probability, added.',
+            solution: ['0(0.2) + 1(0.5) + 2(0.3)', '= 0 + 0.5 + 0.6', '= 1.1'] },
+
+          { id: 'q2', kind: 'numeric', lesson: 'a1',
+            prompt: 'With the same distribution, what is Var(X)?',
+            answer: 0.49, verify: { expr: '(0*Rational(2,10) + 1*Rational(5,10) + 4*Rational(3,10)) - Rational(11,10)**2' },
+            hint: 'E(X²) minus the square of the mean.',
+            solution: ['E(X²) = 0(0.2) + 1(0.5) + 4(0.3) = 1.7', 'μ² = 1.21', 'Var(X) = 1.7 − 1.21 = 0.49'] },
+
+          { id: 'q3', kind: 'numeric', lesson: 'a1',
+            prompt: 'With the same distribution, what is the standard deviation of X?',
+            answer: 0.7, verify: { expr: 'sqrt((1*Rational(5,10) + 4*Rational(3,10)) - Rational(11,10)**2)' },
+            hint: 'The square root of the variance.',
+            solution: ['Var(X) = 0.49', 'σ = √0.49', '= 0.7'] },
+
+          { id: 'q4', kind: 'numeric', lesson: 'a1',
+            prompt: 'A game costs $2 to play. With probability 1/8 you win $10; otherwise nothing. What is the expected net gain per play, in dollars? Give the sign.',
+            answer: -0.75, verify: { expr: '10*Rational(1,8) - 2' },
+            hint: 'Subtract the cost on every branch.',
+            solution: ['Net gain is 8 with probability 1/8 and −2 with probability 7/8', 'E = 8(1/8) − 2(7/8) = 1 − 1.75', '= −$0.75'] },
+
+          { id: 'q5', kind: 'numeric', lesson: 'a2',
+            prompt: 'A binomial variable has n = 4 and p = 1/3. What is P(X = 2)? Give 4 decimal places.',
+            answer: 0.2963, tol: 0.00005, verify: { expr: 'binomial(4, 2) * Rational(1,3)**2 * Rational(2,3)**2', dp: 4 },
+            hint: '₄C₂ times p² times q².',
+            solution: ['₄C₂ = 6', '6 × (1/9) × (4/9) = 24/81 = 8/27', '≈ 0.2963'] },
+
+          { id: 'q6', kind: 'numeric', lesson: 'a2',
+            prompt: 'A fair coin is tossed 8 times. What is the probability of at least two heads? Give 4 decimal places.',
+            answer: 0.9648, tol: 0.00005, verify: { expr: '1 - binomial(8, 0)*Rational(1,2)**8 - binomial(8, 1)*Rational(1,2)**8', dp: 4 },
+            hint: 'Use the complement: subtract P(0) and P(1) from 1.',
+            solution: ['P(X = 0) = 1/256 and P(X = 1) = 8/256', '1 − 9/256 = 247/256', '≈ 0.9648'] },
+
+          { id: 'q7', kind: 'numeric', lesson: 'a2',
+            prompt: 'A binomial variable has n = 50 and p = 0.2. What is its mean?',
+            answer: 10, verify: { expr: '50 * Rational(2,10)' },
+            hint: 'μ = np.',
+            solution: ['μ = np', '= 50 × 0.2', '= 10'] },
+
+          { id: 'q8', kind: 'numeric', lesson: 'a2',
+            prompt: 'With n = 50 and p = 0.2, what is the standard deviation? Give 3 decimal places.',
+            answer: 2.828, tol: 0.0005, verify: { expr: 'sqrt(50 * Rational(2,10) * Rational(8,10))', dp: 3 },
+            hint: 'σ = √(npq), and q = 1 − p.',
+            solution: ['npq = 50 × 0.2 × 0.8 = 8', 'σ = √8', '≈ 2.828'] },
+
+          { id: 'q9', kind: 'numeric', lesson: 'a3',
+            prompt: 'T = [[0.7, 0.4], [0.3, 0.6]] and X₀ = [0.5, 0.5]. What is the first entry of X₁?',
+            answer: 0.55, verify: { expr: '(Matrix([[Rational(7,10), Rational(4,10)], [Rational(3,10), Rational(6,10)]]) * Matrix([Rational(1,2), Rational(1,2)]))[0]' },
+            hint: 'First row of T times X₀.',
+            solution: ['X₁ = T X₀', 'First entry: 0.7(0.5) + 0.4(0.5)', '= 0.35 + 0.20 = 0.55'] },
+
+          { id: 'q10', kind: 'numeric', lesson: 'a3',
+            prompt: 'With the same T and X₀, what is the first entry of X₂?',
+            answer: 0.565, verify: { expr: '(Matrix([[Rational(7,10), Rational(4,10)], [Rational(3,10), Rational(6,10)]])**2 * Matrix([Rational(1,2), Rational(1,2)]))[0]' },
+            hint: 'Apply T to X₁, not to X₀.',
+            solution: ['X₁ = [0.55, 0.45]', 'First entry of T X₁: 0.7(0.55) + 0.4(0.45)', '= 0.385 + 0.18 = 0.565'] },
+
+          { id: 'q11', kind: 'numeric', lesson: 'a3',
+            prompt: 'For T = [[0.7, 0.4], [0.3, 0.6]], what is the first entry of the steady-state vector? Give 4 decimal places.',
+            answer: 0.5714, tol: 0.00005, verify: { expr: 'solve([Rational(7,10)*a + Rational(4,10)*b - a, a + b - 1], [a, b])[a]', dp: 4 },
+            hint: 'One row of TQ = Q together with a + b = 1.',
+            solution: ['0.7a + 0.4b = a gives b = 0.75a', 'a + 0.75a = 1 gives a = 4/7', '≈ 0.5714'] },
+
+          { id: 'q12', kind: 'mc', lesson: 'a2',
+            prompt: 'Which of these is NOT a binomial experiment?',
+            options: [
+              { t: 'Drawing 3 items one at a time, without replacement, from a box of 10 and counting defectives', ok: true },
+              { t: 'Tossing a fair coin 8 times and counting heads' },
+              { t: 'Asking 20 randomly chosen voters, independently, whether they support a measure' },
+              { t: 'Spinning a spinner 4 times and counting how often it lands on 1' }
+            ],
+            hint: 'Which one changes the success probability from trial to trial?',
+            solution: ['Binomial needs independent trials with the same p every time', 'Without replacement, each draw changes the fraction of defectives left', 'The other three have a fixed p on every trial'] },
+
+          { id: 'q13', kind: 'mc', lesson: 'a3',
+            prompt: 'A matrix is proposed as a transition matrix: [[0.6, 0.5], [0.3, 0.5]]. What is wrong with it?',
+            options: [
+              { t: 'The first column sums to 0.9, not 1 — from state 1 the system must go somewhere', ok: true },
+              { t: 'Nothing; it is a valid transition matrix' },
+              { t: 'The rows must sum to 1, and the first row sums to 1.1' },
+              { t: 'Transition matrices cannot contain the same entry twice' }
+            ],
+            hint: 'Add up each column.',
+            solution: ['Columns are "from" states, and every column must sum to 1', 'Column 1: 0.6 + 0.3 = 0.9', 'Ten per cent of the probability from state 1 is unaccounted for'] },
+
+          { id: 'q14', kind: 'spot', lesson: 'a1',
+            prompt: 'A student finds the variance of X, which takes 0, 1, 2 with probabilities 0.2, 0.5, 0.3. One line is wrong.',
+            steps: [
+              { t: 'The mean is 0(0.2) + 1(0.5) + 2(0.3) = 1.1', bad: false },
+              { t: 'Var(X) = E(X²) − μ², so compute E(X²) first', bad: false },
+              { t: 'E(X²) = 0(0.2²) + 1(0.5²) + 2(0.3²) = 0.25 + 0.18 = 0.43', bad: true },
+              { t: 'Then subtract μ² = 1.21', bad: false }
+            ],
+            why: 'E(X²) squares the VALUES, not the probabilities: 0²(0.2) + 1²(0.5) + 2²(0.3) = 0 + 0.5 + 1.2 = 1.7, so Var(X) = 1.7 − 1.21 = 0.49. The student’s 0.43 leads to a negative variance, 0.43 − 1.21, which is impossible — a variance is an expected square and can never be below zero. That impossibility is the check that catches the error.',
+            hint: 'Can a variance be negative?',
+            solution: ['E(X²) = Σ x² f(x) = 1.7', 'μ² = 1.21', 'Var(X) = 0.49'] },
+
+          { id: 'q15', kind: 'spot', lesson: 'a2',
+            prompt: 'A student finds the probability of at least two heads in 8 tosses of a fair coin. One line is wrong.',
+            steps: [
+              { t: 'X, the number of heads, is binomial with n = 8 and p = 1/2', bad: false },
+              { t: '"At least two" is the complement of "fewer than two", which is X = 0 or X = 1', bad: false },
+              { t: 'P(X ≥ 2) = 1 − P(X = 0) − P(X = 1) − P(X = 2)', bad: true },
+              { t: 'P(X = 0) = 1/256 and P(X = 1) = 8/256', bad: false }
+            ],
+            why: '"At least two" INCLUDES two, so P(X = 2) is part of the event and must not be subtracted. The complement is X = 0 or 1 only, exactly as the second line says: P(X ≥ 2) = 1 − 1/256 − 8/256 = 247/256. Subtracting P(X = 2) = 28/256 as well answers a different question — "more than two heads" — and gives 219/256.',
+            hint: 'Does "at least two" include exactly two?',
+            solution: ['The complement of X ≥ 2 is X ≤ 1', '1 − 1/256 − 8/256', '= 247/256 ≈ 0.9648'] },
+
+          { id: 'q16', kind: 'order', lesson: 'a3',
+            prompt: 'Put the steps of finding a steady-state vector in order.',
+            steps: [
+              'Write Q as a column of unknowns that sum to 1',
+              'Set TQ = Q and write out its rows as equations',
+              'Discard the redundant row and keep the sum-to-1 condition in its place',
+              'Solve the resulting linear system for the entries of Q'
+            ],
+            hint: 'One of the rows of TQ = Q never adds anything.',
+            solution: ['Q is a probability vector, so its entries sum to 1', 'TQ = Q is the defining condition', 'The rows are dependent because the columns of T sum to 1', 'The sum condition fixes the scale and makes Q unique'] },
+
+          { id: 'q17', kind: 'order', lesson: 'a2',
+            prompt: 'Put the steps of a binomial probability calculation in order.',
+            steps: [
+              'Check the three conditions: fixed n, two outcomes, the same p on independent trials',
+              'Identify n, p and q = 1 − p, and list which values of X the question’s wording covers',
+              'Decide whether the direct sum or its complement needs fewer terms',
+              'Compute each term as nCx p^x q^(n−x) and combine'
+            ],
+            hint: 'The wording — at least, more than, at most — decides the list before any arithmetic.',
+            solution: ['If the conditions fail the formula does not apply', 'The list of values is where "at least" against "more than" is settled', 'The complement is usually shorter for "at least"', 'Each term needs its combination factor'] }
+        ]
+      }
+    ]
+  };
+
+  root.Courses.register(BUSMATH);
+
+})(typeof window !== 'undefined' ? window : globalThis);
+
+if (typeof module !== 'undefined' && module.exports) module.exports = globalThis.Courses;
+
+</script>
+<script>
 /* UNI Made EZ — subject profiles
    Copyright © 2026 JohnsonXCorp. All rights reserved.
    Proprietary. Not open source: see LICENSE. */
@@ -16260,7 +17472,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.42', date: '16 September 2026', year: 2026 };
+  const BUILD = { v: '2.43', date: '16 September 2026', year: 2026 };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonandy242', ['gmail', 'com'].join('.')].join('@');
   /* The one sentence that says what this is. It appears under the wordmark, and build.js uses
@@ -16273,6 +17485,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      because the person who needs it is the one who just watched the app refresh itself and wants to
      know what moved. Trim the tail when it gets past a dozen; nobody reads further back than that. */
   const WHATS_NEW = [
+    ['2.43', '<b>Business calculus, from the chapter the quiz is on.</b> Two new Math courses follow the set text for TRU&rsquo;s MATH 1070 and MATH 1170 &mdash; Haeussler, Paul &amp; Wood, <i>Introductory Mathematical Analysis</i>, 14th edition &mdash; section by section, in the book&rsquo;s order, with every explanation and every question written from scratch. <b>Calculus for Business and Economics</b> opens with chapter 10, limits and continuity (the form 0/0, one-sided and infinite limits, limits at infinity by dominant terms, the three-part test for continuity, and inequalities solved by sign chart), and chapter 11, differentiation (the derivative from its definition, the power rule and the rewriting it needs, marginal cost and marginal revenue, the product, quotient and chain rules, and the marginal-revenue product). <b>Mathematics for Business and Economics</b> opens with chapter 9: expected value and variance, the binomial distribution, and Markov chains with their steady-state vector. Twelve lessons, 24 worked examples, 53 practice questions and 36 named misconceptions &mdash; every limit, derivative, binomial probability and matrix product recomputed by a computer algebra system before the page ships. Each course prints the chapters it does not yet cover, and the rest follow in the same shape.'],
     ['2.42', '<b>Macroeconomics is taught here now &mdash; the whole course, not a first instalment.</b> <b>Principles of Macroeconomics</b> follows an eleven-lecture ECON 1950 series in its own order: scarcity, the production possibilities curve and comparative advantage; what GDP counts and the two ways of adding it up; unemployment, the CPI and the GDP deflator; aggregate demand against long-run aggregate supply; the classical model and the Keynesian answer to it; consumption, the multiplier and where output settles; public debt and fiscal policy; money, fractional reserve banking and the money multiplier; and the Bank of Canada&rsquo;s four levers. <b>Nine units, 27 lessons, 54 worked examples, 99 practice questions and 81 named misconceptions</b> &mdash; every one a mistake first-year macro students actually make, starting with the three that cost the most marks: dividing the unemployed by the employed, adding imports instead of subtracting them, and spending the whole recessionary gap instead of dividing it by the multiplier. Every figure is recomputed by a computer algebra system before the page ships. <b>And there is an eleventh subject profile</b>: set a subject to <b>Economics</b> and your own files are read as economics &mdash; identities and rates first, cause-and-effect sentences treated as definitions, arithmetic on. The set text is named and pointed at, as always, and never reproduced.'],
     ['2.41', '<b>A full audit of every screen, on every display it is used on.</b> Nineteen device sizes &mdash; every iPhone from the 13 mini to the 16 Pro Max, iPads in both orientations, and four desktop widths &mdash; across all twenty-five screens, in both themes. Nothing scrolled sideways and nothing was cut off, and four things were wrong. <b>Small type</b>: the labels, chips and build stamps sat between 9.9px and 10.9px, under the 11px floor below which text stops being comfortable on a phone; they were seventy separate numbers and are now four named sizes with a floor that a test enforces. <b>Touch targets</b>: forty kinds of control were under the 44px a thumb needs, including the theme switch at 18px tall and the topbar buttons at 30&times;26 &mdash; a link inside a sentence is deliberately left alone, because padding a word out would open up the paragraph around it. <b>The notch and the home indicator</b>: the page declared no <code>viewport-fit</code>, so the one piece of safe-area padding in the stylesheet was silently doing nothing; installed on an iPhone, the rating bar could sit under the home indicator. <b>And a formula inside a fraction</b> rendered its exponent at 9.4px, the smallest text in the app. All fixed, and each one now has a test, so none of them can come back quietly.'],
     ['2.40', '<b>Financial Accounting is finished.</b> It shipped in v2.37 with four of its twelve modules built and the other eight listed as gaps; all twelve are now taught. Five new units: <b>cash</b> &mdash; internal control, the bank reconciliation and which side of it needs a journal entry; <b>inventory</b> &mdash; perpetual against periodic, purchase discounts and freight; <b>costing</b> &mdash; FIFO, weighted average and specific identification, the moving average a perpetual system needs, and lower of cost and net realisable value; <b>property, plant and equipment</b> &mdash; what counts as cost, the three depreciation methods, revised estimates and disposal; <b>liabilities and equity</b> &mdash; warranty provisions, why a bond is issued at a discount, shares and dividends; and <b>cash flows and analysis</b> &mdash; the indirect method and the ratios a reader starts from. Fifteen new lessons, 30 worked examples, 50 practice questions and 42 more named misconceptions. <b>LIFO stays in the gaps list on purpose:</b> it is prohibited under IAS 2.25 and ASPE 3031, and because its arithmetic is perfectly correct nothing in this app would ever flag it &mdash; so it is named rather than quietly left out.'],
