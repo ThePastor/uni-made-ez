@@ -18647,15 +18647,14 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     id: 'math-1070',
     code: 'MATH 1070',
     title: 'Mathematics for Business and Economics',
-    blurb: 'The first half of the book. Built so far: chapters 1 to 4 — equations and inequalities put to work, functions and their graphs, lines, parabolas and systems, exponential and logarithmic functions — and chapter 9 — random variables, the binomial distribution, and Markov chains.',
+    blurb: 'The first half of the book. Built so far: chapters 1 to 5 — algebra put to work, functions and graphs, lines and systems, exponentials and logarithms, and the mathematics of finance — and chapter 9 — random variables, the binomial distribution, and Markov chains.',
     level: 'Foundation',
     prereq: 'precalc',
-    exam: 'Follows the set text, chapters 1 to 9. Chapters 1 to 4 and 9 are built; chapters 5 to 8 are listed on this page as not yet covered and follow in later releases, one chapter at a time. Precalculus here covers the review algebra of chapter 0 and much of chapters 2 to 4.',
+    exam: 'Follows the set text, chapters 1 to 9. Chapters 1 to 5 and 9 are built; chapters 6 to 8 are listed on this page as not yet covered and follow in later releases, one chapter at a time. Precalculus here covers the review algebra of chapter 0 and much of chapters 2 to 4.',
     text: TEXT,
     legalNote: NOTE,
     gaps: [
       'Chapter 0 — review of algebra: covered by the Precalculus course rather than built here',
-      'Chapter 5 — mathematics of finance: compound interest, present value, annuities, amortisation and perpetuities',
       'Chapter 6 — matrix algebra: matrix multiplication, row reduction, inverses and input–output analysis',
       'Chapter 7 — linear programming: graphical solution, the simplex method, duality',
       'Chapter 8 — introduction to probability: counting, permutations and combinations, sample spaces, conditional probability, independence and Bayes’ formula'
@@ -21271,9 +21270,610 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             solution: ['e^(−0.5x) = 25/100', '0.5x = ln 4 ≈ 1.3863', 'x ≈ 2.773'] }
         ]
       },
+      /* ============================ CHAPTER 5 ============================ */
+      {
+        id: 'finance', n: 5,
+        title: 'Mathematics of finance',
+        blurb: 'Money moved through time: compounding and effective rates, present value and what a future sum is worth today, continuous compounding, the annuity formulas behind savings plans and loans, amortisation schedules, and perpetuities.',
+        read: 'Chapter 5',
+        objectives: [
+          'Compute compound amounts and effective rates, compare nominal rates, and find doubling times',
+          'Find present values, set up equations of value, and decide investments by net present value',
+          'Use continuous compounding for compound amount, effective rate and present value',
+          'Find the present and future value of an ordinary annuity and an annuity due, the periodic payment, and sinking-fund deposits',
+          'Amortise a loan: the payment, the schedule, the total interest, and the number of periods',
+          'Value a perpetuity, and recognise it as the limit of an annuity'
+        ],
+        lessons: [
+          {
+            id: 'f1', title: 'Compound interest', src: 'Section 5.1',
+            idea: `Chapter 4 introduced the compound amount; this chapter makes it the working tool of finance. A principal P invested at a <b>periodic rate</b> r for n periods grows to<br><br><b>S = P(1 + r)<sup>n</sup></b><br><br>and P is the <b>present value</b> of S. The rate quoted is almost always a <b>nominal annual rate</b> compounded some number of times a year; the periodic rate is the nominal rate divided by the number of periods per year, and n counts periods. $4,000 at 7% compounded monthly for 5 years has r = 0.07/12 and n = 60, giving S ≈ 5,670.50.<br><br>Because the same nominal rate earns different amounts under different compounding, nominal rates cannot be compared directly. The <b>effective rate</b> r<sub>e</sub> is the rate compounded annually that would produce the same growth in a year:<br><br><b>r<sub>e</sub> = (1 + r/n)<sup>n</sup> − 1</b>, for a nominal rate r compounded n times a year<br><br>So 8% compounded quarterly is (1.02)<sup>4</sup> − 1 ≈ 8.243% effective, while 8.1% compounded semiannually is (1.0405)<sup>2</sup> − 1 ≈ 8.264% — slightly better, despite the lower-sounding quarterly frequency. Effective rates are the only fair basis of comparison, and a problem that gives an effective rate is simply saying "compounded annually at this rate". The effective rate rises with the number of compoundings but is bounded: section 5.3 gives the ceiling.<br><br>The "how long" questions are exponential equations from section 4.4. Money doubles at rate r per period when (1 + r)<sup>n</sup> = 2, so n = ln 2/ln(1 + r) — about 11.9 years at 6% compounded annually — and the principal never enters, because doubling is doubling whatever the amount. A target amount is reached when P(1 + r)<sup>n</sup> = S, so n = ln(S/P)/ln(1 + r), usually rounded up to the next whole period because interest is credited only at the end of a period.`,
+            rules: [
+              { name: 'Compound amount', expr: 'S = P (1 + r)^n', note: 'Periodic rate r, n periods. P is the present value of S.' },
+              { name: 'Periodic rate', expr: 'r = (nominal annual rate)/(periods per year)', words: true, note: 'And n = years × periods per year.' },
+              { name: 'Effective rate', expr: 'r_e = (1 + r/n)^n - 1', note: 'The annually compounded rate giving the same growth in a year. The basis for comparing rates.' },
+              { name: 'Doubling time', expr: 'n = ln 2/ln(1 + r)', note: 'Periods to double at rate r per period. Independent of the principal.' },
+              { name: 'Time to a target', expr: 'n = ln(S/P)/ln(1 + r)', note: 'Round up to the next whole period, since interest is credited at period ends.' }
+            ],
+            examples: [
+              {
+                prompt: '$4,000 is invested at 7% compounded monthly for 5 years. Find the compound amount and the compound interest.',
+                steps: [
+                  { do: 'r = 0.07/12 ≈ 0.0058333, n = 60', why: 'Monthly compounding: twelve periods a year, sixty in five years.' },
+                  { do: 'S = 4,000(1 + 0.07/12)⁶⁰ ≈ 4,000 × 1.417625 ≈ 5,670.50', why: 'The compound amount formula, keeping the periodic rate unrounded in the calculator.' },
+                  { do: 'Interest ≈ 5,670.50 − 4,000 = 1,670.50', why: 'Compound interest is the growth over the principal.' }
+                ],
+                answer: 'Compound amount about $5,670.50; interest about $1,670.50', answerWords: true
+              },
+              {
+                prompt: 'Which is better for a saver: 8% compounded quarterly or 8.1% compounded semiannually?',
+                steps: [
+                  { do: 'Quarterly: r_e = (1 + 0.08/4)⁴ − 1 = 1.02⁴ − 1 ≈ 0.08243', why: 'Convert each nominal rate to an effective rate.' },
+                  { do: 'Semiannually: r_e = (1 + 0.081/2)² − 1 = 1.0405² − 1 ≈ 0.08264', why: 'Same conversion for the second offer.' },
+                  { do: '8.264% beats 8.243%: the 8.1% semiannual rate is better', why: 'Only effective rates compare fairly. The higher nominal rate wins here despite compounding less often.' }
+                ],
+                answer: '8.1% compounded semiannually (effective 8.264% versus 8.243%)', answerWords: true
+              },
+              {
+                prompt: 'How long does money take to double at 6% compounded annually? And how long for $5,000 to grow to $8,000 at 6% compounded monthly?',
+                steps: [
+                  { do: '(1.06)ⁿ = 2, so n = ln 2/ln 1.06 ≈ 0.6931/0.05827 ≈ 11.9 years', why: 'Take logarithms; the principal cancels.' },
+                  { do: '5,000(1.005)ⁿ = 8,000, so 1.005ⁿ = 1.6 and n = ln 1.6/ln 1.005 ≈ 0.4700/0.004988 ≈ 94.2 months', why: 'Monthly rate 0.5%; solve for the number of months.' },
+                  { do: 'Rounded up: 95 months, just under 8 years', why: 'Interest is credited at the end of each month, so the target is first reached after the 95th.' }
+                ],
+                answer: 'About 11.9 years to double; 95 months (about 7.9 years) to reach $8,000', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'bus-nominal-rates-compared-directly',
+                wrong: 'Choosing 8% compounded quarterly over 8.1% compounded semiannually because it compounds more often',
+                right: 'Convert both to effective rates and compare those: 8.243% versus 8.264%.',
+                why: 'More frequent compounding helps, but a higher nominal rate can help more. The effective rate combines both into one number that says what a dollar actually earns in a year, and it is the only honest comparison.'
+              },
+              {
+                id: 'bus-effective-rate-uses-years',
+                wrong: 'Computing an effective rate as (1 + r/n)^(years) − 1',
+                right: 'The exponent is the number of periods in one year: r_e = (1 + r/n)ⁿ − 1.',
+                why: 'The effective rate is a one-year quantity by definition. Using the total number of years gives the growth over the whole investment, which is a different (and larger) number that cannot be compared with an annual rate.'
+              },
+              {
+                id: 'bus-periodic-rate-rounded-early',
+                wrong: 'Rounding 0.07/12 to 0.006 before raising to the 60th power',
+                right: 'Keep the periodic rate to full calculator precision, or write it as 0.07/12 inside the calculation.',
+                why: '0.006 instead of 0.0058333 is a 3% error in the rate, and over 60 periods it shifts the compound amount by tens of dollars. Round the answer, never the rate.'
+              }
+            ]
+          },
+
+          {
+            id: 'f2', title: 'Present value', src: 'Section 5.2',
+            idea: `Solving S = P(1 + r)<sup>n</sup> for P gives the <b>present value</b>:<br><br><b>P = S(1 + r)<sup>−n</sup></b><br><br>— the amount that must be invested now, at the given rate, to grow to S in n periods. Discounting is compounding run backwards, and the factor (1 + r)<sup>−n</sup> is called the discount factor. $10,000 due in 8 years at 5% compounded semiannually is worth 10,000(1.025)<sup>−16</sup> ≈ 6,736.25 today. The present value falls as the rate rises and as the date recedes.<br><br>Present value is what makes sums at different dates comparable. An <b>equation of value</b> moves every payment to one chosen date — its <b>comparison date</b> — and sets what is owed equal to what is paid there. To replace a debt of $2,000 due in 4 years and $3,000 due in 6 years by a single payment x in 2 years at 6% compounded annually, take year 2 as the comparison date: x = 2,000(1.06)<sup>−2</sup> + 3,000(1.06)<sup>−4</sup> ≈ 4,156.27. Amounts due after the comparison date are discounted to it; amounts paid before it are compounded forward. Any date may be chosen — the answer is the same — and the convenient one is the date of the unknown payment, so that its coefficient is 1.<br><br>To compare two investments, value both at the same date: $5,000 that becomes $6,300 in five years, against a bank at 6% compounded semiannually that turns it into 5,000(1.03)<sup>10</sup> ≈ 6,719.58 — the bank wins.<br><br>An investment that produces a stream of future <b>cash flows</b> is judged by its <b>net present value</b>:<br><br><b>NPV = (sum of present values of the cash flows) − (initial investment)</b><br><br>at the rate money could otherwise earn. NPV &gt; 0 means the project beats that alternative and is worth doing; NPV &lt; 0 means the money would do better in the bank. Paying $15,000 for cash flows of $6,000, $6,000 and $5,000 at the ends of the next three years, at 8%, has NPV = 6,000(1.08)<sup>−1</sup> + 6,000(1.08)<sup>−2</sup> + 5,000(1.08)<sup>−3</sup> − 15,000 ≈ −331.25: not profitable, though it returns more dollars than it cost.`,
+            rules: [
+              { name: 'Present value', expr: 'P = S (1 + r)^(-n)', note: 'What S due in n periods is worth now. (1 + r)^(−n) is the discount factor.' },
+              { name: 'Equation of value', expr: 'Move every amount to one comparison date: discount later sums, compound earlier ones, and equate', words: true, note: 'Choose the date of the unknown payment so its coefficient is 1.' },
+              { name: 'Comparing investments', expr: 'Value both at the same date', words: true, note: 'Usually the end date, or today.' },
+              { name: 'Net present value', expr: 'NPV = Sigma S_k (1 + r)^(-k) - C', note: 'Present values of the cash flows minus the initial cost C. Positive is profitable at that rate; negative is not.' }
+            ],
+            examples: [
+              {
+                prompt: 'Find the present value of $10,000 due in 8 years at 5% compounded semiannually.',
+                steps: [
+                  { do: 'r = 0.025, n = 16', why: 'Semiannual: 2.5% per half-year, 16 half-years.' },
+                  { do: 'P = 10,000(1.025)⁻¹⁶ ≈ 10,000 × 0.673625 ≈ 6,736.25', why: 'Discount by the factor (1 + r)^(−n).' }
+                ],
+                answer: 'About $6,736.25', answerWords: true
+              },
+              {
+                prompt: 'A debt of $2,000 due in 4 years and $3,000 due in 6 years is to be settled by one payment in 2 years. At 6% compounded annually, how much is the payment?',
+                steps: [
+                  { do: 'Comparison date: year 2, so the unknown x has coefficient 1', why: 'Every amount is moved to the same date.' },
+                  { do: 'x = 2,000(1.06)⁻² + 3,000(1.06)⁻⁴', why: 'Both debts fall after year 2, so both are discounted back to it, by 2 and 4 years.' },
+                  { do: 'x ≈ 1,779.99 + 2,376.28 ≈ 4,156.27', why: 'Less than the $5,000 face value because it is paid earlier.' }
+                ],
+                answer: 'About $4,156.27', answerWords: true
+              },
+              {
+                prompt: 'An investment of $15,000 returns $6,000 at the end of year 1, $6,000 at the end of year 2 and $5,000 at the end of year 3. At 8% compounded annually, is it worthwhile?',
+                steps: [
+                  { do: 'PV of flows: 6,000/1.08 + 6,000/1.08² + 5,000/1.08³ ≈ 5,555.56 + 5,144.03 + 3,969.16 = 14,668.75', why: 'Each cash flow discounted to today.' },
+                  { do: 'NPV ≈ 14,668.75 − 15,000 = −331.25', why: 'Subtract the initial investment.' },
+                  { do: 'NPV < 0: not worthwhile at 8%; the bank would do better', why: 'The project returns $17,000 for $15,000, but too slowly to match 8% compounding.' }
+                ],
+                answer: 'NPV ≈ −$331.25, so no', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'bus-present-value-compounded-forward',
+                wrong: 'Multiplying a future sum by (1 + r)ⁿ to find its present value',
+                right: 'Present value discounts: multiply by (1 + r)^(−n), which is less than 1.',
+                why: 'A sum due later is worth less today, not more. The check is direction: a present value must be smaller than the future amount, and (1 + r)ⁿ makes it larger.'
+              },
+              {
+                id: 'bus-equation-of-value-mixed-dates',
+                wrong: 'Adding $2,000 due in 4 years to $3,000 due in 6 years as $5,000',
+                right: 'Move every amount to one comparison date first, then add.',
+                why: 'Dollars at different dates are different quantities, like metres and feet. The equation of value converts them all to the same date; only then can they be combined.'
+              },
+              {
+                id: 'bus-npv-judged-by-total-dollars',
+                wrong: 'Calling an investment profitable because the cash flows add up to more than the cost',
+                right: 'Discount each cash flow to the present and compare the total with the cost: the sign of the NPV decides.',
+                why: 'Receiving $17,000 over three years for $15,000 sounds good, but $15,000 in the bank at 8% would be worth more. NPV measures the project against the alternative use of the money, which is the question an investor actually faces.'
+              }
+            ]
+          },
+
+          {
+            id: 'f3', title: 'Interest compounded continuously', src: 'Section 5.3',
+            idea: `As the number of compoundings per year grows — monthly, daily, hourly — the compound amount P(1 + r/k)<sup>kt</sup> rises, but toward a ceiling rather than without limit. The ceiling is reached by <b>continuous compounding</b>, and it is where the number e earns its place in finance:<br><br><b>S = Pe<sup>rt</sup></b><br><br>for a principal P at an annual rate r compounded continuously for t years. $2,000 at 4.5% for 6 years becomes 2,000e<sup>0.27</sup> ≈ 2,619.93. The difference between daily and continuous compounding is a few cents on a thousand dollars; the formula is used because it is the simplest of all, with no periods to count.<br><br>The <b>effective rate</b> under continuous compounding comes from P(1 + r<sub>e</sub>) = Pe<sup>r</sup>:<br><br><b>r<sub>e</sub> = e<sup>r</sup> − 1</b><br><br>So 4.5% continuous is e<sup>0.045</sup> − 1 ≈ 4.603% effective, and this is the largest effective rate any compounding frequency can extract from a 4.5% nominal rate.<br><br>Solving for P gives the <b>present value</b> under continuous compounding:<br><br><b>P = Se<sup>−rt</sup></b><br><br>A fund that must hold $50,000 in 15 years at 6% continuous needs 50,000e<sup>−0.9</sup> ≈ 20,328.48 now.<br><br>The terminology of rates is a minefield across jurisdictions. What this course calls the nominal rate is often the APR; the effective annual rate is often the APY or EAR. In any real negotiation, the compounding convention should be stated, because the same two digits can mean measurably different amounts of money.`,
+            rules: [
+              { name: 'Continuous compound amount', expr: 'S = P e^(r t)', note: 'Annual rate r, t years. The limit of more and more frequent compounding.' },
+              { name: 'Effective rate', expr: 'r_e = e^r - 1', note: 'The ceiling on the effective rate for a nominal rate r.' },
+              { name: 'Continuous present value', expr: 'P = S e^(-r t)', note: 'Discounting with e.' },
+              { name: 'Rate vocabulary', expr: 'Nominal rate is often called APR; effective annual rate is APY or EAR', words: true, note: 'State the compounding convention in any real agreement.' }
+            ],
+            examples: [
+              {
+                prompt: '$2,000 is invested at 4.5% compounded continuously. Find the amount after 6 years and the effective rate.',
+                steps: [
+                  { do: 'S = 2,000e^(0.045 × 6) = 2,000e^0.27 ≈ 2,000 × 1.309964 ≈ 2,619.93', why: 'Continuous compounding: rate times years in the exponent.' },
+                  { do: 'r_e = e^0.045 − 1 ≈ 0.04603, about 4.603%', why: 'The effective rate for continuous compounding.' }
+                ],
+                answer: 'About $2,619.93; effective rate about 4.603%', answerWords: true
+              },
+              {
+                prompt: 'A trust must contain $50,000 in 15 years. At 6% compounded continuously, how much must be deposited now?',
+                steps: [
+                  { do: 'P = 50,000e^(−0.06 × 15) = 50,000e^(−0.9)', why: 'Present value under continuous compounding.' },
+                  { do: '≈ 50,000 × 0.40657 ≈ 20,328.48', why: 'e^(−0.9) ≈ 0.4066.' }
+                ],
+                answer: 'About $20,328.48', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'bus-continuous-formula-with-periods',
+                wrong: 'Writing S = Pe^(rn) with n a number of months and r a monthly rate',
+                right: 'The continuous formula uses the annual rate and time in years: S = Pe^(rt).',
+                why: 'Continuous compounding has no periods. Mixing a periodic rate into e^(rt) double-counts the compounding frequency. Convert time to years and use the annual rate.'
+              },
+              {
+                id: 'bus-continuous-thought-unbounded',
+                wrong: 'Assuming continuous compounding makes an investment grow without limit within a year',
+                right: 'It is the ceiling of frequent compounding, only slightly above daily: a 5% nominal rate gives at most e^0.05 − 1 ≈ 5.13% effective.',
+                why: '(1 + r/k)^k increases with k but converges to e^r. Daily compounding already captures almost all of the gain; the continuous formula is used for its simplicity, not because it pays dramatically more.'
+              },
+              {
+                id: 'bus-continuous-discount-sign-dropped',
+                wrong: 'Finding a present value under continuous compounding as S e^(rt)',
+                right: 'Discounting needs the negative exponent: P = S e^(−rt), which is less than S.',
+                why: 'e^(rt) is greater than 1 and grows a sum forward; e^(−rt) is less than 1 and shrinks it back to today. A present value larger than the future amount is the sign the exponent has the wrong sign.'
+              }
+            ]
+          },
+
+          {
+            id: 'f4', title: 'Annuities', src: 'Section 5.4',
+            idea: `An <b>annuity</b> is a sequence of equal payments R made at equal intervals. In an <b>ordinary annuity</b> the payments come at the <i>end</i> of each period — a loan repayment, a monthly deposit made after the month's interest; in an <b>annuity due</b> they come at the <i>beginning</i> — rent, insurance premiums. The two questions asked of an annuity are what it is worth today and what it accumulates to, and both are sums of a geometric sequence from section 1.6.<br><br><b>Present value of an ordinary annuity.</b> Each payment is discounted separately and the sum telescopes:<br><br><b>A = R · [1 − (1 + r)<sup>−n</sup>] / r</b><br><br>The bracketed factor, written a<sub>n⌉r</sub> ("a angle n at r"), is the present value of $1 per period for n periods at rate r per period. $250 a month for 4 years at 6% compounded monthly has r = 0.005, n = 48, and A = 250 × 42.5803 ≈ 10,645.08: that is the loan such payments would pay off, or the lump sum that funds them.<br><br><b>Future value of an ordinary annuity.</b> Each payment is compounded forward to the end:<br><br><b>S = R · [(1 + r)<sup>n</sup> − 1] / r</b><br><br>The factor is s<sub>n⌉r</sub>. $1,500 a quarter for 10 years at 8% compounded quarterly has r = 0.02, n = 40, and S = 1,500 × 60.4020 ≈ 90,603.<br><br>An <b>annuity due</b> is an ordinary annuity with every payment one period earlier, so each formula is multiplied by (1 + r): A<sub>due</sub> = (1 + r) · R a<sub>n⌉r</sub> and S<sub>due</sub> = (1 + r) · R s<sub>n⌉r</sub>. The payment count is unchanged.<br><br>Solving the formulas for R gives the <b>periodic payment</b> that a present value can support, R = A/a<sub>n⌉r</sub>, and the <b>sinking-fund</b> deposit that reaches a future target, R = S/s<sub>n⌉r</sub>. To have $30,000 in 5 years with monthly deposits at 6% compounded monthly, R = 30,000/s<sub>60⌉0.005</sub> = 30,000/69.7700 ≈ 429.98 a month.<br><br>Three things fix every annuity problem: the rate per period (not per year), the number of payments (not years), and whether the payments are at the end or the beginning. Get those three right and the formula does the rest.`,
+            rules: [
+              { name: 'Present value of an ordinary annuity', expr: 'A = R (1 - (1 + r)^(-n))/r', note: 'R per period at the end of each of n periods, rate r per period. The factor is a angle n at r.' },
+              { name: 'Future value of an ordinary annuity', expr: 'S = R ((1 + r)^n - 1)/r', note: 'What the payments accumulate to just after the last one. The factor is s angle n at r.' },
+              { name: 'Annuity due', expr: 'Multiply the ordinary-annuity value by (1 + r)', words: true, note: 'Payments at the beginning of each period; same number of payments.' },
+              { name: 'Periodic payment', expr: 'R = A r/(1 - (1 + r)^(-n))', note: 'The payment a present value A supports.' },
+              { name: 'Sinking fund', expr: 'R = S r/((1 + r)^n - 1)', note: 'The deposit that accumulates to S.' }
+            ],
+            examples: [
+              {
+                prompt: 'Find the present value of $250 a month for 4 years at 6% compounded monthly, and what it becomes as an annuity due.',
+                steps: [
+                  { do: 'r = 0.005, n = 48', why: 'Monthly rate 0.5%, 48 payments.' },
+                  { do: 'A = 250 × (1 − 1.005⁻⁴⁸)/0.005 ≈ 250 × 42.5803 ≈ 10,645.08', why: 'Ordinary annuity: payments at the ends of the months.' },
+                  { do: 'Annuity due: 10,645.08 × 1.005 ≈ 10,698.30', why: 'Each payment one month earlier is worth one month’s interest more.' }
+                ],
+                answer: 'About $10,645.08 as an ordinary annuity; about $10,698.30 as an annuity due', answerWords: true
+              },
+              {
+                prompt: '$1,500 is deposited at the end of each quarter for 10 years at 8% compounded quarterly. Find the amount in the account after the last deposit.',
+                steps: [
+                  { do: 'r = 0.02, n = 40', why: 'Quarterly rate 2%, 40 deposits.' },
+                  { do: 'S = 1,500 × (1.02⁴⁰ − 1)/0.02 ≈ 1,500 × 60.4020 ≈ 90,603.00', why: 'Future value of an ordinary annuity: each deposit compounded forward to the end.' },
+                  { do: 'Deposits total 60,000; interest ≈ 30,603', why: 'The difference between the accumulated amount and the sum of the payments.' }
+                ],
+                answer: 'About $90,603', answerWords: true
+              },
+              {
+                prompt: 'A firm wants $30,000 in 5 years by equal monthly deposits into a fund paying 6% compounded monthly. Find the deposit.',
+                steps: [
+                  { do: 'r = 0.005, n = 60; s = (1.005⁶⁰ − 1)/0.005 ≈ 69.7700', why: 'The future-value factor for 60 monthly deposits.' },
+                  { do: 'R = 30,000/69.7700 ≈ 429.98', why: 'Sinking-fund deposit: the target divided by the factor.' }
+                ],
+                answer: 'About $429.98 a month', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'bus-annuity-pv-fv-confused',
+                wrong: 'Using the future-value formula to find what a stream of payments is worth today',
+                right: 'Present value uses 1 − (1 + r)^(−n); future value uses (1 + r)ⁿ − 1.',
+                why: 'The present value discounts each payment back; the future value compounds each forward. They differ by the factor (1 + r)ⁿ, and for 48 months at 0.5% that is a 27% error in the answer.'
+              },
+              {
+                id: 'bus-annuity-due-treated-as-ordinary',
+                wrong: 'Valuing rent paid at the start of each month with the ordinary-annuity formula',
+                right: 'Payments at the beginning of the period make an annuity due: multiply the ordinary value by (1 + r).',
+                why: 'Every payment arrives one period earlier, and so earns or saves one period’s interest. The difference is small per payment but systematic, and exam questions say "at the beginning of each month" precisely to test it.'
+              },
+              {
+                id: 'bus-annuity-years-instead-of-periods',
+                wrong: 'Using n = 4 and r = 0.06 for $250 a month for 4 years at 6% compounded monthly',
+                right: 'n counts payments and r is the rate per payment period: n = 48, r = 0.005.',
+                why: 'The formula does not know what a year is. It sees n payments and a rate between consecutive payments. With annual figures for a monthly annuity every factor is wrong.'
+              }
+            ]
+          },
+
+          {
+            id: 'f5', title: 'Amortisation of loans', src: 'Section 5.5',
+            idea: `A loan that is repaid by equal periodic payments is <b>amortised</b>. The lender has, in effect, bought an ordinary annuity: the loan amount A is the present value of the payments, so the payment is<br><br><b>R = A / a<sub>n⌉r</sub> = A r / [1 − (1 + r)<sup>−n</sup>]</b><br><br>A $20,000 car loan over 5 years at 6% compounded monthly has r = 0.005 and n = 60, so R = 20,000 × 0.005/(1 − 1.005<sup>−60</sup>) ≈ 386.66 a month. Sixty payments total ≈ 23,199.36, so the <b>total interest</b> is nR − A ≈ 3,199.36.<br><br>Each payment is part interest and part repayment of principal, and the split changes every period. The <b>amortisation schedule</b> tracks it: at each payment, the interest is the outstanding balance times r, the principal repaid is R minus that interest, and the new balance is the old balance minus the principal repaid. For the car loan, the first payment carries interest 20,000 × 0.005 = 100.00 and repays 286.66 of principal, leaving 19,713.34; the second carries interest 98.57 and repays 288.09; and so on, with the interest share shrinking and the principal share growing until the last payment clears the balance. The balance after any payment is also the present value of the payments that remain, which is how a payoff amount is quoted.<br><br>Given the loan, the payment and the rate, the <b>number of payments</b> comes from solving A = R a<sub>n⌉r</sub> for n:<br><br><b>n = −ln(1 − Ar/R) / ln(1 + r)</b><br><br>Repaying $10,000 at 12% compounded monthly with $500 a month gives n = −ln(1 − 0.2)/ln 1.01 ≈ 22.4, so 22 full payments and a smaller 23rd. The formula requires Ar/R &lt; 1: a payment that does not even cover the first period's interest never repays the loan.<br><br>Mortgages, car loans and student loans are all this one calculation, at different scales and with different conventions for the periodic rate.`,
+            rules: [
+              { name: 'Payment on an amortised loan', expr: 'R = A r/(1 - (1 + r)^(-n))', note: 'Loan A is the present value of n payments of R at rate r per period.' },
+              { name: 'Total interest', expr: 'n R - A', note: 'All the payments less the amount borrowed.' },
+              { name: 'Schedule', expr: 'Interest = balance × r; principal repaid = R − interest; new balance = balance − principal repaid', words: true, note: 'The interest share falls and the principal share rises each period.' },
+              { name: 'Outstanding balance', expr: 'The present value of the remaining payments', words: true, note: 'What it costs to pay the loan off early.' },
+              { name: 'Number of payments', expr: 'n = -ln(1 - A r/R)/ln(1 + r)', note: 'Requires A r/R < 1: the payment must exceed one period’s interest.' }
+            ],
+            examples: [
+              {
+                prompt: 'A $20,000 loan is repaid over 5 years by equal monthly payments at 6% compounded monthly. Find the payment, the total interest, and the first two lines of the schedule.',
+                steps: [
+                  { do: 'r = 0.005, n = 60; R = 20,000 × 0.005/(1 − 1.005⁻⁶⁰) ≈ 100/0.258628 ≈ 386.66', why: 'The loan is the present value of the payments.' },
+                  { do: 'Total paid 60 × 386.66 ≈ 23,199.36; total interest ≈ 3,199.36', why: 'Total interest is all the payments less the amount borrowed, nR − A.' },
+                  { do: 'Payment 1: interest 20,000 × 0.005 = 100.00, principal 286.66, balance 19,713.34', why: 'Interest on the opening balance, the rest of the payment reduces principal.' },
+                  { do: 'Payment 2: interest 19,713.34 × 0.005 ≈ 98.57, principal ≈ 288.09, balance ≈ 19,425.25', why: 'A little less interest, a little more principal, every month.' }
+                ],
+                answer: 'Payment about $386.66; total interest about $3,199.36; balance after two payments about $19,425.25', answerWords: true
+              },
+              {
+                prompt: 'A $10,000 loan at 12% compounded monthly is repaid at $500 a month. How many payments are needed?',
+                steps: [
+                  { do: 'r = 0.01; Ar/R = 10,000 × 0.01/500 = 0.2', why: 'The first month’s interest is $100, well under the $500 payment, so the loan does amortise.' },
+                  { do: 'n = −ln(1 − 0.2)/ln 1.01 = −ln 0.8/ln 1.01 ≈ 0.22314/0.009950 ≈ 22.4', why: 'Solve A = R a angle n at r for n.' },
+                  { do: '22 payments of $500 and a smaller 23rd', why: 'A fractional n means the last payment is partial.' }
+                ],
+                answer: '23 payments: 22 full ones and a final smaller one', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'bus-loan-interest-as-simple-rate',
+                wrong: 'Computing total interest on a $20,000 loan at 6% over 5 years as 20,000 × 0.06 × 5 = 6,000',
+                right: 'Interest is charged only on the outstanding balance, which falls with every payment: total interest = nR − A ≈ 3,199.',
+                why: 'An amortised loan is not a lump sum held for five years. Roughly half the principal is gone halfway through, so the interest is roughly half of the simple-interest figure. The schedule makes this visible line by line.'
+              },
+              {
+                id: 'bus-schedule-interest-on-original',
+                wrong: 'Charging interest on the original loan amount in every line of the schedule',
+                right: 'Each period’s interest is the current outstanding balance times r.',
+                why: 'That is what amortisation means: the payment reduces the balance, and next period’s interest is on the smaller balance. Interest on the original amount throughout is a different, more expensive contract.'
+              },
+              {
+                id: 'bus-payment-below-interest',
+                wrong: 'Applying the number-of-payments formula when the payment is less than one period’s interest',
+                right: 'If Ar/R ≥ 1 the formula has no answer: the balance never falls and the loan is never repaid.',
+                why: 'ln(1 − Ar/R) is undefined when 1 − Ar/R ≤ 0. Mathematically and financially that is the same statement — a payment that does not cover the interest leaves the borrower deeper in debt each period.'
+              }
+            ]
+          },
+
+          {
+            id: 'f6', title: 'Perpetuities', src: 'Section 5.6',
+            idea: `A <b>perpetuity</b> is an annuity whose payments never stop: an endowment that pays a scholarship every year forever, a preferred share with a fixed dividend, a lease in perpetuity. Its present value is the sum of an infinite geometric sequence, and section 1.6 already found the answer. Discounting a payment R at the end of every period at rate r per period gives R/(1 + r) + R/(1 + r)² + ⋯, a geometric series with ratio 1/(1 + r) &lt; 1, whose sum is<br><br><b>A = R / r</b><br><br>The same thing appears by letting n → ∞ in the annuity formula: (1 + r)<sup>−n</sup> → 0, so R[1 − (1 + r)<sup>−n</sup>]/r → R/r. A perpetuity of $6,000 a year starting in one year at 5% is worth 6,000/0.05 = 120,000 — which is exactly the amount that earns $6,000 of interest a year without ever touching the principal. That is the intuition: a perpetuity is funded by interest alone.<br><br>If the first payment is made <i>now</i> — a <b>perpetuity due</b> — add one payment: A = R + R/r, so $126,000 in the example.<br><br>Working the formula the other way gives what an endowment can pay: a $500,000 gift at 4% supports 500,000 × 0.04 = $20,000 a year forever.<br><br>The mathematics underneath is the <b>limit of a sequence</b>. A sequence (a<sub>n</sub>) has limit L if its terms get and stay as close to L as desired for large n; (1 + r)<sup>−n</sup> has limit 0 for r &gt; 0, (0.9)<sup>n</sup> → 0, and the partial sums of a geometric series with |ratio| &lt; 1 have limit a/(1 − ratio). The perpetuity value is the limit of the annuity values as the number of payments grows without bound, and it is an honest number because that limit exists.`,
+            rules: [
+              { name: 'Perpetuity', expr: 'A = R/r', note: 'Payments of R at the end of every period forever, rate r per period. The principal whose interest is R.' },
+              { name: 'Perpetuity due', expr: 'A = R + R/r', note: 'First payment now: one extra payment.' },
+              { name: 'What an endowment pays', expr: 'R = A r', note: 'The perpetual payment a fund A supports.' },
+              { name: 'As a limit', expr: 'R (1 - (1 + r)^(-n))/r approaches R/r as n grows', words: true, note: 'Because (1 + r)^(−n) → 0 for r > 0.' },
+              { name: 'Limit of a sequence', expr: 'Terms that get and stay as close to L as desired for large n have limit L', words: true, note: '(0.9)ⁿ → 0; a geometric series with |ratio| < 1 has a finite sum.' }
+            ],
+            examples: [
+              {
+                prompt: 'Find the present value of $6,000 a year forever at 5% compounded annually, (a) if the first payment is in one year, (b) if the first payment is now.',
+                steps: [
+                  { do: '(a) A = 6,000/0.05 = 120,000', why: 'An ordinary perpetuity: the amount whose annual interest is $6,000.' },
+                  { do: '(b) A = 6,000 + 120,000 = 126,000', why: 'A perpetuity due adds the immediate payment.' }
+                ],
+                answer: '(a) $120,000; (b) $126,000', answerWords: true
+              },
+              {
+                prompt: 'A donor gives $500,000 to fund a scholarship paid at the end of each year forever. If the fund earns 4% compounded annually, how large is the scholarship? And what is the limit of (0.9)ⁿ as n grows?',
+                steps: [
+                  { do: 'R = 500,000 × 0.04 = 20,000 a year', why: 'The interest alone pays the scholarship; the principal is never spent.' },
+                  { do: '(0.9)ⁿ: 0.9, 0.81, 0.729, … → 0', why: 'A positive number less than 1 raised to ever larger powers shrinks toward 0, which is why the annuity factor converges.' }
+                ],
+                answer: '$20,000 a year; the limit is 0', answerWords: true
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'bus-perpetuity-thought-infinite',
+                wrong: 'Claiming a perpetuity has infinite present value because it pays forever',
+                right: 'The payments are discounted ever more heavily, and the series converges: A = R/r.',
+                why: 'The far-future payments are worth almost nothing today. The geometric series with ratio 1/(1 + r) < 1 sums to a finite number, and that number is simply the principal whose interest funds the payments.'
+              },
+              {
+                id: 'bus-perpetuity-due-missing-payment',
+                wrong: 'Valuing a perpetuity whose first payment is today as R/r',
+                right: 'R/r values payments starting one period from now. With a payment today, add it: R + R/r.',
+                why: 'The formula is derived from payments at the ends of periods. A payment now is not discounted at all and is not in the series; it must be added separately.'
+              },
+              {
+                id: 'bus-perpetuity-rate-not-per-period',
+                wrong: 'Using an annual rate for a perpetuity paid monthly',
+                right: 'The rate in R/r is the rate per payment period. Monthly payments need the monthly rate.',
+                why: 'As with every annuity formula, r and the payment interval must match. $500 a month at 6% compounded monthly is worth 500/0.005 = 100,000, not 500/0.06.'
+              }
+            ]
+          }
+        ],
+        practice: [
+          { id: 'h1', kind: 'numeric', lesson: 'f1',
+            prompt: '$4,000 at 7% compounded monthly for 5 years. What is the compound amount, in dollars? Give 2 decimal places.',
+            answer: 5670.5, tol: 0.005, verify: { expr: '4000*(1 + Rational(7,100)/12)**60', dp: 2 },
+            hint: 'r = 0.07/12, n = 60.',
+            solution: ['(1 + 0.07/12)⁶⁰ ≈ 1.417625', '4,000 × 1.417625', '≈ 5,670.50'] },
+
+          { id: 'h2', kind: 'numeric', lesson: 'f1',
+            prompt: 'What effective rate, as a percentage, corresponds to 8% compounded quarterly? Give 3 decimal places.',
+            answer: 8.243, tol: 0.0005, verify: { expr: '100*((1 + Rational(8,100)/4)**4 - 1)', dp: 3 },
+            hint: '(1.02)⁴ − 1.',
+            solution: ['1.02⁴ ≈ 1.082432', 'Effective rate ≈ 0.082432', '≈ 8.243%'] },
+
+          { id: 'h3', kind: 'numeric', lesson: 'f1',
+            prompt: 'What effective rate, as a percentage, corresponds to 8.1% compounded semiannually? Give 3 decimal places.',
+            answer: 8.264, tol: 0.0005, verify: { expr: '100*((1 + Rational(81,1000)/2)**2 - 1)', dp: 3 },
+            hint: '(1.0405)² − 1.',
+            solution: ['1.0405² = 1.08264', '≈ 8.264%', 'Better than 8% quarterly'] },
+
+          { id: 'h4', kind: 'numeric', lesson: 'f1',
+            prompt: 'How many years does money take to double at 6% compounded annually? Give 1 decimal place.',
+            answer: 11.9, tol: 0.05, verify: { expr: 'log(2)/log(Rational(106,100))', dp: 1 },
+            hint: 'n = ln 2/ln 1.06.',
+            solution: ['0.6931/0.05827', '≈ 11.9 years'] },
+
+          { id: 'h5', kind: 'numeric', lesson: 'f1',
+            prompt: 'How many whole months are needed for $5,000 to reach at least $8,000 at 6% compounded monthly?',
+            answer: 95, verify: { expr: 'ceiling(log(Rational(8,5))/log(1 + Rational(6,100)/12))' },
+            hint: 'Solve 1.005ⁿ = 1.6 and round up.',
+            solution: ['n = ln 1.6/ln 1.005 ≈ 94.2', 'Round up', '95 months'] },
+
+          { id: 'h6', kind: 'numeric', lesson: 'f1',
+            prompt: '$12,000 invested at an effective rate of 5% for 15 years grows to how much, in dollars? Give 2 decimal places.',
+            answer: 24947.14, tol: 0.005, verify: { expr: '12000*Rational(105,100)**15', dp: 2 },
+            hint: 'An effective rate compounds annually.',
+            solution: ['12,000(1.05)¹⁵', '1.05¹⁵ ≈ 2.078928', '≈ 24,947.14'] },
+
+          { id: 'h7', kind: 'mc', lesson: 'f1',
+            prompt: 'Two banks offer 6% compounded monthly and 6.1% compounded annually. Which earns more in a year?',
+            options: [
+              { t: '6.1% compounded annually, effective 6.1%', ok: false },
+              { t: '6% compounded monthly, effective about 6.168%', ok: true },
+              { t: 'They are equal', ok: false },
+              { t: 'It depends on the principal', ok: false }
+            ],
+            hint: 'Convert 6% monthly to an effective rate.',
+            solution: ['(1 + 0.06/12)¹² − 1 ≈ 0.06168', '6.168% beats 6.1%', 'The principal does not matter'] },
+
+          { id: 'h8', kind: 'numeric', lesson: 'f2',
+            prompt: 'What is the present value of $10,000 due in 8 years at 5% compounded semiannually, in dollars? Give 2 decimal places.',
+            answer: 6736.25, tol: 0.005, verify: { expr: '10000*Rational(1025,1000)**(-16)', dp: 2 },
+            hint: '10,000(1.025)⁻¹⁶.',
+            solution: ['1.025⁻¹⁶ ≈ 0.673625', '≈ 6,736.25'] },
+
+          { id: 'h9', kind: 'numeric', lesson: 'f2',
+            prompt: 'Debts of $2,000 due in 4 years and $3,000 due in 6 years are settled by one payment in 2 years at 6% compounded annually. What is the payment, in dollars? Give 2 decimal places.',
+            answer: 4156.27, tol: 0.005, verify: { expr: '2000*Rational(106,100)**(-2) + 3000*Rational(106,100)**(-4)', dp: 2 },
+            hint: 'Discount each debt to year 2.',
+            solution: ['2,000(1.06)⁻² ≈ 1,779.99', '3,000(1.06)⁻⁴ ≈ 2,376.28', 'Sum ≈ 4,156.27'] },
+
+          { id: 'h10', kind: 'numeric', lesson: 'f2',
+            prompt: 'An investment of $15,000 returns $6,000, $6,000 and $5,000 at the ends of years 1, 2 and 3. At 8% compounded annually, what is the NPV, in dollars? Give 2 decimal places.',
+            answer: -331.25, tol: 0.005, verify: { expr: '6000/Rational(108,100) + 6000/Rational(108,100)**2 + 5000/Rational(108,100)**3 - 15000', dp: 2 },
+            hint: 'Sum of present values minus the cost.',
+            solution: ['5,555.56 + 5,144.03 + 3,969.16 = 14,668.75', '− 15,000', '= −331.25: not profitable'] },
+
+          { id: 'h11', kind: 'numeric', lesson: 'f2',
+            prompt: '$5,000 in a bank at 6% compounded semiannually for 5 years becomes how much, in dollars? Give 2 decimal places.',
+            answer: 6719.58, tol: 0.005, verify: { expr: '5000*Rational(103,100)**10', dp: 2 },
+            hint: '5,000(1.03)¹⁰.',
+            solution: ['1.03¹⁰ ≈ 1.343916', '≈ 6,719.58', 'Beats a business offering 6,300'] },
+
+          { id: 'h12', kind: 'mc', lesson: 'f2',
+            prompt: 'A project costs $10,000 and has NPV = +$420 at 7%. This means',
+            options: [
+              { t: 'the project is worth $420 more today than investing the $10,000 at 7%', ok: true },
+              { t: 'the project earns a total of $420', ok: false },
+              { t: 'the project loses money', ok: false },
+              { t: 'the project returns 7%', ok: false }
+            ],
+            hint: 'NPV compares with the alternative rate.',
+            solution: ['Positive NPV: the discounted cash flows exceed the cost', 'By $420 in today’s dollars', 'The project beats 7%'] },
+
+          { id: 'h13', kind: 'numeric', lesson: 'f3',
+            prompt: '$2,000 at 4.5% compounded continuously for 6 years becomes how much, in dollars? Give 2 decimal places.',
+            answer: 2619.93, tol: 0.005, verify: { expr: '2000*exp(Rational(45,1000)*6)', dp: 2 },
+            hint: '2,000e^0.27.',
+            solution: ['e^0.27 ≈ 1.309964', '≈ 2,619.93'] },
+
+          { id: 'h14', kind: 'numeric', lesson: 'f3',
+            prompt: 'What effective rate, as a percentage, corresponds to 4.5% compounded continuously? Give 3 decimal places.',
+            answer: 4.603, tol: 0.0005, verify: { expr: '100*(exp(Rational(45,1000)) - 1)', dp: 3 },
+            hint: 'e^r − 1.',
+            solution: ['e^0.045 ≈ 1.046028', '≈ 4.603%'] },
+
+          { id: 'h15', kind: 'numeric', lesson: 'f3',
+            prompt: 'How much must be deposited now, in dollars, to have $50,000 in 15 years at 6% compounded continuously? Give 2 decimal places.',
+            answer: 20328.48, tol: 0.005, verify: { expr: '50000*exp(-Rational(6,100)*15)', dp: 2 },
+            hint: '50,000e^(−0.9).',
+            solution: ['e^(−0.9) ≈ 0.40657', '≈ 20,328.48'] },
+
+          { id: 'h16', kind: 'numeric', lesson: 'f3',
+            prompt: 'How long, in years, for money to double at 5% compounded continuously? Give 2 decimal places.',
+            answer: 13.86, tol: 0.005, verify: { expr: 'log(2)/Rational(5,100)', dp: 2 },
+            hint: 'e^(0.05t) = 2.',
+            solution: ['0.05t = ln 2', 't = 0.6931/0.05', '≈ 13.86'] },
+
+          { id: 'h17', kind: 'numeric', lesson: 'f4',
+            prompt: 'Present value of $250 a month for 4 years at 6% compounded monthly (ordinary annuity), in dollars? Give 2 decimal places.',
+            answer: 10645.08, tol: 0.005, verify: { expr: '250*(1 - Rational(1005,1000)**(-48))/Rational(5,1000)', dp: 2 },
+            hint: 'r = 0.005, n = 48.',
+            solution: ['(1 − 1.005⁻⁴⁸)/0.005 ≈ 42.5803', '250 × 42.5803', '≈ 10,645.08'] },
+
+          { id: 'h18', kind: 'numeric', lesson: 'f4',
+            prompt: 'The same payments as an annuity due: present value in dollars? Give 2 decimal places.',
+            answer: 10698.3, tol: 0.005, verify: { expr: 'Rational(1005,1000)*250*(1 - Rational(1005,1000)**(-48))/Rational(5,1000)', dp: 2 },
+            hint: 'Multiply the ordinary value by 1.005.',
+            solution: ['10,645.08 × 1.005', '≈ 10,698.30'] },
+
+          { id: 'h19', kind: 'numeric', lesson: 'f4',
+            prompt: '$1,500 at the end of each quarter for 10 years at 8% compounded quarterly accumulates to how much, in dollars? Give 2 decimal places.',
+            answer: 90602.97, tol: 0.005, verify: { expr: '1500*(Rational(102,100)**40 - 1)/Rational(2,100)', dp: 2 },
+            hint: 'r = 0.02, n = 40, future value.',
+            solution: ['(1.02⁴⁰ − 1)/0.02 ≈ 60.40198', '1,500 × 60.40198', '≈ 90,602.97'] },
+
+          { id: 'h20', kind: 'numeric', lesson: 'f4',
+            prompt: 'What monthly deposit, in dollars, accumulates to $30,000 in 5 years at 6% compounded monthly? Give 2 decimal places.',
+            answer: 429.98, tol: 0.005, verify: { expr: '30000*Rational(5,1000)/(Rational(1005,1000)**60 - 1)', dp: 2 },
+            hint: 'Sinking fund: R = S r/((1 + r)ⁿ − 1).',
+            solution: ['(1.005⁶⁰ − 1)/0.005 ≈ 69.7700', '30,000/69.7700', '≈ 429.98'] },
+
+          { id: 'h21', kind: 'numeric', lesson: 'f4',
+            prompt: 'A lump sum of $40,000 at 6% compounded monthly funds equal payments at the end of each month for 10 years. What is each payment, in dollars? Give 2 decimal places.',
+            answer: 444.08, tol: 0.005, verify: { expr: '40000*Rational(5,1000)/(1 - Rational(1005,1000)**(-120))', dp: 2 },
+            hint: 'R = A r/(1 − (1 + r)^(−n)) with n = 120.',
+            solution: ['(1 − 1.005⁻¹²⁰)/0.005 ≈ 90.0735', '40,000/90.0735', '≈ 444.08'] },
+
+          { id: 'h22', kind: 'mc', lesson: 'f4',
+            prompt: 'Rent of $900 is paid at the beginning of each month. To value a year of rent today at 6% compounded monthly, use',
+            options: [
+              { t: 'the annuity-due formula: 1.005 × 900 × (1 − 1.005⁻¹²)/0.005', ok: true },
+              { t: 'the ordinary-annuity formula with n = 12', ok: false },
+              { t: 'the future-value formula', ok: false },
+              { t: '12 × 900, since interest does not apply', ok: false }
+            ],
+            hint: 'Beginning of the period.',
+            solution: ['Payments at the start of each period: annuity due', 'Multiply the ordinary present value by (1 + r)', 'n stays 12'] },
+
+          { id: 'h23', kind: 'spot', lesson: 'f4',
+            prompt: 'A student finds the future value of $200 a month for 3 years at 9% compounded monthly. Which step is wrong?',
+            steps: [
+              { t: 'r = 0.09/12 = 0.0075', bad: false },
+              { t: 'n = 3', bad: true },
+              { t: 'S = 200 × ((1 + r)ⁿ − 1)/r', bad: false },
+              { t: 'Round the final answer to the nearest cent', bad: false }
+            ],
+            why: 'n is the number of payments, 36 monthly deposits, not the number of years. With n = 36 the accumulated amount is about $8,231; with n = 3 it is about $605.',
+            hint: 'How many payments are made?',
+            solution: ['n = 36', 'S = 200 × (1.0075³⁶ − 1)/0.0075', '≈ 8,231'] },
+
+          { id: 'h24', kind: 'numeric', lesson: 'f5',
+            prompt: 'A $20,000 loan over 5 years at 6% compounded monthly. What is the monthly payment, in dollars? Give 2 decimal places.',
+            answer: 386.66, tol: 0.005, verify: { expr: '20000*Rational(5,1000)/(1 - Rational(1005,1000)**(-60))', dp: 2 },
+            hint: 'R = A r/(1 − (1 + r)^(−n)).',
+            solution: ['1 − 1.005⁻⁶⁰ ≈ 0.258628', '100/0.258628', '≈ 386.66'] },
+
+          { id: 'h25', kind: 'numeric', lesson: 'f5',
+            prompt: 'For that loan, what is the total interest paid, in dollars? Give 2 decimal places.',
+            answer: 3199.36, tol: 0.05, verify: { expr: '60*20000*Rational(5,1000)/(1 - Rational(1005,1000)**(-60)) - 20000', dp: 2 },
+            hint: '60 payments minus the principal.',
+            solution: ['60 × 386.656 ≈ 23,199.36 with the unrounded payment', '− 20,000', '≈ 3,199.36'] },
+
+          { id: 'h26', kind: 'numeric', lesson: 'f5',
+            prompt: 'For that loan, how much of the first payment is interest, in dollars?',
+            answer: 100, verify: { expr: '20000*Rational(5,1000)' },
+            hint: 'Opening balance times the monthly rate.',
+            solution: ['20,000 × 0.005', '= 100.00', 'The other 286.66 repays principal'] },
+
+          { id: 'h27', kind: 'numeric', lesson: 'f5',
+            prompt: 'For that loan, what is the balance after the first payment, in dollars? Give 2 decimal places.',
+            answer: 19713.34, tol: 0.005, verify: { expr: '20000 - (Rational(38666,100) - 100)', dp: 2 },
+            hint: 'Balance minus the principal repaid.',
+            solution: ['Principal repaid 386.66 − 100 = 286.66', '20,000 − 286.66', '= 19,713.34'] },
+
+          { id: 'h28', kind: 'numeric', lesson: 'f5',
+            prompt: 'A $10,000 loan at 12% compounded monthly is repaid at $500 a month. How many payments, counting a final partial one?',
+            answer: 23, verify: { expr: 'ceiling(-log(1 - 10000*Rational(1,100)/500)/log(Rational(101,100)))' },
+            hint: 'n = −ln(1 − Ar/R)/ln(1 + r), rounded up.',
+            solution: ['−ln 0.8/ln 1.01 ≈ 22.4', '22 full payments', 'and a 23rd smaller one'] },
+
+          { id: 'h29', kind: 'numeric', lesson: 'f5',
+            prompt: 'A $150,000 mortgage over 25 years at 4.8% compounded monthly. What is the monthly payment, in dollars? Give 2 decimal places.',
+            answer: 859.5, tol: 0.05, verify: { expr: '150000*Rational(4,1000)/(1 - Rational(1004,1000)**(-300))', dp: 2 },
+            hint: 'r = 0.004, n = 300.',
+            solution: ['1 − 1.004⁻³⁰⁰ ≈ 0.698056', '600/0.698056', '≈ 859.50'] },
+
+          { id: 'h30', kind: 'mc', lesson: 'f5',
+            prompt: 'In an amortisation schedule, from one payment to the next',
+            options: [
+              { t: 'the interest portion falls and the principal portion rises', ok: true },
+              { t: 'the interest portion is constant', ok: false },
+              { t: 'the principal portion falls', ok: false },
+              { t: 'the payment itself falls', ok: false }
+            ],
+            hint: 'Interest is charged on the outstanding balance.',
+            solution: ['The balance falls after each payment', 'So next period’s interest is smaller', 'The fixed payment then repays more principal'] },
+
+          { id: 'h31', kind: 'numeric', lesson: 'f6',
+            prompt: 'Present value of $6,000 a year forever, first payment in one year, at 5% compounded annually, in dollars?',
+            answer: 120000, verify: { expr: '6000/Rational(5,100)' },
+            hint: 'A = R/r.',
+            solution: ['6,000/0.05', '= 120,000'] },
+
+          { id: 'h32', kind: 'numeric', lesson: 'f6',
+            prompt: 'The same perpetuity with the first payment now: present value in dollars?',
+            answer: 126000, verify: { expr: '6000 + 6000/Rational(5,100)' },
+            hint: 'Add one payment.',
+            solution: ['120,000 + 6,000', '= 126,000'] },
+
+          { id: 'h33', kind: 'numeric', lesson: 'f6',
+            prompt: 'A $500,000 endowment earning 4% compounded annually pays a scholarship at the end of each year forever. How much, in dollars?',
+            answer: 20000, verify: { expr: '500000*Rational(4,100)' },
+            hint: 'R = A r.',
+            solution: ['500,000 × 0.04', '= 20,000'] },
+
+          { id: 'h34', kind: 'numeric', lesson: 'f6',
+            prompt: 'A perpetuity pays $500 at the end of each month at 6% compounded monthly. What is its present value, in dollars?',
+            answer: 100000, verify: { expr: '500/(Rational(6,100)/12)' },
+            hint: 'Use the monthly rate.',
+            solution: ['r = 0.005', '500/0.005', '= 100,000'] },
+
+          { id: 'h35', kind: 'mc', lesson: 'f6',
+            prompt: 'The limit of the sequence a_n = 3(0.8)ⁿ as n grows without bound is',
+            options: [
+              { t: '0', ok: true },
+              { t: '3', ok: false },
+              { t: '15', ok: false },
+              { t: 'it has no limit', ok: false }
+            ],
+            hint: 'A number between 0 and 1 to a large power.',
+            solution: ['0.8ⁿ shrinks toward 0', '3 × 0 = 0', 'The sum of the sequence would be 3/(1 − 0.8) = 15, but that is the series, not the terms'] },
+
+          { id: 'h36', kind: 'order', lesson: 'f5',
+            prompt: 'Put the steps of building one line of an amortisation schedule in order.',
+            steps: [
+              'Take the outstanding balance at the start of the period',
+              'Multiply it by the periodic rate to get the interest for the period',
+              'Subtract the interest from the payment to get the principal repaid',
+              'Subtract the principal repaid from the balance to get the new balance'
+            ],
+            hint: 'Balance, interest, principal, new balance.',
+            solution: ['Start from the balance', 'Interest on it', 'The rest of the payment is principal', 'Reduce the balance'] }
+        ]
+      },
       /* ============================ CHAPTER 9 ============================ */
       {
-        id: 'prob', n: 5,
+        id: 'prob', n: 6,
         title: 'Additional topics in probability',
         blurb: 'A number attached to every outcome, the average you should expect over many trials and how far a single trial strays from it, the distribution that counts successes, and matrices that predict where a system settles.',
         read: 'Chapter 9',
@@ -21866,7 +22466,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.51', date: '16 September 2026', year: 2026 };
+  const BUILD = { v: '2.52', date: '16 September 2026', year: 2026 };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonandy242', ['gmail', 'com'].join('.')].join('@');
   /* The one sentence that says what this is. It appears under the wordmark, and build.js uses
@@ -21879,6 +22479,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      because the person who needs it is the one who just watched the app refresh itself and wants to
      know what moved. Trim the tail when it gets past a dozen; nobody reads further back than that. */
   const WHATS_NEW = [
+    ['2.52', '<b>MATH 1070 chapter 5, Mathematics of Finance, all six sections.</b> Compound interest with periodic and effective rates and doubling time; present value, equations of value at a comparison date, and net present value as the test of an investment; continuous compounding and its effective-rate ceiling; ordinary annuities and annuities due, the periodic payment and sinking funds; amortisation &mdash; the payment, the schedule line by line, total interest and the number of payments; and perpetuities as the limit of an annuity. Six lessons, 15 worked examples, 36 practice questions and 18 named misconceptions, every dollar figure recomputed by a computer algebra system to the cent. Chapter 6, matrix algebra, follows.'],
     ['2.51', '<b>MATH 1070 chapter 4, Exponential and Logarithmic Functions, all four sections.</b> Exponential functions and their graphs, compound amounts at a periodic rate with the nominal-versus-periodic distinction spelled out, growth and decay with base e; the logarithm as an exponent, converting between forms, common and natural logs, and the half-life formula; the product, quotient and power rules with the non-rule for sums named, and the change-of-base formula; and exponential and logarithmic equations &mdash; isolate first, take logs, combine, convert, and check the domain for extraneous solutions &mdash; with doubling time and a demand equation solved for quantity. Four lessons, 9 worked examples, 34 practice questions and 12 named misconceptions, every number recomputed by a computer algebra system. Chapter 5, the mathematics of finance, follows.'],
     ['2.50', '<b>MATH 1070 chapter 3, Lines, Parabolas and Systems, all six sections.</b> Slope and the three forms of a line, parallel and perpendicular done properly; linear demand and supply equations built from two observations, straight-line depreciation and production trade-offs; the parabola with its vertex formula and the maximum-revenue argument; systems of two and three linear equations by elimination and substitution, with the parallel and coincident cases read off the algebra; nonlinear systems and extraneous roots; and the two intersections that matter most &mdash; market equilibrium, with what a per-unit tax does to it, and break-even with profit targets. Six lessons, 16 worked examples, 40 practice questions and 18 named misconceptions, every number recomputed by a computer algebra system. Chapter 4 follows.'],
     ['2.49', '<b>MATH 1070 chapter 2, Functions and Graphs, all eight sections.</b> What a function is, its natural domain and the difference quotient that becomes the derivative; constant, polynomial, rational, case-defined and absolute-value functions, factorials, and a tax-bracket function that shows why a raise never lowers take-home pay; sums, products, quotients and composition of functions, read in the right order, and decomposing a function for the chain rule to come; one-to-one functions and inverses, with the domain restriction that makes the square root undo squaring; intercepts, the vertical-line test and domain and range from a graph; the four symmetry tests; translations, reflections and stretches in the order they apply; and functions of two variables with level curves. Eight lessons, 19 worked examples, 41 practice questions and 24 named misconceptions, every number recomputed by a computer algebra system. Chapter 3 follows.'],
