@@ -16075,22 +16075,22 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             ],
             examples: [
               {
-                prompt: 'Find lim<sub>x→3</sub> (x² − 9)/(x − 3).',
+                prompt: 'Find lim x→3 (x² − 9)/(x − 3).',
                 steps: [
                   { do: 'Substituting x = 3 gives (9 − 9)/(3 − 3) = 0/0', why: 'This is not the answer and not a failure. It is the signal that the quotient must be rewritten for x ≠ 3.' },
                   { do: 'Factor the numerator: x² − 9 = (x − 3)(x + 3)', why: 'A difference of squares. Whenever substitution gives 0/0 in a rational function, the denominator’s zero is also a factor of the numerator.' },
                   { do: 'For x ≠ 3, (x − 3)(x + 3)/(x − 3) = x + 3', why: 'Cancelling is legal because the limit never uses x = 3, which is the only place the cancelled factor is zero.' },
-                  { do: 'lim<sub>x→3</sub> (x + 3) = 3 + 3 = 6', why: 'x + 3 is a polynomial, so its limit is found by substitution — the rule that could not be used one step earlier now applies.' }
+                  { do: 'lim x→3 (x + 3) = 3 + 3 = 6', why: 'x + 3 is a polynomial, so its limit is found by substitution — the rule that could not be used one step earlier now applies.' }
                 ],
                 answer: '6', answerWords: true
               },
               {
-                prompt: 'If f(x) = 2x² − 5x, find lim<sub>h→0</sub> (f(x + h) − f(x)) / h.',
+                prompt: 'If f(x) = 2x² − 5x, find lim h→0 (f(x + h) − f(x)) / h.',
                 steps: [
                   { do: 'f(x + h) = 2(x + h)² − 5(x + h) = 2x² + 4xh + 2h² − 5x − 5h', why: 'Treat x as a constant throughout: h is the variable that is changing. Expanding (x + h)² fully is where most slips happen.' },
                   { do: 'f(x + h) − f(x) = 4xh + 2h² − 5h', why: 'The 2x² and −5x cancel against f(x). Every surviving term contains an h — as it must, since substituting h = 0 gave 0/0.' },
                   { do: 'Divide by h: (4xh + 2h² − 5h)/h = 4x + 2h − 5 for h ≠ 0', why: 'Factor h out of the numerator and cancel. This is the step that removes the 0/0.' },
-                  { do: 'lim<sub>h→0</sub> (4x + 2h − 5) = 4x − 5', why: 'Now a polynomial in h, so let h → 0 by substitution. The result, 4x − 5, will be called the derivative of f in the next chapter.' }
+                  { do: 'lim h→0 (4x + 2h − 5) = 4x − 5', why: 'Now a polynomial in h, so let h → 0 by substitution. The result, 4x − 5, will be called the derivative of f in the next chapter.' }
                 ],
                 answer: '4x − 5', answerWords: true
               }
@@ -16128,22 +16128,22 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             ],
             examples: [
               {
-                prompt: 'Find lim<sub>x→∞</sub> (6x² − x)/(2x² + 3), and lim<sub>x→∞</sub> (5x + 1)/(x³ − 4).',
+                prompt: 'Find lim x→∞ (6x² − x)/(2x² + 3), and lim x→∞ (5x + 1)/(x³ − 4).',
                 steps: [
                   { do: 'Both are rational functions, so keep only the dominant term top and bottom', why: 'As x grows, the highest power swamps every lower one. The shortcut is only valid for a quotient of polynomials.' },
                   { do: 'First: (6x²)/(2x²) = 3, so the limit is 3', why: 'Equal degrees. The limit is the ratio of leading coefficients, and the −x and +3 have no effect at all.' },
-                  { do: 'Second: (5x)/(x³) = 5/x², and lim<sub>x→∞</sub> 5/x² = 0', why: 'The numerator’s degree is lower, so the dominant terms reduce to a reciprocal power, which goes to 0.' },
+                  { do: 'Second: (5x)/(x³) = 5/x², and lim x→∞ 5/x² = 0', why: 'The numerator’s degree is lower, so the dominant terms reduce to a reciprocal power, which goes to 0.' },
                   { do: 'Limits: 3 and 0', why: 'Had the degrees been reversed in the second — x³ on top — there would be no limit; the function would grow without bound.' }
                 ],
                 answer: '3 and 0', answerWords: true
               },
               {
-                prompt: 'f(x) = x + 2 for x &lt; 1 and f(x) = 4x for x ≥ 1. Find lim<sub>x→1⁻</sub> f(x), lim<sub>x→1⁺</sub> f(x), and decide whether lim<sub>x→1</sub> f(x) exists.',
+                prompt: 'f(x) = x + 2 for x < 1 and f(x) = 4x for x ≥ 1. Find lim x→1⁻ f(x), lim x→1⁺ f(x), and decide whether lim x→1 f(x) exists.',
                 steps: [
-                  { do: 'From the left, x &lt; 1, so the first piece applies: lim<sub>x→1⁻</sub> (x + 2) = 3', why: 'Which formula to use is decided by which side of 1 the x-values are on, not by the value at 1.' },
-                  { do: 'From the right, x ≥ 1, so the second piece applies: lim<sub>x→1⁺</sub> 4x = 4', why: 'Each piece is a polynomial, so each one-sided limit is found by substitution into the right piece.' },
+                  { do: 'From the left, x < 1, so the first piece applies: lim x→1⁻ (x + 2) = 3', why: 'Which formula to use is decided by which side of 1 the x-values are on, not by the value at 1.' },
+                  { do: 'From the right, x ≥ 1, so the second piece applies: lim x→1⁺ 4x = 4', why: 'Each piece is a polynomial, so each one-sided limit is found by substitution into the right piece.' },
                   { do: '3 ≠ 4', why: 'The two-sided limit requires the one-sided limits to agree; here they do not.' },
-                  { do: 'lim<sub>x→1</sub> f(x) does not exist', why: 'Note that f(1) = 4 exists and is irrelevant. The graph has a jump at x = 1, and a jump is exactly a point where the two sides disagree.' }
+                  { do: 'lim x→1 f(x) does not exist', why: 'Note that f(1) = 4 exists and is irrelevant. The graph has a jump at x = 1, and a jump is exactly a point where the two sides disagree.' }
                 ],
                 answer: '3 from the left, 4 from the right, so the limit does not exist', answerWords: true
               }
@@ -16191,12 +16191,12 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
                 answer: 'Discontinuous at x = 2 and x = 3, both infinite discontinuities', answerWords: true
               },
               {
-                prompt: 'f(x) = x² + 1 for x &lt; 2 and f(x) = 3x − 1 for x ≥ 2. Is f continuous at 2?',
+                prompt: 'f(x) = x² + 1 for x < 2 and f(x) = 3x − 1 for x ≥ 2. Is f continuous at 2?',
                 steps: [
                   { do: 'Condition 1: f(2) = 3(2) − 1 = 5, so f is defined at 2', why: 'x = 2 falls in the second piece because of the ≥. The value comes from that piece.' },
-                  { do: 'Condition 2: from the left, lim<sub>x→2⁻</sub> (x² + 1) = 5; from the right, lim<sub>x→2⁺</sub> (3x − 1) = 5', why: 'Each side uses its own piece. Both are polynomials, so both limits are substitutions.' },
-                  { do: 'The one-sided limits agree, so lim<sub>x→2</sub> f(x) = 5', why: 'Condition 2 holds. Had the sides differed, f would have a jump and the check would end here.' },
-                  { do: 'Condition 3: f(2) = 5 = lim<sub>x→2</sub> f(x), so f is continuous at 2', why: 'All three conditions hold. Away from 2 each piece is a polynomial, so f is in fact continuous everywhere.' }
+                  { do: 'Condition 2: from the left, lim x→2⁻ (x² + 1) = 5; from the right, lim x→2⁺ (3x − 1) = 5', why: 'Each side uses its own piece. Both are polynomials, so both limits are substitutions.' },
+                  { do: 'The one-sided limits agree, so lim x→2 f(x) = 5', why: 'Condition 2 holds. Had the sides differed, f would have a jump and the check would end here.' },
+                  { do: 'Condition 3: f(2) = 5 = lim x→2 f(x), so f is continuous at 2', why: 'All three conditions hold. Away from 2 each piece is a polynomial, so f is in fact continuous everywhere.' }
                 ],
                 answer: 'Yes — f(2) = 5 and the limit is 5', answerWords: true
               }
@@ -16234,24 +16234,24 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             ],
             examples: [
               {
-                prompt: 'Solve x² − 3x − 10 &gt; 0.',
+                prompt: 'Solve x² − 3x − 10 > 0.',
                 steps: [
                   { do: 'Zeros: x² − 3x − 10 = (x − 5)(x + 2) = 0, so x = −2 and x = 5', why: 'A polynomial has no discontinuities, so its zeros are the only places its sign can change.' },
-                  { do: 'Intervals: x &lt; −2, then −2 &lt; x &lt; 5, then x &gt; 5', why: 'Two zeros split the line into three intervals, and on each the sign is constant by continuity.' },
+                  { do: 'Intervals: x < −2, then −2 < x < 5, then x > 5', why: 'Two zeros split the line into three intervals, and on each the sign is constant by continuity.' },
                   { do: 'Test values: at x = −3, (−8)(−1) = +; at x = 0, (−5)(2) = −; at x = 6, (1)(8) = +', why: 'One test point per interval is enough — the sign cannot change within it. Using the factored form makes the sign of each factor visible.' },
-                  { do: 'The inequality asks for &gt; 0: x &lt; −2 or x &gt; 5', why: 'Strict inequality, so the zeros themselves are excluded. In interval notation, (−∞, −2) ∪ (5, ∞).' }
+                  { do: 'The inequality asks for > 0: x < −2 or x > 5', why: 'Strict inequality, so the zeros themselves are excluded. In interval notation, (−∞, −2) ∪ (5, ∞).' }
                 ],
-                answer: 'x &lt; −2 or x &gt; 5', answerWords: true
+                answer: 'x < −2 or x > 5', answerWords: true
               },
               {
                 prompt: 'Solve (x + 1)/(x − 4) ≤ 0.',
                 steps: [
                   { do: 'Zero of the numerator: x = −1. Zero of the denominator (a discontinuity): x = 4', why: 'Both kinds of point go on the chart, because the sign can change at either. Nothing is multiplied through — that would flip the inequality wherever x − 4 is negative.' },
-                  { do: 'Intervals: x &lt; −1, then −1 &lt; x &lt; 4, then x &gt; 4', why: 'Two marked points, three intervals.' },
+                  { do: 'Intervals: x < −1, then −1 < x < 4, then x > 4', why: 'Two marked points, three intervals.' },
                   { do: 'Test values: at x = −2, (−1)/(−6) = +; at x = 0, (1)/(−4) = −; at x = 5, (6)/(1) = +', why: 'The sign of a quotient is the product of the signs, so the factored form shows it directly.' },
-                  { do: 'Wanted ≤ 0: the middle interval, with −1 included and 4 excluded: −1 ≤ x &lt; 4', why: 'At x = −1 the expression is 0, which satisfies ≤ 0. At x = 4 the expression does not exist, so 4 can never be part of the solution.' }
+                  { do: 'Wanted ≤ 0: the middle interval, with −1 included and 4 excluded: −1 ≤ x < 4', why: 'At x = −1 the expression is 0, which satisfies ≤ 0. At x = 4 the expression does not exist, so 4 can never be part of the solution.' }
                 ],
-                answer: '−1 ≤ x &lt; 4', answerWords: true
+                answer: '−1 ≤ x < 4', answerWords: true
               }
             ],
             pitfalls: [
@@ -16278,46 +16278,46 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
         ],
         practice: [
           { id: 'q1', kind: 'numeric', lesson: 'a1',
-            prompt: 'Find lim<sub>x→3</sub> (x² − 9)/(x − 3).',
+            prompt: 'Find lim x→3 (x² − 9)/(x − 3).',
             answer: 6, verify: { expr: 'limit((x**2 - 9)/(x - 3), x, 3)' },
             hint: 'Substitution gives 0/0. Factor the numerator.',
             solution: ['x² − 9 = (x − 3)(x + 3)', 'For x ≠ 3 the quotient equals x + 3', 'lim (x + 3) = 6'] },
 
           { id: 'q2', kind: 'numeric', lesson: 'a1',
-            prompt: 'Find lim<sub>x→−2</sub> (x³ − 2x² + 5).',
+            prompt: 'Find lim x→−2 (x³ − 2x² + 5).',
             answer: -11, verify: { expr: 'limit(x**3 - 2*x**2 + 5, x, -2)' },
             hint: 'It is a polynomial.',
             solution: ['A polynomial’s limit is found by substitution', '(−2)³ − 2(−2)² + 5 = −8 − 8 + 5', '= −11'] },
 
           { id: 'q3', kind: 'numeric', lesson: 'a1',
-            prompt: 'Find lim<sub>x→4</sub> √(x² + 9).',
+            prompt: 'Find lim x→4 √(x² + 9).',
             answer: 5, verify: { expr: 'limit(sqrt(x**2 + 9), x, 4)' },
             hint: 'The limit of a root is the root of the limit.',
             solution: ['lim (x² + 9) = 16 + 9 = 25', 'Take the square root of the limit', '√25 = 5'] },
 
           { id: 'q4', kind: 'numeric', lesson: 'a1',
-            prompt: 'If f(x) = x², find lim<sub>h→0</sub> (f(3 + h) − f(3)) / h.',
+            prompt: 'If f(x) = x², find lim h→0 (f(3 + h) − f(3)) / h.',
             answer: 6, verify: { expr: 'limit(((3 + h)**2 - 9)/h, h, 0)' },
             hint: 'Expand (3 + h)², subtract 9, then cancel the h.',
             solution: ['(3 + h)² − 9 = 9 + 6h + h² − 9 = 6h + h²', 'Divide by h: 6 + h for h ≠ 0', 'lim (6 + h) = 6'] },
 
           { id: 'q5', kind: 'numeric', lesson: 'a2',
-            prompt: 'Find lim<sub>x→∞</sub> (6x² − x)/(2x² + 3).',
+            prompt: 'Find lim x→∞ (6x² − x)/(2x² + 3).',
             answer: 3, verify: { expr: 'limit((6*x**2 - x)/(2*x**2 + 3), x, oo)' },
             hint: 'Keep only the dominant term top and bottom.',
             solution: ['Dominant terms: 6x² over 2x²', 'Equal degrees, so the limit is the ratio of leading coefficients', '6/2 = 3'] },
 
           { id: 'q6', kind: 'numeric', lesson: 'a2',
-            prompt: 'Find lim<sub>x→∞</sub> (5x + 1)/(x³ − 4).',
+            prompt: 'Find lim x→∞ (5x + 1)/(x³ − 4).',
             answer: 0, verify: { expr: 'limit((5*x + 1)/(x**3 - 4), x, oo)' },
             hint: 'Which degree is larger?',
             solution: ['Dominant terms: 5x over x³ = 5/x²', 'A reciprocal power goes to 0', 'The limit is 0'] },
 
           { id: 'q7', kind: 'numeric', lesson: 'a2',
-            prompt: 'f(x) = x + 2 for x &lt; 1 and f(x) = 4x for x ≥ 1. Find lim<sub>x→1⁻</sub> f(x).',
+            prompt: 'f(x) = x + 2 for x < 1 and f(x) = 4x for x ≥ 1. Find lim x→1⁻ f(x).',
             answer: 3, verify: { expr: "limit(x + 2, x, 1, '-')" },
             hint: 'From the left means x less than 1 — which piece is that?',
-            solution: ['For x &lt; 1 the function is x + 2', 'Substitute: 1 + 2', '= 3 (the right-hand limit is 4, so the two-sided limit does not exist)'] },
+            solution: ['For x < 1 the function is x + 2', 'Substitute: 1 + 2', '= 3 (the right-hand limit is 4, so the two-sided limit does not exist)'] },
 
           { id: 'q8', kind: 'numeric', lesson: 'a3',
             prompt: 'f(x) = (x + 3)/(x² − 5x + 6) is discontinuous at two values of x. What is the larger one?',
@@ -16326,13 +16326,13 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             solution: ['A rational function is discontinuous only where the denominator is 0', 'x² − 5x + 6 = (x − 2)(x − 3)', 'x = 2 and x = 3; the larger is 3'] },
 
           { id: 'q9', kind: 'numeric', lesson: 'a4',
-            prompt: 'The solution of x² − 3x − 10 &gt; 0 is x &lt; a or x &gt; b. What is b?',
+            prompt: 'The solution of x² − 3x − 10 > 0 is x < a or x > b. What is b?',
             answer: 5, verify: { expr: 'Max(*solve(x**2 - 3*x - 10, x))' },
             hint: 'Find the zeros first, then test each interval.',
-            solution: ['(x − 5)(x + 2) = 0 gives x = −2 and x = 5', 'Test values show + on the outer intervals and − between', 'Solution x &lt; −2 or x &gt; 5, so b = 5'] },
+            solution: ['(x − 5)(x + 2) = 0 gives x = −2 and x = 5', 'Test values show + on the outer intervals and − between', 'Solution x < −2 or x > 5, so b = 5'] },
 
           { id: 'q10', kind: 'mc', lesson: 'a2',
-            prompt: 'What is lim<sub>x→0</sub> 1/x²?',
+            prompt: 'What is lim x→0 1/x²?',
             options: [
               { t: 'It does not exist — the values grow without bound, written as ∞', ok: true },
               { t: '0, because 1/x² is very small near 0' },
@@ -16343,7 +16343,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             solution: ['As x → 0, x² → 0 through positive values, so 1/x² grows without bound', 'Both sides go to +∞, so the sign is the same on each side', 'No number is approached, so the limit does not exist; we write ∞ to say how'] },
 
           { id: 'q11', kind: 'mc', lesson: 'a3',
-            prompt: 'A function has f(2) = 7, lim<sub>x→2⁻</sub> f(x) = 5 and lim<sub>x→2⁺</sub> f(x) = 5. Which is true?',
+            prompt: 'A function has f(2) = 7, lim x→2⁻ f(x) = 5 and lim x→2⁺ f(x) = 5. Which is true?',
             options: [
               { t: 'The limit at 2 exists and is 5, but f is discontinuous at 2', ok: true },
               { t: 'f is continuous at 2 because f(2) exists' },
@@ -16357,16 +16357,16 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             prompt: 'A student solves (x + 1)/(x − 4) ≤ 0. One line is wrong.',
             steps: [
               { t: 'The numerator is zero at x = −1 and the denominator is zero at x = 4', bad: false },
-              { t: 'Test values give + for x &lt; −1, − between −1 and 4, and + for x &gt; 4', bad: false },
+              { t: 'Test values give + for x < −1, − between −1 and 4, and + for x > 4', bad: false },
               { t: 'The expression is ≤ 0 on the middle interval, so the solution is −1 ≤ x ≤ 4', bad: true },
               { t: 'A discontinuity can never be part of the solution set', bad: false }
             ],
-            why: 'The zero of the numerator, −1, is included because the expression equals 0 there and 0 satisfies ≤ 0. The zero of the denominator, 4, is a point where the expression has no value at all, so it cannot satisfy any inequality and is excluded: the solution is −1 ≤ x &lt; 4. The fourth line states the rule that the third line breaks.',
+            why: 'The zero of the numerator, −1, is included because the expression equals 0 there and 0 satisfies ≤ 0. The zero of the denominator, 4, is a point where the expression has no value at all, so it cannot satisfy any inequality and is excluded: the solution is −1 ≤ x < 4. The fourth line states the rule that the third line breaks.',
             hint: 'Does the expression have a value at x = 4?',
-            solution: ['Sign chart: + | − | + around −1 and 4', 'Include −1 (the expression is 0 there)', 'Exclude 4 (the expression is undefined there): −1 ≤ x &lt; 4'] },
+            solution: ['Sign chart: + | − | + around −1 and 4', 'Include −1 (the expression is 0 there)', 'Exclude 4 (the expression is undefined there): −1 ≤ x < 4'] },
 
           { id: 'q13', kind: 'spot', lesson: 'a1',
-            prompt: 'A student finds lim<sub>x→2</sub> (x² − 4)/(x − 2). One line is wrong.',
+            prompt: 'A student finds lim x→2 (x² − 4)/(x − 2). One line is wrong.',
             steps: [
               { t: 'Substituting x = 2 gives 0/0', bad: false },
               { t: '0/0 is undefined, so the limit does not exist', bad: true },
@@ -16430,7 +16430,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
                   { do: 'f(x + h) = 3(x + h)² − (x + h) = 3x² + 6xh + 3h² − x − h', why: 'Expand carefully; the 6xh cross-term is the whole point of the calculation and it is the term most often dropped.' },
                   { do: 'f(x + h) − f(x) = 6xh + 3h² − h', why: 'The terms without h cancel against f(x). Every remaining term has a factor of h, which is what makes the next step possible.' },
                   { do: 'Divide by h and cancel: 6x + 3h − 1 for h ≠ 0', why: 'This removes the 0/0. The condition h ≠ 0 is what the limit needs and no more.' },
-                  { do: 'f′(x) = lim<sub>h→0</sub> (6x + 3h − 1) = 6x − 1, so the slope at x = 2 is f′(2) = 11', why: 'Substitute h = 0 in the polynomial, then x = 2 in the derivative. The order matters: differentiate first, then evaluate.' }
+                  { do: 'f′(x) = lim h→0 (6x + 3h − 1) = 6x − 1, so the slope at x = 2 is f′(2) = 11', why: 'Substitute h = 0 in the polynomial, then x = 2 in the derivative. The order matters: differentiate first, then evaluate.' }
                 ],
                 answer: 'f′(x) = 6x − 1, and the slope at x = 2 is 11', answerWords: true
               },
@@ -16481,9 +16481,9 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
               {
                 prompt: 'Differentiate y = 5x⁴ − 2/x + 3√x.',
                 steps: [
-                  { do: 'Rewrite: y = 5x⁴ − 2x<sup>−1</sup> + 3x<sup>1/2</sup>', why: 'The power rule needs each term as a coefficient times a power of x. Doing this first is the whole method.' },
+                  { do: 'Rewrite: y = 5x⁴ − 2x⁻¹ + 3x^(1/2)', why: 'The power rule needs each term as a coefficient times a power of x. Doing this first is the whole method.' },
                   { do: 'Term 1: 5 · 4x³ = 20x³', why: 'Constant multiple and power rule: exponent down, exponent minus one.' },
-                  { do: 'Term 2: −2 · (−1)x<sup>−2</sup> = 2x<sup>−2</sup>; Term 3: 3 · (1/2)x<sup>−1/2</sup> = (3/2)x<sup>−1/2</sup>', why: 'A negative exponent minus one is more negative; a half minus one is minus a half. Watch the signs on the second term — two negatives make the result positive.' },
+                  { do: 'Term 2: −2 · (−1)x⁻² = 2x⁻²; Term 3: 3 · (1/2)x^(−1/2) = (3/2)x^(−1/2)', why: 'A negative exponent minus one is more negative; a half minus one is minus a half. Watch the signs on the second term — two negatives make the result positive.' },
                   { do: 'dy/dx = 20x³ + 2/x² + 3/(2√x)', why: 'Written back with positive exponents, which is how an answer is usually expected. At x = 1 this is 20 + 2 + 1.5 = 23.5.' }
                 ],
                 answer: 'dy/dx = 20x³ + 2/x² + 3/(2√x)', answerWords: true
@@ -17472,7 +17472,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.43', date: '16 September 2026', year: 2026 };
+  const BUILD = { v: '2.44', date: '16 September 2026', year: 2026 };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonandy242', ['gmail', 'com'].join('.')].join('@');
   /* The one sentence that says what this is. It appears under the wordmark, and build.js uses
@@ -17485,6 +17485,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      because the person who needs it is the one who just watched the app refresh itself and wants to
      know what moved. Trim the tail when it gets past a dozen; nobody reads further back than that. */
   const WHATS_NEW = [
+    ['2.44', '<b>A rendering bug in the new calculus course, fixed the same morning.</b> Forty practice questions and worked-example lines in MATH 1170 were showing raw markup to the student &mdash; <code>lim&lt;sub&gt;x&rarr;3&lt;/sub&gt;</code> printed exactly like that instead of a limit, and <code>&amp;lt;</code> instead of a less-than sign &mdash; because those fields are shown as text on purpose (a question is never injected as HTML) and the new course had been written as if they were not. Every one is rewritten in plain notation, every lesson and practice page in the library (491 of them) was rendered and scanned for stray markup, and a build-time check now reads every question, step, option, solution and pitfall in every course and fails if any of them carries a tag or an entity. The check was proved against the original defect before it was kept.'],
     ['2.43', '<b>Business calculus, from the chapter the quiz is on.</b> Two new Math courses follow the set text for TRU&rsquo;s MATH 1070 and MATH 1170 &mdash; Haeussler, Paul &amp; Wood, <i>Introductory Mathematical Analysis</i>, 14th edition &mdash; section by section, in the book&rsquo;s order, with every explanation and every question written from scratch. <b>Calculus for Business and Economics</b> opens with chapter 10, limits and continuity (the form 0/0, one-sided and infinite limits, limits at infinity by dominant terms, the three-part test for continuity, and inequalities solved by sign chart), and chapter 11, differentiation (the derivative from its definition, the power rule and the rewriting it needs, marginal cost and marginal revenue, the product, quotient and chain rules, and the marginal-revenue product). <b>Mathematics for Business and Economics</b> opens with chapter 9: expected value and variance, the binomial distribution, and Markov chains with their steady-state vector. Twelve lessons, 24 worked examples, 53 practice questions and 36 named misconceptions &mdash; every limit, derivative, binomial probability and matrix product recomputed by a computer algebra system before the page ships. Each course prints the chapters it does not yet cover, and the rest follow in the same shape.'],
     ['2.42', '<b>Macroeconomics is taught here now &mdash; the whole course, not a first instalment.</b> <b>Principles of Macroeconomics</b> follows an eleven-lecture ECON 1950 series in its own order: scarcity, the production possibilities curve and comparative advantage; what GDP counts and the two ways of adding it up; unemployment, the CPI and the GDP deflator; aggregate demand against long-run aggregate supply; the classical model and the Keynesian answer to it; consumption, the multiplier and where output settles; public debt and fiscal policy; money, fractional reserve banking and the money multiplier; and the Bank of Canada&rsquo;s four levers. <b>Nine units, 27 lessons, 54 worked examples, 99 practice questions and 81 named misconceptions</b> &mdash; every one a mistake first-year macro students actually make, starting with the three that cost the most marks: dividing the unemployed by the employed, adding imports instead of subtracting them, and spending the whole recessionary gap instead of dividing it by the multiplier. Every figure is recomputed by a computer algebra system before the page ships. <b>And there is an eleventh subject profile</b>: set a subject to <b>Economics</b> and your own files are read as economics &mdash; identities and rates first, cause-and-effect sentences treated as definitions, arithmetic on. The set text is named and pointed at, as always, and never reproduced.'],
     ['2.41', '<b>A full audit of every screen, on every display it is used on.</b> Nineteen device sizes &mdash; every iPhone from the 13 mini to the 16 Pro Max, iPads in both orientations, and four desktop widths &mdash; across all twenty-five screens, in both themes. Nothing scrolled sideways and nothing was cut off, and four things were wrong. <b>Small type</b>: the labels, chips and build stamps sat between 9.9px and 10.9px, under the 11px floor below which text stops being comfortable on a phone; they were seventy separate numbers and are now four named sizes with a floor that a test enforces. <b>Touch targets</b>: forty kinds of control were under the 44px a thumb needs, including the theme switch at 18px tall and the topbar buttons at 30&times;26 &mdash; a link inside a sentence is deliberately left alone, because padding a word out would open up the paragraph around it. <b>The notch and the home indicator</b>: the page declared no <code>viewport-fit</code>, so the one piece of safe-area padding in the stylesheet was silently doing nothing; installed on an iPhone, the rating bar could sit under the home indicator. <b>And a formula inside a fraction</b> rendered its exponent at 9.4px, the smallest text in the app. All fixed, and each one now has a test, so none of them can come back quietly.'],
