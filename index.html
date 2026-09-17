@@ -22961,6 +22961,583 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 
 </script>
 <script>
+/* UNI Made EZ — Economics & Business Statistics 1 (ECON 2320)
+   Copyright © 2026 JohnsonXCorp. All rights reserved.
+   Proprietary. Not open source: see LICENSE.
+
+   ---------------------------------------------------------------------------------------------
+   WHAT THIS IS. A course that follows the STRUCTURE of the set text for TRU's ECON 2320 —
+   Anderson, Sweeney, Williams et al., "Statistics for Business and Economics", 13th edition
+   (Cengage) — over the sections the course actually examines: chapter 3 (3.1, 3.2, 3.5),
+   chapter 4, chapter 5 (except 5.4 and 5.7), chapters 6, 7 and 8, and chapter 9 (9.1–9.5).
+   The chapter and section numbering here is the book's, so `src` on a lesson is the section a
+   student would open beside it.
+
+   THE BOOK IS NAMED AND POINTED AT, NEVER REPRODUCED. The topic order and the section headings
+   are the book's. Every explanation, worked example, practice question and figure below is
+   written here from scratch, with different data and different numbers from anything in the
+   text or in the department's own past papers.
+
+   THE CHECK ON THE ARITHMETIC. Every numeric question carries `verify.expr`, a restatement that
+   SymPy evaluates on its own, and test/math.js fails the build if the stated answer disagrees.
+   Normal-distribution probabilities are written with the error function, Φ(z) = (1 + erf(z/√2))/2,
+   so the check is exact rather than a second reading of the same table.
+   --------------------------------------------------------------------------------------------- */
+(function (root) {
+  'use strict';
+  if (!root.Courses || !root.Courses.register) return;
+
+  const STATS = { id: 'stats', name: 'Statistics', blurb: 'Which measure or test applies, what it assumes, and what the number means once you have it.' };
+
+  const TEXT = 'Anderson, Sweeney, Williams, Camm, Cochran, Fry & Ohlmann, Statistics for Business and Economics, 13th ed (Cengage)';
+
+  const NOTE = 'Study material for a university course. It follows the chapter and section order of the set ' +
+    'text so that a lesson here matches the section you would open alongside it, but every explanation, ' +
+    'example and question is written from scratch — nothing is copied from the book or from any past ' +
+    'paper, and neither is replaced by this. Answers are recomputed by a computer algebra system before ' +
+    'the page ships; where a figure is rounded, the question says to how many places.';
+
+  const STAT = {
+    subject: STATS,
+    id: 'econ-2320',
+    code: 'ECON 2320',
+    title: 'Economics & Business Statistics 1',
+    blurb: 'The first statistics course, built in the order the exam asks for it: how to summarise a batch of numbers and say how spread out and how related they are, then probability from counting to Bayes, the distributions that describe a count and a measurement, what happens to a sample mean when you take samples over and over, and finally the two questions every applied paper ends on — how precise is this estimate, and is this difference real.',
+    level: 'Foundation',
+    exam: 'Follows the department\'s stated scope: chapter 3 sections 3.1, 3.2 and 3.5; chapter 4 in full; chapter 5 except sections 5.4 and 5.7; chapters 6, 7 and 8 in full; chapter 9 sections 9.1–9.5. Built so far: chapter 3. The remaining chapters follow one per release, in course order.',
+    text: TEXT,
+    legalNote: NOTE,
+    gaps: [
+      'Not examined in ECON 2320 at TRU, so not built for it: section 5.4 bivariate distributions and section 5.7 the hypergeometric distribution, and sections 9.6 onward',
+      'Chapters 1 and 2 — data, samples, and the tables and charts used to display them — are assumed background and are not taught here',
+      'Still to be built, one chapter per release: chapter 4 probability, chapter 5 discrete probability distributions, chapter 6 continuous probability distributions, chapter 7 sampling and sampling distributions, chapter 8 interval estimation, and chapter 9 hypothesis tests'
+    ],
+    units: [
+
+      /* ============================ CHAPTER 3 ============================ */
+      {
+        id: 'descr', n: 1,
+        title: 'Descriptive statistics: numerical measures',
+        blurb: 'Three questions about a batch of numbers — where is its centre, how spread out is it, and does it move with another batch — and the measures that answer each.',
+        read: 'Chapter 3',
+        objectives: [
+          'Compute and choose between the mean, the median and the mode, and find a weighted mean and a percentile',
+          'Compute the range, the interquartile range, the variance, the standard deviation and the coefficient of variation, and know which divisor a sample takes',
+          'Read the empirical rule and a z-score as statements about how unusual a value is',
+          'Compute the covariance of two variables and turn it into a correlation coefficient',
+          'Say what a correlation does and does not establish, and why its sign is the covariance\'s sign'
+        ],
+        lessons: [
+          {
+            id: 'a1', title: 'Measures of location', src: 'Section 3.1',
+            idea: `A batch of numbers is summarised first by a single value near its middle, and there are three candidates, each answering a slightly different question.<br><br>The <b>mean</b> is the arithmetic average. For a sample of n observations it is written <b>x̄</b>; for a whole population of N it is <b>μ</b>. The formula is the same — add and divide — and only the symbol and the divisor's name change. That distinction matters far more than it looks, because from chapter 7 onward the whole course is about what x̄ can tell you about μ.<br><br>The <b>median</b> is the middle value once the data are in order: the single middle one when n is odd, the average of the two middle ones when n is even. Sorting first is not optional, and it is the step most often skipped.<br><br>The <b>mode</b> is the most frequent value. A batch can have two modes, or none worth reporting.<br><br><b>Which to use.</b> The mean uses every observation, so it is pulled toward an extreme value; the median does not move. For incomes, house prices, or any batch with a long tail, the median is the honest centre and the mean is the one quoted by whoever wants a bigger number. If the two are far apart, the data are skewed — mean above median means the tail runs to the right.<br><br>The <b>weighted mean</b> applies when observations do not count equally: <b>x̄ = Σw<sub>i</sub>x<sub>i</sub> / Σw<sub>i</sub></b>. A grade average with unequal credit weights, or an average price across purchases of different sizes, is a weighted mean, and computing the plain mean of the values instead is a standard and expensive mistake.<br><br><b>Percentiles</b> locate a value rather than the centre. The pth percentile is a value with about p% of the data at or below it. Compute the position <b>i = (p/100)n</b>; if i is not a whole number, round it <b>up</b> and take that observation; if i is a whole number, average observations i and i + 1. <b>Quartiles</b> are the 25th, 50th and 75th percentiles — Q<sub>2</sub> is the median — and they are the skeleton of the five-number summary and the box plot.`,
+            figure: {
+              kind: 'numberline', x: [0, 12],
+              points: [{ x: 2, label: '2' }, { x: 3, label: '3' }, { x: 4, label: '4' }, { x: 5, label: '5' }, { x: 6, label: '6' }, { x: 11, label: '11' }],
+              caption: 'Six observations, one of them far out on the right. The median sits between 4 and 5, at 4.5, and would not move if the 11 were a 40. The mean is 5.17, already dragged above four of the six values by that single point — which is the whole argument for reporting the median when a batch has a long tail.'
+            },
+            rules: [
+              { name: 'Sample mean', expr: 'x_bar = (sum x_i) / n', note: 'Add every observation and divide by how many there are. The population version is μ = (Σx_i)/N — same arithmetic, different symbol.' },
+              { name: 'Weighted mean', expr: 'x_bar = (sum w_i x_i) / (sum w_i)', note: 'Divide by the total weight, not by the number of values. Equal weights give the ordinary mean back.' },
+              { name: 'Position of the pth percentile', expr: 'i = (p / 100) n', note: 'Not a whole number: round UP and take that observation. A whole number: average observations i and i + 1.' },
+              { name: 'Median', expr: 'Sort, then take the middle value, or the average of the two middle values', words: true, note: 'Sorting first is the step that is skipped; an unsorted "median" is just an arbitrary observation.' },
+              { name: 'Which centre', expr: 'Mean above median means a tail to the right; far apart means skewed', words: true, note: 'For skewed data — incomes, prices, waiting times — the median is the honest centre.' }
+            ],
+            examples: [
+              {
+                prompt: 'A shop records the value of eight sales, in dollars: 14, 9, 22, 14, 31, 18, 9, 12. Find the mean, the median and the mode.',
+                approach: 'Three different measures, so three different routines. The mean needs a total and a count; the median needs the data SORTED first and then the middle; the mode needs a tally. Do the sort once and use it for the median and the mode together — it makes both easier and it is the step that protects you from the commonest error in this section.',
+                figure: {
+                  kind: 'numberline', x: [5, 35],
+                  points: [{ x: 9, label: '9, 9' }, { x: 12, label: '12' }, { x: 14, label: '14, 14' }, { x: 18, label: '18' }, { x: 22, label: '22' }, { x: 31, label: '31' }],
+                  caption: 'The eight sales in order. The median, 14, sits where half the sales are below and half above; the mean, 16.125, is pulled to the right of it by the single $31 sale. Two values tie for most frequent at the low end, which is why the mode is the least useful of the three here.'
+                },
+                steps: [
+                  { do: 'Total: 14 + 9 + 22 + 14 + 31 + 18 + 9 + 12 = 129', why: 'Add every observation once. Re-adding in a different order is the quickest check on this step.' },
+                  { do: 'Mean: x̄ = 129/8 = 16.125', why: 'Divide by n = 8. The mean need not be one of the observed values, and here it is not.' },
+                  { do: 'Sort: 9, 9, 12, 14, 14, 18, 22, 31', why: 'The median and the mode are both read off the sorted list. Sorting is not optional, and it is the step most often skipped.' },
+                  { do: 'n = 8 is even, so the median is the average of the 4th and 5th values: (14 + 14)/2 = 14', why: 'With an even count there is no single middle observation, so the two middle ones are averaged. Here they happen to be equal.' },
+                  { do: 'Mode: 9 and 14 both occur twice, everything else once', why: 'Two values tie, so the batch is bimodal — reporting a single mode would be false.' },
+                  { do: 'Mean 16.125, median 14, modes 9 and 14', why: 'The mean sits above the median, which says the batch has a tail to the right: the single $31 sale pulls the average up and leaves the median untouched.' }
+                ],
+                answer: 'Mean 16.125, median 14, and two modes, 9 and 14', answerWords: true,
+                check: 'Replace the 31 with 60. The median is still 14 — the middle two values have not changed — while the mean jumps to 19.75. That is exactly the difference between the two measures, and it is what "resistant to an extreme value" means.'
+              },
+              {
+                prompt: 'A student takes four courses worth 3, 3, 4 and 2 credits and earns 76, 88, 61 and 95 in them. Find the credit-weighted average, and compare it with the unweighted average of the four marks.',
+                approach: 'The credits are the weights, so this is Σwx over Σw. Compute the four products first and keep them visible, then total them, then divide by the total credits — 12, not 4. Doing the unweighted average as well is worth the extra line here, because seeing the gap is the point of the question.',
+                steps: [
+                  { do: 'Identify the weights: w = 3, 3, 4, 2, totalling Σw = 12 credits', why: 'The weight is what the mark counts for, which here is credits. The total weight is the divisor, and using n = 4 instead is the standard error.' },
+                  { do: 'Products: 3(76) = 228, 3(88) = 264, 4(61) = 244, 2(95) = 190', why: 'Each mark multiplied by its own weight, one at a time.' },
+                  { do: 'Σwx = 228 + 264 + 244 + 190 = 926', why: 'Total of the weighted values.' },
+                  { do: 'Weighted mean = 926/12 = 77.1667, so 77.17 to two decimal places', why: 'Divide by the total weight. The answer is in the same units as the marks.' },
+                  { do: 'Unweighted mean = (76 + 88 + 61 + 95)/4 = 320/4 = 80', why: 'The plain average of the four marks, ignoring how much each course counts.' },
+                  { do: 'The weighted average is 2.83 marks lower', why: 'The worst mark, 61, sits on the heaviest course, 4 credits, so weighting pulls the average down. The unweighted figure flatters the student and is the wrong number.' }
+                ],
+                answer: '77.17 weighted, against 80 unweighted — the weighted figure is 2.83 lower', answerWords: true,
+                check: 'Set every weight to 3 and the formula gives 3(320)/12 = 80, the unweighted mean back again — equal weights must reproduce the ordinary mean, and that is the fastest test that the formula was applied the right way up.'
+              },
+              {
+                prompt: 'Twelve delivery times, in minutes, are 18, 22, 25, 25, 27, 30, 31, 34, 36, 40, 44, 52. Find the first quartile, the third quartile and the 90th percentile.',
+                approach: 'Every percentile uses the same two-step rule: compute the position i = (p/100)n, then apply the tie-break — round up when i is not a whole number, average two observations when it is. The data are already sorted, which is the precondition. Do the three positions separately and state which rule each one triggered.',
+                figure: {
+                  kind: 'numberline', x: [15, 55],
+                  points: [{ x: 25, label: 'Q₁ = 25' }, { x: 30.5, label: 'median 30.5' }, { x: 38, label: 'Q₃ = 38' }, { x: 52, label: 'max 52' }],
+                  caption: 'The three quartiles on the number line, with the largest observation for scale. Half the deliveries fall between Q₁ = 25 and Q₃ = 38 — a 13-minute middle — while the upper quarter stretches from 38 all the way to 52. That lopsidedness is the long right tail these data have.'
+                },
+                steps: [
+                  { do: 'The data are already in order, and n = 12', why: 'A percentile is a position in the sorted list. If the list were unsorted, sorting would be step one.' },
+                  { do: 'Q₁: i = (25/100)(12) = 3, a whole number', why: 'The first quartile is the 25th percentile, so p = 25.' },
+                  { do: 'Whole number, so average observations 3 and 4: (25 + 25)/2 = 25', why: 'The whole-number case averages the two observations, which here are equal, so Q₁ = 25.' },
+                  { do: 'Q₃: i = (75/100)(12) = 9, again a whole number, so average observations 9 and 10: (36 + 40)/2 = 38', why: 'The same rule. Taking the 9th observation alone would give 36 and is the error the rule exists to prevent.' },
+                  { do: '90th percentile: i = (90/100)(12) = 10.8, not a whole number', why: 'The other branch of the rule.' },
+                  { do: 'Round UP to 11 and take the 11th observation: 44', why: 'Round up, never to nearest — 10.8 becomes 11, and the 90th percentile is 44 minutes.' }
+                ],
+                answer: 'Q₁ = 25, Q₃ = 38, and the 90th percentile is 44 minutes', answerWords: true,
+                check: 'Count directly: three of the twelve times are at or below 25, which is 25% ✓, and nine are at or below 36 with ten at or below 40, so Q₃ = 38 sits between them as it must. Eleven of twelve, 91.7%, are at or below 44 — just past 90%, which is what rounding the position up guarantees.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'stat-median-unsorted',
+                wrong: 'Taking the middle value of the list as typed to get the median',
+                right: 'Sort the data first, then take the middle value or the average of the middle two.',
+                why: 'The median is defined by position in the ORDERED data, so an unsorted middle is just whichever observation happened to be typed there. It is the most common single-mark loss in this chapter, it is invisible in the working, and it takes ten seconds to prevent.'
+              },
+              {
+                id: 'stat-weighted-mean-wrong-divisor',
+                wrong: 'Computing Σwx and then dividing by the number of observations',
+                right: 'Divide by the total weight Σw.',
+                why: 'The divisor has to be the total of the weights or the units do not cancel: 926 credit-marks over 12 credits is a mark, over 4 it is nothing at all. The check is that equal weights must give the ordinary mean back, and with the wrong divisor they do not.'
+              },
+              {
+                id: 'stat-percentile-round-nearest',
+                wrong: 'Rounding the percentile position 10.8 to the nearest whole number, 11 — or to 10',
+                right: 'Round the position UP whenever it is not a whole number; average two observations only when it is exactly a whole number.',
+                why: 'The rule is round up, not round to nearest, and the two agree only by accident. At i = 10.2 rounding to nearest gives the 10th observation, where the rule gives the 11th, and the resulting percentile has less than p% of the data at or below it — which is not what a percentile means.'
+              },
+              {
+                id: 'stat-mean-for-skewed',
+                wrong: 'Reporting the mean as "the typical value" for incomes, house prices or waiting times',
+                right: 'Report the median when the batch has a long tail, and say which one you have reported.',
+                why: 'The mean uses every observation, so a single extreme value moves it and moves nothing else. In a skewed batch the mean can sit above most of the data, as it does above four of six observations in the lesson figure, and calling that "typical" is false even though the arithmetic is right.'
+              }
+            ]
+          },
+
+          {
+            id: 'a2', title: 'Measures of variability', src: 'Section 3.2',
+            idea: `Two batches can share a mean and be nothing alike. Variability is the second question, and it carries at least as much information as the centre — in finance it <b>is</b> the information, since risk is variability.<br><br>The <b>range</b> is largest minus smallest. It uses two observations and ignores every other one, so it is quoted for a quick sense of scale and trusted for nothing.<br><br>The <b>interquartile range</b> is <b>IQR = Q<sub>3</sub> − Q<sub>1</sub></b>, the width of the middle half. It ignores the tails on purpose, which makes it the resistant measure of spread in the same way the median is the resistant centre.<br><br>The <b>variance</b> is the workhorse: the average of the squared deviations from the mean. Squaring does two jobs — it stops positives and negatives cancelling, and it makes a big deviation count for much more than a small one. The formulas differ in their divisor:<br><br><b>s² = Σ(x<sub>i</sub> − x̄)² / (n − 1)</b> for a sample · <b>σ² = Σ(x<sub>i</sub> − μ)² / N</b> for a population<br><br>The <b>n − 1</b> is not a typo and not a rounding convention. A sample's deviations are measured from x̄, which was itself computed from that same sample and therefore sits closer to the data than the true μ does; dividing by n would give a variance that is too small on average, every time. Dividing by n − 1 corrects exactly that bias. The n − 1 is called the <b>degrees of freedom</b>, and it returns in chapter 8 as the parameter of the t distribution, so it is worth understanding rather than memorising.<br><br>The <b>standard deviation</b> is the square root of the variance, <b>s</b> or <b>σ</b>. It is the one to report, because squaring destroyed the units — a variance of dollars comes out in dollars squared, which means nothing, while the standard deviation is back in dollars.<br><br>The <b>coefficient of variation</b>, <b>(s/x̄) × 100%</b>, makes spread comparable across batches measured in different units or at different scales: a standard deviation of $500 is enormous on a $1,000 mean and trivial on a $500,000 one.<br><br>Two readings of the standard deviation matter for later chapters. The <b>z-score</b>, <b>z = (x − x̄)/s</b>, restates an observation as a number of standard deviations from the mean, and it is the currency of chapter 6. The <b>empirical rule</b> says that for a roughly bell-shaped batch about 68% of the data lie within one standard deviation of the mean, about 95% within two, and almost all within three — which is why a z beyond 3 marks an outlier.`,
+            figure: {
+              kind: 'graph', x: [0, 12], y: [0, 4],
+              fns: [{ expr: 'exp(-(x - 6)**2/2)*3', label: 'a tight batch: s = 1' }, { expr: 'exp(-(x - 6)**2/18)', label: 'a spread batch: s = 3', dashed: true }],
+              points: [{ x: 6, y: 0, label: 'the shared mean' }],
+              caption: 'Two batches with exactly the same mean and nothing else in common. The mean alone cannot tell them apart; the standard deviation can, and it is the number that says how far from the centre an ordinary observation sits. In the tight batch a value of 9 is three standard deviations out and extraordinary; in the spread one it is one standard deviation out and unremarkable.'
+            },
+            rules: [
+              { name: 'Sample variance', expr: 's^2 = (sum (x_i - x_bar)^2) / (n - 1)', note: 'Divide by n − 1 for a sample. The deviations are measured from x̄, which came from the same data, so n would understate the spread.' },
+              { name: 'Population variance', expr: 'sigma^2 = (sum (x_i - mu)^2) / N', note: 'Divide by N when the data ARE the whole population. The n − 1 correction is not needed, because μ is not estimated from the data.' },
+              { name: 'Standard deviation', expr: 's = sqrt(s^2)', note: 'Report this, not the variance: the square root puts the answer back into the units of the data.' },
+              { name: 'Coefficient of variation', expr: 'CV = (s / x_bar) * 100', note: 'Spread as a percentage of the mean, so two batches in different units can be compared.' },
+              { name: 'z-score', expr: 'z = (x - x_bar) / s', note: 'How many standard deviations an observation sits from the mean. Negative below, positive above.' },
+              { name: 'The empirical rule', expr: 'Roughly bell-shaped: about 68% within 1s, 95% within 2s, almost all within 3s', words: true, note: 'A z beyond 3 is an outlier by this rule. It applies only to a roughly symmetric, bell-shaped batch.' }
+            ],
+            examples: [
+              {
+                prompt: 'Five machines produce 12, 15, 9, 14 and 10 units in an hour. Treating these as a sample, find the variance, the standard deviation and the coefficient of variation.',
+                approach: 'The mean comes first, because every deviation is measured from it. Then build a column of deviations, square them, add the squares, and divide by n − 1 — five observations, so four. Take the square root for the standard deviation, and divide that by the mean for the coefficient of variation. Keep the deviations visible: they must add to zero, which is a free check on the arithmetic.',
+                steps: [
+                  { do: 'Mean: x̄ = (12 + 15 + 9 + 14 + 10)/5 = 60/5 = 12', why: 'Every deviation is measured from the mean, so it has to be exact before anything else happens. A convenient whole number here.' },
+                  { do: 'Deviations: 0, 3, −3, 2, −2', why: 'Each observation minus 12. They sum to 0, as deviations from the mean always must — the fastest check there is on both the mean and this column.' },
+                  { do: 'Squares: 0, 9, 9, 4, 4, which total Σ(x − x̄)² = 26', why: 'Squaring stops the positives and negatives cancelling, and it makes the larger deviations count for more.' },
+                  { do: 's² = 26/(5 − 1) = 26/4 = 6.5', why: 'Divide by n − 1 = 4, not by 5. These five machines are a sample, and the deviations were measured from their own mean.' },
+                  { do: 's = √6.5 = 2.5495, so 2.55 units to two decimal places', why: 'The square root puts the answer back into units per hour; the variance, 6.5, is in units squared and means nothing on its own.' },
+                  { do: 'CV = (2.5495/12) × 100 = 21.25%', why: 'The spread is about a fifth of the average output — that percentage is what makes this batch comparable with one measured in dollars or in kilograms.' }
+                ],
+                answer: 's² = 6.5, s = 2.55 units, and CV = 21.25%', answerWords: true,
+                check: 'Divide by 5 instead of 4 and the variance comes out 5.2, an 11% understatement of the spread — that gap is what the n − 1 correction is for. And the empirical rule agrees with the picture: x̄ ± 2s is 6.9 to 17.1, and all five observations lie inside it.'
+              },
+              {
+                prompt: 'A batch of exam marks has mean 68 and standard deviation 12. Find the z-score of a mark of 89, and say what the empirical rule implies about a mark of 104.',
+                approach: 'A z-score is one subtraction and one division, but the interpretation is the point: z says how many standard deviations the value sits from the mean, and the empirical rule converts that into how unusual it is. Compute both z-scores, then read each against the 68–95–almost-all benchmarks.',
+                figure: {
+                  kind: 'graph', x: [32, 110], y: [0, 1.15],
+                  fns: [{ expr: 'exp(-((x - 68)/12)**2/2)', label: 'marks: mean 68, s = 12' }],
+                  vlines: [{ x: 89, label: 'z = 1.75' }, { x: 104, label: 'z = 3' }],
+                  caption: 'The mark of 89 sits 1.75 standard deviations above the mean — inside the middle 95%, good but not rare. The mark of 104 sits exactly three standard deviations out, in the sliver the empirical rule calls "almost never", which is the conventional line for an outlier.'
+                },
+                steps: [
+                  { do: 'z = (x − x̄)/s, so for x = 89: z = (89 − 68)/12', why: 'The deviation from the mean goes on top, the standard deviation underneath.' },
+                  { do: 'z = 21/12 = 1.75', why: 'The mark sits 1.75 standard deviations above the mean. Positive means above; the sign carries half the meaning.' },
+                  { do: 'The empirical rule puts about 95% of a bell-shaped batch within z = ±2', why: '1.75 is inside that, so a mark of 89 is comfortably above average but not rare.' },
+                  { do: 'For x = 104: z = (104 − 68)/12 = 36/12 = 3', why: 'Exactly three standard deviations above the mean.' },
+                  { do: 'The rule puts almost all of the data within z = ±3, so a mark at z = 3 is at the far edge', why: 'Fewer than about 1 in 100 observations sit beyond three standard deviations in a bell-shaped batch — the conventional line for an outlier.' },
+                  { do: 'z = 1.75 for 89; a mark of 104 is a z = 3 outlier', why: 'The z-score is the general translation: it makes a mark comparable with a height, a price or a waiting time, which is exactly what chapter 6 will need.' }
+                ],
+                answer: 'z = 1.75 for the mark of 89; a mark of 104 has z = 3 and counts as an outlier', answerWords: true,
+                check: 'Read it backwards: z = 1.75 means x = 68 + 1.75(12) = 89 ✓ and z = 3 means x = 68 + 36 = 104 ✓. Notice too that the empirical rule needs the batch to be roughly bell-shaped — on a badly skewed batch a z of 3 says much less.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'stat-variance-divide-by-n',
+                wrong: 'Dividing the sum of squared deviations by n for a sample',
+                right: 'Divide by n − 1 for a sample; only a full population divides by N.',
+                why: 'The deviations were measured from x̄, which came from the same data and therefore sits closer to it than the true μ does, so dividing by n understates the spread every time, not just sometimes. In the worked example the understatement is 11% on five observations, and the n − 1 is also the degrees of freedom that the t distribution needs in chapter 8.'
+              },
+              {
+                id: 'stat-report-variance-not-sd',
+                wrong: 'Reporting the variance as the spread — "the wages vary by 6.5 dollars"',
+                right: 'Report the standard deviation, in the units of the data.',
+                why: 'Squaring destroyed the units: a variance of dollars is in dollars squared, which is not a quantity anyone can picture. The variance is the intermediate value and the standard deviation is the answer, which is why every reporting convention in the course quotes s and σ rather than s² and σ².'
+              },
+              {
+                id: 'stat-sd-compared-across-scales',
+                wrong: 'Calling one batch more variable than another because its standard deviation is larger, when the two are on different scales',
+                right: 'Compare coefficients of variation when the means differ greatly or the units are not the same.',
+                why: 'A standard deviation of $500 is enormous around a mean of $1,000 and negligible around a mean of $500,000, so the raw comparison answers the wrong question. The coefficient of variation divides the spread by the mean and is unitless, which is exactly what makes the comparison legitimate.'
+              },
+              {
+                id: 'stat-empirical-rule-on-skewed',
+                wrong: 'Applying the 68–95–99.7 rule to any batch of data',
+                right: 'The empirical rule assumes a roughly symmetric, bell-shaped distribution.',
+                why: 'On a badly skewed batch — incomes, waiting times, insurance claims — far more than 5% of the data can sit beyond two standard deviations on one side and almost none on the other. Chebyshev\'s theorem, which holds for any shape but gives much weaker bounds, is the honest tool there.'
+              }
+            ]
+          },
+
+          {
+            id: 'a3', title: 'Measures of association between two variables', src: 'Section 3.5',
+            idea: `The third question is whether two variables move together. It is answered in two steps, and the second exists because the first produces a number nobody can interpret.<br><br><b>Covariance</b> multiplies each pair's deviations and averages them:<br><br><b>s<sub>xy</sub> = Σ(x<sub>i</sub> − x̄)(y<sub>i</sub> − ȳ) / (n − 1)</b> for a sample · <b>σ<sub>xy</sub> = Σ(x<sub>i</sub> − μ<sub>x</sub>)(y<sub>i</sub> − μ<sub>y</sub>) / N</b> for a population<br><br>The same n − 1 appears, for the same reason. What the formula does is easiest to see one point at a time: when a point sits above the mean in both variables, both deviations are positive and the product is positive; when it sits below in both, both are negative and the product is positive again. A point that is above in x and below in y contributes a negative product. So the <b>sign</b> of the total says which pattern dominates — positive for a relationship that slopes up, negative for one that slopes down, near zero for no linear pattern.<br><br>The <b>size</b>, however, says nothing at all, because it depends on the units. Measure the same heights in centimetres instead of metres and the covariance multiplies by 100. A covariance of 0.1 might be a very strong relationship or a very weak one, and there is no way to tell from the number.<br><br>The <b>correlation coefficient</b> fixes this by dividing out both standard deviations:<br><br><b>r<sub>xy</sub> = s<sub>xy</sub> / (s<sub>x</sub> s<sub>y</sub>)</b> for a sample · <b>ρ<sub>xy</sub> = σ<sub>xy</sub> / (σ<sub>x</sub> σ<sub>y</sub>)</b> for a population<br><br>The result is unitless and always lies between <b>−1 and +1</b>. A value of +1 means the points lie exactly on a line sloping up, −1 exactly on a line sloping down, and 0 no linear relationship. It keeps the covariance's sign — the denominator is a product of standard deviations and cannot be negative — so the sign of r and the sign of s<sub>xy</sub> always agree. An r outside [−1, 1] is not a surprising result; it is an arithmetic error.<br><br>Three warnings, each worth a mark:<br><br><b>Correlation is not causation.</b> r measures how closely the points follow a line, not what makes them do it. A third variable driving both, or coincidence in a small sample, produces the same number as a genuine cause.<br><br><b>Correlation is LINEAR.</b> Points sitting exactly on a parabola have a strong relationship and can have r near 0. A correlation of zero rules out a straight-line pattern and nothing else.<br><br><b>r does not measure the steepness of the line.</b> A very shallow line with points sitting exactly on it has r = 1, and a steep one with scattered points can have r = 0.4. What r measures is how tightly the points cling to the line, not how fast y changes.`,
+            figure: {
+              kind: 'graph', x: [0, 11], y: [0, 11],
+              fns: [{ expr: 'x', label: 'the pattern the points follow' }],
+              points: [{ x: 1, y: 1.6 }, { x: 2, y: 1.9 }, { x: 3, y: 3.6 }, { x: 4, y: 3.4 }, { x: 5, y: 5.4 }, { x: 6, y: 5.6 }, { x: 7, y: 7.4 }, { x: 8, y: 7.7 }, { x: 9, y: 9.3 }],
+              caption: 'Nine pairs that rise together. Every point lies near the line, so the correlation is close to +1; the covariance is positive too, but its size would change with the units and tells you nothing on its own. Scatter the same points further from the line without tilting it and r falls while the line stays where it is — r measures tightness, not steepness.'
+            },
+            rules: [
+              { name: 'Sample covariance', expr: 's_xy = (sum (x_i - x_bar)(y_i - y_bar)) / (n - 1)', note: 'The sign is the message: positive slopes up, negative slopes down. The size depends on the units and means nothing alone.' },
+              { name: 'Population covariance', expr: 'sigma_xy = (sum (x_i - mu_x)(y_i - mu_y)) / N', note: 'Divide by N when the pairs are the whole population.' },
+              { name: 'Sample correlation coefficient', expr: 'r_xy = s_xy / (s_x s_y)', note: 'Unitless, always between −1 and +1, and it keeps the covariance’s sign because the denominator is never negative.' },
+              { name: 'Population correlation coefficient', expr: 'rho_xy = sigma_xy / (sigma_x sigma_y)', note: 'The same construction for a population. ρ is the parameter; r is the estimate of it.' },
+              { name: 'What r does not say', expr: 'Not causation, not curvature, not the slope of the line', words: true, note: 'r measures how tightly points cling to a straight line. Nothing else.' }
+            ],
+            examples: [
+              {
+                prompt: 'Five weeks of advertising spend x (in $000) and sales y (in $000) are (2, 18), (3, 21), (5, 27), (6, 28) and (4, 26). Find the sample covariance and the sample correlation coefficient, to four decimal places where rounded.',
+                approach: 'Both measures need the same three sums, so build them in one table: the two means first, then the deviations in x and in y, then three columns of products — the cross-products for the covariance and the two squared columns for the standard deviations. Divide each total by n − 1, then divide the covariance by the product of the two standard deviations. The answer must land between −1 and +1, or something has gone wrong.',
+                figure: {
+                  kind: 'graph', x: [0, 8], y: [14, 32], xlabel: 'advertising ($000)', ylabel: 'sales ($000)',
+                  points: [{ x: 2, y: 18, label: '(2, 18)' }, { x: 3, y: 21 }, { x: 4, y: 26 }, { x: 5, y: 27 }, { x: 6, y: 28, label: '(6, 28)' }],
+                  segments: [{ from: [1.6, 17.1], to: [6.4, 29.1], label: 'the pattern', dashed: true }],
+                  caption: 'The five weeks plotted. Four of the five points sit almost on a line and the fifth is barely off it, which is why r comes out above 0.96. Note what the picture cannot tell you: whether the advertising caused the sales, or whether both simply rise in a busy season.'
+                },
+                steps: [
+                  { do: 'Means: x̄ = (2 + 3 + 5 + 6 + 4)/5 = 20/5 = 4 and ȳ = (18 + 21 + 27 + 28 + 26)/5 = 120/5 = 24', why: 'Both means are needed before any deviation can be written down, and both come out whole here.' },
+                  { do: 'Deviations in x: −2, −1, 1, 2, 0. In y: −6, −3, 3, 4, 2', why: 'Each column must sum to zero — −2 −1 +1 +2 +0 = 0 and −6 −3 +3 +4 +2 = 0 ✓ — which checks both means at once.' },
+                  { do: 'Cross-products: 12, 3, 3, 8, 0, totalling Σ(x − x̄)(y − ȳ) = 26', why: 'Every product here is positive or zero: each week sits on the same side of both means, which is what a positive relationship looks like term by term.' },
+                  { do: 's_xy = 26/(5 − 1) = 6.5', why: 'Divide by n − 1 = 4. Positive, so sales rise with spend — but 6.5 what? The units are thousand-dollars squared, which is why the number alone says nothing.' },
+                  { do: 'Squares: Σ(x − x̄)² = 4 + 1 + 1 + 4 + 0 = 10, so s_x = √(10/4) = 1.5811. Σ(y − ȳ)² = 36 + 9 + 9 + 16 + 4 = 74, so s_y = √(74/4) = 4.3012', why: 'The two standard deviations, each with the same n − 1 divisor as the covariance.' },
+                  { do: 'r = 6.5/(1.5811 × 4.3012) = 6.5/6.8007 = 0.9558', why: 'Unitless, between −1 and +1, and very close to 1: the points cling tightly to a line that slopes up.' }
+                ],
+                answer: 's_xy = 6.5 and r = 0.9558', answerWords: true,
+                check: 'r can be computed without the standard deviations at all: 26/√(10 × 74) = 26/27.2029 = 0.9558 ✓, because the n − 1 divisors cancel between the numerator and the denominator. And the sign agrees with the covariance, as it always must.'
+              },
+              {
+                prompt: 'Two variables have covariance −0.24, with standard deviations 0.6 and 0.8. A student reports the correlation as −0.5 and concludes that the first variable causes the second to fall. Find the correlation coefficient and say what is wrong with the conclusion.',
+                approach: 'One division settles the arithmetic: r is the covariance over the product of the two standard deviations. Then the interpretation, which is where the marks are. A correlation — however strong, and whatever its sign — says the points follow a line; it says nothing about which variable moves the other, or whether anything moves either of them.',
+                steps: [
+                  { do: 'The denominator: s_x s_y = 0.6 × 0.8 = 0.48', why: 'A product of two standard deviations, so it can never be negative — which is why r always takes the covariance’s sign.' },
+                  { do: 'r = −0.24/0.48 = −0.5', why: 'The arithmetic the student reported is right: r = −0.5.' },
+                  { do: 'Check the range: −0.5 lies between −1 and +1 ✓', why: 'A value outside that range is an arithmetic error, never a finding. It is worth the one second it costs.' },
+                  { do: 'Read the strength: −0.5 is a moderate downward relationship, not a strong one', why: 'The points slope down but are scattered well away from the line. Calling it strong overstates what the number supports.' },
+                  { do: 'The conclusion does not follow: r measures how closely the pairs follow a straight line, not what makes them do it', why: 'Correlation is not causation. A third variable driving both, reverse causation, or coincidence in a small sample all produce exactly this number.' },
+                  { do: 'And the sign says direction, not cause: as one variable rises the other tends to fall, which is an observation, not a mechanism', why: 'The honest reading is "these two move in opposite directions, moderately"; anything about causing requires evidence this calculation cannot supply.' }
+                ],
+                answer: 'r = −0.5, a moderate inverse relationship — but correlation is not causation, so the conclusion does not follow', answerWords: true,
+                check: 'Work the covariance back: r s_x s_y = (−0.5)(0.6)(0.8) = −0.24 ✓. Note also what an r of −0.5 does not rule out — the pairs could sit on a curve, since r sees only the straight-line part of any pattern.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'stat-covariance-size-interpreted',
+                wrong: 'Calling a covariance of 0.1 a weak relationship and one of 4,000 a strong one',
+                right: 'Only the SIGN of a covariance can be interpreted. Divide by both standard deviations to get r before saying anything about strength.',
+                why: 'Covariance carries the product of the two units, so the same data measured in metres and in centimetres give covariances differing by a factor of 10,000 with no change in the relationship. That is precisely the defect the correlation coefficient was invented to remove.'
+              },
+              {
+                id: 'stat-correlation-is-causation',
+                wrong: 'Concluding from a large r that one variable causes the other',
+                right: 'State that the two move together; causation needs evidence the calculation cannot supply.',
+                why: 'r is computed from the coordinates alone and knows nothing about mechanism, so a lurking third variable that drives both produces exactly the same number as a genuine cause. Ice-cream sales and drownings correlate strongly because both follow the weather, and no arithmetic on those two columns can detect the difference.'
+              },
+              {
+                id: 'stat-r-zero-means-unrelated',
+                wrong: 'Reading r ≈ 0 as "the two variables are unrelated"',
+                right: 'r ≈ 0 means no LINEAR relationship. A curved relationship can be perfect and still give r near 0.',
+                why: 'Points sitting exactly on a symmetric parabola are completely determined by each other, yet the upward half and the downward half contribute cross-products that cancel, so r comes out near zero. The correct statement is always "no linear relationship", and a scatter plot is the only cheap way to see the difference.'
+              },
+              {
+                id: 'stat-r-read-as-slope',
+                wrong: 'Reading a correlation of 0.9 as "a steep relationship" or as the slope of the line',
+                right: 'r measures how tightly the points cling to a line, not how steep that line is.',
+                why: 'A nearly flat line with the points sitting exactly on it has r = 1, while a steep line with widely scattered points can have r = 0.4. Slope and tightness are separate facts, and confusing them makes r look like a measure of how much y changes per unit of x, which is the regression coefficient\'s job and not r\'s.'
+              }
+            ]
+          }
+        ],
+        practice: [
+          { id: 'd1', kind: 'numeric', lesson: 'a1',
+            prompt: 'Find the mean of 7, 11, 4, 9, 14.',
+            answer: 9, verify: { expr: 'Rational(7 + 11 + 4 + 9 + 14, 5)' },
+            hint: 'Add the five values and divide by 5.',
+            solution: ['Total: 7 + 11 + 4 + 9 + 14 = 45', 'Divide by n = 5', '45/5 = 9'] },
+
+          { id: 'd2', kind: 'numeric', lesson: 'a1',
+            prompt: 'Find the median of 22, 15, 31, 18, 27, 15.',
+            answer: 20, verify: { expr: 'Rational(18 + 22, 2)' },
+            hint: 'Sort first. Six values means two in the middle.',
+            solution: ['Sorted: 15, 15, 18, 22, 27, 31', 'n = 6 is even, so average the 3rd and 4th values', '(18 + 22)/2 = 20'] },
+
+          { id: 'd3', kind: 'numeric', lesson: 'a1',
+            prompt: 'Find the median of 40, 12, 33, 19, 25.',
+            answer: 25, verify: { expr: 'Rational(25)' },
+            hint: 'Sort, then take the single middle value.',
+            solution: ['Sorted: 12, 19, 25, 33, 40', 'n = 5 is odd, so the median is the 3rd value', 'Median = 25'] },
+
+          { id: 'd4', kind: 'numeric', lesson: 'a1',
+            prompt: 'Four courses carry 2, 3, 3 and 4 credits, with marks 90, 72, 84 and 65. Find the credit-weighted average, to two decimal places.',
+            answer: 75.67, tol: 0.005, verify: { expr: 'Rational(2*90 + 3*72 + 3*84 + 4*65, 12)', dp: 2 },
+            hint: 'Σwx over Σw, and Σw is the total credits, not 4.',
+            solution: ['Products: 2(90) = 180, 3(72) = 216, 3(84) = 252, 4(65) = 260', 'Σwx = 908 and Σw = 2 + 3 + 3 + 4 = 12 credits', '908/12 = 75.67 to two decimal places', 'The unweighted average is 77.75, so weighting costs this student two marks'] },
+
+          { id: 'd5', kind: 'numeric', lesson: 'a1',
+            prompt: 'Ten sorted values are 3, 5, 6, 8, 11, 13, 14, 18, 20, 25. Find the first quartile.',
+            answer: 6, verify: { expr: 'Rational(6)' },
+            hint: 'i = (25/100)(10). Is that a whole number?',
+            solution: ['i = 0.25 × 10 = 2.5', 'Not a whole number, so round UP to position 3', 'The 3rd observation is 6, so Q₁ = 6'] },
+
+          { id: 'd6', kind: 'numeric', lesson: 'a1',
+            prompt: 'For the sorted values 4, 7, 9, 12, 15, 18, 21, 26, find the 75th percentile.',
+            answer: 19.5, verify: { expr: 'Rational(18 + 21, 2)' },
+            hint: 'i = (75/100)(8) — a whole number, so the other branch of the rule applies.',
+            solution: ['i = 0.75 × 8 = 6, a whole number', 'Average observations 6 and 7', '(18 + 21)/2 = 19.5'] },
+
+          { id: 'd7', kind: 'mc', lesson: 'a1',
+            prompt: 'A town\'s house prices have mean $640,000 and median $410,000. Which is the better summary of what a typical house costs, and why?',
+            options: [
+              { t: 'The median, because a few very expensive houses pull the mean up without moving the median', ok: true },
+              { t: 'The mean, because it uses every house in the town rather than just the middle one' },
+              { t: 'Either — with this much data the choice cannot matter' },
+              { t: 'The mean, because it is the larger number and house prices are usually understated' }
+            ],
+            hint: 'The mean sits far above the median. What kind of batch does that describe?',
+            solution: ['Mean far above median means a long right tail', 'The mean uses every observation, so a few mansions drag it up', 'The median is the position-based centre and does not move', 'Report the median, and say so'] },
+
+          { id: 'd8', kind: 'spot', lesson: 'a1',
+            prompt: 'Find the median of 12, 30, 8, 25, 19.',
+            steps: [
+              { t: 'There are five observations, so the median is a single middle value' },
+              { t: 'The middle of the list as written is the third entry, 8', bad: true },
+              { t: 'Sorted, the data are 8, 12, 19, 25, 30' },
+              { t: 'The third value of the sorted list is 19, so the median is 19' }
+            ],
+            why: 'The median is defined by position in the ORDERED data, so taking the middle of the list as typed gives whichever observation happened to be written there — 8, the smallest value in this batch, which is nowhere near the middle. Sorting is the first step and it is the one most often skipped.',
+            hint: 'One of these steps uses the list before it was sorted.',
+            solution: ['The median needs the data in order', 'Sorted: 8, 12, 19, 25, 30', 'The third value is 19'] },
+
+          { id: 'd9', kind: 'numeric', lesson: 'a2',
+            prompt: 'A sample is 5, 8, 11, 8. Find the sample variance.',
+            answer: 6, verify: { expr: 'Rational(9 + 0 + 9 + 0, 3)' },
+            hint: 'The mean is 8. Square the deviations and divide by n − 1.',
+            solution: ['Mean: (5 + 8 + 11 + 8)/4 = 32/4 = 8', 'Deviations: −3, 0, 3, 0', 'Squares: 9, 0, 9, 0, total 18', 's² = 18/(4 − 1) = 6'] },
+
+          { id: 'd10', kind: 'numeric', lesson: 'a2',
+            prompt: 'The same four values, 5, 8, 11, 8, are the whole population. Find the population variance.',
+            answer: 4.5, verify: { expr: 'Rational(18, 4)' },
+            hint: 'Same squared deviations, different divisor.',
+            solution: ['Σ(x − μ)² = 18 as before', 'A population divides by N = 4, not by n − 1', 'σ² = 18/4 = 4.5'] },
+
+          { id: 'd11', kind: 'numeric', lesson: 'a2',
+            prompt: 'A sample of six has Σ(x − x̄)² = 87.5. Find the sample standard deviation, to four decimal places.',
+            answer: 4.1833, tol: 0.00005, verify: { expr: 'sqrt(Rational(875, 10)/5)', dp: 4 },
+            hint: 'Divide by n − 1 first, then take the square root.',
+            solution: ['s² = 87.5/(6 − 1) = 87.5/5 = 17.5', 's = √17.5', 's = 4.1833'] },
+
+          { id: 'd12', kind: 'numeric', lesson: 'a2',
+            prompt: 'A batch has mean 250 and standard deviation 42. Find the coefficient of variation as a percentage, to two decimal places.',
+            answer: 16.8, tol: 0.005, verify: { expr: 'Rational(42, 250)*100', dp: 2 },
+            hint: 'CV = (s/x̄) × 100.',
+            solution: ['s/x̄ = 42/250 = 0.168', 'Multiply by 100', 'CV = 16.80%'] },
+
+          { id: 'd13', kind: 'numeric', lesson: 'a2',
+            prompt: 'Daily returns have mean 0.4% and standard deviation 1.6%. Find the z-score of a day with a return of −2.8%.',
+            answer: -2, verify: { expr: '(Rational(-28, 10) - Rational(4, 10))/Rational(16, 10)' },
+            hint: 'z = (x − x̄)/s, and mind the signs.',
+            solution: ['x − x̄ = −2.8 − 0.4 = −3.2', 'Divide by s = 1.6', 'z = −3.2/1.6 = −2, two standard deviations below the mean'] },
+
+          { id: 'd14', kind: 'numeric', lesson: 'a2',
+            prompt: 'Weights have mean 70 kg and standard deviation 8 kg. What weight sits at z = 1.5?',
+            answer: 82, verify: { expr: '70 + Rational(15, 10)*8' },
+            hint: 'Read the z-score formula backwards: x = x̄ + zs.',
+            solution: ['x = x̄ + zs', 'x = 70 + 1.5(8) = 70 + 12', 'x = 82 kg'] },
+
+          { id: 'd15', kind: 'mc', lesson: 'a2',
+            prompt: 'Why does the sample variance divide by n − 1 rather than by n?',
+            options: [
+              { t: 'Because the deviations are measured from x̄, which came from the same sample and sits closer to the data than μ does, so dividing by n would understate the spread', ok: true },
+              { t: 'Because one observation is always discarded as an outlier before the variance is computed' },
+              { t: 'Because it makes the variance larger, and a larger variance is the safer answer to report' },
+              { t: 'Because the sample standard deviation must come out smaller than the population one' }
+            ],
+            hint: 'Where did the mean in the formula come from?',
+            solution: ['x̄ is computed from the same data the deviations are measured from', 'That makes the squared deviations smaller than they would be around the true μ', 'Dividing by n would therefore understate the spread every time', 'n − 1 corrects exactly that bias, and is the degrees of freedom'] },
+
+          { id: 'd16', kind: 'mc', lesson: 'a2',
+            prompt: 'A batch of waiting times is strongly skewed to the right. What does the empirical rule tell you about it?',
+            options: [
+              { t: 'Nothing reliable — the rule assumes a roughly symmetric, bell-shaped distribution', ok: true },
+              { t: 'That about 68% of the times are within one standard deviation of the mean, as always' },
+              { t: 'That the mean and the median must be equal' },
+              { t: 'That no observation can be more than three standard deviations from the mean' }
+            ],
+            hint: 'What shape does the rule assume?',
+            solution: ['The 68–95–99.7 figures are properties of a bell-shaped distribution', 'A skewed batch can have far more than 5% beyond two standard deviations on one side', 'The rule does not apply here', 'Chebyshev’s theorem holds for any shape, but gives much weaker bounds'] },
+
+          { id: 'd17', kind: 'order', lesson: 'a2',
+            prompt: 'Put the steps for computing a sample standard deviation in order.',
+            steps: [
+              'Compute the mean x̄',
+              'Subtract x̄ from each observation to get the deviations',
+              'Square each deviation and add the squares',
+              'Divide the total by n − 1 to get s²',
+              'Take the square root to get s'
+            ],
+            hint: 'Nothing can be measured from the mean until the mean exists.',
+            solution: ['The mean comes first — every deviation is measured from it', 'Deviations, then squares, then their total', 'Divide by n − 1 for the variance', 'Square root for the standard deviation, back in the original units'] },
+
+          { id: 'd18', kind: 'spot', lesson: 'a2',
+            prompt: 'A sample of five values has Σ(x − x̄)² = 40. Find the standard deviation.',
+            steps: [
+              { t: 'The sum of squared deviations is 40 and n = 5' },
+              { t: 'The sample variance divides by n, so s² = 40/5 = 8', bad: true },
+              { t: 'The sample variance divides by n − 1, so s² = 40/4 = 10' },
+              { t: 's = √10 = 3.1623' }
+            ],
+            why: 'A sample divides by n − 1, not by n. The deviations were measured from x̄, which was itself computed from these five observations and therefore sits closer to them than the true population mean would, so dividing by n gives a variance that is too small on average — here 8 instead of 10, a 20% understatement.',
+            hint: 'Which divisor does a SAMPLE variance take?',
+            solution: ['Sample: divide by n − 1 = 4', 's² = 40/4 = 10', 's = √10 ≈ 3.1623'] },
+
+          { id: 'd19', kind: 'numeric', lesson: 'a3',
+            prompt: 'Four pairs have Σ(x − x̄)(y − ȳ) = 21. Find the sample covariance.',
+            answer: 7, verify: { expr: 'Rational(21, 3)' },
+            hint: 'Divide by n − 1.',
+            solution: ['n = 4, so the divisor is 3', 's_xy = 21/3', 's_xy = 7'] },
+
+          { id: 'd20', kind: 'numeric', lesson: 'a3',
+            prompt: 'Two variables have covariance 12.6, with standard deviations 3 and 7. Find the correlation coefficient, to four decimal places.',
+            answer: 0.6, tol: 0.00005, verify: { expr: 'Rational(126, 10)/(3*7)', dp: 4 },
+            hint: 'Divide the covariance by the product of the standard deviations.',
+            solution: ['s_x s_y = 3 × 7 = 21', 'r = 12.6/21', 'r = 0.6, a moderate positive relationship'] },
+
+          { id: 'd21', kind: 'numeric', lesson: 'a3',
+            prompt: 'A sample has covariance −0.036 with standard deviations 0.15 and 0.48. Find the correlation coefficient, to four decimal places.',
+            answer: -0.5, tol: 0.00005, verify: { expr: 'Rational(-36, 1000)/(Rational(15, 100)*Rational(48, 100))', dp: 4 },
+            hint: 'The denominator is a product of standard deviations, so it cannot be negative.',
+            solution: ['s_x s_y = 0.15 × 0.48 = 0.072', 'r = −0.036/0.072', 'r = −0.5: the two move in opposite directions, moderately'] },
+
+          { id: 'd22', kind: 'numeric', lesson: 'a3',
+            prompt: 'Five pairs give Σ(x − x̄)(y − ȳ) = 48, Σ(x − x̄)² = 40 and Σ(y − ȳ)² = 80. Find the correlation coefficient r, to four decimal places.',
+            answer: 0.8485, tol: 0.00005, verify: { expr: '48/sqrt(40*80)', dp: 4 },
+            hint: 'The n − 1 divisors cancel: r = Σ(x − x̄)(y − ȳ)/√(Σ(x − x̄)² Σ(y − ȳ)²).',
+            solution: ['√(40 × 80) = √3200 = 56.5685', 'r = 48/56.5685', 'r = 0.8485, a strong positive relationship'] },
+
+          { id: 'd23', kind: 'numeric', lesson: 'a3',
+            prompt: 'A correlation of 0.75 is reported between two variables with standard deviations 4 and 9. Find the covariance.',
+            answer: 27, verify: { expr: 'Rational(75, 100)*4*9' },
+            hint: 'Read r = s_xy/(s_x s_y) backwards.',
+            solution: ['s_xy = r s_x s_y', 's_xy = 0.75 × 4 × 9', 's_xy = 27'] },
+
+          { id: 'd24', kind: 'mc', lesson: 'a3',
+            prompt: 'A study finds r = 0.02 between two variables and concludes they are unrelated. What is wrong with that?',
+            options: [
+              { t: 'r near 0 rules out a straight-line relationship only — a strong curved relationship gives r near 0 too', ok: true },
+              { t: 'Nothing is wrong: r = 0.02 proves there is no relationship of any kind' },
+              { t: 'r cannot be that small, so there must be an arithmetic error' },
+              { t: 'r near 0 means the relationship is strong but negative' }
+            ],
+            hint: 'What kind of relationship does r actually measure?',
+            solution: ['r measures how closely the points follow a STRAIGHT line', 'Points on a symmetric parabola are perfectly related and give r near 0', 'The honest statement is "no linear relationship"', 'A scatter plot is the cheapest way to see the difference'] },
+
+          { id: 'd25', kind: 'mc', lesson: 'a3',
+            prompt: 'Which statement about a covariance of 8,400 is correct?',
+            options: [
+              { t: 'The two variables move in the same direction; nothing about the strength can be read from 8,400', ok: true },
+              { t: 'The relationship is very strong, because 8,400 is a large number' },
+              { t: 'The relationship is very weak, because covariances near zero indicate strength' },
+              { t: 'The variables are independent, since covariance is only defined for independent variables' }
+            ],
+            hint: 'What happens to a covariance if you measure the same data in cents instead of dollars?',
+            solution: ['Covariance carries the product of the two units', 'Changing units multiplies it without changing the relationship', 'Only the sign is interpretable', 'Divide by both standard deviations to get r before judging strength'] },
+
+          { id: 'd26', kind: 'spot', lesson: 'a3',
+            prompt: 'A sample has s_xy = 18, s_x = 5 and s_y = 6. Find the correlation coefficient.',
+            steps: [
+              { t: 'r is the covariance divided by the product of the two standard deviations' },
+              { t: 's_x s_y = 5 + 6 = 11', bad: true },
+              { t: 's_x s_y = 5 × 6 = 30' },
+              { t: 'r = 18/30 = 0.6' }
+            ],
+            why: 'The denominator is the PRODUCT of the two standard deviations, not their sum. Adding them gives 11 and an r of 1.64, which is outside [−1, 1] and therefore impossible — that impossibility is the check the range of r exists to provide, and it catches this error immediately.',
+            hint: 'One step combines the two standard deviations the wrong way.',
+            solution: ['r = s_xy/(s_x s_y)', 's_x s_y = 5 × 6 = 30', 'r = 18/30 = 0.6'] },
+
+          { id: 'd27', kind: 'order', lesson: 'a3',
+            prompt: 'Put the steps for computing a sample correlation coefficient from raw pairs in order.',
+            steps: [
+              'Compute the two means, x̄ and ȳ',
+              'Write the deviations from each mean, and check that both columns sum to zero',
+              'Total the cross-products to get Σ(x − x̄)(y − ȳ), and the two squared columns',
+              'Divide each total by n − 1 to get s_xy, s_x² and s_y²',
+              'Divide the covariance by the product of the two standard deviations'
+            ],
+            hint: 'Nothing can be measured from a mean that has not been computed yet.',
+            solution: ['Both means first', 'Then the deviation columns, which must each sum to zero', 'Then the three totals', 'Divide by n − 1, then form r'] },
+
+          { id: 'd28', kind: 'numeric', lesson: 'a3',
+            prompt: 'Three pairs are (1, 4), (2, 5) and (3, 9). Find the sample covariance.',
+            answer: 2.5, verify: { expr: 'Rational((1-2)*(4-6) + (2-2)*(5-6) + (3-2)*(9-6), 2)' },
+            hint: 'The means are 2 and 6.',
+            solution: ['x̄ = 2 and ȳ = 6', 'Cross-products: (−1)(−2) = 2, (0)(−1) = 0, (1)(3) = 3, total 5', 's_xy = 5/(3 − 1) = 2.5'] },
+
+          { id: 'd29', kind: 'mc', lesson: 'a1',
+            prompt: 'A batch of 20 values has one observation changed from 50 to 500. Which summary is unchanged?',
+            options: [
+              { t: 'The median, provided the changed value was already above it', ok: true },
+              { t: 'The mean, because it averages over all 20 values' },
+              { t: 'Both the mean and the median' },
+              { t: 'Neither — every summary depends on every observation' }
+            ],
+            hint: 'Which measure depends on position rather than on size?',
+            solution: ['The median is the middle value by position', 'Moving a value that is already above the median further up does not change which value is in the middle', 'The mean adds 450/20 = 22.5 to itself', 'That contrast is what "resistant" means'] },
+
+          { id: 'd30', kind: 'numeric', lesson: 'a2',
+            prompt: 'A sample of eight has sample variance 20.25. Find the standard deviation.',
+            answer: 4.5, verify: { expr: 'sqrt(Rational(2025, 100))' },
+            hint: 'The square root of the variance.',
+            solution: ['s = √20.25', '4.5² = 20.25', 's = 4.5'] }
+        ]
+      }
+    ]
+  };
+
+  root.Courses.register(STAT);
+
+})(typeof globalThis !== 'undefined' ? globalThis : this);
+if (typeof module !== 'undefined' && module.exports) module.exports = globalThis.Courses;
+
+</script>
+<script>
 /* UNI Made EZ — subject profiles
    Copyright © 2026 JohnsonXCorp. All rights reserved.
    Proprietary. Not open source: see LICENSE. */
@@ -23490,7 +24067,11 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 
   /* ---------- number line ---------- */
   function numberline(spec) {
-    const W = 440, H = 64, L = 24, R = 24, Y = 34;
+    // Two rows are available above the line: a label that would collide with one already placed is
+    // lifted to the upper row rather than printed through it. Box plots and quartile figures put
+    // labels close together by their nature, so this is the ordinary case, not the exception.
+    const W = 440, H = 82, L = 24, R = 24, Y = 50, CH = 6.75;
+    const rows = [[], []];
     const [x0, x1] = spec.x; const sx = x => L + (x - x0) / (x1 - x0) * (W - L - R);
     const parts = [`<line class="fig-axis" x1="${L}" y1="${Y}" x2="${W - R}" y2="${Y}"/>`];
     const t = tickStep(x1 - x0);
@@ -23503,7 +24084,14 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     }
     for (const p of spec.points || []) {
       parts.push(`<circle class="fig-pt${p.open ? ' open' : ''}" cx="${sx(p.x)}" cy="${Y}" r="5"/>`);
-      if (p.label) parts.push(`<text class="fig-lbl" x="${sx(p.x)}" y="${Y - 10}" text-anchor="middle">${esc(p.label)}</text>`);
+      if (p.label) {
+        const half = String(p.label).length * CH / 2 + 3, cx = sx(p.x);
+        const box = { x1: cx - half, x2: cx + half };
+        let r = rows.findIndex(row => row.every(b => box.x1 >= b.x2 || box.x2 <= b.x1));
+        if (r < 0) r = rows.length - 1;
+        rows[r].push(box);
+        parts.push(`<text class="fig-lbl" x="${cx}" y="${Y - 10 - r * 15}" text-anchor="middle">${esc(p.label)}</text>`);
+      }
     }
     return `<figure class="fig fig-line"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(spec.alt || spec.caption || 'number line')}">${parts.join('')}</svg>${spec.caption ? `<figcaption>${esc(spec.caption)}</figcaption>` : ''}</figure>`;
   }
@@ -23531,7 +24119,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.57', date: '17 September 2026', year: 2026 };
+  const BUILD = { v: '2.58', date: '17 September 2026', year: 2026 };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonandy242', ['gmail', 'com'].join('.')].join('@');
   /* The one sentence that says what this is. It appears under the wordmark, and build.js uses
@@ -23544,6 +24132,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      because the person who needs it is the one who just watched the app refresh itself and wants to
      know what moved. Trim the tail when it gets past a dozen; nobody reads further back than that. */
   const WHATS_NEW = [
+    ['2.58', '<b>A new course: ECON 2320, Economics &amp; Business Statistics 1.</b> It is the twelfth subject to get a full course and the first statistics one, built in the order the department examines rather than the order the book prints: chapter 3 first, then probability, the distributions, sampling, interval estimation and hypothesis tests one chapter per release. Chapter 3 ships now &mdash; measures of location, measures of variability, and covariance and correlation &mdash; with three lessons, seven worked examples that each open with a plan and close with a check, 30 practice questions and 12 named misconceptions. The distinctions the marks actually turn on are taught rather than assumed: why a sample divides by n &minus; 1 and a population by N, why only the SIGN of a covariance can be read, why a correlation of zero rules out a straight line and nothing else, and why r is not the slope. Every number is recomputed by a computer algebra system before the page ships.'],
     ['2.57', '<b>MATH 1170 chapter 17 gets its pictures, and the course is now illustrated end to end.</b> A function of two variables will not fit on a flat page, so every figure in this chapter is a <b>slice</b> — one variable frozen, the other free — which is precisely what a partial derivative is, and so the pictures are the concept rather than a compromise. You will find the surface z = x&sup2; + 3y&sup2; cut both ways at once, a cubic slice whose ordinary slope is f<sub>x</sub>(2, 1) = 10, a joint cost curve with the other product pinned at 30 units, a production function flattening into diminishing returns, two upward-sloping demand lines that are the whole competitive-versus-complementary test, a slice drawn above its own first and second derivatives, the two opposite parabolas that explain what a saddle point is, and &mdash; for Lagrange multipliers &mdash; the constraint line touching the circle of equal values at exactly one point. Every worked example in the chapter now opens with <b>How to approach it</b>, works line by line, and closes with a <b>Check</b>. That completes chapters 10, 11, 12, 13 and 17: 76 figures, every one checked in a real browser for labels that overlap or run off the edge.'],
     ['2.56', '<b>MATH 1170 chapter 13, Curve sketching, gets its pictures &mdash; the chapter that needed them most.</b> All six sections open with a figure and every worked example carries one: a sign chart laid out the way the questions are, a cubic with its hilltop and valley marked, a closed interval shaded so the endpoints can be seen winning, a tangent drawn at an inflection point where it crosses the curve, the two parabolas that are the whole second-derivative test, a quartic that is level at the origin without turning &mdash; the case the test cannot decide &mdash; a rational function with two vertical asymptotes and a horizontal one, an oblique asymptote with the curve hugging it from both sides, and, for the applied problems, the fence length, the revenue parabola and the two inventory costs crossing exactly at the economic lot size. Each example now opens with <b>How to approach it</b>, works line by line, and closes with a <b>Check</b>. Chapter 17 follows.'],
     ['2.55', '<b>MATH 1170 chapter 12, Additional differentiation topics, gets its pictures.</b> All five sections open with a graph and every worked example carries one: the log curve whose slope is the reciprocal of the x-coordinate, the exponential whose slope equals its own height, the bell curve e<sup>&minus;x&sup2;</sup> level at its peak because the chain-rule factor vanishes there, the circle with two tangents at the same x &mdash; the reason an implicit slope needs a point and not just an x-value &mdash; x<sup>x</sup> dipping at 1/e where neither the power rule nor the exponential rule can reach it, and a second derivative drawn under its own curve so the sign of one is the bending of the other. Each example now opens with <b>How to approach it</b>, works line by line, and closes with a <b>Check</b>. The figure renderer also learned to draw a curve from a list of points, which is how the relation xy + y&sup3; = 2x + 6 &mdash; solvable for y by no formula you would want to use &mdash; is shown with its tangent at (&minus;5, 1). Chapters 13 and 17 follow.'],
