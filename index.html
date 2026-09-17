@@ -17796,6 +17796,14 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
           {
             id: 'd1', title: 'Relative extrema', src: 'Section 13.1',
             idea: `A derivative is a slope, and the sign of a slope says which way a curve is going. Where f′(x) &gt; 0 the graph rises as x increases and f is <b>increasing</b>; where f′(x) &lt; 0 it falls and f is <b>decreasing</b>. That single observation is the whole engine of curve sketching, because a graph can only turn around where the sign of f′ changes.<br><br>A <b>relative maximum</b> is a point higher than every neighbouring point on the curve — a hilltop, not necessarily the highest point overall — and a <b>relative minimum</b> is a valley floor. At a hilltop the curve must stop rising and start falling, so either the tangent is horizontal there (f′(a) = 0) or the curve has a corner or a cusp and f′(a) does not exist. Those are the only two ways a turn can happen, which gives the definition that organises the chapter:<br><br><b>a is a critical value for f if a is in the domain of f and either f′(a) = 0 or f′(a) does not exist.</b><br><br>The point (a, f(a)) is a critical point. Every relative extremum sits at a critical value — but not every critical value is an extremum. y = x³ has f′(0) = 0 and no turn at all: the curve flattens for an instant and keeps climbing. So a critical value is a <b>candidate</b>, and each candidate has to be tested. The test is the sign of f′ on either side.<br><br><b>First-derivative test.</b> Find f′(x) and write it in fully factored form. List the critical values, and also any values not in the domain of f that sit between values that are (a zero of a denominator, say) — these head the columns of a <b>sign chart</b>. In each interval between them, work out the sign of f′ by multiplying the signs of its factors. Then read the chart: at a critical value where f is continuous, f′ going from + to − means a relative maximum, − to + means a relative minimum, and no change of sign means no extremum. A value that is not in the domain gets a heavy line in the chart and can never be an extremum, however the signs behave around it.<br><br>Two habits keep this honest. Factor f′ before reading signs: (x + 3)(x − 1)/(x + 1)² tells you its zeros and its poles at a glance, and x² + 2x − 3 over an unexpanded square does not. And when the question asks <i>where</i> the extrema occur, answer with the x-value; when it asks for the extreme <i>values</i>, substitute back into f itself, never into f′ — f′ is 0 at every one of them.<br><br>Combined with the x- and y-intercepts and a symmetry check, the sign chart is already enough to sketch a polynomial well: it tells you the shape between the turning points, and the intercepts pin the curve to the axes.`,
+            figure: {
+              kind: 'signchart',
+              marks: [{ x: '0' }, { x: '2' }],
+              rows: [{ label: 'x', signs: ['−', '+', '+'] }, { label: 'x − 2', signs: ['−', '−', '+'] }],
+              result: { label: 'f′ = 3x(x − 2)', signs: ['+', '−', '+'] },
+              shape: ['rise', 'fall', 'rise'],
+              caption: 'The sign chart for f(x) = x³ − 3x², laid out the way every question in this section is. The critical values head the chart, each factor gets a row, the product row is f′, and the bottom row turns the signs into shape: up to a hilltop at x = 0, down to a valley at x = 2, up again after.'
+            },
             rules: [
               { name: 'Increasing', expr: 'df/dx > 0', note: 'The slope is positive and the curve rises as x increases. Where df/dx < 0 it falls.' },
               { name: 'Critical value', expr: 'a is critical if a is in the domain and df/dx = 0 or does not exist at a', words: true, note: 'A candidate for an extremum, not a guarantee of one. y = x³ has a critical value at 0 and no turn.' },
@@ -17806,23 +17814,44 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             examples: [
               {
                 prompt: 'Find where f(x) = x³ − 6x² + 9x + 1 is increasing and decreasing, and locate its relative extrema.',
+                approach: 'Everything comes from the sign of f′, so factor f′ completely before doing anything else — a factored derivative shows its zeros at a glance. Those zeros head a sign chart; the sign of f′ on each interval says rising or falling; a change from + to − is a hilltop and from − to + a valley. Heights come from f, never from f′.',
+                figure: {
+                  kind: 'graph', x: [-0.6, 4.6], y: [-4, 9],
+                  fns: [{ expr: 'x**3 - 6*x**2 + 9*x + 1', label: 'f(x) = x³ − 6x² + 9x + 1' }],
+                  points: [{ x: 1, y: 5, label: 'relative max 5' }, { x: 3, y: 1, label: 'relative min 1' }],
+                  caption: 'The curve rises to a hilltop at x = 1, falls into a valley at x = 3, and rises again — exactly the pattern the sign chart predicts. Both turning points are level, and neither is the highest or lowest value of the function overall: the curve keeps going in both directions.'
+                },
                 steps: [
                   { do: 'f′(x) = 3x² − 12x + 9 = 3(x² − 4x + 3) = 3(x − 1)(x − 3)', why: 'Factor completely first. The zeros of the factors are the only places the sign of f′ can change, and a polynomial has no excluded values.' },
                   { do: 'Critical values: x = 1 and x = 3. Sign chart headed by 1 and 3, three intervals', why: 'Both are in the domain and both make f′ zero. Nothing else can head the chart.' },
                   { do: 'On (−∞, 1): (−)(−) = +. On (1, 3): (+)(−) = −. On (3, ∞): (+)(+) = +', why: 'Test the sign of each factor, then multiply. At x = 0, say, x − 1 and x − 3 are both negative.' },
-                  { do: 'f increasing on (−∞, 1) and (3, ∞); decreasing on (1, 3). Relative maximum at x = 1, f(1) = 1 − 6 + 9 + 1 = 5. Relative minimum at x = 3, f(3) = 27 − 54 + 27 + 1 = 1', why: 'At 1 the sign goes + to −, a hilltop; at 3 it goes − to +, a valley. The values 5 and 1 come from f, not from f′.' }
+                  { do: 'So f is increasing on (−∞, 1) and (3, ∞), and decreasing on (1, 3)', why: 'Positive derivative means rising, negative means falling. The intervals are open, and written in x, not in f(x).' },
+                  { do: 'At x = 1 the sign goes + to −: a relative maximum, f(1) = 1 − 6 + 9 + 1 = 5', why: 'Rising then falling is a hilltop. The height comes from f, not from f′, which is 0 there.' },
+                  { do: 'At x = 3 the sign goes − to +: a relative minimum, f(3) = 27 − 54 + 27 + 1 = 1', why: 'Falling then rising is a valley. Reporting x = 3 alone leaves the question half answered.' }
                 ],
-                answer: 'Increasing on (−∞, 1) and (3, ∞), decreasing on (1, 3); relative maximum 5 at x = 1, relative minimum 1 at x = 3', answerWords: true
+                answer: 'Increasing on (−∞, 1) and (3, ∞), decreasing on (1, 3); relative maximum 5 at x = 1, relative minimum 1 at x = 3', answerWords: true,
+                check: 'Test one point in each interval: f′(0) = 9 > 0, f′(2) = 12 − 24 + 9 = −3 < 0, f′(4) = 48 − 48 + 9 = 9 > 0 — rising, falling, rising ✓. And the maximum value 5 does sit above the minimum value 1, as a hilltop to the left of a valley must on a rising-falling-rising curve.'
               },
               {
                 prompt: 'Use the first-derivative test on f(x) = x²/(x − 1), x ≠ 1.',
+                approach: 'A quotient, so f′ comes from the quotient rule and must be simplified and factored before its sign can be read. Two kinds of value head the chart here: the zeros of f′, which are critical values, and the excluded value x = 1, which is not a critical value but still splits the number line because the sign can change across it. Keep those two roles apart and the rest is the usual test.',
+                figure: {
+                  kind: 'graph', x: [-3, 5], y: [-8, 14],
+                  fns: [{ expr: 'x**2/(x - 1)', label: 'f(x) = x²/(x − 1)' }],
+                  vlines: [{ x: 1, label: 'x = 1' }],
+                  points: [{ x: 0, y: 0, label: 'relative max 0' }, { x: 2, y: 4, label: 'relative min 4' }],
+                  caption: 'The oddity this graph makes obvious: the relative maximum, 0, is smaller than the relative minimum, 4. Nothing forbids that, because the two sit on opposite sides of the vertical asymptote at x = 1 and the curve never travels between them.'
+                },
                 steps: [
-                  { do: 'Quotient rule: f′(x) = [2x(x − 1) − x²(1)]/(x − 1)² = (x² − 2x)/(x − 1)² = x(x − 2)/(x − 1)²', why: 'Numerator and denominator both fully factored, so zeros and excluded values can be read off directly.' },
+                  { do: 'Quotient rule: f′(x) = [2x(x − 1) − x²(1)]/(x − 1)²', why: 'Bottom times the derivative of the top, minus top times the derivative of the bottom, all over the bottom squared.' },
+                  { do: 'Simplify and factor: (x² − 2x)/(x − 1)² = x(x − 2)/(x − 1)²', why: 'Numerator and denominator both fully factored, so zeros and excluded values can be read off directly.' },
                   { do: 'Critical values: x = 0 and x = 2. The value x = 1 is not in the domain of f but heads the chart too', why: 'f′ is 0 at 0 and 2. It fails to exist at 1, but 1 is not in the domain of f, so it is not a critical value — it still splits the number line.' },
                   { do: 'Signs of f′: (−∞, 0) +, (0, 1) −, (1, 2) −, (2, ∞) +', why: '(x − 1)² is positive everywhere it exists, so the sign is that of x(x − 2): positive outside 0 and 2, negative between them.' },
-                  { do: 'Relative maximum at x = 0, f(0) = 0; relative minimum at x = 2, f(2) = 4/1 = 4; nothing at x = 1', why: '+ to − at 0, − to + at 2. Around 1 the sign does not change, and in any case 1 is outside the domain, so no extremum can be there — the graph has a vertical asymptote instead.' }
+                  { do: 'Relative maximum at x = 0, f(0) = 0; relative minimum at x = 2, f(2) = 4/1 = 4', why: '+ to − at 0, − to + at 2. Both heights come from f.' },
+                  { do: 'Nothing at x = 1: the sign does not change there, and in any case 1 is outside the domain', why: 'An extremum has to be a point of the graph. At x = 1 there is no point, only a vertical asymptote.' }
                 ],
-                answer: 'Relative maximum 0 at x = 0, relative minimum 4 at x = 2; x = 1 is excluded from the domain and gives no extremum', answerWords: true
+                answer: 'Relative maximum 0 at x = 0, relative minimum 4 at x = 2; x = 1 is excluded from the domain and gives no extremum', answerWords: true,
+                check: 'Sample f itself either side of each turning point: f(−0.5) = 0.25/(−1.5) = −0.167 and f(0.5) = 0.25/(−0.5) = −0.5, both below f(0) = 0 ✓; f(1.5) = 2.25/0.5 = 4.5 and f(3) = 9/2 = 4.5, both above f(2) = 4 ✓.'
               }
             ],
             pitfalls: [
@@ -17850,6 +17879,13 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
           {
             id: 'd2', title: 'Absolute extrema on a closed interval', src: 'Section 13.2',
             idea: `A relative maximum is the top of one hill. An <b>absolute maximum</b> is the highest point on the whole graph, or on the whole of the domain the question allows. In general a function need not have one: y = x has no highest value, and y = x² has no highest value on the open interval (−1, 1) because it climbs toward 1 without arriving. But one important case is guaranteed.<br><br><b>Extreme-value theorem.</b> If f is continuous on a closed interval [a, b], then f has both an absolute maximum value and an absolute minimum value on that interval.<br><br>Both conditions matter. Drop "closed" and y = x² on (−1, 1) has no maximum; drop "continuous" and y = 1/x² on [−1, 1] has no maximum either, because it blows up at 0. With both in place, there is a highest point and a lowest point, and the theorem also says where to look: an absolute extremum on [a, b] is either a relative extremum inside the interval — so it sits at a critical value — or it is at one of the two endpoints, where the curve is cut off.<br><br>That gives a procedure with no sign chart at all:<br><br><b>1.</b> Find the critical values of f that lie inside (a, b).<br><b>2.</b> Evaluate f at those critical values and at both endpoints a and b.<br><b>3.</b> The largest of those numbers is the absolute maximum value; the smallest is the absolute minimum value.<br><br>No test is needed at the critical values, because the comparison in step 3 does the testing. A critical value that lies outside [a, b] is simply discarded — it is a feature of a part of the curve the question has cut away. And the endpoints are not optional: on [0, 5], the function 2x³ − 15x² + 24x has its absolute maximum at the interior critical value 1 but would have it at the endpoint if the interval were [0, 6], where f(6) = 36 beats f(1) = 11.<br><br>The theorem is the reason so many applied problems in section 13.6 are set on a closed interval: a price cannot be negative and cannot exceed the price that kills all demand, so the revenue function lives on [0, p<sub>max</sub>], and the largest revenue is guaranteed to exist and guaranteed to be at a critical value or an end.`,
+            figure: {
+              kind: 'graph', x: [-1.4, 3.4], y: [-20, 14],
+              fns: [{ expr: 'x**4 - 8*x**2', label: 'f(x) = x⁴ − 8x² on [−1, 3]' }],
+              shade: [{ from: -1, to: 3 }],
+              points: [{ x: -1, y: -7, label: 'endpoint' }, { x: 0, y: 0, label: 'critical' }, { x: 2, y: -16, label: 'lowest' }, { x: 3, y: 9, label: 'highest' }],
+              caption: 'Four candidates on a closed interval, and the extremes fall at two different kinds of point: the smallest value at an interior critical point, the largest at an endpoint. That is why the endpoints are always evaluated — a curve cut off at x = 3 may be at its highest exactly where the scissors fell.'
+            },
             rules: [
               { name: 'Extreme-value theorem', expr: 'Continuous on a closed interval means an absolute maximum and an absolute minimum both exist', words: true, note: 'Both conditions are needed: an open interval or a discontinuity can lose one or both.' },
               { name: 'Where to look', expr: 'Absolute extrema on [a, b] occur at critical values inside (a, b) or at the endpoints a and b', words: true, note: 'A curve cut off at an endpoint can have its highest point there with no horizontal tangent.' },
@@ -17859,23 +17895,45 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             examples: [
               {
                 prompt: 'Find the absolute extrema of f(x) = x³ − 3x + 2 on [−2, 3].',
+                approach: 'On a closed interval the extreme-value theorem guarantees both extremes exist, and they can only be at a critical point inside or at an endpoint. So the method is a short list and a comparison: find the critical values, discard any outside the interval, evaluate f at those and at both endpoints, and pick the largest and smallest of the numbers. No sign chart is needed.',
+                figure: {
+                  kind: 'graph', x: [-2.6, 3.6], y: [-2, 23],
+                  fns: [{ expr: 'x**3 - 3*x + 2', label: 'f(x) = x³ − 3x + 2' }],
+                  shade: [{ from: -2, to: 3 }],
+                  points: [{ x: -1, y: 4, label: 'relative max 4' }, { x: 3, y: 20, label: 'absolute max 20' }, { x: 1, y: 0, label: 'critical, 0' }, { x: -2, y: 0, label: 'endpoint, 0' }],
+                  caption: 'Inside the shaded interval the curve has a hilltop of height 4, but the endpoint at x = 3 towers over it at 20 — the absolute maximum is not the relative one. The smallest value, 0, happens twice, at the left endpoint and at the interior valley.'
+                },
                 steps: [
-                  { do: 'f′(x) = 3x² − 3 = 3(x − 1)(x + 1), so the critical values are x = −1 and x = 1, both inside (−2, 3)', why: 'Only critical values inside the interval are kept. Both of these are.' },
+                  { do: 'f′(x) = 3x² − 3 = 3(x − 1)(x + 1), so the critical values are x = −1 and x = 1', why: 'Set the derivative to 0 and factor. A polynomial is differentiable everywhere, so these are the only critical values.' },
+                  { do: 'Both lie inside (−2, 3), so both are kept', why: 'Only critical values inside the interval are candidates; one outside belongs to a part of the curve that was cut away.' },
                   { do: 'f(−2) = −8 + 6 + 2 = 0 and f(3) = 27 − 9 + 2 = 20', why: 'The endpoints must be evaluated; the curve is cut off there and may have its extreme value at the cut.' },
                   { do: 'f(−1) = −1 + 3 + 2 = 4 and f(1) = 1 − 3 + 2 = 0', why: 'The values at the critical points, from f itself.' },
-                  { do: 'Largest is 20 at x = 3; smallest is 0, at both x = −2 and x = 1', why: 'The comparison is the whole test. The absolute maximum is at an endpoint, not at the relative maximum 4 inside; the minimum value 0 is reached twice.' }
+                  { do: 'Compare the four numbers 0, 20, 4 and 0', why: 'The comparison is the whole test — no first- or second-derivative test is required once the list is complete.' },
+                  { do: 'Largest is 20 at x = 3; smallest is 0, at both x = −2 and x = 1', why: 'The absolute maximum is at an endpoint, not at the relative maximum 4 inside; the minimum value 0 is reached twice, which is allowed — a value can repeat, an extreme value cannot be beaten.' }
                 ],
-                answer: 'Absolute maximum 20 at x = 3; absolute minimum 0 at x = −2 and at x = 1', answerWords: true
+                answer: 'Absolute maximum 20 at x = 3; absolute minimum 0 at x = −2 and at x = 1', answerWords: true,
+                check: 'Sample a few more points inside the interval: f(−1.5) = 3.125, f(0) = 2, f(2) = 4, f(2.5) = 10.125. None exceeds 20 or falls below 0, which is what the four-number comparison claimed.'
               },
               {
                 prompt: 'Find the extreme values of f(x) = 2x³ − 15x² + 24x on [0, 5].',
+                approach: 'Same procedure exactly. Differentiate, factor, keep the critical values inside the interval, evaluate f at those and at both endpoints, compare. Resist deciding in advance where the extremes will be: here both turn out to be interior, but the previous example had one at an endpoint, and nothing distinguishes the two cases until the numbers are on the page.',
+                figure: {
+                  kind: 'graph', x: [-0.4, 5.4], y: [-20, 16],
+                  fns: [{ expr: '2*x**3 - 15*x**2 + 24*x', label: 'f(x) = 2x³ − 15x² + 24x' }],
+                  shade: [{ from: 0, to: 5 }],
+                  points: [{ x: 1, y: 11, label: 'maximum 11' }, { x: 4, y: -16, label: 'minimum −16' }, { x: 5, y: -5, label: 'endpoint −5' }],
+                  caption: 'This time both extremes are interior: the hilltop at x = 1 is the highest point of the shaded stretch and the valley at x = 4 the lowest. The right endpoint, at −5, is climbing back up and loses to the valley by eleven.'
+                },
                 steps: [
-                  { do: 'f′(x) = 6x² − 30x + 24 = 6(x² − 5x + 4) = 6(x − 1)(x − 4); critical values 1 and 4, both in (0, 5)', why: 'Factor and read off the zeros. Both lie inside the interval and are kept.' },
-                  { do: 'f(0) = 0; f(5) = 250 − 375 + 120 = −5', why: 'Endpoint values first.' },
-                  { do: 'f(1) = 2 − 15 + 24 = 11; f(4) = 128 − 240 + 96 = −16', why: 'Critical-point values.' },
-                  { do: 'Maximum 11 at x = 1; minimum −16 at x = 4', why: 'Among 0, −5, 11 and −16 the largest is 11 and the smallest is −16. Here both extremes are interior, but that could not be known before the four values were compared.' }
+                  { do: 'f′(x) = 6x² − 30x + 24 = 6(x² − 5x + 4) = 6(x − 1)(x − 4)', why: 'Take the common factor 6 out first; the quadratic left behind factors by inspection.' },
+                  { do: 'Critical values 1 and 4, both in (0, 5)', why: 'Read off the zeros. Both lie inside the interval and are kept.' },
+                  { do: 'f(0) = 0; f(5) = 250 − 375 + 120 = −5', why: 'Endpoint values first, so they are not forgotten at the end.' },
+                  { do: 'f(1) = 2 − 15 + 24 = 11', why: 'Critical-point value at x = 1.' },
+                  { do: 'f(4) = 128 − 240 + 96 = −16', why: 'Critical-point value at x = 4. Careful with 2(64) = 128 and 15(16) = 240.' },
+                  { do: 'Among 0, −5, 11 and −16: maximum 11 at x = 1, minimum −16 at x = 4', why: 'Here both extremes are interior, but that could not be known before the four values were compared.' }
                 ],
-                answer: 'Absolute maximum 11 at x = 1; absolute minimum −16 at x = 4', answerWords: true
+                answer: 'Absolute maximum 11 at x = 1; absolute minimum −16 at x = 4', answerWords: true,
+                check: 'The signs of f′ agree: f′(0.5) = 1.5 − 15 + 24 > 0, f′(2) = 24 − 60 + 24 = −12 < 0, f′(4.5) = 121.5 − 135 + 24 > 0 — rising into x = 1, falling into x = 4, rising after, which makes 11 a hilltop and −16 a valley.'
               }
             ],
             pitfalls: [
@@ -17903,6 +17961,13 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
           {
             id: 'd3', title: 'Concavity', src: 'Section 13.3',
             idea: `Two curves can both fall to a minimum at x = 0 and rise afterwards and still look completely different: one bends like a bowl, the other like a bowl with its sides pushed in. The first derivative cannot tell them apart. The second can.<br><br>A curve is <b>concave up</b> on an interval if it bends upward there — it lies above its tangent lines, and the slopes of those tangents increase as x increases. It is <b>concave down</b> if it bends downward, lies below its tangents, and its slopes decrease. Since the slope is f′, "slopes increasing" means f′ is an increasing function, and f′ increases where its own derivative is positive. So:<br><br><b>f″(x) &gt; 0 on an interval means f is concave up there; f″(x) &lt; 0 means concave down.</b><br><br>Concavity is about f′, not about f. A curve can be decreasing and concave up (e<sup>−x</sup>, falling but flattening) or increasing and concave down (√x, rising but levelling off). Rising and falling is the first derivative's business; bending is the second's.<br><br>A point where the concavity changes — from up to down or down to up — is an <b>inflection point</b>. To find them, the procedure mirrors the first-derivative test one level up: find f″, factor it, head a sign chart with the values where f″ is 0 or does not exist, and look for a change of sign. Two conditions must both hold for (a, f(a)) to be an inflection point: <b>f″ changes sign at a</b>, and <b>f is continuous at a</b> (so a is in the domain). Neither alone is enough. y = x⁴ has f″ = 12x², which is 0 at x = 0 but positive on both sides: no change of sign, no inflection point, the curve is concave up throughout. And y = 1/x has f″ = 2/x³, negative for x &lt; 0 and positive for x &gt; 0 — a genuine change of concavity — but 0 is not in the domain, so there is no inflection <i>point</i>; the concavity changes across the vertical asymptote, not at a point on the curve.<br><br>For sketching, the second derivative adds the bending to the shape the first derivative gave. A polynomial's sign chart for f′ says where it rises and falls; the chart for f″ says where it is bowl-shaped and where it is dome-shaped; and the inflection points are where the drawing hand has to change direction of curvature. With intercepts and symmetry, that is a complete picture of any polynomial.`,
+            figure: {
+              kind: 'graph', x: [-1.2, 3.4], y: [-6, 5],
+              fns: [{ expr: 'x**3 - 3*x**2', label: 'y = x³ − 3x²' }],
+              segments: [{ from: [0.2, 0.4], to: [1.9, -4.7], label: 'tangent at the inflection' }],
+              points: [{ x: 1, y: -2, label: 'inflection (1, −2)' }],
+              caption: 'Concavity is which way the curve bends, and it changes at x = 1: to the left the curve is concave down and lies below its tangent, to the right concave up and above it. The tangent drawn at the inflection point crosses the curve there — the one place a tangent does.'
+            },
             rules: [
               { name: 'Concave up', expr: 'd^2 y/dx^2 > 0', note: 'The curve bends upward and lies above its tangents; the slopes are increasing. Where the second derivative is negative it is concave down.' },
               { name: 'Not the same as increasing', expr: 'Rising or falling is the sign of the first derivative; bending is the sign of the second', words: true, note: 'A curve can fall while concave up, or rise while concave down.' },
@@ -17912,23 +17977,45 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             examples: [
               {
                 prompt: 'Discuss the concavity of y = x³ − 6x² + 9x + 1 and find any inflection points.',
+                approach: 'Concavity is the sign of y″, so differentiate twice and factor the second derivative. Its zeros and any points where it fails to exist head a sign chart, exactly as f′ did in section 13.1. An inflection point needs two things: a change of sign in y″, and a point of the graph there — so a y-coordinate from y, not from y″.',
+                figure: {
+                  kind: 'signchart',
+                  marks: [{ x: '2' }],
+                  rows: [{ label: 'x − 2', signs: ['−', '+'] }],
+                  result: { label: 'y″ = 6(x − 2)', signs: ['−', '+'] },
+                  shape: ['down', 'up'],
+                  caption: 'The concavity chart for y = x³ − 6x² + 9x + 1. One mark, two intervals, one change of sign — so exactly one inflection point, at x = 2. The bottom row reads: bending downward, then upward.'
+                },
                 steps: [
-                  { do: 'y′ = 3x² − 12x + 9, y″ = 6x − 12 = 6(x − 2)', why: 'Two derivatives, and the second factored so its sign is easy to read.' },
-                  { do: 'y″ = 0 at x = 2; y″ is defined everywhere. Sign chart headed by 2', why: 'The only place the sign of y″ can change.' },
+                  { do: 'y′ = 3x² − 12x + 9', why: 'The first derivative, needed only as a stepping stone here.' },
+                  { do: 'y″ = 6x − 12 = 6(x − 2)', why: 'Differentiate again and factor, so the sign is easy to read.' },
+                  { do: 'y″ = 0 at x = 2, and y″ is defined everywhere. Sign chart headed by 2', why: 'The only place the sign of y″ can change. A polynomial has no excluded values.' },
                   { do: 'For x < 2, y″ < 0: concave down. For x > 2, y″ > 0: concave up', why: 'Test x = 0 and x = 3, or read the sign of 6(x − 2) directly.' },
-                  { do: 'Concavity changes at 2 and the function is continuous there, so (2, y(2)) = (2, 8 − 24 + 18 + 1) = (2, 3) is an inflection point', why: 'Both conditions hold. The y-coordinate comes from y, never from y″, which is 0 there.' }
+                  { do: 'The concavity changes at 2 and the function is continuous there', why: 'Both conditions are required. A zero of y″ with no sign change is not an inflection point.' },
+                  { do: 'y(2) = 8 − 24 + 18 + 1 = 3, so (2, 3) is an inflection point', why: 'The y-coordinate comes from y, never from y″, which is 0 there. An inflection point is a point, so it needs both coordinates.' }
                 ],
-                answer: 'Concave down on (−∞, 2), concave up on (2, ∞); inflection point (2, 3)', answerWords: true
+                answer: 'Concave down on (−∞, 2), concave up on (2, ∞); inflection point (2, 3)', answerWords: true,
+                check: 'This is the same cubic as in section 13.1, with a hilltop at x = 1 and a valley at x = 3. An inflection at x = 2 sits neatly between them, which is where the bending has to turn round if the curve is to go from a hilltop down to a valley.'
               },
               {
                 prompt: 'Find the inflection points of y = x⁴ − 6x², and explain why y = x⁴ has none.',
+                approach: 'Same routine on two functions, to make one point: a zero of y″ is only a candidate. Differentiate twice, factor, chart the sign, and insist on a change of sign before calling anything an inflection point. The second function has a perfectly good zero of y″ and no inflection point at all, which is the whole lesson.',
+                figure: {
+                  kind: 'graph', x: [-2.6, 2.6], y: [-10, 12],
+                  fns: [{ expr: 'x**4 - 6*x**2', label: 'y = x⁴ − 6x²' }, { expr: 'x**4', label: 'y = x⁴', dashed: true }],
+                  points: [{ x: -1, y: -5, label: 'inflection' }, { x: 1, y: -5, label: 'inflection' }],
+                  caption: 'The solid curve changes its bending twice, at x = −1 and x = 1, and the two inflection points sit at the same height by symmetry. The dashed curve y = x⁴ flattens at the origin — its second derivative is zero there — but it bends upward on both sides, so nothing changes and there is no inflection point.'
+                },
                 steps: [
-                  { do: 'y′ = 4x³ − 12x, y″ = 12x² − 12 = 12(x − 1)(x + 1); zeros at x = ±1', why: 'Factored, the candidates are visible at once.' },
+                  { do: 'y′ = 4x³ − 12x', why: 'First derivative of x⁴ − 6x², term by term.' },
+                  { do: 'y″ = 12x² − 12 = 12(x − 1)(x + 1); zeros at x = ±1', why: 'Factored, the candidates are visible at once.' },
                   { do: 'Signs of y″: positive for x < −1, negative on (−1, 1), positive for x > 1', why: 'The product of two linear factors is negative only between its zeros.' },
-                  { do: 'Concavity changes at both −1 and 1; y(±1) = 1 − 6 = −5. Inflection points (−1, −5) and (1, −5)', why: 'Sign change plus a point on the curve at each: two inflection points, by symmetry at the same height.' },
-                  { do: 'For y = x⁴, y″ = 12x² is 0 at x = 0 but positive on both sides. No sign change, so no inflection point: the curve is concave up everywhere', why: 'A zero of the second derivative is a candidate, exactly as a zero of the first derivative was. Only a change of sign makes it an inflection point.' }
+                  { do: 'Concavity changes at both −1 and 1, and y(±1) = 1 − 6 = −5', why: 'A sign change at each, plus a point on the curve at each: two inflection points, at the same height by symmetry.' },
+                  { do: 'For y = x⁴: y″ = 12x², which is 0 at x = 0 but positive on both sides', why: 'A zero of the second derivative is a candidate, exactly as a zero of the first derivative was a candidate for an extremum.' },
+                  { do: 'No sign change, so no inflection point: y = x⁴ is concave up everywhere', why: 'Only a change of sign makes a candidate an inflection point. The curve flattens at the origin without ever bending the other way.' }
                 ],
-                answer: 'y = x⁴ − 6x² has inflection points (−1, −5) and (1, −5); y = x⁴ has none because its second derivative never changes sign', answerWords: true
+                answer: 'y = x⁴ − 6x² has inflection points (−1, −5) and (1, −5); y = x⁴ has none because its second derivative never changes sign', answerWords: true,
+                check: 'Values of y″ for the first curve: y″(−2) = 36 > 0, y″(0) = −12 < 0, y″(2) = 36 > 0 — two genuine changes ✓. For the second: y″(−1) = 12 and y″(1) = 12, both positive, no change ✓.'
               }
             ],
             pitfalls: [
@@ -17956,6 +18043,12 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
           {
             id: 'd4', title: 'The second-derivative test', src: 'Section 13.4',
             idea: `Concavity gives a faster way to test a critical value, at least when it works. Suppose f′(a) = 0, so the tangent at a is horizontal. If the curve is concave up around a, it bends upward away from that horizontal tangent on both sides — a valley — so a is a relative minimum. If it is concave down around a, it bends downward on both sides — a hilltop — so a is a relative maximum. That is the whole of the <b>second-derivative test</b>:<br><br><b>If f′(a) = 0 and f″(a) &gt; 0, f has a relative minimum at a.<br>If f′(a) = 0 and f″(a) &lt; 0, f has a relative maximum at a.</b><br><br>The signs are easy to get backwards, and a picture is the cure: positive second derivative, concave up, bowl, minimum. Negative, concave down, dome, maximum.<br><br>The test has two limits, and exams probe both. First, it says <b>nothing</b> when f″(a) = 0. In that case there may be a maximum, a minimum, or neither: y = x⁴ has f′(0) = f″(0) = 0 and a minimum; y = −x⁴ has the same and a maximum; y = x³ has the same and neither. Whenever f″(a) = 0, go back to the first-derivative test and read the sign of f′ on either side — that test always works. Second, the second-derivative test only applies where f′(a) = 0; it has nothing to say at a critical value where f′ does not exist, and it must never be used at a point that is not a critical value at all.<br><br>When the second derivative is awkward to compute, the first-derivative test is often less work, and it always gives an answer. The second-derivative test is the fast route when f″ is easy and non-zero, which for a polynomial of low degree it usually is.<br><br>One more result is used constantly in the applied problems that follow. <b>If a function is continuous on an interval and has exactly one relative extremum there, that relative extremum is also an absolute extremum on the interval.</b> A curve with only one turn cannot get back above a single hilltop or below a single valley. So when a cost function on (0, ∞) has a single critical value and the second derivative is positive there, that relative minimum is the minimum cost, full stop — no endpoints to check, because there are none.`,
+            figure: {
+              kind: 'graph', x: [-3, 3], y: [-6, 6],
+              fns: [{ expr: 'x**2', label: 'y″ > 0: a valley' }, { expr: '-x**2 + 4', label: 'y″ < 0: a hilltop' }],
+              points: [{ x: 0, y: 0, label: 'minimum' }, { x: 0, y: 4, label: 'maximum' }],
+              caption: 'The second-derivative test in one picture. Both curves are level at x = 0; what tells them apart is the bending. Concave up — second derivative positive — holds water and the level point is a valley; concave down spills it and the level point is a hilltop.'
+            },
             rules: [
               { name: 'Relative maximum', expr: 'd^2 f/dx^2 < 0', note: 'At a critical value where df/dx = 0. Concave down at a horizontal tangent is a hilltop; a positive second derivative there is a valley, a relative minimum.' },
               { name: 'Inconclusive', expr: 'If the second derivative is 0 at a, the test says nothing; use the first-derivative test', words: true, note: 'x⁴, −x⁴ and x³ all have first and second derivatives 0 at 0, and have a minimum, a maximum and neither.' },
@@ -17965,23 +18058,43 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             examples: [
               {
                 prompt: 'Use the second-derivative test on y = x³ − 12x + 3.',
+                approach: 'The test trades a sign chart for two substitutions: find the critical values from y′ = 0, then evaluate y″ at each. Positive means concave up and therefore a valley; negative means a hilltop. It is the quicker route whenever y″ is easy to write down, as it is for a cubic. Heights still come from y.',
+                figure: {
+                  kind: 'graph', x: [-4.2, 4.2], y: [-20, 26],
+                  fns: [{ expr: 'x**3 - 12*x + 3', label: 'y = x³ − 12x + 3' }],
+                  points: [{ x: -2, y: 19, label: 'max 19, y″ < 0' }, { x: 2, y: -13, label: 'min −13, y″ > 0' }],
+                  caption: 'A hilltop at x = −2 where the curve is bending downward, a valley at x = 2 where it is bending upward, and the bending changes between them at the origin. The second derivative 6x carries the sign of x, which is all the test needs.'
+                },
                 steps: [
-                  { do: 'y′ = 3x² − 12 = 3(x − 2)(x + 2); critical values x = 2 and x = −2', why: 'Set the first derivative to 0. Both are horizontal tangents, so the test applies.' },
+                  { do: 'y′ = 3x² − 12 = 3(x − 2)(x + 2)', why: 'Factor after taking out the 3, so the zeros are visible.' },
+                  { do: 'Critical values x = 2 and x = −2', why: 'Set the first derivative to 0. Both are horizontal tangents, so the test applies.' },
                   { do: 'y″ = 6x', why: 'Easy second derivative, which is when this test is worth using.' },
-                  { do: 'y″(2) = 12 > 0: relative minimum at 2, value 8 − 24 + 3 = −13', why: 'Positive second derivative, concave up, valley.' },
-                  { do: 'y″(−2) = −12 < 0: relative maximum at −2, value −8 + 24 + 3 = 19', why: 'Negative, concave down, hilltop. Values from y, not from y″.' }
+                  { do: 'y″(2) = 12 > 0: relative minimum at 2, value 8 − 24 + 3 = −13', why: 'Positive second derivative, concave up, valley. The value comes from y.' },
+                  { do: 'y″(−2) = −12 < 0: relative maximum at −2, value −8 + 24 + 3 = 19', why: 'Negative, concave down, hilltop. Values from y, not from y″.' },
+                  { do: 'Both tests were decisive, so no sign chart is needed', why: 'The first-derivative test would give the same answer; the second-derivative test got there in two substitutions.' }
                 ],
-                answer: 'Relative maximum 19 at x = −2, relative minimum −13 at x = 2', answerWords: true
+                answer: 'Relative maximum 19 at x = −2, relative minimum −13 at x = 2', answerWords: true,
+                check: 'Cross-check with the first-derivative test: y′(−3) = 15 > 0, y′(0) = −12 < 0, y′(3) = 15 > 0 — rising, falling, rising, so a hilltop at −2 and a valley at 2 ✓. The maximum 19 sits above the minimum −13, as it must here.'
               },
               {
                 prompt: 'Test y = x⁴ − 4x³ for relative extrema, using the second-derivative test where possible.',
+                approach: 'Run the test, and be ready for it to fail. When y″ at a critical value comes out zero, the test is silent — it does not say "no extremum", it says nothing at all — and the first-derivative test has to be used at that value instead. Doing both here is the point of the question.',
+                figure: {
+                  kind: 'graph', x: [-1.2, 4.4], y: [-32, 14],
+                  fns: [{ expr: 'x**4 - 4*x**3', label: 'y = x⁴ − 4x³' }],
+                  points: [{ x: 3, y: -27, label: 'minimum −27' }, { x: 0, y: 0, label: 'level, but no extremum' }],
+                  caption: 'At the origin the curve is level — the tangent is horizontal — and yet it is neither a hilltop nor a valley: the curve arrives falling and leaves falling, pausing without turning. That is exactly the case the second-derivative test cannot decide, and the sign of y′ settles it.'
+                },
                 steps: [
-                  { do: 'y′ = 4x³ − 12x² = 4x²(x − 3); critical values x = 0 and x = 3', why: 'Factor to read off the zeros.' },
+                  { do: 'y′ = 4x³ − 12x² = 4x²(x − 3); critical values x = 0 and x = 3', why: 'Factor to read off the zeros. The repeated factor x² is a hint that x = 0 will behave unusually.' },
                   { do: 'y″ = 12x² − 24x = 12x(x − 2)', why: 'Second derivative, factored.' },
                   { do: 'y″(3) = 12(3)(1) = 36 > 0: relative minimum at 3, value 81 − 108 = −27', why: 'The test works at 3 and gives a minimum.' },
-                  { do: 'y″(0) = 0: the test says nothing. First-derivative test: y′ = 4x²(x − 3) is negative for x < 0 and negative for 0 < x < 3, so no sign change and no extremum at 0', why: 'When the second derivative is 0, fall back to the sign of the first derivative. Here the curve flattens at 0 and keeps falling.' }
+                  { do: 'y″(0) = 0: the test says nothing at all', why: 'Inconclusive is not the same as "no extremum". The test simply has no verdict, and another test must be used.' },
+                  { do: 'First-derivative test at 0: y′ = 4x²(x − 3) is negative for x < 0 and negative for 0 < x < 3', why: '4x² is positive on both sides and x − 3 is negative on both, so the sign of y′ does not change.' },
+                  { do: 'No sign change, so no extremum at x = 0 — the curve flattens and keeps falling', why: 'Only a change of sign in y′ makes a critical value an extremum. Here the graph has a horizontal tangent at a point that is not a turning point.' }
                 ],
-                answer: 'Relative minimum −27 at x = 3; no extremum at x = 0, where the second-derivative test is inconclusive and the first-derivative test shows no change of sign', answerWords: true
+                answer: 'Relative minimum −27 at x = 3; no extremum at x = 0, where the second-derivative test is inconclusive and the first-derivative test shows no change of sign', answerWords: true,
+                check: 'Values either side of 0: y(−0.5) = 0.0625 + 0.5 = 0.5625 and y(0.5) = 0.0625 − 0.5 = −0.4375. One above, one below — so the origin is not a hilltop and not a valley ✓. And y(2.5) = 39.06 − 62.5 = −23.4 > −27, consistent with a minimum at x = 3.'
               }
             ],
             pitfalls: [
@@ -18009,6 +18122,13 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
           {
             id: 'd5', title: 'Asymptotes and sketching', src: 'Section 13.5',
             idea: `Some curves run off to infinity, and where they do so is part of their shape. An <b>asymptote</b> is a line the curve approaches arbitrarily closely, and there are three kinds.<br><br>The line <b>x = a is a vertical asymptote</b> if f(x) → ∞ or f(x) → −∞ as x → a from at least one side. The curve "blows up" beside the line. For a rational function P(x)/Q(x) written in lowest terms, the rule is mechanical: x = a is a vertical asymptote exactly when <b>Q(a) = 0 and P(a) ≠ 0</b>. The lowest-terms condition is not decoration. (x² − 4)/(x − 2) has a zero denominator at 2, but so does the numerator; the fraction reduces to x + 2 for x ≠ 2, and the graph is a line with a hole in it, not a curve with an asymptote. Cancel first, then look for zeros of what remains. Near a vertical asymptote the one-sided limits tell which way each branch goes: for (3x − 5)/(x − 2), the numerator is near 1 while the denominator is small and positive on the right of 2, so the curve rises to +∞ there, and falls to −∞ on the left.<br><br>The line <b>y = b is a horizontal asymptote</b> if f(x) → b as x → ∞ or as x → −∞. It describes the long-run level of the curve, which for a rational function is settled by comparing degrees, exactly as in the limits of section 10.2: if the degree of the numerator is less than the degree of the denominator, y = 0; if the degrees are equal, y = the ratio of the leading coefficients; if the numerator's degree is greater, there is no horizontal asymptote. A curve may cross its horizontal asymptote in the middle — the asymptote only governs the ends. Non-rational functions are handled by the limit directly: y = 3 + 2e<sup>−x</sup> → 3 as x → ∞, so y = 3 is a horizontal asymptote on the right, while on the left the curve climbs without bound. A function can have at most two horizontal asymptotes, one in each direction; a rational function has at most one, the same in both.<br><br>When the numerator's degree is exactly one more than the denominator's, the curve settles not onto a horizontal line but onto a slanted one, an <b>oblique asymptote</b> y = mx + b. Long division finds it: P(x)/Q(x) = (mx + b) + R(x)/Q(x) with the degree of R below that of Q, and the remainder term vanishes as x → ±∞, leaving the line. A polynomial of degree two or more has no asymptotes of any kind: it simply goes to ±∞ at each end.<br><br>With asymptotes in hand, the chapter's tools combine into a <b>procedure for sketching</b>: note the domain and any excluded values; find the intercepts; check for symmetry; find the asymptotes; make the sign chart for f′ to get rising, falling and the relative extrema; make the sign chart for f″ to get concavity and inflection points; then draw, letting each branch approach its asymptotes. The sign charts are the skeleton and the asymptotes are the frame; the curve is what fits both.`,
+            figure: {
+              kind: 'graph', x: [-4, 4], y: [-6, 6],
+              fns: [{ expr: 'x/(x**2 - 1)', label: 'f(x) = x/(x² − 1)' }],
+              vlines: [{ x: -1, label: 'x = −1' }, { x: 1, label: 'x = 1' }],
+              hlines: [{ y: 0, label: 'y = 0' }],
+              caption: 'Three asymptotes and three branches. The curve runs off to infinity beside each zero of the denominator, and flattens onto y = 0 at both ends because the denominator outgrows the numerator. Asymptotes are the skeleton of a sketch: draw them first and the branches have nowhere else to go.'
+            },
             rules: [
               { name: 'Vertical asymptote', expr: 'x = a is a vertical asymptote if f(x) goes to +infinity or -infinity as x approaches a from either side', words: true, note: 'For a rational function in lowest terms: Q(a) = 0 and P(a) ≠ 0. Cancel common factors first, or a hole gets called an asymptote.' },
               { name: 'Horizontal asymptote', expr: 'y = b is a horizontal asymptote if f(x) approaches b as x goes to +infinity or -infinity', words: true, note: 'Governs the ends of the curve only; the curve may cross it in the middle.' },
@@ -18020,23 +18140,45 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             examples: [
               {
                 prompt: 'Find the vertical and horizontal asymptotes of f(x) = (2x² − 8)/(x² − 9).',
+                approach: 'Two separate questions with two separate methods. Vertical asymptotes come from the zeros of the denominator, but only after the fraction is in lowest terms — a factor that cancels leaves a hole, not an asymptote. The horizontal asymptote comes from comparing the degrees of numerator and denominator, which here are equal, so the answer is the ratio of the leading coefficients.',
+                figure: {
+                  kind: 'graph', x: [-9, 9], y: [-14, 16],
+                  fns: [{ expr: '(2*x**2 - 8)/(x**2 - 9)', label: 'f(x) = (2x² − 8)/(x² − 9)' }],
+                  vlines: [{ x: -3, label: 'x = −3' }, { x: 3, label: 'x = 3' }],
+                  hlines: [{ y: 2, label: 'y = 2' }],
+                  points: [{ x: 2, y: 0, label: 'zero at 2' }, { x: -2, y: 0, label: 'zero at −2' }],
+                  caption: 'The middle branch passes through the zeros at x = ±2 and dives at both vertical asymptotes; the outer branches come down onto y = 2 from above. No branch ever touches y = 2, which the algebra confirms: setting f(x) = 2 leads to −8 = −18.'
+                },
                 steps: [
-                  { do: 'Factor: f(x) = 2(x − 2)(x + 2)/[(x − 3)(x + 3)]. No common factors, so it is in lowest terms', why: 'Only in lowest terms does a zero of the denominator guarantee an asymptote.' },
-                  { do: 'Denominator zero at x = 3 and x = −3; numerator there is 2(9) − 8 = 10, not zero. Vertical asymptotes x = 3 and x = −3', why: 'Q(a) = 0 and P(a) ≠ 0 at both values.' },
+                  { do: 'Factor: f(x) = 2(x − 2)(x + 2)/[(x − 3)(x + 3)]', why: 'Factoring is what shows whether anything cancels.' },
+                  { do: 'No common factors, so the fraction is already in lowest terms', why: 'Only in lowest terms does a zero of the denominator guarantee an asymptote; a cancelling factor would give a hole instead.' },
+                  { do: 'Denominator zero at x = 3 and x = −3; the numerator there is 2(9) − 8 = 10, not zero. Vertical asymptotes x = 3 and x = −3', why: 'Q(a) = 0 and P(a) ≠ 0 at both values, which is exactly the test.' },
                   { do: 'Degrees are equal (2 and 2), so the horizontal asymptote is y = 2/1 = 2', why: 'Equal degrees: the ratio of the leading coefficients. As a limit, (2x² − 8)/(x² − 9) → 2x²/x² = 2 as x → ±∞.' },
-                  { do: 'Check the crossing: f(x) = 2 would need 2x² − 8 = 2x² − 18, impossible, so this curve never touches y = 2', why: 'Not required, but it tells the sketch that every branch stays on one side of the horizontal line.' }
+                  { do: 'Check the crossing: f(x) = 2 would need 2x² − 8 = 2x² − 18, which is impossible', why: 'Not required, but it tells the sketch that every branch stays on one side of the horizontal line.' },
+                  { do: 'Vertical x = ±3, horizontal y = 2', why: 'A horizontal asymptote describes the ends of the curve; vertical ones describe the middle. A curve may have at most two of the former and any number of the latter.' }
                 ],
-                answer: 'Vertical asymptotes x = 3 and x = −3; horizontal asymptote y = 2', answerWords: true
+                answer: 'Vertical asymptotes x = 3 and x = −3; horizontal asymptote y = 2', answerWords: true,
+                check: 'Put in a large x: f(100) = 19992/9991 = 2.0010, and f(−100) is the same by symmetry — closing on 2 from above ✓. And just left of 3, f(2.9) = 8.82/(−0.59) = −14.9, already plunging, as a vertical asymptote requires.'
               },
               {
                 prompt: 'Find all asymptotes of f(x) = (x² + 3x − 1)/(x − 2).',
+                approach: 'The degree comparison decides the shape of the ends, and here the numerator is exactly one degree higher, which is the oblique case: no horizontal asymptote, but a slanted line the curve settles onto. Long division produces it — the quotient is the line and the remainder term is the gap, which closes as x grows. The vertical asymptote is found as usual.',
+                figure: {
+                  kind: 'graph', x: [-14, 14], y: [-28, 28],
+                  fns: [{ expr: '(x**2 + 3*x - 1)/(x - 2)', label: 'f(x) = (x² + 3x − 1)/(x − 2)' }, { expr: 'x + 5', label: 'y = x + 5 (oblique)', dashed: true }],
+                  vlines: [{ x: 2, label: 'x = 2' }],
+                  caption: 'Both branches hug the slanted dashed line at their far ends, one from above and one from below, because the leftover term 9/(x − 2) shrinks to nothing in both directions. Near x = 2 that same term is enormous, and the curve leaves the line for the vertical asymptote.'
+                },
                 steps: [
-                  { do: 'Denominator zero at x = 2; numerator there is 4 + 6 − 1 = 9 ≠ 0. Vertical asymptote x = 2', why: 'Lowest terms, and the rule applies.' },
-                  { do: 'Numerator degree 2, denominator degree 1: one more, so no horizontal asymptote but an oblique one', why: 'Degree above means the curve does not level off; exactly one above means it settles onto a slanted line.' },
-                  { do: 'Long division: x² + 3x − 1 = (x − 2)(x + 5) + 9, so f(x) = x + 5 + 9/(x − 2)', why: 'Check: (x − 2)(x + 5) = x² + 3x − 10, and −10 + 9 = −1. The remainder 9 has degree below the divisor.' },
-                  { do: 'As x → ±∞, 9/(x − 2) → 0, so the graph approaches y = x + 5. Oblique asymptote y = x + 5', why: 'The quotient is the line; the remainder term is the gap, and it closes at both ends.' }
+                  { do: 'Denominator zero at x = 2; the numerator there is 4 + 6 − 1 = 9 ≠ 0. Vertical asymptote x = 2', why: 'Lowest terms, and the rule applies.' },
+                  { do: 'Numerator degree 2, denominator degree 1: one more', why: 'Compare the degrees before anything else — that comparison alone decides which kind of end behaviour to look for.' },
+                  { do: 'So there is no horizontal asymptote, but there is an oblique one', why: 'Degree above means the curve does not level off; exactly one above means it settles onto a slanted line.' },
+                  { do: 'Long division: x² + 3x − 1 = (x − 2)(x + 5) + 9', why: 'Check: (x − 2)(x + 5) = x² + 3x − 10, and −10 + 9 = −1. The remainder 9 has degree below the divisor, so the division is finished.' },
+                  { do: 'So f(x) = x + 5 + 9/(x − 2)', why: 'Rewriting the function as line plus leftover is the whole technique.' },
+                  { do: 'As x → ±∞, 9/(x − 2) → 0, so the graph approaches y = x + 5', why: 'The quotient is the line; the remainder term is the gap, and it closes at both ends. Positive gap on the right, negative on the left.' }
                 ],
-                answer: 'Vertical asymptote x = 2 and oblique asymptote y = x + 5; no horizontal asymptote', answerWords: true
+                answer: 'Vertical asymptote x = 2 and oblique asymptote y = x + 5; no horizontal asymptote', answerWords: true,
+                check: 'At x = 20, f(20) = (400 + 60 − 1)/18 = 25.5 against the line value 25 — a gap of 0.5, which is 9/18 exactly ✓. At x = −20 the gap is 9/(−22) = −0.41, the curve sitting just below the line, as the picture shows.'
               }
             ],
             pitfalls: [
@@ -18064,6 +18206,12 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
           {
             id: 'd6', title: 'Applied maxima and minima', src: 'Section 13.6',
             idea: `Everything in the chapter was built for this: to find the cheapest, the largest, the most profitable. The calculus is the easy part. The work is in setting the problem up so that there is one function of one variable to differentiate.<br><br>The guide is short and every step matters. <b>Draw a picture</b> when there is one to draw, and label it. <b>Write the quantity to be optimised</b> — cost, revenue, area, profit — as an expression, using as many variables as the picture needs. <b>Reduce it to one variable</b> using the constraint the problem gives: a fixed area, a demand equation, a fixed perimeter. <b>State the domain</b>, because a length cannot be negative and a price cannot exceed the one that kills all demand; the domain decides whether there are endpoints. <b>Find the critical values, test them, and compare with any endpoints.</b> Then <b>answer the question that was asked</b>, which is rarely "what is x" and usually "how much fence", "what price", "how many units".<br><br>A fencing problem shows the pattern. A rectangular storage yard of 7,200 square feet is to be fenced on three sides, the fourth being a river. With x the side parallel to the river and y each of the other two, the fence length is L = x + 2y — two variables. The constraint xy = 7,200 gives y = 7,200/x, so L(x) = x + 14,400/x on x &gt; 0. Then L′(x) = 1 − 14,400/x² is 0 at x = 120, L″ = 28,800/x³ is positive there, and since 120 is the only critical value on (0, ∞) and L is continuous, this relative minimum is the absolute minimum. The answer to the question is y = 60, so 120 ft along the river and 60 ft on each end, 240 ft of fence in all.<br><br>The business problems reuse chapter 11's vocabulary. <b>Revenue</b> is price times quantity, r = pq, with the demand equation turning it into a function of q alone; a demand p = 120 − 0.5q makes sense only for 0 ≤ q ≤ 240, a closed interval, so the endpoints are checked and the maximum revenue 7,200 at q = 120 is compared against r = 0 at both ends. <b>Average cost</b> c̄ = c/q is minimised where its derivative is 0, which for c = 0.5q² + 8q + 1,250 happens at q = 50, where c̄ = 58; the second derivative 2,500/q³ is positive, and q = 50 is the only critical value on q &gt; 0, so it is the minimum. <b>Profit</b> is revenue minus cost, and the largest profit is not at the largest revenue: the marginal condition is dr/dq = dc/dq, marginal revenue equal to marginal cost, and every profit maximisation in this course reduces to it. The <b>economic lot size</b> balances setup costs, which fall as the run q grows, against carrying costs, which rise with it; C(q) = (setup cost × runs) + (carrying cost per unit × average inventory q/2) has a single interior minimum at the q where the two are equal.<br><br>Two things make or break these problems. The first is the domain: a closed interval means endpoints are candidates and must be evaluated; an open one like q &gt; 0 means the single-extremum argument from section 13.4 does the work. The second is the last step. A critical value is not an answer; the question asked for a price, a length or a cost, and the marks are for that.`,
+            figure: {
+              kind: 'graph', x: [0.2, 8], y: [0, 14],
+              fns: [{ expr: 'x + 4/x', label: 'a typical objective, y = x + 4/x' }],
+              points: [{ x: 2, y: 4, label: 'least value 4' }],
+              caption: 'The shape almost every applied problem in this section produces: one term that grows with x, one that shrinks, and a single least value where they balance. The domain is open — x > 0 — so there are no endpoints to check, and the one relative minimum is therefore the absolute one.'
+            },
             rules: [
               { name: 'The guide', expr: 'Draw it, write the quantity to optimise, reduce to one variable with the constraint, state the domain, find and test critical values and endpoints, answer the question asked', words: true, note: 'The differentiation is one step of six.' },
               { name: 'Reduce first', expr: 'Use the constraint to write the quantity as a function of one variable before differentiating', words: true, note: 'A cost written in x and y cannot be differentiated with respect to either alone.' },
@@ -18075,33 +18223,63 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             examples: [
               {
                 prompt: 'A rectangular yard of 7,200 ft² is to be fenced on three sides; the fourth side is a river and needs no fence. Find the dimensions that use the least fence, and the length used.',
+                approach: 'Name the two dimensions, write the quantity to be minimised and the constraint that ties them together, then use the constraint to eliminate one variable so a single-variable calculus problem is left. Differentiate, solve, and confirm it is a minimum. Finish by answering what was asked — the dimensions and the length, not the value of x.',
+                figure: {
+                  kind: 'graph', x: [20, 400], y: [0, 900], xlabel: 'x', ylabel: 'L',
+                  fns: [{ expr: 'x + 14400/x', label: 'L(x) = x + 14,400/x' }],
+                  points: [{ x: 120, y: 240, label: 'least fence: 240 ft' }],
+                  caption: 'Fence length against the side parallel to the river. A long thin yard needs a great deal of fence for its two ends; a short wide one needs a long side. The least total, 240 ft, comes at x = 120, and the curve is flat enough nearby that 110 or 130 costs barely a foot more.'
+                },
                 steps: [
-                  { do: 'Let x be the side parallel to the river and y each of the two sides meeting it. Fence: L = x + 2y. Constraint: xy = 7,200', why: 'The quantity to minimise, in the two variables the picture gives, and the one relation between them.' },
+                  { do: 'Let x be the side parallel to the river and y each of the two sides meeting it', why: 'Naming the variables against a sketch is the step that prevents the two ends being counted once instead of twice.' },
+                  { do: 'Fence: L = x + 2y. Constraint: xy = 7,200', why: 'The quantity to minimise, in the two variables the picture gives, and the one relation between them.' },
                   { do: 'y = 7,200/x, so L(x) = x + 14,400/x for x > 0', why: 'Reduced to one variable. The domain is open: any positive x makes a yard.' },
-                  { do: 'L′(x) = 1 − 14,400/x² = 0 gives x² = 14,400, x = 120 (positive). L″(x) = 28,800/x³ > 0 at 120: relative minimum', why: 'One critical value, tested by the second derivative.' },
-                  { do: 'The only relative extremum on (0, ∞) of a continuous function is absolute. y = 7,200/120 = 60. Least fence: 120 + 2(60) = 240 ft', why: 'Answer the question: the dimensions and the length, not just x = 120.' }
+                  { do: 'L′(x) = 1 − 14,400/x² = 0 gives x² = 14,400, so x = 120', why: 'Only the positive root makes sense as a length.' },
+                  { do: 'L″(x) = 28,800/x³ > 0 at 120, so this is a relative minimum', why: 'One critical value, tested by the second derivative.' },
+                  { do: 'The only relative extremum on an open interval of a continuous function is absolute. y = 7,200/120 = 60, and L = 120 + 2(60) = 240 ft', why: 'Answer the question: the dimensions and the length, not just x = 120.' }
                 ],
-                answer: '120 ft parallel to the river and 60 ft on each end, using 240 ft of fence', answerWords: true
+                answer: '120 ft parallel to the river and 60 ft on each end, using 240 ft of fence', answerWords: true,
+                check: 'Try neighbours: x = 100 gives 100 + 144 = 244 ft and x = 150 gives 150 + 96 = 246 ft, both worse than 240 ✓. The area is right too: 120 × 60 = 7,200 ft².'
               },
               {
                 prompt: 'The demand for a product is p = 120 − 0.5q, 0 ≤ q ≤ 240. Find the quantity and price that maximise revenue, and the maximum revenue.',
+                approach: 'Revenue is price times quantity, and the demand equation lets one of them be eliminated — write r in terms of q alone. The interval is closed this time, so the endpoints are genuine candidates and must be evaluated alongside the critical value. Then read the price off the demand equation, because the question asked for it.',
+                figure: {
+                  kind: 'graph', x: [0, 240], y: [0, 8200], xlabel: 'q', ylabel: 'r',
+                  fns: [{ expr: '120*x - 0.5*x**2', label: 'r = 120q − 0.5q²' }],
+                  points: [{ x: 120, y: 7200, label: 'maximum 7,200' }],
+                  caption: 'Revenue against quantity is a downward parabola that starts and finishes at zero: sell nothing and earn nothing, or drive the price to zero and earn nothing again. The peak is exactly halfway along, at q = 120, where the price is 60 — half the intercept in both cases, as it always is for a linear demand.'
+                },
                 steps: [
                   { do: 'r = pq = (120 − 0.5q)q = 120q − 0.5q² on [0, 240]', why: 'Revenue is price times quantity, with the demand equation removing p. The interval is closed, so endpoints count.' },
-                  { do: 'dr/dq = 120 − q = 0 at q = 120', why: 'The single critical value, inside the interval.' },
-                  { do: 'r(0) = 0, r(240) = 28,800 − 28,800 = 0, r(120) = 14,400 − 7,200 = 7,200', why: 'Compare the critical value with both endpoints; the largest wins.' },
-                  { do: 'Maximum revenue 7,200 at q = 120, where p = 120 − 60 = 60', why: 'The question asked for the price as well. Selling nothing and giving it away both earn nothing; the middle of the demand line earns the most.' }
+                  { do: 'dr/dq = 120 − q', why: 'Marginal revenue. Note it falls twice as fast as the price does — the usual relationship for a linear demand.' },
+                  { do: '120 − q = 0 at q = 120, the single critical value, inside the interval', why: 'One candidate from the interior.' },
+                  { do: 'r(0) = 0 and r(240) = 28,800 − 28,800 = 0', why: 'Both endpoints earn nothing, but they still have to be evaluated before the comparison is legitimate.' },
+                  { do: 'r(120) = 14,400 − 7,200 = 7,200', why: 'The critical-point value, and the largest of the three.' },
+                  { do: 'Maximum revenue 7,200 at q = 120, where p = 120 − 0.5(120) = 60', why: 'The question asked for the price as well. Selling nothing and giving it away both earn nothing; the middle of the demand line earns the most.' }
                 ],
-                answer: 'q = 120 units at p = 60, for a maximum revenue of 7,200', answerWords: true
+                answer: 'q = 120 units at p = 60, for a maximum revenue of 7,200', answerWords: true,
+                check: 'Either side: q = 110 gives (120 − 55)(110) = 7,150 and q = 130 gives (120 − 65)(130) = 7,150 — both below 7,200, and equal, as symmetry about the peak requires.'
               },
               {
                 prompt: 'A firm sells 3,600 units a year at a uniform rate, made in equal production runs. Each run costs $50 to set up, and carrying costs are $4 per unit per year on the average inventory. Find the economic lot size.',
+                approach: 'Build the cost function from the two costs that pull in opposite directions: big runs mean few setups but a lot of stock sitting in the warehouse, small runs the reverse. Express both in terms of the lot size q, add them, minimise. The average inventory is q/2, not q, and that halving is where the problem is usually lost.',
+                figure: {
+                  kind: 'graph', x: [60, 700], y: [0, 3600], xlabel: 'q', ylabel: 'cost',
+                  fns: [{ expr: '180000/x + 2*x', label: 'total cost' }, { expr: '180000/x', label: 'setup cost', dashed: true }, { expr: '2*x', label: 'carrying cost', dashed: true }],
+                  points: [{ x: 300, y: 1200, label: 'lot size 300' }],
+                  caption: 'The two costs cross at q = 300, and that is also where the total is least — $600 of setup and $600 of carrying, $1,200 in all. The crossing and the minimum coincide here because one cost is proportional to q and the other to 1/q; it is a useful check, not a general law.'
+                },
                 steps: [
-                  { do: 'Let q be the lot size. Runs per year: 3,600/q. Setup cost: 50 × 3,600/q = 180,000/q. Average inventory q/2, carrying cost 4 × q/2 = 2q', why: 'Inventory falls uniformly from q to 0 between runs, so the average on hand is q/2.' },
+                  { do: 'Let q be the lot size. Runs per year: 3,600/q', why: 'The whole year’s output is made in runs of q, so the number of runs is the total divided by the size.' },
+                  { do: 'Setup cost: 50 × 3,600/q = 180,000/q', why: 'Cost per run times runs per year. Bigger runs mean fewer setups, so this term falls as q grows.' },
+                  { do: 'Average inventory is q/2, so carrying cost is 4 × q/2 = 2q', why: 'Inventory falls uniformly from q to 0 between runs, so the average on hand is q/2, not q.' },
                   { do: 'C(q) = 180,000/q + 2q for q > 0', why: 'Total annual setup plus carrying cost, one variable, open domain.' },
-                  { do: 'C′(q) = −180,000/q² + 2 = 0 gives q² = 90,000, q = 300. C″(q) = 360,000/q³ > 0: minimum', why: 'One critical value on (0, ∞), tested and therefore absolute.' },
-                  { do: 'Economic lot size 300 units, in 3,600/300 = 12 runs a year; at q = 300 setup cost 600 and carrying cost 600 are equal', why: 'The two costs balance at the optimum, which is a check worth doing. C(300) = 1,200.' }
+                  { do: 'C′(q) = −180,000/q² + 2 = 0 gives q² = 90,000, so q = 300. C″(q) = 360,000/q³ > 0: a minimum', why: 'One critical value on (0, ∞), tested and therefore absolute.' },
+                  { do: 'Economic lot size 300 units, in 3,600/300 = 12 runs a year, with C(300) = 600 + 600 = 1,200', why: 'The two costs balance at the optimum, which is a check worth doing.' }
                 ],
-                answer: 'A lot size of 300 units, 12 runs a year, for a minimum annual cost of $1,200', answerWords: true
+                answer: 'A lot size of 300 units, 12 runs a year, for a minimum annual cost of $1,200', answerWords: true,
+                check: 'Neighbours: q = 250 gives 720 + 500 = $1,220 and q = 400 gives 450 + 800 = $1,250, both above $1,200 ✓. And 12 runs of 300 is 3,600 units, which is the year’s sales exactly.'
               }
             ],
             pitfalls: [
@@ -23193,7 +23371,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.55', date: '17 September 2026', year: 2026 };
+  const BUILD = { v: '2.56', date: '17 September 2026', year: 2026 };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonandy242', ['gmail', 'com'].join('.')].join('@');
   /* The one sentence that says what this is. It appears under the wordmark, and build.js uses
@@ -23206,6 +23384,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      because the person who needs it is the one who just watched the app refresh itself and wants to
      know what moved. Trim the tail when it gets past a dozen; nobody reads further back than that. */
   const WHATS_NEW = [
+    ['2.56', '<b>MATH 1170 chapter 13, Curve sketching, gets its pictures &mdash; the chapter that needed them most.</b> All six sections open with a figure and every worked example carries one: a sign chart laid out the way the questions are, a cubic with its hilltop and valley marked, a closed interval shaded so the endpoints can be seen winning, a tangent drawn at an inflection point where it crosses the curve, the two parabolas that are the whole second-derivative test, a quartic that is level at the origin without turning &mdash; the case the test cannot decide &mdash; a rational function with two vertical asymptotes and a horizontal one, an oblique asymptote with the curve hugging it from both sides, and, for the applied problems, the fence length, the revenue parabola and the two inventory costs crossing exactly at the economic lot size. Each example now opens with <b>How to approach it</b>, works line by line, and closes with a <b>Check</b>. Chapter 17 follows.'],
     ['2.55', '<b>MATH 1170 chapter 12, Additional differentiation topics, gets its pictures.</b> All five sections open with a graph and every worked example carries one: the log curve whose slope is the reciprocal of the x-coordinate, the exponential whose slope equals its own height, the bell curve e<sup>&minus;x&sup2;</sup> level at its peak because the chain-rule factor vanishes there, the circle with two tangents at the same x &mdash; the reason an implicit slope needs a point and not just an x-value &mdash; x<sup>x</sup> dipping at 1/e where neither the power rule nor the exponential rule can reach it, and a second derivative drawn under its own curve so the sign of one is the bending of the other. Each example now opens with <b>How to approach it</b>, works line by line, and closes with a <b>Check</b>. The figure renderer also learned to draw a curve from a list of points, which is how the relation xy + y&sup3; = 2x + 6 &mdash; solvable for y by no formula you would want to use &mdash; is shown with its tangent at (&minus;5, 1). Chapters 13 and 17 follow.'],
     ['2.54', '<b>MATH 1170 chapter 11, The Derivative, gets the same treatment &mdash; and the graph labels stop colliding.</b> All five sections now open with a picture and every worked example carries one: the secant sliding into the tangent on y = x&sup2;, a curve drawn above its own derivative so the sign of one matches the shape of the other, a cost curve whose tangent is the marginal cost (and the same curve magnified until the tangent and the curve separate by a cent), a rational function with its vertical asymptote and its horizontal one, and the chain rule shown as an inside function feeding an outside one. Every example begins with <b>How to approach it</b>, works the algebra line by line, and ends with a <b>Check</b>. Behind that: the figure renderer now places every label by trying a ring of positions and scoring each one against the tick numbers, the axis letters, the plotted points and the labels already placed, so nothing prints through anything else &mdash; the fault visible in 2.53, where &ldquo;tangent at x = 1&rdquo; ran straight through the x-axis ticks. A new audit renders every figure in a real browser, reads each label&rsquo;s true box, and fails the build on any overlap or overflow. Chapters 12, 13 and 17 follow, one per release.'],
     ['2.53', '<b>MATH 1170 gets pictures, and its worked examples get a plan, fuller working and a check.</b> Starting with chapter 10, every lesson opens with a graph and every worked example carries one: the hole at (3, 6) that a limit sees and a value does not, the secant sliding into the tangent as h shrinks, the jump at a seam between two pieces, the two vertical asymptotes of a rational function, and the parabola shaded where the inequality holds. The graphs are not images &mdash; each is drawn from the actual function in the example, in the page&rsquo;s own colours, so it matches the numbers and reads in dark mode and on a phone &mdash; and sign charts are laid out as tables with the zeros and the excluded values marked differently. Each example now begins with <b>How to approach it</b>, shows the algebra between the lines instead of jumping (six steps where there were four), and ends with a <b>Check</b> that tests the answer against numbers near the point. Chapters 11, 12, 13 and 17 follow, one per release. MATH 1070 pauses at chapter 5 for now.'],
