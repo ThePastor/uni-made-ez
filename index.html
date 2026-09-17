@@ -17322,7 +17322,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             idea: `Not every curve is given as y = f(x). The circle x² + y² = 25 and the curve y³ + y − x = 7 define y in terms of x <b>implicitly</b> — the relation holds, but y is not isolated and sometimes cannot be. Implicit differentiation finds dy/dx anyway, without ever solving for y.<br><br>The idea is a single sentence: <b>treat y as an unknown function of x, and differentiate both sides of the equation with respect to x.</b> Whenever a term contains y, the chain rule applies, and every derivative of a y-term picks up a factor of dy/dx. Then solve the resulting equation for dy/dx.<br><br>The procedure:<br><br><b>1.</b> Differentiate both sides with respect to x. A term in x alone is differentiated as usual. A term in y is differentiated as a function of x — so d/dx (y²) = 2y · dy/dx, d/dx (y³) = 3y² · dy/dx, d/dx (ln y) = (1/y) · dy/dx, and d/dx (y) = dy/dx.<br><b>2.</b> A term with both, like xy, is a <b>product</b>: d/dx (xy) = x · dy/dx + y.<br><b>3.</b> Collect every term containing dy/dx on one side and everything else on the other.<br><b>4.</b> Factor out dy/dx and divide.<br><br>For x² + y² = 25: 2x + 2y · dy/dx = 0, so <b>dy/dx = −x/y</b>. The answer contains y as well as x, and that is normal: on an implicit curve the slope at a point depends on both coordinates, because the same x can sit at two different y-values with two different slopes. The circle at x = 3 has slope −3/4 at (3, 4) and +3/4 at (3, −4).<br><br>So a slope from implicit differentiation is always evaluated at a <b>point</b>, not at an x-value alone. From there, a tangent line is point-slope form exactly as before: at (3, 4) the tangent to the circle is y − 4 = −(3/4)(x − 3).<br><br>Economics meets this technique wherever a relation between two quantities is given as an equation rather than a formula — an isoquant relating two inputs that produce a fixed output, a demand relation that has not been solved for price, a budget constraint. The derivative of one variable with respect to the other along the curve is the trade-off between them, and implicit differentiation is how it is found.`,
             figure: {
               kind: 'graph', x: [-6, 6], y: [-6.5, 6.5],
-              fns: [{ expr: 'sqrt(25 - x**2)', label: 'x² + y² = 25' }, { expr: '-sqrt(25 - x**2)' }],
+              fns: [{ expr: 'sqrt(25 - x**2)', label: 'x² + y² = 25' }, { expr: '-sqrt(25 - x**2)', c: 0 }],
               segments: [{ from: [1, 5.5], to: [5.4, 2.2], label: 'slope −3/4' }, { from: [1, -5.5], to: [5.4, -2.2], label: 'slope +3/4' }],
               points: [{ x: 3, y: 4, label: '(3, 4)' }, { x: 3, y: -4, label: '(3, −4)' }],
               caption: 'A circle is not a function of x: the line x = 3 meets it twice, at (3, 4) and (3, −4), and the tangents there have opposite slopes. That is why implicit differentiation returns dy/dx = −x/y, an answer containing both coordinates, and why an implicit slope is evaluated at a point rather than at an x-value.'
@@ -17339,7 +17339,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
                 approach: 'Treat y as an unknown function of x and differentiate both sides. Every term containing y produces a factor dy/dx by the chain rule; the constant on the right gives 0. Then collect, factor and divide. The result will contain y as well as x, so the slope has to be read off at the point, and the tangent is ordinary point-slope form once the slope is known.',
                 figure: {
                   kind: 'graph', x: [-6, 6], y: [-6.5, 6.5],
-                  fns: [{ expr: 'sqrt(25 - x**2)', label: 'x² + y² = 25' }, { expr: '-sqrt(25 - x**2)' }],
+                  fns: [{ expr: 'sqrt(25 - x**2)', label: 'x² + y² = 25' }, { expr: '-sqrt(25 - x**2)', c: 0 }],
                   segments: [{ from: [0.5, 5.875], to: [6, 1.75], label: 'y = −0.75x + 6.25' }],
                   points: [{ x: 3, y: 4, label: '(3, 4)' }],
                   caption: 'The tangent at (3, 4) touches the circle once and leans away from the origin: its slope, −3/4, is the negative reciprocal of the radius slope 4/3. That perpendicularity is a property of circles, and it is a free check on any tangent you compute for one.'
@@ -18645,6 +18645,11 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
           {
             id: 'e1', title: 'Partial derivatives', src: 'Section 17.1',
             idea: `A cost that depends on how many of two products are made, an output that depends on both labour and capital, a demand that depends on two prices — most quantities in economics depend on more than one thing. z = f(x, y) is a function of two variables, and its graph is a surface over the xy-plane rather than a curve over a line. A derivative of such a function has to say which input is changing, and the answer is: one at a time.<br><br>The <b>partial derivative of f with respect to x</b>, written f<sub>x</sub>(x, y) or ∂z/∂x, is the ordinary derivative of f with respect to x <b>with y held constant</b>. The partial with respect to y, f<sub>y</sub> or ∂z/∂y, holds x constant instead. The curly ∂ (not d) is the signal that other variables are being frozen. Geometrically, ∂z/∂x is the slope of the surface in the x-direction — the slope of the curve cut from the surface by a plane of constant y — and ∂z/∂y is the slope in the y-direction.<br><br>Nothing new is needed to compute one. For f(x, y) = x³y − 2xy² + 5y, treat y as if it were the number 7: the derivative with respect to x is f<sub>x</sub> = 3x²y − 2y², because x³y is (constant)·x³, −2xy² is (constant)·x, and 5y is a constant that differentiates to 0. Now treat x as the constant: f<sub>y</sub> = x³ − 4xy + 5. Every rule from chapters 11 and 12 carries over — product, quotient, chain, logs and exponentials — applied with the other variable frozen. The one thing to watch is that "constant" does not mean "zero": x³y differentiated with respect to x is 3x²y, and the y stays.<br><br>Evaluating at a point is written f<sub>x</sub>(a, b) or ∂z/∂x |<sub>(a, b)</sub>: differentiate first, then substitute both coordinates. At (2, 1) the function above has f<sub>x</sub> = 12 − 2 = 10 and f<sub>y</sub> = 8 − 8 + 5 = 5, meaning that near (2, 1) the surface rises 10 units per unit of x and 5 per unit of y.<br><br>With three or more variables the idea is the same: w = f(x, y, z) has three partials, each holding the other two fixed, and a function of n variables has n of them. The bookkeeping grows; the calculus does not.`,
+            figure: {
+              kind: 'graph', x: [-3, 3], y: [0, 30],
+              fns: [{ expr: 'x**2 + 3', label: 'slice at y = 1: z = x² + 3' }, { expr: '3*x**2 + 1', label: 'slice at x = 1: z = 1 + 3y²' }],
+              caption: 'The surface z = x² + 3y² cannot be drawn on a flat page, but its slices can. Freeze y at 1 and a curve in x is left; freeze x at 1 and a curve in y is left. A partial derivative is the ordinary slope of one of these slices — the second one climbs three times as fast, which is exactly what ∂z/∂y = 6y against ∂z/∂x = 2x says.'
+            },
             rules: [
               { name: 'Partial with respect to x', expr: 'partial z/partial x', note: 'Written ∂z/∂x or f_x: differentiate with respect to x holding y constant. The ∂ marks a partial derivative.' },
               { name: 'How to compute', expr: 'Treat every other variable as a constant and use the ordinary rules', words: true, note: 'Constant means frozen, not zero: the partial of x³y with respect to x is 3x²y.' },
@@ -18655,22 +18660,43 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             examples: [
               {
                 prompt: 'For f(x, y) = x³y − 2xy² + 5y, find f_x and f_y, and evaluate both at (2, 1).',
+                approach: 'Two ordinary derivatives, done twice over. For f_x, read the whole expression as a function of x with y frozen into a number — so x³y is a constant times x³, and 5y is a constant that differentiates to 0. Then start again for f_y with x frozen. Substitute the point only after both derivatives are written out in full.',
+                figure: {
+                  kind: 'graph', x: [-2.5, 2.8], y: [-3, 17],
+                  fns: [{ expr: 'x**3 - 2*x + 5', label: 'the slice f(x, 1) = x³ − 2x + 5' }],
+                  segments: [{ from: [1.6, 5], to: [2.4, 13], label: 'slope f_x = 10' }],
+                  points: [{ x: 2, y: 9, label: 'f(2, 1) = 9' }],
+                  caption: 'Freeze y at 1 and the function becomes x³ − 2x + 5, an ordinary cubic. The partial derivative f_x(2, 1) = 10 is nothing more exotic than the slope of this curve at x = 2 — which is why every rule from chapters 11 and 12 still applies.'
+                },
                 steps: [
-                  { do: 'f_x: hold y constant. x³y gives 3x²y, −2xy² gives −2y², 5y gives 0. So f_x = 3x²y − 2y²', why: 'y is treated as a number, so x³y is a constant times x³ and 5y is a constant.' },
+                  { do: 'f_x: hold y constant. x³y gives 3x²y', why: 'y is a frozen number, so x³y is a constant times x³ and the power rule applies to the x³ alone.' },
+                  { do: 'Still holding y: −2xy² gives −2y², and 5y gives 0. So f_x = 3x²y − 2y²', why: '−2xy² is a constant times x, so it differentiates to that constant. 5y contains no x at all, so it is a constant and vanishes.' },
                   { do: 'f_y: hold x constant. x³y gives x³, −2xy² gives −4xy, 5y gives 5. So f_y = x³ − 4xy + 5', why: 'Now x is the frozen one: x³y is a constant times y, and −2xy² is a constant times y².' },
-                  { do: 'At (2, 1): f_x = 3(4)(1) − 2(1) = 10', why: 'Substitute both coordinates after differentiating.' },
-                  { do: 'At (2, 1): f_y = 8 − 4(2)(1) + 5 = 5', why: 'The surface rises 10 per unit of x and 5 per unit of y near that point.' }
+                  { do: 'At (2, 1): f_x = 3(4)(1) − 2(1)² = 12 − 2 = 10', why: 'Substitute both coordinates after differentiating — a partial derivative is a function of both variables.' },
+                  { do: 'At (2, 1): f_y = 2³ − 4(2)(1) + 5 = 8 − 8 + 5 = 5', why: 'The surface rises 10 per unit of x and 5 per unit of y near that point: twice as steep in the x-direction.' }
                 ],
-                answer: 'f_x = 3x²y − 2y² and f_y = x³ − 4xy + 5; at (2, 1) they are 10 and 5', answerWords: true
+                answer: 'f_x = 3x²y − 2y² and f_y = x³ − 4xy + 5; at (2, 1) they are 10 and 5', answerWords: true,
+                check: 'Step a little in x with y fixed at 1: f(2.01, 1) = 8.1206 − 4.02 + 5 = 9.1006 against f(2, 1) = 9, an average slope of 10.06 ✓. Step in y instead: f(2, 1.01) = 8.08 − 4.0804 + 5.05 = 9.0496, an average slope of 4.96 — closing on 5 ✓.'
               },
               {
                 prompt: 'Find ∂z/∂x and ∂z/∂y for z = ln(x² + y²), and evaluate them at (3, 4).',
+                approach: 'The chain rule for ln u, twice. With y frozen the inside x² + y² differentiates to 2x, because y² is a constant; with x frozen it differentiates to 2y. The denominator is the same in both, so evaluate x² + y² once at the point and reuse it. The symmetry of the function means the two answers differ only in their numerators.',
+                figure: {
+                  kind: 'graph', x: [-6, 6], y: [2.4, 4.4],
+                  fns: [{ expr: 'ln(x**2 + 16)', label: 'the slice z(x, 4) = ln(x² + 16)' }],
+                  segments: [{ from: [1.5, 2.859], to: [5, 3.699], label: 'slope 0.24' }],
+                  points: [{ x: 3, y: 3.2189, label: '(3, ln 25)' }],
+                  caption: 'The slice through y = 4: a gentle curve, level at x = 0 where the numerator 2x vanishes, and rising with slope 0.24 at x = 3. The slice through x = 3 has the same shape in y but is steeper at the point, 0.32, because 4 is the larger coordinate.'
+                },
                 steps: [
-                  { do: '∂z/∂x = (1/(x² + y²)) · 2x = 2x/(x² + y²)', why: 'Chain rule for ln u with y held constant: the inside differentiates to 2x, since y² is a constant.' },
-                  { do: '∂z/∂y = 2y/(x² + y²)', why: 'The same with x frozen; the inside now differentiates to 2y.' },
-                  { do: 'At (3, 4): x² + y² = 25, so ∂z/∂x = 6/25 = 0.24 and ∂z/∂y = 8/25 = 0.32', why: 'Substitute after differentiating. The y-direction is steeper there because y is the larger coordinate.' }
+                  { do: 'Name the inside: u = x² + y², so z = ln u', why: 'Both partial derivatives are chain-rule problems on the same inside function.' },
+                  { do: 'With y frozen, ∂u/∂x = 2x, so ∂z/∂x = (1/u)(2x) = 2x/(x² + y²)', why: 'y² is a constant when differentiating in x, so it contributes nothing to the inside derivative.' },
+                  { do: 'With x frozen, ∂u/∂y = 2y, so ∂z/∂y = 2y/(x² + y²)', why: 'The same calculation with the roles swapped; the function is symmetric in x and y, and so are its partials.' },
+                  { do: 'At (3, 4) the common denominator is 3² + 4² = 25', why: 'Evaluate the inside once and reuse it for both. It is the same number in each partial.' },
+                  { do: '∂z/∂x = 6/25 = 0.24 and ∂z/∂y = 8/25 = 0.32', why: 'Substitute after differentiating. The y-direction is steeper there because y is the larger coordinate.' }
                 ],
-                answer: '∂z/∂x = 2x/(x² + y²) and ∂z/∂y = 2y/(x² + y²); at (3, 4) they are 0.24 and 0.32', answerWords: true
+                answer: '∂z/∂x = 2x/(x² + y²) and ∂z/∂y = 2y/(x² + y²); at (3, 4) they are 0.24 and 0.32', answerWords: true,
+                check: 'Numerically in x: z(3.01, 4) = ln(25.0601) = 3.221305 against ln 25 = 3.218876, an average slope of 0.243 ✓. In y: z(3, 4.01) = ln(25.0801) = 3.222103, an average slope of 0.323 ✓.'
               }
             ],
             pitfalls: [
@@ -18698,6 +18724,11 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
           {
             id: 'e2', title: 'Applications of partial derivatives', src: 'Section 17.2',
             idea: `Every partial derivative is a marginal something. The three applications the course uses share one grammar: hold everything else fixed, change one input by a small amount, and the partial derivative is the approximate change in the output.<br><br><b>Marginal cost.</b> If c = f(x, y) is the cost of making x units of one product and y of another — a joint-cost function — then ∂c/∂x is the marginal cost with respect to x: the approximate cost of one more unit of the first product with production of the second unchanged. For c = 0.05x² + 40x + 60y + 0.1xy + 2000, ∂c/∂x = 0.1x + 40 + 0.1y depends on both outputs, because the interaction term 0.1xy means the products share resources; at (80, 30) it is 51 dollars.<br><br><b>Marginal productivity.</b> A production function P = f(l, k) gives output from l units of labour and k of capital. ∂P/∂l is the marginal productivity of labour — extra output from one more unit of labour with capital fixed — and ∂P/∂k the marginal productivity of capital. For a Cobb–Douglas function like P = 20 l<sup>0.75</sup> k<sup>0.25</sup>, the exponents are the shares, and the partials are found by the power rule with the other factor frozen.<br><br><b>Competitive and complementary products.</b> When the demand for each of two products depends on both prices, q<sub>A</sub> = f(p<sub>A</sub>, p<sub>B</sub>) and q<sub>B</sub> = g(p<sub>A</sub>, p<sub>B</sub>), there are four marginal demands. The two "own-price" partials ∂q<sub>A</sub>/∂p<sub>A</sub> and ∂q<sub>B</sub>/∂p<sub>B</sub> are normally negative — a dearer product sells less — and say nothing about the relationship. The two <b>cross-price</b> partials are the test:<br><br><b>∂q<sub>A</sub>/∂p<sub>B</sub> &gt; 0 and ∂q<sub>B</sub>/∂p<sub>A</sub> &gt; 0: competitive (substitutes)</b> — a rise in the price of one sends buyers to the other, like butter and margarine.<br><b>∂q<sub>A</sub>/∂p<sub>B</sub> &lt; 0 and ∂q<sub>B</sub>/∂p<sub>A</sub> &lt; 0: complementary</b> — a rise in the price of one reduces demand for both, like cars and fuel.<br><br>Mixed signs mean neither. The classification needs both cross partials, and it needs their signs at the prices in question, which for the demand functions in this course are positive numbers.<br><br>In each application, the interpretation is a sentence, not a number: "increasing labour from 81 to 82 hours with capital held at 16 raises output by about 10 units." The "held at" clause is what makes it a partial derivative, and an exam answer without it is incomplete.`,
+            figure: {
+              kind: 'graph', x: [0, 40], y: [0, 260], xlabel: 'the other product’s price', ylabel: 'demand',
+              fns: [{ expr: '160 + 3*x', label: 'competitive: the cross partial is positive' }, { expr: '200 - 3*x', label: 'complementary: the cross partial is negative' }],
+              caption: 'The classification is a sign, and a sign is a direction on a line. If a rise in the other product’s price sends demand up, buyers are switching across and the products compete; if it sends demand down, the two are bought together. Both lines slope down against their OWN price, which is why the own-price partials decide nothing.'
+            },
             rules: [
               { name: 'Marginal cost', expr: 'partial c/partial x', note: 'For a joint cost c = f(x, y): the approximate cost of one more unit of x with y held fixed.' },
               { name: 'Marginal productivity', expr: 'partial P/partial l', note: 'For a production function P of labour l and capital k: the marginal productivity of labour, capital held fixed. Of capital, the partial with respect to k.' },
@@ -18708,31 +18739,63 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             examples: [
               {
                 prompt: 'A firm’s joint cost of producing x units of product 1 and y of product 2 is c = 0.05x² + 40x + 60y + 0.1xy + 2000 dollars. Find both marginal costs at x = 80, y = 30, and interpret them.',
+                approach: 'A marginal cost here is a partial derivative: the cost of one more unit of one product with the other output held fixed. Differentiate in x with y frozen, then in y with x frozen, and watch the joint term 0.1xy — it is what makes each marginal cost depend on the other product’s output. The interpretation is part of the answer, and it must name what is being held fixed.',
+                figure: {
+                  kind: 'graph', x: [0, 160], y: [0, 14000], xlabel: 'x', ylabel: 'cost',
+                  fns: [{ expr: '0.05*x**2 + 43*x + 3800', label: 'cost with y held at 30' }],
+                  segments: [{ from: [40, 5520], to: [120, 9600], label: 'slope $51 per unit' }],
+                  points: [{ x: 80, y: 7560, label: '(80, $7,560)' }],
+                  caption: 'With product 2 pinned at 30 units, the joint cost becomes an ordinary cost curve in x. It bends gently upward, so each extra unit costs a little more than the last, and at x = 80 the tangent rises $51 per unit. Freeze product 2 at a different level and this whole curve shifts — which is the joint term at work.'
+                },
                 steps: [
-                  { do: '∂c/∂x = 0.1x + 40 + 0.1y; at (80, 30): 8 + 40 + 3 = 51', why: 'Hold y constant. The term 0.1xy contributes 0.1y, so the marginal cost of product 1 depends on how much of product 2 is being made.' },
-                  { do: '∂c/∂y = 60 + 0.1x; at (80, 30): 60 + 8 = 68', why: 'Hold x constant. The terms 0.05x², 40x and 2000 are constants and vanish.' },
-                  { do: 'Interpretation: with product 2 held at 30 units, the 81st unit of product 1 adds about $51; with product 1 held at 80, the 31st unit of product 2 adds about $68', why: 'Each marginal cost is a one-unit change in one output with the other frozen. The "held at" clause is part of the answer.' }
+                  { do: '∂c/∂x = 0.1x + 40 + 0.1y', why: 'Hold y constant. 60y and 2000 vanish; the joint term 0.1xy contributes 0.1y, a constant as far as x is concerned.' },
+                  { do: 'At (80, 30): 0.1(80) + 40 + 0.1(30) = 8 + 40 + 3 = 51', why: 'The marginal cost of product 1 depends on how much of product 2 is being made — the $3 is entirely the joint term.' },
+                  { do: '∂c/∂y = 60 + 0.1x', why: 'Hold x constant. The terms 0.05x², 40x and 2000 are constants and vanish; 0.1xy contributes 0.1x.' },
+                  { do: 'At (80, 30): 60 + 0.1(80) = 60 + 8 = 68', why: 'Note that y itself does not appear: the marginal cost of product 2 is constant in its own output here.' },
+                  { do: 'Interpretation: with product 2 held at 30 units, the 81st unit of product 1 adds about $51', why: 'Each marginal cost is a one-unit change in one output with the other frozen. The "held at" clause is part of the answer.' },
+                  { do: 'And with product 1 held at 80, the 31st unit of product 2 adds about $68', why: 'Two different numbers for two different products, each valid only at the stated pair of outputs.' }
                 ],
-                answer: 'Marginal costs $51 per unit of product 1 and $68 per unit of product 2 at (80, 30), each with the other output held fixed', answerWords: true
+                answer: 'Marginal costs $51 per unit of product 1 and $68 per unit of product 2 at (80, 30), each with the other output held fixed', answerWords: true,
+                check: 'Cost the 81st unit directly: c(81, 30) − c(80, 30) = (328.05 + 3240 + 1800 + 243 + 2000) − (320 + 3200 + 1800 + 240 + 2000) = 7611.05 − 7560 = $51.05 — the marginal cost of $51, as advertised.'
               },
               {
                 prompt: 'Output is P = 20 l^0.75 k^0.25. Find the marginal productivities of labour and capital at l = 81, k = 16.',
+                approach: 'Each marginal productivity is a partial derivative of the production function, and the power rule does all the work provided the other input is genuinely treated as a constant. The tidy move is to collect the result into a single quarter- or three-quarter-power of a ratio, because the numbers 81 and 16 are a fourth power apart and the arithmetic then comes out exact.',
+                figure: {
+                  kind: 'graph', x: [0, 160], y: [0, 1700], xlabel: 'l', ylabel: 'P',
+                  fns: [{ expr: '40*x**0.75', label: 'output with capital held at 16' }],
+                  segments: [{ from: [41, 680], to: [121, 1480], label: 'slope 10 per worker' }],
+                  points: [{ x: 81, y: 1080, label: '(81, 1080)' }],
+                  caption: 'Capital frozen at 16, output against labour: rising everywhere but flattening, which is diminishing returns. The tangent at l = 81 climbs 10 units of output per extra worker; further along the curve it climbs less, because the fourth root in the formula grows ever more slowly.'
+                },
                 steps: [
-                  { do: '∂P/∂l = 20(0.75) l^(−0.25) k^0.25 = 15 (k/l)^0.25', why: 'Power rule in l with k frozen; the result is written as a single quarter-power to make the arithmetic easy.' },
+                  { do: '∂P/∂l = 20(0.75) l^(−0.25) k^0.25 = 15 l^(−0.25) k^0.25', why: 'Power rule in l with k frozen: the exponent 0.75 comes down and drops by one.' },
+                  { do: 'Write it as a single quarter-power: ∂P/∂l = 15 (k/l)^0.25', why: 'A negative power of l is one over a positive power, so the two quarter-powers combine into one ratio — made for these numbers.' },
                   { do: 'At (81, 16): (16/81)^0.25 = 2/3, so ∂P/∂l = 15 × 2/3 = 10', why: 'The fourth root of 16 is 2 and of 81 is 3.' },
-                  { do: '∂P/∂k = 20(0.25) l^0.75 k^(−0.75) = 5 (l/k)^0.75', why: 'Power rule in k with l frozen.' },
-                  { do: 'At (81, 16): (81/16)^0.75 = (3/2)³ = 27/8, so ∂P/∂k = 5 × 27/8 = 16.875', why: 'One more unit of labour adds about 10 units of output with capital at 16; one more unit of capital adds about 16.9 with labour at 81.' }
+                  { do: '∂P/∂k = 20(0.25) l^0.75 k^(−0.75) = 5 (l/k)^0.75', why: 'Power rule in k with l frozen, collected the same way.' },
+                  { do: 'At (81, 16): (81/16)^0.75 = (3/2)³ = 27/8', why: 'Take the fourth root first, 3/2, then cube it — much easier than raising 5.0625 to the 0.75.' },
+                  { do: '∂P/∂k = 5 × 27/8 = 16.875', why: 'One more unit of labour adds about 10 units of output with capital at 16; one more unit of capital adds about 16.9 with labour at 81.' }
                 ],
-                answer: 'Marginal productivity of labour 10 and of capital 16.875 at (81, 16)', answerWords: true
+                answer: 'Marginal productivity of labour 10 and of capital 16.875 at (81, 16)', answerWords: true,
+                check: 'Check the level first: P(81, 16) = 20(27)(2) = 1,080. Then one more worker: P(82, 16) = 40(82^0.75) = 40(27.249) = 1,089.9, a gain of 9.9 — the marginal productivity of 10 ✓.'
               },
               {
                 prompt: 'Demand for products A and B is qA = 200 − 4pA + 3pB and qB = 150 + 2pA − 5pB. Are A and B competitive, complementary, or neither?',
+                approach: 'The classification depends on the CROSS-price partials only: how each product’s demand responds to the OTHER product’s price. Compute both, and read the signs. Both positive means competitive, both negative means complementary, and mixed signs means neither. The own-price partials are a distraction here, worth checking only as a sanity test.',
+                figure: {
+                  kind: 'graph', x: [0, 40], y: [0, 300], xlabel: 'the other product’s price', ylabel: 'demand',
+                  fns: [{ expr: '160 + 3*x', label: 'qA against pB (with pA = 10)' }, { expr: '100 + 2*x', label: 'qB against pA (with pB = 10)' }],
+                  caption: 'Both lines slope upward: raise the price of B and more A is bought, raise the price of A and more B is bought. Buyers are switching between the two, which is what "competitive" means. The slopes, 3 and 2, are the two cross-price partial derivatives, and their signs are the whole answer.'
+                },
                 steps: [
-                  { do: '∂qA/∂pB = 3 and ∂qB/∂pA = 2', why: 'The two cross-price partials are the only ones that matter for the classification.' },
+                  { do: 'Identify the cross-price partials: ∂qA/∂pB and ∂qB/∂pA', why: 'These are the only ones that matter for the classification — each is the response of one demand to the other price.' },
+                  { do: '∂qA/∂pB = 3, holding pA constant', why: 'Differentiate qA with respect to pB: 200 and −4pA are constants, and 3pB gives 3.' },
+                  { do: '∂qB/∂pA = 2, holding pB constant', why: 'The same on the second equation: 150 and −5pB are constants, and 2pA gives 2.' },
                   { do: 'Both are positive, so A and B are competitive products', why: 'A rise in B’s price raises the demand for A, and a rise in A’s price raises the demand for B: buyers switch between them.' },
-                  { do: 'The own-price partials −4 and −5 are negative, as expected, and play no part in the decision', why: 'They say each product obeys the law of demand, which is true of substitutes and complements alike.' }
+                  { do: 'Check the own-price partials: ∂qA/∂pA = −4 and ∂qB/∂pB = −5, both negative', why: 'They say each product obeys the law of demand, which is true of substitutes and complements alike — so they play no part in the decision.' }
                 ],
-                answer: 'Competitive (substitutes), because both cross-price partial derivatives are positive', answerWords: true
+                answer: 'Competitive (substitutes), because both cross-price partial derivatives are positive', answerWords: true,
+                check: 'Test with numbers: at pA = 10, pB = 10 the demands are qA = 190 and qB = 120. Raise pB to 11 and qA becomes 193 — demand for A rises when B gets dearer, which is substitution, not complementarity.'
               }
             ],
             pitfalls: [
@@ -18760,6 +18823,11 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
           {
             id: 'e3', title: 'Higher-order partial derivatives', src: 'Section 17.3',
             idea: `A partial derivative of z = f(x, y) is itself a function of x and y, so it can be differentiated again — with respect to either variable. That gives four <b>second-order partial derivatives</b>:<br><br><b>f<sub>xx</sub> = (f<sub>x</sub>)<sub>x</sub></b>, the partial of f<sub>x</sub> with respect to x, also written ∂²z/∂x²<br><b>f<sub>xy</sub> = (f<sub>x</sub>)<sub>y</sub></b>, the partial of f<sub>x</sub> with respect to y, written ∂²z/∂y∂x<br><b>f<sub>yx</sub> = (f<sub>y</sub>)<sub>x</sub></b>, written ∂²z/∂x∂y<br><b>f<sub>yy</sub> = (f<sub>y</sub>)<sub>y</sub></b>, written ∂²z/∂y²<br><br>The subscript notation reads left to right: f<sub>xy</sub> means differentiate with respect to x first, then y. The ∂-notation reads right to left, from the variable nearest the function outward: ∂²z/∂y∂x also means x first, then y. The two notations agree; they just spell the order in opposite directions.<br><br>f<sub>xy</sub> and f<sub>yx</sub> are the <b>mixed partials</b>, and for every function in this course they are <b>equal</b>: the order of differentiation does not matter. That is a useful check — compute both, and if they differ, something upstream is wrong — and it will matter in the next section, where the second-derivative test uses f<sub>xy</sub> once and does not care which way it was found.<br><br>For f(x, y) = x³y² + 2xy: f<sub>x</sub> = 3x²y² + 2y and f<sub>y</sub> = 2x³y + 2x. Then f<sub>xx</sub> = 6xy², f<sub>xy</sub> = 6x²y + 2, f<sub>yx</sub> = 6x²y + 2 (equal, as promised) and f<sub>yy</sub> = 2x³.<br><br>Third and higher orders follow the same pattern: f<sub>xxy</sub> is f differentiated twice in x and then once in y, and ∂³w/∂z∂y∂x is x first, then y, then z. With three variables there are nine second partials and the mixed ones still pair up. The technique never changes — freeze, differentiate, repeat — but the labelling deserves care, because the one thing the test in section 17.4 cannot forgive is a wrong f<sub>xy</sub>.`,
+            figure: {
+              kind: 'graph', x: [-2, 2], y: [-8, 13],
+              fns: [{ expr: 'x**3', label: 'the slice f(x, 1) = x³' }, { expr: '3*x**2', label: 'f_x along the slice', dashed: true }, { expr: '6*x', label: 'f_xx along the slice', dashed: true }],
+              caption: 'For f(x, y) = x³y², freezing y at 1 leaves x³. A second partial derivative is then nothing new: f_x is the slope of that slice and f_xx the slope of the slope, exactly as in chapter 12. The only thing that is new is the bookkeeping — which variable was frozen, and in what order.'
+            },
             rules: [
               { name: 'Second partials', expr: 'f_xx, f_xy, f_yx, f_yy', note: 'Each first partial differentiated again with respect to x or y: four second-order partial derivatives.' },
               { name: 'Reading the order', expr: 'f_xy = partial^2 z/(partial y partial x)', note: 'Subscripts read left to right, x first then y; the ∂-form reads right to left, nearest the function first. Both mean x first.' },
@@ -18769,23 +18837,43 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             examples: [
               {
                 prompt: 'Find the four second-order partial derivatives of f(x, y) = x³y² + 2xy, and evaluate f_xx, f_xy and f_yy at (1, 2).',
+                approach: 'Work outward: two first partials, then two derivatives of each. Keep a strict habit about which variable is frozen at each stage, because that is the only place mistakes happen. The two mixed partials must come out equal — that agreement is the free check this section gives you, so compute both rather than assuming.',
+                figure: {
+                  kind: 'graph', x: [-1.6, 1.6], y: [-22, 22],
+                  fns: [{ expr: '4*x**3 + 4*x', label: 'the slice f(x, 2) = 4x³ + 4x' }],
+                  points: [{ x: 1, y: 8, label: 'f(1, 2) = 8' }],
+                  caption: 'The slice through y = 2. Its ordinary second derivative is 24x, which is 24 at x = 1 — and that is f_xx(1, 2). Positive, so the slice is bending upward there: along the x-direction the surface holds water at this point.'
+                },
                 steps: [
-                  { do: 'f_x = 3x²y² + 2y and f_y = 2x³y + 2x', why: 'First partials, each with the other variable frozen.' },
-                  { do: 'f_xx = 6xy²; f_xy = 6x²y + 2', why: 'Differentiate f_x with respect to x, then separately with respect to y.' },
-                  { do: 'f_yx = 6x²y + 2; f_yy = 2x³', why: 'Differentiate f_y with respect to x, then y. The mixed partials agree, as they must.' },
-                  { do: 'At (1, 2): f_xx = 6(1)(4) = 24, f_xy = 6(1)(2) + 2 = 14, f_yy = 2', why: 'Substitute after differentiating.' }
+                  { do: 'f_x = 3x²y² + 2y', why: 'First partial in x, with y frozen: y² and 2y ride along as constants.' },
+                  { do: 'f_y = 2x³y + 2x', why: 'First partial in y, with x frozen.' },
+                  { do: 'f_xx = 6xy² and f_xy = 6x²y + 2', why: 'Differentiate f_x with respect to x, then separately with respect to y.' },
+                  { do: 'f_yx = 6x²y + 2 and f_yy = 2x³', why: 'Differentiate f_y with respect to x, then y. The mixed partials agree, as they must for a function this well behaved.' },
+                  { do: 'At (1, 2): f_xx = 6(1)(4) = 24 and f_yy = 2(1) = 2', why: 'Substitute after differentiating. Note f_yy does not involve y at all.' },
+                  { do: 'At (1, 2): f_xy = 6(1)(2) + 2 = 14', why: 'The mixed partial measures how the slope in x changes as y changes — here strongly, because the joint term is large.' }
                 ],
-                answer: 'f_xx = 6xy², f_xy = f_yx = 6x²y + 2, f_yy = 2x³; at (1, 2) they are 24, 14 and 2', answerWords: true
+                answer: 'f_xx = 6xy², f_xy = f_yx = 6x²y + 2, f_yy = 2x³; at (1, 2) they are 24, 14 and 2', answerWords: true,
+                check: 'Check f_xy from the other side: f_x(1, 2) = 12 + 4 = 16 and f_x(1, 2.01) = 3(4.0401) + 4.02 = 16.1403, so f_x changes by 0.1403 for a step of 0.01 in y — a rate of 14.03, matching f_xy = 14 ✓.'
               },
               {
                 prompt: 'For w = x²y e^(3z), find ∂³w/∂z∂y∂x and evaluate it at (1, 2, 0).',
+                approach: 'The notation is the instruction: read it from the variable nearest w outward, so x first, then y, then z. Do exactly that, one variable at a time, freezing the other two at each stage. Substitute the point only at the end — and notice as you go which variables drop out, because a variable that has been differentiated away cannot reappear.',
+                figure: {
+                  kind: 'graph', x: [-1, 1], y: [0, 14], xlabel: 'z', ylabel: 'e^(3z)',
+                  fns: [{ expr: 'exp(3*x)', label: 'the z-factor, e^(3z)' }],
+                  points: [{ x: 0, y: 1, label: 'z = 0: the factor is 1' }],
+                  caption: 'Only the z-factor survives differentiation in z, and each such differentiation multiplies it by 3 while leaving its shape untouched. At z = 0 the factor equals 1, which is why the final answer is a plain 6 and not a fraction of e.'
+                },
                 steps: [
-                  { do: 'Read the order: x first, then y, then z', why: 'The ∂-notation is read from the variable nearest w outward.' },
+                  { do: 'Read the order: x first, then y, then z', why: 'The ∂-notation is read from the variable nearest w outward. Doing it in the written order left to right is the classic slip.' },
                   { do: '∂w/∂x = 2xy e^(3z)', why: 'y and e^(3z) are constants when differentiating in x.' },
-                  { do: '∂²w/∂y∂x = 2x e^(3z)', why: 'Now differentiate in y with x and z frozen: the factor y becomes 1.' },
-                  { do: '∂³w/∂z∂y∂x = 6x e^(3z); at (1, 2, 0): 6(1)(1) = 6', why: 'Differentiate in z: e^(3z) gives 3e^(3z). At z = 0 the exponential is 1, and y no longer appears.' }
+                  { do: '∂²w/∂y∂x = 2x e^(3z)', why: 'Now differentiate in y with x and z frozen: the factor y becomes 1, so y leaves the expression for good.' },
+                  { do: '∂³w/∂z∂y∂x = 6x e^(3z)', why: 'Differentiate in z: e^(3z) gives 3e^(3z) by the chain rule, and 2x × 3 = 6x.' },
+                  { do: 'At (1, 2, 0): e^(3×0) = e⁰ = 1', why: 'Evaluate the exponential first; a zero exponent is the easiest number in the problem and the one most often mishandled.' },
+                  { do: 'So the value is 6(1)(1) = 6', why: 'The y-coordinate 2 is never used — y was differentiated away at the second step, and no amount of substitution brings it back.' }
                 ],
-                answer: '∂³w/∂z∂y∂x = 6x e^(3z), which is 6 at (1, 2, 0)', answerWords: true
+                answer: '∂³w/∂z∂y∂x = 6x e^(3z), which is 6 at (1, 2, 0)', answerWords: true,
+                check: 'Order does not matter for a function this smooth, so try it the other way: ∂w/∂z = 3x²y e^(3z), then in y gives 3x² e^(3z), then in x gives 6x e^(3z) — the same result ✓.'
               }
             ],
             pitfalls: [
@@ -18813,6 +18901,12 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
           {
             id: 'e4', title: 'Maxima and minima for functions of two variables', src: 'Section 17.4',
             idea: `A surface z = f(x, y) has a <b>relative maximum</b> at (a, b) if f(a, b) is at least as large as f(x, y) at every nearby point — a hilltop on the surface — and a relative minimum if it is at least as small. At a hilltop the surface is level in every direction, so in particular the slope in the x-direction and the slope in the y-direction are both zero:<br><br><b>Critical point: f<sub>x</sub>(a, b) = 0 and f<sub>y</sub>(a, b) = 0, both at once.</b><br><br>Finding critical points therefore means solving a <b>system</b> of two equations in two unknowns. Often each equation involves only one variable and the system falls apart; sometimes it is a pair of linear equations; occasionally one equation has to be substituted into the other. Every solution is a critical point and every relative extremum is at one — but, exactly as in one variable, a critical point can be a maximum, a minimum, or neither.<br><br>The "neither" case has a new shape. On the surface z = y² − x², the origin is a minimum along the y-axis and a maximum along the x-axis at the same time: a <b>saddle point</b>. Both first partials are zero there and there is no extremum. One-variable intuition does not see saddles coming, which is why the test that follows has three outcomes rather than two.<br><br><b>Second-derivative test.</b> With the second partials continuous near a critical point (a, b), form<br><br><b>D = f<sub>xx</sub> · f<sub>yy</sub> − (f<sub>xy</sub>)²</b>, evaluated at (a, b).<br><br>If <b>D &gt; 0 and f<sub>xx</sub> &lt; 0</b>: relative maximum. If <b>D &gt; 0 and f<sub>xx</sub> &gt; 0</b>: relative minimum. If <b>D &lt; 0</b>: saddle point, no extremum. If <b>D = 0</b>: the test says nothing. The order of the checks matters: D is computed first, and the sign of f<sub>xx</sub> is consulted only when D is positive. (When D &gt; 0, f<sub>xx</sub> and f<sub>yy</sub> have the same sign, so either may be used.) A negative D is not "a maximum because something is negative" — it is a saddle, whatever the sign of f<sub>xx</sub>.<br><br>The applications are the ones from chapter 13 with a second decision variable. A firm choosing the outputs of two products, or the prices of two products, has a profit function P(x, y); the best pair of choices is a critical point that passes the test as a maximum. A production function P(l, k) is maximised the same way. As before, the last step is to answer the question: the outputs, the prices, the maximum profit itself.`,
+            figure: {
+              kind: 'graph', x: [-3, 3], y: [-9, 9],
+              fns: [{ expr: 'x**2', label: 'across x: a valley' }, { expr: '-x**2', label: 'across y: a hilltop' }],
+              points: [{ x: 0, y: 0, label: 'a saddle point' }],
+              caption: 'Why a surface can be level at a point that is neither a maximum nor a minimum. Here both slices are level at the origin, but one bends up and the other down — a saddle, like a mountain pass. The D test is what detects this without drawing anything: D < 0 exactly when the two directions disagree.'
+            },
             rules: [
               { name: 'Critical point', expr: 'f_x = 0, f_y = 0', note: 'Both first partials zero at once: a system of two equations. Every relative extremum is at one.' },
               { name: 'The discriminant', expr: 'D = f_xx f_yy - (f_xy)^2', note: 'Evaluated at the critical point, from the second partials.' },
@@ -18823,33 +18917,63 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             examples: [
               {
                 prompt: 'Find and classify the critical points of f(x, y) = x² + 3y² − 4x + 6y + 2.',
+                approach: 'Set both first partials to zero and solve the system — here each equation involves one variable only, so it separates and the critical point falls out immediately. Then compute the three second partials, form D = f_xx f_yy − (f_xy)², and read the verdict: D positive with f_xx positive is a valley. Finish with the value, which comes from f.',
+                figure: {
+                  kind: 'graph', x: [-4, 5], y: [-7, 20],
+                  fns: [{ expr: 'x**2 - 4*x - 1', label: 'slice at y = −1 (free variable x)' }, { expr: '3*x**2 + 6*x - 2', label: 'slice at x = 2 (free variable y)' }],
+                  points: [{ x: 2, y: -5, label: 'bottom of the x-slice' }, { x: -1, y: -5, label: 'bottom of the y-slice' }],
+                  caption: 'Both slices through the critical point are upward parabolas, and both bottom out at the same height, −5 — the x-slice at x = 2 and the y-slice at y = −1. Two valleys pointing the same way is what D > 0 with f_xx > 0 detects: the surface is a bowl.'
+                },
                 steps: [
-                  { do: 'f_x = 2x − 4 = 0 gives x = 2; f_y = 6y + 6 = 0 gives y = −1. Critical point (2, −1)', why: 'Each equation involves one variable only, so the system separates.' },
-                  { do: 'f_xx = 2, f_yy = 6, f_xy = 0, so D = (2)(6) − 0² = 12', why: 'Second partials are constants here; D is positive everywhere.' },
-                  { do: 'D > 0 and f_xx = 2 > 0: relative minimum', why: 'Positive D says it is an extremum; positive f_xx says the surface bends up, a valley.' },
+                  { do: 'f_x = 2x − 4 and f_y = 6y + 6', why: 'The first partials, each with the other variable frozen.' },
+                  { do: 'Set both to zero: 2x − 4 = 0 gives x = 2; 6y + 6 = 0 gives y = −1. Critical point (2, −1)', why: 'Each equation involves one variable only, so the system separates. There is exactly one solution.' },
+                  { do: 'f_xx = 2, f_yy = 6, f_xy = 0', why: 'Second partials. They are constants here, which is a feature of a quadratic.' },
+                  { do: 'D = f_xx f_yy − (f_xy)² = (2)(6) − 0² = 12', why: 'The discriminant. Positive everywhere, since nothing in it depends on the point.' },
+                  { do: 'D > 0 and f_xx = 2 > 0: relative minimum', why: 'Positive D says it is an extremum rather than a saddle; positive f_xx says the surface bends up, a valley.' },
                   { do: 'f(2, −1) = 4 + 3 − 8 − 6 + 2 = −5', why: 'The minimum value comes from f. Since this is the only critical point and the surface is a bowl, it is also the absolute minimum.' }
                 ],
-                answer: 'One critical point, (2, −1), a relative (and absolute) minimum with value −5', answerWords: true
+                answer: 'One critical point, (2, −1), a relative (and absolute) minimum with value −5', answerWords: true,
+                check: 'Try nearby points: f(3, −1) = 9 + 3 − 12 − 6 + 2 = −4 and f(2, 0) = 4 − 8 + 2 = −2, both above −5 ✓. Completing the square says the same thing exactly: f = (x − 2)² + 3(y + 1)² − 5.'
               },
               {
                 prompt: 'Find and classify the critical points of f(x, y) = x³ − 3x + y² − 2y.',
+                approach: 'Same procedure, but now f_x = 0 has two solutions, so there are two critical points and each must be classified separately — D is no longer a constant. Compute D at each point in turn. Where D is negative the point is a saddle and f_xx is not consulted at all; where D is positive, the sign of f_xx decides.',
+                figure: {
+                  kind: 'graph', x: [-3, 3], y: [-4, 9],
+                  fns: [{ expr: 'x**3 - 3*x - 1', label: 'slice at y = 1 (free variable x)' }, { expr: 'x**2 - 2*x + 2', label: 'slice at x = −1 (free variable y)' }],
+                  points: [{ x: -1, y: 1, label: 'hilltop along x' }, { x: 1, y: 1, label: 'valley along y' }, { x: 1, y: -3, label: 'the minimum, −3' }],
+                  caption: 'Two slices through the saddle at (−1, 1): along x the cubic has a hilltop there, along y the parabola has a valley — opposite verdicts, which is D < 0. The cubic’s own valley, further right at x = 1, is the genuine relative minimum of value −3.'
+                },
                 steps: [
-                  { do: 'f_x = 3x² − 3 = 0 gives x = ±1; f_y = 2y − 2 = 0 gives y = 1. Critical points (1, 1) and (−1, 1)', why: 'Two solutions in x, one in y: two critical points.' },
-                  { do: 'f_xx = 6x, f_yy = 2, f_xy = 0, so D = 12x', why: 'D now depends on the point, so it is evaluated at each critical point separately.' },
-                  { do: 'At (1, 1): D = 12 > 0 and f_xx = 6 > 0, relative minimum, f(1, 1) = 1 − 3 + 1 − 2 = −3', why: 'Positive D, positive f_xx: a valley.' },
-                  { do: 'At (−1, 1): D = −12 < 0, saddle point', why: 'Negative D means no extremum, regardless of f_xx (which is −6 here — the sign of f_xx is not consulted).' }
+                  { do: 'f_x = 3x² − 3 = 3(x − 1)(x + 1), so x = ±1', why: 'Factor before solving; a quadratic in x means two candidates.' },
+                  { do: 'f_y = 2y − 2 = 0 gives y = 1. Critical points (1, 1) and (−1, 1)', why: 'Two solutions in x, one in y: every combination is a critical point, so two in all.' },
+                  { do: 'f_xx = 6x, f_yy = 2, f_xy = 0, so D = 12x', why: 'D now depends on the point, so it must be evaluated at each critical point separately.' },
+                  { do: 'At (1, 1): D = 12 > 0 and f_xx = 6 > 0, so a relative minimum', why: 'Positive D, positive f_xx: a valley in every direction.' },
+                  { do: 'Its value: f(1, 1) = 1 − 3 + 1 − 2 = −3', why: 'From f, not from the second partials.' },
+                  { do: 'At (−1, 1): D = −12 < 0, so a saddle point', why: 'Negative D means no extremum, regardless of f_xx (which is −6 here — the sign of f_xx is simply not consulted).' }
                 ],
-                answer: 'Relative minimum −3 at (1, 1); saddle point at (−1, 1)', answerWords: true
+                answer: 'Relative minimum −3 at (1, 1); saddle point at (−1, 1)', answerWords: true,
+                check: 'Around the saddle: f(−1, 1) = −1 + 3 + 1 − 2 = 1, while f(−0.5, 1) = −0.125 + 1.5 − 1 = 0.375 is lower and f(−1, 2) = 2 + 4 − 4 = 2 is higher. Lower one way, higher the other — a saddle ✓.'
               },
               {
                 prompt: 'A firm’s weekly profit from selling x units of one product and y of another is P(x, y) = −2x² − y² + 2xy + 40x + 20y − 200. Find the outputs that maximise profit, and the maximum profit.',
+                approach: 'Set both partials to zero — this time the joint term 2xy links them, so it is a genuine system of two linear equations and must be solved as one. Then run the D test to confirm a maximum rather than a saddle, and evaluate P at the solution. The question asks for outputs and a profit, so report both.',
+                figure: {
+                  kind: 'graph', x: [0, 60], y: [-1100, 900], xlabel: 'x', ylabel: 'profit',
+                  fns: [{ expr: '-2*x**2 + 120*x - 1000', label: 'profit with y held at 40' }],
+                  points: [{ x: 30, y: 800, label: 'maximum $800' }],
+                  caption: 'With the second product fixed at its optimal 40 units, profit against the first is a downward parabola peaking at x = 30. Too few units and the fixed costs are not covered; too many and the −2x² term bites. The other slice, in y with x at 30, peaks at the same height.'
+                },
                 steps: [
-                  { do: 'P_x = −4x + 2y + 40 = 0 and P_y = 2x − 2y + 20 = 0', why: 'Both first partials zero: a linear system.' },
-                  { do: 'From the second, y = x + 10. Substituting: −4x + 2x + 20 + 40 = 0, so x = 30 and y = 40', why: 'Solve by substitution; check both equations: −120 + 80 + 40 = 0 and 60 − 80 + 20 = 0.' },
-                  { do: 'P_xx = −4, P_yy = −2, P_xy = 2, so D = (−4)(−2) − 2² = 4 > 0 and P_xx < 0: relative maximum', why: 'Positive D and negative P_xx: a hilltop. The only critical point, so it is the best the firm can do.' },
+                  { do: 'P_x = −4x + 2y + 40 and P_y = 2x − 2y + 20', why: 'First partials, each with the other output frozen. The joint term 2xy contributes 2y and 2x respectively.' },
+                  { do: 'Set both to zero: −4x + 2y + 40 = 0 and 2x − 2y + 20 = 0', why: 'Both first partials zero: a linear system, and the two equations are linked, so neither can be solved alone.' },
+                  { do: 'From the second, y = x + 10', why: 'Divide by 2 and rearrange — the simpler equation first.' },
+                  { do: 'Substitute: −4x + 2(x + 10) + 40 = 0, so −2x + 60 = 0 and x = 30, y = 40', why: 'Check both equations: −120 + 80 + 40 = 0 ✓ and 60 − 80 + 20 = 0 ✓.' },
+                  { do: 'P_xx = −4, P_yy = −2, P_xy = 2, so D = (−4)(−2) − 2² = 8 − 4 = 4 > 0 and P_xx < 0: relative maximum', why: 'Positive D and negative P_xx: a hilltop. The only critical point, so it is the best the firm can do.' },
                   { do: 'P(30, 40) = −1,800 − 1,600 + 2,400 + 1,200 + 800 − 200 = 800', why: 'Answer the question: 30 and 40 units, for a profit of $800 a week.' }
                 ],
-                answer: 'Make 30 units of the first product and 40 of the second, for a maximum weekly profit of $800', answerWords: true
+                answer: 'Make 30 units of the first product and 40 of the second, for a maximum weekly profit of $800', answerWords: true,
+                check: 'Nudge each output: P(31, 40) = −1,922 − 1,600 + 2,480 + 1,240 + 800 − 200 = 798, and P(30, 41) = −1,800 − 1,681 + 2,460 + 1,200 + 820 − 200 = 799. Both below 800 ✓ — and only just, as a smooth peak requires.'
               }
             ],
             pitfalls: [
@@ -18877,6 +19001,12 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
           {
             id: 'e5', title: 'Lagrange multipliers', src: 'Section 17.5',
             idea: `Most real optimisation has a constraint. Minimise cost subject to producing a fixed output; maximise output subject to a fixed budget; split a production quota between two plants as cheaply as possible. One way is to solve the constraint for one variable, substitute, and optimise what is left — chapter 13's method. When the constraint will not solve cleanly, or there are many variables, there is a more systematic route.<br><br><b>The method of Lagrange multipliers.</b> To find the critical points of f(x, y) subject to a constraint written as g(x, y) = 0, build a new function of three variables:<br><br><b>F(x, y, λ) = f(x, y) − λ g(x, y)</b><br><br>where λ (lambda) is a new unknown, the <b>Lagrange multiplier</b>. Then find the critical points of F in the ordinary way, by setting all of its partials to zero:<br><br><b>F<sub>x</sub> = 0, F<sub>y</sub> = 0, F<sub>λ</sub> = 0.</b><br><br>The last of these is just −g(x, y) = 0: the constraint itself. So the system says "the partials of f are proportional to the partials of g, and the constraint holds." Any (x, y) that solves it is a critical point of f subject to the constraint. The theory is that at a constrained extremum the level curve of f is tangent to the constraint curve, so their gradients are parallel — which is what f<sub>x</sub> = λ g<sub>x</sub>, f<sub>y</sub> = λ g<sub>y</sub> says.<br><br>Solving the system is where ingenuity is needed. Two habits cover almost every case. If each of the first equations can be solved for a variable in terms of λ, substitute all of them into the constraint and solve for λ. If not, <b>divide one equation by another</b> so that λ cancels, which gives a relation between the variables to feed into the constraint — and then λ is never needed at all. For xy subject to 2x + 3y = 60, the equations y = 2λ and x = 3λ divide to y/x = 2/3, the constraint then gives x = 15, y = 10, and λ was never found.<br><br>The method finds critical points; it does not say whether they are maxima or minima. In the problems of this course, the nature of the problem settles it — a cost has a minimum and no maximum, an output on a budget has a maximum — and the single critical point is taken as the answer.<br><br>The economics inside the multiplier is worth knowing. When the cost of running two plants is minimised subject to a fixed total output, the two equations F<sub>q1</sub> = 0 and F<sub>q2</sub> = 0 say ∂c/∂q<sub>1</sub> = λ = ∂c/∂q<sub>2</sub>: <b>the marginal costs of the plants are equal</b> at the optimum, and λ is that common marginal cost. Shifting a unit from one plant to the other would save nothing. For a least-cost input combination — minimum spending on labour and capital for a given output — the same equations say the marginal productivity per dollar is the same for every input.`,
+            figure: {
+              kind: 'graph', x: [-4, 10], y: [0, 55],
+              fns: [{ expr: 'x**2 + (10 - x)**2/4', label: 'f along the constraint x + 2y = 10' }],
+              points: [{ x: 2, y: 20, label: 'least value 20' }],
+              caption: 'What a constrained problem really asks: walk along the constraint and find the lowest point of the walk. Here the walk can be written out — substitute y = (10 − x)/2 — and the answer read off at x = 2. Lagrange multipliers reach the same point without ever doing that substitution, which is what makes them worth learning: most constraints cannot be untangled this way.'
+            },
             rules: [
               { name: 'The Lagrange function', expr: 'F = f - lambda g', note: 'To optimise f subject to g(x, y) = 0. λ is a new unknown, the multiplier.' },
               { name: 'The system', expr: 'F_x = 0, F_y = 0, F_lambda = 0', note: 'The last equation is the constraint itself. Solutions (x, y) are the constrained critical points.' },
@@ -18887,33 +19017,63 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             examples: [
               {
                 prompt: 'Minimise f(x, y) = x² + y² subject to x + 2y = 10.',
+                approach: 'Write the constraint with everything on one side, build F = f − λg, and set all three partials of F to zero. The λ-equation simply returns the constraint. Solve the first two for λ, equate them to eliminate λ — it is a means, not an answer — and feed the resulting relation into the constraint.',
+                figure: {
+                  kind: 'graph', x: [-6, 11], y: [-6.5, 8],
+                  fns: [{ expr: 'sqrt(20 - x**2)', label: 'x² + y² = 20' }, { expr: '-sqrt(20 - x**2)', c: 0 }, { expr: '(10 - x)/2', label: 'the constraint x + 2y = 10', dashed: true }],
+                  points: [{ x: 2, y: 4, label: 'closest point (2, 4)' }],
+                  caption: 'The circle x² + y² = 20 is the set of points where f takes the value 20, and the constraint line just touches it at (2, 4). A smaller circle would miss the line entirely, a larger one would cut it twice — so 20 is the least value f can take on the line, and tangency is the geometry behind the whole method.'
+                },
                 steps: [
-                  { do: 'Constraint as g = x + 2y − 10 = 0. F = x² + y² − λ(x + 2y − 10)', why: 'Move everything to one side, then subtract λ times it from f.' },
-                  { do: 'F_x = 2x − λ = 0, F_y = 2y − 2λ = 0, F_λ = −(x + 2y − 10) = 0', why: 'All three partials zero. The third is the constraint.' },
-                  { do: 'From the first two, λ = 2x and λ = y, so y = 2x', why: 'Both give λ; equate them to eliminate it.' },
-                  { do: 'x + 2(2x) = 10 gives x = 2, y = 4; f(2, 4) = 4 + 16 = 20', why: 'The single critical point is the constrained minimum: a sum of squares on a line has a lowest point and no highest. It is the closest point of the line to the origin, squared distance 20.' }
+                  { do: 'Constraint as g = x + 2y − 10 = 0', why: 'Everything on one side. The method needs the constraint in this form before anything else.' },
+                  { do: 'F = x² + y² − λ(x + 2y − 10)', why: 'The objective minus λ times the constraint. The sign convention does not matter, as long as it is kept.' },
+                  { do: 'F_x = 2x − λ = 0, F_y = 2y − 2λ = 0, F_λ = −(x + 2y − 10) = 0', why: 'All three partials zero. The third simply returns the constraint, which is the point of including it.' },
+                  { do: 'From the first two, λ = 2x and λ = y, so y = 2x', why: 'Both give λ; equate them to eliminate it. λ itself is rarely the answer.' },
+                  { do: 'Substitute into the constraint: x + 2(2x) = 10, so 5x = 10 and x = 2, y = 4', why: 'The relation between the variables goes into the constraint, which is the only equation that pins down the scale.' },
+                  { do: 'f(2, 4) = 4 + 16 = 20', why: 'The single critical point is the constrained minimum: a sum of squares on a line has a lowest point and no highest. It is the closest point of the line to the origin, squared distance 20.' }
                 ],
-                answer: 'Minimum 20 at (2, 4)', answerWords: true
+                answer: 'Minimum 20 at (2, 4)', answerWords: true,
+                check: 'Test other points of the line: (0, 5) gives 25, (4, 3) gives 25, (6, 2) gives 40 — all above 20 ✓. And (2, 4) does satisfy the constraint: 2 + 8 = 10.'
               },
               {
                 prompt: 'Maximise xy subject to 2x + 3y = 60, with x and y positive.',
+                approach: 'The same three equations. Here λ falls out particularly neatly: dividing one equation by the other cancels it and leaves a ratio between x and y. Put that ratio into the constraint to get the point, then argue briefly why it is a maximum — the objective vanishes at both ends of the segment and is positive between them.',
+                figure: {
+                  kind: 'graph', x: [0, 30], y: [0, 175], xlabel: 'x', ylabel: 'the product xy',
+                  fns: [{ expr: '20*x - 2*x**2/3', label: 'xy along the constraint' }],
+                  points: [{ x: 15, y: 150, label: 'maximum 150' }],
+                  caption: 'Walking along the constraint from x = 0 to x = 30, the product starts at 0, rises to 150 at x = 15, and returns to 0. A single interior peak and two zero ends: that is the argument for calling the one critical point a maximum without any second-derivative test.'
+                },
                 steps: [
-                  { do: 'F = xy − λ(2x + 3y − 60); F_x = y − 2λ = 0, F_y = x − 3λ = 0, F_λ = −(2x + 3y − 60) = 0', why: 'The system for the constrained critical points.' },
-                  { do: 'y = 2λ and x = 3λ; dividing, y/x = 2/3, so y = 2x/3', why: 'λ cancels in the quotient and is never needed.' },
-                  { do: '2x + 3(2x/3) = 60 gives 4x = 60, x = 15, y = 10', why: 'Substitute the relation into the constraint.' },
+                  { do: 'F = xy − λ(2x + 3y − 60)', why: 'Objective minus λ times the constraint, written with everything on one side.' },
+                  { do: 'F_x = y − 2λ = 0, F_y = x − 3λ = 0, F_λ = −(2x + 3y − 60) = 0', why: 'The system for the constrained critical points. The partial of xy in x is y, and in y is x.' },
+                  { do: 'So y = 2λ and x = 3λ', why: 'Each of the first two equations solved for its variable.' },
+                  { do: 'Dividing, y/x = 2/3, so y = 2x/3', why: 'λ cancels in the quotient and is never needed. Dividing is quicker here than substituting.' },
+                  { do: '2x + 3(2x/3) = 60 gives 4x = 60, so x = 15 and y = 10', why: 'Substitute the relation into the constraint. Check: 30 + 30 = 60 ✓.' },
                   { do: 'Maximum product 15 × 10 = 150', why: 'The nature of the problem decides: the product is 0 at either end of the segment and positive between, so the single critical point is the maximum.' }
                 ],
-                answer: 'Maximum 150 at x = 15, y = 10', answerWords: true
+                answer: 'Maximum 150 at x = 15, y = 10', answerWords: true,
+                check: 'Neighbours on the constraint: x = 12 gives y = 12 and a product of 144; x = 18 gives y = 8 and a product of 144. Both below 150, and equal to each other — the symmetry a smooth peak produces.'
               },
               {
                 prompt: 'A firm must produce 120 units across two plants. Its cost is c = 3q₁² + q₁q₂ + 2q₂² + 500. How should output be split to minimise cost, and what is the minimum?',
+                approach: 'Set the problem up exactly as before, and notice what the first two equations say once λ is eliminated: the marginal cost of plant 1 equals the marginal cost of plant 2. That equal-marginal-cost condition is the economics of the whole problem, and it is worth stating in words before grinding out the numbers.',
+                figure: {
+                  kind: 'graph', x: [0, 120], y: [18000, 32000], xlabel: 'q₁', ylabel: 'total cost',
+                  fns: [{ expr: '4*x**2 - 360*x + 29300', label: 'cost with q₂ = 120 − q₁' }],
+                  points: [{ x: 45, y: 21200, label: 'least cost $21,200' }],
+                  caption: 'Once the constraint is used to write q₂ = 120 − q₁, total cost is a parabola in q₁ alone, least at 45 units. Loading everything onto one plant is expensive at either end; the cheapest split is uneven, 45 and 75, because plant 1’s costs rise faster than plant 2’s.'
+                },
                 steps: [
                   { do: 'F = 3q₁² + q₁q₂ + 2q₂² + 500 − λ(q₁ + q₂ − 120)', why: 'Cost minus λ times the constraint q₁ + q₂ − 120 = 0.' },
-                  { do: 'F_q₁ = 6q₁ + q₂ − λ = 0 and F_q₂ = q₁ + 4q₂ − λ = 0, so 6q₁ + q₂ = q₁ + 4q₂', why: 'Both equal λ; equating them eliminates it. Each side is a marginal cost, so this says the marginal costs of the two plants are equal.' },
-                  { do: '5q₁ = 3q₂, so q₂ = 5q₁/3. Then q₁ + 5q₁/3 = 120 gives 8q₁/3 = 120, q₁ = 45, q₂ = 75', why: 'The relation between the outputs goes into the constraint.' },
-                  { do: 'c = 3(2,025) + 45(75) + 2(5,625) + 500 = 6,075 + 3,375 + 11,250 + 500 = 21,200; λ = 6(45) + 75 = 345', why: 'Answer the question: 45 and 75 units, minimum cost $21,200. The common marginal cost is $345, which is what one more unit of the order would cost.' }
+                  { do: 'F_q₁ = 6q₁ + q₂ − λ = 0 and F_q₂ = q₁ + 4q₂ − λ = 0', why: 'Each first partial treats the other output as a constant; the joint term q₁q₂ supplies the q₂ and the q₁.' },
+                  { do: 'Both equal λ, so 6q₁ + q₂ = q₁ + 4q₂', why: 'Each side is a marginal cost, so this says the marginal costs of the two plants are equal at the optimum — the economic content of the answer.' },
+                  { do: '5q₁ = 3q₂, so q₂ = 5q₁/3', why: 'Collect the terms. Plant 1 makes less because its costs climb faster.' },
+                  { do: 'Constraint: q₁ + 5q₁/3 = 120 gives 8q₁/3 = 120, so q₁ = 45 and q₂ = 75', why: 'The relation between the outputs goes into the constraint, which fixes the scale.' },
+                  { do: 'c = 3(2,025) + 45(75) + 2(5,625) + 500 = 6,075 + 3,375 + 11,250 + 500 = 21,200, and λ = 6(45) + 75 = 345', why: 'Answer the question: 45 and 75 units, minimum cost $21,200. The common marginal cost is $345, which is what one more unit of the order would cost.' }
                 ],
-                answer: 'Plant 1 makes 45 units and plant 2 makes 75, for a minimum cost of $21,200; the marginal cost at each plant is $345', answerWords: true
+                answer: 'Plant 1 makes 45 units and plant 2 makes 75, for a minimum cost of $21,200; the marginal cost at each plant is $345', answerWords: true,
+                check: 'The marginal costs do match: 6(45) + 75 = 345 and 45 + 4(75) = 345 ✓. And an even split is worse: at q₁ = q₂ = 60, c = 10,800 + 3,600 + 7,200 + 500 = $22,100, nine hundred dollars above the optimum.'
               }
             ],
             pitfalls: [
@@ -23079,7 +23239,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
    dark mode and reflows on a phone.
 
    Three kinds:
-     { kind: 'graph', x: [a, b], y: [c, d]?, fns: [{ expr | pts: [[x,y],…], label?, dashed?, domain?: [a, b] }],
+     { kind: 'graph', x: [a, b], y: [c, d]?, fns: [{ expr | pts: [[x,y],…], label?, dashed?, domain?: [a, b], c?: 0|1|2 }],
        points?: [{ x, y, label?, open? }], vlines?: [{ x, label? }], hlines?: [{ y, label? }],
        segments?: [{ from: [x, y], to: [x, y], label?, dashed? }], shade?: [{ from, to }],
        xlabel?, ylabel?, tall?, caption? }
@@ -23257,7 +23417,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
           curvePts.push({ x: sx(px), y: sy(py) });
           prev = 1;
         }
-        parts.push(`<path class="fig-curve c${k % 3}${f.dashed ? ' dashed' : ''}" d="${d.trim()}"/>`);
+        parts.push(`<path class="fig-curve c${f.c !== undefined ? f.c : k % 3}${f.dashed ? ' dashed' : ''}" d="${d.trim()}"/>`);
         return;
       }
       const [d0, d1] = f.domain || [x0, x1];
@@ -23272,7 +23432,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
         if (yc >= y0 && yc <= y1 && i % 8 === 0) curvePts.push({ x: sx(x), y: sy(yc) });
         prev = yc;
       }
-      parts.push(`<path class="fig-curve c${k % 3}${f.dashed ? ' dashed' : ''}" d="${d.trim()}"/>`);
+      parts.push(`<path class="fig-curve c${f.c !== undefined ? f.c : k % 3}${f.dashed ? ' dashed' : ''}" d="${d.trim()}"/>`);
     });
     /* ---- marks, and their labels as requests ---- */
     const around = (r, up) => ([
@@ -23371,7 +23531,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.56', date: '17 September 2026', year: 2026 };
+  const BUILD = { v: '2.57', date: '17 September 2026', year: 2026 };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonandy242', ['gmail', 'com'].join('.')].join('@');
   /* The one sentence that says what this is. It appears under the wordmark, and build.js uses
@@ -23384,6 +23544,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      because the person who needs it is the one who just watched the app refresh itself and wants to
      know what moved. Trim the tail when it gets past a dozen; nobody reads further back than that. */
   const WHATS_NEW = [
+    ['2.57', '<b>MATH 1170 chapter 17 gets its pictures, and the course is now illustrated end to end.</b> A function of two variables will not fit on a flat page, so every figure in this chapter is a <b>slice</b> — one variable frozen, the other free — which is precisely what a partial derivative is, and so the pictures are the concept rather than a compromise. You will find the surface z = x&sup2; + 3y&sup2; cut both ways at once, a cubic slice whose ordinary slope is f<sub>x</sub>(2, 1) = 10, a joint cost curve with the other product pinned at 30 units, a production function flattening into diminishing returns, two upward-sloping demand lines that are the whole competitive-versus-complementary test, a slice drawn above its own first and second derivatives, the two opposite parabolas that explain what a saddle point is, and &mdash; for Lagrange multipliers &mdash; the constraint line touching the circle of equal values at exactly one point. Every worked example in the chapter now opens with <b>How to approach it</b>, works line by line, and closes with a <b>Check</b>. That completes chapters 10, 11, 12, 13 and 17: 76 figures, every one checked in a real browser for labels that overlap or run off the edge.'],
     ['2.56', '<b>MATH 1170 chapter 13, Curve sketching, gets its pictures &mdash; the chapter that needed them most.</b> All six sections open with a figure and every worked example carries one: a sign chart laid out the way the questions are, a cubic with its hilltop and valley marked, a closed interval shaded so the endpoints can be seen winning, a tangent drawn at an inflection point where it crosses the curve, the two parabolas that are the whole second-derivative test, a quartic that is level at the origin without turning &mdash; the case the test cannot decide &mdash; a rational function with two vertical asymptotes and a horizontal one, an oblique asymptote with the curve hugging it from both sides, and, for the applied problems, the fence length, the revenue parabola and the two inventory costs crossing exactly at the economic lot size. Each example now opens with <b>How to approach it</b>, works line by line, and closes with a <b>Check</b>. Chapter 17 follows.'],
     ['2.55', '<b>MATH 1170 chapter 12, Additional differentiation topics, gets its pictures.</b> All five sections open with a graph and every worked example carries one: the log curve whose slope is the reciprocal of the x-coordinate, the exponential whose slope equals its own height, the bell curve e<sup>&minus;x&sup2;</sup> level at its peak because the chain-rule factor vanishes there, the circle with two tangents at the same x &mdash; the reason an implicit slope needs a point and not just an x-value &mdash; x<sup>x</sup> dipping at 1/e where neither the power rule nor the exponential rule can reach it, and a second derivative drawn under its own curve so the sign of one is the bending of the other. Each example now opens with <b>How to approach it</b>, works line by line, and closes with a <b>Check</b>. The figure renderer also learned to draw a curve from a list of points, which is how the relation xy + y&sup3; = 2x + 6 &mdash; solvable for y by no formula you would want to use &mdash; is shown with its tangent at (&minus;5, 1). Chapters 13 and 17 follow.'],
     ['2.54', '<b>MATH 1170 chapter 11, The Derivative, gets the same treatment &mdash; and the graph labels stop colliding.</b> All five sections now open with a picture and every worked example carries one: the secant sliding into the tangent on y = x&sup2;, a curve drawn above its own derivative so the sign of one matches the shape of the other, a cost curve whose tangent is the marginal cost (and the same curve magnified until the tangent and the curve separate by a cent), a rational function with its vertical asymptote and its horizontal one, and the chain rule shown as an inside function feeding an outside one. Every example begins with <b>How to approach it</b>, works the algebra line by line, and ends with a <b>Check</b>. Behind that: the figure renderer now places every label by trying a ring of positions and scoring each one against the tick numbers, the axis letters, the plotted points and the labels already placed, so nothing prints through anything else &mdash; the fault visible in 2.53, where &ldquo;tangent at x = 1&rdquo; ran straight through the x-axis ticks. A new audit renders every figure in a real browser, reads each label&rsquo;s true box, and fails the build on any overlap or overflow. Chapters 12, 13 and 17 follow, one per release.'],
