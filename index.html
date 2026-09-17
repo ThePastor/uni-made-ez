@@ -16125,7 +16125,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
                 figure: {
                   kind: 'graph', x: [-1, 6], y: [0, 9],
                   fns: [{ expr: '(x**2 - 9)/(x - 3)', label: '(x² − 9)/(x − 3)' }, { expr: 'x + 3', label: 'x + 3', dashed: true }],
-                  points: [{ x: 3, y: 6, open: true, label: '(3, 6): the limit, not a value' }],
+                  points: [{ x: 3, y: 6, open: true, label: '(3, 6): the limit' }],
                   caption: 'The two functions agree at every x except 3, so their limits at 3 agree. The dashed line x + 3 fills the hole; the limit is its height there, 6.'
                 },
                 steps: [
@@ -16146,7 +16146,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
                   kind: 'graph', x: [-1, 4], y: [-4, 8],
                   fns: [{ expr: '2*x**2 - 5*x', label: 'f(x) = 2x² − 5x' }],
                   segments: [{ from: [1, -3], to: [3, 3], label: 'secant, h = 2', dashed: true }, { from: [-0.5, -1.5], to: [3, -5], label: 'tangent at x = 1' }],
-                  points: [{ x: 1, y: -3, label: '(1, f(1))' }, { x: 3, y: 3, label: '(1 + h, f(1 + h)), h = 2' }],
+                  points: [{ x: 1, y: -3, label: '(1, f(1))' }, { x: 3, y: 3, label: '(1 + h, f(1 + h))' }],
                   caption: 'At x = 1: the difference quotient is the slope of the dashed secant through (1, f(1)) and (1 + h, f(1 + h)). As h → 0 the second point slides down to the first and the secant becomes the tangent, whose slope 4(1) − 5 = −1 is the limit.'
                 },
                 steps: [
@@ -16224,7 +16224,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
                 figure: {
                   kind: 'graph', x: [-2, 3], y: [-1, 9],
                   fns: [{ expr: 'x + 2', label: 'x + 2 (for x < 1)', domain: [-2, 1] }, { expr: '4*x', label: '4x (for x ≥ 1)', domain: [1, 3] }],
-                  points: [{ x: 1, y: 3, open: true, label: 'left side heads to 3' }, { x: 1, y: 4, label: 'f(1) = 4, and the right side heads to 4' }],
+                  points: [{ x: 1, y: 3, open: true, label: 'from the left, 3' }, { x: 1, y: 4, label: 'f(1) = 4; from the right, 4' }],
                   vlines: [{ x: 1, label: 'x = 1' }],
                   caption: 'A jump at x = 1. Approaching from the left along x + 2 the height closes in on 3; approaching from the right along 4x it closes in on 4. Two different one-sided limits mean no two-sided limit, whatever value sits at x = 1.'
                 },
@@ -16567,6 +16567,13 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
           {
             id: 'b1', title: 'The derivative', src: 'Section 11.1',
             idea: `The slope of a curve at a point is defined through the slopes of lines that can be measured. Fix a point (a, f(a)) on the graph. A <b>secant line</b> through it and a second point (a + h, f(a + h)) has slope<br><br><b>(f(a + h) − f(a)) / h</b><br><br>— the difference quotient of the last chapter. As h → 0 the second point slides toward the first, the secant swings toward the <b>tangent line</b>, and its slope approaches the tangent's slope. So the slope of the tangent at a is <b>lim<sub>h→0</sub> (f(a + h) − f(a)) / h</b>, provided the limit exists.<br><br>Do this at a general x instead of a fixed a and the answer is a new function, the <b>derivative</b> of f:<br><br><b>f′(x) = lim<sub>h→0</sub> (f(x + h) − f(x)) / h</b><br><br>Finding it this way is called differentiating <b>from the definition</b>, and it is the same routine every time: form f(x + h), subtract f(x), divide by h, do the algebra that removes the 0/0, then let h → 0. The notation varies and it is all the same object: f′(x), y′, <b>dy/dx</b>, d/dx (f(x)), D<sub>x</sub>y. The value at a particular point is written f′(a) or dy/dx|<sub>x=a</sub>. The variable need not be x: if p depends on q, dp/dq is the derivative of p with respect to q.<br><br>Two things a derivative gives at once. The <b>slope of the curve</b> at x = a is f′(a). And the <b>tangent line</b> there is the line through (a, f(a)) with that slope: <b>y − f(a) = f′(a)(x − a)</b>, point-slope form.<br><br>A derivative can fail to exist at a point. The graph may have a <b>corner</b>, where the difference quotient has different limits from the two sides; it may have a <b>vertical tangent</b>, where the quotient grows without bound; or the function may be <b>discontinuous</b> there. That last one is a theorem: <b>if f is differentiable at a, then f is continuous at a.</b> The converse is false — |x| is continuous at 0 and has no derivative there — so continuity is necessary for differentiability and not sufficient. The word for a function that has a derivative at every point of an interval is <b>differentiable</b> on that interval.`,
+            figure: {
+              kind: 'graph', x: [-0.5, 3], y: [-1, 9],
+              fns: [{ expr: 'x**2', label: 'f(x) = x²' }],
+              segments: [{ from: [1, 1], to: [2.4, 5.8], label: 'secant, h = 1', dashed: true }, { from: [0.2, -0.6], to: [2.4, 3.8], label: 'tangent at x = 1' }],
+              points: [{ x: 1, y: 1, label: '(1, 1)' }, { x: 2, y: 4, label: '(1 + h, f(1 + h))' }],
+              caption: 'The derivative at a point is the slope of the tangent there, and the tangent is what the secant becomes. With h = 1 the secant through (1, 1) and (2, 4) has slope 3; with h = 0.1 it is 2.1; with h = 0.01 it is 2.01. The limit of those slopes, 2, is f′(1).'
+            },
             rules: [
               { name: 'The derivative', expr: 'dy/dx = lim (f(x + h) - f(x)) / h', note: 'As h approaches 0. It is the slope of the tangent, defined as the limit of secant slopes.' },
               { name: 'Slope of the curve at a', expr: 'The value of the derivative at a', words: true, note: 'Written f′(a) or dy/dx evaluated at x = a.' },
@@ -16576,23 +16583,45 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             examples: [
               {
                 prompt: 'Use the definition to find f′(x) for f(x) = 3x² − x, and then find the slope of the curve at x = 2.',
+                approach: 'The definition is a difference quotient, so the routine of section 10.1 applies without change: write f(x + h) in full, subtract f(x) so that every surviving term carries an h, factor the h out and cancel it, then let h → 0. Only at the end substitute x = 2 — differentiate first, evaluate second, because f′ is a function and the slope at a point is one of its values.',
+                figure: {
+                  kind: 'graph', x: [0, 3], y: [-2, 26],
+                  fns: [{ expr: '3*x**2 - x', label: 'f(x) = 3x² − x' }],
+                  segments: [{ from: [1.2, 1.2], to: [2.8, 18.8], label: 'slope 11' }],
+                  points: [{ x: 2, y: 10, label: '(2, 10)' }],
+                  caption: 'f′(x) = 6x − 1 gives the slope at every x. At x = 2 that is 11, and the straight line drawn through (2, 10) with slope 11 lies along the curve there — which is what "the slope of the curve at a point" means.'
+                },
                 steps: [
-                  { do: 'f(x + h) = 3(x + h)² − (x + h) = 3x² + 6xh + 3h² − x − h', why: 'Expand carefully; the 6xh cross-term is the whole point of the calculation and it is the term most often dropped.' },
-                  { do: 'f(x + h) − f(x) = 6xh + 3h² − h', why: 'The terms without h cancel against f(x). Every remaining term has a factor of h, which is what makes the next step possible.' },
-                  { do: 'Divide by h and cancel: 6x + 3h − 1 for h ≠ 0', why: 'This removes the 0/0. The condition h ≠ 0 is what the limit needs and no more.' },
-                  { do: 'f′(x) = lim h→0 (6x + 3h − 1) = 6x − 1, so the slope at x = 2 is f′(2) = 11', why: 'Substitute h = 0 in the polynomial, then x = 2 in the derivative. The order matters: differentiate first, then evaluate.' }
+                  { do: 'Write the definition: f′(x) = lim h→0 (f(x + h) − f(x))/h', why: 'Every derivative in this section comes from this one limit; the rules of section 11.2 are shortcuts for it.' },
+                  { do: 'f(x + h) = 3(x + h)² − (x + h) = 3(x² + 2xh + h²) − x − h = 3x² + 6xh + 3h² − x − h', why: 'Expand (x + h)² as three terms before multiplying by 3. The 6xh cross-term is the whole point of the calculation and it is the term most often dropped.' },
+                  { do: 'Subtract f(x): (3x² + 6xh + 3h² − x − h) − (3x² − x) = 6xh + 3h² − h', why: 'The terms without h cancel against f(x) — as they must, since at h = 0 the numerator has to be 0.' },
+                  { do: 'Factor and cancel: h(6x + 3h − 1)/h = 6x + 3h − 1 for h ≠ 0', why: 'This removes the 0/0. The condition h ≠ 0 is exactly what the limit needs and no more.' },
+                  { do: 'f′(x) = lim h→0 (6x + 3h − 1) = 6x − 1', why: 'A polynomial in h, so let h → 0 by substitution. This is the derivative function: a slope for every x.' },
+                  { do: 'The slope at x = 2 is f′(2) = 6(2) − 1 = 11', why: 'Now substitute the point. Differentiating first and evaluating second is the order that matters; f(2) = 10 is the height, f′(2) = 11 is the steepness.' }
                 ],
-                answer: 'f′(x) = 6x − 1, and the slope at x = 2 is 11', answerWords: true
+                answer: 'f′(x) = 6x − 1, and the slope at x = 2 is 11', answerWords: true,
+                check: 'Take a small h and compute the secant slope directly: (f(2.01) − f(2))/0.01 = (10.1103 − 10)/0.01 = 11.03, and with h = 0.001 it is 11.003. The secant slopes are closing in on 11, which is what f′(2) claims.'
               },
               {
                 prompt: 'Find an equation of the tangent line to y = x² + 1 at the point where x = 3.',
+                approach: 'A line needs a point and a slope, and the two come from different places: the point from the function, the slope from its derivative. So find y at x = 3, differentiate to get the slope function, evaluate it at 3, and put both into point-slope form. The commonest wreck is using the derivative for the y-coordinate.',
+                figure: {
+                  kind: 'graph', x: [0, 4.5], y: [0, 21],
+                  fns: [{ expr: 'x**2 + 1', label: 'y = x² + 1' }],
+                  segments: [{ from: [1.5, 1], to: [4.2, 17.2], label: 'y = 6x − 8' }],
+                  points: [{ x: 3, y: 10, label: '(3, 10)' }],
+                  caption: 'The tangent touches the curve at (3, 10) and has the slope the derivative gives there, 6. Its equation is y − 10 = 6(x − 3), and the line crosses the y-axis at −8.'
+                },
                 steps: [
-                  { do: 'The point: y = 3² + 1 = 10, so the tangent passes through (3, 10)', why: 'A line needs a point and a slope. The point comes from the function, not the derivative.' },
-                  { do: 'The derivative from the definition: ((x + h)² + 1 − x² − 1)/h = (2xh + h²)/h = 2x + h → 2x', why: 'The +1 cancels immediately: a constant term never survives into the derivative.' },
-                  { do: 'The slope at x = 3 is f′(3) = 6', why: 'Evaluate the derivative at the point in question.' },
-                  { do: 'y − 10 = 6(x − 3), which is y = 6x − 8', why: 'Point-slope form with the point and slope found. Writing y = 6x − 8 is optional but it makes the y-intercept, −8, easy to check.' }
+                  { do: 'The point: y = 3² + 1 = 10, so the tangent passes through (3, 10)', why: 'The point of tangency lies on the curve, so its height comes from the function itself, never from the derivative.' },
+                  { do: 'The derivative from the definition: ((x + h)² + 1 − (x² + 1))/h', why: 'Set up the difference quotient for this f before simplifying.' },
+                  { do: 'Expand and cancel: (x² + 2xh + h² + 1 − x² − 1)/h = (2xh + h²)/h = 2x + h', why: 'The +1 cancels immediately: a constant term never survives into a derivative, because adding a constant shifts a graph up without tilting it.' },
+                  { do: 'dy/dx = lim h→0 (2x + h) = 2x', why: 'Let h → 0. The slope function for y = x² + 1 is 2x.' },
+                  { do: 'The slope at x = 3 is 2(3) = 6', why: 'Evaluate the derivative at the point in question.' },
+                  { do: 'Point-slope form: y − 10 = 6(x − 3), which simplifies to y = 6x − 8', why: 'A point and a slope determine the line. The simplified form makes the y-intercept, −8, easy to read off and to check.' }
                 ],
-                answer: 'y − 10 = 6(x − 3), or y = 6x − 8', answerWords: true
+                answer: 'y − 10 = 6(x − 3), or y = 6x − 8', answerWords: true,
+                check: 'At x = 3 the line gives 6(3) − 8 = 10, so it does pass through the point of tangency. Just beside it the line and the curve nearly agree: at x = 3.1 the curve is 10.61 and the line is 10.6 — close, as a tangent should be, and the small gap is the curve bending away.'
               }
             ],
             pitfalls: [
@@ -16620,6 +16649,12 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
           {
             id: 'b2', title: 'Rules for differentiation', src: 'Section 11.2',
             idea: `Differentiating from the definition works and is slow. The rules below are the definition applied once and for all to the shapes that keep recurring, so that a derivative becomes a matter of recognising shapes.<br><br><b>Constant rule.</b> If f(x) = c, then f′(x) = 0. A horizontal line has slope zero.<br><br><b>Power rule.</b> For any real number a, <b>d/dx (x<sup>a</sup>) = a x<sup>a−1</sup></b>. Bring the exponent down as a coefficient, then reduce the exponent by one. It holds for negative and fractional exponents as well as positive integers, which is what makes it so useful.<br><br><b>Constant-multiple rule.</b> <b>d/dx (c f(x)) = c f′(x)</b>. A constant factor rides along untouched.<br><br><b>Sum and difference rule.</b> <b>d/dx (f ± g) = f′ ± g′</b>. Differentiate term by term. This extends to any finite number of terms, so a polynomial is differentiated one term at a time with the power rule.<br><br>The practical skill this section is really about is <b>rewriting before differentiating</b>. The power rule wants x raised to a power, so anything else has to be put in that form first:<br><br><b>1/x = x<sup>−1</sup></b>, <b>1/x³ = x<sup>−3</sup></b>, <b>√x = x<sup>1/2</sup></b>, <b>1/√x = x<sup>−1/2</sup></b>, <b>³√x² = x<sup>2/3</sup></b>, and a coefficient in a denominator comes out as a reciprocal: <b>3/(2x⁴) = (3/2) x<sup>−4</sup></b>.<br><br>Then the rule applies mechanically: d/dx (x<sup>−1</sup>) = −x<sup>−2</sup> = −1/x², and d/dx (x<sup>1/2</sup>) = (1/2) x<sup>−1/2</sup> = 1/(2√x). Both results are worth knowing on sight.<br><br>Two cautions. The power rule is for a <b>variable base</b> and a constant exponent; it says nothing about 2<sup>x</sup>, which has a variable exponent and is a later chapter. And it is for a <b>single power of x</b>; a product like (x² + 1)(x³ − 2x) or a quotient is not a power and needs the rules of section 11.4 — or must be multiplied out first.`,
+            figure: {
+              kind: 'graph', x: [-0.7, 4], y: [-16, 14],
+              fns: [{ expr: 'x**3 - 4*x**2', label: 'f(x) = x³ − 4x²' }, { expr: '3*x**2 - 8*x', label: 'f′(x) = 3x² − 8x', dashed: true }],
+              points: [{ x: 0, y: 0, label: 'f′ = 0' }, { x: 2.667, y: -9.48, label: 'f′ = 0' }],
+              caption: 'A function and its derivative on the same axes. Where the dashed derivative crosses zero — at x = 0 and x = 8/3 — the solid curve is momentarily flat; where the derivative is negative the curve falls, and where it is positive the curve rises. The power rule produces that dashed curve in one line.'
+            },
             rules: [
               { name: 'Constant', expr: 'd/dx (c) = 0', note: 'The slope of a horizontal line.' },
               { name: 'Power', expr: 'd/dx (x^n) = n x^(n-1)', note: 'For any real exponent — negative and fractional included. Exponent down, exponent minus one.' },
@@ -16630,23 +16665,42 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             examples: [
               {
                 prompt: 'Differentiate y = 5x⁴ − 2/x + 3√x.',
+                approach: 'The power rule only sees terms of the form (coefficient)(power of x), so the first move is always to rewrite: a reciprocal becomes a negative exponent and a root becomes a fractional one. Then differentiate term by term, taking care that "exponent minus one" makes a negative exponent more negative and a half into a minus a half. Finally rewrite with positive exponents, which is the form an answer is normally expected in.',
+                figure: {
+                  kind: 'graph', x: [0.3, 4], y: [-8, 8],
+                  fns: [{ expr: '2/x', label: 'y = 2/x' }, { expr: '-2/x**2', label: 'dy/dx = −2/x²', dashed: true }],
+                  caption: 'The middle term on its own. y = 2/x falls everywhere, so its derivative must be negative everywhere — and −2/x² is. Rewriting 2/x as 2x⁻¹ is what lets the power rule produce it; the minus sign in the answer is a check that the rewrite was done correctly.'
+                },
                 steps: [
-                  { do: 'Rewrite: y = 5x⁴ − 2x⁻¹ + 3x^(1/2)', why: 'The power rule needs each term as a coefficient times a power of x. Doing this first is the whole method.' },
-                  { do: 'Term 1: 5 · 4x³ = 20x³', why: 'Constant multiple and power rule: exponent down, exponent minus one.' },
-                  { do: 'Term 2: −2 · (−1)x⁻² = 2x⁻²; Term 3: 3 · (1/2)x^(−1/2) = (3/2)x^(−1/2)', why: 'A negative exponent minus one is more negative; a half minus one is minus a half. Watch the signs on the second term — two negatives make the result positive.' },
-                  { do: 'dy/dx = 20x³ + 2/x² + 3/(2√x)', why: 'Written back with positive exponents, which is how an answer is usually expected. At x = 1 this is 20 + 2 + 1.5 = 23.5.' }
+                  { do: 'Rewrite every term as a power of x: y = 5x⁴ − 2x⁻¹ + 3x^(1/2)', why: 'The power rule needs each term as a coefficient times a power of x. Doing this first is the whole method; 2/x and √x are invisible to the rule as written.' },
+                  { do: 'Term 1: d/dx (5x⁴) = 5 · 4x³ = 20x³', why: 'Constant multiple and power rule: bring the exponent down, then reduce it by one.' },
+                  { do: 'Term 2: d/dx (−2x⁻¹) = −2 · (−1)x⁻² = 2x⁻²', why: 'The exponent −1 comes down and multiplies the −2, so two negatives make a plus; the new exponent is −1 − 1 = −2, more negative, not less.' },
+                  { do: 'Term 3: d/dx (3x^(1/2)) = 3 · (1/2)x^(−1/2) = (3/2)x^(−1/2)', why: 'Half comes down against the 3 to give 3/2, and 1/2 − 1 = −1/2.' },
+                  { do: 'Collect: dy/dx = 20x³ + 2x⁻² + (3/2)x^(−1/2)', why: 'The derivative of a sum is the sum of the derivatives, so the three results simply line up.' },
+                  { do: 'Rewrite with positive exponents: dy/dx = 20x³ + 2/x² + 3/(2√x)', why: 'x⁻² is 1/x² and x^(−1/2) is 1/√x. This is the form marks are given for.' }
                 ],
-                answer: 'dy/dx = 20x³ + 2/x² + 3/(2√x)', answerWords: true
+                answer: 'dy/dx = 20x³ + 2/x² + 3/(2√x)', answerWords: true,
+                check: 'At x = 1 the derivative is 20 + 2 + 1.5 = 23.5. Test it against the function: (y(1.001) − y(1))/0.001 = (6.02352 − 6)/0.001 ≈ 23.5. The two agree, so the rewriting and the signs are right.'
               },
               {
                 prompt: 'Find the equation of the tangent line to y = x³ − 4x² at the point (2, −8).',
+                approach: 'Same shape as the tangent-line problem in the last lesson, but the derivative now comes from the power rule instead of the definition, which is the point of this section. Differentiate, evaluate at x = 2 for the slope, confirm the given point really is on the curve, and write point-slope form.',
+                figure: {
+                  kind: 'graph', x: [-0.5, 4.2], y: [-20, 8],
+                  fns: [{ expr: 'x**3 - 4*x**2', label: 'y = x³ − 4x²' }],
+                  segments: [{ from: [0.5, -2], to: [3.5, -14], label: 'y = −4x' }],
+                  points: [{ x: 2, y: -8, label: '(2, −8)' }],
+                  caption: 'The tangent at (2, −8) has slope −4, so the curve is falling there. This particular tangent, y = −4x, happens to pass through the origin — a coincidence of the numbers, not a rule.'
+                },
                 steps: [
-                  { do: 'dy/dx = 3x² − 8x', why: 'Term by term with the power rule — no definition needed now.' },
-                  { do: 'At x = 2: 3(4) − 8(2) = 12 − 16 = −4', why: 'Differentiate first, then evaluate. The slope of the tangent is −4.' },
-                  { do: 'The point (2, −8) is given, and checks: 8 − 16 = −8', why: 'Verifying the point lies on the curve catches a mis-copied question before any work is wasted.' },
-                  { do: 'y + 8 = −4(x − 2), so y = −4x', why: 'Point-slope form; this particular tangent happens to pass through the origin.' }
+                  { do: 'Differentiate term by term: dy/dx = 3x² − 8x', why: 'The power rule on x³ gives 3x², and on −4x² gives −8x. No definition needed now — that is what section 11.2 buys.' },
+                  { do: 'Evaluate at x = 2: 3(2)² − 8(2) = 12 − 16 = −4', why: 'Differentiate first, then substitute. The slope of the tangent is −4, so the curve is going downhill at that point.' },
+                  { do: 'Check the point is on the curve: y(2) = 8 − 16 = −8 ✓', why: 'Verifying the given point catches a mis-copied question before any further work is wasted.' },
+                  { do: 'Point-slope form: y − (−8) = −4(x − 2), that is, y + 8 = −4(x − 2)', why: 'The point and the slope go straight into the form; subtracting a negative y-coordinate is where sign slips happen.' },
+                  { do: 'Simplify: y + 8 = −4x + 8, so y = −4x', why: 'Expand the bracket and isolate y. The 8s cancel, which is why this tangent goes through the origin.' }
                 ],
-                answer: 'y = −4x', answerWords: true
+                answer: 'y = −4x', answerWords: true,
+                check: 'The line agrees with the curve at the point: −4(2) = −8 ✓. And it should be close just beside it — at x = 2.1 the curve is −8.379 and the line is −8.4, a gap of two hundredths, which is the curve bending away from its tangent.'
               }
             ],
             pitfalls: [
@@ -16674,6 +16728,13 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
           {
             id: 'b3', title: 'The derivative as a rate of change', src: 'Section 11.3',
             idea: `A derivative is a slope, and a slope is a rate: rise per run. That reading is where calculus meets economics.<br><br>Over an interval, the <b>average rate of change</b> of y with respect to x is <b>Δy/Δx</b>, the change in y divided by the change in x. Shrink the interval to nothing and the average rate becomes the <b>instantaneous rate of change</b>, which is the derivative: <b>dy/dx = lim<sub>Δx→0</sub> Δy/Δx</b>. The difference quotient was a rate all along.<br><br>The physical version is <b>velocity</b>. If s = f(t) is position at time t, then Δs/Δt is average velocity over an interval and <b>ds/dt is velocity at an instant</b>. The derivative also gives an <b>approximation</b> that is used constantly: for a small change Δx, <b>Δy ≈ (dy/dx) · Δx</b>, and in particular, when x increases by 1, y changes by approximately dy/dx.<br><br>That last sentence is the definition of everything called <b>marginal</b> in economics. If c is the total cost of producing q units, then<br><br><b>marginal cost = dc/dq</b><br><br>is the rate at which cost changes with output, and it is interpreted as the <b>approximate cost of producing one more unit</b>. The word approximate matters: the exact cost of the (q + 1)th unit is c(q + 1) − c(q), and the derivative is its tangent-line estimate — close when the cost curve is nearly straight over one unit, which it usually is.<br><br>Likewise, with r the total revenue from selling q units, <b>marginal revenue = dr/dq</b> is the approximate revenue from selling one more unit. Revenue comes from a demand equation: if the price at which q units sell is p = f(q), then <b>r = pq</b>, and marginal revenue is found by differentiating that product. Under a fixed price, r = pq gives a constant marginal revenue equal to the price; under a downward-sloping demand, marginal revenue falls below price, because selling one more unit means lowering the price on all of them.<br><br>Average and marginal are different: <b>average cost per unit</b> is c̄ = c/q, the total divided by the count, while marginal cost is the derivative. They coincide only when cost is exactly proportional to output.<br><br>Finally, a rate on its own can mislead — a change of 10 in something worth 1,000 is small, in something worth 20 is large. The <b>relative rate of change</b> is <b>(dy/dx) / y</b>, and the <b>percentage rate of change</b> is that times 100. It is the derivative in proportion to the size of the thing changing.`,
+            figure: {
+              kind: 'graph', x: [0, 300], y: [1800, 5200], xlabel: 'q', ylabel: 'c',
+              fns: [{ expr: '0.01*x**2 + 5*x + 2000', label: 'c = 0.01q² + 5q + 2000' }],
+              segments: [{ from: [40, 2180], to: [180, 3160], label: 'slope 7 at q = 100' }],
+              points: [{ x: 100, y: 2600, label: '(100, 2600)' }],
+              caption: 'Marginal cost is the slope of the total-cost curve. At q = 100 the tangent rises 7 dollars per extra unit, and that is what "the marginal cost is $7" means — not the cost of the hundredth unit, but the rate at which cost is growing there.'
+            },
             rules: [
               { name: 'Average rate of change', expr: 'average rate = Delta y / Delta x', note: 'Over an interval: the change in y per unit change in x.' },
               { name: 'Instantaneous rate', expr: 'dy/dx', note: 'The limit of the average rate as the interval shrinks. Velocity is ds/dt.' },
@@ -16685,23 +16746,43 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             examples: [
               {
                 prompt: 'The total cost of producing q units is c = 0.01q² + 5q + 2000 dollars. Find the marginal-cost function, the marginal cost at q = 100, and compare it with the actual cost of the 101st unit.',
+                approach: 'Marginal cost is dc/dq, so differentiate the cost function with the power rule — the fixed cost, being constant, contributes nothing. Evaluate at q = 100 for the rate there. Then compute the true extra cost, c(101) − c(100), and compare: the marginal cost is a rate read off the tangent, and the actual cost of one more unit is the small step along the curve, which is why they agree to within a cent.',
+                figure: {
+                  kind: 'graph', x: [95, 105], y: [2555, 2650], xlabel: 'q', ylabel: 'c',
+                  fns: [{ expr: '0.01*x**2 + 5*x + 2000', label: 'c = 0.01q² + 5q + 2000' }, { expr: '2600 + 7*(x - 100)', label: 'tangent, slope 7', dashed: true }],
+                  points: [{ x: 100, y: 2600, label: 'c(100) = 2600' }, { x: 101, y: 2607.01, label: 'c(101) = 2607.01' }],
+                  caption: 'The same curve, magnified around q = 100. Over one unit the curve and its tangent are almost the same line: the tangent predicts a rise of $7.00 and the curve actually rises $7.01. That one cent is the whole difference between marginal cost and the cost of the next unit.'
+                },
                 steps: [
-                  { do: 'Marginal cost is dc/dq = 0.02q + 5', why: 'Differentiate the total-cost function term by term. The 2000 — fixed cost — vanishes, as a constant always does.' },
-                  { do: 'At q = 100: 0.02(100) + 5 = $7', why: 'The rate at which cost is rising when output is 100. Interpretation: the 101st unit costs approximately $7.' },
-                  { do: 'Actual: c(101) − c(100) = (102.01 + 505 + 2000) − (100 + 500 + 2000) = 2607.01 − 2600 = $7.01', why: 'The exact cost of one more unit, from the total-cost function directly.' },
-                  { do: 'The marginal cost of $7 approximates the exact $7.01 to within a cent', why: 'The tangent line and the curve differ by 0.01(1)² over one unit. That is the sense in which marginal cost is "the cost of the next unit".' }
+                  { do: 'Marginal cost is the derivative of total cost: dc/dq = d/dq (0.01q² + 5q + 2000)', why: 'Marginal anything means the derivative of that thing with respect to quantity.' },
+                  { do: 'Differentiate term by term: dc/dq = 0.02q + 5', why: 'The power rule gives 0.02q from 0.01q² and 5 from 5q; the fixed cost 2000 is a constant and differentiates to 0 — fixed costs do not change with output, which is what "fixed" means.' },
+                  { do: 'At q = 100: dc/dq = 0.02(100) + 5 = 2 + 5 = 7', why: 'The marginal cost at an output of 100 units is $7 per unit.' },
+                  { do: 'The actual cost of the 101st unit: c(101) − c(100)', why: 'This is the true extra cost, and it is a difference of two costs, not a derivative.' },
+                  { do: 'c(101) = 0.01(10,201) + 505 + 2000 = 102.01 + 2505 = 2607.01 and c(100) = 100 + 500 + 2000 = 2600, so the difference is 7.01', why: 'Compute both and subtract. Keeping the cents matters here, because the cents are what is being compared.' },
+                  { do: 'The marginal cost $7.00 approximates the actual $7.01', why: 'The derivative is the rate at the point; over a step of one unit the curve bends slightly away from its tangent, and the one-cent gap is that bend. For a smooth cost curve the approximation is what marginal cost is for.' }
                 ],
-                answer: 'dc/dq = 0.02q + 5; $7 at q = 100, against an actual $7.01', answerWords: true
+                answer: 'dc/dq = 0.02q + 5; $7 at q = 100, against an actual $7.01', answerWords: true,
+                check: 'Try the same comparison somewhere else: at q = 200, dc/dq = 9, and c(201) − c(200) = 3413.01 − 3404 = 9.01. The same one-cent gap, because the 0.01q² term bends the curve by the same amount everywhere.'
               },
               {
                 prompt: 'A product sells at the price p = 100 − 2q dollars when q units are demanded. Find the marginal-revenue function and the marginal revenue at q = 10.',
+                approach: 'Revenue is price times quantity, so first build r as a function of q alone by substituting the demand equation — marginal revenue is dr/dq, and it cannot be found until r is a function of the single variable q. Then differentiate and evaluate. Notice at the end that dr/dq is not the price: the price falls as more is sold, and that fall is subtracted from the price in the marginal revenue.',
+                figure: {
+                  kind: 'graph', x: [0, 50], y: [0, 1400], xlabel: 'q', ylabel: 'r',
+                  fns: [{ expr: '100*x - 2*x**2', label: 'r = 100q − 2q²' }],
+                  segments: [{ from: [4, 440], to: [16, 1160], label: 'slope 60 at q = 10' }],
+                  points: [{ x: 10, y: 800, label: '(10, 800)' }, { x: 25, y: 1250, label: 'slope 0 at q = 25' }],
+                  caption: 'Revenue against quantity. At q = 10 the tangent rises 60 dollars per extra unit; by q = 25 the tangent is flat, so marginal revenue is 0 and revenue is at its maximum. Past that point selling more brings less in, because the price has to fall too far.'
+                },
                 steps: [
-                  { do: 'Revenue is price times quantity: r = pq = (100 − 2q)q = 100q − 2q²', why: 'Substitute the demand equation for p so that r is a function of q alone. Marginal revenue is a derivative with respect to q.' },
-                  { do: 'dr/dq = 100 − 4q', why: 'Term by term with the power rule.' },
-                  { do: 'At q = 10: 100 − 40 = $60', why: 'Selling the 11th unit brings in approximately $60 of additional revenue.' },
-                  { do: 'Note the price at q = 10 is 100 − 20 = $80, and marginal revenue is less than that', why: 'To sell one more unit the price must fall by $2 on every unit sold, so the extra unit is worth less than its own price. Marginal revenue sits below the demand curve whenever demand slopes downward.' }
+                  { do: 'Revenue is price times quantity: r = pq', why: 'The definition. It has two variables in it, so it cannot be differentiated with respect to q yet.' },
+                  { do: 'Substitute the demand equation: r = (100 − 2q)q = 100q − 2q²', why: 'Now r is a function of q alone, which is what dr/dq requires.' },
+                  { do: 'Differentiate: dr/dq = 100 − 4q', why: 'The power rule term by term. Note the 4, not 2: the q² term had a coefficient of −2 and the exponent 2 comes down against it.' },
+                  { do: 'At q = 10: dr/dq = 100 − 4(10) = 60', why: 'The 11th unit brings in about $60 more revenue.' },
+                  { do: 'Compare with the price at q = 10: p = 100 − 20 = 80', why: 'Marginal revenue ($60) is less than the price ($80), because selling the extra unit also forces the price down on every unit already being sold. That gap is the whole content of the idea.' }
                 ],
-                answer: 'dr/dq = 100 − 4q, which is $60 at q = 10', answerWords: true
+                answer: 'dr/dq = 100 − 4q, which is $60 at q = 10', answerWords: true,
+                check: 'The actual extra revenue from the 11th unit is r(11) − r(10) = (1100 − 242) − (1000 − 200) = 858 − 800 = 58, close to the marginal $60. And dr/dq = 0 at q = 25, which the figure shows is exactly where the revenue curve peaks.'
               }
             ],
             pitfalls: [
@@ -16729,6 +16810,13 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
           {
             id: 'b4', title: 'The product rule and the quotient rule', src: 'Section 11.4',
             idea: `The derivative of a sum is the sum of the derivatives; the derivative of a product is <b>not</b> the product of the derivatives. The correct rule has two terms:<br><br><b>Product rule: (fg)′ = f′g + fg′</b><br><br>— the derivative of the first times the second, plus the first times the derivative of the second. The symmetric shape means the order of the two terms does not matter, and the rule extends to three factors by grouping two of them or by the pattern f′gh + fg′h + fgh′.<br><br>Quotients have their own rule, and here the order does matter:<br><br><b>Quotient rule: (f/g)′ = (g f′ − f g′) / g²</b><br><br>— the denominator times the derivative of the numerator, minus the numerator times the derivative of the denominator, all over the denominator squared. The minus sign is the part to get right; "low d-high minus high d-low, over low squared" is one way people remember it.<br><br>Both rules can be avoided when it is cheaper to do so, and knowing when is a skill the section tests. A product of two polynomials can be <b>multiplied out</b> and differentiated term by term. A quotient with a single-term denominator can be <b>split</b>: (x³ + 4x)/x² = x + 4x<sup>−1</sup>, which is then the power rule. A constant over a power is a negative exponent: 5/x⁴ = 5x<sup>−4</sup>. The quotient rule is for when the denominator is a genuine sum, like (2x + 1)/(x − 3), and there is no way round it.<br><br>The economic application in this section is a <b>consumption function</b>: if national consumption C depends on national income I, then <b>dC/dI</b> is the <b>marginal propensity to consume</b> — the approximate fraction of one additional dollar of income that is spent. Because income is either consumed or saved, the <b>marginal propensity to save</b> is <b>1 − dC/dI</b>. A consumption function given as a quotient is the standard reason the quotient rule appears in an economics course at all.`,
+            figure: {
+              kind: 'graph', x: [-4, 9], y: [-8, 14],
+              fns: [{ expr: '(2*x + 1)/(x - 3)', label: 'y = (2x + 1)/(x − 3)' }],
+              vlines: [{ x: 3, label: 'x = 3' }],
+              hlines: [{ y: 2, label: 'y = 2' }],
+              caption: 'A quotient and what its derivative has to say about it. Both branches of this curve fall from left to right, everywhere they are defined, so the derivative must be negative everywhere — and the quotient rule gives −7/(x − 3)², a negative number over a square. A "+" in place of the "−" in the rule would have claimed the opposite.'
+            },
             rules: [
               { name: 'Product rule', expr: 'd/dx (f g) = f × dg/dx + g × df/dx', note: 'Two terms. The order of the terms does not matter, so there is no sign to get wrong.' },
               { name: 'Quotient rule', expr: 'd/dx (f / g) = (g × df/dx - f × dg/dx) / g^2', note: 'Denominator times derivative of numerator, MINUS numerator times derivative of denominator, over the denominator squared.' },
@@ -16738,23 +16826,46 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             examples: [
               {
                 prompt: 'Find dy/dx for y = (x² + 1)(x³ − 2x), and evaluate it at x = 2.',
+                approach: 'A product of two functions, so the product rule applies: name the two factors, differentiate each separately, and combine as first times the derivative of the second plus second times the derivative of the first. Expanding the brackets first would also work here and is a useful check, but the rule is what generalises to products that cannot be expanded.',
+                figure: {
+                  kind: 'graph', x: [-2.2, 2.2], y: [-12, 24],
+                  fns: [{ expr: '(x**2 + 1)*(x**3 - 2*x)', label: 'y = (x² + 1)(x³ − 2x)' }],
+                  segments: [{ from: [1.86, 10.8], to: [2.14, 29.2], label: 'slope 66' }],
+                  points: [{ x: 2, y: 20, label: '(2, 20)' }],
+                  caption: 'The curve climbs steeply past x = 2: the tangent drawn there has slope 66, so a step of one unit in x would raise y by about 66. A slope that large is worth sanity-checking against the graph, and the drawing agrees.'
+                },
                 steps: [
-                  { do: 'Let f = x² + 1 and g = x³ − 2x, so f′ = 2x and g′ = 3x² − 2', why: 'Name the two factors and differentiate each separately before assembling anything.' },
-                  { do: 'dy/dx = f′g + fg′ = 2x(x³ − 2x) + (x² + 1)(3x² − 2)', why: 'Derivative of the first times the second, plus the first times the derivative of the second.' },
-                  { do: 'At x = 2: 2(2)(8 − 4) + (4 + 1)(12 − 2) = 4(4) + 5(10) = 16 + 50', why: 'Substituting into the unexpanded form is less work than expanding first when only a value is wanted.' },
-                  { do: 'dy/dx = 66 at x = 2', why: 'Check by expanding: y = x⁵ − 2x³ + x³ − 2x = x⁵ − x³ − 2x, so dy/dx = 5x⁴ − 3x² − 2, which is 80 − 12 − 2 = 66. Both routes agree, as they must.' }
+                  { do: 'Name the factors: u = x² + 1 and v = x³ − 2x', why: 'The product rule is a statement about two named functions; naming them keeps the four pieces straight.' },
+                  { do: 'Differentiate each: u′ = 2x and v′ = 3x² − 2', why: 'Each factor is a polynomial, so the power rule handles both.' },
+                  { do: 'Apply the rule: dy/dx = uv′ + vu′ = (x² + 1)(3x² − 2) + (x³ − 2x)(2x)', why: 'First times the derivative of the second, plus second times the derivative of the first. Not u′v′ — the derivative of a product is never the product of the derivatives.' },
+                  { do: 'Expand: (3x⁴ − 2x² + 3x² − 2) + (2x⁴ − 4x²) = 5x⁴ − 3x² − 2', why: 'Multiply out and collect like terms. Simplifying now makes the evaluation and any later work easier.' },
+                  { do: 'Evaluate at x = 2: 5(16) − 3(4) − 2 = 80 − 12 − 2 = 66', why: 'Substitute after differentiating.' },
+                  { do: 'Check by expanding first: y = x⁵ − x³ − 2x, so dy/dx = 5x⁴ − 3x² − 2 ✓', why: 'This product could be multiplied out, so the answer can be confirmed a second way. Most products cannot, which is why the rule exists.' }
                 ],
-                answer: '66', answerWords: true
+                answer: '66', answerWords: true,
+                check: 'Numerically: (y(2.001) − y(2))/0.001 = (20.0660 − 20)/0.001 ≈ 66.0. The two routes — the rule and the expansion — and the numerical slope all agree.'
               },
               {
                 prompt: 'Find dy/dx for y = (2x + 1)/(x − 3), and the slope of the curve at x = 4.',
+                approach: 'A quotient, so the quotient rule: bottom times the derivative of the top, minus top times the derivative of the bottom, all over the bottom squared. The order in the numerator matters — unlike the product rule, this one is not symmetric — and the standard error is writing the two terms the wrong way round, which flips the sign of the whole answer. Simplify the numerator fully; here everything cancels except a constant.',
+                figure: {
+                  kind: 'graph', x: [0, 8], y: [-6, 16],
+                  fns: [{ expr: '(2*x + 1)/(x - 3)', label: 'y = (2x + 1)/(x − 3)' }],
+                  segments: [{ from: [3.7, 11.1], to: [4.6, 4.8], label: 'slope −7' }],
+                  points: [{ x: 4, y: 9, label: '(4, 9)' }],
+                  vlines: [{ x: 3, label: 'x = 3' }],
+                  caption: 'At (4, 9) the curve is falling steeply, and the derivative −7/(x − 3)² gives −7 there. Close to the asymptote the square in the denominator is tiny, so the slope is enormous; far from it the curve flattens out toward y = 2.'
+                },
                 steps: [
-                  { do: 'Numerator f = 2x + 1 with f′ = 2; denominator g = x − 3 with g′ = 1', why: 'The denominator is a sum, so it cannot be split or rewritten as a power. The quotient rule is required.' },
-                  { do: 'dy/dx = (g f′ − f g′)/g² = ((x − 3)(2) − (2x + 1)(1)) / (x − 3)²', why: 'Denominator times derivative of the numerator first, then minus the numerator times the derivative of the denominator. The order fixes the sign.' },
-                  { do: 'Simplify the numerator: 2x − 6 − 2x − 1 = −7, so dy/dx = −7/(x − 3)²', why: 'The x-terms cancel here, which is typical for a quotient of two linear functions.' },
-                  { do: 'At x = 4: −7/1 = −7', why: 'A negative slope everywhere the function is defined: it is decreasing on both sides of its vertical asymptote at x = 3.' }
+                  { do: 'Name the parts: u = 2x + 1 (top) and v = x − 3 (bottom)', why: 'The quotient rule needs the top and bottom kept apart; mixing them up is what produces the wrong sign.' },
+                  { do: 'Differentiate each: u′ = 2 and v′ = 1', why: 'Both are linear, so both derivatives are constants.' },
+                  { do: 'Apply the rule: dy/dx = (vu′ − uv′)/v² = ((x − 3)(2) − (2x + 1)(1))/(x − 3)²', why: 'Bottom times the derivative of the top, minus top times the derivative of the bottom, over the bottom squared. The minus sign, and the order of the two products, are the rule.' },
+                  { do: 'Expand the numerator: (2x − 6) − (2x + 1) = 2x − 6 − 2x − 1 = −7', why: 'Distribute the minus sign across both terms of the second bracket — dropping it on the +1 is the classic slip. The x-terms cancel and only a constant survives.' },
+                  { do: 'So dy/dx = −7/(x − 3)²', why: 'The denominator stays squared. Note the derivative is negative for every x ≠ 3, matching a curve that falls everywhere.' },
+                  { do: 'At x = 4: −7/(4 − 3)² = −7/1 = −7', why: 'Substitute. The slope at (4, 9) is −7.' }
                 ],
-                answer: 'dy/dx = −7/(x − 3)², and the slope at x = 4 is −7', answerWords: true
+                answer: 'dy/dx = −7/(x − 3)², and the slope at x = 4 is −7', answerWords: true,
+                check: 'Numerically: (y(4.001) − y(4))/0.001 = (8.99301 − 9)/0.001 ≈ −6.99, closing in on −7. And the sign is right by eye: the curve in the figure is falling at that point, so a positive answer would have been wrong whatever the arithmetic said.'
               }
             ],
             pitfalls: [
@@ -16782,6 +16893,11 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
           {
             id: 'b5', title: 'The chain rule', src: 'Section 11.5',
             idea: `Functions are often built by <b>composition</b>: y = (x² + 1)³ is the cube of something, and the something is x² + 1. Write it as y = u³ with u = x² + 1. The <b>chain rule</b> says the rate of change of y with respect to x is the rate of y with respect to u, times the rate of u with respect to x:<br><br><b>dy/dx = (dy/du) · (du/dx)</b><br><br>Here dy/du = 3u² and du/dx = 2x, so dy/dx = 3u² · 2x = 6x(x² + 1)². The inner function is differentiated too, and the factor it contributes — the 2x — is exactly what the power rule alone would miss.<br><br>The most-used special case is a <b>function raised to a power</b>, the <b>power rule for u<sup>n</sup></b>:<br><br><b>d/dx (u<sup>n</sup>) = n u<sup>n−1</sup> · (du/dx)</b><br><br>Read it as: the ordinary power rule applied to the outer power, then multiplied by the derivative of the inside. Nothing else in this course produces more lost marks than forgetting that last factor. It handles roots and reciprocals of expressions too, after rewriting: √(3x² + 4x) = (3x² + 4x)<sup>1/2</sup>, and 1/(x² + 5)² = (x² + 5)<sup>−2</sup>.<br><br>The chain rule composes with the earlier rules. A quotient raised to a power is the power rule for u<sup>n</sup> with the quotient rule applied to du/dx. A product of two powers, like (x + 1)⁴(2x − 3)⁵, is the product rule where each factor's derivative comes from the chain rule. The working is longer but it is only the rules applied in order, outermost operation first.<br><br>The economic form of the chain rule is a rate through an intermediate variable. If a firm's output q depends on its number of employees m, and revenue r depends on output through the demand equation, then <b>dr/dm = (dr/dq) · (dq/dm)</b>. This is the <b>marginal-revenue product</b>: the approximate change in revenue from employing one more person. It is computed by finding r as a function of q from r = pq, differentiating, then multiplying by dq/dm — or equivalently by substituting q(m) into r and differentiating directly with respect to m. Both routes give the same number, and doing it both ways is the check.`,
+            figure: {
+              kind: 'graph', x: [-1.7, 1.7], y: [0, 32],
+              fns: [{ expr: '(x**2 + 1)**3', label: 'y = (x² + 1)³' }, { expr: 'x**2 + 1', label: 'u = x² + 1', dashed: true }],
+              caption: 'A composite and its inside. The inner function u = x² + 1 rises gently; cubing it turns that gentle rise into a steep one. The chain rule explains the difference: the outer rate 3u² is multiplied by the inner rate 2x, so the two rates compound instead of adding.'
+            },
             rules: [
               { name: 'Chain rule', expr: 'dy/dx = dy/du × du/dx', note: 'For y a function of u and u a function of x. Outer rate times inner rate.' },
               { name: 'Power rule for a function', expr: 'd/dx (u^n) = n u^(n-1) × du/dx', note: 'The power rule on the outside, times the derivative of the inside. The last factor is the one that gets forgotten.' },
@@ -16791,23 +16907,45 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             examples: [
               {
                 prompt: 'Differentiate y = (x² + 1)³, and find dy/dx at x = 1.',
+                approach: 'This is a composite — something is being cubed — so the chain rule applies: differentiate the outer function with the inside left alone, then multiply by the derivative of the inside. Naming the inside u makes the two halves explicit and makes the factor 2x impossible to forget, which is the error this section exists to prevent.',
+                figure: {
+                  kind: 'graph', x: [-1.7, 1.7], y: [0, 32],
+                  fns: [{ expr: '(x**2 + 1)**3', label: 'y = (x² + 1)³' }],
+                  segments: [{ from: [0.75, 2], to: [1.3, 15.2], label: 'slope 24' }],
+                  points: [{ x: 1, y: 8, label: '(1, 8)' }],
+                  caption: 'At x = 1 the curve passes through (1, 8) with slope 24. Without the chain rule’s factor of 2x the answer would have been 3(2)² = 12 — a tangent half as steep as the curve actually is, which the drawing would immediately contradict.'
+                },
                 steps: [
-                  { do: 'Let u = x² + 1, so y = u³', why: 'Identifying the inside function is the whole of the chain rule. Everything after that is mechanical.' },
-                  { do: 'dy/du = 3u² and du/dx = 2x', why: 'The ordinary power rule for each of the two pieces.' },
-                  { do: 'dy/dx = 3u² · 2x = 6x(x² + 1)²', why: 'Multiply, then put u back in terms of x. Without the factor 2x the answer is wrong by a factor that varies with x, not a constant.' },
-                  { do: 'At x = 1: 6(1)(2)² = 24', why: 'Expanding y = x⁶ + 3x⁴ + 3x² + 1 and differentiating gives 6x⁵ + 12x³ + 6x, which is 24 at x = 1. The chain rule agrees with the long way round.' }
+                  { do: 'Identify the inside and the outside: u = x² + 1, and y = u³', why: 'The inside is what is done first, the outside what is done to the result. Writing both down is the habit that makes the rule mechanical.' },
+                  { do: 'Differentiate the outside with respect to u: dy/du = 3u²', why: 'The power rule on u³, treating u as the variable. The inside is left untouched at this stage.' },
+                  { do: 'Differentiate the inside: du/dx = 2x', why: 'The power rule on x² + 1.' },
+                  { do: 'Multiply, by the chain rule: dy/dx = (dy/du)(du/dx) = 3u² · 2x', why: 'The rule is that the rates multiply. This is the factor that is dropped when the rule is forgotten.' },
+                  { do: 'Put the inside back and tidy: dy/dx = 3(x² + 1)² · 2x = 6x(x² + 1)²', why: 'The answer must be a function of x, so u is replaced by what it stood for. Writing the 6x in front is conventional.' },
+                  { do: 'At x = 1: 6(1)(1 + 1)² = 6 · 4 = 24', why: 'Substitute. The slope at (1, 8) is 24.' }
                 ],
-                answer: 'dy/dx = 6x(x² + 1)², which is 24 at x = 1', answerWords: true
+                answer: 'dy/dx = 6x(x² + 1)², which is 24 at x = 1', answerWords: true,
+                check: 'Expand to test it: (x² + 1)³ = x⁶ + 3x⁴ + 3x² + 1, whose derivative is 6x⁵ + 12x³ + 6x, giving 6 + 12 + 6 = 24 at x = 1 ✓. Numerically, (y(1.001) − y(1))/0.001 ≈ 24.0 as well.'
               },
               {
                 prompt: 'A manufacturer finds that m employees produce q = 10m units a day, and the product sells at p = 50 − q/10 dollars per unit. Find the marginal-revenue product when m = 5.',
+                approach: 'The marginal-revenue product is dr/dm — the extra revenue from one more employee — and revenue is not written in terms of m to start with, so the chain rule links the two: dr/dm = (dr/dq)(dq/dm). Build r as a function of q, differentiate to get marginal revenue, differentiate the production function to get output per employee, and multiply. Substituting to get r in terms of m directly is a valid second route, and worth doing as a check.',
+                figure: {
+                  kind: 'graph', x: [0, 50], y: [0, 6800], xlabel: 'm', ylabel: 'r',
+                  fns: [{ expr: '500*x - 10*x**2', label: 'r = 500m − 10m²' }],
+                  segments: [{ from: [2, 1050], to: [9, 3850], label: 'slope 400 at m = 5' }],
+                  points: [{ x: 5, y: 2250, label: '(5, 2250)' }],
+                  caption: 'Revenue against the number of employees. At m = 5 the tangent rises $400 per extra employee. The curve peaks at m = 25, where an extra employee adds nothing: output still rises, but the price has fallen far enough to cancel the gain.'
+                },
                 steps: [
-                  { do: 'Revenue as a function of q: r = pq = (50 − q/10)q = 50q − q²/10', why: 'Price comes from demand, and revenue is price times quantity. Everything is now in one variable, q.' },
-                  { do: 'dr/dq = 50 − q/5, and dq/dm = 10', why: 'Two ordinary derivatives — the pieces the chain rule multiplies.' },
-                  { do: 'dr/dm = (dr/dq)(dq/dm) = (50 − q/5)(10). At m = 5, q = 50, so dr/dm = (50 − 10)(10) = 400', why: 'Evaluate dr/dq at the q that corresponds to m = 5, not at 5 itself. Then multiply.' },
-                  { do: 'Hiring a sixth employee raises daily revenue by approximately $400', why: 'Check by substitution: r = 50(10m) − (10m)²/10 = 500m − 10m², so dr/dm = 500 − 20m = 400 at m = 5. Same answer.' }
+                  { do: 'Write revenue in terms of q: r = pq = (50 − q/10)q = 50q − q²/10', why: 'Revenue is price times quantity, and the demand equation removes p.' },
+                  { do: 'Differentiate: dr/dq = 50 − q/5', why: 'Marginal revenue, in dollars per unit of output.' },
+                  { do: 'Differentiate the production function: dq/dm = 10', why: 'Each extra employee adds 10 units of output a day — a constant rate here, which keeps the arithmetic clean.' },
+                  { do: 'Chain rule: dr/dm = (dr/dq)(dq/dm) = (50 − q/5)(10)', why: 'The two rates multiply: dollars per unit times units per employee gives dollars per employee.' },
+                  { do: 'At m = 5 the output is q = 10(5) = 50, so dr/dq = 50 − 10 = 40', why: 'The chain rule needs the value of the inside function at the point, not the value of m. Substituting m = 5 into dr/dq would be meaningless — its variable is q.' },
+                  { do: 'dr/dm = 40 × 10 = 400', why: 'The fifth employee’s replacement adds about $400 a day of revenue. This is the marginal-revenue product.' }
                 ],
-                answer: '$400 per additional employee', answerWords: true
+                answer: '$400 per additional employee', answerWords: true,
+                check: 'The direct route: q = 10m and p = 50 − m, so r = (50 − m)(10m) = 500m − 10m², giving dr/dm = 500 − 20m = 400 at m = 5 ✓. And the actual gain from the sixth employee is r(6) − r(5) = 2640 − 2250 = 390, close to the marginal 400.'
               }
             ],
             pitfalls: [
@@ -22625,7 +22763,8 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
    Three kinds:
      { kind: 'graph', x: [a, b], y: [c, d]?, fns: [{ expr, label?, dashed?, domain?: [a, b] }],
        points?: [{ x, y, label?, open? }], vlines?: [{ x, label? }], hlines?: [{ y, label? }],
-       segments?: [{ from: [x, y], to: [x, y], label?, dashed? }], shade?: [{ from, to }], caption? }
+       segments?: [{ from: [x, y], to: [x, y], label?, dashed? }], shade?: [{ from, to }],
+       xlabel?, ylabel?, tall?, caption? }
      { kind: 'signchart', marks: [{ x: '−3', kind: 'zero' | 'undef' }], rows: [{ label, signs: [...] }],
        result?: { label, signs: [...] }, shape?: ['rise', 'fall', ...], caption? }
      { kind: 'numberline', x: [a, b], intervals?: [{ from, to, closedL?, closedR? }],
@@ -22697,9 +22836,19 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     return 10 * mag;
   }
 
-  /* ---------- graph ---------- */
+  /* ---------- graph ----------
+     Labels are the hard part of an automatic figure. A point label, an asymptote label and a
+     segment label all want the space beside the thing they name, and the tick numbers and the axis
+     letters are already there — which is how "tangent at x = 1" ended up printed through the
+     x-axis ticks in v2.53. So nothing is emitted where it was asked for: every label becomes a
+     REQUEST with an anchor and a list of candidate positions around it, and a placement pass scores
+     each candidate — outside the frame is fatal, overlapping an already-placed label or a tick is
+     heavily penalised, sitting on top of a plotted curve is penalised lightly — and takes the best.
+     Labels are placed in the order points, segments, asymptotes, so the most important ones get
+     first refusal on the good spots. */
   function graph(spec) {
-    const W = 440, H = 280, PAD = { l: 38, r: 16, t: 14, b: 30 };
+    const W = 460, H = spec.tall ? 340 : 300, PAD = { l: 42, r: 20, t: 18, b: 34 };
+    const CH = 6.75, LH = 12;                      // mono advance width and line height at 11px
     const [x0, x1] = spec.x;
     const fns = (spec.fns || []).map(f => ({ ...f, f: compile(f.expr) }));
     // y-range: given, or from the samples (ignoring blow-ups)
@@ -22717,63 +22866,120 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     const sx = x => PAD.l + (x - x0) / (x1 - x0) * (W - PAD.l - PAD.r);
     const sy = y => H - PAD.b - (y - y0) / (y1 - y0) * (H - PAD.t - PAD.b);
     const inY = y => y >= y0 && y <= y1;
-    const parts = [];
-    // grid + ticks
+    const parts = [], labels = [], placed = [], curvePts = [];
+    const hit = (a, b) => a.x1 < b.x2 && b.x1 < a.x2 && a.y1 < b.y2 && b.y1 < a.y2;
+    const boxOf = (text, x, y, anchor) => {
+      const w = String(text).length * CH;
+      const x1b = anchor === 'end' ? x - w : anchor === 'middle' ? x - w / 2 : x;
+      // a little larger than the glyphs: the estimate must never be tighter than the real text box,
+      // which test/figclash.js checks against the browser's own getBBox()
+      return { x1: x1b - 2, x2: x1b + w + 2, y1: y - LH, y2: y + 4 };
+    };
+    /* A label request: anchor point, the text, and candidate offsets in preference order. */
+    function want(text, ax, ay, cands) { labels.push({ text, ax, ay, cands }); }
+    function place() {
+      for (const L of labels) {
+        let best = null, bestScore = Infinity;
+        for (let i = 0; i < L.cands.length; i++) {
+          const c = L.cands[i];
+          const x = L.ax + c.dx, y = L.ay + c.dy, box = boxOf(L.text, x, y, c.anchor);
+          let score = i * 0.5;                                        // prefer earlier candidates
+          if (box.x1 < 2 || box.x2 > W - 2 || box.y1 < 2 || box.y2 > H - 2) score += 1000;
+          for (const p of placed) if (hit(box, p)) score += 200;
+          for (const pt of curvePts) if (pt.x >= box.x1 && pt.x <= box.x2 && pt.y >= box.y1 && pt.y <= box.y2) { score += 4; break; }
+          if (score < bestScore) { bestScore = score; best = { x, y, anchor: c.anchor, box }; }
+          if (bestScore < 0.5) break;
+        }
+        placed.push(best.box);
+        parts.push(`<text class="fig-lbl" x="${best.x.toFixed(1)}" y="${best.y.toFixed(1)}" text-anchor="${best.anchor}">${esc(L.text)}</text>`);
+      }
+    }
+    /* grid + ticks — drawn first, and their boxes reserved so no label can land on a number */
     const tx = tickStep(x1 - x0), ty = tickStep(y1 - y0);
     for (let x = Math.ceil(x0 / tx) * tx; x <= x1 + 1e-9; x += tx) {
       if (Math.abs(x) < 1e-9) continue;
       parts.push(`<line class="fig-grid" x1="${sx(x)}" y1="${PAD.t}" x2="${sx(x)}" y2="${H - PAD.b}"/>`);
       parts.push(`<text class="fig-tick" x="${sx(x)}" y="${H - PAD.b + 14}" text-anchor="middle">${fmt(x)}</text>`);
+      placed.push(boxOf(fmt(x), sx(x), H - PAD.b + 14, 'middle'));
     }
     for (let y = Math.ceil(y0 / ty) * ty; y <= y1 + 1e-9; y += ty) {
       if (Math.abs(y) < 1e-9) continue;
       parts.push(`<line class="fig-grid" x1="${PAD.l}" y1="${sy(y)}" x2="${W - PAD.r}" y2="${sy(y)}"/>`);
       parts.push(`<text class="fig-tick" x="${PAD.l - 6}" y="${sy(y) + 4}" text-anchor="end">${fmt(y)}</text>`);
+      placed.push(boxOf(fmt(y), PAD.l - 6, sy(y) + 4, 'end'));
     }
     // axes: through the origin when it is in view, else along the edges
-    const ax = inY(0) ? sy(0) : (y0 > 0 ? H - PAD.b : PAD.t);
-    const ay = (x0 <= 0 && x1 >= 0) ? sx(0) : (x0 > 0 ? PAD.l : W - PAD.r);
-    parts.push(`<line class="fig-axis" x1="${PAD.l}" y1="${ax}" x2="${W - PAD.r}" y2="${ax}"/>`);
-    parts.push(`<line class="fig-axis" x1="${ay}" y1="${PAD.t}" x2="${ay}" y2="${H - PAD.b}"/>`);
-    parts.push(`<text class="fig-tick" x="${W - PAD.r}" y="${ax - 5}" text-anchor="end">x</text>`);
-    parts.push(`<text class="fig-tick" x="${ay + 6}" y="${PAD.t + 10}">y</text>`);
+    const ax0 = inY(0) ? sy(0) : (y0 > 0 ? H - PAD.b : PAD.t);
+    const ay0 = (x0 <= 0 && x1 >= 0) ? sx(0) : (x0 > 0 ? PAD.l : W - PAD.r);
+    parts.push(`<line class="fig-axis" x1="${PAD.l}" y1="${ax0}" x2="${W - PAD.r}" y2="${ax0}"/>`);
+    parts.push(`<line class="fig-axis" x1="${ay0}" y1="${PAD.t}" x2="${ay0}" y2="${H - PAD.b}"/>`);
+    // the axes are named: a cost curve has q across and c up, not x and y
+    const xl = spec.xlabel || 'x', yl = spec.ylabel || 'y';
+    parts.push(`<text class="fig-tick" x="${W - PAD.r}" y="${ax0 - 6}" text-anchor="end">${esc(xl)}</text>`);
+    placed.push(boxOf(xl, W - PAD.r, ax0 - 6, 'end'));
+    parts.push(`<text class="fig-tick" x="${ay0 + 6}" y="${PAD.t + 10}">${esc(yl)}</text>`);
+    placed.push(boxOf(yl, ay0 + 6, PAD.t + 10, 'start'));
     // shaded intervals on the x-axis
     for (const s of spec.shade || []) {
       const a = Math.max(x0, s.from), b = Math.min(x1, s.to);
       parts.push(`<rect class="fig-shade" x="${sx(a)}" y="${PAD.t}" width="${Math.max(0, sx(b) - sx(a))}" height="${H - PAD.t - PAD.b}"/>`);
     }
-    // curves: sampled; broken at non-finite values and at asymptotic jumps
+    // curves: sampled; the pen lifts at non-finite values and at asymptotic jumps
     fns.forEach((f, k) => {
       const [d0, d1] = f.domain || [x0, x1];
       const a = Math.max(x0, d0), b = Math.min(x1, d1);
       const N = 400; let d = ''; let prev = null; const span = y1 - y0;
       for (let i = 0; i <= N; i++) {
-        const x = a + (b - a) * i / N; let y = f.f(x);
+        const x = a + (b - a) * i / N; const y = f.f(x);
         if (!isFinite(y)) { prev = null; continue; }
-        // clamp far outside the window so a near-asymptote sample still points the right way
         const yc = Math.max(y0 - span, Math.min(y1 + span, y));
-        if (prev !== null && Math.abs(yc - prev) > span * 0.9) prev = null;   // an asymptotic jump: lift the pen
+        if (prev !== null && Math.abs(yc - prev) > span * 0.9) prev = null;
         d += (prev === null ? 'M' : 'L') + sx(x).toFixed(1) + ' ' + sy(yc).toFixed(1) + ' ';
+        if (yc >= y0 && yc <= y1 && i % 8 === 0) curvePts.push({ x: sx(x), y: sy(yc) });
         prev = yc;
       }
       parts.push(`<path class="fig-curve c${k % 3}${f.dashed ? ' dashed' : ''}" d="${d.trim()}"/>`);
     });
+    /* ---- marks, and their labels as requests ---- */
+    const around = (r, up) => ([
+      { dx: r, dy: up ? -r : r + 4, anchor: 'start' }, { dx: -r, dy: up ? -r : r + 4, anchor: 'end' },
+      { dx: r, dy: up ? r + 4 : -r, anchor: 'start' }, { dx: -r, dy: up ? r + 4 : -r, anchor: 'end' },
+      { dx: 0, dy: -r - 6, anchor: 'middle' }, { dx: 0, dy: r + 12, anchor: 'middle' },
+      { dx: r + 18, dy: -r - 12, anchor: 'start' }, { dx: -r - 18, dy: -r - 12, anchor: 'end' },
+      { dx: r + 18, dy: r + 16, anchor: 'start' }, { dx: -r - 18, dy: r + 16, anchor: 'end' },
+      { dx: 0, dy: -r - 22, anchor: 'middle' }, { dx: 0, dy: r + 28, anchor: 'middle' }
+    ]);
+    for (const p of spec.points || []) {
+      parts.push(`<circle class="fig-pt${p.open ? ' open' : ''}" cx="${sx(p.x)}" cy="${sy(p.y)}" r="4"/>`);
+      placed.push({ x1: sx(p.x) - 6, x2: sx(p.x) + 6, y1: sy(p.y) - 6, y2: sy(p.y) + 6 });
+      if (p.label) want(p.label, sx(p.x), sy(p.y), around(9, sy(p.y) > H / 2));
+    }
     for (const s of spec.segments || []) {
       parts.push(`<line class="fig-seg${s.dashed ? ' dashed' : ''}" x1="${sx(s.from[0])}" y1="${sy(s.from[1])}" x2="${sx(s.to[0])}" y2="${sy(s.to[1])}"/>`);
-      if (s.label) { const right = sx(s.to[0]) + 4 + s.label.length * 6.4 <= W - PAD.r; parts.push(`<text class="fig-lbl" x="${sx(s.to[0]) + (right ? 4 : -4)}" y="${sy(s.to[1]) - 4}" text-anchor="${right ? 'start' : 'end'}">${esc(s.label)}</text>`); }
+      if (s.label) {
+        // anchor at the midpoint of the drawn segment: the ends are usually crowded by the points
+        const mx = (sx(s.from[0]) + sx(s.to[0])) / 2, my = (sy(s.from[1]) + sy(s.to[1])) / 2;
+        want(s.label, mx, my, around(10, my > H / 2));
+      }
     }
     for (const v of spec.vlines || []) {
       parts.push(`<line class="fig-asym" x1="${sx(v.x)}" y1="${PAD.t}" x2="${sx(v.x)}" y2="${H - PAD.b}"/>`);
-      if (v.label) { const right = sx(v.x) + 4 + v.label.length * 6.4 <= W - PAD.r; parts.push(`<text class="fig-lbl" x="${sx(v.x) + (right ? 4 : -4)}" y="${PAD.t + 12}" text-anchor="${right ? 'start' : 'end'}">${esc(v.label)}</text>`); }
+      if (v.label) want(v.label, sx(v.x), PAD.t, [
+        { dx: 5, dy: 12, anchor: 'start' }, { dx: -5, dy: 12, anchor: 'end' },
+        { dx: 5, dy: 26, anchor: 'start' }, { dx: -5, dy: 26, anchor: 'end' },
+        { dx: 5, dy: 40, anchor: 'start' }, { dx: -5, dy: 40, anchor: 'end' },
+        { dx: 5, dy: H - PAD.b - PAD.t - 6, anchor: 'start' }, { dx: -5, dy: H - PAD.b - PAD.t - 6, anchor: 'end' }
+      ]);
     }
     for (const h of spec.hlines || []) {
       parts.push(`<line class="fig-asym" x1="${PAD.l}" y1="${sy(h.y)}" x2="${W - PAD.r}" y2="${sy(h.y)}"/>`);
-      if (h.label) parts.push(`<text class="fig-lbl" x="${W - PAD.r - 4}" y="${sy(h.y) - 4}" text-anchor="end">${esc(h.label)}</text>`);
+      if (h.label) want(h.label, W - PAD.r, sy(h.y), [
+        { dx: -4, dy: -5, anchor: 'end' }, { dx: -4, dy: 14, anchor: 'end' },
+        { dx: -(W - PAD.l - PAD.r) / 2, dy: -5, anchor: 'middle' }, { dx: -(W - PAD.l - PAD.r) / 2, dy: 14, anchor: 'middle' },
+        { dx: -(W - PAD.l - PAD.r) + 6, dy: -5, anchor: 'start' }, { dx: -(W - PAD.l - PAD.r) + 6, dy: 14, anchor: 'start' }
+      ]);
     }
-    for (const p of spec.points || []) {
-      parts.push(`<circle class="fig-pt${p.open ? ' open' : ''}" cx="${sx(p.x)}" cy="${sy(p.y)}" r="4"/>`);
-      if (p.label) { const right = sx(p.x) + 7 + p.label.length * 6.4 <= W - PAD.r; parts.push(`<text class="fig-lbl" x="${sx(p.x) + (right ? 7 : -7)}" y="${sy(p.y) - 7}" text-anchor="${right ? 'start' : 'end'}">${esc(p.label)}</text>`); }
-    }
+    place();
     const legend = fns.filter(f => f.label).map((f, k) => `<span class="fig-key c${k % 3}${f.dashed ? ' dashed' : ''}"><i></i>${esc(f.label)}</span>`).join('');
     return `<figure class="fig fig-graph"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(spec.alt || spec.caption || 'graph')}">${parts.join('')}</svg>${legend ? `<div class="fig-legend">${legend}</div>` : ''}${spec.caption ? `<figcaption>${esc(spec.caption)}</figcaption>` : ''}</figure>`;
   }
@@ -22831,7 +23037,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.53', date: '16 September 2026', year: 2026 };
+  const BUILD = { v: '2.54', date: '17 September 2026', year: 2026 };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonandy242', ['gmail', 'com'].join('.')].join('@');
   /* The one sentence that says what this is. It appears under the wordmark, and build.js uses
@@ -22844,6 +23050,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      because the person who needs it is the one who just watched the app refresh itself and wants to
      know what moved. Trim the tail when it gets past a dozen; nobody reads further back than that. */
   const WHATS_NEW = [
+    ['2.54', '<b>MATH 1170 chapter 11, The Derivative, gets the same treatment &mdash; and the graph labels stop colliding.</b> All five sections now open with a picture and every worked example carries one: the secant sliding into the tangent on y = x&sup2;, a curve drawn above its own derivative so the sign of one matches the shape of the other, a cost curve whose tangent is the marginal cost (and the same curve magnified until the tangent and the curve separate by a cent), a rational function with its vertical asymptote and its horizontal one, and the chain rule shown as an inside function feeding an outside one. Every example begins with <b>How to approach it</b>, works the algebra line by line, and ends with a <b>Check</b>. Behind that: the figure renderer now places every label by trying a ring of positions and scoring each one against the tick numbers, the axis letters, the plotted points and the labels already placed, so nothing prints through anything else &mdash; the fault visible in 2.53, where &ldquo;tangent at x = 1&rdquo; ran straight through the x-axis ticks. A new audit renders every figure in a real browser, reads each label&rsquo;s true box, and fails the build on any overlap or overflow. Chapters 12, 13 and 17 follow, one per release.'],
     ['2.53', '<b>MATH 1170 gets pictures, and its worked examples get a plan, fuller working and a check.</b> Starting with chapter 10, every lesson opens with a graph and every worked example carries one: the hole at (3, 6) that a limit sees and a value does not, the secant sliding into the tangent as h shrinks, the jump at a seam between two pieces, the two vertical asymptotes of a rational function, and the parabola shaded where the inequality holds. The graphs are not images &mdash; each is drawn from the actual function in the example, in the page&rsquo;s own colours, so it matches the numbers and reads in dark mode and on a phone &mdash; and sign charts are laid out as tables with the zeros and the excluded values marked differently. Each example now begins with <b>How to approach it</b>, shows the algebra between the lines instead of jumping (six steps where there were four), and ends with a <b>Check</b> that tests the answer against numbers near the point. Chapters 11, 12, 13 and 17 follow, one per release. MATH 1070 pauses at chapter 5 for now.'],
     ['2.52', '<b>MATH 1070 chapter 5, Mathematics of Finance, all six sections.</b> Compound interest with periodic and effective rates and doubling time; present value, equations of value at a comparison date, and net present value as the test of an investment; continuous compounding and its effective-rate ceiling; ordinary annuities and annuities due, the periodic payment and sinking funds; amortisation &mdash; the payment, the schedule line by line, total interest and the number of payments; and perpetuities as the limit of an annuity. Six lessons, 15 worked examples, 36 practice questions and 18 named misconceptions, every dollar figure recomputed by a computer algebra system to the cent. Chapter 6, matrix algebra, follows.'],
     ['2.51', '<b>MATH 1070 chapter 4, Exponential and Logarithmic Functions, all four sections.</b> Exponential functions and their graphs, compound amounts at a periodic rate with the nominal-versus-periodic distinction spelled out, growth and decay with base e; the logarithm as an exponent, converting between forms, common and natural logs, and the half-life formula; the product, quotient and power rules with the non-rule for sums named, and the change-of-base formula; and exponential and logarithmic equations &mdash; isolate first, take logs, combine, convert, and check the domain for extraneous solutions &mdash; with doubling time and a demand equation solved for quantity. Four lessons, 9 worked examples, 34 practice questions and 12 named misconceptions, every number recomputed by a computer algebra system. Chapter 5, the mathematics of finance, follows.'],
