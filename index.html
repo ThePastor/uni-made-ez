@@ -12449,7 +12449,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      Mechanics is cut to the four ideas the subject leans on, while this one follows a real outline
      week by week and therefore also covers the parts a course actually spends time on and a summary
      leaves out — significant figures, approximation, drag, elasticity, fictitious frames, Kepler.
-     Built so far: chapters 1 to 6. */
+     Built so far: the whole course, chapters 1 to 8. */
   const FOUND = {
     subject: PHYS,
     id: 'phys-1000h', inst: 'trent',
@@ -12457,11 +12457,10 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     title: 'Foundations of Physics',
     blurb: 'Mechanics from the beginning, for someone who has not done physics before: what a measurement is worth before it is used, how motion in a straight line is described and predicted, then vectors and two dimensions, the laws that say why motion changes, and finally energy and momentum — the two quantities that survive a collision no one can solve force by force.',
     level: 'Foundation',
-    exam: 'Follows the course schedule: chapter 1 sections 1.1–1.4, chapter 2 in full, chapter 3 sections 3.1–3.5, chapter 4 sections 4.1–4.7, chapter 5 sections 5.1–5.3, chapter 6 sections 6.1–6.6, chapter 7 sections 7.1–7.7 and chapter 8 sections 8.1–8.5. A midterm falls after chapter 6 and the final is cumulative. Built so far: chapters 1 to 6.',
+    exam: 'Follows the course schedule: chapter 1 sections 1.1–1.4, chapter 2 in full, chapter 3 sections 3.1–3.5, chapter 4 sections 4.1–4.7, chapter 5 sections 5.1–5.3, chapter 6 sections 6.1–6.6, chapter 7 sections 7.1–7.7 and chapter 8 sections 8.1–8.5. A midterm falls after chapter 6 and the final is cumulative. Every chapter on the schedule is built.',
     text: 'Urone & Hinrichs, College Physics (OpenStax, free online)',
     legalNote: 'Study material for a university course. It follows the chapter and section order of the set text so that a lesson here matches the section you would open alongside it, but every explanation, example and question is written from scratch — nothing is copied from the book or from any past paper. Answers are recomputed by a computer algebra system before the page ships; where a figure is rounded, the question says to how many places, and g is taken as 9.80 m/s² unless a question says otherwise.',
     gaps: [
-      'Still to be built, in schedule order: chapter 7 work and energy, and chapter 8 linear momentum and collisions',
       'Not on the schedule for this course, so not built for it: rotational dynamics, statics and torque, fluids, thermodynamics, waves and everything after chapter 8 of the set text',
       'The course assumes school algebra and trigonometry — quadratics, two equations in two unknowns, and sine, cosine and tangent on a right triangle — and teaches none of it; the Precalculus course here covers that ground'
     ],
@@ -15172,6 +15171,884 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             answer: 1.8, verify: { expr: 'Rational(6, 10)*3' },
             hint: 'v = rω.',
             solution: ['v = 3.0 × 0.60', '= 1.8 m/s', 'A rider 1.5 m out would move at 0.90 m/s — same ω, half the speed'] }
+        ]
+      }
+,
+
+      /* ============================ CHAPTER 7 ============================ */
+      {
+        id: 'energy', n: 7,
+        title: 'Work and energy',
+        blurb: 'A second way to solve mechanics problems, which needs no forces and no time: track the energy instead, and let what it cannot do tell you what must happen.',
+        read: 'Chapter 7',
+        objectives: [
+          'Compute the work done by a force, including the cosine factor and the cases that give zero',
+          'Use the work–energy theorem to find a speed or a force without touching the equations of motion',
+          'Compute kinetic and gravitational potential energy, and choose a reference level',
+          'Apply conservation of energy, and account for friction when energy is not conserved',
+          'Compute power as work over time and as force times speed'
+        ],
+        lessons: [
+          {
+            id: 'g1', title: 'Work and the work–energy theorem', src: 'Section 7.1',
+            idea: `<b>Work</b> is what a force does when it moves something:<br><br><b>W = Fd cos θ</b>, in <b>joules</b> (1 J = 1 N·m)<br><br>where θ is the angle between the force and the displacement. Work is a <b>scalar</b> — it has a sign but no direction — and the cosine carries all the geometry.<br><br>Three cases follow from that cosine, and each is a standing exam question:<br><br>• Force along the motion, θ = 0: <b>W = Fd</b>, the maximum.<br>• Force perpendicular to the motion, θ = 90°: <b>W = 0</b>. A normal force does no work; neither does the tension on a ball whirled in a circle, nor gravity on a satellite in a circular orbit.<br>• Force opposing the motion, θ = 180°: <b>W = −Fd</b>, negative. Friction almost always does negative work, taking energy out.<br><br>Two situations give zero work for a different reason, and both offend intuition. Holding a heavy box still does <b>no work</b>, however tiring, because d = 0 — muscles consume energy, but no mechanical work is done on the box. And carrying that box horizontally at constant speed does no work either, because the lifting force is vertical while the motion is horizontal.<br><br><b>Kinetic energy</b> is the energy of motion:<br><br><b>KE = ½mv²</b><br><br>Note the <b>v²</b>: doubling the speed <b>quadruples</b> the kinetic energy, which is why stopping distances grow so steeply and why a crash at 100 km/h releases four times the energy of one at 50.<br><br>The two ideas meet in the <b>work–energy theorem</b>:<br><br><b>W<sub>net</sub> = ΔKE = ½mv² − ½mv<sub>0</sub>²</b><br><br>The net work done on an object equals its change in kinetic energy. This is a second complete route through mechanics: it needs no time, no acceleration and no vectors beyond a cosine, so a question that would take two equations of motion often takes one line of energy. Positive net work speeds something up; negative net work slows it down; zero net work leaves the speed unchanged, however complicated the journey.`,
+            figure: {
+              kind: 'graph', x: [0, 30], y: [0, 500], xlabel: 'v', ylabel: 'KE (kJ)',
+              fns: [{ expr: 'x**2/2*1.2/1000*1000', label: 'KE of a 1,200 kg car' }],
+              points: [{ x: 10, y: 60, label: '10 m/s: 60 kJ' }, { x: 20, y: 240, label: '20 m/s: 240 kJ' }, { x: 30, y: 540, label: '30 m/s' }],
+              caption: 'Kinetic energy against speed for a family car. The curve is a parabola because of the v², so doubling the speed from 10 to 20 m/s does not double the energy but quadruples it. Every joule of that has to be removed by the brakes, which is why stopping distance grows as the square of the speed and not in proportion to it.'
+            },
+            rules: [
+              { name: 'Work', expr: 'W = F d cos(theta)', note: 'In joules, 1 J = 1 N·m. θ is the angle between the force and the displacement.' },
+              { name: 'Perpendicular force does no work', expr: 'cos(90) = 0', note: 'A normal force, a string on a circling ball, gravity on a circular orbit — all do zero work.' },
+              { name: 'Negative work', expr: 'W = -F d when the force opposes the motion', words: true, note: 'Friction almost always does negative work, removing energy.' },
+              { name: 'Kinetic energy', expr: 'KE = m v^2 / 2', note: 'The v² is the point: twice the speed is four times the energy.' },
+              { name: 'The work–energy theorem', expr: 'W_net = (delta KE)', note: 'Net work equals the change in kinetic energy. A complete second route through mechanics, with no time in it.' }
+            ],
+            examples: [
+              {
+                prompt: 'A crate is dragged 12 m along level ground by a 50 N force applied at 30° above the horizontal, against 18 N of friction. Find the work done by each force and the net work.',
+                approach: 'Take each force in turn and apply W = Fd cos θ with its own angle — that is the whole method, and the angles are what distinguish the four answers. Then add the works as signed numbers to get the net work, which is a scalar sum and much easier than adding the forces as vectors. The two vertical forces will turn out to do nothing at all.',
+                steps: [
+                  { do: 'Applied force: θ = 30° between the force and the horizontal displacement, so W = 50 × 12 × cos 30°', why: 'Only the component along the motion does work, and the cosine extracts it.' },
+                  { do: 'W_applied = 50 × 12 × 0.8660 = 519.6 J', why: 'Positive, because the force has a component in the direction of travel.' },
+                  { do: 'Friction: θ = 180°, directly opposing, so W = 18 × 12 × cos 180° = −216 J', why: 'Negative work. Friction removes energy from the crate and turns it into heat.' },
+                  { do: 'Weight: θ = 90°, since the crate moves horizontally, so W = 0', why: 'Perpendicular forces do no work, however large they are.' },
+                  { do: 'Normal force: also θ = 90°, so W = 0', why: 'The same reason. Two of the four forces contribute nothing.' },
+                  { do: 'Net work = 519.6 − 216 + 0 + 0 = 303.6 J', why: 'A scalar sum of signed numbers — no components, no triangles. By the work–energy theorem the crate\'s kinetic energy rose by 303.6 J.' }
+                ],
+                answer: '519.6 J by the applied force, −216 J by friction, zero by the weight and the normal force, and 303.6 J net', answerWords: true,
+                check: 'Cross-check through forces: the horizontal component of the pull is 50 cos 30° = 43.3 N, so the net horizontal force is 43.3 − 18 = 25.3 N, and 25.3 × 12 = 303.6 J ✓. The two routes must agree, since the net work is the work of the net force when the force is constant.'
+              },
+              {
+                prompt: 'A 1,200 kg car accelerates from 20 m/s to 30 m/s over 150 m. Find the net work done and the average net force, using energy rather than the equations of motion.',
+                approach: 'The work–energy theorem turns this into arithmetic with no acceleration and no time: compute the kinetic energy at each end, subtract, and that is the net work. Then divide by the distance for the average force, since work is force times distance when they act along the same line. Notice what is never needed — a, t and any equation from chapter 2.',
+                steps: [
+                  { do: 'Initial kinetic energy: KE₀ = ½(1,200)(20²) = ½(1,200)(400) = 240,000 J', why: 'Square the speed before multiplying. 240 kJ at 20 m/s.' },
+                  { do: 'Final kinetic energy: KE = ½(1,200)(30²) = ½(1,200)(900) = 540,000 J', why: 'Half again as fast, and more than double the energy — the v² at work.' },
+                  { do: 'Net work: W = ΔKE = 540,000 − 240,000 = 300,000 J', why: 'The work–energy theorem, used directly. 300 kJ had to be supplied.' },
+                  { do: 'Average net force: W = Fd, so F = W/d = 300,000/150', why: 'The force acts along the motion, so no cosine is needed.' },
+                  { do: 'F = 2,000 N', why: 'A plausible net driving force for a family car.' },
+                  { do: 'No acceleration and no time were used anywhere', why: 'That is the advantage of the energy route: it skips straight from the speeds to the force.' }
+                ],
+                answer: 'Net work 300 kJ, average net force 2,000 N', answerWords: true,
+                check: 'Confirm with chapter 2: v² = v₀² + 2aΔx gives 900 = 400 + 2a(150), so a = 1.667 m/s², and F = ma = 1,200 × 1.667 = 2,000 N ✓. Two independent routes, one of which needed the acceleration and one of which did not.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'p1k-work-without-cosine',
+                wrong: 'Computing W = Fd for a force applied at an angle',
+                right: 'Only the component along the displacement does work: W = Fd cos θ.',
+                why: 'Dropping the cosine overstates the work by up to a factor of the secant of the angle — 15% at 30°, 100% at 60° — and the error is invisible because the answer is still in joules. Writing the angle down before the formula is what fixes it, and at θ = 0 the cosine is 1, so nothing is lost by always including it.'
+              },
+              {
+                id: 'p1k-holding-does-work',
+                wrong: 'Saying that holding a heavy weight still does work because it is tiring',
+                right: 'Work needs a displacement. With d = 0 the work is zero, however much effort is involved.',
+                why: 'Muscles consume chemical energy to maintain tension even without moving, which is why it feels like work, but no energy is transferred to the object — its kinetic and potential energy are unchanged. The physics definition is narrower than the everyday one, and the work–energy theorem depends on that narrowness.'
+              },
+              {
+                id: 'p1k-normal-force-does-work',
+                wrong: 'Including the normal force or the weight in the work done on a horizontally sliding box',
+                right: 'Both are perpendicular to the motion, so cos 90° = 0 and each does no work.',
+                why: 'A perpendicular force changes the direction of motion but never the speed, which is exactly why it appears in the centripetal equation and not in the energy one. Including them adds large spurious numbers to a net work that should have come from the horizontal forces alone.'
+              },
+              {
+                id: 'p1k-ke-linear-in-v',
+                wrong: 'Expecting twice the speed to mean twice the kinetic energy',
+                right: 'KE = ½mv², so twice the speed is FOUR times the energy.',
+                why: 'It is why braking distance grows as the square of speed and why a crash at twice the speed is four times as violent, so the square is the practical content of the formula rather than a detail. Treating it as linear also makes the work–energy theorem give a net work far too small, and the error grows with the speed.'
+              }
+            ]
+          },
+
+          {
+            id: 'g2', title: 'Potential energy and conservative forces', src: 'Section 7.3',
+            idea: `<b>Potential energy</b> is energy stored by position. Lift a book and the work you did is not lost; it is stored, ready to reappear as kinetic energy if the book is released.<br><br>Near the Earth's surface, <b>gravitational potential energy</b> is<br><br><b>PE = mgh</b><br><br>with h measured from a <b>reference level you choose</b>. The choice is free — the floor, the table, the ground outside — because only <b>changes</b> in potential energy have physical meaning. Choosing badly is not wrong, merely inconvenient; choosing differently partway through a problem is wrong.<br><br>A force is <b>conservative</b> if the work it does depends only on the start and end points, not on the route. Gravity is conservative: lifting a book 2 m straight up and carrying it up a long ramp to the same height take exactly the same work against gravity. Spring forces are conservative too. Only conservative forces have a potential energy, which is why there is no "friction potential energy".<br><br><b>Friction and drag are non-conservative</b>: a longer path costs more, and the energy they remove becomes heat and does not come back. That irreversibility is the whole distinction.<br><br>The consequences are worth stating plainly:<br><br>• The work done by gravity when an object falls a height h is <b>+mgh</b>, whatever path it takes.<br>• Going up and coming back to the same height, gravity does <b>zero</b> net work — the negative work going up cancels the positive work coming down.<br>• A skier, a ball and a roller coaster arriving at the same height from the same start have the <b>same speed</b>, regardless of how twisted the route was, provided friction is negligible.<br><br>That last result is the one energy methods are prized for. A path too complicated to describe with forces at all becomes a two-line calculation, because the intermediate shape simply does not matter.`,
+            figure: {
+              kind: 'graph', x: [0, 10], y: [0, 6], xlabel: 'x', ylabel: 'height',
+              fns: [{ expr: '5 - 0.05*x**2', label: 'a curved ramp' }, { expr: '5 - 0.5*x', label: 'a straight one', dashed: true }],
+              points: [{ x: 0, y: 5, label: 'both start here' }, { x: 8.9, y: 1.04, label: 'same height, same speed' }],
+              caption: 'Two routes from the same starting height to the same finishing height. Gravity does identical work on both, so an object arriving by either route arrives at the same speed — the shape of the path between is irrelevant. That is what conservative means, and it is why energy methods handle curves that force methods cannot.'
+            },
+            rules: [
+              { name: 'Gravitational potential energy', expr: 'PE = m g h', note: 'h from a reference level you choose. Only changes in PE matter, so the choice is free — but keep it for the whole problem.' },
+              { name: 'Change in potential energy', expr: '(delta PE) = m g (delta h)', note: 'Positive going up, negative coming down.' },
+              { name: 'Conservative force', expr: 'The work depends only on the endpoints, not on the path', words: true, note: 'Gravity and springs. Only conservative forces have a potential energy.' },
+              { name: 'Non-conservative force', expr: 'Friction and drag: a longer path costs more, and the energy does not return', words: true, note: 'Which is why there is no "friction potential energy".' },
+              { name: 'Round trip', expr: 'Gravity does zero net work over any closed path', words: true, note: 'The work going up exactly cancels the work coming down.' }
+            ],
+            examples: [
+              {
+                prompt: 'A 2.5 kg book is lifted 1.8 m onto a shelf. Find the work done against gravity and the potential energy gained, with g = 9.80 m/s². Then find its speed on reaching the floor if it falls off.',
+                approach: 'Choose the reference level first and say so — the floor, here, which makes the shelf height positive and the final potential energy zero. Lifting at steady speed means the work done against gravity equals the potential energy gained, and the fall converts all of that back into kinetic energy. The second part is conservation of energy, and the mass will cancel.',
+                steps: [
+                  { do: 'Take the floor as the reference level, so h = 0 there and h = 1.8 m at the shelf', why: 'Any level would do, but stating it once and keeping it is what stops sign errors later.' },
+                  { do: 'Work against gravity: W = mgh = 2.5 × 9.80 × 1.8', why: 'Lifting at constant speed, so the lifting force equals the weight and moves through 1.8 m.' },
+                  { do: 'W = 44.1 J, and the potential energy gained is the same 44.1 J', why: 'The work done against a conservative force is stored, not lost — that is what potential energy means.' },
+                  { do: 'Falling: all the potential energy becomes kinetic, so ½mv² = mgh', why: 'No friction in free fall over 1.8 m, so the total energy is unchanged.' },
+                  { do: 'The mass cancels: v = √(2gh) = √(2 × 9.80 × 1.8) = √35.28', why: 'Which is chapter 2\'s result recovered — every object falls the same way, whatever its mass.' },
+                  { do: 'v = 5.94 m/s on reaching the floor', why: 'And 44.1 J of kinetic energy, exactly what was stored.' }
+                ],
+                answer: '44.1 J of work and of stored energy, and it lands at 5.94 m/s', answerWords: true,
+                check: 'Check the kinetic energy at landing: ½(2.5)(5.94²) = ½(2.5)(35.3) = 44.1 J ✓, matching the potential energy exactly. And the chapter 2 route agrees: v² = 2gh = 35.28, giving the same 5.94 m/s without mentioning energy at all.'
+              },
+              {
+                prompt: 'A roller-coaster car passes the top of a 25 m hill at 5.0 m/s and rolls, without friction, to a point 10 m above the ground. Find its speed there.',
+                approach: 'Energy makes this a two-line problem where forces would make it impossible — the track\'s shape between the two points is not even given, and with a conservative force it does not matter. Write the total energy at each point, set them equal, and cancel the mass, which is not given either. Only the two heights and the starting speed are needed.',
+                steps: [
+                  { do: 'No friction, so the total mechanical energy is conserved: KE₀ + PE₀ = KE + PE', why: 'Gravity is conservative, so the shape of the track between the points is irrelevant.' },
+                  { do: 'Write it out: ½mv₀² + mgh₀ = ½mv² + mgh', why: 'Taking the ground as the reference level for both heights.' },
+                  { do: 'The mass cancels throughout: ½v₀² + gh₀ = ½v² + gh', why: 'Which is why the car\'s mass is not given — it makes no difference to the speed.' },
+                  { do: 'Rearrange: v² = v₀² + 2g(h₀ − h) = 5.0² + 2(9.80)(25 − 10)', why: 'The drop in height is what converts into speed, so only the DIFFERENCE of the heights appears.' },
+                  { do: 'v² = 25 + 2(9.80)(15) = 25 + 294 = 319', why: 'The 294 J per kilogram released by the 15 m drop dwarfs the 12.5 the car started with.' },
+                  { do: 'v = √319 = 17.9 m/s', why: 'And this is the speed at ANY point 10 m up, however the track twists to get there.' }
+                ],
+                answer: '17.9 m/s', answerWords: true,
+                check: 'The path-independence is testable: a car dropping the same 15 m down a vertical shaft from rest would reach √(2 × 9.80 × 15) = 17.1 m/s, and adding the 5.0 m/s it already had (in quadrature, through v² = v₀² + 2gΔh) gives 17.9 m/s ✓ — the same answer from a completely different shape of track.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'p1k-reference-level-changed',
+                wrong: 'Measuring heights from the ground at one point in a problem and from the track at another',
+                right: 'Choose one reference level and keep it for the whole calculation.',
+                why: 'Only CHANGES in potential energy are physical, so any level works — but mixing two of them introduces a constant offset into one side of the energy equation and not the other. The symptom is an energy that appears not to balance by a fixed amount, which is much harder to spot than an arithmetic slip.'
+              },
+              {
+                id: 'p1k-path-matters-for-gravity',
+                wrong: 'Expecting a longer or more twisted route to change the speed at a given height',
+                right: 'Gravity is conservative: only the change in height matters, not the path — provided friction is negligible.',
+                why: 'This is the reason energy methods can solve problems that force methods cannot touch, since the intermediate shape may be unknown or undescribable. The proviso is real, though: once friction is significant the path length matters again, because friction is not conservative.'
+              },
+              {
+                id: 'p1k-friction-potential-energy',
+                wrong: 'Writing a potential energy for friction, or expecting energy lost to friction to come back',
+                right: 'Friction is non-conservative. The energy becomes heat and does not return.',
+                why: 'A potential energy exists only when the work done depends on position alone, and friction\'s work depends on the distance travelled — a longer path always costs more. That irreversibility is what "non-conservative" names, and it is why friction appears in the energy equation as a loss term rather than as a stored quantity.'
+              },
+              {
+                id: 'p1k-mass-expected-in-energy-speed',
+                wrong: 'Assuming a heavier car reaches the bottom of a frictionless slope faster',
+                right: 'The mass cancels: v = √(v₀² + 2gΔh), with no m in it.',
+                why: 'A heavier object has more potential energy to convert and proportionally more inertia to accelerate, and the two effects cancel exactly — the same cancellation that makes free fall independent of mass. Questions often omit the mass deliberately, which is a hint that it was never needed.'
+              }
+            ]
+          },
+
+          {
+            id: 'g3', title: 'Conservation of energy, with and without friction', src: 'Section 7.6',
+            idea: `When only <b>conservative</b> forces act, the total mechanical energy does not change:<br><br><b>KE<sub>i</sub> + PE<sub>i</sub> = KE<sub>f</sub> + PE<sub>f</sub></b><br><br>Energy moves between the two forms and the total stays put. A pendulum trades potential for kinetic on the way down and back again on the way up; a roller coaster does the same at every hill.<br><br>Friction and drag break that, but not the underlying principle — the energy is not destroyed, it becomes <b>heat</b>. With non-conservative forces present:<br><br><b>W<sub>nc</sub> = ΔKE + ΔPE</b><br><br>or, in the form most useful for a friction problem,<br><br><b>KE<sub>i</sub> + PE<sub>i</sub> = KE<sub>f</sub> + PE<sub>f</sub> + E<sub>heat</sub></b>, with <b>E<sub>heat</sub> = f<sub>k</sub>d</b><br><br>The heat term is the kinetic friction force times the <b>distance travelled along the path</b> — not the straight-line displacement, and not the change in height. That is where the path-dependence of friction shows up in the arithmetic.<br><br>The method is the same every time: <b>pick the two moments, choose a reference level, write the total energy at each, set them equal (adding the heat term if friction acts), and solve.</b> The intermediate motion never enters. That is the power of the approach — a problem with a curved track, a changing slope or an unknown shape becomes two columns of numbers.<br><br>Energy methods and force methods answer different questions well. Use <b>energy</b> when speeds and heights are involved and time is not; use <b>forces</b> when an acceleration or a time is wanted, or when a force at one instant is required. Neither replaces the other, and recognising which a question is asking for saves more time than any algebra.<br><br>One caution: conservation of mechanical energy is <b>not</b> a law that always holds. It is a consequence of no non-conservative force doing work, and a question mentioning friction, air resistance or a rough surface is telling you it does not apply in its simple form.`,
+            figure: {
+              kind: 'graph', x: [0, 10], y: [0, 100], xlabel: 'x', ylabel: 'energy (J)',
+              fns: [{ expr: '80 - 8*x', label: 'potential energy' }, { expr: '8*x', label: 'kinetic energy', dashed: true }, { expr: '80', label: 'total: constant' }],
+              caption: 'A frictionless descent, drawn as energy against distance. Potential energy falls, kinetic energy rises by exactly as much, and their total is a flat line — that flatness IS conservation of energy. Add friction and the total line slopes gently down, and the gap between it and its starting value is the heat produced.'
+            },
+            rules: [
+              { name: 'Conservation of mechanical energy', expr: 'KE_i + PE_i = KE_f + PE_f', note: 'Valid when no non-conservative force does work. Friction in the question means it does not apply in this form.' },
+              { name: 'With friction', expr: 'KE_i + PE_i = KE_f + PE_f + E_heat', note: 'Energy is still conserved overall; some of it has become heat.' },
+              { name: 'The heat term', expr: 'E_heat = f_k d', note: 'd is the distance travelled ALONG THE PATH, which is where friction’s path-dependence enters.' },
+              { name: 'The method', expr: 'Two moments, one reference level, total energy at each, set equal', words: true, note: 'The motion in between never appears, which is what makes curved paths tractable.' },
+              { name: 'Which method to use', expr: 'Energy for speeds and heights; forces for accelerations and times', words: true, note: 'Neither replaces the other. Reading which the question wants saves the most time.' }
+            ],
+            examples: [
+              {
+                prompt: 'A 3.0 kg box slides 4.0 m down a slope inclined at 30°, starting from rest, with μ_k = 0.25. Find its speed at the bottom, with g = 9.80 m/s².',
+                approach: 'Friction is acting, so mechanical energy is not conserved and the heat term has to be computed separately. Work out how much potential energy is released by the drop, how much of it friction takes as heat, and give the remainder to kinetic energy. The drop in height and the distance along the slope are different numbers, and each belongs in its own term.',
+                figure: {
+                  kind: 'graph', x: [0, 4.5], y: [0, 70], xlabel: 'distance along the slope', ylabel: 'energy (J)',
+                  fns: [{ expr: '14.7*x', label: 'released by the drop' }, { expr: '6.365*x', label: 'taken as heat', dashed: true }, { expr: '8.335*x', label: 'left as kinetic energy' }],
+                  caption: 'The energy accounting along the slope. The top line is what gravity releases, the dashed line is what friction turns into heat, and the gap between them is the kinetic energy the box actually gains — about 57% of what was available. Steepen the slope and the lines diverge faster; flatten it and they converge until the box will not slide at all.'
+                },
+                steps: [
+                  { do: 'Height dropped: h = d sin 30° = 4.0 × 0.5 = 2.0 m', why: 'The slope length is 4.0 m but the VERTICAL drop is what potential energy depends on — sine along the slope, as in chapter 4.' },
+                  { do: 'Potential energy released: mgh = 3.0 × 9.80 × 2.0 = 58.8 J', why: 'The total energy available to the box.' },
+                  { do: 'Normal force: N = mg cos 30° = 3.0 × 9.80 × 0.8660 = 25.46 N', why: 'Cosine into the slope. Friction depends on this, not on the weight.' },
+                  { do: 'Friction force: f_k = μ_k N = 0.25 × 25.46 = 6.365 N', why: 'Kinetic, because the box is sliding.' },
+                  { do: 'Heat: E_heat = f_k d = 6.365 × 4.0 = 25.46 J, using the PATH length', why: 'The full 4.0 m along the slope, not the 2.0 m drop. This is where friction\'s path-dependence enters.' },
+                  { do: 'Kinetic energy left: 58.8 − 25.46 = 33.34 J, so v = √(2 × 33.34/3.0) = √22.23 = 4.71 m/s', why: 'Just over half the energy survived as motion. Without friction the box would arrive at 6.26 m/s.' }
+                ],
+                answer: '4.71 m/s', answerWords: true,
+                check: 'Cross-check with forces: the net force along the slope is mg sin 30° − f_k = 14.7 − 6.365 = 8.335 N, so a = 2.778 m/s², and v² = 2(2.778)(4.0) = 22.23, giving 4.71 m/s ✓. The energy route needed no acceleration at all, which is its advantage on a curved slope where a would not be constant.'
+              },
+              {
+                prompt: 'A pendulum bob is released from rest at a height of 0.45 m above its lowest point. Find its speed at the lowest point, and explain why the length of the string does not matter.',
+                approach: 'A pendulum is a curved path with a tension that changes direction continuously — hopeless for force methods at this level, and a two-line problem for energy. The string tension is always perpendicular to the motion, so it does no work at all, which leaves gravity alone and makes the total energy constant. Only the height matters, and the mass will cancel as usual.',
+                steps: [
+                  { do: 'Forces on the bob: gravity and the string tension', why: 'Air resistance is neglected, so those are the only two.' },
+                  { do: 'The tension does NO work: it is always perpendicular to the bob\'s motion, so cos 90° = 0', why: 'This is what makes the problem tractable — the only force doing work is conservative.' },
+                  { do: 'So mechanical energy is conserved: ½mv² = mgh, taking the lowest point as the reference', why: 'All the potential energy at the release point becomes kinetic at the bottom.' },
+                  { do: 'The mass cancels: v = √(2gh)', why: 'A heavy bob and a light one swing identically, which is Galileo\'s observation about pendulums.' },
+                  { do: 'v = √(2 × 9.80 × 0.45) = √8.82 = 2.97 m/s', why: 'The speed at the lowest point of the swing.' },
+                  { do: 'The string length does not appear: only the HEIGHT dropped matters, not the arc travelled', why: 'A long string swinging through a small angle and a short one swinging through a large angle reach the same speed if the bob drops the same height.' }
+                ],
+                answer: '2.97 m/s, and the string length is irrelevant because only the height drop enters', answerWords: true,
+                check: 'Compare with a free drop of 0.45 m: √(2 × 9.80 × 0.45) = 2.97 m/s ✓ — identical, because the path does not matter for a conservative force and the tension never does any work. The string changes the DIRECTION of the motion continuously and the speed not at all.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'p1k-energy-conserved-with-friction',
+                wrong: 'Using KE_i + PE_i = KE_f + PE_f when the question mentions friction or a rough surface',
+                right: 'Add the heat term: the missing energy is f_k d, and it does not come back.',
+                why: 'Mechanical energy is conserved only when no non-conservative force does work, so the simple form overstates the final speed — by 33% in the worked example. A question that supplies a coefficient of friction is telling you the heat term is needed, and ignoring the figure it gave is the giveaway.'
+              },
+              {
+                id: 'p1k-heat-term-uses-height',
+                wrong: 'Computing the friction heat as f_k times the change in height',
+                right: 'It is f_k times the distance travelled ALONG THE PATH.',
+                why: 'Friction acts over every metre of the journey, which is precisely why it is non-conservative and why a longer route costs more. On a 30° slope the path is twice the height drop, so using the height halves the heat and leaves the final speed substantially too high.'
+              },
+              {
+                id: 'p1k-slope-length-as-height',
+                wrong: 'Using the slope length as h in mgh',
+                right: 'Potential energy depends on the VERTICAL drop: h = d sin θ.',
+                why: 'The two are equal only for a vertical drop and differ by a factor of two on a 30° slope, so the error doubles the energy released. Keeping the two distances explicitly labelled — path length for friction, vertical drop for gravity — is what keeps them from being swapped, since both appear in the same calculation.'
+              },
+              {
+                id: 'p1k-energy-when-time-wanted',
+                wrong: 'Reaching for conservation of energy to find how long something takes',
+                right: 'Energy equations contain no time. Use the equations of motion or the impulse relation instead.',
+                why: 'The energy method\'s great strength — that the intermediate motion drops out — is exactly why it cannot answer a question about duration. Recognising which tool a question calls for is the practical skill: heights and speeds point to energy, while accelerations, times and instantaneous forces point back to Newton.'
+              }
+            ]
+          },
+
+          {
+            id: 'g4', title: 'Power', src: 'Section 7.7',
+            idea: `<b>Power</b> is the rate of doing work, or equivalently the rate of transferring energy:<br><br><b>P = W/t</b>, in <b>watts</b> (1 W = 1 J/s)<br><br>The distinction from work is the one this section exists for. Carrying a load up four flights of stairs does the <b>same work</b> whether you walk or run; running takes less time and therefore requires more <b>power</b>. Work is the total transferred; power is how fast.<br><br>A second form is often more useful, because it needs no time at all:<br><br><b>P = Fv</b><br><br>which follows from P = W/t = Fd/t = Fv. It applies directly to anything moving at steady speed against a resisting force: a car against drag, a pump pushing water, a train against rolling resistance.<br><br>That form also explains why a car's top speed is what it is. At constant speed the drive force equals the total resistance, so <b>P = F<sub>resist</sub>v</b>. Since drag goes as <b>v²</b>, the power needed goes as <b>v³</b> — doubling the top speed needs roughly eight times the engine power, which is why fast cars are so disproportionately powerful and so disproportionately thirsty.<br><br>Units worth carrying: a watt is a joule per second; a kilowatt is 1,000 W; a horsepower is about 746 W. The <b>kilowatt-hour</b> is a unit of ENERGY, not power — it is a kilowatt sustained for an hour, so 1 kWh = 1,000 × 3,600 = 3.6 × 10<sup>6</sup> J. Electricity bills are in kilowatt-hours because they charge for energy delivered, not for the rate.<br><br>Some anchors: a person climbing stairs steadily produces a few hundred watts; a kettle draws about 2 kW; a family car at motorway speed uses roughly 20 kW against drag, with a peak engine output several times that.`,
+            figure: {
+              kind: 'graph', x: [0, 45], y: [0, 70], xlabel: 'v (m/s)', ylabel: 'power (kW)',
+              fns: [{ expr: '0.0008*x**3', label: 'power needed against drag' }],
+              points: [{ x: 20, y: 6.4, label: '20 m/s: 6.4 kW' }, { x: 40, y: 51.2, label: '40 m/s: 51 kW' }],
+              caption: 'The power a car needs against air resistance, against its speed. The curve is a cube because drag goes as v² and power is drag times speed — so doubling the speed multiplies the power demand by eight. It is the single clearest reason motorway fuel consumption is so sensitive to speed.'
+            },
+            rules: [
+              { name: 'Power', expr: 'P = W / t', note: 'In watts, 1 W = 1 J/s. The same work done faster needs more power.' },
+              { name: 'Power from force and speed', expr: 'P = F v', note: 'Needs no time. The form to use for anything moving steadily against a resistance.' },
+              { name: 'Why top speed is expensive', expr: 'Drag goes as v^2, so power goes as v^3', words: true, note: 'Doubling the speed needs about eight times the power.' },
+              { name: 'The kilowatt-hour', expr: '1 kWh = 3.6 * 10^6 J', note: 'A unit of ENERGY, not power: a kilowatt sustained for an hour. It is what an electricity bill charges for.' },
+              { name: 'Horsepower', expr: '1 hp = 746 W', note: 'Roughly. A useful anchor when a question quotes an engine in horsepower.' }
+            ],
+            examples: [
+              {
+                prompt: 'A pump raises 250 kg of water through 12 m in 40 s. Find the power it delivers, with g = 9.80 m/s².',
+                approach: 'Work first, then divide by the time — power is never computed in one step from raw data. The work here is against gravity, so it is mgh, and the water is assumed to arrive with no kinetic energy worth counting. The answer is the USEFUL power delivered to the water, which is less than the electrical power the pump draws.',
+                steps: [
+                  { do: 'Work done against gravity: W = mgh = 250 × 9.80 × 12', why: 'Lifting at steady speed, so the lifting force equals the weight of the water.' },
+                  { do: 'W = 29,400 J', why: 'Nearly 30 kJ — the energy now stored as potential energy in the raised water.' },
+                  { do: 'Power: P = W/t = 29,400/40', why: 'Joules per second, which is watts by definition.' },
+                  { do: 'P = 735 W', why: 'About three-quarters of a kilowatt, or roughly one horsepower.' },
+                  { do: 'This is the USEFUL power delivered to the water', why: 'A real pump draws more, because of friction in the pipes and losses in the motor — the difference is its efficiency.' },
+                  { do: 'Doing the same job in 20 s would need 1,470 W', why: 'The same work, half the time, twice the power — which is the whole distinction the section is about.' }
+                ],
+                answer: '735 W', answerWords: true,
+                check: 'Check the units by the other route: the water rises at 12/40 = 0.30 m/s and weighs 2,450 N, so P = Fv = 2,450 × 0.30 = 735 W ✓. The two forms of the power formula must agree, and here they do exactly.'
+              },
+              {
+                prompt: 'A car travels at a constant 25 m/s against 600 N of total resistance. Find the power needed. Then estimate the power needed at 50 m/s, given that drag dominates and goes as v².',
+                approach: 'At constant speed the drive force exactly equals the resistance, so P = Fv applies directly with no work or time needed. For the second part, do not recompute from scratch — scale it, remembering that the force itself changes with the speed. The force goes up by four and the speed by two, so the power goes up by eight.',
+                steps: [
+                  { do: 'Constant speed means zero net force, so the drive force equals the 600 N resistance', why: 'The first law. This is what lets P = Fv be used with the resistance figure.' },
+                  { do: 'P = Fv = 600 × 25 = 15,000 W = 15 kW', why: 'A realistic figure for a car cruising at 90 km/h.' },
+                  { do: 'At 50 m/s the drag has quadrupled: F = 4 × 600 = 2,400 N', why: 'Drag goes as v², so doubling the speed multiplies the force by four.' },
+                  { do: 'P = 2,400 × 50 = 120,000 W = 120 kW', why: 'The force is four times larger AND the speed is twice as large.' },
+                  { do: 'The ratio is 120/15 = 8', why: 'Power goes as v³: two cubed is eight. This is the cleanest statement of why top speed is expensive.' },
+                  { do: 'So 15 kW at 25 m/s and about 120 kW at 50 m/s', why: 'Doubling the cruising speed needs eight times the engine — which is why a 120 kW car is not twice as fast as a 15 kW one.' }
+                ],
+                answer: '15 kW at 25 m/s, and about 120 kW at 50 m/s — eight times as much', answerWords: true,
+                check: 'The cube law again, from a different angle: if a car has 120 kW available and needs 15 kW at 25 m/s, its top speed is 25 × ∛8 = 50 m/s ✓. And the energy cost follows — covering a given distance twice as fast uses four times the energy against drag, since the power is eight times higher for half the time.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'p1k-power-and-work-confused',
+                wrong: 'Saying that running up the stairs does more work than walking up them',
+                right: 'The work is the same, mgh. Running takes less time, so it needs more POWER.',
+                why: 'Work measures the total energy transferred and power measures the rate, and only the second depends on how long it took. The distinction matters practically: a small motor can raise any load given enough time, and what limits a machine is usually its power rather than the work it could eventually do.'
+              },
+              {
+                id: 'p1k-kwh-as-power',
+                wrong: 'Treating the kilowatt-hour as a unit of power',
+                right: 'It is a unit of ENERGY: a kilowatt for an hour, so 1 kWh = 3.6 × 10⁶ J.',
+                why: 'The name contains a power unit and a time unit multiplied together, which is exactly what energy is, and an electricity bill charges for energy delivered rather than for the rate. Treating it as a power leads to answers out by a factor of 3,600, and the units check catches it immediately.'
+              },
+              {
+                id: 'p1k-power-linear-in-speed',
+                wrong: 'Assuming twice the cruising speed needs twice the engine power',
+                right: 'The resisting force itself grows as v², so the power goes as v³ — about eight times as much.',
+                why: 'It is why the last few km/h of a car\'s top speed cost so much more engine than the first, and why fuel consumption climbs so steeply above about 80 km/h. Using P = Fv with the ORIGINAL force forgets that F is not a constant when drag dominates, which is the substance of the error.'
+              },
+              {
+                id: 'p1k-fv-at-changing-speed',
+                wrong: 'Using P = Fv with an accelerating object and calling the answer its power output',
+                right: 'P = Fv gives the INSTANTANEOUS power at that speed. For an average, use the total work over the total time.',
+                why: 'An accelerating car delivers a different power at every instant, so a single Fv value describes one moment rather than the journey. The distinction matters whenever a question asks for average power over an interval, where W/t is the right form and a mid-journey Fv can be badly unrepresentative.'
+              }
+            ]
+          }
+        ],
+        practice: [
+          { id: 'r1', kind: 'numeric', lesson: 'g1',
+            prompt: 'A 40 N force pushes a box 8.0 m in the direction of the force. Find the work done, in joules.',
+            answer: 320, verify: { expr: '40*8' },
+            hint: 'W = Fd cos θ with θ = 0.',
+            solution: ['The force is along the motion, so cos 0° = 1', 'W = 40 × 8.0', '= 320 J'] },
+
+          { id: 'r2', kind: 'numeric', lesson: 'g1',
+            prompt: 'A 60 N force at 40° to the horizontal drags a crate 10 m horizontally. Find the work done, in joules, to one decimal place.',
+            answer: 459.6, tol: 0.5, verify: { expr: '60*10*cos(40*pi/180)', dp: 1 },
+            hint: 'Only the component along the motion does work.',
+            solution: ['W = 60 × 10 × cos 40°', '= 600 × 0.76604', '= 459.6 J'] },
+
+          { id: 'r3', kind: 'numeric', lesson: 'g1',
+            prompt: 'Find the kinetic energy of a 1,500 kg car at 20 m/s, in joules.',
+            answer: 300000, verify: { expr: 'Rational(1, 2)*1500*20**2' },
+            hint: 'KE = ½mv².',
+            solution: ['KE = ½ × 1,500 × 400', '= 300,000 J', '= 300 kJ'] },
+
+          { id: 'r4', kind: 'numeric', lesson: 'g1',
+            prompt: 'That car speeds up to 30 m/s. Find the net work done on it, in joules.',
+            answer: 375000, verify: { expr: 'Rational(1, 2)*1500*(30**2 - 20**2)' },
+            hint: 'W_net = ΔKE.',
+            solution: ['KE at 30 m/s = ½ × 1,500 × 900 = 675,000 J', 'ΔKE = 675,000 − 300,000', '= 375,000 J'] },
+
+          { id: 'r5', kind: 'mc', lesson: 'g1',
+            prompt: 'A waiter carries a tray horizontally at constant speed across a room. How much work does he do on the tray?',
+            options: [
+              { t: 'None — the supporting force is vertical and the motion is horizontal, so cos 90° = 0', ok: true },
+              { t: 'mgd, where d is the distance walked' },
+              { t: 'It depends on how heavy the tray is' },
+              { t: 'Half of mgd, since the motion is steady' }
+            ],
+            hint: 'What angle is between the supporting force and the displacement?',
+            solution: ['The force he exerts is upward, balancing the weight', 'The displacement is horizontal', 'The angle between them is 90°, and cos 90° = 0', 'No work is done on the tray, however tiring it feels'] },
+
+          { id: 'r6', kind: 'numeric', lesson: 'g2',
+            prompt: 'Find the potential energy gained when a 12 kg mass is raised 3.0 m, in joules, with g = 9.80 m/s².',
+            answer: 352.8, tol: 0.5, verify: { expr: '12*Rational(98, 10)*3', dp: 1 },
+            hint: 'PE = mgh.',
+            solution: ['PE = 12 × 9.80 × 3.0', '= 352.8 J', 'Stored, and recoverable if it falls'] },
+
+          { id: 'r7', kind: 'numeric', lesson: 'g2',
+            prompt: 'An object is dropped from 20 m. Find its speed on landing, in m/s, to one decimal place, with g = 9.80 m/s².',
+            answer: 19.8, tol: 0.05, verify: { expr: 'sqrt(2*Rational(98, 10)*20)', dp: 1 },
+            hint: 'All the potential energy becomes kinetic: v = √(2gh).',
+            solution: ['½mv² = mgh, and the mass cancels', 'v = √(2 × 9.80 × 20) = √392', '= 19.8 m/s'] },
+
+          { id: 'r8', kind: 'mc', lesson: 'g2',
+            prompt: 'Two identical balls reach the same height above the ground, one down a straight frictionless ramp and one down a curved one, from the same starting height. How do their speeds compare?',
+            options: [
+              { t: 'Identical — gravity is conservative, so only the change in height matters', ok: true },
+              { t: 'The straight ramp gives a higher speed, being the shorter path' },
+              { t: 'The curved ramp gives a higher speed, having a steeper section' },
+              { t: 'It cannot be said without knowing the shape of the curve' }
+            ],
+            hint: 'Does the work done by gravity depend on the route?',
+            solution: ['Gravity is a conservative force', 'The work it does depends only on the start and end heights', 'With no friction, both balls arrive with the same kinetic energy', 'The shape of the path is irrelevant'] },
+
+          { id: 'r9', kind: 'numeric', lesson: 'g3',
+            prompt: 'A car passes a point 30 m up at 8.0 m/s and coasts without friction to a point 12 m up. Find its speed there, in m/s, to one decimal place.',
+            answer: 20.4, tol: 0.05, verify: { expr: 'sqrt(8**2 + 2*Rational(98, 10)*(30 - 12))', dp: 1 },
+            hint: 'v² = v₀² + 2gΔh, with Δh the drop.',
+            solution: ['v² = 8.0² + 2(9.80)(18) = 64 + 352.8 = 416.8', 'v = √416.8', '= 20.4 m/s'] },
+
+          { id: 'r10', kind: 'numeric', lesson: 'g3',
+            prompt: 'A 5.0 kg box slides 6.0 m along level ground against 12 N of friction. Find the heat generated, in joules.',
+            answer: 72, verify: { expr: '12*6' },
+            hint: 'E_heat = f_k d, with d along the path.',
+            solution: ['E_heat = 12 × 6.0', '= 72 J', 'Which is why the surfaces warm up'] },
+
+          { id: 'r11', kind: 'numeric', lesson: 'g3',
+            prompt: 'A pendulum bob is released from 0.80 m above its lowest point. Find its speed there, in m/s, to two decimal places, with g = 9.80 m/s².',
+            answer: 3.96, tol: 0.005, verify: { expr: 'sqrt(2*Rational(98, 10)*Rational(8, 10))', dp: 2 },
+            hint: 'The string tension does no work.',
+            solution: ['The tension is always perpendicular to the motion, so it does no work', '½mv² = mgh, and the mass cancels', 'v = √(2 × 9.80 × 0.80) = √15.68 = 3.96 m/s'] },
+
+          { id: 'r12', kind: 'numeric', lesson: 'g3',
+            prompt: 'A 2.0 kg block slides down a slope, dropping 3.0 m, and 25 J is lost to friction. Find its speed at the bottom from rest, in m/s, to two decimal places.',
+            answer: 5.81, tol: 0.05, verify: { expr: 'sqrt(2*(2*Rational(98, 10)*3 - 25)/2)', dp: 2 },
+            hint: 'KE = mgh − E_heat.',
+            solution: ['Energy released: mgh = 2.0 × 9.80 × 3.0 = 58.8 J', 'Left as kinetic energy: 58.8 − 25 = 33.8 J', 'v = √(2 × 33.8/2.0) = √33.8 = 5.81 m/s'] },
+
+          { id: 'r13', kind: 'numeric', lesson: 'g4',
+            prompt: 'A machine does 18,000 J of work in 30 s. Find its power output, in watts.',
+            answer: 600, verify: { expr: 'Rational(18000, 30)' },
+            hint: 'P = W/t.',
+            solution: ['P = 18,000/30', '= 600 W', 'Which is 0.6 kW'] },
+
+          { id: 'r14', kind: 'numeric', lesson: 'g4',
+            prompt: 'A train moves at a steady 30 m/s against 25,000 N of resistance. Find the power needed, in watts.',
+            answer: 750000, verify: { expr: '25000*30' },
+            hint: 'P = Fv at constant speed.',
+            solution: ['At constant speed the drive force equals the resistance', 'P = 25,000 × 30', '= 750,000 W = 750 kW'] },
+
+          { id: 'r15', kind: 'numeric', lesson: 'g4',
+            prompt: 'A 70 kg person climbs 4.0 m of stairs in 6.0 s. Find the power, in watts, to one decimal place, with g = 9.80 m/s².',
+            answer: 457.3, tol: 0.5, verify: { expr: '70*Rational(98, 10)*4/6', dp: 1 },
+            hint: 'Work against gravity first, then divide by the time.',
+            solution: ['W = mgh = 70 × 9.80 × 4.0 = 2,744 J', 'P = 2,744/6.0', '= 457.3 W'] },
+
+          { id: 'r16', kind: 'numeric', lesson: 'g4',
+            prompt: 'How many joules are there in 2.5 kWh?',
+            answer: 9000000, verify: { expr: 'Rational(25, 10)*1000*3600' },
+            hint: '1 kWh = 1,000 W sustained for 3,600 s.',
+            solution: ['1 kWh = 1,000 × 3,600 = 3.6 × 10⁶ J', '2.5 × 3.6 × 10⁶', '= 9.0 × 10⁶ J'] },
+
+          { id: 'r17', kind: 'mc', lesson: 'g4',
+            prompt: 'Two people carry identical loads up the same staircase, one in 20 s and one in 40 s. What differs?',
+            options: [
+              { t: 'The power: the faster one needs twice as much, while both do the same work', ok: true },
+              { t: 'The work: the faster one does twice as much' },
+              { t: 'Both the work and the power are doubled for the faster one' },
+              { t: 'Nothing differs, since the load and the height are the same' }
+            ],
+            hint: 'Which of the two quantities contains the time?',
+            solution: ['Work is mgh, which depends only on the load and the height', 'Both do the same work', 'Power is work over time', 'Half the time means twice the power'] },
+
+          { id: 'r18', kind: 'spot', lesson: 'g3',
+            prompt: 'A 4.0 kg box slides 5.0 m down a 30° slope with 10 N of friction, from rest. Find the kinetic energy at the bottom. (g = 9.80 m/s²)',
+            steps: [
+              { t: 'The vertical drop is h = 5.0 sin 30° = 2.5 m, so the energy released is mgh = 98 J' },
+              { t: 'The heat lost is f_k times the height: 10 × 2.5 = 25 J', bad: true },
+              { t: 'Friction acts along the whole path: E_heat = 10 × 5.0 = 50 J' },
+              { t: 'KE = 98 − 50 = 48 J' }
+            ],
+            why: 'Friction acts over every metre of the path travelled, not over the vertical drop, and on a 30° slope the path is twice the height. Using the height halves the heat term and leaves the kinetic energy — and therefore the final speed — substantially too high.',
+            hint: 'Over what distance does friction act?',
+            solution: ['Released: mgh = 4.0 × 9.80 × 2.5 = 98 J', 'Heat: f_k d = 10 × 5.0 = 50 J along the path', 'KE = 48 J'] },
+
+          { id: 'r19', kind: 'order', lesson: 'g3',
+            prompt: 'Put the energy method in order.',
+            steps: [
+              'Choose the two moments the question connects',
+              'Choose one reference level for height',
+              'Write the total energy at each moment',
+              'Set them equal, adding a heat term if friction acts',
+              'Solve for the unknown and check it is physically sensible'
+            ],
+            hint: 'The reference level has to exist before any potential energy can be written.',
+            solution: ['Two moments, because energy methods compare states rather than following motion', 'One reference level, kept throughout', 'The heat term appears only when a non-conservative force acts'] },
+
+          { id: 'r20', kind: 'order', lesson: 'g1',
+            prompt: 'Put the steps for finding the net work from several forces in order.',
+            steps: [
+              'List every force acting on the object',
+              'Find the angle between each force and the displacement',
+              'Compute Fd cos θ for each force, keeping the sign',
+              'Add the works as signed numbers',
+              'Equate the total to the change in kinetic energy'
+            ],
+            hint: 'Work is a scalar, so the last addition is simpler than a vector sum.',
+            solution: ['Every force, including the ones that will turn out to do nothing', 'Each with its own angle', 'Signed scalars, so the addition is ordinary arithmetic', 'The total is the change in kinetic energy'] }
+        ]
+      },
+
+      /* ============================ CHAPTER 8 ============================ */
+      {
+        id: 'momentum', n: 8,
+        title: 'Linear momentum and collisions',
+        blurb: 'The quantity that survives a collision no one could solve force by force — what it is, how a force changes it over time, and why the total of it never changes when two things hit each other.',
+        read: 'Chapter 8',
+        objectives: [
+          'Compute momentum as a vector, and read its sign as a direction',
+          'Relate impulse to the change in momentum, and use it to explain why crumple zones work',
+          'Apply conservation of momentum to collisions, explosions and recoil',
+          'Distinguish elastic from inelastic collisions by what happens to the kinetic energy',
+          'Solve a perfectly inelastic collision and say how much energy was lost'
+        ],
+        lessons: [
+          {
+            id: 'h1', title: 'Momentum and impulse', src: 'Section 8.1',
+            idea: `<b>Linear momentum</b> is mass times velocity:<br><br><b>p = mv</b>, in kg·m/s<br><br>It is a <b>vector</b>, pointing where the velocity points, so in one dimension its sign is its direction. A 1,500 kg car at 20 m/s east has momentum 30,000 kg·m/s east, and the same car reversing at 20 m/s has −30,000. Unlike kinetic energy, which is a scalar and always positive, momentum keeps track of which way things are going — which is exactly why it works for collisions.<br><br>Newton's second law is really a statement about momentum. Rearranging F = ma with a = Δv/Δt:<br><br><b>FΔt = Δp = mv − mv<sub>0</sub></b><br><br>The quantity <b>FΔt</b> is the <b>impulse</b>, measured in N·s, and the relation is the <b>impulse–momentum theorem</b>: the impulse delivered equals the change in momentum produced. It is the momentum counterpart of the work–energy theorem — force times TIME changes momentum, force times DISTANCE changes energy — and choosing between them is usually just a matter of whether the question mentions a time or a distance.<br><br>The practical content is in the rearrangement:<br><br><b>F = Δp/Δt</b><br><br>For a given change in momentum, <b>stretching the time reduces the force</b>. That is the whole of impact safety. A car's crumple zone extends a collision from milliseconds to tenths of a second and divides the force on the occupants by the same factor. An airbag does the same, a cricketer's hands moving back with the ball do the same, and so does landing with bent knees. None of them changes Δp — the body still has to stop — and all of them change how long it takes.<br><br>When the force varies during an impact, as it always really does, F in these formulas is the <b>average</b> force. The impulse is then the area under a force–time graph, and a short violent peak and a long gentle push can deliver exactly the same impulse.`,
+            figure: {
+              kind: 'graph', x: [0, 0.5], y: [0, 9000], xlabel: 't (s)', ylabel: 'force (N)',
+              fns: [{ expr: '8000*exp(-((x - 0.03)/0.02)**2)', label: 'rigid impact: short and violent' }, { expr: '1200*exp(-((x - 0.2)/0.13)**2)', label: 'with a crumple zone', dashed: true }],
+              caption: 'Two impacts delivering the same impulse — the areas under the two curves are equal, because the same momentum has to be removed either way. The rigid collision does it in a few hundredths of a second at 8,000 N; spreading it over a fifth of a second cuts the peak force to about 1,200 N. Nothing about the momentum changed; only the time did.'
+            },
+            rules: [
+              { name: 'Momentum', expr: 'p = m v', note: 'A vector in kg·m/s. In one dimension the sign is the direction, unlike kinetic energy which is always positive.' },
+              { name: 'Impulse', expr: 'J = F (delta t)', note: 'In N·s. When the force varies, F is the average — the impulse is the area under a force–time graph.' },
+              { name: 'The impulse–momentum theorem', expr: 'F (delta t) = m v - m v_0', note: 'Impulse equals the change in momentum. The time counterpart of the work–energy theorem.' },
+              { name: 'Why crumple zones work', expr: 'F = (delta p) / (delta t)', note: 'The same momentum change over a longer time means a smaller force. Airbags, bent knees and soft hands all do this.' },
+              { name: 'Which theorem to use', expr: 'Force times time changes momentum; force times distance changes energy', words: true, note: 'A question mentioning a duration points at impulse; one mentioning a distance points at work.' }
+            ],
+            examples: [
+              {
+                prompt: 'A 0.145 kg baseball arrives at 40 m/s and leaves the bat at 50 m/s in the opposite direction, with the bat in contact for 1.5 ms. Find the impulse and the average force.',
+                approach: 'The reversal is the whole difficulty, and a sign convention handles it: take the incoming direction as positive, so the outgoing velocity is negative and the change in momentum is much larger than either momentum alone. Compute Δp first, then divide by the contact time. Subtracting the speeds instead of the velocities is the error the question is built around.',
+                steps: [
+                  { do: 'Take the incoming direction as positive: v₀ = +40 m/s and v = −50 m/s', why: 'The ball comes back the other way, so the two velocities have opposite signs. This is the step everything depends on.' },
+                  { do: 'Initial momentum: p₀ = 0.145 × 40 = +5.80 kg·m/s', why: 'Mass times velocity, carrying the sign.' },
+                  { do: 'Final momentum: p = 0.145 × (−50) = −7.25 kg·m/s', why: 'Negative, because it is travelling the other way.' },
+                  { do: 'Δp = −7.25 − 5.80 = −13.05 kg·m/s', why: 'Note the size: larger than either momentum, because the ball had to be stopped AND sent back. Using the speeds alone would give 1.45, nearly ten times too small.' },
+                  { do: 'The impulse equals that change: J = −13.05 N·s, directed back towards the pitcher', why: 'Impulse and change in momentum are the same quantity — that is the theorem.' },
+                  { do: 'Average force: F = Δp/Δt = −13.05/0.0015 = −8,700 N', why: 'The minus sign says the force points back at the pitcher. About 8.7 kN, roughly the weight of a small car, delivered in a millisecond and a half.' }
+                ],
+                answer: 'An impulse of 13.05 N·s and an average force of about 8,700 N, both directed back towards the pitcher', answerWords: true,
+                check: 'Sanity: the ball\'s weight is only 1.42 N, so the 8,700 N contact force dwarfs gravity — which justifies ignoring gravity during the impact ✓. And the direction is right: to reverse the ball\'s motion the force must point back the way it came.'
+              },
+              {
+                prompt: 'A 70 kg driver in a car travelling at 15 m/s is brought to rest in a crash. Find the average force on her if she stops in 0.10 s with a crumple zone and an airbag, and if she stops in 0.010 s against a rigid dashboard.',
+                approach: 'The change in momentum is identical in both cases — she has to stop either way — so the only variable is the time, and the ratio of the forces is the inverse ratio of the times. Compute Δp once, then divide by each duration. Presenting both numbers together is what makes the safety argument, which is the point of the question.',
+                steps: [
+                  { do: 'Change in momentum: Δp = 0 − (70 × 15) = −1,050 kg·m/s', why: 'She must be brought to rest, and this number is the same however the stop happens. That invariance is the key to the whole comparison.' },
+                  { do: 'With the crumple zone: F = Δp/Δt = −1,050/0.10', why: 'A tenth of a second, which is what the car\'s deformation and the airbag buy.' },
+                  { do: 'F = −10,500 N, about 10.5 kN', why: 'Large — around 15 times her weight — but survivable with a seatbelt spreading it across the chest and pelvis.' },
+                  { do: 'Against a rigid dashboard: F = −1,050/0.010 = −105,000 N', why: 'A hundredth of a second, ten times shorter, so ten times the force.' },
+                  { do: '105 kN is about 150 times her body weight', why: 'Comfortably fatal. The difference between the two outcomes is entirely the stopping time.' },
+                  { do: 'Δp was identical in both cases; only Δt differed', why: 'Which is the design principle: safety engineering cannot reduce the momentum that has to be removed, so it lengthens the time in which it is removed.' }
+                ],
+                answer: 'About 10,500 N over 0.10 s, against 105,000 N over 0.010 s — ten times the force for a tenth of the time', answerWords: true,
+                check: 'The ratio is the check: the times differ by a factor of ten and so do the forces, exactly as F = Δp/Δt requires with Δp fixed ✓. It is also why every impact-safety device works the same way — a helmet\'s foam, a climber\'s dynamic rope, a gymnast\'s mat all extend Δt.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'p1k-momentum-change-speeds-subtracted',
+                wrong: 'Computing Δp from the speeds when an object rebounds: 50 − 40 = 10',
+                right: 'Momentum is a vector. With the incoming direction positive, Δp = m(−50 − 40), nearly ten times larger.',
+                why: 'A rebound requires the object to be stopped AND sent back, so the momentum change is the sum of the two magnitudes rather than their difference. Using speeds understates the impulse and the force by a factor of nine here, and the error disappears entirely if a sign convention is written down first.'
+              },
+              {
+                id: 'p1k-momentum-and-ke-confused',
+                wrong: 'Treating momentum as always positive, or adding momenta the way kinetic energies are added',
+                right: 'Momentum is a vector with a sign; kinetic energy is a scalar and always positive.',
+                why: 'Two objects moving towards each other can have zero total momentum and a great deal of kinetic energy, which is exactly the situation a head-on collision describes. Losing the sign makes conservation of momentum unusable, since the cancellation between opposing momenta is the whole content of the law.'
+              },
+              {
+                id: 'p1k-crumple-reduces-momentum',
+                wrong: 'Saying a crumple zone reduces the momentum change in a crash',
+                right: 'Δp is fixed — the occupant must stop either way. The crumple zone lengthens Δt, which reduces the FORCE.',
+                why: 'Nothing can change how much momentum has to be removed once the speed and mass are set, so safety engineering works entirely on the denominator of F = Δp/Δt. Understanding that is what unifies airbags, helmet foam, bent knees and a fielder\'s soft hands into one idea instead of four.'
+              },
+              {
+                id: 'p1k-impulse-units-confused',
+                wrong: 'Quoting an impulse in newtons, or a momentum in N·s without noticing they are the same unit',
+                right: 'Impulse is in N·s, momentum in kg·m/s, and 1 N·s = 1 kg·m/s exactly.',
+                why: 'The identity follows from 1 N = 1 kg·m/s², and it is a confirmation that impulse and change in momentum are genuinely the same physical quantity rather than merely proportional. Quoting an impulse in newtons drops the time factor, which is precisely the part that distinguishes a gentle push from a violent one.'
+              }
+            ]
+          },
+
+          {
+            id: 'h2', title: 'Conservation of momentum', src: 'Section 8.3',
+            idea: `If no <b>external</b> force acts on a system, its total momentum does not change:<br><br><b>p<sub>total, before</sub> = p<sub>total, after</sub></b><br><br>and for two objects in one dimension:<br><br><b>m<sub>1</sub>u<sub>1</sub> + m<sub>2</sub>u<sub>2</sub> = m<sub>1</sub>v<sub>1</sub> + m<sub>2</sub>v<sub>2</sub></b><br><br>The reason is the third law. During a collision the two objects exert equal and opposite forces on each other for exactly the same length of time, so they receive equal and opposite impulses, and the two momentum changes cancel. Internal forces can never change a system's total momentum, however violent they are.<br><br>The word <b>external</b> is what makes the law usable. Gravity and friction are external forces, so momentum is not perfectly conserved in any real collision — but during the fraction of a second an impact lasts, the internal forces are enormous compared with gravity or friction, and the external impulse is negligible. That is why momentum is conserved in a car crash even though the cars are sitting on a friction-providing road.<br><br>Conservation of momentum solves three families of problem that forces cannot touch, because the forces during the event are unknown and unknowable:<br><br>• <b>Collisions</b>: two objects meet and separate, or stick.<br>• <b>Explosions</b>: one object becomes two, with the total momentum still whatever it was — zero, if it started at rest, so the fragments fly apart with equal and opposite momenta.<br>• <b>Recoil</b>: a rifle and its bullet, a rocket and its exhaust, a swimmer pushing off a wall. Starting from rest, <b>m<sub>1</sub>v<sub>1</sub> = −m<sub>2</sub>v<sub>2</sub></b>, so the heavier object moves far more slowly.<br><br>The procedure is always the same: <b>define the system, choose a positive direction, write the total momentum before and after, and set them equal.</b> The sign convention does the hard work, and the single most common failure is a velocity entered without its sign.<br><br>Momentum is conserved in <b>every</b> collision. Kinetic energy is not, which is the subject of the next lesson.`,
+            figure: {
+              kind: 'numberline', x: [-5, 7],
+              points: [{ x: 3, label: 'before: 2 kg at 3 m/s' }, { x: 0, label: '4 kg at rest' }, { x: 1, label: 'after: both at 1 m/s' }],
+              caption: 'A 2 kg trolley at 3 m/s runs into a stationary 4 kg one and they couple together. The total momentum is 6 kg·m/s before and 6 kg·m/s after — unchanged, because the forces between them are internal. The shared speed of 1 m/s is what is left when that momentum is carried by three times the mass.'
+            },
+            rules: [
+              { name: 'Conservation of momentum', expr: 'p_before = p_after', note: 'Valid when no external force acts. During an impact the internal forces dwarf gravity and friction, so it holds even on a rough road.' },
+              { name: 'Two objects, one dimension', expr: 'm_1 u_1 + m_2 u_2 = m_1 v_1 + m_2 v_2', note: 'Every velocity carries a sign. This is the equation almost every question in this chapter needs.' },
+              { name: 'Why it holds', expr: 'Equal and opposite forces for equal times give equal and opposite impulses', words: true, note: 'Newton’s third law, applied for the duration of the contact.' },
+              { name: 'Recoil from rest', expr: 'm_1 v_1 = -m_2 v_2', note: 'A rifle and a bullet, a rocket and its exhaust. The heavier object moves much more slowly.' },
+              { name: 'The procedure', expr: 'Define the system, choose a positive direction, write p before and after, set them equal', words: true, note: 'The sign convention does the work. A velocity entered without its sign is the usual failure.' }
+            ],
+            examples: [
+              {
+                prompt: 'A 4.0 kg rifle fires a 0.020 kg bullet at 600 m/s. Find the recoil velocity of the rifle.',
+                approach: 'Take the rifle and bullet together as the system. Before firing, nothing moves, so the total momentum is zero — and since the forces between rifle and bullet are internal, it is still zero afterwards. That single fact gives the equation, and the recoil velocity comes out negative, which is what tells you it goes the other way.',
+                steps: [
+                  { do: 'System: the rifle and the bullet together', why: 'The explosion is internal to that system, so its total momentum cannot change.' },
+                  { do: 'Before firing, both are at rest, so p_before = 0', why: 'This zero is the whole of the physics. Everything else is arithmetic.' },
+                  { do: 'Take the bullet\'s direction as positive: after firing, p = (0.020)(600) + (4.0)v', why: 'Two terms, each mass times its own velocity, signs included.' },
+                  { do: 'Set the total to zero: 12 + 4.0v = 0', why: 'The bullet carries 12 kg·m/s forward, so the rifle must carry 12 kg·m/s backward.' },
+                  { do: 'v = −12/4.0 = −3.0 m/s', why: 'Negative, meaning backwards — which is what recoil is.' },
+                  { do: 'The rifle recoils at 3.0 m/s, 200 times slower than the bullet', why: 'Equal and opposite momenta with 200 times the mass gives 1/200 of the speed.' }
+                ],
+                answer: 'The rifle recoils at 3.0 m/s, opposite to the bullet', answerWords: true,
+                check: 'Momentum balances exactly: 0.020 × 600 = 12 and 4.0 × 3.0 = 12 ✓. But the kinetic energies do not — the bullet carries ½(0.020)(600²) = 3,600 J and the rifle only ½(4.0)(3.0²) = 18 J. Momentum is shared equally; energy is not, and that asymmetry is why a rifle is survivable to fire.'
+              },
+              {
+                prompt: 'A 2.0 kg trolley moving at 3.0 m/s collides with a stationary 4.0 kg trolley and they couple together. Find their common velocity afterwards.',
+                approach: 'A perfectly inelastic collision: the two move off as one, so there is a single unknown velocity rather than two. Write the total momentum before, write it after with the combined mass, and equate. The stationary trolley contributes a zero to the left-hand side, which is worth writing out rather than omitting.',
+                steps: [
+                  { do: 'Take the moving trolley\'s direction as positive', why: 'One convention for both sides of the equation.' },
+                  { do: 'Before: p = (2.0)(3.0) + (4.0)(0) = 6.0 kg·m/s', why: 'The stationary trolley contributes nothing, but writing the zero keeps the structure visible.' },
+                  { do: 'After: they move together, so the combined mass is 2.0 + 4.0 = 6.0 kg with one velocity v', why: 'Coupling is what makes this a single-unknown problem.' },
+                  { do: 'p_after = 6.0v, and momentum is conserved, so 6.0v = 6.0', why: 'The equation in one line.' },
+                  { do: 'v = 1.0 m/s, in the original direction', why: 'Positive, so forward. Three times the mass is moving, so the speed is a third of what it was.' },
+                  { do: 'Check the energy: before ½(2.0)(9.0) = 9.0 J, after ½(6.0)(1.0) = 3.0 J', why: 'Six joules have gone — into deformation, sound and heat. Momentum is conserved and kinetic energy is not, which is the next lesson.' }
+                ],
+                answer: '1.0 m/s in the original direction, with 6.0 J of kinetic energy lost', answerWords: true,
+                check: 'Momentum balances: 6.0 kg·m/s before and 6.0 × 1.0 = 6.0 after ✓. And the energy loss is the signature of an inelastic collision — two thirds of the kinetic energy gone, which is typical when a light object couples to a heavier stationary one.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'p1k-momentum-signs-dropped',
+                wrong: 'Adding the momenta of two objects moving towards each other as though both were positive',
+                right: 'Choose a positive direction and give the opposing object a negative velocity.',
+                why: 'Two 1,000 kg cars approaching at 20 m/s each have a total momentum of zero, not 40,000 kg·m/s, and after a head-on collision they are at rest — which the signed calculation predicts and the unsigned one cannot. Writing the convention down before any numbers is what makes the cancellation happen automatically.'
+              },
+              {
+                id: 'p1k-energy-conserved-in-collision',
+                wrong: 'Assuming kinetic energy is conserved in a collision because momentum is',
+                right: 'Momentum is conserved in every collision; kinetic energy only in an elastic one.',
+                why: 'The two are independent conservation statements, and most real collisions convert a large fraction of the kinetic energy into deformation, sound and heat — two thirds of it in the worked example. Assuming both gives two equations where only one is true, and the resulting answer satisfies neither the physics nor the experiment.'
+              },
+              {
+                id: 'p1k-external-forces-ignored-or-overweighted',
+                wrong: 'Refusing to use conservation of momentum because friction and gravity act on the trolleys',
+                right: 'During the brief impact the internal forces dwarf the external ones, so the external impulse is negligible.',
+                why: 'The law needs no external IMPULSE, and impulse is force times time — a modest friction force acting for a hundredth of a second contributes almost nothing beside a contact force thousands of times larger. That is why momentum is used freely for collisions on ordinary surfaces and abandoned for the seconds of rolling afterwards.'
+              },
+              {
+                id: 'p1k-system-not-defined',
+                wrong: 'Applying conservation of momentum to one object alone',
+                right: 'Momentum is conserved for a SYSTEM with no external force. A single object in a collision certainly has its momentum changed.',
+                why: 'The bullet\'s momentum changes enormously and so does the rifle\'s; only their total is preserved, because the force between them is internal to the pair. Naming the system explicitly as the first line of the solution is what makes it clear which forces are internal and therefore which cancel.'
+              }
+            ]
+          },
+
+          {
+            id: 'h3', title: 'Elastic and inelastic collisions', src: 'Section 8.4',
+            idea: `Momentum is conserved in every collision. What separates the types is what happens to the <b>kinetic energy</b>.<br><br>An <b>elastic</b> collision conserves kinetic energy as well. Nothing is permanently deformed and nothing heats up: billiard balls come close, and colliding atoms and subatomic particles are genuinely elastic. Two conservation laws hold at once:<br><br><b>m<sub>1</sub>u<sub>1</sub> + m<sub>2</sub>u<sub>2</sub> = m<sub>1</sub>v<sub>1</sub> + m<sub>2</sub>v<sub>2</sub></b> and <b>½m<sub>1</sub>u<sub>1</sub>² + ½m<sub>2</sub>u<sub>2</sub>² = ½m<sub>1</sub>v<sub>1</sub>² + ½m<sub>2</sub>v<sub>2</sub>²</b><br><br>Two equations and two unknowns, which for a head-on collision with a stationary target reduce to:<br><br><b>v<sub>1</sub> = ((m<sub>1</sub> − m<sub>2</sub>)/(m<sub>1</sub> + m<sub>2</sub>))u<sub>1</sub></b> · <b>v<sub>2</sub> = (2m<sub>1</sub>/(m<sub>1</sub> + m<sub>2</sub>))u<sub>1</sub></b><br><br>Three special cases are worth recognising on sight. <b>Equal masses</b>: the moving one stops dead and the target leaves with the full speed — the Newton's-cradle result. <b>A light object hitting a much heavier one</b>: it bounces back at almost its original speed, like a ball off a wall. <b>A heavy object hitting a much lighter one</b>: it carries on almost unchanged and the light one is flung off at nearly twice the speed.<br><br>An <b>inelastic</b> collision does not conserve kinetic energy; the missing energy goes into deformation, sound and heat. Most real collisions are inelastic. The extreme case is a <b>perfectly inelastic</b> collision, where the objects <b>stick together</b> and move as one:<br><br><b>m<sub>1</sub>u<sub>1</sub> + m<sub>2</sub>u<sub>2</sub> = (m<sub>1</sub> + m<sub>2</sub>)v</b><br><br>This is the easiest case algebraically, because there is only one unknown velocity. It also loses the <b>most</b> kinetic energy of any collision with the same momentum — which is exactly what car designers want, since energy that deforms metal is energy that does not reach the occupants.<br><br>The energy lost is found by subtraction: compute the total kinetic energy before and after and take the difference. It is never negative, and if your arithmetic says it is, a sign has gone astray in the momentum step.`,
+            figure: {
+              kind: 'numberline', x: [-1, 6],
+              points: [{ x: 4, label: 'before: 0.5 kg at 4 m/s' }, { x: 0, label: '0.3 kg at rest' }, { x: 1, label: 'after: heavy one at 1 m/s' }, { x: 5, label: 'light one at 5 m/s' }],
+              caption: 'An elastic head-on collision with a stationary lighter target. The incoming object keeps moving forward but slowly, and the target leaves faster than the projectile arrived — 5 m/s from a 4 m/s impact. Momentum balances at 2.0 kg·m/s and kinetic energy at 4.0 J both before and after, which is what makes it elastic.'
+            },
+            rules: [
+              { name: 'Elastic collision', expr: 'Momentum AND kinetic energy are both conserved', words: true, note: 'Billiard balls approximately; atoms and particles genuinely.' },
+              { name: 'Elastic, head-on, stationary target', expr: 'v_1 = (m_1 - m_2) u_1 / (m_1 + m_2)', note: 'And v_2 = 2 m_1 u_1/(m_1 + m_2). Equal masses make the first zero — the Newton’s-cradle result.' },
+              { name: 'Inelastic collision', expr: 'Momentum conserved, kinetic energy not', words: true, note: 'The missing energy becomes deformation, sound and heat. Most real collisions.' },
+              { name: 'Perfectly inelastic', expr: 'm_1 u_1 + m_2 u_2 = (m_1 + m_2) v', note: 'They stick together and move as one — a single unknown, and the largest possible energy loss.' },
+              { name: 'Energy lost', expr: 'E_lost = KE_before - KE_after', note: 'Found by subtraction, and never negative. A negative answer means a momentum sign went astray.' }
+            ],
+            examples: [
+              {
+                prompt: 'A 0.50 kg ball moving at 4.0 m/s collides elastically head-on with a stationary 0.30 kg ball. Find both velocities afterwards, and verify that kinetic energy is conserved.',
+                approach: 'An elastic collision with a stationary target is the one case with ready-made formulas, so use them — but verify the answer against BOTH conservation laws afterwards, because that check is what distinguishes an elastic solution from a plausible-looking wrong one. The projectile is heavier than the target here, so expect it to keep going forward while the target leaves faster than it arrived.',
+                steps: [
+                  { do: 'Identify: m₁ = 0.50 kg at u₁ = 4.0 m/s, m₂ = 0.30 kg at rest, and the total mass is 0.80 kg', why: 'The stationary target is what allows the simplified formulas to be used.' },
+                  { do: 'Projectile: v₁ = ((m₁ − m₂)/(m₁ + m₂))u₁ = ((0.50 − 0.30)/0.80)(4.0)', why: 'The numerator is the difference of the masses, which decides whether the projectile goes on or bounces back.' },
+                  { do: 'v₁ = (0.20/0.80)(4.0) = 1.0 m/s, still forward', why: 'Positive because the projectile is the heavier of the two. A lighter projectile would give a negative v₁ — a bounce.' },
+                  { do: 'Target: v₂ = (2m₁/(m₁ + m₂))u₁ = (1.00/0.80)(4.0) = 5.0 m/s', why: 'Faster than the projectile arrived, which is normal when the target is lighter — and is not a violation of anything.' },
+                  { do: 'Check momentum: before 0.50 × 4.0 = 2.0; after 0.50 × 1.0 + 0.30 × 5.0 = 0.5 + 1.5 = 2.0 ✓', why: 'The first conservation law, which holds for every collision.' },
+                  { do: 'Check energy: before ½(0.50)(16) = 4.0 J; after ½(0.50)(1) + ½(0.30)(25) = 0.25 + 3.75 = 4.0 J ✓', why: 'The second law, which holds only because this collision is elastic. Both checks passing is what confirms the answer.' }
+                ],
+                answer: 'The 0.50 kg ball continues at 1.0 m/s and the 0.30 kg ball leaves at 5.0 m/s', answerWords: true,
+                check: 'Test the equal-mass case with the same formulas: with m₁ = m₂ the first numerator is zero, so v₁ = 0 and v₂ = u₁ — the projectile stops dead and the target leaves at the full speed, which is exactly what a Newton\'s cradle does ✓.'
+              },
+              {
+                prompt: 'A 1,200 kg car at 20 m/s runs into a stationary 1,800 kg van and they lock together. Find their common velocity and the kinetic energy lost.',
+                approach: 'Locking together means perfectly inelastic, so there is one unknown velocity and momentum alone settles it. Then compute the kinetic energy before and after separately and subtract — the loss cannot be found from the velocities without doing both, because energy is not conserved and there is no shortcut. Expect a large loss, which is the whole design intention of a crumple zone.',
+                steps: [
+                  { do: 'Momentum before: p = (1,200)(20) + (1,800)(0) = 24,000 kg·m/s', why: 'Only the car is moving. The van contributes a zero.' },
+                  { do: 'After the lock-up the combined mass is 1,200 + 1,800 = 3,000 kg', why: 'Perfectly inelastic, so they share one velocity.' },
+                  { do: '3,000v = 24,000, so v = 8.0 m/s in the car\'s original direction', why: 'Momentum conserved. Two and a half times the mass at two-fifths of the speed.' },
+                  { do: 'Kinetic energy before: ½(1,200)(20²) = ½(1,200)(400) = 240,000 J', why: 'All of it in the car.' },
+                  { do: 'Kinetic energy after: ½(3,000)(8.0²) = ½(3,000)(64) = 96,000 J', why: 'Shared by the wreckage moving together.' },
+                  { do: 'Energy lost: 240,000 − 96,000 = 144,000 J, which is 60% of the original', why: 'Into crushed metal, sound and heat — and energy that deforms the cars is energy that does not reach the occupants.' }
+                ],
+                answer: '8.0 m/s together, with 144 kJ — 60% of the kinetic energy — lost', answerWords: true,
+                check: 'Momentum balances: 3,000 × 8.0 = 24,000 ✓, the same as before. And the loss is positive, as it must be — a negative energy loss would mean the collision created kinetic energy, and would point straight at a sign error in the momentum line.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'p1k-ke-conserved-in-every-collision',
+                wrong: 'Writing a kinetic-energy conservation equation for a collision where the objects stick together',
+                right: 'Kinetic energy is conserved only in an ELASTIC collision, and a perfectly inelastic one loses the most of any.',
+                why: 'Using both laws on an inelastic collision gives two contradictory equations and an answer that satisfies neither. The question always says which case it is — "stick together", "couple", "lock" mean perfectly inelastic, while "elastic" or "bounce off with no loss" licenses the second equation.'
+              },
+              {
+                id: 'p1k-target-faster-rejected',
+                wrong: 'Rejecting an answer because the target leaves faster than the projectile arrived',
+                right: 'A lighter target legitimately leaves faster — up to twice the projectile\'s speed in the limit.',
+                why: 'Momentum and energy are both conserved in that answer, which is the only test that matters; what is not conserved is speed, which is not a conserved quantity at all. The extreme case is familiar from a golf club and ball, where the much lighter ball leaves far faster than the club head moved.'
+              },
+              {
+                id: 'p1k-inelastic-momentum-abandoned',
+                wrong: 'Assuming that because energy is lost, momentum is lost too',
+                right: 'Momentum is conserved in EVERY collision, elastic or not. Only the kinetic energy differs.',
+                why: 'The two laws have different origins — momentum conservation follows from the third law and holds regardless of deformation, while energy conservation requires that nothing be permanently deformed. Abandoning momentum leaves a perfectly inelastic collision with no equation at all, when in fact it is the easiest case of the chapter.'
+              },
+              {
+                id: 'p1k-energy-loss-from-velocities',
+                wrong: 'Trying to find the energy lost by subtracting the velocities, or by a single formula',
+                right: 'Compute the total kinetic energy before and after separately, then subtract.',
+                why: 'Kinetic energy goes as v², so differences in energy are not proportional to differences in speed and no shortcut through the velocities exists. Doing both totals in full also gives a free check, since the result must come out positive for any collision that is not elastic.'
+              }
+            ]
+          }
+        ],
+        practice: [
+          { id: 's1', kind: 'numeric', lesson: 'h1',
+            prompt: 'Find the momentum of a 1,400 kg car at 18 m/s, in kg·m/s.',
+            answer: 25200, verify: { expr: '1400*18' },
+            hint: 'p = mv.',
+            solution: ['p = 1,400 × 18', '= 25,200 kg·m/s', 'In the direction of travel'] },
+
+          { id: 's2', kind: 'numeric', lesson: 'h1',
+            prompt: 'A 0.50 kg ball changes velocity from +6.0 m/s to −4.0 m/s. Find the magnitude of its change in momentum, in kg·m/s.',
+            answer: 5, verify: { expr: 'Rational(1, 2)*(6 - (-4))' },
+            hint: 'The velocities have opposite signs — the change is bigger than either.',
+            solution: ['Δp = m(v − v₀) = 0.50(−4.0 − 6.0)', '= 0.50 × (−10)= −5.0 kg·m/s', 'Magnitude 5.0 kg·m/s, directed opposite to the original motion'] },
+
+          { id: 's3', kind: 'numeric', lesson: 'h1',
+            prompt: 'A 900 N force acts for 0.40 s. Find the impulse, in N·s.',
+            answer: 360, verify: { expr: '900*Rational(4, 10)' },
+            hint: 'J = FΔt.',
+            solution: ['J = 900 × 0.40', '= 360 N·s', 'Which is also 360 kg·m/s of momentum change'] },
+
+          { id: 's4', kind: 'numeric', lesson: 'h1',
+            prompt: 'A 60 kg person falls and stops from 6.0 m/s in 0.20 s. Find the average force, in newtons.',
+            answer: 1800, verify: { expr: '60*6/Rational(2, 10)' },
+            hint: 'F = Δp/Δt.',
+            solution: ['Δp = 60 × 6.0 = 360 kg·m/s', 'F = 360/0.20', '= 1,800 N'] },
+
+          { id: 's5', kind: 'numeric', lesson: 'h1',
+            prompt: 'The same person stops in 0.050 s instead. Find the average force, in newtons.',
+            answer: 7200, verify: { expr: '60*6/Rational(5, 100)' },
+            hint: 'Same Δp, a quarter of the time.',
+            solution: ['Δp is unchanged at 360 kg·m/s', 'F = 360/0.050', '= 7,200 N — four times as large for a quarter of the time'] },
+
+          { id: 's6', kind: 'mc', lesson: 'h1',
+            prompt: 'Why does bending the knees on landing reduce the force on the body?',
+            options: [
+              { t: 'It lengthens the stopping time, and F = Δp/Δt with Δp fixed', ok: true },
+              { t: 'It reduces the momentum that has to be removed' },
+              { t: 'It converts the momentum into energy instead' },
+              { t: 'It reduces the mass that decelerates' }
+            ],
+            hint: 'Which of the two quantities in F = Δp/Δt can actually be changed?',
+            solution: ['The body must stop either way, so Δp is fixed', 'Bending the knees stretches Δt', 'A larger denominator means a smaller force', 'Airbags, crumple zones and soft hands all work the same way'] },
+
+          { id: 's7', kind: 'numeric', lesson: 'h2',
+            prompt: 'A 3.0 kg trolley at 4.0 m/s couples with a stationary 5.0 kg trolley. Find their common velocity, in m/s.',
+            answer: 1.5, verify: { expr: 'Rational(3*4, 8)' },
+            hint: 'Momentum before equals momentum after, with the combined mass.',
+            solution: ['p_before = 3.0 × 4.0 = 12 kg·m/s', 'Combined mass = 8.0 kg', 'v = 12/8.0 = 1.5 m/s'] },
+
+          { id: 's8', kind: 'numeric', lesson: 'h2',
+            prompt: 'A 60 kg skater pushes off a 90 kg skater on frictionless ice; the 90 kg skater moves at 2.0 m/s. Find the 60 kg skater\'s speed, in m/s.',
+            answer: 3, verify: { expr: 'Rational(90*2, 60)' },
+            hint: 'They start at rest, so the total momentum stays zero.',
+            solution: ['p_before = 0', '0 = 90 × 2.0 + 60 × v', 'v = −180/60 = −3.0 m/s, so 3.0 m/s the other way'] },
+
+          { id: 's9', kind: 'numeric', lesson: 'h2',
+            prompt: 'A 5.0 kg rifle fires a 0.025 kg bullet at 500 m/s. Find the recoil speed of the rifle, in m/s.',
+            answer: 2.5, verify: { expr: 'Rational(25, 1000)*500/5' },
+            hint: 'Total momentum stays zero.',
+            solution: ['Bullet momentum = 0.025 × 500 = 12.5 kg·m/s', 'The rifle must carry 12.5 kg·m/s backwards', 'v = 12.5/5.0 = 2.5 m/s'] },
+
+          { id: 's10', kind: 'numeric', lesson: 'h2',
+            prompt: 'Two objects move towards each other: 2.0 kg at +5.0 m/s and 3.0 kg at −2.0 m/s. Find the total momentum, in kg·m/s.',
+            answer: 4, verify: { expr: '2*5 + 3*(-2)' },
+            hint: 'Keep the signs — they point in opposite directions.',
+            solution: ['p = (2.0)(+5.0) + (3.0)(−2.0)', '= 10 − 6', '= +4.0 kg·m/s, in the first object\'s direction'] },
+
+          { id: 's11', kind: 'numeric', lesson: 'h2',
+            prompt: 'If those two objects stick together, find their common velocity in m/s, to one decimal place.',
+            answer: 0.8, tol: 0.005, verify: { expr: 'Rational(2*5 + 3*(-2), 5)', dp: 1 },
+            hint: 'Total momentum over total mass.',
+            solution: ['p_total = 4.0 kg·m/s', 'Combined mass = 5.0 kg', 'v = 4.0/5.0 = 0.8 m/s in the first object\'s direction'] },
+
+          { id: 's12', kind: 'mc', lesson: 'h2',
+            prompt: 'Two identical cars collide head-on at equal speeds and lock together. What happens?',
+            options: [
+              { t: 'They stop dead, because the total momentum was zero before the collision', ok: true },
+              { t: 'They continue in the direction of the heavier one' },
+              { t: 'They rebound with the same speeds, since momentum is conserved' },
+              { t: 'Momentum is not conserved, because the cars are destroyed' }
+            ],
+            hint: 'Add the two momenta as signed numbers.',
+            solution: ['Equal masses at equal and opposite velocities', 'Total momentum = +mv − mv = 0', 'It stays zero, so the wreckage is at rest', 'All the kinetic energy went into deformation'] },
+
+          { id: 's13', kind: 'numeric', lesson: 'h3',
+            prompt: 'A 2.0 kg object at 6.0 m/s collides elastically head-on with a stationary 2.0 kg object. Find the first object\'s velocity afterwards, in m/s.',
+            answer: 0, verify: { expr: 'Rational(2 - 2, 2 + 2)*6' },
+            hint: 'Equal masses: use v₁ = ((m₁ − m₂)/(m₁ + m₂))u₁.',
+            solution: ['m₁ − m₂ = 0', 'v₁ = 0: the projectile stops dead', 'The target leaves at the full 6.0 m/s — the Newton\'s-cradle result'] },
+
+          { id: 's14', kind: 'numeric', lesson: 'h3',
+            prompt: 'A 1.0 kg object at 8.0 m/s hits a stationary 3.0 kg object elastically head-on. Find the velocity of the 1.0 kg object afterwards, in m/s.',
+            answer: -4, verify: { expr: 'Rational(1 - 3, 1 + 3)*8' },
+            hint: 'A lighter projectile bounces back — expect a negative answer.',
+            solution: ['v₁ = ((1.0 − 3.0)/4.0)(8.0)', '= (−0.5)(8.0)', '= −4.0 m/s, so it rebounds at 4.0 m/s'] },
+
+          { id: 's15', kind: 'numeric', lesson: 'h3',
+            prompt: 'For that same collision, find the velocity of the 3.0 kg object afterwards, in m/s.',
+            answer: 4, verify: { expr: 'Rational(2*1, 1 + 3)*8' },
+            hint: 'v₂ = (2m₁/(m₁ + m₂))u₁.',
+            solution: ['v₂ = (2 × 1.0/4.0)(8.0)', '= 0.5 × 8.0', '= 4.0 m/s forward'] },
+
+          { id: 's16', kind: 'numeric', lesson: 'h3',
+            prompt: 'A 1,000 kg car at 15 m/s hits a stationary 2,000 kg truck and they lock together. Find their common velocity, in m/s.',
+            answer: 5, verify: { expr: 'Rational(1000*15, 3000)' },
+            hint: 'Perfectly inelastic: one unknown velocity.',
+            solution: ['p = 1,000 × 15 = 15,000 kg·m/s', 'Combined mass = 3,000 kg', 'v = 15,000/3,000 = 5.0 m/s'] },
+
+          { id: 's17', kind: 'numeric', lesson: 'h3',
+            prompt: 'Find the kinetic energy lost in that collision, in joules.',
+            answer: 75000, verify: { expr: 'Rational(1, 2)*1000*15**2 - Rational(1, 2)*3000*5**2' },
+            hint: 'Compute the kinetic energy before and after and subtract.',
+            solution: ['Before: ½(1,000)(225) = 112,500 J', 'After: ½(3,000)(25) = 37,500 J', 'Lost: 75,000 J, two thirds of the original'] },
+
+          { id: 's18', kind: 'mc', lesson: 'h3',
+            prompt: 'Which statement about a perfectly inelastic collision is correct?',
+            options: [
+              { t: 'Momentum is conserved and it loses more kinetic energy than any other collision with the same momentum', ok: true },
+              { t: 'Both momentum and kinetic energy are conserved' },
+              { t: 'Neither momentum nor kinetic energy is conserved' },
+              { t: 'Kinetic energy is conserved but momentum is not' }
+            ],
+            hint: 'Which conservation law holds in every collision?',
+            solution: ['Momentum is conserved in every collision', 'Kinetic energy is conserved only in elastic ones', 'Sticking together is the extreme case of energy loss', 'Which is exactly what a crumple zone is designed to achieve'] },
+
+          { id: 's19', kind: 'spot', lesson: 'h1',
+            prompt: 'A 0.20 kg ball hits a wall at 8.0 m/s and rebounds at 6.0 m/s. Find the magnitude of the change in momentum.',
+            steps: [
+              { t: 'The ball reverses direction, so the two velocities have opposite signs' },
+              { t: 'Δp = 0.20 × (8.0 − 6.0) = 0.40 kg·m/s', bad: true },
+              { t: 'Taking the incoming direction as positive: Δp = 0.20 × (−6.0 − 8.0)' },
+              { t: '= −2.8 kg·m/s, so the magnitude is 2.8 kg·m/s' }
+            ],
+            why: 'The rebound means the final velocity is negative, so the change is the sum of the two magnitudes rather than their difference — the ball had to be stopped and then sent back. Subtracting the speeds understates the impulse sevenfold here, and the same error makes any bounce problem come out far too gentle.',
+            hint: 'What sign does the rebound velocity carry?',
+            solution: ['Incoming +8.0 m/s, outgoing −6.0 m/s', 'Δp = 0.20(−6.0 − 8.0) = −2.8 kg·m/s', 'Magnitude 2.8 kg·m/s'] },
+
+          { id: 's20', kind: 'spot', lesson: 'h3',
+            prompt: 'A 2.0 kg trolley at 3.0 m/s couples with a stationary 1.0 kg trolley. Find their common velocity.',
+            steps: [
+              { t: 'They stick together, so this is perfectly inelastic' },
+              { t: 'Kinetic energy is conserved: ½(2.0)(9.0) = ½(3.0)v², so v = 2.45 m/s', bad: true },
+              { t: 'Momentum is what is conserved here: (2.0)(3.0) = (3.0)v' },
+              { t: 'v = 6.0/3.0 = 2.0 m/s' }
+            ],
+            why: 'Kinetic energy is not conserved when objects stick together — that case loses more of it than any other — so the energy equation gives a velocity that violates momentum conservation. Momentum is the law that holds in every collision, and it is the one that has to be used here.',
+            hint: 'Which conservation law applies when objects couple?',
+            solution: ['Momentum before = 2.0 × 3.0 = 6.0 kg·m/s', 'Combined mass 3.0 kg', 'v = 2.0 m/s, and 3.0 J of kinetic energy was lost'] },
+
+          { id: 's21', kind: 'order', lesson: 'h2',
+            prompt: 'Put the steps of a collision problem in order.',
+            steps: [
+              'Define the system — both objects together',
+              'Choose a positive direction',
+              'Write the total momentum before, with signs',
+              'Write the total momentum after, with signs',
+              'Set them equal and solve, then check whether energy was also conserved'
+            ],
+            hint: 'The signs cannot be written until a direction has been chosen.',
+            solution: ['The system is named first, so it is clear which forces are internal', 'One positive direction, kept for both sides', 'Momentum before equals momentum after', 'The energy check identifies whether the collision was elastic'] },
+
+          { id: 's22', kind: 'order', lesson: 'h3',
+            prompt: 'Put the steps for finding the energy lost in a collision in order.',
+            steps: [
+              'Use conservation of momentum to find the unknown velocity',
+              'Compute the total kinetic energy before',
+              'Compute the total kinetic energy after',
+              'Subtract to find the loss',
+              'Check that the loss is positive'
+            ],
+            hint: 'The energies cannot be computed until every velocity is known.',
+            solution: ['Momentum first, because it gives the missing velocity', 'Then both totals in full, since energy goes as v² and has no shortcut', 'The difference is the loss, and it is never negative'] }
         ]
       }
 
@@ -26914,7 +27791,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.62', date: '18 September 2026', year: 2026 };
+  const BUILD = { v: '2.63', date: '18 September 2026', year: 2026 };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonandy242', ['gmail', 'com'].join('.')].join('@');
   /* The one sentence that says what this is. It appears under the wordmark, and build.js uses
@@ -26927,6 +27804,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      because the person who needs it is the one who just watched the app refresh itself and wants to
      know what moved. Trim the tail when it gets past a dozen; nobody reads further back than that. */
   const WHATS_NEW = [
+    ['2.63', '<b>PHYS 1000H is complete: chapters 7 and 8 land, and every chapter on the schedule is now built.</b> <b>Work and energy</b> is a second route through mechanics that needs neither forces nor time: the cosine that makes a normal force do no work at all, the v&sup2; in kinetic energy that is why braking distance grows so steeply, the work&ndash;energy theorem, potential energy with a reference level you choose, and why a ball down a curved ramp and a ball down a straight one arrive at the same speed &mdash; then friction, which breaks that and turns the difference into heat over the distance actually travelled. <b>Power</b> closes the chapter: the same work done faster, and why doubling a car&rsquo;s cruising speed needs eight times the engine. <b>Momentum</b> finishes the course: impulse as force times time, why a crumple zone cannot reduce the momentum that must be removed and can only stretch the seconds it takes, conservation from the third law, and collisions &mdash; elastic, where a lighter target legitimately leaves faster than the projectile arrived, and perfectly inelastic, which loses more energy than any other and is exactly what a car is designed to do. Seven more lessons, fourteen worked examples, 42 more practice questions. The course now stands at 28 lessons, 56 worked examples and 160 practice questions across all eight chapters.'],
     ['2.62', '<b>PHYS 1000H chapters 5 and 6: the forces surfaces and fluids exert, and going round in a circle.</b> <b>Friction</b> is taught as the inequality it is &mdash; push a crate with 80 N and static friction is exactly 80 N, not its maximum &mdash; with the drop to the smaller kinetic coefficient that makes a heavy box lurch when it finally gives, and the tilted plank that measures a coefficient with nothing but a protractor. <b>Drag</b> grows with the square of the speed, which is why a car meets four times the air resistance at twice the speed and the engine works eight times as hard, and why a falling body levels off at a terminal velocity where its acceleration is zero rather than g. <b>Elasticity</b> closes the chapter with stress, strain and Young&rsquo;s modulus, and the squared area conversion that decides whether the answer is right. Chapter 6 is <b>circular motion</b>: radians and v = r&omega;, centripetal acceleration going as v&sup2; so that a bend taken twice as fast needs four times the grip, the insistence that centripetal force is a job done by a real force rather than a force of its own, why the passenger pressed against the door was never pushed outward, and Newton&rsquo;s law of gravitation &mdash; surface gravity, orbital speed, Kepler&rsquo;s third law, and why an astronaut floats where gravity is still 8.7 m/s&sup2;. Seven more lessons, fourteen worked examples, 42 more practice questions. Chapters 7 and 8 complete the course.'],
     ['2.61', '<b>PHYS 1000H chapters 3 and 4: two dimensions, and the laws that say why motion changes.</b> <b>Vectors</b> first &mdash; added head to tail, where 3 km east and 4 km north make 5 km and not 7, then by components, which is the method that scales to any number of forces. A car rounding a bend at constant speed turns out to have changed its velocity by 28 m/s, which is the whole reason circular motion needs a force. Then <b>projectiles</b>, resting on one idea: the horizontal and vertical motions are independent, so a ball fired from a table and a ball dropped from it hit the floor together, and every question is solved by taking the time from the vertical motion and handing it to the horizontal one. <b>Relative velocity</b> closes the chapter with the river crossing that has two different right answers depending on which question was asked. Chapter 4 is <b>Newton&rsquo;s three laws</b>: why no force is needed to keep going, why &Sigma;F = ma takes the NET force and not the one you were given, why a third-law pair can never cancel (the two halves act on different objects), and the free-body diagram that turns any of it into an equation &mdash; with the normal force derived every time rather than assumed to be mg, because in a lift it is not. Eight more lessons, sixteen worked examples, 42 more practice questions. Chapters 5 to 8 follow.'],
     ['2.60', '<b>A new course under the green chip: PHYS 1000H, Foundations of Physics.</b> A first mechanics course for someone arriving without school physics, following its own schedule week by week through the first eight chapters of the open text it is set from. Chapters 1 and 2 ship now. <b>Measurement</b> comes first, because it is what the rest rests on: SI units and prefixes read as powers of ten, conversion by multiplying by a fraction equal to one and letting the cancelling do the checking, accuracy against precision, the two different significant-figure rules for multiplying and for adding, and order-of-magnitude estimation as the check that catches a unit error in one line. Then <b>motion in a straight line</b>: distance against displacement and speed against velocity &mdash; a lap run in 64 seconds has an average velocity of exactly zero &mdash; acceleration, the four constant-acceleration equations chosen by what each one leaves out, free fall with one sign convention held for the whole flight, and position&ndash;time and velocity&ndash;time graphs where the slope of one and the area under the other carry the answer. Six lessons, twelve worked examples with a plan and a closing check, 34 practice questions and 23 named misconceptions. Chapters 3 to 8 follow.'],
