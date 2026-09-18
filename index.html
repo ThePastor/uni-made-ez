@@ -12449,7 +12449,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      Mechanics is cut to the four ideas the subject leans on, while this one follows a real outline
      week by week and therefore also covers the parts a course actually spends time on and a summary
      leaves out — significant figures, approximation, drag, elasticity, fictitious frames, Kepler.
-     Built so far: chapters 1 and 2. */
+     Built so far: chapters 1 to 4. */
   const FOUND = {
     subject: PHYS,
     id: 'phys-1000h', inst: 'trent',
@@ -12457,11 +12457,11 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     title: 'Foundations of Physics',
     blurb: 'Mechanics from the beginning, for someone who has not done physics before: what a measurement is worth before it is used, how motion in a straight line is described and predicted, then vectors and two dimensions, the laws that say why motion changes, and finally energy and momentum — the two quantities that survive a collision no one can solve force by force.',
     level: 'Foundation',
-    exam: 'Follows the course schedule: chapter 1 sections 1.1–1.4, chapter 2 in full, chapter 3 sections 3.1–3.5, chapter 4 sections 4.1–4.7, chapter 5 sections 5.1–5.3, chapter 6 sections 6.1–6.6, chapter 7 sections 7.1–7.7 and chapter 8 sections 8.1–8.5. A midterm falls after chapter 6 and the final is cumulative. Built so far: chapters 1 and 2.',
+    exam: 'Follows the course schedule: chapter 1 sections 1.1–1.4, chapter 2 in full, chapter 3 sections 3.1–3.5, chapter 4 sections 4.1–4.7, chapter 5 sections 5.1–5.3, chapter 6 sections 6.1–6.6, chapter 7 sections 7.1–7.7 and chapter 8 sections 8.1–8.5. A midterm falls after chapter 6 and the final is cumulative. Built so far: chapters 1 to 4.',
     text: 'Urone & Hinrichs, College Physics (OpenStax, free online)',
     legalNote: 'Study material for a university course. It follows the chapter and section order of the set text so that a lesson here matches the section you would open alongside it, but every explanation, example and question is written from scratch — nothing is copied from the book or from any past paper. Answers are recomputed by a computer algebra system before the page ships; where a figure is rounded, the question says to how many places, and g is taken as 9.80 m/s² unless a question says otherwise.',
     gaps: [
-      'Still to be built, in schedule order: chapter 3 two-dimensional kinematics and vectors, chapter 4 the laws of motion, chapter 5 friction, drag and elasticity, chapter 6 circular motion and gravitation, chapter 7 work and energy, and chapter 8 linear momentum and collisions',
+      'Still to be built, in schedule order: chapter 5 friction, drag and elasticity, chapter 6 circular motion and gravitation, chapter 7 work and energy, and chapter 8 linear momentum and collisions',
       'Not on the schedule for this course, so not built for it: rotational dynamics, statics and torque, fluids, thermodynamics, waves and everything after chapter 8 of the set text',
       'The course assumes school algebra and trigonometry — quadratics, two equations in two unknowns, and sine, cosine and tangent on a right triangle — and teaches none of it; the Precalculus course here covers that ground'
     ],
@@ -13205,6 +13205,1047 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             answer: 8, verify: { expr: 'Rational(900 + 300, 75 + 45 + 30)' },
             hint: 'The stop counts in the total time.',
             solution: ['Displacement = 900 + 300 = 1200 m, all one direction', 'Total time = 75 + 45 + 30 = 150 s', '1200/150 = 8.0 m/s'] }
+        ]
+      }
+,
+
+      /* ============================ CHAPTER 3 ============================ */
+      {
+        id: 'twodim', n: 3,
+        title: 'Two dimensions: vectors and projectiles',
+        blurb: 'Motion that is not confined to a line — adding vectors head to tail and then by components, the one idea that makes projectile motion easy, and what a velocity means when the ground itself is moving.',
+        read: 'Chapter 3',
+        objectives: [
+          'Add and subtract vectors graphically, head to tail, and read the resultant off the diagram',
+          'Resolve a vector into components with sine and cosine, and rebuild a resultant from its components',
+          'Recover a magnitude and a direction from components, taking care over the quadrant',
+          'Solve projectile problems by treating the horizontal and vertical motions as independent',
+          'Add velocities that are measured in different frames — a boat in a current, a plane in a wind'
+        ],
+        lessons: [
+          {
+            id: 'c1', title: 'Vectors added graphically', src: 'Section 3.2',
+            idea: `A <b>scalar</b> is a number with a unit: mass, time, temperature, distance, speed. A <b>vector</b> has a magnitude and a direction: displacement, velocity, acceleration, force. In one dimension a sign carried the whole direction; in two it cannot, and vectors become a subject of their own.<br><br>Two vectors are added <b>head to tail</b>: draw the first, draw the second starting where the first ended, and the <b>resultant</b> is the arrow from the start of the first to the head of the last. The order makes no difference — walking 3 km east then 4 km north puts you exactly where walking 4 km north then 3 km east does — which is to say vector addition is commutative, and the two routes are the two halves of a parallelogram.<br><br>The resultant is emphatically <b>not</b> the sum of the magnitudes. Adding 3 km and 4 km at right angles gives 5 km, not 7 km, and the only case where magnitudes add directly is two vectors pointing the same way. That single fact accounts for more lost marks in this chapter than anything else.<br><br>The magnitude of a resultant is bounded: it can be no larger than the sum of the magnitudes (parallel) and no smaller than their difference (antiparallel). Three and four can produce anything between 1 and 7, and nothing outside.<br><br><b>Subtraction</b> is addition of the negative. The vector <b>−B</b> has the same length as B and points the opposite way, so <b>A − B</b> is drawn by adding −B to A head to tail. This is what a change in velocity is: <b>Δv = v<sub>f</sub> − v<sub>i</sub></b>, and drawing it is how you see that a car rounding a bend at constant speed has a change in velocity — and therefore an acceleration — pointing into the curve.<br><br><b>Multiplying by a scalar</b> stretches a vector without turning it: 3A is three times as long in the same direction, and −2A is twice as long the other way. That is all the arithmetic a graphical treatment needs, and section 3.3 replaces the drawing with trigonometry.`,
+            figure: {
+              kind: 'graph', x: [-1, 6], y: [-1, 6],
+              segments: [
+                { from: [0, 0], to: [3, 0], label: '3 km east' },
+                { from: [3, 0], to: [3, 4], label: '4 km north' },
+                { from: [0, 0], to: [3, 4], label: 'resultant, 5 km', dashed: true }
+              ],
+              points: [{ x: 0, y: 0, label: 'start' }, { x: 3, y: 4, label: 'finish' }],
+              caption: 'Head to tail: the second vector begins where the first ends, and the dashed resultant runs from the very start to the very finish. Its length is 5 km, not the 7 km the two magnitudes add to — the right angle between them is exactly what takes two away.'
+            },
+            rules: [
+              { name: 'Head to tail', expr: 'Draw the second vector from the head of the first; the resultant runs start to finish', words: true, note: 'The order makes no difference — A + B and B + A end in the same place.' },
+              { name: 'Magnitudes do not simply add', expr: 'R = sqrt(A^2 + B^2) when A and B are perpendicular', note: '3 and 4 at right angles give 5, not 7. Only parallel vectors add magnitude to magnitude.' },
+              { name: 'How big a resultant can be', expr: 'A - B <= R <= A + B', note: 'Largest when they point the same way, smallest when they oppose. Anything outside that range is an error.' },
+              { name: 'Subtraction', expr: 'A - B = A + (-B)', note: '−B is the same length, reversed. A change in velocity, Δv = v_f − v_i, is drawn exactly this way.' },
+              { name: 'Times a scalar', expr: 'c A has magnitude |c| A, reversed if c is negative', words: true, note: 'Stretching or shrinking, never turning — except for the flip when c is negative.' }
+            ],
+            examples: [
+              {
+                prompt: 'A hiker walks 3.0 km east, then 4.0 km north. Find the magnitude and direction of the resultant displacement.',
+                approach: 'Draw it head to tail first, because the picture decides which trigonometric ratio applies. The two legs are perpendicular, which makes the resultant the hypotenuse of a right triangle — so its magnitude comes from Pythagoras and its direction from the tangent of the angle between the resultant and the east leg. Then state the direction in words, since a bare angle means nothing without an axis to measure it from.',
+                steps: [
+                  { do: 'Draw the 3.0 km east, then the 4.0 km north starting where the first ended', why: 'Head to tail. The resultant is the arrow from the start of the first to the head of the second.' },
+                  { do: 'The two legs are perpendicular, so the resultant is the hypotenuse of a right triangle', why: 'This is the only case where Pythagoras applies directly, and the diagram is what confirms it.' },
+                  { do: 'Magnitude: R = √(3.0² + 4.0²) = √(9 + 16) = √25', why: 'Square each leg, add, take the root. Adding 3.0 and 4.0 to get 7.0 km would be the standard error.' },
+                  { do: 'R = 5.0 km', why: 'Two kilometres less than the magnitudes suggest, and that shortfall is the whole content of vector addition.' },
+                  { do: 'Direction: tan θ = opposite/adjacent = 4.0/3.0, so θ = tan⁻¹(1.333) = 53.13°', why: 'The angle is at the start of the resultant, between it and the eastward leg.' },
+                  { do: 'So 5.0 km at 53° north of east', why: 'An angle needs a reference — "53°" alone could mean four different directions, and naming the axis it is measured from is part of the answer.' }
+                ],
+                answer: '5.0 km at 53° north of east', answerWords: true,
+                check: 'The bound test: the resultant must lie between 4.0 − 3.0 = 1.0 km and 4.0 + 3.0 = 7.0 km, and 5.0 does ✓. The angle is also sensible — the northward leg is the longer one, so the resultant should lean north of the 45° diagonal, and 53° does.'
+              },
+              {
+                prompt: 'A car rounds a bend, its velocity changing from 20 m/s east to 20 m/s north. Find the magnitude of the change in velocity, and say what it implies about the acceleration.',
+                approach: 'A change in velocity is a vector subtraction, Δv = v_f − v_i, so draw it as v_f plus the reverse of v_i. The speed is unchanged, which is exactly the point of the question: it is the DIRECTION that changed, and a change of direction is a change of velocity. Compute the magnitude from the right triangle the two vectors make, then read off what a non-zero Δv means.',
+                figure: {
+                  kind: 'graph', x: [-24, 24], y: [-24, 24],
+                  segments: [
+                    { from: [0, 0], to: [0, 20], label: 'v_f, 20 m/s north' },
+                    { from: [0, 0], to: [-20, 0], label: '−v_i, reversed' },
+                    { from: [-20, 0], to: [0, 20], label: 'Δv, 28.3 m/s', dashed: true }
+                  ],
+                  caption: 'The change in velocity drawn as a subtraction: the final velocity plus the reverse of the initial one. Its magnitude is 28.3 m/s even though the speed never changed, and it points north-west — which is the direction the car had to be pushed to get round the bend.'
+                },
+                steps: [
+                  { do: 'Δv = v_f − v_i, which is drawn as v_f + (−v_i)', why: 'Subtraction is addition of the reverse. Reversing the initial velocity is the step that makes the diagram drawable.' },
+                  { do: 'v_f is 20 m/s north; −v_i is 20 m/s west', why: 'The initial velocity was 20 m/s east, so its reverse is 20 m/s west, same size.' },
+                  { do: 'These two are perpendicular, so |Δv| = √(20² + 20²) = √800', why: 'North and west are at right angles, so Pythagoras applies again.' },
+                  { do: '|Δv| = 28.3 m/s', why: 'A large change, despite the speed being identical at both ends. Subtracting the speeds would have given zero, which is the error this question exists to expose.' },
+                  { do: 'Δv is non-zero, so the velocity changed, so there was an acceleration', why: 'Acceleration is the rate of change of VELOCITY, and velocity includes direction.' },
+                  { do: 'The direction of Δv is north-west, pointing into the curve', why: 'That is the direction of the average acceleration, and it is the force the road had to supply through the tyres. Chapter 6 makes this the centripetal force.' }
+                ],
+                answer: '28.3 m/s, pointing north-west — so the car accelerated even though its speed never changed', answerWords: true,
+                check: 'Sanity: the two vectors have equal length and meet at a right angle, so Δv must be √2 times either of them — 20√2 = 28.28 ✓. And the bound test holds: |Δv| lies between 0 and 40, as it must for two 20s.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'p1k-vector-magnitudes-added',
+                wrong: 'Adding 3.0 km east and 4.0 km north to get 7.0 km',
+                right: 'Perpendicular vectors combine as √(3² + 4²) = 5.0 km.',
+                why: 'Magnitudes add directly only when the vectors point the same way, and every other arrangement gives less. The bound A − B ≤ R ≤ A + B is a free check on any resultant, and an answer sitting at the top of that range when the vectors are visibly not parallel has been computed as a scalar sum.'
+              },
+              {
+                id: 'p1k-angle-without-reference',
+                wrong: 'Reporting a direction as "53°"',
+                right: 'Name the axis: 53° north of east, or measured anticlockwise from the positive x-axis.',
+                why: 'Four different directions in the plane make a 53° angle with some axis, so the number alone does not identify one. Stating the reference also forces you to check the quadrant, which is where the inverse tangent quietly misleads, since a calculator returns the same angle for the first and third quadrants.'
+              },
+              {
+                id: 'p1k-change-in-speed-for-change-in-velocity',
+                wrong: 'Saying a car rounding a bend at constant speed has no change in velocity',
+                right: 'Velocity includes direction, so a change of direction alone is a change of velocity — here 28.3 m/s of it.',
+                why: 'Subtracting the two SPEEDS gives zero and the two VELOCITIES gives a large vector, and only the second is the physics. This is the conceptual root of circular motion: an object going round a circle at constant speed is accelerating at every instant, which is why it needs a force to keep it there.'
+              },
+              {
+                id: 'p1k-subtraction-drawn-forwards',
+                wrong: 'Drawing A − B by putting B head to tail on A',
+                right: 'Reverse B first: A − B is A added to a vector of the same length pointing the opposite way.',
+                why: 'Drawing the subtraction as an addition gives A + B, a vector that in the worked example would have magnitude 28.3 m/s but point north-EAST — the opposite side of the diagram from the truth, and the wrong direction for the acceleration. Reversing before drawing is one pencil stroke and removes the ambiguity entirely.'
+              }
+            ]
+          },
+
+          {
+            id: 'c2', title: 'Components and the analytical method', src: 'Section 3.3',
+            idea: `Drawing vectors is how the idea is understood; <b>components</b> are how vectors are actually computed with. Any vector can be replaced by two perpendicular vectors — one along x, one along y — that add to it, and those two are its components.<br><br>For a vector <b>A</b> of magnitude A at an angle <b>θ</b> measured from the positive x-axis:<br><br><b>A<sub>x</sub> = A cos θ</b> · <b>A<sub>y</sub> = A sin θ</b><br><br>The cosine goes with the <b>adjacent</b> side and the sine with the <b>opposite</b>, which means the pairing depends on where the angle is measured from. An angle given from the <b>vertical</b> swaps them. That is why the first step is always a sketch with the angle marked: the formulas are not a rule to recall but a reading of a triangle.<br><br>Going the other way, from components back to a magnitude and a direction:<br><br><b>A = √(A<sub>x</sub>² + A<sub>y</sub>²)</b> · <b>θ = tan<sup>−1</sup>(A<sub>y</sub>/A<sub>x</sub>)</b><br><br>The inverse tangent needs watching. A calculator returns an angle between −90° and 90°, so it cannot tell the second quadrant from the fourth or the third from the first. Check the SIGNS of the components against the diagram: if A<sub>x</sub> is negative the vector points left, and 180° must be added to what the calculator gave.<br><br>The whole reason for components is that <b>they add as ordinary numbers</b>:<br><br><b>R<sub>x</sub> = A<sub>x</sub> + B<sub>x</sub></b> · <b>R<sub>y</sub> = A<sub>y</sub> + B<sub>y</sub></b><br><br>So the analytical method is four steps, however many vectors there are: resolve each into components, add the x-components, add the y-components, and rebuild the resultant from the two totals. No triangle is ever solved with the sine rule, and a five-vector problem is no harder than a two-vector one.`,
+            figure: {
+              kind: 'graph', x: [-1, 8], y: [-1, 6],
+              segments: [
+                { from: [0, 0], to: [6, 4], label: 'A, at angle θ' },
+                { from: [0, 0], to: [6, 0], label: 'A cos θ' },
+                { from: [6, 0], to: [6, 4], label: 'A sin θ' }
+              ],
+              caption: 'A vector and the two perpendicular vectors that add to it. The horizontal one is the side ADJACENT to θ, so it takes the cosine; the vertical one is opposite, so it takes the sine. Measure θ from the vertical instead and the two swap — which is why the sketch comes before the formula.'
+            },
+            rules: [
+              { name: 'Components, angle from the x-axis', expr: 'A_x = A cos(theta)', note: 'And A_y = A sin(theta). The cosine belongs to the ADJACENT side; an angle measured from the vertical swaps sine and cosine.' },
+              { name: 'Back to a magnitude', expr: 'A = sqrt(A_x^2 + A_y^2)', note: 'Pythagoras on the two components, which are perpendicular by construction.' },
+              { name: 'Back to a direction', expr: 'theta = arctan(A_y / A_x)', note: 'Then check the quadrant against the signs: a negative A_x means 180° must be added.' },
+              { name: 'Components add as numbers', expr: 'R_x = A_x + B_x', note: 'And R_y = A_y + B_y. This is the entire reason components exist.' },
+              { name: 'The method', expr: 'Resolve each vector, add the x-components, add the y-components, rebuild', words: true, note: 'Four steps, however many vectors there are. No sine rule, no cosine rule.' }
+            ],
+            examples: [
+              {
+                prompt: 'A force of 25 N acts at 30° above the horizontal. Find its horizontal and vertical components, to two decimal places.',
+                approach: 'One sketch, then two multiplications. Mark the angle where the question puts it — here from the horizontal — and identify which side of the triangle is adjacent to it and which is opposite. The adjacent side takes the cosine and the opposite takes the sine, and the components must both come out smaller than the 25 N they came from.',
+                steps: [
+                  { do: 'Sketch the force at 30° above the horizontal, with its x and y components drawn in', why: 'The sketch decides which ratio goes where, and takes five seconds.' },
+                  { do: 'The horizontal component is adjacent to the 30°, so it takes the cosine: F_x = 25 cos 30°', why: 'Adjacent goes with cosine. Had the angle been measured from the vertical, this would have been the sine instead.' },
+                  { do: 'F_x = 25 × 0.8660 = 21.65 N', why: 'The larger of the two, as it must be when the angle is under 45°.' },
+                  { do: 'The vertical component is opposite the 30°, so it takes the sine: F_y = 25 sin 30°', why: 'Opposite goes with sine, and sin 30° is exactly 0.5, which makes this one checkable by eye.' },
+                  { do: 'F_y = 25 × 0.5 = 12.50 N', why: 'Exactly half the force, which is the signature of a 30° angle and worth recognising.' },
+                  { do: 'F_x = 21.65 N and F_y = 12.50 N', why: 'Both are smaller than 25 N, as every component of a vector must be — a component larger than its parent is an immediate sign that sine and cosine were swapped or the angle misread.' }
+                ],
+                answer: 'F_x = 21.65 N and F_y = 12.50 N', answerWords: true,
+                check: 'Rebuild the force from the components: √(21.65² + 12.50²) = √(468.7 + 156.3) = √625 = 25.0 N ✓. And tan⁻¹(12.50/21.65) = 30.0°, recovering the angle — the two checks together confirm both the sizes and the pairing.'
+              },
+              {
+                prompt: 'Two forces act on a box: 40 N east and 30 N at 60° north of east. Find the magnitude and direction of the resultant, to one decimal place.',
+                approach: 'Components, not triangles. Resolve each force into an x and a y part, add the x parts, add the y parts, and rebuild. The first force is already along x, so its y-component is zero — worth writing down anyway, because the discipline of the table is what makes a five-force problem no harder than this one.',
+                figure: {
+                  kind: 'graph', x: [-5, 70], y: [-5, 45],
+                  segments: [
+                    { from: [0, 0], to: [40, 0], label: '40 N east' },
+                    { from: [40, 0], to: [55, 26], label: '30 N at 60°' },
+                    { from: [0, 0], to: [55, 26], label: 'resultant 60.8 N', dashed: true }
+                  ],
+                  caption: 'The two forces head to tail, with the resultant closing the triangle. It leans well below 60° because the eastward force is the bigger of the two and pulls the total towards the axis — the components say so numerically, and the picture says so at a glance.'
+                },
+                steps: [
+                  { do: 'First force: F1_x = 40 N, F1_y = 0', why: 'Due east is along the x-axis, so it has no vertical part. Writing the zero keeps the table honest.' },
+                  { do: 'Second force: F2_x = 30 cos 60° = 30 × 0.5 = 15.0 N', why: 'Adjacent side, cosine, and cos 60° is exactly 0.5.' },
+                  { do: 'F2_y = 30 sin 60° = 30 × 0.8660 = 25.98 N', why: 'Opposite side, sine. This component is the larger of the two because the angle exceeds 45°.' },
+                  { do: 'Add the components: R_x = 40 + 15.0 = 55.0 N and R_y = 0 + 25.98 = 25.98 N', why: 'Components add as ordinary numbers, which is the whole reason for resolving in the first place.' },
+                  { do: 'Magnitude: R = √(55.0² + 25.98²) = √(3025 + 675) = √3700 = 60.8 N', why: 'Pythagoras on the two totals. Well short of 40 + 30 = 70 N, as it must be for forces that are not parallel.' },
+                  { do: 'Direction: θ = tan⁻¹(25.98/55.0) = 25.3° north of east', why: 'Both components are positive, so the resultant is in the first quadrant and the calculator value needs no adjustment.' }
+                ],
+                answer: '60.8 N at 25.3° north of east', answerWords: true,
+                check: 'The bounds hold: the resultant must lie between 40 − 30 = 10 N and 40 + 30 = 70 N, and 60.8 does ✓. The angle is plausible too — 25.3° is between the 0° of the larger force and the 60° of the smaller, and closer to the larger one, exactly as a weighted result should be.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'p1k-sin-cos-swapped',
+                wrong: 'Using the sine for the horizontal component whatever the diagram shows',
+                right: 'The ADJACENT side takes the cosine, so an angle measured from the vertical swaps the two.',
+                why: 'The formulas A cos θ and A sin θ are a reading of a particular triangle, not a rule about x and y, and a question that gives the angle from the vertical — a rope from a ceiling, a slope measured from the upright — reverses them. Sketching and labelling the angle before writing anything costs seconds and removes the guess entirely.'
+              },
+              {
+                id: 'p1k-component-bigger-than-vector',
+                wrong: 'Accepting a component of 28 N from a 25 N force',
+                right: 'Every component is smaller than the vector it comes from, because sine and cosine never exceed 1.',
+                why: 'A component larger than its parent means the angle was entered in radians, the ratio was inverted, or the calculator was in the wrong mode — all of which are invisible in the working and obvious in the result. Checking the size of each component against the magnitude is a one-second test that catches every one of them.'
+              },
+              {
+                id: 'p1k-quadrant-ignored',
+                wrong: 'Taking the inverse tangent at face value when a component is negative',
+                right: 'Check the signs against the sketch: a negative x-component means 180° has to be added.',
+                why: 'The inverse tangent returns a value between −90° and 90°, so it cannot distinguish the second quadrant from the fourth — an answer of −35° might really be 145°. The components carry the quadrant information that the ratio throws away, which is why the signs are checked rather than the angle trusted.'
+              },
+              {
+                id: 'p1k-sine-rule-instead-of-components',
+                wrong: 'Solving vector problems by the sine and cosine rules on an awkward triangle',
+                right: 'Resolve into components, add them as numbers, and rebuild.',
+                why: 'The triangle method works for exactly two vectors and collapses at three, where there is no single triangle to solve; components scale to any number of vectors with the same four steps. It is also far less error-prone, because adding signed numbers is harder to get wrong than deciding which angle in a sketched triangle a rule refers to.'
+              }
+            ]
+          },
+
+          {
+            id: 'c3', title: 'Projectile motion', src: 'Section 3.4',
+            idea: `A <b>projectile</b> is anything moving under gravity alone once it has been launched. The whole subject rests on a single observation, and everything else is bookkeeping:<br><br><b>The horizontal and vertical motions are independent.</b><br><br>Horizontally there is no force, so <b>a<sub>x</sub> = 0</b> and the horizontal velocity <b>never changes</b>. Vertically there is gravity, so <b>a<sub>y</sub> = −g</b> and the vertical motion is exactly the free fall of chapter 2. A ball fired horizontally from a table and a ball dropped from the same table hit the floor at the <b>same moment</b>, however fast the first was fired — the horizontal motion cannot hurry or delay the fall.<br><br>So a projectile problem is two one-dimensional problems sharing a single clock:<br><br><b>Horizontal: x = v<sub>0x</sub>t</b>, with v<sub>0x</sub> = v<sub>0</sub> cos θ · <b>Vertical: y = v<sub>0y</sub>t − ½gt²</b> and <b>v<sub>y</sub> = v<sub>0y</sub> − gt</b>, with v<sub>0y</sub> = v<sub>0</sub> sin θ<br><br>The time is the bridge. Almost every question is solved by <b>finding t from the vertical motion and putting it into the horizontal equation</b>, because the vertical side is the one with the acceleration and therefore the one that fixes the duration.<br><br>Three results follow for a projectile landing at its launch height:<br><br>• Time of flight <b>t = 2v<sub>0</sub> sin θ / g</b> — twice the time to the top, because rise and fall are symmetric.<br>• Maximum height <b>H = (v<sub>0</sub> sin θ)² / 2g</b>, reached where v<sub>y</sub> = 0.<br>• Range <b>R = v<sub>0</sub>² sin 2θ / g</b>, which is greatest at <b>θ = 45°</b> and equal for any two angles adding to 90° — 30° and 60° carry the same distance.<br><br>Two cautions. At the top of the flight the vertical velocity is zero but the <b>horizontal velocity is not</b>, so the speed there is v<sub>0</sub> cos θ and never zero. And the range formula assumes the landing height equals the launch height, so it does not apply to a ball thrown from a cliff — there the honest route is the two equations and the shared clock.`,
+            figure: {
+              kind: 'graph', x: [0, 56], y: [0, 10], xlabel: 'x', ylabel: 'y',
+              fns: [{ expr: 'x*0.5774 - 9.8*x**2/(2*(25*0.8660)**2)', label: 'the path of a 25 m/s launch at 30°' }],
+              points: [{ x: 27.6, y: 7.97, label: 'top: v_y = 0, v_x unchanged' }, { x: 55.2, y: 0, label: 'lands at 55.2 m' }],
+              caption: 'The parabola a projectile follows, drawn from the actual launch. It is symmetric about the highest point: the rise and the fall take the same time, and the speed at any height on the way up equals the speed at that height coming down. At the top the vertical velocity is zero while the horizontal 21.7 m/s carries straight on, which is why the curve is rounded there rather than pointed.'
+            },
+            rules: [
+              { name: 'Horizontal motion', expr: 'x = v_0 cos(theta) t', note: 'No horizontal force, so no horizontal acceleration: that velocity never changes for the whole flight.' },
+              { name: 'Vertical motion', expr: 'y = v_0 sin(theta) t - g t^2 / 2', note: 'Exactly the free fall of chapter 2, with the launch supplying the initial vertical velocity.' },
+              { name: 'The bridge between them', expr: 'Find t from the vertical motion, then substitute it into the horizontal equation', words: true, note: 'One clock runs for both. This is the route for nearly every question in the section.' },
+              { name: 'Time of flight, level ground', expr: 't = 2 v_0 sin(theta) / g', note: 'Twice the time to the top. Valid only when the projectile lands at the height it was launched from.' },
+              { name: 'Maximum height', expr: 'H = (v_0 sin(theta))^2 / (2 g)', note: 'Where the vertical velocity reaches zero — the horizontal velocity is untouched there.' },
+              { name: 'Range, level ground', expr: 'R = v_0^2 sin(2 theta) / g', note: 'Greatest at 45°, and equal for any two angles adding to 90°: 30° and 60° carry the same distance.' }
+            ],
+            examples: [
+              {
+                prompt: 'A ball rolls off a table 1.25 m high at 3.0 m/s horizontally. Find how long it is in the air and how far from the table it lands, with g = 9.80 m/s².',
+                approach: 'Rolling off means the launch is purely horizontal, so the initial VERTICAL velocity is zero — that is the given hidden in the wording, and it makes the fall identical to a drop. Get the time from the vertical motion alone, where gravity acts, then feed that single number into the horizontal equation. The horizontal speed plays no part in the timing whatsoever.',
+                figure: {
+                  kind: 'graph', x: [0, 2], y: [0, 1.5], xlabel: 'x', ylabel: 'y',
+                  fns: [{ expr: '1.25 - 9.8*x**2/(2*3**2)', label: 'the path from the table edge' }],
+                  points: [{ x: 0, y: 1.25, label: 'leaves the table' }, { x: 1.51, y: 0, label: 'lands 1.51 m out' }],
+                  caption: 'A horizontal launch: the path starts flat and steepens, because the vertical velocity grows from zero while the horizontal stays at 3.0 m/s. A ball simply dropped from the table edge would reach the floor at the same instant, tracing the vertical axis of this picture.'
+                },
+                steps: [
+                  { do: 'Horizontal launch, so v_0y = 0 and v_0x = 3.0 m/s', why: '"Rolls off" is the given: nothing pushes the ball up or down as it leaves, so the vertical motion starts from rest.' },
+                  { do: 'Vertical: the fall is y = ½gt² with y = 1.25 m', why: 'With v_0y = 0 the vertical equation is exactly the free fall of chapter 2, and the horizontal speed does not appear in it.' },
+                  { do: '1.25 = ½(9.80)t², so t² = 2(1.25)/9.80 = 0.2551', why: 'Rearrange before taking roots. Note that 3.0 m/s is nowhere in this line — that is the independence at work.' },
+                  { do: 't = √0.2551 = 0.505 s', why: 'The time of flight. Only the positive root is physical.' },
+                  { do: 'Horizontal: x = v_0x t = 3.0 × 0.505', why: 'The same clock, and a constant horizontal velocity for the whole flight.' },
+                  { do: 'x = 1.51 m from the base of the table', why: 'Double the launch speed and this doubles, while the time stays exactly 0.505 s — which is the cleanest statement of what independence means.' }
+                ],
+                answer: 'In the air 0.505 s, landing 1.51 m from the table', answerWords: true,
+                check: 'Test the independence directly: a ball dropped from 1.25 m takes √(2 × 1.25/9.80) = 0.505 s ✓, the same time. And the landing speed can be checked — v_y = 9.80 × 0.505 = 4.95 m/s downward while v_x is still 3.0 m/s, giving a speed of √(4.95² + 3.0²) = 5.79 m/s.'
+              },
+              {
+                prompt: 'A ball is kicked at 25 m/s at 30° above level ground. Find the maximum height, the time of flight and the range, with g = 9.80 m/s².',
+                approach: 'Resolve the launch velocity into components first — everything else is read off those two numbers. The height and the time to the top come from the vertical component alone, the range from the horizontal component multiplied by the whole flight time. Because the ground is level the symmetry shortcuts apply, and each can be checked against the long route.',
+                steps: [
+                  { do: 'Components: v_0x = 25 cos 30° = 21.65 m/s and v_0y = 25 sin 30° = 12.50 m/s', why: 'Every later line uses one or the other. The horizontal one stays 21.65 m/s for the entire flight.' },
+                  { do: 'Maximum height: v_y = 0 at the top, so H = v_0y²/(2g) = 12.50²/(2 × 9.80)', why: 'The vertical motion alone, exactly as for a ball thrown straight up at 12.50 m/s.' },
+                  { do: 'H = 156.25/19.6 = 7.97 m', why: 'Rather less than a ball thrown straight up at 25 m/s would reach, because only half the launch speed is going upward.' },
+                  { do: 'Time of flight: t = 2v_0y/g = 2(12.50)/9.80 = 2.551 s', why: 'Twice the time to the top, because the ground is level and the rise and fall are symmetric.' },
+                  { do: 'Range: R = v_0x t = 21.65 × 2.551', why: 'Constant horizontal velocity over the whole flight — the independence again, in its most useful form.' },
+                  { do: 'R = 55.2 m', why: 'The formula R = v_0² sin 2θ/g gives the same: 625 sin 60°/9.80 = 55.2 m ✓.' }
+                ],
+                answer: 'Maximum height 7.97 m, time of flight 2.55 s, range 55.2 m', answerWords: true,
+                check: 'Try 60° instead of 30°: sin 120° equals sin 60°, so the range is the same 55.2 m — the pair of angles adding to 90° carry equally far, with the steeper one taking longer and going higher. And at 45° the range would be 625/9.80 = 63.8 m, the maximum possible at this speed, which confirms 55.2 m is sensibly short of it.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'p1k-g-in-horizontal',
+                wrong: 'Putting a ½at² term into the horizontal equation',
+                right: 'There is no horizontal force, so a_x = 0 and x = v_0x t exactly.',
+                why: 'Gravity acts downward only, and the horizontal velocity of a projectile is the same at launch, at the top and at landing. Carrying an acceleration into the horizontal line makes the range come out wrong in a way that no later step can reveal, because the answer still looks like a distance.'
+              },
+              {
+                id: 'p1k-speed-zero-at-top',
+                wrong: 'Taking the speed at the highest point to be zero',
+                right: 'The VERTICAL velocity is zero there; the horizontal component is unchanged, so the speed is v_0 cos θ.',
+                why: 'A projectile at the top of its arc is still travelling forwards at its full horizontal speed, which is why the path is rounded there rather than coming to a point. Setting the whole velocity to zero also breaks the energy accounting of chapter 7, where the kinetic energy at the top is not zero but ½mv_0x².'
+              },
+              {
+                id: 'p1k-range-formula-off-level',
+                wrong: 'Using R = v₀² sin 2θ/g for a projectile launched from a cliff',
+                right: 'That formula assumes the landing height equals the launch height. Otherwise solve the vertical equation for t and substitute.',
+                why: 'The derivation sets the vertical displacement to zero, which is exactly what a cliff violates, and the error grows with the height difference rather than staying small. The general route — find t from the vertical motion with the real displacement, then multiply by the horizontal velocity — always works and is barely longer.'
+              },
+              {
+                id: 'p1k-launch-speed-not-resolved',
+                wrong: 'Using the launch SPEED in the vertical equation instead of its vertical component',
+                right: 'Resolve first: only v₀ sin θ goes up, and only v₀ cos θ goes along.',
+                why: 'Using the full 25 m/s vertically would give a maximum height of 31.9 m instead of 7.97 m, a fourfold error from a single missing factor. Writing both components down before any equation is used is the habit that prevents it, and it is why the worked examples resolve as their first line every time.'
+              }
+            ]
+          },
+
+          {
+            id: 'c4', title: 'Adding velocities: currents, winds and frames', src: 'Section 3.5',
+            idea: `A velocity is always measured <b>relative to something</b>, and when that something is itself moving the velocities add as vectors:<br><br><b>v<sub>ground</sub> = v<sub>relative to the medium</sub> + v<sub>medium relative to the ground</sub></b><br><br>A boat pointed straight across a river still drifts downstream; a plane flying due north in a crosswind ends up east of where it aimed. The velocity the pilot controls is the one relative to the air or water, and the one that decides where you arrive is the sum.<br><br>The subscript convention is worth using, because it makes the additions self-checking: <b>v<sub>BG</sub> = v<sub>BW</sub> + v<sub>WG</sub></b>, boat relative to ground = boat relative to water + water relative to ground. The inner subscripts match and cancel, leaving the outer pair — the same bookkeeping as cancelling units in a conversion. It also gives the reversal rule for free: <b>v<sub>WB</sub> = −v<sub>BW</sub></b>.<br><br>Two questions come up constantly, and they are not the same question:<br><br><b>"Point the boat straight across — where does it land?"</b> The crossing time comes from the across-stream component alone, since the current pushes sideways and does nothing to hurry or delay the crossing. Multiply that time by the current to get the drift downstream. This is projectile motion's independence in a new costume.<br><br><b>"Where should the boat point to land straight opposite?"</b> Now the across-stream speed is not the boat's full speed — some of it is spent fighting the current. Aim upstream at an angle θ with <b>sin θ = v<sub>current</sub>/v<sub>boat</sub></b>, and the crossing takes longer. If the current is faster than the boat, there is no such angle and the trip is impossible, which the arithmetic tells you by asking for the inverse sine of a number bigger than 1.<br><br>Everything in this section is the vector addition of section 3.3 with a story attached, so the method is unchanged: components, add, rebuild.`,
+            figure: {
+              kind: 'graph', x: [-1, 8], y: [-1, 6],
+              segments: [
+                { from: [0, 0], to: [0, 4], label: 'boat, 4 m/s across' },
+                { from: [0, 4], to: [3, 4], label: 'current, 3 m/s' },
+                { from: [0, 0], to: [3, 4], label: 'actual path, 5 m/s', dashed: true }
+              ],
+              points: [{ x: 0, y: 0, label: 'start' }, { x: 3, y: 4, label: 'lands here' }],
+              caption: 'A boat pointed straight across a flowing river. It crosses at 4 m/s regardless of the current — the current has no across-stream component — and the same current sweeps it 3 m downstream for every 4 m of crossing. The dashed line is the path over the ground, at 5 m/s.'
+            },
+            rules: [
+              { name: 'Velocities add', expr: 'v_BG = v_BW + v_WG', note: 'Boat relative to ground = boat relative to water + water relative to ground. The inner subscripts cancel.' },
+              { name: 'Reversing a frame', expr: 'v_WB = -v_BW', note: 'Your velocity relative to the train is the reverse of the train’s relative to you.' },
+              { name: 'Pointed straight across', expr: 't = width / v_boat', note: 'The current has no across-stream component, so it cannot change the crossing time — only where you land.' },
+              { name: 'Drift downstream', expr: 'drift = v_current * t', note: 'The current acting for the whole of the crossing time.' },
+              { name: 'To land straight opposite', expr: 'sin(theta) = v_current / v_boat', note: 'Aim upstream by θ. No solution when the current is faster than the boat, and the inverse sine says so.' }
+            ],
+            examples: [
+              {
+                prompt: 'A river is 120 m wide and flows at 1.5 m/s. A boat that travels at 2.0 m/s in still water is pointed straight across. Find the crossing time, the distance swept downstream, and the speed over the ground.',
+                approach: 'Treat the two directions separately, exactly as in projectile motion: across the river and along it. The boat supplies the across-stream velocity and the current supplies the along-stream one, and neither interferes with the other. So the crossing time comes from the boat alone, the drift from the current acting for that time, and the ground speed from combining the two perpendicular velocities at the end.',
+                steps: [
+                  { do: 'Across the river: only the boat contributes, at 2.0 m/s', why: 'The current flows along the river, so it has no component across it — this is the independence the whole question turns on.' },
+                  { do: 'Crossing time: t = 120/2.0 = 60 s', why: 'Width over across-stream speed. The current does not appear, and would not change this answer at any strength.' },
+                  { do: 'Downstream: only the current contributes, at 1.5 m/s for the whole 60 s', why: 'The boat is not pointed downstream at all, so every metre of drift is the river\'s doing.' },
+                  { do: 'Drift = 1.5 × 60 = 90 m downstream', why: 'The boat lands 90 m below the point directly opposite its start.' },
+                  { do: 'Ground speed: the two velocities are perpendicular, so v = √(2.0² + 1.5²) = √6.25', why: 'Across and along the river are at right angles, so Pythagoras applies.' },
+                  { do: 'v = 2.5 m/s over the ground, along a path 37° downstream of straight across', why: 'Faster over the ground than the boat can manage in still water — the current is helping, just not in a useful direction.' }
+                ],
+                answer: 'Crossing time 60 s, drift 90 m downstream, ground speed 2.5 m/s', answerWords: true,
+                check: 'Check by the path: in 60 s the boat covers 120 m across and 90 m down, a straight-line distance of √(120² + 90²) = 150 m, and 150/60 = 2.5 m/s ✓. Note also that doubling the current would double the drift and leave the 60 s untouched.'
+              },
+              {
+                prompt: 'The same boat and river. At what angle upstream must the boat be pointed to land directly opposite, and how long does that crossing take?',
+                approach: 'A different question with a different answer: now the requirement is that the along-stream velocities cancel, which fixes the angle. Set the upstream component of the boat\'s velocity equal to the current, solve for the angle, and then notice that the across-stream speed is what is left over — smaller than 2.0 m/s, so this crossing takes longer than the last one.',
+                figure: {
+                  kind: 'graph', x: [-2.5, 2.5], y: [-0.5, 2.5],
+                  segments: [
+                    { from: [0, 0], to: [-1.5, 1.323], label: 'boat aimed upstream' },
+                    { from: [-1.5, 1.323], to: [0, 1.323], label: 'current, 1.5 m/s' },
+                    { from: [0, 0], to: [0, 1.323], label: 'net: 1.32 m/s straight across', dashed: true }
+                  ],
+                  caption: 'Aiming upstream so the current is cancelled. The boat\'s own velocity is still 2.0 m/s, but 1.5 of it is spent holding station against the river and only 1.32 m/s is left to make progress across — which is why this crossing takes 91 s against the earlier 60 s.'
+                },
+                steps: [
+                  { do: 'The requirement: the boat\'s upstream component must cancel the 1.5 m/s current', why: 'Landing directly opposite means zero net velocity along the river, which is one equation in one unknown.' },
+                  { do: 'That component is 2.0 sin θ, so 2.0 sin θ = 1.5', why: 'θ is measured from straight across, so the upstream part is the sine component.' },
+                  { do: 'sin θ = 1.5/2.0 = 0.75, so θ = 48.6° upstream of straight across', why: 'A large angle, because the current is three-quarters of the boat\'s speed. Had the current been faster than the boat, this line would ask for the inverse sine of a number above 1 — and the crossing would be impossible.' },
+                  { do: 'Across-stream speed: 2.0 cos 48.6° = 2.0 × 0.6614 = 1.323 m/s', why: 'What is left of the boat\'s speed after the upstream part is spoken for. Equivalently √(2.0² − 1.5²) = √1.75 = 1.323 m/s.' },
+                  { do: 'Crossing time: t = 120/1.323 = 90.7 s', why: 'Width over the across-stream speed, as before — but the speed is smaller now.' },
+                  { do: 'So 48.6° upstream, taking 90.7 s', why: 'Half again as long as the straight-across crossing, which is the price of landing where you intended.' }
+                ],
+                answer: '48.6° upstream of straight across, taking 90.7 s', answerWords: true,
+                check: 'Verify the cancellation: the upstream component is 2.0 sin 48.6° = 1.50 m/s, exactly the current ✓, so the net along-stream velocity is zero and the boat lands opposite. And the comparison is the lesson — pointing straight across is quicker (60 s) but lands 90 m downstream; aiming upstream lands you where you meant to go and costs 31 s.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'p1k-current-changes-crossing-time',
+                wrong: 'Expecting a stronger current to make a straight-across crossing take longer',
+                right: 'A current along the river has no across-stream component, so the crossing time is the width divided by the boat\'s own speed, whatever the current does.',
+                why: 'It is the same independence that makes a ball fired horizontally land at the same instant as one dropped: perpendicular motions do not interfere. The current changes WHERE the boat lands, not WHEN it arrives, and separating those two questions is what the section is teaching.'
+              },
+              {
+                id: 'p1k-relative-velocity-subtracted-wrongly',
+                wrong: 'Subtracting the current from the boat speed to get the ground speed',
+                right: 'Add the velocities as vectors: perpendicular ones give √(2.0² + 1.5²) = 2.5 m/s, not 0.5 m/s.',
+                why: 'Speeds only subtract when the motions are directly opposed, and a current across the direction of travel is the opposite case. Writing the subscripts out — v_BG = v_BW + v_WG — makes the addition explicit and stops a vector relationship being carried out on two bare numbers.'
+              },
+              {
+                id: 'p1k-aim-angle-from-wrong-side',
+                wrong: 'Using cos θ = v_current/v_boat for the upstream aiming angle',
+                right: 'With θ measured from straight across, the upstream component is v_boat sin θ, so sin θ = v_current/v_boat.',
+                why: 'Which ratio applies depends on where the angle is measured from, exactly as it did for components in section 3.3, and the two answers here differ by more than 40°. Sketching the triangle with the angle marked settles it, and the check is that the across-stream speed left over must be smaller than the boat\'s full speed.'
+              },
+              {
+                id: 'p1k-impossible-crossing-unnoticed',
+                wrong: 'Reporting an aiming angle when the current is faster than the boat',
+                right: 'sin θ = v_current/v_boat has no solution above 1: the boat cannot land directly opposite at all.',
+                why: 'The arithmetic signals the impossibility by asking for the inverse sine of a number greater than one, and a calculator error at that point is information rather than a nuisance. The physical reading is that the boat will be swept downstream whatever it does, and the best it can manage is to minimise the drift — a genuinely different question.'
+              }
+            ]
+          }
+        ],
+        practice: [
+          { id: 'h1', kind: 'numeric', lesson: 'c1',
+            prompt: 'A walker goes 6.0 km east then 8.0 km north. Find the magnitude of the resultant displacement, in km.',
+            answer: 10, verify: { expr: 'sqrt(6**2 + 8**2)' },
+            hint: 'The two legs are perpendicular.',
+            solution: ['R = √(6.0² + 8.0²)', '= √(36 + 64) = √100', '= 10 km, not the 14 km the magnitudes add to'] },
+
+          { id: 'h2', kind: 'numeric', lesson: 'c1',
+            prompt: 'For that walker, find the direction as an angle north of east, in degrees, to one decimal place.',
+            answer: 53.1, tol: 0.05, verify: { expr: 'atan(Rational(8, 6))*180/pi', dp: 1 },
+            hint: 'tan θ = north leg / east leg.',
+            solution: ['tan θ = 8.0/6.0 = 1.3333', 'θ = tan⁻¹(1.3333)', '= 53.1° north of east'] },
+
+          { id: 'h3', kind: 'mc', lesson: 'c1',
+            prompt: 'Two forces of 5 N and 9 N act at a point. Which resultant is impossible?',
+            options: [
+              { t: '2 N, because the resultant cannot be smaller than the difference of the magnitudes', ok: true },
+              { t: '4 N, which is the difference of the two' },
+              { t: '10 N, which is between the difference and the sum' },
+              { t: '14 N, which is the sum of the two' }
+            ],
+            hint: 'What are the largest and smallest resultants two vectors can produce?',
+            solution: ['The resultant lies between |9 − 5| = 4 N and 9 + 5 = 14 N', '4 N happens when they oppose, 14 N when they are parallel', '2 N is below the minimum and cannot occur', 'That bound is a free check on any resultant'] },
+
+          { id: 'h4', kind: 'numeric', lesson: 'c1',
+            prompt: 'A cyclist\'s velocity changes from 12 m/s north to 12 m/s east. Find the magnitude of the change in velocity, in m/s, to two decimal places.',
+            answer: 16.97, tol: 0.05, verify: { expr: 'sqrt(12**2 + 12**2)', dp: 2 },
+            hint: 'Δv = v_f − v_i, drawn as v_f plus the reverse of v_i. The two are perpendicular.',
+            solution: ['Reverse the initial velocity: 12 m/s south', 'Add it to 12 m/s east — perpendicular, so √(12² + 12²)', '= √288 = 16.97 m/s, even though the speed never changed'] },
+
+          { id: 'h5', kind: 'numeric', lesson: 'c2',
+            prompt: 'A 60 N force acts at 40° above the horizontal. Find its horizontal component in N, to two decimal places.',
+            answer: 45.96, tol: 0.05, verify: { expr: '60*cos(40*pi/180)', dp: 2 },
+            hint: 'The horizontal side is adjacent to the angle.',
+            solution: ['F_x = 60 cos 40°', '= 60 × 0.76604', '= 45.96 N'] },
+
+          { id: 'h6', kind: 'numeric', lesson: 'c2',
+            prompt: 'Find the vertical component of that same force, in N, to two decimal places.',
+            answer: 38.57, tol: 0.05, verify: { expr: '60*sin(40*pi/180)', dp: 2 },
+            hint: 'The vertical side is opposite the angle.',
+            solution: ['F_y = 60 sin 40°', '= 60 × 0.64279', '= 38.57 N, smaller than the 60 N it came from'] },
+
+          { id: 'h7', kind: 'numeric', lesson: 'c2',
+            prompt: 'A vector has components A_x = 9.0 and A_y = 12.0. Find its magnitude.',
+            answer: 15, verify: { expr: 'sqrt(9**2 + 12**2)' },
+            hint: 'Pythagoras on the two components.',
+            solution: ['A = √(9.0² + 12.0²)', '= √(81 + 144) = √225', '= 15.0'] },
+
+          { id: 'h8', kind: 'numeric', lesson: 'c2',
+            prompt: 'A vector has components A_x = 5.0 and A_y = 5.0. Find its direction, in degrees anticlockwise from the positive x-axis.',
+            answer: 45, verify: { expr: 'atan(Rational(5, 5))*180/pi' },
+            hint: 'Equal components mean equal sides.',
+            solution: ['tan θ = 5.0/5.0 = 1', 'θ = tan⁻¹(1) = 45°', 'Both components are positive, so the first quadrant is correct and no adjustment is needed'] },
+
+          { id: 'h9', kind: 'mc', lesson: 'c2',
+            prompt: 'A vector has A_x = −4.0 and A_y = 3.0, and a calculator gives tan⁻¹(3.0/−4.0) = −36.9°. What is the true direction?',
+            options: [
+              { t: '143.1°, because a negative x-component puts the vector in the second quadrant, so 180° is added', ok: true },
+              { t: '−36.9°, exactly as the calculator reported' },
+              { t: '36.9°, dropping the minus sign' },
+              { t: '323.1°, subtracting from 360°' }
+            ],
+            hint: 'Which quadrant has a negative x and a positive y?',
+            solution: ['A_x < 0 and A_y > 0 is the second quadrant', 'The inverse tangent only returns −90° to 90°, so it cannot place it there', 'Add 180°: −36.9 + 180 = 143.1°', 'The signs of the components carry the quadrant, not the ratio'] },
+
+          { id: 'h10', kind: 'numeric', lesson: 'c3',
+            prompt: 'A ball rolls off a bench 0.80 m high at 2.5 m/s. Find the time in the air, in seconds, to three decimal places, with g = 9.80 m/s².',
+            answer: 0.404, tol: 0.002, verify: { expr: 'sqrt(2*Rational(8, 10)/Rational(98, 10))', dp: 3 },
+            hint: 'The vertical motion starts from rest — the 2.5 m/s plays no part.',
+            solution: ['0.80 = ½(9.80)t²', 't² = 1.6/9.80 = 0.16327', 't = 0.404 s'] },
+
+          { id: 'h11', kind: 'numeric', lesson: 'c3',
+            prompt: 'How far from the bench does that ball land, in metres, to two decimal places?',
+            answer: 1.01, tol: 0.005, verify: { expr: 'Rational(25, 10)*sqrt(2*Rational(8, 10)/Rational(98, 10))', dp: 2 },
+            hint: 'x = v_0x t, with the time from the vertical motion.',
+            solution: ['x = 2.5 × 0.40406', '= 1.0101', '= 1.01 m'] },
+
+          { id: 'h12', kind: 'numeric', lesson: 'c3',
+            prompt: 'A projectile is launched at 20 m/s at 40° above level ground. Find the maximum height in metres, to two decimal places, with g = 9.80 m/s².',
+            answer: 8.43, tol: 0.05, verify: { expr: '(20*sin(40*pi/180))**2/(2*Rational(98, 10))', dp: 2 },
+            hint: 'Only the vertical component rises: H = (v₀ sin θ)²/(2g).',
+            solution: ['v_0y = 20 sin 40° = 12.856 m/s', 'H = 12.856²/(2 × 9.80) = 165.28/19.6', '= 8.43 m'] },
+
+          { id: 'h13', kind: 'numeric', lesson: 'c3',
+            prompt: 'Find the range of that projectile on level ground, in metres, to one decimal place.',
+            answer: 40.2, tol: 0.05, verify: { expr: '20**2*sin(80*pi/180)/Rational(98, 10)', dp: 1 },
+            hint: 'R = v₀² sin 2θ / g.',
+            solution: ['R = 20² sin 80°/9.80', '= 400 × 0.98481/9.80', '= 40.2 m'] },
+
+          { id: 'h14', kind: 'mc', lesson: 'c3',
+            prompt: 'A bullet is fired horizontally from a rifle at the same moment an identical bullet is dropped from the same height. Which reaches the ground first?',
+            options: [
+              { t: 'They land at the same moment — the horizontal motion cannot change the vertical fall', ok: true },
+              { t: 'The dropped bullet, because it has less distance to cover' },
+              { t: 'The fired bullet, because it is moving faster' },
+              { t: 'It depends on the muzzle speed of the rifle' }
+            ],
+            hint: 'Does anything horizontal appear in the vertical equation?',
+            solution: ['Vertically both start from rest and fall under the same g', 'The horizontal velocity appears nowhere in y = ½gt²', 'Both take the same time to fall', 'This is the independence that all projectile motion rests on'] },
+
+          { id: 'h15', kind: 'mc', lesson: 'c3',
+            prompt: 'At the highest point of a projectile\'s flight, what is its speed?',
+            options: [
+              { t: 'v₀ cos θ — the horizontal component, which never changed', ok: true },
+              { t: 'Zero, because the projectile is momentarily at rest' },
+              { t: 'v₀, the full launch speed' },
+              { t: 'v₀ sin θ, the vertical component' }
+            ],
+            hint: 'Which component is zero at the top, and which is untouched?',
+            solution: ['The vertical velocity reaches zero at the top', 'The horizontal velocity is unchanged for the whole flight', 'So the speed there is v₀ cos θ', 'It is why the path is rounded at the top rather than pointed'] },
+
+          { id: 'h16', kind: 'numeric', lesson: 'c4',
+            prompt: 'A river 90 m wide flows at 2.0 m/s. A boat travelling at 3.0 m/s in still water is pointed straight across. Find the crossing time in seconds.',
+            answer: 30, verify: { expr: 'Rational(90, 3)' },
+            hint: 'The current has no across-stream component.',
+            solution: ['Only the boat carries it across, at 3.0 m/s', 't = 90/3.0', '= 30 s, whatever the current does'] },
+
+          { id: 'h17', kind: 'numeric', lesson: 'c4',
+            prompt: 'How far downstream does that boat land, in metres?',
+            answer: 60, verify: { expr: '2*Rational(90, 3)' },
+            hint: 'The current acts for the whole crossing time.',
+            solution: ['Drift = current × time', '= 2.0 × 30', '= 60 m downstream'] },
+
+          { id: 'h18', kind: 'numeric', lesson: 'c4',
+            prompt: 'Find the boat\'s speed over the ground, in m/s, to two decimal places.',
+            answer: 3.61, tol: 0.02, verify: { expr: 'sqrt(3**2 + 2**2)', dp: 2 },
+            hint: 'Across and along the river are perpendicular.',
+            solution: ['v = √(3.0² + 2.0²)', '= √13', '= 3.61 m/s'] },
+
+          { id: 'h19', kind: 'numeric', lesson: 'c4',
+            prompt: 'At what angle upstream of straight across must that boat be pointed to land directly opposite? Give the answer in degrees, to one decimal place.',
+            answer: 41.8, tol: 0.05, verify: { expr: 'asin(Rational(2, 3))*180/pi', dp: 1 },
+            hint: 'The upstream component must cancel the current: sin θ = v_current/v_boat.',
+            solution: ['sin θ = 2.0/3.0 = 0.6667', 'θ = sin⁻¹(0.6667)', '= 41.8° upstream of straight across'] },
+
+          { id: 'h20', kind: 'spot', lesson: 'c3',
+            prompt: 'A stone is thrown horizontally at 6.0 m/s from a 5.0 m cliff. How long is it in the air? (g = 9.80 m/s²)',
+            steps: [
+              { t: 'The launch is horizontal, so the vertical motion starts from rest' },
+              { t: 'The stone is moving at 6.0 m/s, so use 5.0 = 6.0t + ½(9.80)t²', bad: true },
+              { t: 'The vertical equation contains only the vertical motion: 5.0 = ½(9.80)t²' },
+              { t: 't = √(10/9.80) = 1.01 s' }
+            ],
+            why: 'The 6.0 m/s is entirely horizontal, so it belongs in the horizontal equation and nowhere else. Putting it into the vertical line makes the stone appear to be thrown downwards as well as outwards, which shortens the calculated fall and breaks the independence the whole section rests on.',
+            hint: 'Which equation does a horizontal velocity belong in?',
+            solution: ['Vertically: v_0y = 0, so 5.0 = ½gt²', 't² = 10/9.80 = 1.0204', 't = 1.01 s, with the 6.0 m/s used only for the horizontal distance'] },
+
+          { id: 'h21', kind: 'order', lesson: 'c3',
+            prompt: 'Put the steps of a projectile problem in the order that uses the independence properly.',
+            steps: [
+              'Resolve the launch velocity into horizontal and vertical components',
+              'Write the vertical equation, with a = −g',
+              'Solve the vertical equation for the time of flight',
+              'Put that time into the horizontal equation, where a = 0',
+              'Check the answer against the symmetry of the path'
+            ],
+            hint: 'Which side of the motion has the acceleration, and therefore sets the clock?',
+            solution: ['Components first — every later line uses one or the other', 'The vertical side carries the acceleration and fixes the duration', 'The time is the bridge between the two motions', 'The horizontal equation is then a single multiplication'] },
+
+          { id: 'h22', kind: 'order', lesson: 'c2',
+            prompt: 'Put the analytical method for adding vectors in order.',
+            steps: [
+              'Sketch each vector with its angle marked',
+              'Resolve each into an x-component and a y-component',
+              'Add all the x-components, then all the y-components',
+              'Combine the two totals with Pythagoras for the magnitude',
+              'Take the inverse tangent for the direction, then check the quadrant against the signs'
+            ],
+            hint: 'The sketch decides which ratio is which, so nothing can be resolved before it exists.',
+            solution: ['Sketch first, because the angle\'s reference decides sine from cosine', 'Resolve, then add as ordinary numbers', 'Rebuild the magnitude, then the direction', 'The quadrant check comes last and uses the signs, not the ratio'] }
+        ]
+      },
+
+      /* ============================ CHAPTER 4 ============================ */
+      {
+        id: 'laws', n: 4,
+        title: 'The laws of motion',
+        blurb: 'Why motion changes: the law that says no force is needed to keep going, the one that says how much force changes how much motion, the one about pairs, and the diagram that turns any of it into an equation.',
+        read: 'Chapter 4',
+        objectives: [
+          'State Newton\'s first law and use it to say what happens to an object with no net force on it',
+          'Apply ΣF = ma with the NET force, in the direction the acceleration is asked for',
+          'Tell the two forces of a third-law pair apart, and say why they never cancel each other',
+          'Compute a normal force on the level, in a lift and on a slope, and a tension in a connected system',
+          'Draw a free-body diagram and read the equation of motion straight off it'
+        ],
+        lessons: [
+          {
+            id: 'd1', title: 'Force and Newton\'s first law', src: 'Section 4.2',
+            idea: `A <b>force</b> is a push or a pull, measured in <b>newtons</b> (N), and it is a vector — size and direction both matter. Several forces acting at once are replaced by their vector sum, the <b>net force</b> <b>ΣF</b>, and it is the net force that the rest of the chapter is about. Two 50 N forces in opposite directions are not "a hundred newtons of force"; they are no net force at all.<br><br><b>Newton's first law</b>: an object at rest stays at rest, and an object in motion continues at constant velocity in a straight line, unless acted on by a non-zero net force.<br><br>The law is easy to state and hard to believe, because everyday experience says a moving thing slows down on its own. It does not — it slows because friction and air resistance are forces acting on it. Remove them, as on an air track or in space, and motion continues indefinitely with nothing to maintain it. The question the first law answers is not "why do things move?" but <b>"why does motion CHANGE?"</b>, and the answer is always a net force.<br><br>The property that makes an object resist a change in its motion is <b>inertia</b>, and its measure is <b>mass</b>. Mass is a scalar in kilograms and it is the same everywhere in the universe. <b>Weight</b> is something else: the gravitational force on the object, <b>w = mg</b>, a vector in newtons that depends on where you are. A 70 kg person has a weight of 686 N on Earth and about 114 N on the Moon, with the same mass in both places. Using the words interchangeably, or quoting a weight in kilograms, is the most common language error in the chapter.<br><br>Two consequences worth holding on to. <b>Equilibrium</b> — ΣF = 0 — means either at rest or moving at constant velocity, and those two cases are physically identical: a car at a steady 100 km/h has exactly as much net force on it as a parked one, namely none. And a first law problem is solved by writing <b>ΣF = 0</b> in each direction, which is the whole method.`,
+            figure: {
+              kind: 'graph', x: [0, 10], y: [-1, 5], xlabel: 't', ylabel: 'v',
+              fns: [{ expr: '3', label: 'no net force: constant velocity' }, { expr: '0.45*x', label: 'a net force: velocity changes', dashed: true }],
+              caption: 'What the first law asserts, drawn as velocity against time. With no net force the line is flat — and flat at 3 m/s is as much an equilibrium as flat at zero. Any net force at all tilts the line, and the tilt is the acceleration the second law goes on to quantify.'
+            },
+            rules: [
+              { name: 'Net force', expr: 'sum F = F_1 + F_2 + F_3', note: 'A vector sum, not a total of magnitudes. Two equal opposite forces give a net force of zero.' },
+              { name: 'Newton’s first law', expr: 'If sum F = 0 the velocity does not change', words: true, note: 'At rest or moving steadily in a straight line — physically the same case.' },
+              { name: 'Weight', expr: 'w = m g', note: 'A force in newtons, and it depends on where you are. Mass is a scalar in kilograms and does not.' },
+              { name: 'Equilibrium', expr: 'sum F_x = 0 and sum F_y = 0', note: 'The equations of a first-law problem, one per direction.' }
+            ],
+            examples: [
+              {
+                prompt: 'A 1,200 kg car travels at a constant 90 km/h along a level road. The engine provides a forward force of 450 N. Find the total resistive force, and the car\'s weight.',
+                approach: 'The words "constant" and "level" are the physics: constant velocity means zero net force, so this is a first-law problem and no acceleration is involved anywhere. Write ΣF = 0 horizontally to get the resistance, then handle the weight as a separate vertical question — and notice that the 90 km/h never enters the arithmetic at all.',
+                steps: [
+                  { do: 'Constant velocity means ΣF = 0, in every direction', why: 'This is the first law used as a tool. Constant speed in a straight line is equilibrium, exactly like being parked.' },
+                  { do: 'Horizontally: the 450 N drive force and the resistance are the only forces', why: 'Gravity and the normal force are vertical and play no part in this direction.' },
+                  { do: 'ΣF_x = 450 − F_resist = 0, so F_resist = 450 N', why: 'Equal and opposite to the drive force. Friction and air resistance together exactly balance the engine, which is why the speed holds.' },
+                  { do: 'The 90 km/h is not used anywhere in that calculation', why: 'Equilibrium does not care how fast you are going, only that the velocity is not changing — which is the counterintuitive core of the first law.' },
+                  { do: 'Weight: w = mg = 1,200 × 9.80', why: 'A separate, vertical question. Weight is a force, so it is in newtons.' },
+                  { do: 'w = 11,760 N, about 11.8 kN', why: 'The mass stays 1,200 kg anywhere; the weight would be about 1,940 N on the Moon.' }
+                ],
+                answer: 'Resistive force 450 N, and the weight is 11,760 N', answerWords: true,
+                check: 'Test the logic against a change: if the driver increased the drive force to 600 N, the net force would become 150 N forward and the car would accelerate at 150/1,200 = 0.125 m/s² — no longer an equilibrium problem. That the resistance equals the drive force EXACTLY is the signature of constant velocity.'
+              },
+              {
+                prompt: 'A 15 kg lamp hangs from two ropes, each making 40° with the vertical. Find the tension in each rope, to the nearest newton.',
+                approach: 'The lamp is at rest, so ΣF = 0 in both directions — a first-law problem in two dimensions. Symmetry means the two tensions are equal, which halves the work: resolve each into components, and the vertical components together must carry the whole weight. The horizontal components cancel by symmetry, and checking that they do is the confirmation the setup was right.',
+                figure: {
+                  kind: 'graph', x: [-3, 3], y: [-1, 4],
+                  segments: [
+                    { from: [0, 0], to: [-2, 2.38], label: 'T, at 40° from vertical' },
+                    { from: [0, 0], to: [2, 2.38], label: 'T, the other rope' },
+                    { from: [0, 0], to: [0, -0.9], label: 'weight, 147 N' }
+                  ],
+                  points: [{ x: 0, y: 0, label: 'the lamp' }],
+                  caption: 'The three forces on the lamp, drawn from the point they act on. The two tensions lean outwards, so only part of each pulls upward — which is why each rope carries 96 N rather than half of the 147 N weight. Widen the angle and the tensions grow without limit, which is why a washing line pulled nearly straight snaps.'
+                },
+                steps: [
+                  { do: 'The lamp hangs at rest, so ΣF_x = 0 and ΣF_y = 0', why: 'At rest is equilibrium. Two equations, and by symmetry only one unknown.' },
+                  { do: 'Weight: w = mg = 15 × 9.80 = 147 N downward', why: 'The force the ropes have to carry between them.' },
+                  { do: 'By symmetry the two tensions are equal, call each T', why: 'The angles are the same on both sides, so nothing distinguishes the ropes. This halves the algebra.' },
+                  { do: 'Vertical components: the angle is from the VERTICAL, so each rope pulls up with T cos 40°', why: 'Adjacent to the angle takes the cosine, and here the vertical is the adjacent side — measuring from the vertical swaps sine and cosine, as section 3.3 warned.' },
+                  { do: 'ΣF_y = 2T cos 40° − 147 = 0, so T = 147/(2 × 0.76604)', why: 'The two upward components together carry the whole weight.' },
+                  { do: 'T = 147/1.53209 = 96 N in each rope', why: 'More than half the weight, because part of each tension is spent pulling sideways rather than up.' }
+                ],
+                answer: '96 N in each rope', answerWords: true,
+                check: 'The horizontal equation confirms it: one rope pulls left with 96 sin 40° = 61.7 N and the other right with the same, so ΣF_x = 0 ✓. And the trend is right — at 0° each rope would carry exactly 73.5 N, half the weight, and the tension climbs from there as the ropes are spread.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'p1k-force-needed-for-motion',
+                wrong: 'Assuming a moving object must have a net force pushing it along',
+                right: 'Constant velocity means zero net force. A force is needed to CHANGE motion, not to continue it.',
+                why: 'Everyday experience misleads because friction is always present, so a push really is needed to keep a box sliding — but that push is balancing friction, not maintaining the motion. Recognising the difference is what lets you write ΣF = 0 for a car at 90 km/h, and getting it wrong turns every equilibrium problem into a search for a force that is not there.'
+              },
+              {
+                id: 'p1k-mass-and-weight-confused',
+                wrong: 'Saying an object "weighs 15 kg", or using 15 in a force equation',
+                right: 'Mass is 15 kg; weight is mg = 147 N. Kilograms are never a force.',
+                why: 'The two differ by a factor of 9.80 and the units give it away instantly, so any force equation containing a bare mass is wrong by an order of magnitude. The distinction also carries real content: the mass is the same on the Moon while the weight is about a sixth, and a question set on another planet is testing exactly that.'
+              },
+              {
+                id: 'p1k-magnitudes-summed-for-net-force',
+                wrong: 'Adding force magnitudes to get the net force',
+                right: 'The net force is a VECTOR sum — two equal opposite forces give zero, not double.',
+                why: 'A tug of war with equal teams has enormous forces and no net force at all, and the rope does not accelerate. Summing magnitudes also makes equilibrium impossible to represent, since a non-zero magnitude can never cancel, which is why the net force has to be assembled by components like any other vector.'
+              },
+              {
+                id: 'p1k-tension-is-half-the-weight',
+                wrong: 'Taking each of two supporting ropes to carry half the weight whatever the angle',
+                right: 'Only the vertical components share the weight: with ropes at 40° from the vertical each carries 96 N, not 73.5 N.',
+                why: 'Half the weight is the answer only when both ropes are vertical, and the tension rises steeply as they are spread — at 80° from the vertical each rope would carry 423 N to hold the same lamp. That is why a tightly strung line snaps under a small load, and the effect is invisible unless the components are actually resolved.'
+              }
+            ]
+          },
+
+          {
+            id: 'd2', title: 'Newton\'s second law', src: 'Section 4.3',
+            idea: `The second law says how much the motion changes:<br><br><b>ΣF = ma</b><br><br>The net force on an object equals its mass times its acceleration, and the acceleration is in the <b>same direction as the net force</b>. It is a vector equation, so in practice it is used one direction at a time: <b>ΣF<sub>x</sub> = ma<sub>x</sub></b> and <b>ΣF<sub>y</sub> = ma<sub>y</sub></b>.<br><br>Three readings of the same equation are worth separating. <b>a = ΣF/m</b> says the acceleration is proportional to the net force — double the force, double the acceleration. It also says the acceleration is inversely proportional to the mass: the same force on twice the mass gives half the acceleration. And <b>the direction of a is the direction of ΣF</b>, which is not the direction of motion. A car braking has its acceleration pointing backwards while it moves forwards; a ball thrown up has its acceleration pointing down for the whole flight.<br><br>The word to watch is <b>NET</b>. Putting a single named force into ΣF = ma when other forces are acting is the standard error of the chapter, and it is why the free-body diagram of section 4.5 is not optional.<br><br>The units are built to make the law clean: <b>1 N = 1 kg·m/s²</b>. A newton is the force that accelerates one kilogram at one metre per second squared, and that identity is a useful dimension check on any answer.<br><br>Free fall drops out immediately. With gravity the only force, ΣF = mg and so <b>ma = mg</b>, giving <b>a = g</b> with the mass cancelling — which is why a hammer and a feather fall together, and why chapter 2 never needed a mass.<br><br>The method for every problem in the rest of the chapter: <b>choose the object, draw its free-body diagram, choose axes, write ΣF = ma in each direction, and solve.</b> Nothing else is required, and skipping the diagram is what makes the problems seem hard.`,
+            figure: {
+              kind: 'graph', x: [0, 60], y: [0, 7], xlabel: 'F', ylabel: 'a',
+              fns: [{ expr: 'x/10', label: 'a 10 kg mass' }, { expr: 'x/20', label: 'a 20 kg mass', dashed: true }],
+              points: [{ x: 40, y: 4, label: '40 N on 10 kg: 4 m/s²' }, { x: 40, y: 2, label: 'same force, 20 kg: 2 m/s²' }],
+              caption: 'Acceleration against net force for two masses. Both lines are straight through the origin — acceleration is proportional to the net force — and the heavier mass gives the shallower line, because the same force buys half the acceleration. The slope of each line is 1/m, so mass is the resistance to being accelerated.'
+            },
+            rules: [
+              { name: 'Newton’s second law', expr: 'sum F = m a', note: 'The NET force, and the acceleration points the same way as it. Used one direction at a time.' },
+              { name: 'By direction', expr: 'sum F_x = m a_x', note: 'And ΣF_y = m a_y. A vector equation is two scalar equations in two dimensions.' },
+              { name: 'Rearranged', expr: 'a = (sum F) / m', note: 'Double the force, double the acceleration; double the mass, halve it.' },
+              { name: 'The newton', expr: '1 N = 1 kg m / s^2', note: 'A dimension check on any force answer.' },
+              { name: 'Why free fall ignores mass', expr: 'm a = m g gives a = g', note: 'The mass cancels, which is why every object falls at the same rate.' }
+            ],
+            examples: [
+              {
+                prompt: 'A 6.0 kg box on a frictionless floor is pushed with a horizontal force of 24 N. Find its acceleration. Then find the acceleration if a 9.0 N friction force opposes the push.',
+                approach: 'Two versions of the same question, and the difference between them is the whole point of the word NET. In the first there is one horizontal force; in the second there are two, and the net force is their vector sum. Work horizontally only — the weight and the normal force are vertical, balance each other, and never enter the calculation.',
+                steps: [
+                  { do: 'Frictionless case: the only horizontal force is the 24 N push, so ΣF = 24 N', why: 'With nothing opposing it, the net force equals the applied force — the one case where the two are the same number.' },
+                  { do: 'a = ΣF/m = 24/6.0 = 4.0 m/s², in the direction of the push', why: 'The acceleration always points along the net force.' },
+                  { do: 'With friction: the two horizontal forces oppose, so ΣF = 24 − 9.0 = 15 N', why: 'A vector sum in one dimension is a signed sum. This is the step the whole example exists for.' },
+                  { do: 'a = 15/6.0 = 2.5 m/s²', why: 'Still forwards, but smaller. Using the 24 N here would have given 4.0 m/s² again and quietly ignored the friction.' },
+                  { do: 'Vertically, the weight of 58.8 N and the normal force balance, so a_y = 0', why: 'Worth stating: the box does not accelerate into the floor or off it, which is what fixes the normal force in the next lesson.' },
+                  { do: 'So 4.0 m/s² without friction and 2.5 m/s² with it', why: 'A 38% reduction in acceleration from a friction force that is 38% of the push — proportionality, exactly as the law predicts.' }
+                ],
+                answer: '4.0 m/s² frictionless, and 2.5 m/s² against 9.0 N of friction', answerWords: true,
+                check: 'Work backwards from the second answer: ma = 6.0 × 2.5 = 15 N, which must be the net force, and 24 − 15 = 9.0 N recovers the friction ✓. The units check too: N/kg is m/s², since 1 N = 1 kg·m/s².'
+              },
+              {
+                prompt: 'A 0.150 kg ball moving at 30 m/s is caught, coming to rest in 0.020 s. Find the average force the hands exert.',
+                approach: 'The force is not given and cannot be, so it has to come through the acceleration: find how fast the velocity changed, then multiply by the mass. Take the direction of the ball\'s motion as positive so the acceleration comes out negative, which is the signal that the force opposes the motion — and keep that sign to the end rather than dropping it and describing the direction in words twice.',
+                steps: [
+                  { do: 'Take the ball\'s direction of travel as positive: v₀ = +30 m/s, v = 0', why: 'One convention, stated first. The answer\'s sign will then mean something.' },
+                  { do: 'Acceleration: a = (v − v₀)/t = (0 − 30)/0.020', why: 'The definition from chapter 2. Nothing about forces yet.' },
+                  { do: 'a = −1,500 m/s²', why: 'Enormous — about 150 times g — because the change happens in a fiftieth of a second. Negative means it opposes the motion.' },
+                  { do: 'Second law: ΣF = ma = 0.150 × (−1,500)', why: 'Mass in kilograms, acceleration in m/s², so the answer comes out in newtons.' },
+                  { do: 'ΣF = −225 N', why: 'The minus sign says the force points backwards, against the ball\'s motion — which is what catching means.' },
+                  { do: 'So the hands exert about 225 N, roughly the weight of a 23 kg mass', why: 'That is why a catcher moves the hands backwards with the ball: doubling the stopping time halves the force.' }
+                ],
+                answer: '225 N, directed against the ball\'s motion', answerWords: true,
+                check: 'Test the stopping-time relationship: catching softly over 0.060 s instead gives a = −500 m/s² and a force of 75 N, a third as much ✓. And the weight of the ball, 1.47 N, is negligible beside 225 N, which justifies ignoring gravity during the catch.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'p1k-single-force-for-net',
+                wrong: 'Putting the applied force into F = ma when friction or another force is also acting',
+                right: 'ΣF is the NET force: 24 N of push against 9.0 N of friction is 15 N.',
+                why: 'The law is stated for the sum of all forces and gives a wrong acceleration for any object with more than one force on it, which is nearly all of them. A free-body diagram makes the omission impossible to commit, which is precisely why the diagram is drawn before the equation rather than after.'
+              },
+              {
+                id: 'p1k-acceleration-along-motion',
+                wrong: 'Assuming the acceleration points the way the object is moving',
+                right: 'The acceleration points along the NET FORCE, which may be backwards, sideways or straight down.',
+                why: 'A braking car moves forwards and accelerates backwards; a ball thrown upwards moves up and accelerates down for its entire flight. Tying the acceleration to the velocity rather than to the force produces the wrong sign in every deceleration problem, and the sign is usually where the mark is.'
+              },
+              {
+                id: 'p1k-newtons-from-kilograms',
+                wrong: 'Writing a force in kilograms, or substituting a weight in kilograms into ΣF = ma',
+                right: 'Force is in newtons; 1 N = 1 kg·m/s². A 15 kg mass has a 147 N weight.',
+                why: 'The confusion multiplies or divides answers by 9.80 and is invisible unless the units are carried, which is why every worked example here writes them at each step. The dimension check settles any doubt: kilograms times metres per second squared gives newtons, and nothing else does.'
+              },
+              {
+                id: 'p1k-vertical-forces-in-horizontal-equation',
+                wrong: 'Including the weight in the horizontal equation for a box pushed along a floor',
+                right: 'Weight acts vertically, so it belongs in ΣF_y. The horizontal equation contains the push and the friction only.',
+                why: 'The vector equation splits into one scalar equation per direction, and mixing them adds a force that has no component along the axis being used. On a slope the weight does have a component along the motion, which is exactly why that case is treated separately and why axes are chosen along the slope there.'
+              }
+            ]
+          },
+
+          {
+            id: 'd3', title: 'Newton\'s third law', src: 'Section 4.4',
+            idea: `<b>Newton's third law</b>: if object A exerts a force on object B, then B exerts a force on A that is equal in magnitude and opposite in direction.<br><br>Forces come in pairs, and the pair is described precisely: <b>same size, opposite direction, same kind of force, and — the part that matters — acting on DIFFERENT objects</b>. That last clause is the whole content of the law and the source of every confusion about it.<br><br>Because the two act on different objects, <b>a third-law pair can never cancel</b>. Cancelling requires two forces on the SAME object. When you push a wall the wall pushes back on you equally, and nothing about that stops you accelerating, because the wall's push is on you while yours is on the wall.<br><br>The classic puzzle — "if the horse pulls the cart and the cart pulls back equally, how does anything move?" — dissolves the same way. The cart accelerates because of the forces on the CART: the horse's pull forward against friction backwards. The cart's pull on the horse is a force on the horse and belongs in the horse's equation, not the cart's. Deciding which object you are analysing, and then admitting only forces acting on THAT object, is the discipline the free-body diagram enforces.<br><br>A book resting on a table shows the two relationships being mixed up:<br><br>• The table pushes up on the book, and the book pushes down on the table. <b>Third-law pair</b> — different objects, always equal.<br>• The table pushes up on the book, and gravity pulls down on the book. <b>Not</b> a pair — same object, different kinds of force, and equal here only because the book is not accelerating. Put the book in a lift and they stop being equal at once.<br><br>The test is mechanical: swap the two objects in the sentence. "Earth pulls book" pairs with "book pulls Earth", not with "table pushes book".<br><br>Third-law pairs are also how anything moves at all. You walk by pushing backwards on the ground; the ground pushes you forwards. A rocket pushes exhaust backwards; the exhaust pushes the rocket forwards — which works in a vacuum, because nothing is being pushed against.`,
+            figure: {
+              kind: 'graph', x: [-3, 3], y: [-3, 3],
+              segments: [
+                { from: [0, 0.4], to: [0, 2.2], label: 'table pushes book up' },
+                { from: [0, -0.4], to: [0, -2.2], label: 'book pushes table down' }
+              ],
+              points: [{ x: 0, y: 0.4, label: 'on the book' }, { x: 0, y: -0.4, label: 'on the table' }],
+              caption: 'A third-law pair: equal, opposite, and acting on two different objects — one arrow belongs in the book\'s free-body diagram and the other in the table\'s. Because they are never on the same object they can never cancel, which is why a pair of equal opposite forces does not mean nothing happens.'
+            },
+            rules: [
+              { name: 'Newton’s third law', expr: 'F_AB = -F_BA', note: 'Equal size, opposite direction, same kind of force — and acting on different objects.' },
+              { name: 'Why a pair never cancels', expr: 'Cancelling needs two forces on the SAME object', words: true, note: 'A third-law pair is always split between two objects, so it can never sum to zero on either of them.' },
+              { name: 'The swap test', expr: 'Reverse the two nouns: "Earth pulls book" pairs with "book pulls Earth"', words: true, note: 'If the sentence does not reverse cleanly, the two forces are not a pair.' },
+              { name: 'Equal forces, unequal accelerations', expr: 'a = F / m, so the smaller mass accelerates more', note: 'The Earth is pulled up by a falling apple with the same force the apple is pulled down, and moves immeasurably little.' }
+            ],
+            examples: [
+              {
+                prompt: 'A 60 kg skater pushes off a 90 kg skater on frictionless ice, exerting 120 N. Find each skater\'s acceleration, and name the third-law pair.',
+                approach: 'The forces are equal by the third law, so the only thing that differs is the mass — and the accelerations are therefore in inverse proportion. Apply the second law separately to each skater, using the same 120 N and their own masses, and be explicit that the two forces are a pair acting on different people, which is why neither cancels the other.',
+                steps: [
+                  { do: 'The pair: the 60 kg skater pushes the 90 kg skater with 120 N, and the 90 kg skater pushes back on the 60 kg skater with 120 N', why: 'Equal, opposite, and on different people. Naming both halves is what the question asks for.' },
+                  { do: 'They cannot cancel, because one acts on each skater', why: 'Cancelling needs both forces on the same object. Here each skater feels exactly one of them.' },
+                  { do: '90 kg skater: a = F/m = 120/90 = 1.33 m/s², away from the push', why: 'The second law applied to that skater alone, with only the force acting ON her.' },
+                  { do: '60 kg skater: a = 120/60 = 2.0 m/s², in the opposite direction', why: 'Same force, smaller mass, larger acceleration — the inverse proportion in the second law.' },
+                  { do: 'The ratio of accelerations is 2.0/1.33 = 1.5, exactly the inverse of the mass ratio 90/60', why: 'Equal forces on unequal masses always produce accelerations in inverse ratio, which is a check worth making.' },
+                  { do: 'So 2.0 m/s² for the lighter skater and 1.33 m/s² for the heavier', why: 'Both start from rest and move apart, the lighter one faster — which is what the ice rink actually shows.' }
+                ],
+                answer: '2.0 m/s² for the 60 kg skater and 1.33 m/s² for the 90 kg one; the pair is each skater\'s push on the other', answerWords: true,
+                check: 'Momentum, from chapter 8, agrees in advance: equal forces for equal times give equal and opposite momentum changes, so 60 × v₁ = 90 × v₂ and the lighter skater ends up 1.5 times faster ✓. The same argument is why a rifle recoils far less than the bullet advances.'
+              },
+              {
+                prompt: 'A book rests on a table. Identify the force that pairs with the table\'s upward push on the book, and explain why the book\'s weight is not that partner.',
+                approach: 'Apply the swap test rather than reasoning about what balances what. Take the sentence describing the force, reverse the two nouns, and see whether the result names a real force — that reversal is the pair. Then show that the weight fails the test on two counts, and demonstrate the difference by changing the situation so the two forces stop being equal.',
+                steps: [
+                  { do: 'Write the force as a sentence: "the table pushes up on the book"', why: 'Naming both objects in order is what makes the test mechanical rather than a matter of intuition.' },
+                  { do: 'Swap the nouns: "the book pushes down on the table" — that is the partner', why: 'Equal in size, opposite in direction, the same kind of force (contact), and on a different object.' },
+                  { do: 'Now test the weight: "the Earth pulls down on the book" swaps to "the book pulls up on the Earth"', why: 'That is the weight\'s true partner — a gravitational force on the Earth, which is equal in size and utterly unnoticeable because the Earth\'s mass is so large.' },
+                  { do: 'So the weight and the normal force fail the test: both act on the SAME object, the book', why: 'A third-law pair is never on one object. These two are two of the forces in the book\'s own free-body diagram.' },
+                  { do: 'They are also different kinds of force — one gravitational, one contact', why: 'A pair is always the same kind of interaction seen from its two ends.' },
+                  { do: 'They are equal here only because the book is not accelerating', why: 'Put the book in a lift accelerating upward and the normal force exceeds the weight, while the third-law pairs stay exactly equal — which proves the two relationships are different in kind.' }
+                ],
+                answer: 'The book\'s downward push on the table. The weight is not the partner: it acts on the same object, is a different kind of force, and is equal only while the book is not accelerating', answerWords: true,
+                check: 'The lift makes it concrete: accelerating upward at 2.0 m/s², a 2.0 kg book has a weight of 19.6 N and a normal force of 23.6 N — visibly unequal, while the book\'s push on the lift floor is still exactly 23.6 N, equal to the floor\'s push on it. Only one of the two relationships survives the acceleration.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'p1k-third-law-pair-cancels',
+                wrong: 'Concluding that because forces come in equal opposite pairs, nothing can ever accelerate',
+                right: 'The two forces of a pair act on DIFFERENT objects, so they never appear in the same equation and cannot cancel.',
+                why: 'Cancellation requires two forces on the same object, and a third-law pair is split between two by definition. The horse-and-cart puzzle dissolves as soon as the cart is analysed alone: the forces on the CART are the horse\'s pull forward and friction backwards, and the cart\'s pull on the horse is simply not one of them.'
+              },
+              {
+                id: 'p1k-weight-and-normal-as-pair',
+                wrong: 'Calling the weight of a book and the table\'s normal force a third-law pair',
+                right: 'Both act on the book, so they cannot be a pair. The weight pairs with the book\'s gravitational pull on the Earth.',
+                why: 'They are equal for a book on a level table, which makes the mistake look harmless until the situation changes — in a lift accelerating upward the normal force exceeds the weight while every genuine third-law pair stays exactly equal. The swap test catches it immediately, because "Earth pulls book" reverses to "book pulls Earth" and not to anything involving the table.'
+              },
+              {
+                id: 'p1k-bigger-object-bigger-force',
+                wrong: 'Assuming a lorry exerts a larger force on a car in a collision than the car does on the lorry',
+                right: 'The forces are exactly equal. The ACCELERATIONS differ, because the masses differ.',
+                why: 'The damage asymmetry is real and is entirely a consequence of a = F/m, not of unequal forces: the same force on a tenth of the mass produces ten times the acceleration. Attributing it to a larger force instead makes the third law look false in exactly the situations where it is most often tested.'
+              },
+              {
+                id: 'p1k-forces-on-other-objects-in-diagram',
+                wrong: 'Drawing the force the cart exerts on the horse in the cart\'s free-body diagram',
+                right: 'A free-body diagram shows only the forces acting ON the chosen object.',
+                why: 'Including the reaction puts a force in the equation that acts somewhere else entirely, and it usually cancels the very force that drives the motion — which is how the horse-and-cart paradox gets written down as algebra. Choosing the object first, and admitting a force only if the object is the one being pushed or pulled, prevents it every time.'
+              }
+            ]
+          },
+
+          {
+            id: 'd4', title: 'Normal force, tension and free-body diagrams', src: 'Section 4.5',
+            idea: `Three forces recur in every problem from here on.<br><br>The <b>normal force N</b> is the push a surface exerts, always <b>perpendicular to the surface</b>. Its size is whatever is needed to stop the object going through, so it is <b>never</b> simply "the weight" — it is found from the equation of motion, not assumed:<br><br>• On a level surface with nothing else vertical: <b>N = mg</b>.<br>• In a lift accelerating upward at a: <b>N = m(g + a)</b>, which is why you feel heavier.<br>• Accelerating downward: <b>N = m(g − a)</b>, and in free fall N = 0 — weightlessness.<br>• On a slope at angle θ: <b>N = mg cos θ</b>, smaller than the weight because only part of the weight presses into the surface.<br><br><b>Tension T</b> is the pull transmitted by a rope or cable, directed <b>along the rope, away from the object</b>. For a rope treated as massless, the tension is the same all along it, and an ideal pulley changes the rope's direction without changing that tension.<br><br>The <b>free-body diagram</b> is how all of this becomes arithmetic. Four steps:<br><br><b>1.</b> Choose ONE object and draw it as a dot or a box.<br><b>2.</b> Draw every force acting ON it, as an arrow pointing away from the dot — and nothing else. No forces it exerts on other things, no velocity, no acceleration.<br><b>3.</b> Choose axes. On a slope, tilt them so x runs along the slope: then the acceleration lies entirely along x, and only the weight needs resolving.<br><b>4.</b> Write ΣF = ma in each direction and solve.<br><br>For <b>connected objects</b>, draw a separate diagram for each, write an equation for each, and use the fact that they share an acceleration. The tension appears in both equations with opposite signs and eliminates cleanly. Treating the two as one object gives the acceleration in a single line — <b>a = ΣF<sub>external</sub>/m<sub>total</sub></b> — but says nothing about the tension, which is internal to that combined system.`,
+            figure: {
+              kind: 'graph', x: [-3, 3], y: [-3, 3],
+              segments: [
+                { from: [0, 0], to: [0, 2.2], label: 'N, normal force' },
+                { from: [0, 0], to: [0, -2.2], label: 'w = mg, weight' },
+                { from: [0, 0], to: [2.2, 0], label: 'applied push' },
+                { from: [0, 0], to: [-1.2, 0], label: 'friction' }
+              ],
+              points: [{ x: 0, y: 0, label: 'the object' }],
+              caption: 'A free-body diagram: one object, reduced to a point, with every force ON it drawn as an arrow leaving that point — and nothing else on the page. The vertical pair fixes the normal force, the horizontal pair gives the net force and hence the acceleration, and no force that this object exerts on anything else appears anywhere.'
+            },
+            rules: [
+              { name: 'Normal force, level surface', expr: 'N = m g', note: 'Only when the surface is level and nothing else acts vertically. Never assume it — derive it from ΣF_y.' },
+              { name: 'Normal force in a lift', expr: 'N = m (g + a)', note: 'Accelerating upward you feel heavier; downward it is m(g − a), and in free fall N = 0.' },
+              { name: 'Normal force on a slope', expr: 'N = m g cos(theta)', note: 'Only the perpendicular part of the weight presses into the surface, so N is less than mg.' },
+              { name: 'Weight along a slope', expr: 'F_parallel = m g sin(theta)', note: 'The component that drives the object down the slope. Sine along, cosine into — worth fixing by checking θ = 0.' },
+              { name: 'Connected objects', expr: 'a = (sum F_external) / m_total', note: 'Gives the shared acceleration in one line. The tension needs one object\'s own equation.' },
+              { name: 'The diagram', expr: 'One object, every force ON it, nothing else', words: true, note: 'No reaction forces on other bodies, no velocity arrow, no ma arrow.' }
+            ],
+            examples: [
+              {
+                prompt: 'A 70 kg person stands in a lift. Find the normal force from the floor when the lift is stationary, when it accelerates upward at 1.8 m/s², and when it accelerates downward at 1.8 m/s². Take g = 9.80 m/s².',
+                approach: 'One free-body diagram serves all three cases: the person has two vertical forces, the weight down and the normal force up, and only the acceleration changes between them. Take up as positive and write ΣF_y = ma_y once, then substitute the three accelerations. The normal force is the unknown in every case — it is never assumed equal to the weight.',
+                figure: {
+                  kind: 'graph', x: [-2.5, 2.5], y: [-3, 3],
+                  segments: [
+                    { from: [0, 0], to: [0, 2.4], label: 'N, from the floor' },
+                    { from: [0, 0], to: [0, -2.0], label: 'w = 686 N' }
+                  ],
+                  points: [{ x: 0, y: 0, label: 'the person' }],
+                  caption: 'Two forces, and which is bigger depends entirely on the acceleration. Stationary or moving steadily they are equal at 686 N; accelerating upward the normal force wins at 812 N, which is the extra push you feel in your feet as a lift starts.'
+                },
+                steps: [
+                  { do: 'Free-body diagram: the weight mg down, the normal force N up — nothing else', why: 'The lift, the cable and the motor are not forces on the PERSON. Only the floor touches them.' },
+                  { do: 'Take up as positive and write ΣF_y = ma_y: N − mg = ma', why: 'One equation for all three cases. Rearranged, N = m(g + a).' },
+                  { do: 'Weight: mg = 70 × 9.80 = 686 N, in every case', why: 'The weight never changes — only the normal force does, which is the point of the question.' },
+                  { do: 'Stationary: a = 0, so N = 70(9.80 + 0) = 686 N', why: 'Equal to the weight, but only because the acceleration is zero. A lift moving at constant speed gives the same answer.' },
+                  { do: 'Accelerating upward: a = +1.8, so N = 70(9.80 + 1.8) = 70(11.6) = 812 N', why: 'The floor must do more than hold the person up — it must also accelerate them. This is the heaviness felt as a lift starts upward.' },
+                  { do: 'Accelerating downward: a = −1.8, so N = 70(9.80 − 1.8) = 70(8.0) = 560 N', why: 'Lighter by the same 126 N. At a = −9.80 the normal force would be zero: free fall, and true weightlessness.' }
+                ],
+                answer: '686 N stationary, 812 N accelerating upward, 560 N accelerating downward', answerWords: true,
+                check: 'The pattern is symmetric — 812 and 560 sit 126 N either side of 686, and 126 = 70 × 1.8 = ma exactly ✓. And the limiting case confirms the formula: putting a = −9.80 gives N = 0, which is what a bathroom scale reads in a falling lift.'
+              },
+              {
+                prompt: 'Two boxes, 3.0 kg and 5.0 kg, sit connected by a light rope on a frictionless floor. A 24 N force pulls the 5.0 kg box away from the other. Find the acceleration and the tension in the rope.',
+                approach: 'Two questions needing two different views of the same system. For the acceleration, treat both boxes as one object of 8.0 kg — the tension is then internal and drops out, giving the answer in a line. For the tension, go back to a single box and write its own equation, choosing the 3.0 kg one because the rope is the only horizontal force on it.',
+                figure: {
+                  kind: 'graph', x: [-1, 11], y: [-2, 2],
+                  segments: [
+                    { from: [1, 0], to: [3, 0], label: 'T on the 3.0 kg box' },
+                    { from: [5, 0], to: [3.4, 0], label: 'T back on the 5.0 kg box' },
+                    { from: [7, 0], to: [9.4, 0], label: '24 N applied' }
+                  ],
+                  points: [{ x: 1, y: 0, label: '3.0 kg' }, { x: 7, y: 0, label: '5.0 kg' }],
+                  caption: 'The rope pulls the trailing box forward and pulls back on the leading one with the same 9.0 N — a third-law pair, which is exactly why it cancels when the two boxes are treated as a single object. The applied 24 N is external and does not.'
+                },
+                steps: [
+                  { do: 'For the acceleration, treat the two boxes as one object of mass 3.0 + 5.0 = 8.0 kg', why: 'The rope tension becomes internal to the combined system, and internal forces cancel in pairs.' },
+                  { do: 'The only external horizontal force is the 24 N pull, so a = 24/8.0 = 3.0 m/s²', why: 'Both boxes share this acceleration — they are tied together and cannot move apart.' },
+                  { do: 'For the tension, draw the 3.0 kg box alone: the only horizontal force on it is the rope', why: 'The 24 N is applied to the other box and does not appear here. Choosing the simpler box is a deliberate saving.' },
+                  { do: 'ΣF = ma gives T = 3.0 × 3.0 = 9.0 N', why: 'The rope is doing the whole job of accelerating the trailing box.' },
+                  { do: 'Check with the 5.0 kg box: 24 − T = 5.0 × 3.0 = 15 N, so T = 9.0 N ✓', why: 'The other box\'s equation must give the same tension, and it does — an independent confirmation, not a repetition.' },
+                  { do: 'a = 3.0 m/s² and T = 9.0 N', why: 'The tension is less than the applied force, as it must be: the rope pulls only the trailing box, while the 24 N accelerates both.' }
+                ],
+                answer: 'a = 3.0 m/s² and the tension is 9.0 N', answerWords: true,
+                check: 'The tension should be the applied force shared in proportion to the mass behind it: 24 × (3.0/8.0) = 9.0 N ✓. And swapping which box is pulled would give a tension of 24 × (5.0/8.0) = 15 N, a different answer from the same masses — which is why the diagram has to match the situation.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'p1k-normal-force-assumed-mg',
+                wrong: 'Taking N = mg in a lift, on a slope, or whenever something else pushes vertically',
+                right: 'Derive the normal force from ΣF_y every time: m(g + a) in a lift, mg cos θ on a slope.',
+                why: 'N = mg is a result for one special case — level surface, no vertical acceleration, no other vertical force — and not the definition of a normal force. Assuming it makes every lift and slope problem wrong at the first line, and it hides the fact that friction, which depends on N, changes with it.'
+              },
+              {
+                id: 'p1k-sine-cosine-on-a-slope',
+                wrong: 'Using mg sin θ for the force into a slope and mg cos θ for the force along it',
+                right: 'Sine along the slope, cosine into it: F_parallel = mg sin θ and N = mg cos θ.',
+                why: 'Checking the limit settles it in two seconds: on flat ground θ = 0, nothing slides, and the component along the slope must be zero — which only sin 0 = 0 delivers. Getting them the wrong way round makes a level floor push objects sideways and a vertical wall support them, so the test is quick and conclusive.'
+              },
+              {
+                id: 'p1k-ma-drawn-as-a-force',
+                wrong: 'Drawing an "ma" arrow, or the velocity, on a free-body diagram',
+                right: 'A free-body diagram shows forces only. The ma is the RESULT of those forces, on the other side of the equation.',
+                why: 'Putting ma on the diagram invites it to be counted as one more force, which double-counts it and turns ΣF = ma into an equation that balances to zero. The velocity is worse: it has no place in a force diagram at all, and drawing it encourages the first-law error of thinking a moving object needs a forward force.'
+              },
+              {
+                id: 'p1k-combined-system-for-tension',
+                wrong: 'Trying to find the tension by treating two connected boxes as one object',
+                right: 'The tension is internal to the combined system and cancels. Write the equation for ONE box to find it.',
+                why: 'Combining is the right move for the acceleration and useless for the tension, because internal forces cancel in pairs by the third law and simply do not appear in the combined equation. Knowing which question each view answers is the actual skill: combine for the shared acceleration, separate for any force in between.'
+              }
+            ]
+          }
+        ],
+        practice: [
+          { id: 'k1', kind: 'numeric', lesson: 'd1',
+            prompt: 'Find the weight of a 25 kg mass, in newtons, with g = 9.80 m/s².',
+            answer: 245, verify: { expr: '25*Rational(98, 10)' },
+            hint: 'w = mg, and the answer is a force.',
+            solution: ['w = 25 × 9.80', '= 245 N', 'The mass is 25 kg anywhere; the weight is not'] },
+
+          { id: 'k2', kind: 'numeric', lesson: 'd1',
+            prompt: 'A crate is pulled at constant velocity by a 180 N force. Find the total resistive force, in newtons.',
+            answer: 180, verify: { expr: '180' },
+            hint: 'Constant velocity means zero net force.',
+            solution: ['Constant velocity is equilibrium: ΣF = 0', '180 − F_resist = 0', 'F_resist = 180 N, exactly balancing the pull'] },
+
+          { id: 'k3', kind: 'mc', lesson: 'd1',
+            prompt: 'A spacecraft coasts far from any star with its engines off. What happens to it?',
+            options: [
+              { t: 'It continues at constant velocity in a straight line, indefinitely', ok: true },
+              { t: 'It gradually slows down, because no force is driving it' },
+              { t: 'It speeds up, because there is nothing to resist it' },
+              { t: 'It stops as soon as the engines are switched off' }
+            ],
+            hint: 'What does the first law say a zero net force does to the velocity?',
+            solution: ['With no net force the velocity does not change', 'Nothing is needed to maintain motion', 'On Earth friction hides this, which is why the law feels wrong', 'The craft coasts at constant velocity forever'] },
+
+          { id: 'k4', kind: 'numeric', lesson: 'd2',
+            prompt: 'A net force of 36 N acts on an 8.0 kg mass. Find the acceleration in m/s².',
+            answer: 4.5, verify: { expr: 'Rational(36, 8)' },
+            hint: 'a = ΣF/m.',
+            solution: ['a = 36/8.0', '= 4.5 m/s²', 'In the direction of the net force'] },
+
+          { id: 'k5', kind: 'numeric', lesson: 'd2',
+            prompt: 'A 4.0 kg box is pushed with 30 N against 12 N of friction. Find its acceleration in m/s².',
+            answer: 4.5, verify: { expr: 'Rational(30 - 12, 4)' },
+            hint: 'The NET force is what goes into the second law.',
+            solution: ['ΣF = 30 − 12 = 18 N', 'a = 18/4.0', '= 4.5 m/s²'] },
+
+          { id: 'k6', kind: 'numeric', lesson: 'd2',
+            prompt: 'What net force accelerates a 1,400 kg car at 2.5 m/s²? Give the answer in newtons.',
+            answer: 3500, verify: { expr: '1400*Rational(25, 10)' },
+            hint: 'ΣF = ma.',
+            solution: ['ΣF = 1,400 × 2.5', '= 3,500 N', 'Which is 3.5 kN'] },
+
+          { id: 'k7', kind: 'numeric', lesson: 'd2',
+            prompt: 'A 0.060 kg tennis ball is struck, its speed changing from 0 to 45 m/s in 0.0050 s. Find the average force, in newtons.',
+            answer: 540, verify: { expr: 'Rational(6, 100)*Rational(45, 5*Rational(1, 1000))' },
+            hint: 'Find the acceleration first, then multiply by the mass.',
+            solution: ['a = 45/0.0050 = 9,000 m/s²', 'ΣF = 0.060 × 9,000', '= 540 N — far more than the ball\'s 0.59 N weight'] },
+
+          { id: 'k8', kind: 'mc', lesson: 'd2',
+            prompt: 'The same net force is applied to a 2 kg mass and a 6 kg mass. How do the accelerations compare?',
+            options: [
+              { t: 'The 2 kg mass accelerates three times as fast, because acceleration is inversely proportional to mass', ok: true },
+              { t: 'They accelerate equally, because the force is the same' },
+              { t: 'The 6 kg mass accelerates three times as fast, because it has more mass to carry the force' },
+              { t: 'Nothing can be said without knowing the size of the force' }
+            ],
+            hint: 'a = F/m — what happens to a when m triples?',
+            solution: ['a = F/m with F fixed', 'Tripling the mass divides the acceleration by three', 'The 2 kg mass accelerates three times as fast', 'Mass is the resistance to being accelerated'] },
+
+          { id: 'k9', kind: 'mc', lesson: 'd3',
+            prompt: 'A car collides with a much heavier lorry. How do the forces on the two vehicles compare?',
+            options: [
+              { t: 'They are exactly equal and opposite; the car is damaged more because a = F/m gives it a larger acceleration', ok: true },
+              { t: 'The lorry exerts a larger force, which is why the car is damaged more' },
+              { t: 'The car exerts a larger force, because it is moving faster' },
+              { t: 'The forces depend on the masses in proportion' }
+            ],
+            hint: 'The third law fixes the forces. What differs between the vehicles?',
+            solution: ['Third law: the forces are equal in size and opposite in direction', 'The masses are very unequal', 'a = F/m, so the car accelerates far more violently', 'The damage difference is an acceleration difference, not a force difference'] },
+
+          { id: 'k10', kind: 'mc', lesson: 'd3',
+            prompt: 'Which pair of forces is a genuine third-law pair?',
+            options: [
+              { t: 'The Earth\'s gravitational pull on a book, and the book\'s gravitational pull on the Earth', ok: true },
+              { t: 'A book\'s weight, and the normal force from the table it rests on' },
+              { t: 'The forward force on a car, and the friction opposing it' },
+              { t: 'The tension in a rope, and the weight it supports' }
+            ],
+            hint: 'Apply the swap test: reverse the two nouns and see whether a real force results.',
+            solution: ['"Earth pulls book" reverses to "book pulls Earth"', 'Equal, opposite, same kind of force, different objects', 'The other options all put both forces on the same object', 'Those can balance, but balancing is not pairing'] },
+
+          { id: 'k11', kind: 'numeric', lesson: 'd4',
+            prompt: 'A 60 kg person stands in a lift accelerating upward at 2.0 m/s². Find the normal force from the floor, in newtons, with g = 9.80 m/s².',
+            answer: 708, verify: { expr: '60*(Rational(98, 10) + 2)' },
+            hint: 'N − mg = ma, so N = m(g + a).',
+            solution: ['N = 60(9.80 + 2.0)', '= 60 × 11.8', '= 708 N, more than the 588 N weight'] },
+
+          { id: 'k12', kind: 'numeric', lesson: 'd4',
+            prompt: 'Find the normal force on that person when the lift accelerates downward at 2.0 m/s², in newtons.',
+            answer: 468, verify: { expr: '60*(Rational(98, 10) - 2)' },
+            hint: 'Now a is negative with up positive.',
+            solution: ['N = 60(9.80 − 2.0)', '= 60 × 7.8', '= 468 N, and at a = −9.80 it would be zero'] },
+
+          { id: 'k13', kind: 'numeric', lesson: 'd4',
+            prompt: 'A 12 kg box sits on a slope at 25°. Find the normal force, in newtons, to one decimal place.',
+            answer: 106.6, tol: 0.5, verify: { expr: '12*Rational(98, 10)*cos(25*pi/180)', dp: 1 },
+            hint: 'N = mg cos θ — cosine INTO the slope.',
+            solution: ['mg = 12 × 9.80 = 117.6 N', 'N = 117.6 cos 25° = 117.6 × 0.9063', '= 106.6 N, less than the weight'] },
+
+          { id: 'k14', kind: 'numeric', lesson: 'd4',
+            prompt: 'Find the component of that box\'s weight acting down the slope, in newtons, to one decimal place.',
+            answer: 49.7, tol: 0.05, verify: { expr: '12*Rational(98, 10)*sin(25*pi/180)', dp: 1 },
+            hint: 'Sine ALONG the slope.',
+            solution: ['F = mg sin 25° = 117.6 × 0.42262', '= 49.7 N', 'At θ = 0 this is zero, which is the check that sine is the right ratio'] },
+
+          { id: 'k15', kind: 'numeric', lesson: 'd4',
+            prompt: 'Two boxes of 2.0 kg and 6.0 kg are joined by a light rope on a frictionless floor, pulled by 40 N applied to the 6.0 kg box. Find the acceleration in m/s².',
+            answer: 5, verify: { expr: 'Rational(40, 8)' },
+            hint: 'Treat the two as one object for the acceleration.',
+            solution: ['Combined mass = 2.0 + 6.0 = 8.0 kg', 'a = 40/8.0', '= 5.0 m/s², shared by both boxes'] },
+
+          { id: 'k16', kind: 'numeric', lesson: 'd4',
+            prompt: 'Find the tension in that rope, in newtons.',
+            answer: 10, verify: { expr: '2*Rational(40, 8)' },
+            hint: 'Write the equation for the 2.0 kg box alone — the rope is the only horizontal force on it.',
+            solution: ['For the trailing box: T = ma = 2.0 × 5.0', '= 10 N', 'Check on the other box: 40 − 10 = 30 = 6.0 × 5.0 ✓'] },
+
+          { id: 'k17', kind: 'spot', lesson: 'd4',
+            prompt: 'A 5.0 kg box is pulled along a rough floor by a 30 N horizontal force against 8.0 N of friction. Find the normal force and the acceleration.',
+            steps: [
+              { t: 'Vertically nothing accelerates, so N = mg = 5.0 × 9.80 = 49 N' },
+              { t: 'Horizontally the applied force is 30 N, so a = 30/5.0 = 6.0 m/s²', bad: true },
+              { t: 'Horizontally the NET force is 30 − 8.0 = 22 N' },
+              { t: 'a = 22/5.0 = 4.4 m/s²' }
+            ],
+            why: 'The second law takes the net force, and here friction opposes the pull, so 8.0 N must be subtracted before dividing by the mass. Using the applied force alone overstates the acceleration by 36% and quietly discards a force that was given in the question — which is exactly what a free-body diagram is drawn to prevent.',
+            hint: 'Which force does ΣF = ma actually take?',
+            solution: ['N = mg = 49 N, since nothing accelerates vertically', 'ΣF_x = 30 − 8.0 = 22 N', 'a = 22/5.0 = 4.4 m/s²'] },
+
+          { id: 'k18', kind: 'spot', lesson: 'd1',
+            prompt: 'A 20 kg crate hangs at rest from a single vertical rope. Find the tension.',
+            steps: [
+              { t: 'The crate is at rest, so ΣF = 0' },
+              { t: 'The crate has a mass of 20 kg, so the tension is 20 N', bad: true },
+              { t: 'The weight is mg = 20 × 9.80 = 196 N' },
+              { t: 'ΣF_y = T − 196 = 0, so T = 196 N' }
+            ],
+            why: 'A mass in kilograms is not a force in newtons, and the two differ by the factor g. Quoting 20 N for the tension understates it almost tenfold, and the unit mismatch is the symptom — a tension is a force, so it can only come from a calculation whose units are newtons.',
+            hint: 'One step uses a mass where a force is needed.',
+            solution: ['Weight = mg = 196 N', 'At rest, the tension balances it exactly', 'T = 196 N'] },
+
+          { id: 'k19', kind: 'order', lesson: 'd4',
+            prompt: 'Put the free-body method in order.',
+            steps: [
+              'Choose one object and draw it as a dot',
+              'Draw every force acting ON that object, and nothing else',
+              'Choose axes — along the slope, if there is one',
+              'Write ΣF = ma in each direction',
+              'Solve, and check the answer is physically sensible'
+            ],
+            hint: 'Nothing can be drawn until it is decided whose diagram this is.',
+            solution: ['The object is chosen first, because it decides which forces qualify', 'Only forces ON it are drawn — no reactions on other bodies', 'Axes are chosen to make the acceleration lie along one of them', 'Then one equation per direction'] },
+
+          { id: 'k20', kind: 'order', lesson: 'd2',
+            prompt: 'Put the steps for a second-law problem with more than one force in order.',
+            steps: [
+              'List every force acting on the object',
+              'Add them as vectors to get the net force',
+              'Divide the net force by the mass',
+              'State the direction of the acceleration as that of the net force',
+              'Check the units: N/kg is m/s²'
+            ],
+            hint: 'The net force has to exist before it can be divided by anything.',
+            solution: ['All the forces first, or the net force is wrong', 'Vector sum, not a sum of magnitudes', 'a = ΣF/m', 'The direction comes from the net force, not from the motion'] }
         ]
       }
 
@@ -24942,7 +25983,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.60', date: '18 September 2026', year: 2026 };
+  const BUILD = { v: '2.61', date: '18 September 2026', year: 2026 };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonandy242', ['gmail', 'com'].join('.')].join('@');
   /* The one sentence that says what this is. It appears under the wordmark, and build.js uses
@@ -24955,6 +25996,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      because the person who needs it is the one who just watched the app refresh itself and wants to
      know what moved. Trim the tail when it gets past a dozen; nobody reads further back than that. */
   const WHATS_NEW = [
+    ['2.61', '<b>PHYS 1000H chapters 3 and 4: two dimensions, and the laws that say why motion changes.</b> <b>Vectors</b> first &mdash; added head to tail, where 3 km east and 4 km north make 5 km and not 7, then by components, which is the method that scales to any number of forces. A car rounding a bend at constant speed turns out to have changed its velocity by 28 m/s, which is the whole reason circular motion needs a force. Then <b>projectiles</b>, resting on one idea: the horizontal and vertical motions are independent, so a ball fired from a table and a ball dropped from it hit the floor together, and every question is solved by taking the time from the vertical motion and handing it to the horizontal one. <b>Relative velocity</b> closes the chapter with the river crossing that has two different right answers depending on which question was asked. Chapter 4 is <b>Newton&rsquo;s three laws</b>: why no force is needed to keep going, why &Sigma;F = ma takes the NET force and not the one you were given, why a third-law pair can never cancel (the two halves act on different objects), and the free-body diagram that turns any of it into an equation &mdash; with the normal force derived every time rather than assumed to be mg, because in a lift it is not. Eight more lessons, sixteen worked examples, 42 more practice questions. Chapters 5 to 8 follow.'],
     ['2.60', '<b>A new course under the green chip: PHYS 1000H, Foundations of Physics.</b> A first mechanics course for someone arriving without school physics, following its own schedule week by week through the first eight chapters of the open text it is set from. Chapters 1 and 2 ship now. <b>Measurement</b> comes first, because it is what the rest rests on: SI units and prefixes read as powers of ten, conversion by multiplying by a fraction equal to one and letting the cancelling do the checking, accuracy against precision, the two different significant-figure rules for multiplying and for adding, and order-of-magnitude estimation as the check that catches a unit error in one line. Then <b>motion in a straight line</b>: distance against displacement and speed against velocity &mdash; a lap run in 64 seconds has an average velocity of exactly zero &mdash; acceleration, the four constant-acceleration equations chosen by what each one leaves out, free fall with one sign convention held for the whole flight, and position&ndash;time and velocity&ndash;time graphs where the slope of one and the area under the other carry the answer. Six lessons, twelve worked examples with a plan and a closing check, 34 practice questions and 23 named misconceptions. Chapters 3 to 8 follow.'],
     ['2.59', '<b>Courses now carry a coloured institution chip, and no university is named anywhere else.</b> A course written to a particular institution\u2019s outline shows a small chip beside its level &mdash; blue for one, green for the other &mdash; on its card and at the top of its page. Everywhere else the name is gone: exam scopes now say &ldquo;the course outline&rdquo;, gap lines say what is not on the outline rather than where, the set-text note names the author and not the campus, and the academic-integrity page points at <i>your</i> institution\u2019s policy rather than one in particular. Three courses carry no chip at all, which is the honest rendering of a course cut to what the subject examines generally rather than to anyone\u2019s syllabus. The build now fails if a university name reappears in any text a student reads.'],
     ['2.58', '<b>A new course: ECON 2320, Economics &amp; Business Statistics 1.</b> It is the twelfth subject to get a full course and the first statistics one, built in the order the department examines rather than the order the book prints: chapter 3 first, then probability, the distributions, sampling, interval estimation and hypothesis tests one chapter per release. Chapter 3 ships now &mdash; measures of location, measures of variability, and covariance and correlation &mdash; with three lessons, seven worked examples that each open with a plan and close with a check, 30 practice questions and 12 named misconceptions. The distinctions the marks actually turn on are taught rather than assumed: why a sample divides by n &minus; 1 and a population by N, why only the SIGN of a covariance can be read, why a correlation of zero rules out a straight line and nothing else, and why r is not the slope. Every number is recomputed by a computer algebra system before the page ships.'],
