@@ -2400,6 +2400,32 @@ math mi[mathvariant="normal"] { font-style: normal; }
   math { font-size: 1.32em; }
 }
 
+/* ---- the institution chip (v2.59) ----------------------------------------------------------
+   A course that follows a particular institution's outline carries a small coloured chip on its
+   card and its page, and the institution's name appears nowhere else in the app. Each institution
+   gets its own hue so a mixed library reads at a glance; both are set as a soft fill with ink of
+   the same family, which keeps the contrast in light mode and in dark without a second palette. */
+.inst {
+  display: inline-block; margin-left: 8px; padding: 2px 8px; border-radius: 999px;
+  font: 600 11px/1.5 var(--mono, ui-monospace, monospace); letter-spacing: .04em;
+  text-transform: uppercase; vertical-align: 2px; white-space: nowrap;
+  border: 1px solid transparent;
+}
+/* The card and the hero lay their children out as a column, so a chip left to itself becomes a
+   full-width row. It is sized to its text and pinned to the start of the line instead. */
+.course-card .inst, .sec-hero .inst { justify-self: start; align-self: start; width: fit-content; margin-left: 0; margin-top: -2px; }
+.inst-tru   { background: #DCEBF7; color: #17405E; border-color: #B6D4E9; }
+.inst-trent { background: #DDEEE2; color: #14452C; border-color: #B4D8C1; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .inst-tru   { background: #14293A; color: #9CCBEA; border-color: #22415A; }
+  :root:not([data-theme="light"]) .inst-trent { background: #12301F; color: #93D2AC; border-color: #1F4A32; }
+}
+:root[data-theme="dark"] .inst-tru   { background: #14293A; color: #9CCBEA; border-color: #22415A; }
+:root[data-theme="dark"] .inst-trent { background: #12301F; color: #93D2AC; border-color: #1F4A32; }
+/* The app's floor is 11px and the chip does not get an exemption: on a phone it loses padding,
+   never size. */
+@media (max-width: 640px) { .inst { margin-left: 6px; padding: 1px 6px; letter-spacing: .02em; } }
+
 </style>
 </head>
 <body>
@@ -5283,7 +5309,7 @@ const tfHint = (a, id) => hintFrom(a, id, null, 'Check the statement against the
    textbooks are named and pointed at, never reproduced: the doctrine is nobody's property, the
    publisher's wording is. `read` on a unit names the chapter to read alongside it.
 
-   PROVENANCE. The Precalculus course follows Anndy's own TRU section slides — chapters and section
+   PROVENANCE. The Precalculus course follows Anndy's own section slides — chapters and section
    numbers are his, not a rearrangement — so a student reading a lesson here is reading the same
    syllabus in the same order as the lecture. `src` on each lesson names the section it came from.
    --------------------------------------------------------------------------------------------- */
@@ -5304,7 +5330,7 @@ const tfHint = (a, id) => hintFrom(a, id, null, 'Check the statement against the
 
   const PRECALC = {
     subject: MATH,
-    id: 'precalc',
+    id: 'precalc', inst: 'tru',
     code: 'Precalculus',
     title: 'Precalculus',
     blurb: 'The whole of precalculus: functions and their transformations, lines, polynomials and rational functions, exponentials and logarithms, and trigonometry from the unit circle to the law of cosines.',
@@ -7439,9 +7465,22 @@ const tfHint = (a, id) => hintFrom(a, id, null, 'Check the statement against the
     return out;
   }
 
+  /* INSTITUTIONS. A course that follows a particular institution's outline says so with a small
+     coloured chip on its card and its page, and nowhere else: from v2.59 the institution's name is
+     not written into any blurb, exam note, gap line or legal note. The chip is the single place it
+     appears, which keeps the prose about the subject and makes a mixed library readable at a glance.
+     A course with no `inst` — one cut to what the subject examines generally rather than to anyone's
+     outline — simply has no chip, and that absence is itself accurate. */
+  const INSTITUTIONS = {
+    tru: { id: 'tru', label: 'TRU' },
+    trent: { id: 'trent', label: 'Trent' }
+  };
+
   root.Courses = {
     all: () => COURSES,
     subjects: bySubject,
+    institution: id => INSTITUTIONS[id] || null,
+    institutions: () => Object.values(INSTITUTIONS),
     // a subject file adds its courses here rather than editing this one
     register: c => { if (c && !COURSES.some(x => x.id === c.id)) COURSES.push(c); return c; },
     get: id => COURSES.find(c => c.id === id) || null,
@@ -7474,7 +7513,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
    Proprietary. Not open source: see LICENSE.
 
    ---------------------------------------------------------------------------------------------
-   Two TRU courses, BLAW 2910 Commercial Law and BLAW 3930 Environmental Law, both taught by
+   Two courses, BLAW 2910 Commercial Law and BLAW 3930 Environmental Law, both taught by
    Murray Sholty in Fall 2026.
 
    WHERE THIS CONTENT COMES FROM, AND WHERE IT DOES NOT. The STRUCTURE is taken from the course
@@ -7513,7 +7552,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
   /* ==================== BLAW 2910 — COMMERCIAL LAW ==================== */
   const COMMERCIAL = {
     subject: LAW,
-    id: 'blaw2910',
+    id: 'blaw2910', inst: 'tru',
     code: 'BLAW 2910',
     title: 'Commercial Law',
     blurb: 'The legal environment a business operates in: where Canadian law comes from, how disputes get resolved, tort from the four elements through to what a plaintiff collects, and contract from formation through terms and vitiating factors to breach and remedy.',
@@ -8105,7 +8144,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
   /* ==================== BLAW 3930 — ENVIRONMENTAL LAW ==================== */
   const ENVIRO = {
     subject: LAW,
-    id: 'blaw3930',
+    id: 'blaw3930', inst: 'tru',
     code: 'BLAW 3930',
     title: 'Environmental Law',
     blurb: 'How environmental regulation is made, who has authority to make it, the rights owed to Indigenous peoples when a decision may affect them, and what happens to a company that gets it wrong.',
@@ -13507,7 +13546,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 
    ---------------------------------------------------------------------------------------------
    WHAT THIS IS. Principles of Macroeconomics, following the structure of Anndy's own ECON 1950
-   lecture series at Thompson Rivers University: eleven lectures, from "what is economics" through
+   lecture series: eleven lectures, from "what is economics" through
    to the Bank of Canada. The ORDER and the SCOPE are his course's — nine units, one per block of
    lectures, and `src` on every lesson names the lecture it follows. Every sentence, worked example
    and exercise below is written here from scratch.
@@ -13552,14 +13591,14 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 
   const MACRO = {
     subject: ECON,
-    id: 'econ-macro',
+    id: 'econ-macro', inst: 'tru',
     code: 'ECON 1950',
     title: 'Principles of Macroeconomics',
     blurb: 'The whole first course: scarcity and trade, how output, jobs and prices are measured, the two great arguments about what makes an economy settle where it does, and the fiscal and monetary levers.',
     level: 'Foundation',
     prereq: null,
     exam: 'The eleven lectures run in the order taught: economics and scarcity, the production possibilities curve and trade, GDP and business cycles, unemployment and inflation, aggregate demand and long-run aggregate supply, the classical model, Keynesian analysis, the Keynesian model and the multiplier, public debt and fiscal policy, money and the banking system, and the Bank of Canada.',
-    text: 'the ECON 1950 lecture slides (Strantza, Thompson Rivers University)',
+    text: 'the ECON 1950 lecture slides (Strantza)',
     legalNote: NOTE,
     gaps: [
       'Microeconomics — demand and supply in a single market, elasticity, consumer choice and the theory of the firm',
@@ -16034,7 +16073,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
    Proprietary. Not open source: see LICENSE.
 
    ---------------------------------------------------------------------------------------------
-   WHAT THIS IS. Two courses that follow the STRUCTURE of the set text for TRU's MATH 1070 and
+   WHAT THIS IS. Two courses that follow the STRUCTURE of the set text for MATH 1070 and
    MATH 1170 — Haeussler, Paul & Wood, "Introductory Mathematical Analysis for Business,
    Economics, and the Life and Social Sciences", 14th edition (Pearson). Chapters 1–9 belong to
    MATH 1070 and chapters 10–17 to MATH 1170; that split is a fact about the courses, and the
@@ -16074,17 +16113,17 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
   /* =============================== MATH 1170 =============================== */
   const CALC = {
     subject: MATH,
-    id: 'math-1170',
+    id: 'math-1170', inst: 'tru',
     code: 'MATH 1170',
     title: 'Calculus for Business and Economics',
     blurb: 'The calculus half of the book: limits and what they say about a function near a point, continuity, the derivative from first principles, the rules that make it fast, and what a derivative means when the function is a cost, a revenue or a demand — then what its sign says about the shape of a curve, and how the same tests find the cheapest fence and the best price.',
     level: 'Foundation',
     prereq: 'precalc',
-    exam: 'Follows the TRU course outline: chapters 0, 1, 2 and 4 are self-study review, then sections 10.1–10.4, 11.1–11.5, 12.1, 12.2, 12.4, 12.5, 12.7, 13.1–13.6 and 17.1–17.5. Chapters 14–16 are not in the course. Every section on the outline is built: chapters 10, 11, 12, 13 and 17. Quizzes weekly, midterms October 14 and November 18, final cumulative.',
+    exam: 'Follows the course outline: chapters 0, 1, 2 and 4 are self-study review, then sections 10.1–10.4, 11.1–11.5, 12.1, 12.2, 12.4, 12.5, 12.7, 13.1–13.6 and 17.1–17.5. Chapters 14–16 are not in the course. Every section on the outline is built: chapters 10, 11, 12, 13 and 17. Quizzes weekly, midterms October 14 and November 18, final cumulative.',
     text: TEXT,
     legalNote: NOTE,
     gaps: [
-      'Not part of MATH 1170 at TRU, so not built for it: section 12.3 elasticity of demand, section 12.6 Newton’s method, section 17.6 multiple integrals, and chapters 14–16 (integration, its methods and applications, and continuous random variables)',
+      'Not part of MATH 1170 on the course outline, so not built for it: section 12.3 elasticity of demand, section 12.6 Newton’s method, section 17.6 multiple integrals, and chapters 14–16 (integration, its methods and applications, and continuous random variables)',
       'Planned as extra material beyond the course, after MATH 1070 chapters 1–8: chapter 14 integration, chapter 15 methods and applications of integration, and chapter 16 continuous random variables'
     ],
     units: [
@@ -19414,7 +19453,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
   /* =============================== MATH 1070 =============================== */
   const BUSMATH = {
     subject: MATH,
-    id: 'math-1070',
+    id: 'math-1070', inst: 'tru',
     code: 'MATH 1070',
     title: 'Mathematics for Business and Economics',
     blurb: 'The first half of the book. Built so far: chapters 1 to 5 — algebra put to work, functions and graphs, lines and systems, exponentials and logarithms, and the mathematics of finance — and chapter 9 — random variables, the binomial distribution, and Markov chains.',
@@ -22966,7 +23005,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
    Proprietary. Not open source: see LICENSE.
 
    ---------------------------------------------------------------------------------------------
-   WHAT THIS IS. A course that follows the STRUCTURE of the set text for TRU's ECON 2320 —
+   WHAT THIS IS. A course that follows the STRUCTURE of the set text for ECON 2320 —
    Anderson, Sweeney, Williams et al., "Statistics for Business and Economics", 13th edition
    (Cengage) — over the sections the course actually examines: chapter 3 (3.1, 3.2, 3.5),
    chapter 4, chapter 5 (except 5.4 and 5.7), chapters 6, 7 and 8, and chapter 9 (9.1–9.5).
@@ -22999,7 +23038,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 
   const STAT = {
     subject: STATS,
-    id: 'econ-2320',
+    id: 'econ-2320', inst: 'tru',
     code: 'ECON 2320',
     title: 'Economics & Business Statistics 1',
     blurb: 'The first statistics course, built in the order the exam asks for it: how to summarise a batch of numbers and say how spread out and how related they are, then probability from counting to Bayes, the distributions that describe a count and a measurement, what happens to a sample mean when you take samples over and over, and finally the two questions every applied paper ends on — how precise is this estimate, and is this difference real.',
@@ -23008,7 +23047,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     text: TEXT,
     legalNote: NOTE,
     gaps: [
-      'Not examined in ECON 2320 at TRU, so not built for it: section 5.4 bivariate distributions and section 5.7 the hypergeometric distribution, and sections 9.6 onward',
+      'Not examined in ECON 2320 on the course outline, so not built for it: section 5.4 bivariate distributions and section 5.7 the hypergeometric distribution, and sections 9.6 onward',
       'Chapters 1 and 2 — data, samples, and the tables and charts used to display them — are assumed background and are not taught here',
       'Still to be built, one chapter per release: chapter 4 probability, chapter 5 discrete probability distributions, chapter 6 continuous probability distributions, chapter 7 sampling and sampling distributions, chapter 8 interval estimation, and chapter 9 hypothesis tests'
     ],
@@ -24119,7 +24158,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.58', date: '17 September 2026', year: 2026 };
+  const BUILD = { v: '2.59', date: '18 September 2026', year: 2026 };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonandy242', ['gmail', 'com'].join('.')].join('@');
   /* The one sentence that says what this is. It appears under the wordmark, and build.js uses
@@ -24132,6 +24171,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      because the person who needs it is the one who just watched the app refresh itself and wants to
      know what moved. Trim the tail when it gets past a dozen; nobody reads further back than that. */
   const WHATS_NEW = [
+    ['2.59', '<b>Courses now carry a coloured institution chip, and no university is named anywhere else.</b> A course written to a particular institution\u2019s outline shows a small chip beside its level &mdash; blue for one, green for the other &mdash; on its card and at the top of its page. Everywhere else the name is gone: exam scopes now say &ldquo;the course outline&rdquo;, gap lines say what is not on the outline rather than where, the set-text note names the author and not the campus, and the academic-integrity page points at <i>your</i> institution\u2019s policy rather than one in particular. Three courses carry no chip at all, which is the honest rendering of a course cut to what the subject examines generally rather than to anyone\u2019s syllabus. The build now fails if a university name reappears in any text a student reads.'],
     ['2.58', '<b>A new course: ECON 2320, Economics &amp; Business Statistics 1.</b> It is the twelfth subject to get a full course and the first statistics one, built in the order the department examines rather than the order the book prints: chapter 3 first, then probability, the distributions, sampling, interval estimation and hypothesis tests one chapter per release. Chapter 3 ships now &mdash; measures of location, measures of variability, and covariance and correlation &mdash; with three lessons, seven worked examples that each open with a plan and close with a check, 30 practice questions and 12 named misconceptions. The distinctions the marks actually turn on are taught rather than assumed: why a sample divides by n &minus; 1 and a population by N, why only the SIGN of a covariance can be read, why a correlation of zero rules out a straight line and nothing else, and why r is not the slope. Every number is recomputed by a computer algebra system before the page ships.'],
     ['2.57', '<b>MATH 1170 chapter 17 gets its pictures, and the course is now illustrated end to end.</b> A function of two variables will not fit on a flat page, so every figure in this chapter is a <b>slice</b> — one variable frozen, the other free — which is precisely what a partial derivative is, and so the pictures are the concept rather than a compromise. You will find the surface z = x&sup2; + 3y&sup2; cut both ways at once, a cubic slice whose ordinary slope is f<sub>x</sub>(2, 1) = 10, a joint cost curve with the other product pinned at 30 units, a production function flattening into diminishing returns, two upward-sloping demand lines that are the whole competitive-versus-complementary test, a slice drawn above its own first and second derivatives, the two opposite parabolas that explain what a saddle point is, and &mdash; for Lagrange multipliers &mdash; the constraint line touching the circle of equal values at exactly one point. Every worked example in the chapter now opens with <b>How to approach it</b>, works line by line, and closes with a <b>Check</b>. That completes chapters 10, 11, 12, 13 and 17: 76 figures, every one checked in a real browser for labels that overlap or run off the edge.'],
     ['2.56', '<b>MATH 1170 chapter 13, Curve sketching, gets its pictures &mdash; the chapter that needed them most.</b> All six sections open with a figure and every worked example carries one: a sign chart laid out the way the questions are, a cubic with its hilltop and valley marked, a closed interval shaded so the endpoints can be seen winning, a tangent drawn at an inflection point where it crosses the curve, the two parabolas that are the whole second-derivative test, a quartic that is level at the origin without turning &mdash; the case the test cannot decide &mdash; a rational function with two vertical asymptotes and a horizontal one, an oblique asymptote with the curve hugging it from both sides, and, for the applied problems, the fence length, the revenue parabola and the two inventory costs crossing exactly at the economic lot size. Each example now opens with <b>How to approach it</b>, works line by line, and closes with a <b>Check</b>. Chapter 17 follows.'],
@@ -24143,11 +24183,11 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     ['2.50', '<b>MATH 1070 chapter 3, Lines, Parabolas and Systems, all six sections.</b> Slope and the three forms of a line, parallel and perpendicular done properly; linear demand and supply equations built from two observations, straight-line depreciation and production trade-offs; the parabola with its vertex formula and the maximum-revenue argument; systems of two and three linear equations by elimination and substitution, with the parallel and coincident cases read off the algebra; nonlinear systems and extraneous roots; and the two intersections that matter most &mdash; market equilibrium, with what a per-unit tax does to it, and break-even with profit targets. Six lessons, 16 worked examples, 40 practice questions and 18 named misconceptions, every number recomputed by a computer algebra system. Chapter 4 follows.'],
     ['2.49', '<b>MATH 1070 chapter 2, Functions and Graphs, all eight sections.</b> What a function is, its natural domain and the difference quotient that becomes the derivative; constant, polynomial, rational, case-defined and absolute-value functions, factorials, and a tax-bracket function that shows why a raise never lowers take-home pay; sums, products, quotients and composition of functions, read in the right order, and decomposing a function for the chain rule to come; one-to-one functions and inverses, with the domain restriction that makes the square root undo squaring; intercepts, the vertical-line test and domain and range from a graph; the four symmetry tests; translations, reflections and stretches in the order they apply; and functions of two variables with level curves. Eight lessons, 19 worked examples, 41 practice questions and 24 named misconceptions, every number recomputed by a computer algebra system. Chapter 3 follows.'],
     ['2.48', '<b>MATH 1070 begins at the beginning: chapter 1, Applications and More Algebra, all six sections.</b> Word problems turned into one equation and answered in the question&rsquo;s own words (mixtures, profit targets, tag prices, split investments, a compound-interest rate with its impossible root rejected); linear inequalities with the one rule that costs the most marks and interval notation done properly; profit, rent-versus-buy and current-ratio conditions read as thresholds; absolute value as a distance, with the between/outside split for inequalities and tolerances written in one line; summation notation, its properties and the three formulas; and arithmetic and geometric sequences with their sums, the infinite geometric sum, repeating decimals and a perpetuity &mdash; the foundation of the finance chapter to come. Six lessons, 17 worked examples, 40 practice questions and 18 named misconceptions, every number recomputed by a computer algebra system. Chapter 2 follows.'],
-    ['2.47', '<b>Chapter 17 of the calculus course &mdash; multivariable calculus, sections 17.1&ndash;17.5, which completes the MATH 1170 outline.</b> Partial derivatives and how to read the &part; notation; marginal cost, marginal productivity and the cross-price test for competitive and complementary products; second-order and mixed partials and why the mixed ones agree; critical points of a surface and the D-test with its three outcomes, saddle points included; and Lagrange multipliers, with the trick of dividing equations so &lambda; cancels and the economics of why the multiplier is a marginal cost. Five lessons, 13 worked examples, 40 practice questions and 16 named misconceptions, every number recomputed by a computer algebra system. Every section the TRU outline lists for MATH 1170 is now built; the course page says so. Next: MATH 1070, chapters 1&ndash;8, then chapters 14&ndash;16 of the book as extra material.'],
-    ['2.46', '<b>Chapter 13 of the calculus course &mdash; curve sketching, all six sections of the TRU outline.</b> Relative extrema with the first-derivative test and the sign chart that drives it; absolute extrema on a closed interval and the extreme-value theorem behind the endpoint check; concavity and inflection points from the second derivative, including the two ways a zero of it fails to be one; the second-derivative test and exactly when it says nothing; vertical, horizontal and oblique asymptotes, holes that are not asymptotes, and the full sketching procedure; and applied maxima and minima &mdash; fencing, revenue on a closed interval, average cost, a subscription price, profit at marginal revenue equal to marginal cost, and the economic lot size. Six lessons, 13 worked examples, 42 practice questions and 19 named misconceptions, every number recomputed by a computer algebra system. Chapter 17 follows.'],
-    ['2.45', '<b>Chapter 12 of the calculus course, in the five sections the TRU outline sets.</b> <b>Additional differentiation topics</b>: derivatives of logarithms (ln u, other bases, and the laws of logarithms used before differentiating), derivatives of exponentials (e&#7512;, other bases, and which rule applies when the base or the exponent is the variable), implicit differentiation with tangents to curves that never solve for y, logarithmic differentiation for stacked products and for the form u&#8319; with both base and exponent varying, and higher-order derivatives, explicitly and implicitly. Five lessons, 10 worked examples, 30 practice questions and 15 named misconceptions; every derivative recomputed by a computer algebra system, the implicit ones included. Sections 12.3 and 12.6 are left out on purpose &mdash; they are not in MATH 1170 &mdash; and the course page now says which parts of the book the course does not use, instead of listing them as not yet built. Read from the course outline on Moodle, which also fixed the unit order for what follows: chapter 13 next, then 17.'],
+    ['2.47', '<b>Chapter 17 of the calculus course &mdash; multivariable calculus, sections 17.1&ndash;17.5, which completes the MATH 1170 outline.</b> Partial derivatives and how to read the &part; notation; marginal cost, marginal productivity and the cross-price test for competitive and complementary products; second-order and mixed partials and why the mixed ones agree; critical points of a surface and the D-test with its three outcomes, saddle points included; and Lagrange multipliers, with the trick of dividing equations so &lambda; cancels and the economics of why the multiplier is a marginal cost. Five lessons, 13 worked examples, 40 practice questions and 16 named misconceptions, every number recomputed by a computer algebra system. Every section the course outline lists for MATH 1170 is now built; the course page says so. Next: MATH 1070, chapters 1&ndash;8, then chapters 14&ndash;16 of the book as extra material.'],
+    ['2.46', '<b>Chapter 13 of the calculus course &mdash; curve sketching, all six sections of the course outline.</b> Relative extrema with the first-derivative test and the sign chart that drives it; absolute extrema on a closed interval and the extreme-value theorem behind the endpoint check; concavity and inflection points from the second derivative, including the two ways a zero of it fails to be one; the second-derivative test and exactly when it says nothing; vertical, horizontal and oblique asymptotes, holes that are not asymptotes, and the full sketching procedure; and applied maxima and minima &mdash; fencing, revenue on a closed interval, average cost, a subscription price, profit at marginal revenue equal to marginal cost, and the economic lot size. Six lessons, 13 worked examples, 42 practice questions and 19 named misconceptions, every number recomputed by a computer algebra system. Chapter 17 follows.'],
+    ['2.45', '<b>Chapter 12 of the calculus course, in the five sections the course outline sets.</b> <b>Additional differentiation topics</b>: derivatives of logarithms (ln u, other bases, and the laws of logarithms used before differentiating), derivatives of exponentials (e&#7512;, other bases, and which rule applies when the base or the exponent is the variable), implicit differentiation with tangents to curves that never solve for y, logarithmic differentiation for stacked products and for the form u&#8319; with both base and exponent varying, and higher-order derivatives, explicitly and implicitly. Five lessons, 10 worked examples, 30 practice questions and 15 named misconceptions; every derivative recomputed by a computer algebra system, the implicit ones included. Sections 12.3 and 12.6 are left out on purpose &mdash; they are not in MATH 1170 &mdash; and the course page now says which parts of the book the course does not use, instead of listing them as not yet built. Read from the course outline on Moodle, which also fixed the unit order for what follows: chapter 13 next, then 17.'],
     ['2.44', '<b>A rendering bug in the new calculus course, fixed the same morning.</b> Forty practice questions and worked-example lines in MATH 1170 were showing raw markup to the student &mdash; <code>lim&lt;sub&gt;x&rarr;3&lt;/sub&gt;</code> printed exactly like that instead of a limit, and <code>&amp;lt;</code> instead of a less-than sign &mdash; because those fields are shown as text on purpose (a question is never injected as HTML) and the new course had been written as if they were not. Every one is rewritten in plain notation, every lesson and practice page in the library (491 of them) was rendered and scanned for stray markup, and a build-time check now reads every question, step, option, solution and pitfall in every course and fails if any of them carries a tag or an entity. The check was proved against the original defect before it was kept.'],
-    ['2.43', '<b>Business calculus, from the chapter the quiz is on.</b> Two new Math courses follow the set text for TRU&rsquo;s MATH 1070 and MATH 1170 &mdash; Haeussler, Paul &amp; Wood, <i>Introductory Mathematical Analysis</i>, 14th edition &mdash; section by section, in the book&rsquo;s order, with every explanation and every question written from scratch. <b>Calculus for Business and Economics</b> opens with chapter 10, limits and continuity (the form 0/0, one-sided and infinite limits, limits at infinity by dominant terms, the three-part test for continuity, and inequalities solved by sign chart), and chapter 11, differentiation (the derivative from its definition, the power rule and the rewriting it needs, marginal cost and marginal revenue, the product, quotient and chain rules, and the marginal-revenue product). <b>Mathematics for Business and Economics</b> opens with chapter 9: expected value and variance, the binomial distribution, and Markov chains with their steady-state vector. Twelve lessons, 24 worked examples, 53 practice questions and 36 named misconceptions &mdash; every limit, derivative, binomial probability and matrix product recomputed by a computer algebra system before the page ships. Each course prints the chapters it does not yet cover, and the rest follow in the same shape.'],
+    ['2.43', '<b>Business calculus, from the chapter the quiz is on.</b> Two new Math courses follow the set text for MATH 1070 and MATH 1170 &mdash; Haeussler, Paul &amp; Wood, <i>Introductory Mathematical Analysis</i>, 14th edition &mdash; section by section, in the book&rsquo;s order, with every explanation and every question written from scratch. <b>Calculus for Business and Economics</b> opens with chapter 10, limits and continuity (the form 0/0, one-sided and infinite limits, limits at infinity by dominant terms, the three-part test for continuity, and inequalities solved by sign chart), and chapter 11, differentiation (the derivative from its definition, the power rule and the rewriting it needs, marginal cost and marginal revenue, the product, quotient and chain rules, and the marginal-revenue product). <b>Mathematics for Business and Economics</b> opens with chapter 9: expected value and variance, the binomial distribution, and Markov chains with their steady-state vector. Twelve lessons, 24 worked examples, 53 practice questions and 36 named misconceptions &mdash; every limit, derivative, binomial probability and matrix product recomputed by a computer algebra system before the page ships. Each course prints the chapters it does not yet cover, and the rest follow in the same shape.'],
     ['2.42', '<b>Macroeconomics is taught here now &mdash; the whole course, not a first instalment.</b> <b>Principles of Macroeconomics</b> follows an eleven-lecture ECON 1950 series in its own order: scarcity, the production possibilities curve and comparative advantage; what GDP counts and the two ways of adding it up; unemployment, the CPI and the GDP deflator; aggregate demand against long-run aggregate supply; the classical model and the Keynesian answer to it; consumption, the multiplier and where output settles; public debt and fiscal policy; money, fractional reserve banking and the money multiplier; and the Bank of Canada&rsquo;s four levers. <b>Nine units, 27 lessons, 54 worked examples, 99 practice questions and 81 named misconceptions</b> &mdash; every one a mistake first-year macro students actually make, starting with the three that cost the most marks: dividing the unemployed by the employed, adding imports instead of subtracting them, and spending the whole recessionary gap instead of dividing it by the multiplier. Every figure is recomputed by a computer algebra system before the page ships. <b>And there is an eleventh subject profile</b>: set a subject to <b>Economics</b> and your own files are read as economics &mdash; identities and rates first, cause-and-effect sentences treated as definitions, arithmetic on. The set text is named and pointed at, as always, and never reproduced.'],
     ['2.41', '<b>A full audit of every screen, on every display it is used on.</b> Nineteen device sizes &mdash; every iPhone from the 13 mini to the 16 Pro Max, iPads in both orientations, and four desktop widths &mdash; across all twenty-five screens, in both themes. Nothing scrolled sideways and nothing was cut off, and four things were wrong. <b>Small type</b>: the labels, chips and build stamps sat between 9.9px and 10.9px, under the 11px floor below which text stops being comfortable on a phone; they were seventy separate numbers and are now four named sizes with a floor that a test enforces. <b>Touch targets</b>: forty kinds of control were under the 44px a thumb needs, including the theme switch at 18px tall and the topbar buttons at 30&times;26 &mdash; a link inside a sentence is deliberately left alone, because padding a word out would open up the paragraph around it. <b>The notch and the home indicator</b>: the page declared no <code>viewport-fit</code>, so the one piece of safe-area padding in the stylesheet was silently doing nothing; installed on an iPhone, the rating bar could sit under the home indicator. <b>And a formula inside a fraction</b> rendered its exponent at 9.4px, the smallest text in the app. All fixed, and each one now has a test, so none of them can come back quietly.'],
     ['2.40', '<b>Financial Accounting is finished.</b> It shipped in v2.37 with four of its twelve modules built and the other eight listed as gaps; all twelve are now taught. Five new units: <b>cash</b> &mdash; internal control, the bank reconciliation and which side of it needs a journal entry; <b>inventory</b> &mdash; perpetual against periodic, purchase discounts and freight; <b>costing</b> &mdash; FIFO, weighted average and specific identification, the moving average a perpetual system needs, and lower of cost and net realisable value; <b>property, plant and equipment</b> &mdash; what counts as cost, the three depreciation methods, revised estimates and disposal; <b>liabilities and equity</b> &mdash; warranty provisions, why a bond is issued at a discount, shares and dividends; and <b>cash flows and analysis</b> &mdash; the indirect method and the ratios a reader starts from. Fifteen new lessons, 30 worked examples, 50 practice questions and 42 more named misconceptions. <b>LIFO stays in the gaps list on purpose:</b> it is prohibited under IAS 2.25 and ASPE 3031, and because its arithmetic is perfectly correct nothing in this app would ever flag it &mdash; so it is named rather than quietly left out.'],
@@ -25647,8 +25687,8 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
         <li>The authored courses are teaching material, cited to the doctrine and the set text. They
           are a companion to your course, not a substitute for it, and not a source to cite.</li>
       </ul>
-      <p><b>Your institution's rules decide, not this page.</b> At Thompson Rivers University the
-      Student Academic Integrity Policy (ED 5-0) governs, TRU's guidance is that the use of any
+      <p><b>Your institution's rules decide, not this page.</b> Your institution's own Academic
+      Integrity policy governs, and the usual guidance is that the use of any
       AI-assisted tool in coursework is a matter for your instructor, and the safe order is always:
       ask your instructor first, then use it in the way they allowed.</p>
       <p><b>One thing worth telling your instructor.</b> A common and reasonable objection to study
@@ -26132,11 +26172,20 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
       <ul class="rights-list">${c.gaps.map(g => `<li>${esc(g)}</li>`).join('')}</ul></div></div>`;
   }
 
+  /* The institution chip. A course built to a particular outline carries one, and that chip is the
+     only place an institution is named — the prose stays about the subject. A course with no `inst`
+     shows nothing, which is the honest rendering of a course cut to the subject rather than to
+     anyone's syllabus. */
+  function instChip(c) {
+    const i = c.inst && Courses.institution(c.inst);
+    if (!i) return '';
+    return `<span class="inst inst-${esc(i.id)}" title="Follows the ${esc(i.label)} course outline">${esc(i.label)}</span>`;
+  }
   function courseCard(c) {
     const n = Courses.count(c.id);
     const done = c.units.reduce((a, u) => a + unitProgress(c, u).seen, 0);
     return `<a class="course-card" href="#/courses/${esc(c.id)}">
-        <span class="label">${esc(c.code && c.code !== c.title ? c.code + ' \u00b7 ' + c.level : c.level)}</span>
+        <span class="label">${esc(c.code && c.code !== c.title ? c.code + ' \u00b7 ' + c.level : c.level)}</span>${instChip(c)}
         <h3>${esc(c.title)}</h3>
         <p>${esc(c.blurb)}</p>
         <span class="meta"><span>${n.units} unit${n.units === 1 ? '' : 's'} &middot; ${n.practice} practice</span><span class="arr">&rarr;</span></span>
@@ -26196,7 +26245,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     app.innerHTML = frame(`${topbar(`<a href="#/">Subjects</a><span class="sep">/</span><a href="#/courses">Courses</a><span class="sep">/</span><span class="sep-sub">${esc(c.subject.name)}</span><span class="sep">/</span><strong>${esc(c.title)}</strong>`)}
       <main id="main" tabindex="-1">
         <div class="sec-hero">
-          <span class="label">${esc(c.level)} &middot; ${n.units} unit${n.units === 1 ? '' : 's'}</span>
+          <span class="label">${esc(c.level)} &middot; ${n.units} unit${n.units === 1 ? '' : 's'}</span>${instChip(c)}
           <h1>${esc(c.title)}</h1>
           <p class="lede">${esc(c.blurb)}</p>
           <div class="sum-stats"><div><b>${n.lessons}</b><span>lessons</span></div><div><b>${n.examples}</b><span>worked examples</span></div><div><b>${n.practice}</b><span>practice questions</span></div></div>
