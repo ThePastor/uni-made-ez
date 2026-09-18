@@ -18635,7 +18635,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             idea: `An <b>electron configuration</b> says which orbitals the electrons of an atom occupy in the ground state — the arrangement of lowest total energy. Three rules decide it, and every one of them is asked about.<br><br><b>The aufbau principle.</b> Electrons enter the lowest-energy orbital available. In a multi-electron atom the energy depends on <b>both</b> n and l, not on n alone, and the order is<br><br><b>1s 2s 2p 3s 3p 4s 3d 4p 5s 4d 5p 6s 4f 5d 6p</b><br><br>The 4s before 3d is the first place this bites, and it is not a curiosity — it is why the fourth period starts with potassium and calcium before the transition metals appear.<br><br><b>The Pauli exclusion principle.</b> No two electrons in an atom may have all four quantum numbers the same. Since an orbital fixes n, l and m<sub>l</sub>, the two electrons in it must differ in m<sub>s</sub> — so <b>an orbital holds at most two electrons, and they must be paired with opposite spins</b>.<br><br><b>Hund's rule.</b> Within a subshell of equal-energy orbitals, electrons occupy separate orbitals with parallel spins before any orbital is doubled up. Nitrogen's three 2p electrons go one into each of the three 2p orbitals, not two into one. The reason is repulsion: two electrons in the same small orbital repel more than two in different ones.<br><br>The <b>orbital diagram</b> shows this explicitly, with a box per orbital and an arrow per electron — up for one spin, down for the other. A configuration such as 2p³ hides whether the electrons are paired; the diagram does not, and questions about <b>unpaired electrons</b> are asking for the diagram.<br><br>Writing a configuration is then mechanical: count the electrons — equal to the atomic number for a neutral atom — and pour them into the orbital order, respecting the capacities s 2, p 6, d 10, f 14. Silicon, Z = 14: 1s² 2s² 2p⁶ 3s² 3p², and the superscripts must sum to 14.`,
             figure: {
               kind: 'graph', x: [0.5, 8.5], y: [0, 5], xlabel: 'filling order →', ylabel: 'relative energy',
-              fns: [{ pts: [[1, 0.2], [2, 1.4], [3, 1.9], [4, 2.6], [5, 3.0], [6, 3.4], [7, 3.6], [8, 4.1]], label: 'rising energy' }],
+              fns: [{ data: true, pts: [[1, 0.2], [2, 1.4], [3, 1.9], [4, 2.6], [5, 3.0], [6, 3.4], [7, 3.6], [8, 4.1]], label: 'rising energy' }],
               points: [
                 { x: 1, y: 0.2, label: '1s' }, { x: 2, y: 1.4, label: '2s' }, { x: 3, y: 1.9, label: '2p' },
                 { x: 4, y: 2.6, label: '3s' }, { x: 5, y: 3.0, label: '3p' }, { x: 6, y: 3.4, label: '4s' },
@@ -18794,7 +18794,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             idea: `An outer electron does not feel the full pull of the nucleus, because the electrons between it and the nucleus push back. What it feels is the <b>effective nuclear charge</b>:<br><br><b>Z<sub>eff</sub> ≈ Z − S</b><br><br>with Z the number of protons and S the screening by the core electrons, roughly equal to their number. Sodium has Z = 11 and ten core electrons, so its valence electron feels about +1. Chlorine has Z = 17 and the same ten core electrons, so its valence electrons feel about +7.<br><br>That comparison is the engine of the whole chapter. <b>Across a period</b>, protons are added one at a time while the new electrons all go into the <b>same</b> shell and screen each other poorly — so Z<sub>eff</sub> rises steadily from left to right. <b>Down a group</b>, each step adds a whole new shell and a matching set of core electrons, so Z<sub>eff</sub> stays roughly constant while n grows.<br><br><b>Atomic radius</b> follows directly:<br><br><b>Across a period, radius decreases</b> — the same shell is pulled in harder as Z<sub>eff</sub> rises. This is the one that feels wrong: more electrons, smaller atom.<br><br><b>Down a group, radius increases</b> — a new shell is further out, and the pull on it has not changed.<br><br>So the largest atoms are at the bottom left of the table and the smallest at the top right, and radius is measured in picometres: about 186 pm for sodium, 99 pm for chlorine, 37 pm for hydrogen.<br><br>The trend is not perfectly smooth. Across the d block the radius barely changes, because the electrons being added go into an inner shell where they screen the outer ones well — which is why the transition metals are all of a similar size and alloy with one another so readily.`,
             figure: {
               kind: 'graph', x: [10, 19], y: [0, 200], xlabel: 'atomic number Z', ylabel: 'atomic radius (pm)',
-              fns: [{ pts: [[11, 186], [12, 160], [13, 143], [14, 118], [15, 110], [16, 103], [17, 99], [18, 97], [19, 227]], label: 'period 3, then K' }],
+              fns: [{ data: true, pts: [[11, 186], [12, 160], [13, 143], [14, 118], [15, 110], [16, 103], [17, 99], [18, 97], [19, 227]], label: 'period 3, then K' }],
               points: [{ x: 11, y: 186, label: 'Na' }, { x: 17, y: 99, label: 'Cl' }, { x: 19, y: 227, label: 'K' }],
               caption: 'Atomic radius across the third period, with potassium beyond it. The steady fall from sodium to argon is effective nuclear charge rising while the shell stays the same — eight more protons pulling the third shell in by nearly half. The jump at potassium is the fourth shell opening: one new shell undoes the whole period’s contraction and more.'
             },
@@ -18870,7 +18870,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             idea: `Writing the configuration of an <b>ion</b> takes one extra rule, and it is the one most often got wrong. Electrons are added to the lowest available orbital, as usual; but they are <b>removed from the highest n first</b>, not from the last orbital filled. For a transition metal these differ: iron fills 4s before 3d, but Fe²⁺ is [Ar] 3d⁶, not [Ar] 4s² 3d⁴. The 4s electrons are further out and go first.<br><br>Main-group ions are simpler, and they aim for a noble-gas configuration: Na⁺ is [Ne], Cl⁻ is [Ar], Mg²⁺ is [Ne]. Ions with the same configuration are called <b>isoelectronic</b>, and within such a set the one with the most protons is the smallest — same electrons, stronger pull.<br><br><b>Ionic radius</b> follows two reliable rules:<br><br>A <b>cation is smaller</b> than its parent atom, often dramatically — Na is 186 pm and Na⁺ is 102 pm, because the whole outer shell has gone and the remaining electrons feel the same nuclear charge.<br><br>An <b>anion is larger</b> — Cl is 99 pm and Cl⁻ is 181 pm, because the added electron increases repulsion in a shell whose nuclear charge has not changed.<br><br><b>Ionisation energy</b> (IE) is the energy to remove one electron from a gaseous atom, and it is always positive. Its trends are the mirror image of atomic radius: <b>IE rises across a period</b> as Z<sub>eff</sub> rises, and <b>falls down a group</b> as the outer electron gets further away. So the hardest electron to remove belongs to the small atoms at the top right — helium at 2372 kJ/mol — and the easiest to those at the bottom left.<br><br>Two <b>dips</b> interrupt the rise across a period, and both are examined. From group 2A to 3A the new electron starts a p subshell, which is higher in energy than the filled s — so boron is easier to ionise than beryllium. From 5A to 6A the new electron is the first to pair up in a p orbital, and the repulsion of sharing makes it easier to remove — so oxygen is easier to ionise than nitrogen.<br><br><b>Successive</b> ionisation energies always rise, because each electron is pulled from an increasingly positive ion. The informative feature is the <b>jump</b>: magnesium's first two come off at 738 and 1450 kJ/mol, and the third at 7730 — because it has to come out of the core. The position of the jump counts the valence electrons.`,
             figure: {
               kind: 'graph', x: [2, 11], y: [0, 2200], xlabel: 'atomic number Z', ylabel: 'first ionisation energy (kJ/mol)',
-              fns: [{ pts: [[3, 520], [4, 899], [5, 801], [6, 1086], [7, 1402], [8, 1314], [9, 1681], [10, 2081]], label: 'period 2' }],
+              fns: [{ data: true, pts: [[3, 520], [4, 899], [5, 801], [6, 1086], [7, 1402], [8, 1314], [9, 1681], [10, 2081]], label: 'period 2' }],
               points: [
                 { x: 3, y: 520, label: 'Li' }, { x: 5, y: 801, label: 'B: the 2A→3A dip' },
                 { x: 8, y: 1314, label: 'O: the 5A→6A dip' }, { x: 10, y: 2081, label: 'Ne' }
@@ -18951,7 +18951,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             idea: `<b>Electron affinity</b> (EA) is the energy change when a gaseous atom gains an electron. Unlike ionisation energy it is usually <b>negative</b>, because most atoms release energy when they take an electron — chlorine's is −349 kJ/mol, the most negative of any element. The sign convention causes half the errors in this section: <b>more negative means a stronger attraction for the extra electron</b>, so "high electron affinity" in ordinary speech means a large negative number.<br><br>The trend across a period is towards more negative values, for the same reason as ionisation energy: a rising effective nuclear charge pulls harder on anything nearby. Down a group the change is small and irregular, because the incoming electron is further out but also less crowded.<br><br>The exceptions are informative rather than nuisances. The <b>noble gases</b> have positive electron affinities — energy must be supplied to force an electron onto a full shell, which would have to start a new one. <b>Group 2A</b> is close to zero for the same reason in miniature: the s subshell is full and the electron would have to begin a p subshell. And <b>nitrogen</b> is near zero while carbon is clearly negative, because nitrogen's half-filled 2p³ would have to accept a paired electron.<br><br><b>Metallic character</b> — the tendency to lose electrons rather than gain them — pulls all of this together. It <b>decreases across a period</b> as ionisation energy rises, and <b>increases down a group</b> as it falls. So the most metallic elements are at the bottom left, the least metallic at the top right, and the boundary runs as a staircase through the metalloids.<br><br>Four trends, all read from the same two facts — effective nuclear charge rising across a period, and distance rising down a group. Atomic radius falls to the right; ionisation energy rises to the right; electron affinity becomes more negative to the right; metallic character falls to the right. Learning them as one picture rather than four lists is what makes them usable under exam conditions.`,
             figure: {
               kind: 'graph', x: [2, 11], y: [-400, 100], xlabel: 'atomic number Z', ylabel: 'electron affinity (kJ/mol)',
-              fns: [{ pts: [[3, -60], [4, 0], [5, -27], [6, -122], [7, 0], [8, -141], [9, -328], [10, 0]], label: 'period 2' }],
+              fns: [{ data: true, pts: [[3, -60], [4, 0], [5, -27], [6, -122], [7, 0], [8, -141], [9, -328], [10, 0]], label: 'period 2' }],
               points: [
                 { x: 4, y: 0, label: 'Be: full s' }, { x: 7, y: 0, label: 'N: half-filled p' },
                 { x: 9, y: -328, label: 'F' }, { x: 10, y: 0, label: 'Ne: full shell' }
@@ -19309,7 +19309,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             idea: `A <b>Lewis symbol</b> is the element's symbol with one dot for each valence electron — so sodium has one dot, oxygen six, chlorine seven. Because the valence count is the group number, the whole of a group has the same Lewis symbol, which is the point: the dots are what react, and the core is not drawn at all.<br><br>An <b>ionic bond</b> is the transfer of those electrons from a metal to a non-metal, leaving a cation and an anion that attract each other. Sodium's one dot goes to chlorine's seven, giving Na⁺ with the neon configuration and Cl⁻ with the argon one. The formula follows from making the charges cancel: Na⁺ and Cl⁻ give NaCl, but Mg²⁺ and Cl⁻ give MgCl₂, and Al³⁺ with O²⁻ gives Al₂O₃.<br><br>What holds an ionic solid together is not a bond between one pair of ions but the whole three-dimensional lattice. The <b>lattice energy</b> is the energy released when gaseous ions come together to form one mole of the solid, and it is always negative and always large. It depends on two things, both of which come from Coulomb's law:<br><br><b>Charge</b> — the product of the two charges, and this is the strong dependence. MgO, built from 2+ and 2− ions, has a lattice energy near −3795 kJ/mol against NaCl's −769, which is why magnesium oxide melts at 2852 °C and table salt at 801 °C.<br><br><b>Size</b> — the distance between the ion centres, and this is the weaker dependence. Down the alkali chlorides from LiCl to CsCl the cation grows and the lattice energy falls steadily in magnitude.<br><br>The properties of ionic solids follow from the lattice: they are hard and high-melting because every ion is held by many neighbours, brittle because a layer forced to slide brings like charges into contact, and conducting only when molten or dissolved, because the ions must be free to move.`,
             figure: {
               kind: 'graph', x: [60, 180], y: [600, 900], xlabel: 'cation radius (pm)', ylabel: '|lattice energy| (kJ/mol)',
-              fns: [{ pts: [[76, 834], [102, 769], [138, 701], [152, 680], [167, 657]], label: 'MCl, M = Li to Cs' }],
+              fns: [{ data: true, pts: [[76, 834], [102, 769], [138, 701], [152, 680], [167, 657]], label: 'MCl, M = Li to Cs' }],
               points: [{ x: 76, y: 834, label: 'LiCl' }, { x: 102, y: 769, label: 'NaCl' }, { x: 167, y: 657, label: 'CsCl' }],
               caption: 'Lattice energy against cation size for the alkali metal chlorides, with the same anion throughout. Larger ions cannot approach as closely, so the attraction is weaker and the lattice energy smaller in magnitude. The whole range here is under 200 kJ/mol; changing the CHARGES instead, as in MgO, moves it by thousands.'
             },
@@ -19385,7 +19385,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             idea: `<b>Electronegativity</b> is how strongly an atom in a bond pulls the shared electrons towards itself. On the Pauling scale fluorine is highest at 4.0, oxygen 3.5, nitrogen and chlorine 3.0, carbon 2.5, hydrogen 2.1, and the alkali metals under 1.0.<br><br>The trends are the ones from the previous chapter in another guise: electronegativity <b>rises across a period</b> as effective nuclear charge grows, and <b>falls down a group</b> as the valence shell moves further out. So the most electronegative elements are at the top right, excluding the noble gases.<br><br>What matters is the <b>difference</b> ΔEN between the two bonded atoms, and it sorts bonds into three kinds:<br><br><b>ΔEN under about 0.4</b> — <b>nonpolar covalent</b>. The electrons are shared roughly equally. Any bond between identical atoms is here by definition, with ΔEN exactly 0.<br><b>ΔEN from about 0.4 to 2.0</b> — <b>polar covalent</b>. Shared, but unequally, giving a partial negative charge δ− on the more electronegative atom and δ+ on the other.<br><b>ΔEN above about 2.0</b> — <b>ionic</b>. The transfer is effectively complete.<br><br>The boundaries are conventions rather than laws, and the underlying reality is a continuous scale — which is the honest way to hold this: there is no moment at which sharing becomes transfer.<br><br>A polar bond has a <b>dipole moment</b>, drawn as an arrow pointing towards the negative end. Note carefully that a polar BOND does not guarantee a polar MOLECULE: carbon dioxide has two strongly polar C=O bonds whose dipoles point in opposite directions and cancel exactly, so the molecule has none. That distinction needs the shapes of the next chapter, and it is worth flagging now.`,
             figure: {
               kind: 'graph', x: [10.5, 17.5], y: [0.5, 3.5], xlabel: 'atomic number Z', ylabel: 'electronegativity',
-              fns: [{ pts: [[11, 0.9], [12, 1.2], [13, 1.5], [14, 1.8], [15, 2.1], [16, 2.5], [17, 3.0]], label: 'period 3' }],
+              fns: [{ data: true, pts: [[11, 0.9], [12, 1.2], [13, 1.5], [14, 1.8], [15, 2.1], [16, 2.5], [17, 3.0]], label: 'period 3' }],
               points: [{ x: 11, y: 0.9, label: 'Na' }, { x: 14, y: 1.8, label: 'Si' }, { x: 17, y: 3.0, label: 'Cl' }],
               caption: 'Electronegativity across the third period. It rises steadily from sodium to chlorine, for the same reason the atoms shrink and their ionisation energies grow: effective nuclear charge. The Na–Cl difference of 2.1 puts that bond over the ionic boundary, which is why sodium chloride is a salt rather than a molecule.'
             },
@@ -19623,7 +19623,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             idea: `The <b>bond energy</b> is the energy needed to break one mole of a given bond in the gas phase. Breaking a bond always <b>costs</b> energy, so bond energies are positive; forming one always releases it. That asymmetry is the whole of this section.<br><br>Bond energy rises with <b>bond order</b> and falls with <b>bond length</b>, and the two go together: C–C is 154 pm and 348 kJ/mol, C=C is 134 pm and 614, C≡C is 120 pm and 839. Shorter means stronger, and a double bond is stronger than a single one but not twice as strong — the second shared pair adds less than the first.<br><br>The useful consequence is an estimate of a reaction's enthalpy from a table of bond energies alone:<br><br><b>ΔH<sub>rxn</sub> ≈ Σ(bonds broken) − Σ(bonds formed)</b><br><br>Breaking comes first and is positive; forming is subtracted. The sign then falls out: a reaction is <b>exothermic</b> when the bonds formed are stronger than those broken, which is the physical statement of why anything burns.<br><br>Two cautions are worth stating plainly. The values are <b>averages</b> over many compounds — the O–H bond energy of water is not exactly that of methanol — so the answer is an estimate, typically within 10% of the measured enthalpy, and not a substitute for it. And the method applies to <b>gas-phase</b> species; a condensed phase brings in the intermolecular forces of chapter 11, which this calculation knows nothing about.<br><br>Done carefully, the arithmetic is worth the effort: it explains why combustion releases so much energy (the O=O and C–H bonds broken are weaker than the C=O and O–H bonds formed) without any experimental data at all.`,
             figure: {
               kind: 'graph', x: [0.5, 3.5], y: [0, 900], xlabel: 'bond order', ylabel: 'bond energy (kJ/mol)',
-              fns: [{ pts: [[1, 348], [2, 614], [3, 839]], label: 'carbon–carbon bonds' }],
+              fns: [{ data: true, pts: [[1, 348], [2, 614], [3, 839]], label: 'carbon–carbon bonds' }],
               points: [
                 { x: 1, y: 348, label: 'C–C, 154 pm' }, { x: 2, y: 614, label: 'C=C, 134 pm' },
                 { x: 3, y: 839, label: 'C≡C, 120 pm' }
@@ -19948,7 +19948,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             idea: `<b>VSEPR</b> — valence shell electron pair repulsion — rests on one idea: groups of electrons around a central atom repel each other and settle as far apart as they can get. Everything else follows by geometry.<br><br>What is counted is <b>electron domains</b>, sometimes called electron groups. A domain is any of the following around the central atom:<br><br>a single bond, a double bond, a triple bond — <b>each counts as ONE domain</b> — or a lone pair.<br><br>That a double bond counts once is the step to be careful with. It is one region of electron density, however many pairs are in it, and the geometry is set by where the regions are, not how much charge each holds.<br><br>The number of domains gives the <b>electron geometry</b>:<br><br><b>2 domains — linear</b>, 180°<br><b>3 domains — trigonal planar</b>, 120°<br><b>4 domains — tetrahedral</b>, 109.5°<br><b>5 domains — trigonal bipyramidal</b>, 90° and 120°<br><b>6 domains — octahedral</b>, 90°<br><br>These five are worth knowing cold, because every shape in the next lesson is one of them with some positions occupied by lone pairs rather than atoms.<br><br>The angles are not arbitrary numbers to memorise: they are what you get by placing that many points on a sphere as far apart as possible. Two points go to opposite poles, three to an equator, four to the corners of a tetrahedron — and 109.5° is simply the angle that arrangement produces.<br><br>Note that CO₂ is linear with two domains despite having four shared pairs, and that a molecule with three domains is planar because three points on a sphere define a plane. Neither fact needs anything beyond counting.`,
             figure: {
               kind: 'graph', x: [1.5, 6.5], y: [80, 200], xlabel: 'electron domains', ylabel: 'ideal bond angle (°)',
-              fns: [{ pts: [[2, 180], [3, 120], [4, 109.5], [5, 120], [6, 90]], label: 'ideal angles' }],
+              fns: [{ data: true, pts: [[2, 180], [3, 120], [4, 109.5], [5, 120], [6, 90]], label: 'ideal angles' }],
               points: [
                 { x: 2, y: 180, label: 'linear' }, { x: 3, y: 120, label: 'trigonal planar' },
                 { x: 4, y: 109.5, label: 'tetrahedral' }, { x: 6, y: 90, label: 'octahedral' }
@@ -20028,7 +20028,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             idea: `<b>Electron geometry</b> describes where the domains are; <b>molecular shape</b> describes where the ATOMS are. When every domain is a bond the two names coincide. When some are lone pairs they do not, and the shape is the electron geometry with the lone-pair positions left empty.<br><br>From the tetrahedral electron geometry, four domains:<br><br><b>0 lone pairs — tetrahedral</b> (CH₄), 109.5°<br><b>1 lone pair — trigonal pyramidal</b> (NH₃), about 107°<br><b>2 lone pairs — bent</b> (H₂O), about 104.5°<br><br>The angles shrink as lone pairs are added, and the reason is that a <b>lone pair spreads out more than a bonding pair</b>. A bonding pair is pulled between two nuclei and held narrow; a lone pair is held by one nucleus only and fans out, pushing the bonds closer together. The order of repulsion is<br><br><b>lone–lone > lone–bonding > bonding–bonding</b><br><br>which predicts the sizes of the deviations as well as their direction — one lone pair costs about 2.5°, two cost about 5°.<br><br>From the trigonal planar geometry, three domains: no lone pairs gives trigonal planar (BF₃), one gives <b>bent</b> (SO₂) at about 119°. Note that both H₂O and SO₂ are called bent while having quite different angles, because the name describes the arrangement of atoms and not the value.<br><br>With five domains there is a further rule: <b>lone pairs go equatorial</b>, where there is more room, giving the see-saw, T-shaped and linear shapes as lone pairs are added. With six domains the lone pairs go opposite each other, giving square pyramidal and then square planar.<br><br>The practical procedure never changes: Lewis structure, count domains, electron geometry, then remove the lone-pair positions to name the shape.`,
             figure: {
               kind: 'graph', x: [-0.5, 2.5], y: [100, 114], xlabel: 'lone pairs on the central atom', ylabel: 'bond angle (°)',
-              fns: [{ pts: [[0, 109.5], [1, 107], [2, 104.5]], label: 'four domains' }],
+              fns: [{ data: true, pts: [[0, 109.5], [1, 107], [2, 104.5]], label: 'four domains' }],
               points: [
                 { x: 0, y: 109.5, label: 'CH₄ tetrahedral' }, { x: 1, y: 107, label: 'NH₃ pyramidal' },
                 { x: 2, y: 104.5, label: 'H₂O bent' }
@@ -20266,7 +20266,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             idea: `Valence bond theory keeps the electrons on their own atoms and lets orbitals overlap. <b>Molecular orbital theory</b> abandons that: the atomic orbitals combine into <b>molecular orbitals</b> that belong to the molecule as a whole, and the electrons are then poured into those.<br><br>Two atomic orbitals always give two molecular orbitals — orbitals are conserved here too:<br><br>a <b>bonding</b> orbital, lower in energy than either original, with electron density concentrated between the nuclei<br>an <b>antibonding</b> orbital, marked with a star (σ*), higher in energy, with a node between the nuclei<br><br>Electrons fill them by the same rules as an atom: lowest first, two per orbital with opposite spins, and singly before pairing among orbitals of equal energy.<br><br>The payoff is the <b>bond order</b>:<br><br><b>BO = ½(bonding electrons − antibonding electrons)</b><br><br>A bond order of zero means no bond at all — which is why <b>He₂ does not exist</b>: its two bonding electrons are exactly cancelled by two antibonding ones. Fractional bond orders are allowed, and the model is the only one of the three that permits them.<br><br>Two predictions justify the extra machinery. <b>O₂ is paramagnetic</b> — it is attracted into a magnetic field, and liquid oxygen visibly sticks between the poles of a magnet. Its Lewis structure, O=O, shows every electron paired and predicts the opposite. The molecular orbital diagram puts the last two electrons singly into two equal-energy π* orbitals, exactly as Hund's rule requires, and predicts two unpaired electrons and a bond order of 2. And <b>the bond orders match the measured energies</b>: N₂ at 3 is 945 kJ/mol, O₂ at 2 is 498, F₂ at 1 is 159.<br><br>So the three models are a sequence, not rivals: VSEPR for shape, valence bond for the orbitals a shape needs, and molecular orbital theory where the first two give the wrong answer.`,
             figure: {
               kind: 'graph', x: [0.5, 3.5], y: [0, 1000], xlabel: 'bond order', ylabel: 'bond energy (kJ/mol)',
-              fns: [{ pts: [[1, 159], [2, 498], [3, 945]], label: 'period 2 diatomics' }],
+              fns: [{ data: true, pts: [[1, 159], [2, 498], [3, 945]], label: 'period 2 diatomics' }],
               points: [
                 { x: 1, y: 159, label: 'F₂, 142 pm' }, { x: 2, y: 498, label: 'O₂, 121 pm' },
                 { x: 3, y: 945, label: 'N₂, 110 pm' }
@@ -20617,8 +20617,8 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             figure: {
               kind: 'graph', x: [10, 140], y: [-250, 220], xlabel: 'molar mass (g/mol)', ylabel: 'boiling point (°C)',
               fns: [
-                { pts: [[20, -188], [36.5, -85], [80.9, -67], [128, -35]], label: 'HF, HCl, HBr, HI' },
-                { pts: [[16, -161], [30, -89], [44, -42], [58, -0.5], [72, 36]], label: 'alkanes', dashed: true, c: 1 }
+                { data: true, pts: [[20, -188], [36.5, -85], [80.9, -67], [128, -35]], label: 'HF, HCl, HBr, HI' },
+                { data: true, pts: [[16, -161], [30, -89], [44, -42], [58, -0.5], [72, 36]], label: 'alkanes', dashed: true, c: 1 }
               ],
               caption: 'Boiling point against molar mass for two series. The alkanes rise steadily — nonpolar, so dispersion alone, growing with size. The hydrogen halides do the same from HCl onward, but HF sits far above the line its mass would predict: hydrogen bonding, worth about 100 °C here, and the anomaly that gives the effect away.'
             },
@@ -20695,8 +20695,8 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             figure: {
               kind: 'graph', x: [0, 5], y: [-120, 120], xlabel: 'period of the central atom', ylabel: 'boiling point (°C)',
               fns: [
-                { pts: [[2, 100], [3, -60], [4, -41], [5, -2]], label: 'H₂O, H₂S, H₂Se, H₂Te' },
-                { pts: [[2, -161], [3, -112], [4, -88], [5, -52]], label: 'CH₄, SiH₄, GeH₄, SnH₄', dashed: true, c: 1 }
+                { data: true, pts: [[2, 100], [3, -60], [4, -41], [5, -2]], label: 'H₂O, H₂S, H₂Se, H₂Te' },
+                { data: true, pts: [[2, -161], [3, -112], [4, -88], [5, -52]], label: 'CH₄, SiH₄, GeH₄, SnH₄', dashed: true, c: 1 }
               ],
               caption: 'Two hydride series down their groups. The carbon group rises smoothly with mass, which is dispersion behaving as expected. The oxygen group does the same from H₂S onward — but water, the lightest of its series, boils 160 °C above where the trend puts it. Extrapolating the other three predicts about −60 °C for water, so hydrogen bonding is worth roughly 160 degrees.'
             },
@@ -20773,7 +20773,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             idea: `Water is the most abundant liquid on the planet and it behaves unlike any comparable substance. Every anomaly traces to the same structure: a bent molecule, two O–H bonds and two lone pairs, so <b>each water molecule can form up to four hydrogen bonds</b> — two by donating its hydrogens, two by accepting at its lone pairs. No other small molecule manages four.<br><br><b>The high boiling point</b> — 100 °C against the −60 °C or so its group trend predicts, as the previous lesson established.<br><br><b>The high specific heat capacity</b> — 4.18 J/(g·°C), among the highest of any liquid. Heating water means partly breaking hydrogen bonds rather than simply speeding molecules up, so a great deal of energy produces a small temperature rise. This is why coastal climates are milder than inland ones, and why the body regulates its temperature as well as it does.<br><br><b>The high heat of vaporisation</b> — 40.7 kJ/mol, which is why sweating cools so effectively: every gram that evaporates removes 2.26 kJ.<br><br><b>Ice floats.</b> This is the genuinely rare one — nearly every substance is denser as a solid. In ice, each molecule is locked into four hydrogen bonds at fixed angles, and that arrangement is an open hexagonal lattice with space inside it. Liquid water, whose hydrogen bonds are constantly breaking and reforming, packs more closely. So ice is about 9% less dense than water and floats, lakes freeze from the top down, and aquatic life survives the winter.<br><br><b>It dissolves ionic and polar substances well</b> — "like dissolves like". Its partial charges surround and separate ions, each Na⁺ wrapped in water molecules pointing their oxygens inward and each Cl⁻ wrapped with hydrogens inward. Nonpolar substances such as oils cannot compete with water's hydrogen bonding for a place in the structure, so they separate out.<br><br>None of this is unrelated coincidence. One molecular shape, four hydrogen bonds, and every property in the list follows.`,
             figure: {
               kind: 'graph', x: [-15, 15], y: [0.915, 1.005], xlabel: 'temperature (°C)', ylabel: 'density (g/cm³)',
-              fns: [{ pts: [[-10, 0.918], [-0.1, 0.917], [0, 0.9998], [4, 1.0000], [10, 0.9997], [15, 0.9991]], label: 'water and ice' }],
+              fns: [{ data: true, pts: [[-10, 0.918], [-0.1, 0.917], [0, 0.9998], [4, 1.0000], [10, 0.9997], [15, 0.9991]], label: 'water and ice' }],
               points: [
                 { x: -5, y: 0.918, label: 'ice' }, { x: 4, y: 1.0, label: 'water is densest at 4 °C' }
               ],
@@ -21063,6 +21063,1428 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 
   root.Courses.register(GENCHEM);
   root.Courses.register(CHEM1000);
+
+})(typeof window !== 'undefined' ? window : globalThis);
+
+if (typeof module !== 'undefined' && module.exports) module.exports = globalThis.Courses;
+
+</script>
+<script>
+/* UNI Made EZ — Biology courses
+   Copyright © 2026 JohnsonXCorp. All rights reserved.
+   Proprietary. Not open source: see LICENSE.
+
+   ---------------------------------------------------------------------------------------------
+   WHAT THIS IS. A second-year ecology course, written to the lecture schedule of the outline it
+   is set from and following the chapter order of the open text that course uses. Every sentence,
+   figure, example and question below is written from scratch; the topic order is a fact about the
+   course, not content taken from anyone's book.
+
+   WHY ECOLOGY GETS NUMBERS. Ecology reads as a descriptive subject and is examined as a
+   quantitative one — vital rates, survivorship, mark–recapture estimates, trophic efficiencies,
+   diversity indices. So every unit carries numeric practice with a `verify` restatement that
+   test/math.js recomputes with SymPy before the page is allowed to build, and where an answer is
+   reported rounded it carries `verify.dp` so the exact value is the one being checked.
+
+   WHAT IS DELIBERATELY ABSENT. The laboratory component of the course — field sampling, the
+   spreadsheet work and the written reports — cannot be reproduced in a study app, and the parts
+   of the text the lectures do not cover are not built. Both are listed in `gaps` and printed on
+   the course page under "Not covered here".
+   --------------------------------------------------------------------------------------------- */
+(function (root) {
+  'use strict';
+  if (!root.Courses || !root.Courses.register) return;
+
+  const BIO = {
+    id: 'bio', name: 'Biology',
+    blurb: 'Structures and what they do, processes in order, and the vocabulary that names them.'
+  };
+
+  /* =============================== BIOL-ERSC 2260H =============================== */
+  const ECOL = {
+    subject: BIO,
+    id: 'biol-2260h', inst: 'trent',
+    code: 'BIOL-ERSC 2260H',
+    title: 'Introductory Ecology',
+    blurb: 'The scientific study of how organisms interact with each other and with their surroundings, built up one level at a time: the individual and its niche, the population and its vital rates, the community and what holds its species together, and the ecosystem with energy running through it and matter going round.',
+    level: 'Intermediate',
+    exam: 'Follows the lecture schedule of the course outline: what ecology is, food webs and the niche; the processes that shape communities and ecosystems; diversity, productivity and energy flow; nutrient and elemental cycling; biogeography, landscape and global ecology; population abundance and distribution; vital rates and age structure; population dynamics and growth; and species interactions — competition and predation. Built so far: the first three units.',
+    text: 'Brouwer et al., Ecology for All! (LibreTexts, free online), with Carroll, The Serengeti Rules as the set reading',
+    legalNote: 'Study material for a university course. It follows the chapter and section order of the open text the course is set from, so that a lesson here matches the section you would read alongside it, but every explanation, example and question is written from scratch — nothing is copied from the text, from the set reading, or from any past paper. Numeric answers are recomputed by a computer algebra system before the page ships; where a figure is rounded, the question says to how many places.',
+    gaps: [
+      'Still to be built, in schedule order: biogeography and landscape ecology, global ecology, population abundance and distribution, vital rates and age structure, population dynamics and growth, and species interactions — competition and predation',
+      'The laboratory component is not reproduced here: field sampling of abundance and distribution, the nutrient-cycling lab, the tree hike, the mark–recapture exercise and the spreadsheet work that goes with them are hands-on and have to be done in person',
+      'Not on this course\'s schedule, so not built for it: the physiological and evolutionary chapters of the text, and conservation biology beyond what the global-ecology lecture covers'
+    ],
+    units: [
+
+      /* ============================ WEEK 1 ============================ */
+      {
+        id: 'intro', n: 1,
+        title: 'What ecology is: niches and food webs',
+        blurb: 'The subject defined, the levels it works at, and the two ideas the rest of the course keeps returning to — the niche, which is an organism\'s role rather than its address, and the food web, which is who eats whom drawn as a network rather than a line.',
+        read: 'Chapter 1',
+        objectives: [
+          'Define ecology and place a question at the right level of organisation',
+          'Distinguish habitat from niche, and fundamental niche from realised niche',
+          'Read a food web: trophic levels, producers, consumers and decomposers',
+          'Explain why a food web is a better model than a food chain, and what that predicts',
+          'Identify a keystone species and say what makes it one'
+        ],
+        lessons: [
+
+          {
+            id: 'a1', title: 'Ecology and its levels of organisation', src: 'Section 1.1',
+            idea: `<b>Ecology</b> is the scientific study of the interactions between organisms and their environment — including each other. It is not the same word as <b>environmentalism</b>, which is a political and ethical position about how the natural world should be treated. Ecology is a science and can tell you what will happen if a wolf population is removed; it cannot, on its own, tell you whether removing it is right.<br><br>The subject is organised by <b>level</b>, and almost every ecological question belongs to exactly one of them:<br><br><b>Individual (organismal) ecology</b> — how one organism copes with its physical surroundings. Tolerance ranges, water balance, temperature.<br><b>Population ecology</b> — a group of individuals of <i>one</i> species in one area. How many there are, whether that number is rising or falling, and why.<br><b>Community ecology</b> — the populations of <i>different</i> species living together. Competition, predation, diversity.<br><b>Ecosystem ecology</b> — the community plus the physical environment, treated as one system. Energy flow and nutrient cycling.<br><b>Landscape and global ecology</b> — patterns across whole regions and the planet.<br><br>Naming the level is the first move on any exam question, because it decides what counts as an answer. "Why are there so few wolves here?" is a population question if it is about birth and death rates, a community question if it is about prey and competitors, and an ecosystem question if it is about productivity.<br><br>Two distinctions are worth fixing now. <b>Biotic</b> factors are the living parts of the environment — predators, competitors, food; <b>abiotic</b> factors are the non-living ones — temperature, rainfall, soil, light. And ecology works by the ordinary scientific method: observation, hypothesis, prediction, test. Much of it is <b>observational</b> rather than experimental, because you cannot randomly assign lakes to treatments — which is why the field leans heavily on natural experiments and on careful statistics.`,
+            figure: {
+              kind: 'numberline', x: [0, 6],
+              points: [
+                { x: 1, label: 'individual' }, { x: 2, label: 'population' }, { x: 3, label: 'community' },
+                { x: 4, label: 'ecosystem' }, { x: 5, label: 'landscape' }
+              ],
+              caption: 'The levels of organisation ecology works at, each one containing the last. A population is many individuals of one species; a community is many populations of different species; an ecosystem is a community plus its physical surroundings. Deciding which level a question belongs to is what decides what would count as an answer to it.'
+            },
+            rules: [
+              { name: 'Ecology', expr: 'The study of interactions between organisms and their environment', words: true, note: 'A science. Environmentalism is a position about what ought to be done, which is a different kind of claim.' },
+              { name: 'The levels', expr: 'individual, population, community, ecosystem, landscape', words: true, note: 'Each contains the one before it. Naming the level is the first move on any question.' },
+              { name: 'Population', expr: 'One species, one area', words: true, note: 'The word is not a synonym for "a lot of organisms" — it is species-specific and place-specific.' },
+              { name: 'Community', expr: 'All the populations of different species in one area', words: true, note: 'Adding the physical environment to a community gives an ecosystem.' },
+              { name: 'Biotic and abiotic', expr: 'Living factors and non-living ones', words: true, note: 'Predators and competitors against temperature, rainfall, soil and light.' }
+            ],
+            examples: [
+              {
+                prompt: 'Assign each question to a level of organisation: (a) how a desert lizard avoids overheating; (b) why a lake\'s trout numbers fell by half; (c) why one forest holds forty tree species and another eight; (d) how much carbon a grassland stores each year.',
+                approach: 'For each question ask what the answer would have to be about — one organism, one species’ numbers, several species together, or energy and matter moving through a whole system. The phrasing gives it away once you know what to listen for, and the level then tells you which chapter the answer lives in.',
+                steps: [
+                  { do: '(a) A single lizard coping with heat: individual ecology', why: 'The answer is about physiology and behaviour — shade-seeking, activity timing — and concerns one organism against an abiotic factor.' },
+                  { do: '(b) One species, one place, a change in numbers: population ecology', why: 'The answer must be about birth rate, death rate, immigration or emigration. Nothing else can change a population size.' },
+                  { do: '(c) Many species coexisting: community ecology', why: 'The question is about diversity, which is a property of an assemblage rather than of any one species in it.' },
+                  { do: '(d) Carbon stored per year: ecosystem ecology', why: 'Carbon is matter moving between living and non-living compartments, which is exactly what an ecosystem is defined to include.' },
+                  { do: 'Note that (b) could shade into community ecology if the cause turns out to be a new predator', why: 'The levels describe the question asked, not a fixed property of the organism — and a good answer often moves up a level to explain what it found at a lower one.' }
+                ],
+                answer: '(a) individual, (b) population, (c) community, (d) ecosystem',
+                answerWords: true,
+                check: 'Test each by asking what data you would collect: a body temperature, a count over years, a species list, a mass of carbon ✓ — four different kinds of measurement, which is the real content of the distinction between levels.'
+              },
+              {
+                prompt: 'A student claims that an ecologist studying a river should oppose a proposed dam. Explain what is right and what is wrong about that claim.',
+                approach: 'Separate the two kinds of statement involved — what will happen, and what should be done — and ask which of them the science can settle. The point is not that ecologists have no views, but that the second kind of claim needs something the first cannot supply on its own.',
+                steps: [
+                  { do: 'Ecology can predict the consequences: flow changes, sediment trapped, migratory fish blocked, a reservoir community replacing a river one', why: 'These are empirical claims, testable against other dammed rivers, and they are exactly what the science is for.' },
+                  { do: 'Those predictions can be quantified — how many species lost, how much productivity gained or lost', why: 'Which makes them useful to a decision even though they do not make the decision.' },
+                  { do: 'But whether to build the dam also depends on what the electricity is worth, to whom, and how the costs fall', why: 'Those are questions about values and about distribution, and no measurement settles them.' },
+                  { do: 'So the ecologist has expertise about the consequences and no special authority about the decision', why: 'The distinction between ecology and environmentalism, stated as a job description.' },
+                  { do: 'What is right in the claim: an ecologist may well oppose the dam, and may be better informed than anyone about what would be lost', why: 'Nothing here says scientists should have no opinions — only that the opinion is not itself a scientific finding.' }
+                ],
+                answer: 'Ecology predicts the consequences; whether the dam should be built also turns on values, which the science does not settle',
+                answerWords: true,
+                check: 'The distinction cuts both ways, which is the test of it: an ecologist who found that a dam would do little harm would have produced a finding, not a permission ✓. Confusing the two is what makes disputes about evidence and disputes about priorities impossible to tell apart.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'eco-ecology-as-environmentalism',
+                wrong: 'Treating ecology and environmentalism as the same thing',
+                right: 'Ecology is a science about what happens; environmentalism is a position about what should be done.',
+                why: 'The words share a root and often the same people, and most ecologists do care about conservation. Conflating them makes every ecological finding look like advocacy, which is exactly the charge that gets levelled at the field — and it leaves no way to say that a finding was inconvenient and still true.'
+              },
+              {
+                id: 'eco-population-loose-sense',
+                wrong: 'Using "population" for any large group of organisms',
+                right: 'A population is one species in one area — the rabbits in this valley, not the animals in it.',
+                why: 'The everyday word means a crowd of anything, and nothing in the sentence objects. Every population equation in the course — birth rate, death rate, growth rate — assumes one species, and applying them to a mixed group produces numbers that mean nothing at all.'
+              },
+              {
+                id: 'eco-level-not-named',
+                wrong: 'Answering an ecological question without settling which level it belongs to',
+                right: 'Name the level first: it decides what would count as an answer.',
+                why: 'Many questions can be given a plausible-sounding answer at any level, so nothing forces the choice. "Why did the trout decline" answered at the wrong level produces a fluent paragraph about food webs when the marks were for birth and death rates.'
+              },
+              {
+                id: 'eco-biotic-abiotic-confused',
+                wrong: 'Calling a predator an abiotic factor, or soil a biotic one',
+                right: 'Biotic means living: predators, prey, competitors, parasites. Abiotic means non-living: temperature, water, light, soil chemistry.',
+                why: 'Soil in particular is full of living things, which makes it feel biotic, and dead organic matter sits awkwardly between the two. The distinction is about what the factor IS, not what lives in it, and it matters because the two kinds respond differently: abiotic factors do not respond to being eaten.'
+              }
+            ]
+          },
+
+          {
+            id: 'a2', title: 'Habitat and niche', src: 'Section 1.3',
+            idea: `A <b>habitat</b> is where an organism lives — a physical place, describable without mentioning what the organism does. A <b>niche</b> is the organism's role: everything it needs, everything it tolerates and everything it does. The standard line is worth keeping: <b>the habitat is the address, the niche is the occupation</b>.<br><br>The niche is usually treated as a set of ranges along many axes at once — temperature, humidity, prey size, nesting height, time of day. An organism persists where every one of those conditions is met, which is why it is often called an <b>n-dimensional hypervolume</b>. The name is grander than the idea: it just means more than one requirement has to be satisfied simultaneously.<br><br>Two versions matter, and the distinction between them is examined more than almost anything else in the chapter:<br><br>The <b>fundamental niche</b> is the full range of conditions the species could occupy in the absence of competitors and predators — what its physiology permits.<br><br>The <b>realised niche</b> is the part it actually occupies once other species are present. It is always <b>smaller</b> than or equal to the fundamental niche, and the reason is almost always competition.<br><br>The classic demonstration is barnacles on a shore. One species can survive across a wide band of tidal heights on its own; with a competitor present it is confined to the upper part. Remove the competitor and it spreads back down. That last observation is what makes the distinction testable rather than a definition — the realised niche is not merely the observed one, it is the observed one plus an explanation.<br><br>Two species with identical niches cannot coexist indefinitely — the <b>competitive exclusion principle</b>, taken up properly later in the course. What usually happens instead is that their realised niches shift apart, which is <b>niche partitioning</b>, and it is why a single tree can hold five warbler species that all appear to be doing the same thing.`,
+            figure: {
+              kind: 'graph', x: [0, 30], y: [0, 105], xlabel: 'temperature (°C)', ylabel: 'performance (%)',
+              fns: [
+                { data: true, pts: [[4, 0], [8, 45], [12, 85], [15, 100], [18, 85], [22, 45], [26, 0]], label: 'fundamental niche' },
+                { data: true, pts: [[4, 0], [8, 40], [11, 70], [12.5, 72], [14, 45], [15.5, 0]], label: 'realised niche', dashed: true, c: 1 }
+              ],
+              caption: 'A single niche axis — tolerance against temperature. The solid curve is what the species can do alone: the fundamental niche. The dashed one is what is left once a competitor occupies the warmer end. The realised niche is always contained within the fundamental one, and the test of the claim is removal: take the competitor away and the species spreads back.'
+            },
+            rules: [
+              { name: 'Habitat', expr: 'Where an organism lives — the address', words: true, note: 'A physical place, describable without saying what the organism does there.' },
+              { name: 'Niche', expr: 'What an organism does — the occupation', words: true, note: 'Everything it needs, tolerates and does. Many requirements at once, which is the "hypervolume".' },
+              { name: 'Fundamental niche', expr: 'What the species could occupy with no competitors or predators', words: true, note: 'Set by its physiology alone.' },
+              { name: 'Realised niche', expr: 'What it actually occupies, given the other species present', words: true, note: 'Always smaller than or equal to the fundamental niche. Usually competition is the reason.' },
+              { name: 'Niche partitioning', expr: 'Coexisting species divide the axis between them', words: true, note: 'Which is how several similar species can live in the same tree.' }
+            ],
+            examples: [
+              {
+                prompt: 'A barnacle species is found across the whole intertidal zone when grown alone, but only in the upper third when a second species is present. Name the two niches involved and explain what the experiment shows.',
+                approach: 'Match each observation to the right term first, then say what the comparison between them establishes — because either observation alone would be uninformative. The removal experiment is what turns a description into a causal claim, so it is the part to emphasise.',
+                steps: [
+                  { do: 'Grown alone, the species occupies the whole zone: that range is its fundamental niche', why: 'With no competitor present, what is left is what its physiology permits — the definition of the fundamental niche.' },
+                  { do: 'With the competitor present it is confined to the upper third: that is its realised niche', why: 'What it actually occupies in the real community.' },
+                  { do: 'The realised niche is contained within the fundamental one, as it must be', why: 'Competition can only remove conditions from the usable set; it cannot add any.' },
+                  { do: 'The competitor is the cause, because removing it restores the wider range', why: 'The removal is the experiment. Without it, the narrower range might simply be where the larvae happened to settle.' },
+                  { do: 'So the upper third is not where the species is best suited — it is where it is not excluded', why: 'A point worth stating plainly: the observed distribution does not identify the optimum.' },
+                  { do: 'And the species must tolerate more exposure to air than the competitor does, or it would be excluded everywhere', why: 'Coexistence requires each species to be better somewhere, which is niche partitioning in its simplest form.' }
+                ],
+                answer: 'The whole zone is the fundamental niche; the upper third is the realised niche, and the removal experiment shows competition causes the difference',
+                answerWords: true,
+                check: 'The logic generalises: wherever a species expands after a competitor is removed, its realised niche was smaller than its fundamental one ✓. And the direction is fixed — no experiment has ever found a realised niche larger than the fundamental one, because there is nowhere for the extra conditions to come from.'
+              },
+              {
+                prompt: 'Five warbler species feed in the same spruce trees and appear to eat the same insects. Explain how they can coexist, and what observations would test your explanation.',
+                approach: 'Start from the principle that identical niches cannot coexist, and treat the observation as evidence that the niches are not in fact identical — so the task is to find the axis along which they differ. Then say what would be measured, since an untestable answer here is worth little.',
+                steps: [
+                  { do: 'If their niches were truly identical, one species would eventually exclude the other four', why: 'The competitive exclusion principle. So the appearance of sameness must be hiding a difference.' },
+                  { do: 'The niche has many axes, and "eats insects in spruce trees" describes only a coarse one', why: 'Two species can overlap completely on one axis and separate on another.' },
+                  { do: 'A plausible partition: each species feeds in a different part of the tree — outer tips, inner branches, the crown, the lower trunk', why: 'Vertical and radial position within a tree is an axis available to small birds and easy to occupy differently.' },
+                  { do: 'Test it by recording where each species forages, in height bands and distance from the trunk, over many observations', why: 'The prediction is that the distributions separate, even though the ranges overlap.' },
+                  { do: 'A second test: the timing of breeding, which spreads peak food demand across the season', why: 'A real partition can use any axis, and finding more than one strengthens the case.' },
+                  { do: 'And a prediction that could fail: remove one species and the others should expand into its zone', why: 'Which is the same removal logic as the barnacles, and is what would distinguish partitioning from mere preference.' }
+                ],
+                answer: 'Their realised niches are partitioned along axes the coarse description hides — test by recording foraging position and timing, and by removal',
+                answerWords: true,
+                check: 'The explanation earns its keep by being falsifiable: if careful observation found all five feeding identically in the same places at the same times, the account would be in trouble ✓ — and that is exactly the observation that would send an ecologist looking for a different mechanism, such as the food supply never being scarce enough for competition to bite.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'eco-habitat-as-niche',
+                wrong: 'Describing a niche by naming where the organism lives',
+                right: 'The habitat is the address, the niche is the occupation — what it eats, when it is active, what it tolerates.',
+                why: 'The place is the visible thing and the easiest to write down, and many textbook niches are named after places. Answering with a location gets no marks, because every question that turns on the niche — coexistence, exclusion, partitioning — is about role rather than position.'
+              },
+              {
+                id: 'eco-realised-larger',
+                wrong: 'Treating the realised niche as the bigger of the two, or the two as interchangeable',
+                right: 'The realised niche is always contained within the fundamental one — other species can only subtract.',
+                why: 'Realised sounds like fulfilled, which sounds larger, and the fundamental niche is never directly observed in the field. The containment is not a convention but a consequence: competitors and predators remove usable conditions and cannot create any.'
+              },
+              {
+                id: 'eco-observed-is-optimal',
+                wrong: 'Assuming a species lives where it grows best',
+                right: 'It lives where it is not excluded, which can be well away from its optimum.',
+                why: 'It is a reasonable prior and it is wrong often enough to matter — the upper-shore barnacle is the standard counter-example. Assuming it turns every distribution map into a map of preferences, and it is why restoration projects sometimes plant species exactly where they will lose.'
+              },
+              {
+                id: 'eco-niche-one-axis',
+                wrong: 'Treating the niche as a single variable, so that any overlap means exclusion',
+                right: 'It is many requirements at once; two species can overlap on one axis and separate on another.',
+                why: 'One axis is what fits on a diagram, and the barnacle example uses one. Read that way, the five warblers in one tree look impossible, when in fact they are the standard demonstration that the niche has more dimensions than the obvious one.'
+              }
+            ]
+          },
+
+          {
+            id: 'a3', title: 'Food webs, trophic levels and keystone species', src: 'Section 1.5',
+            idea: `A <b>food chain</b> is a straight line — grass, rabbit, fox. It is a teaching device. Real systems are <b>food webs</b>: networks in which most species eat several things and are eaten by several others, and in which removing one node changes many paths at once.<br><br>Position in the web is described by <b>trophic level</b>:<br><br><b>Producers (autotrophs)</b>, level 1 — plants, algae and some bacteria, which make their own food from sunlight or chemical energy.<br><b>Primary consumers (herbivores)</b>, level 2.<br><b>Secondary consumers</b>, level 3 — carnivores eating herbivores.<br><b>Tertiary consumers</b>, level 4 — and occasionally higher.<br><b>Decomposers and detritivores</b> — bacteria, fungi, earthworms, which break down dead material at every level and return nutrients to the soil. They sit outside the numbering and are routinely left off diagrams, which is a distortion: most of the energy in most ecosystems passes through them rather than through the herbivores.<br><br>Many species occupy more than one level at once. A bear eating berries is a primary consumer; the same bear eating a fish is a tertiary one. This is <b>omnivory</b>, and it is one reason webs are not chains.<br><br>The practical consequence of the web structure is <b>indirect effects</b>. Remove a predator and its prey increases, which reduces whatever the prey eats, which affects whatever depends on that — a chain of effects running down the web, called a <b>trophic cascade</b>. Sea otters eat sea urchins, urchins eat kelp, and where otters were hunted out the kelp forests went with them, along with everything living in them.<br><br>A <b>keystone species</b> is one whose effect on its community is far larger than its abundance would suggest. The name is from the wedge-shaped stone at the top of an arch: not the biggest, but the one whose removal collapses the structure. Keystone status is not the same as being abundant or large — it is about the size of the change when the species goes.`,
+            figure: {
+              kind: 'graph', x: [0.5, 4.5], y: [0, 1200], xlabel: 'trophic level', ylabel: 'energy available (kcal/m² per year)',
+              fns: [{ data: true, pts: [[1, 1000], [2, 100], [3, 10], [4, 1]], label: 'about 10% passes on' }],
+              points: [
+                { x: 1, y: 1000, label: 'producers' }, { x: 2, y: 100, label: 'herbivores' },
+                { x: 3, y: 10, label: 'carnivores' }, { x: 4, y: 1, label: 'top carnivores' }
+              ],
+              caption: 'Energy available at each trophic level, with roughly a tenth passing to the next. The fall is why food chains are short — four or five levels at most — and why top predators are rare and need large areas. The missing 90% is lost as heat in respiration or left in what is not eaten, and the next lesson follows where it goes.'
+            },
+            rules: [
+              { name: 'Food chain against food web', expr: 'A chain is a line; a web is a network', words: true, note: 'Most species eat several things and are eaten by several. The chain is a teaching device.' },
+              { name: 'Trophic levels', expr: 'producers, primary, secondary, tertiary consumers', words: true, note: 'Numbered 1, 2, 3, 4 from the producers up.' },
+              { name: 'Decomposers', expr: 'Break down dead material at every level', words: true, note: 'Outside the numbering, usually left off diagrams, and the route most of the energy actually takes.' },
+              { name: 'Omnivory', expr: 'One species feeding at more than one level', words: true, note: 'A bear eating berries and fish is a primary and a tertiary consumer in the same week.' },
+              { name: 'Trophic cascade', expr: 'A change at one level running down through the levels below', words: true, note: 'Otters eat urchins, urchins eat kelp — so removing otters removes the kelp forest.' },
+              { name: 'Keystone species', expr: 'Effect far larger than its abundance suggests', words: true, note: 'Not the same as abundant or large. The test is what happens when it is removed.' },
+              { name: 'Trophic efficiency', expr: 'Efficiency = E_next / E_this * 100', note: 'The percentage of one level\u2019s energy that becomes biomass at the next. Usually near 10, and measured rather than assumed.' },
+              { name: 'Energy remaining at level n', expr: 'E_n = E_1 * 0.1^(n - 1)', note: 'With the ten per cent rule of thumb. Four levels up and a thousandth of what the producers captured is left.' }
+            ],
+            examples: [
+              {
+                prompt: 'Sea otters eat sea urchins; sea urchins graze kelp; kelp forests shelter fish and invertebrates. Predict what happens when otters are hunted out, and name the effect.',
+                approach: 'Follow the change one link at a time down the web, writing the direction at each step, and resist jumping to the end — the interest is in the alternation of signs. Then name the pattern and say what would confirm it, since a prediction that cannot fail is not worth much.',
+                steps: [
+                  { do: 'Otters removed: urchin numbers rise, since their main predator is gone', why: 'The first link. Predation was holding the urchin population below what the food supply alone would allow.' },
+                  { do: 'More urchins graze more kelp, so kelp declines — sometimes to nothing, leaving "urchin barrens"', why: 'The second link, and the sign has flipped: removing a predator is bad for the plant two levels down.' },
+                  { do: 'Kelp loss removes the physical structure that sheltered fish and invertebrates, so those decline too', why: 'A third effect, and this one is about habitat rather than food — a reminder that webs carry more than energy.' },
+                  { do: 'Note the alternating signs down the chain: otters down, urchins up, kelp down, kelp-dwellers down', why: 'The alternation is the signature of a cascade, and it is what makes the prediction checkable.' },
+                  { do: 'The name for this is a trophic cascade — an indirect effect running down from a change at the top', why: 'Indirect, because otters never touch the kelp.' },
+                  { do: 'Confirmation: where otters have returned, urchins fall and kelp forests regrow', why: 'The reverse experiment, which has been observed along parts of the Pacific coast and is far stronger evidence than the original decline.' }
+                ],
+                answer: 'Urchins increase, kelp is grazed away, and the species sheltering in it decline — a trophic cascade',
+                answerWords: true,
+                check: 'The alternation is the test: if removing otters had reduced urchins, or if kelp had increased, the cascade account would be wrong ✓. And the otter qualifies as a keystone species by the definition of the lesson — it is not abundant, not large in total biomass, and its removal restructures the entire community.'
+              },
+              {
+                prompt: 'Explain why food chains rarely exceed four or five trophic levels.',
+                approach: 'The answer is quantitative rather than descriptive, so work with the roughly tenfold loss at each step and follow it up the levels until the numbers make the point themselves. Then add the second reason, which is about area rather than energy.',
+                steps: [
+                  { do: 'Only about 10% of the energy at one level becomes biomass at the next', why: 'The rest is lost as heat in respiration, or is never eaten, or passes to decomposers.' },
+                  { do: 'Start with 1000 units at the producers: 100 reach the herbivores', why: 'One tenth, and already an order of magnitude gone.' },
+                  { do: 'Then 10 at the secondary consumers and 1 at the tertiary', why: 'Three steps have removed 99.9% of what the plants captured.' },
+                  { do: 'A fifth level would have 0.1 unit — too little to support a viable population', why: 'This is the whole argument: not that a fifth level is impossible, but that it cannot be fed.' },
+                  { do: 'The second reason is area: a top predator needs an enormous range to find that energy', why: 'Which is why large carnivores are the first species lost when habitat is fragmented.' },
+                  { do: 'Systems with more efficient transfer do manage longer chains — some marine ones reach five or six', why: 'The explanation predicts the exception as well as the rule, which is what makes it an explanation.' }
+                ],
+                answer: 'About 90% of the energy is lost at each step, so there is too little left to support a population beyond four or five levels',
+                answerWords: true,
+                check: 'The prediction about area holds up: top predators are consistently the rarest species in their systems and the first to disappear from small reserves ✓. And the marine exception fits — plankton-based chains transfer energy more efficiently than grassland ones, and they are the chains that run longest.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'eco-chain-for-web',
+                wrong: 'Modelling a real system as a single food chain',
+                right: 'Most species eat several things and are eaten by several — the web is the model, the chain is a teaching device.',
+                why: 'Chains are what diagrams show and what exams first ask for, and they are genuinely easier to reason about. They predict that removing a species has one consequence, when the point of the web is that it has many, some of them in the opposite direction from the obvious one.'
+              },
+              {
+                id: 'eco-decomposers-omitted',
+                wrong: 'Leaving decomposers out of an account of an ecosystem',
+                right: 'They process most of the energy in most systems and return every nutrient — nothing works without them.',
+                why: 'They sit outside the trophic numbering and are invisible in the field, so diagrams routinely omit them. Left out, nutrients have nowhere to go and the cycling of the later units cannot be described at all; the grazing pathway that gets all the attention is the minor one in most terrestrial systems.'
+              },
+              {
+                id: 'eco-keystone-as-abundant',
+                wrong: 'Calling the most abundant or largest species the keystone',
+                right: 'A keystone species has an effect out of all proportion to its abundance — the test is removal.',
+                why: 'Importance and size are naturally associated, and the dominant species in a system really does matter. The concept is worth having precisely because it picks out the cases where a rare species is doing the structural work, which is where conservation effort is repaid most.'
+              },
+              {
+                id: 'eco-trophic-level-fixed',
+                wrong: 'Assigning every species a single trophic level',
+                right: 'Omnivores feed at several levels, and many species change level as they grow.',
+                why: 'The numbering invites one label per species, and textbook webs assign them. A fish that eats plankton as a juvenile and other fish as an adult occupies two levels in one lifetime, and the energy calculations that treat levels as clean compartments are approximations because of it.'
+              }
+            ]
+          }
+        ],
+        practice: [
+
+          { id: 'p1', kind: 'mc', lesson: 'a1',
+            prompt: 'Which question belongs to population ecology?',
+            options: [
+              { t: 'Why did the number of moose on this island fall by half in ten years?', ok: true },
+              { t: 'How does a moose keep warm in winter?' },
+              { t: 'How many species of tree grow in this forest?' },
+              { t: 'How much carbon does this forest store each year?' }
+            ],
+            hint: 'One species, one area, a change in numbers.',
+            solution: ['A population is one species in one area',
+              'Its size changes only through birth, death, immigration and emigration',
+              'The others are individual, community and ecosystem questions'] },
+
+          { id: 'p2', kind: 'mc', lesson: 'a1',
+            prompt: 'Which is an abiotic factor?',
+            options: [
+              { t: 'Soil pH', ok: true },
+              { t: 'A competing plant species' },
+              { t: 'A fungal parasite' },
+              { t: 'A seed-eating bird' }
+            ],
+            hint: 'Abiotic means non-living.',
+            solution: ['Soil chemistry is a physical property of the environment',
+              'Competitors, parasites and seed predators are all living',
+              'Soil contains living things, but pH itself is abiotic'] },
+
+          { id: 'p3', kind: 'mc', lesson: 'a1',
+            prompt: 'What distinguishes ecology from environmentalism?',
+            options: [
+              { t: 'Ecology is a science about what happens; environmentalism is a position about what should be done', ok: true },
+              { t: 'Ecology studies plants and environmentalism studies animals' },
+              { t: 'They are two names for the same field' },
+              { t: 'Environmentalism is the laboratory branch of ecology' }
+            ],
+            hint: 'What kind of claim is each one making?',
+            solution: ['Ecology makes empirical claims that can be tested',
+              'Environmentalism makes claims about values and priorities',
+              'An ecologist may hold both, but a finding is not a recommendation'] },
+
+          { id: 'p4', kind: 'mc', lesson: 'a2',
+            prompt: 'Which best describes an organism’s niche?',
+            options: [
+              { t: 'Everything it needs, tolerates and does — its role in the community', ok: true },
+              { t: 'The physical place where it is found' },
+              { t: 'The area it defends against others of its species' },
+              { t: 'The list of species it competes with' }
+            ],
+            hint: 'Address or occupation?',
+            solution: ['The habitat is the address; the niche is the occupation',
+              'It includes food, timing, tolerances and interactions',
+              'Many requirements at once, which is why it is called a hypervolume'] },
+
+          { id: 'p5', kind: 'mc', lesson: 'a2',
+            prompt: 'A species occupies a narrower range when a competitor is present. What does the narrower range represent?',
+            options: [
+              { t: 'Its realised niche', ok: true },
+              { t: 'Its fundamental niche' },
+              { t: 'Its habitat' },
+              { t: 'Its optimum conditions' }
+            ],
+            hint: 'Which one accounts for the other species present?',
+            solution: ['The fundamental niche is what it could occupy alone',
+              'The realised niche is what is left once competitors are there',
+              'And it is not the optimum — it is where the species is not excluded'] },
+
+          { id: 'p6', kind: 'spot', lesson: 'a2',
+            prompt: 'A student explains the barnacle experiment. One line is wrong.',
+            steps: [
+              { t: 'Alone, the species occupies the whole intertidal zone', bad: false },
+              { t: 'That whole range is its fundamental niche', bad: false },
+              { t: 'With a competitor it occupies only the upper third, which is its realised niche', bad: false },
+              { t: 'So the upper third must be where the species grows best', bad: true }
+            ],
+            why: 'The upper third is where the species is not excluded, which is not the same as where it does best — it grew across the whole zone when it had the chance. This is the standard trap, because a distribution looks like a record of preferences. The removal experiment is what settles it: take the competitor away and the species spreads back down.',
+            hint: 'Does a species always live where it grows best?',
+            solution: ['The realised niche is set by exclusion, not by preference',
+              'The species grew across the whole zone when alone',
+              'So its optimum may lie inside the part it has been pushed out of'] },
+
+          { id: 'p7', kind: 'mc', lesson: 'a3',
+            prompt: 'Which group is at trophic level 1?',
+            options: [
+              { t: 'Producers — plants, algae and some bacteria', ok: true },
+              { t: 'Herbivores' },
+              { t: 'Decomposers' },
+              { t: 'Top predators' }
+            ],
+            hint: 'Where does the energy enter the system?',
+            solution: ['Producers make their own food from sunlight or chemical energy',
+              'Everything else depends on what they capture',
+              'Decomposers sit outside the numbering entirely'] },
+
+          { id: 'p8', kind: 'numeric', lesson: 'a3',
+            prompt: 'Producers in a grassland capture 20,000 kJ/m² per year. Taking 10% transfer at each step, how many kJ/m² per year reach the secondary consumers?',
+            answer: 200, verify: { expr: '20000*Rational(1,10)**2' },
+            hint: 'Secondary consumers are two steps above the producers.',
+            solution: ['Herbivores: 20,000 × 0.10 = 2000 kJ/m²/yr', 'Secondary consumers: 2000 × 0.10',
+              '= 200 kJ/m² per year — one per cent of what the plants captured'] },
+
+          { id: 'p9', kind: 'numeric', lesson: 'a3',
+            prompt: 'If a trophic level holds 5000 kJ/m² and the next holds 400 kJ/m², what is the trophic efficiency, as a percentage? Give the answer to one decimal place.',
+            answer: 8, tol: 0.05, verify: { expr: '400/5000*100', dp: 1 },
+            hint: 'Efficiency is the energy passed on divided by the energy available.',
+            solution: ['400/5000 = 0.08', '× 100 = 8.0%', 'A little below the usual rule of thumb of ten per cent'] },
+
+          { id: 'p10', kind: 'numeric', lesson: 'a3',
+            prompt: 'Starting from 1,000,000 kJ at the producers with 10% transfer per step, how many kJ reach the fourth trophic level?',
+            answer: 1000, verify: { expr: '1000000*Rational(1,10)**3' },
+            hint: 'The fourth level is three transfers up from the first.',
+            solution: ['Three steps: 1,000,000 × 0.10 × 0.10 × 0.10', '= 1000 kJ',
+              'A thousandth of what was captured — which is why chains are short'] },
+
+          { id: 'p11', kind: 'mc', lesson: 'a3',
+            prompt: 'Why do food chains rarely have more than four or five levels?',
+            options: [
+              { t: 'About 90% of the energy is lost at each step, so too little is left to support another level', ok: true },
+              { t: 'Predators cannot digest other predators' },
+              { t: 'There are not enough species to fill more levels' },
+              { t: 'Higher levels are occupied by decomposers instead' }
+            ],
+            hint: 'Follow the energy up the levels.',
+            solution: ['Only about a tenth of the energy passes on at each step',
+              'After four steps, 99.99% of what the producers captured is gone',
+              'There is not enough left to feed a viable population'] },
+
+          { id: 'p12', kind: 'mc', lesson: 'a3',
+            prompt: 'What makes a species a keystone species?',
+            options: [
+              { t: 'Its effect on the community is far larger than its abundance would suggest', ok: true },
+              { t: 'It is the most abundant species present' },
+              { t: 'It is the largest species present' },
+              { t: 'It occupies the highest trophic level' }
+            ],
+            hint: 'The name comes from the stone at the top of an arch.',
+            solution: ['The keystone is not the biggest stone — it is the one whose removal collapses the arch',
+              'The test is what changes when the species is removed',
+              'Sea otters are neither abundant nor large in total biomass'] },
+
+          { id: 'p13', kind: 'mc', lesson: 'a3',
+            prompt: 'Sea otters are removed from a coastal system. What happens to the kelp?',
+            options: [
+              { t: 'It declines, because urchin numbers rise and urchins graze kelp', ok: true },
+              { t: 'It increases, because otters no longer disturb it' },
+              { t: 'It is unaffected, since otters do not eat kelp' },
+              { t: 'It increases, because urchins decline without otters' }
+            ],
+            hint: 'Follow the signs down the chain, one link at a time.',
+            solution: ['Otters down means urchins up, since their predator is gone',
+              'Urchins up means kelp down, since urchins graze it',
+              'A trophic cascade — otters affect kelp without ever touching it'] },
+
+          { id: 'p14', kind: 'spot', lesson: 'a3',
+            prompt: 'A student describes an ecosystem’s energy flow. One line is wrong.',
+            steps: [
+              { t: 'Producers capture energy from sunlight', bad: false },
+              { t: 'Herbivores obtain about 10% of that energy', bad: false },
+              { t: 'Decomposers sit at the top of the food chain, above the predators', bad: true },
+              { t: 'Energy is lost as heat at every step', bad: false }
+            ],
+            why: 'Decomposers are not a trophic level above the predators: they break down dead material from every level, including the producers, and return nutrients to the soil. Placing them at the top makes them look like a minor endpoint, when in most terrestrial ecosystems more energy passes through the decomposer pathway than through the grazing one.',
+            hint: 'Whose dead material do decomposers process?',
+            solution: ['They act on dead material from every level, not just the top',
+              'They sit outside the trophic numbering',
+              'And they are the route most of the energy actually takes'] },
+
+          { id: 'p15', kind: 'order', lesson: 'a1',
+            prompt: 'Put the levels of ecological organisation in order, smallest first.',
+            steps: [
+              'Individual',
+              'Population',
+              'Community',
+              'Ecosystem',
+              'Landscape'
+            ],
+            hint: 'Each one contains the last.',
+            solution: ['A population is many individuals of one species',
+              'A community is many populations of different species',
+              'An ecosystem adds the physical environment, and a landscape holds many ecosystems'] },
+
+          { id: 'p16', kind: 'order', lesson: 'a3',
+            prompt: 'Put the steps of a trophic cascade in order, starting from the removal of a top predator.',
+            steps: [
+              'The top predator is removed',
+              'Its prey increases, no longer being eaten',
+              'Whatever the prey feeds on declines under heavier grazing',
+              'Species that depended on that food or structure decline in turn'
+            ],
+            hint: 'The sign flips at each link.',
+            solution: ['Predator down, prey up',
+              'Prey up, their food down',
+              'And the effects continue down the web, alternating in direction'] }
+        ]
+      },
+
+      /* ============================ WEEKS 2 AND 3 ============================ */
+      {
+        id: 'ecosystems', n: 2,
+        title: 'Energy, productivity and what shapes a community',
+        blurb: 'Where the energy in an ecosystem comes from, how much of it the plants actually bank, how little of that reaches anything higher up, and why one community holds forty species and another eight.',
+        read: 'Chapter 19',
+        objectives: [
+          'Distinguish gross from net primary productivity, and compute one from the other',
+          'Compute trophic efficiency from measured energy figures, and read an ecological pyramid',
+          'Explain why energy flows through an ecosystem while matter cycles within it',
+          'Distinguish species richness from species evenness, and compute a diversity index',
+          'Name the main processes that shape a community, including disturbance and succession'
+        ],
+        lessons: [
+
+          {
+            id: 'b1', title: 'Primary productivity and energy flow', src: 'Section 19.1',
+            idea: `Almost all the energy in an ecosystem enters through photosynthesis. <b>Gross primary productivity (GPP)</b> is the total amount of energy the producers fix; but plants respire too, so what is actually available to everything else is<br><br><b>NPP = GPP − R</b><br><br>where R is the energy the producers spend on their own respiration. <b>Net primary productivity</b> is the quantity that matters ecologically: it is the plant growth that herbivores can eat and that accumulates as biomass. Typical units are grams of carbon per square metre per year, or kilojoules per square metre per year.<br><br>NPP varies enormously. Tropical rainforest and estuaries are the most productive systems on Earth — warm, wet and well lit; open ocean and desert are among the least, the first because nutrients are scarce and the second because water is. The open ocean nevertheless contributes a large share of global NPP, because there is a great deal of it.<br><br>Between trophic levels, <b>trophic efficiency</b> is the percentage of one level's energy that becomes biomass at the next:<br><br><b>Efficiency = (energy at level n+1) / (energy at level n) × 100</b><br><br>It averages around 10% and ranges from about 1% to 20%. The missing energy goes three ways: most is lost as heat in respiration, some is in parts never eaten, and the rest passes to decomposers in faeces and dead bodies.<br><br>The consequence is the <b>ecological pyramid</b>. A pyramid of energy always narrows upward — it has to, because energy is lost at every step. A pyramid of biomass usually does, but can be inverted in the ocean, where a small standing crop of fast-growing phytoplankton supports a larger mass of zooplankton by being replaced constantly.<br><br>The organising contrast for the whole unit: <b>energy flows through an ecosystem and is lost as heat; matter cycles within it and is reused</b>. That is why the sun must keep shining but the nitrogen does not need topping up — and it is why the next lesson is about cycles rather than flows.`,
+            figure: {
+              kind: 'graph', x: [0, 6], y: [0, 2600], xlabel: 'ecosystem type', ylabel: 'NPP (g C/m² per year)',
+              fns: [{ data: true, pts: [[1, 2200], [2, 1200], [3, 600], [4, 125], [5, 90]], label: 'net primary productivity' }],
+              points: [
+                { x: 1, y: 2200, label: 'rainforest' }, { x: 2, y: 1200, label: 'temperate forest' },
+                { x: 3, y: 600, label: 'grassland' }, { x: 4, y: 125, label: 'open ocean' }, { x: 5, y: 90, label: 'desert' }
+              ],
+              caption: 'Net primary productivity per square metre for five kinds of ecosystem. Warmth, water and light set the order, and the range is more than twentyfold. Per square metre the open ocean is nearly as poor as desert — but it covers most of the planet, so its share of the global total is far larger than this figure suggests.'
+            },
+            rules: [
+              { name: 'Net primary productivity', expr: 'NPP = GPP - R', note: 'What the producers fix, minus what they respire. NPP is the part available to everything else.' },
+              { name: 'Trophic efficiency', expr: 'Efficiency = E_next / E_this * 100', note: 'Averages about 10 per cent, ranging from roughly 1 to 20. Measured, not assumed.' },
+              { name: 'Where the rest goes', expr: 'Respiration as heat, parts not eaten, and material passed to decomposers', words: true, note: 'Three destinations, and the first is the largest.' },
+              { name: 'Pyramid of energy', expr: 'Always narrows upward', words: true, note: 'It must, because energy is lost at every step. A pyramid of biomass can be inverted in the ocean.' },
+              { name: 'The organising contrast', expr: 'Energy flows through and is lost; matter cycles within and is reused', words: true, note: 'Which is why the sun must keep shining and the nitrogen does not need topping up.' }
+            ],
+            examples: [
+              {
+                prompt: 'A forest fixes 9000 kJ/m² per year and its plants respire 5400 kJ/m² per year. Find the NPP, and the percentage of GPP it represents.',
+                approach: 'A direct subtraction followed by a proportion, with the whole difficulty in keeping straight which quantity is which: GPP is everything fixed, respiration is what the plants spend, and NPP is the remainder. The percentage at the end is what makes the answer interpretable, since the raw number means little on its own.',
+                steps: [
+                  { do: 'Identify the quantities: GPP = 9000 kJ/m²/yr, R = 5400 kJ/m²/yr', why: 'The energy fixed and the energy the producers spend on themselves.' },
+                  { do: 'NPP = GPP − R = 9000 − 5400', why: 'The defining relation. Respiration is subtracted because that energy has already been spent.' },
+                  { do: 'NPP = 3600 kJ/m² per year', why: 'This is what is available to herbivores and to accumulation as biomass.' },
+                  { do: 'As a fraction of GPP: 3600/9000 = 0.40', why: 'A proportion, which is comparable across ecosystems in a way the raw figure is not.' },
+                  { do: '= 40% of gross primary productivity', why: 'So sixty per cent of what the forest captured was spent keeping the trees alive.' },
+                  { do: 'Note that a forest is a high-respiration system, because so much of its biomass is non-photosynthetic wood', why: 'Which is why mature forests can have very high GPP and comparatively modest NPP.' }
+                ],
+                answer: 'NPP = 3600 kJ/m² per year, which is 40% of GPP',
+                answerWords: true,
+                check: 'The fraction is in the right range: forests typically retain 30–50% of GPP as NPP, while young fast-growing systems retain more and old-growth ones less ✓. And the arithmetic is self-checking — NPP can never exceed GPP, so an answer above 9000 would have been impossible.'
+              },
+              {
+                prompt: 'A grassland has 20,000 kJ/m² per year at the producers, 1800 at the herbivores and 200 at the carnivores. Find both trophic efficiencies and comment.',
+                approach: 'Two applications of the same ratio, one per step, and the point is that the two are not the same number — the ten per cent rule is an average rather than a law. Compute each, compare them with the rule of thumb, and then say what that comparison is worth.',
+                steps: [
+                  { do: 'First step: 1800/20,000 = 0.09', why: 'Energy at the herbivores divided by energy at the producers.' },
+                  { do: '× 100 = 9.0% efficiency from producers to herbivores', why: 'Slightly under the rule of thumb, which is typical for a terrestrial system where much plant material is indigestible.' },
+                  { do: 'Second step: 200/1800 = 0.1111', why: 'Energy at the carnivores divided by energy at the herbivores.' },
+                  { do: '× 100 = 11.1% efficiency from herbivores to carnivores', why: 'Slightly above, which is also typical — animal tissue is easier to convert than plant tissue.' },
+                  { do: 'The two differ, so the 10% figure is an average and not a constant', why: 'Worth stating, because questions often supply data precisely to test whether the given numbers are used or the rule of thumb is assumed.' },
+                  { do: 'Overall: 200/20,000 = 1% of the producers’ energy reaches the carnivores', why: 'Two steps of roughly a tenth each, compounding to a hundredth.' }
+                ],
+                answer: '9.0% and 11.1%, compounding to 1% overall',
+                answerWords: true,
+                check: 'The compounding is consistent: 0.090 × 0.111 = 0.010, matching the direct calculation ✓. And the pattern — plants to herbivores less efficient than herbivores to carnivores — holds widely, because cellulose and lignin are hard to digest while muscle is not.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'eco-gpp-for-npp',
+                wrong: 'Using gross primary productivity as the energy available to herbivores',
+                right: 'NPP = GPP − R. The producers spend a large share on their own respiration before anything else eats.',
+                why: 'GPP is the bigger and more memorable number, and "productivity" sounds like output. In a forest the difference is well over half, so using GPP overstates everything above it by a factor of two or more and makes every efficiency calculation wrong.'
+              },
+              {
+                id: 'eco-ten-percent-as-law',
+                wrong: 'Applying a 10% transfer when the question supplies actual energy figures',
+                right: 'Compute the efficiency from the data — real values run from about 1% to 20%.',
+                why: 'The rule of thumb is memorable and often the only number recalled under exam pressure. It is an average across systems, and a question that gives you three energy values is asking you to notice that the two steps differ.'
+              },
+              {
+                id: 'eco-energy-cycles',
+                wrong: 'Saying energy cycles through an ecosystem',
+                right: 'Energy FLOWS through and leaves as heat; MATTER cycles and is reused.',
+                why: 'Energy and nutrients are discussed in the same breath and both move through the same web, so the verbs get swapped. The distinction is the reason an ecosystem needs a constant external energy supply but not a constant supply of nitrogen — lose it and the next unit makes no sense at all.'
+              },
+              {
+                id: 'eco-pyramid-always-upright',
+                wrong: 'Assuming every ecological pyramid narrows upward',
+                right: 'A pyramid of ENERGY always does; a pyramid of BIOMASS can be inverted, as in open ocean plankton.',
+                why: 'The three pyramid types are usually drawn identically, and the energy argument is compelling enough to be over-applied. Biomass is a standing crop rather than a rate, so a small, rapidly replaced producer population can support a larger consumer mass without breaking any energy rule.'
+              }
+            ]
+          },
+
+          {
+            id: 'b2', title: 'Measuring diversity: richness and evenness', src: 'Section 19.3',
+            idea: `"More diverse" needs a definition before it can be measured, and there are two different things it can mean.<br><br><b>Species richness</b> is simply the number of species present. It is easy to count and it ignores how common each one is.<br><br><b>Species evenness</b> is how equally the individuals are spread among those species. A plot with 100 individuals divided 25/25/25/25 among four species is perfectly even; one divided 97/1/1/1 has the same richness and almost no evenness.<br><br>A <b>diversity index</b> combines both into one number. <b>Simpson's index of diversity</b> is the most tractable:<br><br><b>D = 1 − Σp²</b><br><br>where p is each species' proportion of the total. Σp² is the probability that two individuals drawn at random are the same species, so D is the probability that they differ — which is a real quantity with a plain meaning, and it runs from 0 (one species only) to nearly 1 (many species, evenly spread).<br><br>The <b>Shannon index</b>, H = −Σ(p ln p), is the other common one. It weights rare species more heavily and has no fixed upper bound, so its values are only comparable between samples treated the same way.<br><br>Diversity is a property of a defined area, which is why the <b>scale</b> has to be stated. <b>Alpha diversity</b> is within one site, <b>beta diversity</b> is the turnover between sites, and <b>gamma diversity</b> is the total across a region. Two regions can have identical alpha diversity and very different gamma diversity, if one has the same species everywhere and the other has different species in each patch.<br><br>The broadest pattern in the subject is the <b>latitudinal diversity gradient</b>: species richness rises from the poles towards the equator, in almost every group ever examined. The explanation is still argued over — more energy, longer evolutionary time, greater stability — but the pattern itself is about as solid as ecology gets.`,
+            figure: {
+              kind: 'graph', x: [0, 70], y: [0, 1.05], xlabel: 'latitude (° from equator)', ylabel: 'relative species richness',
+              fns: [{ data: true, pts: [[0, 1.0], [10, 0.93], [20, 0.78], [30, 0.6], [40, 0.42], [50, 0.27], [60, 0.15], [70, 0.07]], label: 'richness against latitude' }],
+              points: [{ x: 0, y: 1.0, label: 'tropics' }, { x: 60, y: 0.15, label: 'high latitude' }],
+              caption: 'The latitudinal diversity gradient: species richness falls steadily from the equator towards the poles. The pattern appears in trees, birds, insects, marine molluscs and almost every other group examined, which is what makes it the broadest generalisation in ecology — even though which of the competing explanations is right remains open.'
+            },
+            rules: [
+              { name: 'Species richness', expr: 'The number of species present', words: true, note: 'Ignores how common each one is, which is why it is not the whole story.' },
+              { name: 'Species evenness', expr: 'How equally individuals are spread among the species', words: true, note: 'Four species at 25 per cent each is even; 97/1/1/1 is not, at the same richness.' },
+              { name: 'Simpson’s index of diversity', expr: 'D = 1 - sum(p^2)', note: 'p is each species’ proportion. D is the chance that two individuals drawn at random are different species.' },
+              { name: 'Shannon index', expr: 'H = -sum(p * ln(p))', note: 'Weights rare species more heavily and has no fixed maximum, so compare only within a study.' },
+              { name: 'Scales of diversity', expr: 'alpha within a site, beta between sites, gamma across a region', words: true, note: 'Which is why every diversity figure has to state its area.' },
+              { name: 'The latitudinal gradient', expr: 'Richness rises from the poles towards the equator', words: true, note: 'In nearly every group examined. The explanation is disputed; the pattern is not.' }
+            ],
+            examples: [
+              {
+                prompt: 'A quadrat holds 40 individuals: 20 of species A, 10 of B, 6 of C and 4 of D. Find the species richness and Simpson’s index of diversity, to three decimal places.',
+                approach: 'Richness is a count and needs no arithmetic. For Simpson’s index the routine is fixed: turn each count into a proportion of the total, square each proportion, add them, and subtract from one. Keeping the proportions as fractions until the end avoids rounding creeping into the sum.',
+                steps: [
+                  { do: 'Richness: four species are present, so S = 4', why: 'A count of species, with abundances ignored entirely.' },
+                  { do: 'Proportions: A = 20/40 = 0.500, B = 10/40 = 0.250, C = 6/40 = 0.150, D = 4/40 = 0.100', why: 'Each species’ share of the 40 individuals. They must sum to 1, which is the first check.' },
+                  { do: 'Square each: 0.2500, 0.0625, 0.0225, 0.0100', why: 'The squares are what make a dominant species count heavily — 0.5 squared is a quarter of the whole sum by itself.' },
+                  { do: 'Σp² = 0.3450', why: 'The probability that two individuals drawn at random are the same species.' },
+                  { do: 'D = 1 − 0.3450 = 0.655', why: 'The probability that they are different species — Simpson’s index of diversity.' },
+                  { do: 'Interpretation: about a 66% chance that two individuals picked at random belong to different species', why: 'Which is what makes this index worth using — the number means something without reference to any other sample.' }
+                ],
+                answer: 'Richness 4, and D = 0.655',
+                answerWords: true,
+                check: 'Bound the answer to confirm it: four species spread perfectly evenly would give Σp² = 4(0.25²) = 0.25 and D = 0.750, the maximum available at this richness ✓. The sample scores 0.655, a little below it, which is what a mild dominance by species A should cost.'
+              },
+              {
+                prompt: 'Two plots each hold five species and 100 individuals. Plot 1 is 20/20/20/20/20; plot 2 is 92/2/2/2/2. Compare their diversity.',
+                approach: 'The richness is deliberately identical, so any difference must come from evenness — which is exactly the point the pair is built to make. Compute Simpson’s index for each and let the two numbers carry the argument, then say what the comparison establishes about richness as a measure.',
+                steps: [
+                  { do: 'Both plots have richness S = 5, so that measure cannot tell them apart', why: 'Which is the limitation the whole lesson is about.' },
+                  { do: 'Plot 1: each p = 0.20, so Σp² = 5(0.04) = 0.200', why: 'Perfect evenness, and the minimum possible Σp² for five species.' },
+                  { do: 'D₁ = 1 − 0.200 = 0.800', why: 'The highest value five species can reach.' },
+                  { do: 'Plot 2: 0.92² = 0.8464, plus four at 0.02² = 0.0004 each, so Σp² = 0.8480', why: 'One species at 92% dominates the sum almost entirely.' },
+                  { do: 'D₂ = 1 − 0.8480 = 0.152', why: 'Far lower, despite identical richness.' },
+                  { do: 'So richness alone would call the plots equal, while Simpson’s index separates them fivefold', why: 'And the interpretation is concrete: in plot 2, two individuals drawn at random are almost certainly both the dominant species.' }
+                ],
+                answer: 'Equal richness (5), but D = 0.800 against 0.152 — evenness is the whole difference',
+                answerWords: true,
+                check: 'The extreme case confirms the direction: 100 individuals of one species gives Σp² = 1 and D = 0, the floor ✓, and plot 2 is much nearer that floor than plot 1. This pair is why conservation assessments report an index rather than a species count — a site can lose almost all its individuals of four species and keep its richness intact.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'eco-richness-as-diversity',
+                wrong: 'Reporting a species count as the diversity',
+                right: 'Diversity combines richness AND evenness — two plots with five species each can differ fivefold on an index.',
+                why: 'Richness is what can be counted in the field without measuring abundances, and the words are used loosely in ordinary speech. It treats a plot dominated by one species as equal to an even one, which is precisely the difference conservation monitoring exists to detect.'
+              },
+              {
+                id: 'eco-simpson-not-subtracted',
+                wrong: 'Reporting Σp² as Simpson’s index of diversity',
+                right: 'D = 1 − Σp². Σp² itself is the DOMINANCE — the chance two individuals are the same species.',
+                why: 'The sum is the laborious part and it feels like the answer once computed. Reported unsubtracted it runs backwards: the most diverse community gets the lowest number, and any comparison drawn from it is inverted.'
+              },
+              {
+                id: 'eco-diversity-without-scale',
+                wrong: 'Quoting a diversity figure without saying over what area',
+                right: 'Diversity is scale-dependent — alpha within a site, beta between sites, gamma across a region.',
+                why: 'An index looks like a property of a place rather than of a sample, so the quadrat size goes unmentioned. Two regions with identical within-site diversity can differ enormously in regional diversity if one has the same species everywhere, and no single number captures both.'
+              },
+              {
+                id: 'eco-proportions-not-checked',
+                wrong: 'Computing an index without checking that the proportions sum to 1',
+                right: 'They must, by construction — it is the fastest check on a miscounted total.',
+                why: 'Each proportion looks reasonable on its own and nothing local objects to a wrong denominator. The sum is one addition and catches the commonest error in the calculation, which is dividing by the number of species rather than the number of individuals.'
+              }
+            ]
+          },
+
+          {
+            id: 'b3', title: 'Disturbance, succession and what shapes a community', src: 'Section 19.5',
+            idea: `Communities are not fixed. A <b>disturbance</b> — fire, storm, flood, landslide, a grazing herd — removes organisms and frees up space and resources, and what happens afterwards is <b>succession</b>.<br><br><b>Primary succession</b> starts where there is no soil at all: bare rock after a glacier retreats, or new volcanic surface. It is slow, because soil has to be built. <b>Pioneer species</b> — lichens, mosses — break down rock and add organic matter, and only then can anything larger establish.<br><br><b>Secondary succession</b> starts where a disturbance has removed the community but left the soil: an abandoned field, a burned forest. It is much faster, and it usually runs from fast-growing, short-lived, well-dispersed species through to slower, longer-lived, shade-tolerant ones.<br><br>The old idea that succession ends at a fixed <b>climax community</b> determined by climate alone has been substantially revised. Real systems are disturbed often enough that many never get there, and the endpoint depends on soil, history and chance as well as climate. What is robust is the direction of change, not the existence of a final state.<br><br>The <b>intermediate disturbance hypothesis</b> puts these together and predicts something non-obvious: diversity is highest at <b>moderate</b> levels of disturbance. Too little, and competitive dominants take over and exclude everything else. Too much, and only the fastest colonisers survive. In between, both kinds persist — and the result is a hump-shaped curve of diversity against disturbance that has been observed in coral reefs, grasslands and rocky shores.<br><br>Alongside disturbance, two kinds of control shape a community. <b>Bottom-up control</b> means the community is limited by resources — nutrients, light, water — so adding nutrients changes everything above. <b>Top-down control</b> means it is limited by predation, as the otter and urchin case showed. Most real systems show some of each, and deciding which dominates in a given system is an empirical question rather than a matter of principle.`,
+            figure: {
+              kind: 'graph', x: [0, 10], y: [0, 11], xlabel: 'disturbance frequency or intensity', ylabel: 'species diversity',
+              fns: [{ data: true, pts: [[0.5, 3], [2, 6], [3.5, 8.6], [5, 9.5], [6.5, 8.4], [8, 5.6], [9.5, 2.5]], label: 'intermediate disturbance' }],
+              points: [
+                { x: 0.5, y: 3, label: 'dominants exclude the rest' },
+                { x: 5, y: 9.5, label: 'both persist' },
+                { x: 9.5, y: 2.5, label: 'only fast colonisers' }
+              ],
+              caption: 'The intermediate disturbance hypothesis. Diversity peaks in the middle rather than at either end, because the two ends fail for opposite reasons — competitive exclusion at low disturbance, and no time to establish at high. The hump shape is the prediction, and it is what makes the hypothesis testable rather than a restatement of "moderate is best".'
+            },
+            rules: [
+              { name: 'Disturbance', expr: 'An event that removes organisms and frees resources', words: true, note: 'Fire, storm, flood, landslide, heavy grazing. What follows it is succession.' },
+              { name: 'Primary succession', expr: 'Starts with no soil — bare rock or new volcanic surface', words: true, note: 'Slow, because pioneer species have to build the soil first.' },
+              { name: 'Secondary succession', expr: 'Starts where the soil survives the disturbance', words: true, note: 'An abandoned field or a burned forest. Far faster than primary succession.' },
+              { name: 'Climax community', expr: 'A revised idea, not a fixed endpoint', words: true, note: 'Disturbance is frequent enough that many systems never arrive, and history and soil matter as well as climate.' },
+              { name: 'Intermediate disturbance hypothesis', expr: 'Diversity peaks at moderate disturbance', words: true, note: 'Too little and dominants exclude everything; too much and only fast colonisers survive.' },
+              { name: 'Bottom-up and top-down control', expr: 'Limited by resources, or limited by predation', words: true, note: 'Most systems show some of each, and which dominates is an empirical question.' }
+            ],
+            examples: [
+              {
+                prompt: 'Classify each as primary or secondary succession and say which will be faster: (a) a field abandoned after farming; (b) rock exposed by a retreating glacier; (c) a forest after a crown fire that left the soil intact.',
+                approach: 'One question decides every case: is there soil at the start? Everything else — the speed, the pioneer species, the timescale — follows from that. Answer it for each, then give the reason rather than just the label, since the reason is where the marks are.',
+                steps: [
+                  { do: '(a) An abandoned field has soil, seeds and roots left in it: secondary succession', why: 'The disturbance removed the crop, not the substrate.' },
+                  { do: '(b) Freshly exposed rock has no soil at all: primary succession', why: 'Nothing can root until lichens and mosses have broken the rock down and added organic matter.' },
+                  { do: '(c) A crown fire kills the canopy but leaves soil and often seeds and roots: secondary succession', why: 'Fire looks total and usually is not — which is why burned forests green up within a season.' },
+                  { do: 'Speed: the two secondary cases are far faster, typically decades to a century', why: 'The soil is the slow part to build, and they start with it.' },
+                  { do: 'Primary succession on bare rock runs to centuries or millennia', why: 'Soil formation is the rate-limiting step, and it is genuinely slow.' },
+                  { do: 'So the order is (b) slowest, with (a) and (c) comparable and much quicker', why: 'And the difference is one variable, which is why this classification is worth making first.' }
+                ],
+                answer: '(a) and (c) secondary and fast; (b) primary and much slower — the difference is whether soil is present',
+                answerWords: true,
+                check: 'The test case is a landslide that strips soil to bedrock: it is primary succession despite occurring in a forested landscape ✓, which confirms the criterion is the substrate rather than the surroundings or the severity of the event.'
+              },
+              {
+                prompt: 'A rocky shore is scoured by winter storms. Sheltered patches are dominated by one mussel species; the most exposed patches hold only a few fast-colonising algae; patches of intermediate exposure hold the most species. Explain.',
+                approach: 'Three observations, and a good answer explains all three with one mechanism rather than three separate stories. Take the ends first, because each fails for its own reason, and let the middle follow as the case where neither failure applies.',
+                steps: [
+                  { do: 'Sheltered patches are rarely disturbed, so competition runs to completion', why: 'Given enough undisturbed time, the best competitor monopolises the space.' },
+                  { do: 'Mussels are that competitor here, and they exclude the slower or weaker species: low diversity', why: 'Competitive exclusion, with nothing interrupting it.' },
+                  { do: 'The most exposed patches are scoured so often that few species can establish at all', why: 'Only species that colonise and reproduce very fast can complete a life cycle between disturbances.' },
+                  { do: 'So the two ends have low diversity for opposite reasons — too much competition, and too little time', why: 'Naming both reasons is what distinguishes this from a vague claim that extremes are bad.' },
+                  { do: 'At intermediate exposure, disturbance is frequent enough to open space before mussels take over, but rare enough for slower species to establish', why: 'Both kinds of species persist, so richness is highest.' },
+                  { do: 'This is the intermediate disturbance hypothesis, and the prediction is a hump-shaped curve', why: 'Which is testable: measuring diversity across a gradient of exposure should produce a peak, not a straight line.' }
+                ],
+                answer: 'The intermediate disturbance hypothesis — competitive exclusion at one end, insufficient time to establish at the other, and both groups coexisting in between',
+                answerWords: true,
+                check: 'The prediction has a clean failure condition: if diversity rose steadily with exposure, or fell steadily, the hypothesis would be refuted ✓. The hump has been found on rocky shores, on coral reefs and in grazed grasslands, though not everywhere — which is itself informative about when the mechanism applies.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'eco-fire-as-primary',
+                wrong: 'Calling succession after a fire or a flood primary succession',
+                right: 'Primary succession needs NO soil. If the soil survives, it is secondary — and much faster.',
+                why: 'Severe disturbances look total, and the visible community really is gone. The criterion is the substrate, not the drama: a burned forest keeps its soil, its seed bank and often its root systems, which is why it regreens in a season rather than a century.'
+              },
+              {
+                id: 'eco-climax-as-fixed',
+                wrong: 'Treating succession as an inevitable march to a fixed climax community',
+                right: 'The endpoint depends on soil, history and chance as well as climate, and frequent disturbance means many systems never reach one.',
+                why: 'The classical account is tidy, teachable and still in many summaries. Held strictly, it makes every disturbed community look like a failure to arrive, when disturbance is a normal part of how these systems work — and it is flatly at odds with the intermediate disturbance result.'
+              },
+              {
+                id: 'eco-disturbance-always-bad',
+                wrong: 'Assuming that less disturbance always means more diversity',
+                right: 'Diversity peaks at INTERMEDIATE disturbance — with none at all, competitive dominants take over.',
+                why: 'Disturbance sounds like damage, and conservation is popularly about leaving things alone. Fire suppression is the standing counter-example: decades of it reduce diversity in fire-adapted systems and store up far more severe fires than the ones prevented.'
+              },
+              {
+                id: 'eco-control-one-kind',
+                wrong: 'Deciding that a community is either bottom-up or top-down controlled as a matter of principle',
+                right: 'Most systems show both, and which dominates is settled by experiment rather than argument.',
+                why: 'The two are presented as alternatives with memorable examples on each side, which invites picking one. Adding nutrients and removing predators can both change the same community, and the interesting question is how much each does — which only a manipulation can answer.'
+              }
+            ]
+          }
+        ],
+        practice: [
+
+          { id: 'q1', kind: 'numeric', lesson: 'b1',
+            prompt: 'An ecosystem has GPP of 12,000 kJ/m² per year and plant respiration of 7000 kJ/m² per year. Find the NPP, in kJ/m² per year.',
+            answer: 5000, verify: { expr: '12000 - 7000' },
+            hint: 'NPP = GPP − R.',
+            solution: ['NPP = GPP − R', '= 12,000 − 7000', '= 5000 kJ/m² per year'] },
+
+          { id: 'q2', kind: 'numeric', lesson: 'b1',
+            prompt: 'A marsh has NPP of 1500 g C/m² per year and its plants respire 900 g C/m² per year. Find the GPP, in g C/m² per year.',
+            answer: 2400, verify: { expr: '1500 + 900' },
+            hint: 'Rearrange NPP = GPP − R.',
+            solution: ['GPP = NPP + R', '= 1500 + 900', '= 2400 g C/m² per year'] },
+
+          { id: 'q3', kind: 'numeric', lesson: 'b1',
+            prompt: 'What percentage of GPP is retained as NPP when GPP is 9000 and respiration is 5400 kJ/m² per year? Give the answer to the nearest whole percent.',
+            answer: 40, tol: 0.4, verify: { expr: '(9000 - 5400)/9000*100', dp: 0 },
+            hint: 'Find NPP first, then divide by GPP.',
+            solution: ['NPP = 9000 − 5400 = 3600', '3600/9000 = 0.40', '= 40%'] },
+
+          { id: 'q4', kind: 'numeric', lesson: 'b1',
+            prompt: 'A level holds 4500 kJ/m² and the next holds 540 kJ/m². Find the trophic efficiency as a percentage, to one decimal place.',
+            answer: 12, tol: 0.1, verify: { expr: '540/4500*100', dp: 1 },
+            hint: 'Energy passed on divided by energy available, times 100.',
+            solution: ['540/4500 = 0.12', '× 100', '= 12.0%, a little above the ten per cent rule of thumb'] },
+
+          { id: 'q5', kind: 'mc', lesson: 'b1',
+            prompt: 'Which statement is correct?',
+            options: [
+              { t: 'Energy flows through an ecosystem and is lost as heat; matter cycles within it', ok: true },
+              { t: 'Both energy and matter cycle within an ecosystem' },
+              { t: 'Both energy and matter flow through and are lost' },
+              { t: 'Matter flows through and is lost; energy cycles within' }
+            ],
+            hint: 'Why must the sun keep shining, while the nitrogen does not need topping up?',
+            solution: ['Energy is degraded to heat at every step and leaves the system',
+              'Atoms are not destroyed and are returned by decomposers',
+              'Which is why an ecosystem needs a constant energy input but not a constant matter input'] },
+
+          { id: 'q6', kind: 'mc', lesson: 'b1',
+            prompt: 'Which kind of ecological pyramid can be inverted?',
+            options: [
+              { t: 'A pyramid of biomass, in open-ocean plankton systems', ok: true },
+              { t: 'A pyramid of energy' },
+              { t: 'None — all pyramids narrow upward' },
+              { t: 'Only a pyramid of energy, in aquatic systems' }
+            ],
+            hint: 'Which one measures a standing crop rather than a rate?',
+            solution: ['Energy is lost at every step, so an energy pyramid must narrow upward',
+              'Biomass is a standing crop at one moment',
+              'Fast-growing phytoplankton, constantly replaced, can support a larger mass of zooplankton'] },
+
+          { id: 'q7', kind: 'spot', lesson: 'b1',
+            prompt: 'A student computes what is available to herbivores in a forest. One line is wrong.',
+            steps: [
+              { t: 'The forest fixes 9000 kJ/m² per year, which is its GPP', bad: false },
+              { t: 'The plants respire 5400 kJ/m² per year', bad: false },
+              { t: 'So the herbivores have 9000 kJ/m² per year available', bad: true },
+              { t: 'About 10% of what is available reaches the herbivores as biomass', bad: false }
+            ],
+            why: 'The energy available to herbivores is the NET primary productivity, 9000 − 5400 = 3600 kJ/m² per year: the 5400 has already been spent on the plants’ own respiration and no longer exists as biomass. Using GPP overstates everything above it by a factor of two and a half in this forest, and every efficiency computed from it will be wrong.',
+            hint: 'Which productivity is available to anything else?',
+            solution: ['NPP = GPP − R = 9000 − 5400 = 3600 kJ/m² per year',
+              'Respired energy has already left as heat',
+              'So about 360 kJ/m²/yr reaches the herbivores as biomass'] },
+
+          { id: 'q8', kind: 'numeric', lesson: 'b2',
+            prompt: 'A sample holds 50 individuals of species A and 50 of species B. Find Simpson’s index of diversity, D, to three decimal places.',
+            answer: 0.5, tol: 0.004, verify: { expr: '1 - (Rational(1,2)**2 + Rational(1,2)**2)', dp: 3 },
+            hint: 'D = 1 − Σp², and each p is 0.5.',
+            solution: ['p = 0.5 for each species', 'Σp² = 0.25 + 0.25 = 0.50', 'D = 1 − 0.50 = 0.500'] },
+
+          { id: 'q9', kind: 'numeric', lesson: 'b2',
+            prompt: 'A sample of 100 individuals holds 90 of species A and 10 of species B. Find D, to three decimal places.',
+            answer: 0.18, tol: 0.001, verify: { expr: '1 - (Rational(9,10)**2 + Rational(1,10)**2)', dp: 3 },
+            hint: 'Same richness as the previous question, very different evenness.',
+            solution: ['p = 0.90 and 0.10', 'Σp² = 0.81 + 0.01 = 0.82', 'D = 1 − 0.82 = 0.180 — far lower at the same richness'] },
+
+          { id: 'q10', kind: 'numeric', lesson: 'b2',
+            prompt: 'A quadrat holds 40 individuals: 20 of A, 10 of B, 6 of C and 4 of D. Find D, to three decimal places.',
+            answer: 0.655, tol: 0.006, verify: { expr: '1 - (Rational(1,2)**2 + Rational(1,4)**2 + Rational(15,100)**2 + Rational(1,10)**2)', dp: 3 },
+            hint: 'Proportions first, then squares, then subtract from one.',
+            solution: ['p = 0.500, 0.250, 0.150, 0.100', 'Σp² = 0.2500 + 0.0625 + 0.0225 + 0.0100 = 0.3450',
+              'D = 1 − 0.3450 = 0.655'] },
+
+          { id: 'q11', kind: 'numeric', lesson: 'b2',
+            prompt: 'What is the highest value Simpson’s index of diversity can take for a community of exactly four species? Give the answer to three decimal places.',
+            answer: 0.75, tol: 0.007, verify: { expr: '1 - 4*Rational(1,4)**2', dp: 3 },
+            hint: 'The maximum occurs when the species are perfectly even.',
+            solution: ['Perfect evenness means p = 0.25 for each', 'Σp² = 4(0.0625) = 0.25', 'D = 1 − 0.25 = 0.750'] },
+
+          { id: 'q12', kind: 'mc', lesson: 'b2',
+            prompt: 'Two plots each hold five species. What can differ between them?',
+            options: [
+              { t: 'Their evenness, and therefore their diversity index', ok: true },
+              { t: 'Nothing — equal richness means equal diversity' },
+              { t: 'Their richness' },
+              { t: 'Only the identity of the species, which does not affect any index' }
+            ],
+            hint: 'Richness counts species; it says nothing about abundances.',
+            solution: ['Five species split 20/20/20/20/20 gives D = 0.800',
+              'Five species split 92/2/2/2/2 gives D = 0.152',
+              'Same richness, fivefold difference in the index'] },
+
+          { id: 'q13', kind: 'mc', lesson: 'b2',
+            prompt: 'What does Σp² measure in Simpson’s calculation?',
+            options: [
+              { t: 'The probability that two individuals drawn at random are the SAME species — dominance', ok: true },
+              { t: 'The diversity itself' },
+              { t: 'The number of species present' },
+              { t: 'The evenness of the community' }
+            ],
+            hint: 'What has to be done to it to get the index of diversity?',
+            solution: ['Σp² is the dominance: the chance two random individuals match',
+              'D = 1 − Σp² is the chance they differ',
+              'Reporting Σp² as the diversity runs the scale backwards'] },
+
+          { id: 'q14', kind: 'mc', lesson: 'b3',
+            prompt: 'Which is an example of primary succession?',
+            options: [
+              { t: 'Lichens colonising bare rock exposed by a retreating glacier', ok: true },
+              { t: 'Grasses returning to an abandoned farm field' },
+              { t: 'A forest regrowing after a fire that left the soil intact' },
+              { t: 'Plants recolonising a flooded meadow' }
+            ],
+            hint: 'Is there soil to start with?',
+            solution: ['Primary succession begins with no soil at all',
+              'Pioneer species such as lichens must break the rock down first',
+              'The other three keep their soil, so all are secondary succession'] },
+
+          { id: 'q15', kind: 'mc', lesson: 'b3',
+            prompt: 'According to the intermediate disturbance hypothesis, where is diversity highest?',
+            options: [
+              { t: 'At moderate disturbance — dominants cannot take over, and slower species still have time to establish', ok: true },
+              { t: 'Where disturbance is lowest, since nothing is destroyed' },
+              { t: 'Where disturbance is highest, since space is always available' },
+              { t: 'Diversity does not depend on disturbance' }
+            ],
+            hint: 'The two ends fail for opposite reasons.',
+            solution: ['With no disturbance, the best competitor excludes the rest',
+              'With constant disturbance, only the fastest colonisers can complete a life cycle',
+              'In between, both persist — a hump-shaped curve'] },
+
+          { id: 'q16', kind: 'mc', lesson: 'b3',
+            prompt: 'A lake’s algae increase sharply after fertiliser runs off the surrounding fields. What kind of control does this show?',
+            options: [
+              { t: 'Bottom-up control — the community was limited by nutrients', ok: true },
+              { t: 'Top-down control — the community was limited by predation' },
+              { t: 'Neither: fertiliser is an abiotic factor, so it is not control' },
+              { t: 'Both equally' }
+            ],
+            hint: 'What was in short supply before?',
+            solution: ['Adding a resource changed the community, so the resource was limiting',
+              'That is bottom-up control',
+              'Removing a predator and getting the same increase would have shown top-down control'] },
+
+          { id: 'q17', kind: 'spot', lesson: 'b3',
+            prompt: 'A student explains succession after a forest fire. One line is wrong.',
+            steps: [
+              { t: 'The fire killed the canopy but left the soil in place', bad: false },
+              { t: 'This makes it primary succession, since the forest was destroyed', bad: true },
+              { t: 'Fast-growing, well-dispersed species establish first', bad: false },
+              { t: 'Slower, shade-tolerant species replace them over decades', bad: false }
+            ],
+            why: 'The criterion is the substrate, not how severe the disturbance looked: soil survived, along with the seed bank and often the root systems, so this is secondary succession. That is why a burned forest greens up within a season, while primary succession on bare rock takes centuries — the soil is the slow part to build.',
+            hint: 'What has to be absent for succession to count as primary?',
+            solution: ['Primary succession requires no soil at all',
+              'A fire that leaves the soil gives secondary succession',
+              'Which is much faster, running in decades rather than centuries'] },
+
+          { id: 'q18', kind: 'order', lesson: 'b3',
+            prompt: 'Put the stages of secondary succession on an abandoned field in order.',
+            steps: [
+              'Fast-growing annual weeds colonise the bare ground',
+              'Perennial grasses and herbs establish and shade out the annuals',
+              'Shrubs and fast-growing pioneer trees take hold',
+              'Slower, shade-tolerant trees replace the pioneers'
+            ],
+            hint: 'Fast and short-lived first; slow and shade-tolerant last.',
+            solution: ['The first colonisers are those that disperse and grow fastest',
+              'Each stage changes the conditions — especially the light — for the next',
+              'Shade tolerance is what decides the later order'] },
+
+          { id: 'q19', kind: 'order', lesson: 'b1',
+            prompt: 'Put the steps of an energy-flow calculation in order.',
+            steps: [
+              'Find GPP, the total energy the producers fix',
+              'Subtract plant respiration to get NPP',
+              'Apply the measured trophic efficiency to reach the herbivores',
+              'Repeat for each level above, compounding the losses'
+            ],
+            hint: 'Only one of these quantities is available to anything else.',
+            solution: ['GPP is what is captured; NPP is what is left after the plants have paid themselves',
+              'Efficiency is computed from data when data are given, not assumed to be ten per cent',
+              'Compounding is why four levels leave a thousandth of what was captured'] }
+        ]
+      },
+
+      /* ============================ WEEK 4 ============================ */
+      {
+        id: 'cycles', n: 3,
+        title: 'Nutrient and elemental cycling',
+        blurb: 'The other half of how an ecosystem works. Energy arrives, degrades and leaves; the atoms stay and go round, moving between living tissue, soil, water, rock and air — and the rate at which they move is as important as how much of each there is.',
+        read: 'Chapter 20',
+        objectives: [
+          'Describe a biogeochemical cycle in terms of pools and fluxes, and compute a residence time',
+          'Trace the water cycle and say which processes move water between its pools',
+          'Trace the carbon cycle and identify where human activity has changed a flux',
+          'Trace the nitrogen cycle, naming fixation, nitrification, assimilation and denitrification',
+          'Explain why phosphorus behaves differently from carbon and nitrogen, and what that means for lakes'
+        ],
+        lessons: [
+
+          {
+            id: 'c1', title: 'Pools, fluxes and the water cycle', src: 'Section 20.1',
+            idea: `A <b>biogeochemical cycle</b> is the path an element takes through the living and non-living parts of the Earth. Every one of them is described with the same two words.<br><br>A <b>pool</b> (or reservoir) is a place the element sits — the atmosphere, the ocean, soil, rock, living biomass. A <b>flux</b> is a rate of movement between pools, in mass per unit time. A cycle is a set of pools connected by fluxes, and almost every question about one is really a question about which pool is large, which flux is fast, or which flux has changed.<br><br>The quantity that ties them together is the <b>residence time</b>:<br><br><b>T = S / F</b><br><br>the size of the pool divided by the flux out of it. It is the average time an atom spends there. A large pool with a small outflow gives a long residence time — carbon in deep ocean sediment sits for millions of years; water vapour in the atmosphere averages about nine days.<br><br>Residence time explains why some pools respond quickly to a change and others do not, and it is the single most useful number in the unit.<br><br>Cycles divide into two kinds. A <b>gaseous cycle</b> has a major atmospheric pool — carbon, nitrogen, oxygen, water — so it redistributes globally within years and local disturbances are buffered. A <b>sedimentary cycle</b> has no significant gas phase and moves through rock, soil and water — phosphorus, sulfur, calcium — so it is slow, local, and easily depleted, because what washes into the deep ocean is effectively gone for geological time.<br><br>The <b>water cycle</b> is the simplest to trace: evaporation and transpiration move water up, condensation forms cloud, precipitation brings it down, and runoff, infiltration and groundwater flow return it to the sea. Over land, <b>transpiration by plants</b> is a large share of what goes up — which is why clearing a forest changes local rainfall, and why the water cycle is not purely a physical process.`,
+            figure: {
+              kind: 'graph', x: [0, 6], y: [-1, 8], xlabel: 'pool', ylabel: 'log₁₀ residence time (years)',
+              fns: [{ data: true, pts: [[1, -1.6], [2, 0.6], [3, 1.9], [4, 3.6], [5, 6.5]], label: 'log residence time' }],
+              points: [
+                { x: 1, y: -1.6, label: 'atmospheric water: 9 days' }, { x: 3, y: 1.9, label: 'surface ocean carbon: decades' },
+                { x: 5, y: 6.5, label: 'sedimentary rock: millions of years' }
+              ],
+              caption: 'Residence times across five pools, on a logarithmic scale because they span eight orders of magnitude. The scale is what makes the cycles behave so differently: a pool whose atoms turn over in days responds to a change within a season, while one that turns over in millions of years is, for every practical purpose, permanent storage.'
+            },
+            rules: [
+              { name: 'Pool', expr: 'A place an element sits — atmosphere, ocean, soil, rock, biomass', words: true, note: 'Measured as a mass. Also called a reservoir.' },
+              { name: 'Flux', expr: 'A rate of movement between pools', words: true, note: 'Mass per unit time. A cycle is pools joined by fluxes, and nothing else.' },
+              { name: 'Residence time', expr: 'T = S / F', note: 'Pool size divided by the flux out of it — the average time an atom spends there.' },
+              { name: 'Whether a pool is growing', expr: 'S_change = F_in - F_out', note: 'A pool grows only when the flux in exceeds the flux out. A pool at steady state has equal fluxes, however large both are.' },
+              { name: 'Gaseous cycles', expr: 'Carbon, nitrogen, oxygen and water', words: true, note: 'A major atmospheric pool, so they redistribute globally within years.' },
+              { name: 'Sedimentary cycles', expr: 'Phosphorus, sulfur and calcium', words: true, note: 'No significant gas phase, so slow, local and easily depleted.' },
+              { name: 'The water cycle', expr: 'evaporation and transpiration up, precipitation down, runoff and groundwater back', words: true, note: 'Over land, transpiration by plants is a large share of what goes up.' }
+            ],
+            examples: [
+              {
+                prompt: 'The atmosphere holds about 13,000 km³ of water, and about 505,000 km³ of precipitation falls each year. Find the residence time of water in the atmosphere, in days, to the nearest day.',
+                approach: 'A single application of T = S/F, with the whole difficulty in the units: the pool is a volume and the flux is a volume per year, so the answer comes out in years and then has to be converted. Sanity-check the size at the end, because an answer in days is expected and an answer in years would signal a slip.',
+                steps: [
+                  { do: 'Identify the pool: S = 13,000 km³ of water vapour in the atmosphere', why: 'A standing amount, which is what a pool always is.' },
+                  { do: 'Identify the flux out: F = 505,000 km³ per year falling as precipitation', why: 'Precipitation is how water leaves the atmosphere, so it is the outflow this calculation needs.' },
+                  { do: 'T = S/F = 13,000/505,000', why: 'Pool divided by flux. The km³ cancel, leaving years.' },
+                  { do: 'T = 0.02574 years', why: 'A small fraction of a year, which is the first sign the answer will be in days.' },
+                  { do: 'Convert: 0.02574 × 365 = 9.4 days', why: 'Multiplying years by days per year. The units cancel correctly, which is the check.' },
+                  { do: 'So a water molecule spends about nine days in the air between evaporating and falling', why: 'Which is why weather changes on a timescale of about a week — the atmosphere empties and refills that fast.' }
+                ],
+                answer: 'About 9 days',
+                answerWords: true,
+                check: 'The result matches the everyday scale it predicts: rainfall patterns shift within a week or two, and a drought is broken by a change in circulation rather than by waiting for water to accumulate ✓. An answer in years would have implied weather systems that persist for seasons, which is not what any forecast shows.'
+              },
+              {
+                prompt: 'Explain why phosphorus behaves so differently from carbon in an ecosystem, and what follows for a lake receiving fertiliser runoff.',
+                approach: 'Sort the two elements by cycle type first, because that single classification carries most of the answer — whether there is an atmospheric pool determines the speed, the reach and the recoverability of the cycle. Then apply it to the lake, which is where the difference becomes a practical problem.',
+                steps: [
+                  { do: 'Carbon has a large atmospheric pool as CO₂: a gaseous cycle', why: 'Which means it redistributes globally within a year or two of being released anywhere.' },
+                  { do: 'Phosphorus has no significant gas phase at all — it moves through rock, soil and water: a sedimentary cycle', why: 'There is no phosphorus gas to speak of, so there is no global mixing mechanism.' },
+                  { do: 'So phosphorus moves slowly, locally, and largely downhill', why: 'Weathering releases it from rock; water carries it towards the sea.' },
+                  { do: 'Phosphorus that reaches deep ocean sediment is out of circulation for geological time', why: 'It returns only when that sediment is uplifted, which is why the cycle is effectively one-way on human timescales.' },
+                  { do: 'Consequence: phosphorus is the limiting nutrient in most freshwater systems', why: 'It is scarce because it cannot be resupplied from the air, unlike nitrogen and carbon.' },
+                  { do: 'So fertiliser runoff adding phosphorus to a lake triggers an algal bloom: eutrophication', why: 'Relieving the limiting nutrient releases growth that nothing else was holding back.' },
+                  { do: 'The bloom dies, decomposers consume oxygen breaking it down, and fish suffocate in the resulting dead zone', why: 'The damage is done by decomposition rather than by the algae themselves, which is the part usually left out.' }
+                ],
+                answer: 'Phosphorus has a sedimentary cycle with no gas phase, so it is scarce and limiting — adding it to a lake causes an algal bloom and then oxygen depletion',
+                answerWords: true,
+                check: 'The classification predicts the management response, which is the test of it: phosphorus was removed from detergents and lake recovery followed within years ✓ — a local intervention worked because the cycle is local. The same approach would do nothing about atmospheric carbon, because that cycle is global.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'eco-pool-flux-confused',
+                wrong: 'Comparing a pool with a flux, or reporting one in the other’s units',
+                right: 'A pool is an amount; a flux is an amount per unit time. Residence time is what connects them.',
+                why: 'Both are quoted in mass units in diagrams, with the "per year" easy to miss on an arrow. Any comparison between them is meaningless, and T = S/F only produces a time if the two are kept straight — which is the standard way the error is caught.'
+              },
+              {
+                id: 'eco-residence-time-inverted',
+                wrong: 'Computing residence time as flux divided by pool',
+                right: 'T = S/F — the pool on top. Dividing the other way gives a rate, not a time.',
+                why: 'Both quantities are in front of you and the formula is short enough to be recalled the wrong way round. The units settle it immediately: mass divided by mass-per-year gives years, and the reverse gives per-year, which cannot be a residence time.'
+              },
+              {
+                id: 'eco-water-cycle-physical-only',
+                wrong: 'Describing the water cycle as evaporation and precipitation alone',
+                right: 'Transpiration by plants is a large share of what leaves land, which is why clearing a forest changes local rainfall.',
+                why: 'The cycle is usually first met in physical geography, where the biological step is left out. Leaving it out makes deforestation look like a problem only for the forest, when it measurably reduces rainfall downwind — an ecological effect on what looks like a physical cycle.'
+              },
+              {
+                id: 'eco-all-cycles-alike',
+                wrong: 'Treating every nutrient cycle as working the same way',
+                right: 'Gaseous cycles redistribute globally within years; sedimentary ones are slow, local and easily depleted.',
+                why: 'The diagrams look alike — boxes and arrows — and the same vocabulary is used for all of them. The difference decides whether a local intervention can work, which is why phosphorus control saved lakes and no comparable local fix exists for carbon.'
+              }
+            ]
+          },
+
+          {
+            id: 'c2', title: 'The carbon cycle', src: 'Section 20.2',
+            idea: `Carbon is the element life is built from, and its cycle is the one most thoroughly measured.<br><br>Carbon enters the living world through <b>photosynthesis</b>, which takes CO₂ from the air and fixes it into sugars. It returns through <b>respiration</b> by every organism including the plants themselves, through <b>decomposition</b> of dead material, and through <b>combustion</b>. Those are the fast fluxes, and on a global scale photosynthesis and respiration nearly balance — which is why atmospheric CO₂ has a visible annual sawtooth, falling through the northern summer and rising through the northern winter.<br><br>The pools differ enormously in size and in speed:<br><br><b>Atmosphere</b> — small, and the one that responds fastest.<br><b>Oceans</b> — by far the largest active pool, holding CO₂ dissolved as carbonate and bicarbonate. The surface exchanges with the air within a decade or two; the deep ocean takes centuries.<br><b>Living biomass and soil</b> — soil holds more carbon than all living vegetation, which is why disturbing it matters.<br><b>Sedimentary rock and fossil fuels</b> — the largest pool of all, and the slowest. Carbon entered it over hundreds of millions of years.<br><br>The human change is specific and worth stating precisely: burning fossil fuels moves carbon from the slowest pool into the fastest one, at a rate the slow fluxes cannot match. It is not that a new substance has been introduced — it is that a flux which took hundreds of millions of years to fill a pool is being reversed in centuries. Deforestation adds to this both by releasing stored carbon and by reducing the photosynthetic flux that removes it.<br><br>The ocean absorbs a large share of the excess, which slows atmospheric accumulation but acidifies the water, because dissolved CO₂ forms carbonic acid. That is the same process from the other end, and it is why the two problems cannot be separated.`,
+            figure: {
+              kind: 'graph', x: [1955, 2025], y: [300, 430], xlabel: 'year', ylabel: 'atmospheric CO₂ (ppm)',
+              fns: [{ data: true, pts: [[1960, 317], [1970, 326], [1980, 339], [1990, 354], [2000, 369], [2010, 390], [2020, 414]], label: 'atmospheric CO₂' }],
+              points: [{ x: 1960, y: 317, label: '1960' }, { x: 2020, y: 414, label: '2020' }],
+              caption: 'Atmospheric carbon dioxide over six decades. The rise is steady and accelerating, and its cause is a change to one flux: carbon moving from the slowest pool — fossil fuels, filled over hundreds of millions of years — into the fastest one, in a few centuries. The pools are not new; the rate is.'
+            },
+            rules: [
+              { name: 'Carbon in', expr: 'Photosynthesis fixes CO2 into sugars', words: true, note: 'The only significant route from the atmosphere into living tissue.' },
+              { name: 'Carbon out', expr: 'Respiration, decomposition and combustion', words: true, note: 'All three return CO2 to the air, and globally the first two nearly balance photosynthesis.' },
+              { name: 'The pools by size', expr: 'sedimentary rock, then oceans, then soil, then biomass, then atmosphere', words: true, note: 'Soil holds more carbon than all living vegetation, which is why disturbing it matters.' },
+              { name: 'What human activity changed', expr: 'A flux, not a pool', words: true, note: 'Fossil carbon moves from the slowest pool to the fastest one, far faster than the slow fluxes can return it.' },
+              { name: 'Ocean uptake', expr: 'Absorbs much of the excess, and acidifies', words: true, note: 'Dissolved CO2 forms carbonic acid, so the two problems are one process seen from two ends.' }
+            ],
+            examples: [
+              {
+                prompt: 'Trace a carbon atom from the atmosphere into a fossil fuel and back, naming the process at each step.',
+                approach: 'Follow one atom rather than describing the cycle in general, because the route is what the question is testing and a general account tends to leave out the slow steps. Name the process at every transfer, and note the timescale, since that is what distinguishes the fossil route from the fast one.',
+                steps: [
+                  { do: 'CO₂ in the air is fixed into sugar by a plant: photosynthesis', why: 'The only significant entry into living tissue.' },
+                  { do: 'The plant dies and is buried in an anoxic environment — a swamp or a seabed — before decomposers can finish with it', why: 'This is the crucial step: without burial the carbon simply returns by decomposition within years.' },
+                  { do: 'Over millions of years, heat and pressure convert the buried material to coal, oil or gas', why: 'Which is why the fossil pool took hundreds of millions of years to accumulate.' },
+                  { do: 'It sits there — a residence time of millions of years, effectively permanent storage', why: 'The pool is large and its natural outflow, through weathering and volcanism, is tiny.' },
+                  { do: 'Extraction and burning return the carbon to the air as CO₂: combustion', why: 'A flux that was negligible for most of Earth’s history and is now among the largest.' },
+                  { do: 'The contrast is the point: in without burial the round trip takes years, with burial it takes hundreds of millions', why: 'Same cycle, same pools, two routes differing by eight orders of magnitude in time.' }
+                ],
+                answer: 'Photosynthesis, burial before decomposition, conversion under heat and pressure, then combustion — a round trip of hundreds of millions of years compressed into centuries at the last step',
+                answerWords: true,
+                check: 'The account explains the annual sawtooth as well: carbon on the fast route cycles within a single growing season, which is why atmospheric CO₂ dips each northern summer ✓. Both routes run at once, and it is the ratio between them that has changed.'
+              },
+              {
+                prompt: 'A soil pool holds 1500 Pg of carbon and loses 60 Pg per year to respiration and decomposition. Find the residence time, and say what it implies for land-use change.',
+                approach: 'The residence-time calculation from the previous lesson, applied to a pool that turns over fast enough for human activity to matter within a lifetime. Compute it first, then interpret: a short residence time means the pool responds quickly, which cuts both ways.',
+                steps: [
+                  { do: 'Pool: S = 1500 Pg of carbon in soil', why: 'A petagram is 10¹⁵ g, and soil holds more carbon than all living vegetation.' },
+                  { do: 'Flux out: F = 60 Pg per year', why: 'Respiration by soil organisms plus decomposition of organic matter.' },
+                  { do: 'T = S/F = 1500/60', why: 'Pool over flux, as always.' },
+                  { do: 'T = 25 years', why: 'Short — the soil carbon pool turns over within a human lifetime.' },
+                  { do: 'So a change in the input flux shows up in the pool within decades, not millennia', why: 'Which is the whole significance of the number.' },
+                  { do: 'Ploughing or clearing raises decomposition and lowers input, so stored carbon is released quickly', why: 'And the same speed works in reverse: restored soils can rebuild carbon on a comparable timescale, which is why soil management is a live option rather than a geological one.' }
+                ],
+                answer: '25 years — short enough that land-use change alters the pool within decades, in either direction',
+                answerWords: true,
+                check: 'Compare with the fossil pool: millions of years, so no management action changes it at all ✓. The contrast is what makes residence time the useful number — it says which pools are worth intervening in, and soil is one of the few large ones that is.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'eco-carbon-pool-not-flux',
+                wrong: 'Saying human activity created new carbon or a new pool',
+                right: 'It changed a FLUX — moving carbon from the slowest pool into the fastest, far faster than it can return.',
+                why: 'The problem is usually described as carbon being added to the atmosphere, which sounds like creation. Stated as a flux it becomes precise and predicts the right things: where the carbon came from, why the rate matters more than the total, and why the ocean uptake lags.'
+              },
+              {
+                id: 'eco-plants-only-photosynthesise',
+                wrong: 'Treating plants as pure carbon absorbers that do not respire',
+                right: 'Plants respire too — which is exactly why NPP is less than GPP.',
+                why: 'Photosynthesis is what plants are known for and respiration is presented as something animals do. It is the same error as using GPP for NPP, seen from the carbon side, and it makes the global balance impossible to state: without plant respiration the fast fluxes do not come close to balancing.'
+              },
+              {
+                id: 'eco-ocean-uptake-as-solution',
+                wrong: 'Treating ocean absorption of CO₂ as a harmless sink',
+                right: 'Dissolved CO₂ forms carbonic acid, so uptake and acidification are one process.',
+                why: 'The uptake genuinely does slow atmospheric accumulation, which makes it sound like good news on its own. The chemistry is the same reaction viewed from the other end, and the organisms that build carbonate shells are affected by exactly the amount of CO₂ the ocean takes up.'
+              },
+              {
+                id: 'eco-soil-carbon-ignored',
+                wrong: 'Counting only living vegetation when accounting for carbon on land',
+                right: 'Soil holds more carbon than all the vegetation standing on it.',
+                why: 'The forest is visible and the soil is not, and carbon accounting is usually illustrated with trees. It makes land-use change look like a question about what is cut down, when ploughing and draining release carbon that no tree count records.'
+              }
+            ]
+          },
+
+          {
+            id: 'c3', title: 'The nitrogen and phosphorus cycles', src: 'Section 20.4',
+            idea: `Nitrogen is the puzzle of the nutrient cycles: the atmosphere is <b>78% nitrogen</b> and it is nevertheless the limiting nutrient in most terrestrial systems. The reason is the triple bond in N₂, which almost nothing can break. Atmospheric nitrogen is abundant and unavailable, which are not the same thing.<br><br>The cycle is a sequence of conversions, each carried out by particular organisms:<br><br><b>Nitrogen fixation</b> — N₂ to ammonia (NH₃/NH₄⁺), by bacteria, some of them free-living and some in root nodules of legumes. This is the step that makes nitrogen available at all, and lightning and industry contribute too.<br><b>Nitrification</b> — ammonium to nitrite and then to nitrate (NO₃⁻), by nitrifying bacteria. Nitrate is the form most plants take up most readily.<br><b>Assimilation</b> — plants take up ammonium or nitrate and build amino acids and nucleic acids; animals get theirs by eating.<br><b>Ammonification</b> — decomposers return nitrogen from dead material and waste to ammonium.<br><b>Denitrification</b> — nitrate back to N₂ gas, by bacteria in low-oxygen conditions. This closes the cycle and returns nitrogen to the atmosphere.<br><br>Every step but assimilation is done by bacteria, which is the fact to hold onto: the nitrogen cycle is microbially driven, and it is why waterlogged soils lose nitrogen — they go anoxic and denitrification runs.<br><br><b>Phosphorus</b> has no gas phase. It weathers out of rock as phosphate, is taken up by plants, passes through food webs, is returned by decomposers, and is steadily lost downstream to sediment. There is no return path on a human timescale except uplift.<br><br>Both are now heavily modified by industry. The Haber process fixes more nitrogen than all natural processes combined, and mined phosphate is spread on fields. The result in both cases is <b>eutrophication</b>: a nutrient that was limiting is supplied in excess, algae bloom, the bloom dies, decomposers strip the oxygen, and fish suffocate.`,
+            figure: {
+              kind: 'numberline', x: [0, 5],
+              points: [
+                { x: 0.5, label: 'N₂ gas' }, { x: 1.5, label: 'fixation' }, { x: 2, label: 'ammonium' },
+                { x: 3, label: 'nitrate' }, { x: 4, label: 'plant tissue' }, { x: 4.8, label: 'denitrification' }
+              ],
+              caption: 'The nitrogen cycle as a sequence of conversions. Fixation makes the unreactive gas available as ammonium, nitrification converts that to nitrate, assimilation builds it into tissue, and denitrification eventually returns it to the air. Every one of these steps except assimilation is carried out by bacteria, which is why the cycle stalls in soils where the microbial community is disrupted.'
+            },
+            rules: [
+              { name: 'Why nitrogen limits', expr: 'Abundant as N2 and almost entirely unavailable', words: true, note: 'The triple bond is the obstacle. Abundance and availability are different things.' },
+              { name: 'Fixation', expr: 'N2 to ammonia, by bacteria', words: true, note: 'Free-living and in the root nodules of legumes. Lightning and industry contribute too.' },
+              { name: 'Nitrification', expr: 'ammonium to nitrite to nitrate, by bacteria', words: true, note: 'Nitrate is the form most plants take up most readily.' },
+              { name: 'Ammonification and denitrification', expr: 'Decomposers return ammonium; denitrifiers return N2 to the air', words: true, note: 'Denitrification runs in low-oxygen conditions, which is why waterlogged soils lose nitrogen.' },
+              { name: 'Phosphorus', expr: 'No gas phase: rock to soil to organisms to sediment', words: true, note: 'Lost downstream with no return path on any human timescale.' },
+              { name: 'Eutrophication', expr: 'Excess nutrient, algal bloom, decomposition, oxygen loss', words: true, note: 'The fish are killed by the decomposition of the bloom, not by the algae themselves.' }
+            ],
+            examples: [
+              {
+                prompt: 'A farmer’s soil is nitrogen-poor despite the atmosphere being 78% nitrogen. Explain why, and give two ways the nitrogen could be made available.',
+                approach: 'The apparent paradox is the question, so address it directly: separate abundance from availability and name the chemical obstacle. Then give routes that actually perform the conversion, since suggesting anything that does not break the triple bond misses the point entirely.',
+                steps: [
+                  { do: 'Atmospheric nitrogen is N₂, held together by a triple bond', why: 'One of the strongest bonds in nature, and the reason the gas is so unreactive.' },
+                  { do: 'Almost no organism can break it — plants certainly cannot take up N₂ directly', why: 'So the nitrogen in the air above a field is, for the crop, not there at all.' },
+                  { do: 'Only nitrogen-fixing bacteria, lightning and industrial processes convert it to an available form', why: 'A very short list, which is exactly why nitrogen limits so many systems.' },
+                  { do: 'First route: plant legumes, whose root nodules host nitrogen-fixing bacteria', why: 'The bacteria fix nitrogen in exchange for sugars, and some of it stays in the soil — which is why crop rotation with legumes works and is older than the science explaining it.' },
+                  { do: 'Second route: apply industrially fixed nitrogen fertiliser, made by the Haber process', why: 'Which breaks the triple bond with high temperature, high pressure and a catalyst.' },
+                  { do: 'Note that both work by the same step — fixation — reached two different ways', why: 'Which is the underlying point: nothing helps that does not first convert N₂.' }
+                ],
+                answer: 'N₂ is unavailable because of its triple bond; legumes with nitrogen-fixing bacteria, or industrially fixed fertiliser, both supply it by fixation',
+                answerWords: true,
+                check: 'The explanation predicts the standard agricultural practice correctly: rotations have alternated legumes with cereals for centuries, and the yield benefit is real and measurable ✓. And it rules out the intuitive non-answer — ploughing more air into the soil does nothing, because the nitrogen was never the problem.'
+              },
+              {
+                prompt: 'Fertiliser runs off into a lake and fish die some weeks later. Explain the sequence, and say what actually kills the fish.',
+                approach: 'Build the chain one step at a time, because the causal link most people get wrong is the last one — the fish are not poisoned by the fertiliser or the algae. Identify the limiting nutrient first, since that is why a small input produces a large effect.',
+                steps: [
+                  { do: 'The fertiliser supplies nitrogen and phosphorus, and phosphorus is usually the limiting nutrient in fresh water', why: 'It has no gas phase and no resupply route, so it is scarce — which is why a small addition changes so much.' },
+                  { do: 'With the limiting nutrient relieved, algae grow rapidly: an algal bloom', why: 'Nothing else was holding the population back, so it responds immediately.' },
+                  { do: 'The bloom shades the water, and algae on the surface are short-lived; large amounts die', why: 'Which sets up the step that does the damage.' },
+                  { do: 'Decomposing bacteria consume the dead algae, and respiration consumes dissolved oxygen', why: 'Decomposition is aerobic, and the quantity of dead material is enormous.' },
+                  { do: 'Dissolved oxygen falls below what fish can tolerate: a hypoxic dead zone', why: 'The oxygen is the resource that runs out, and it does so weeks after the runoff.' },
+                  { do: 'So the fish suffocate — killed by decomposition of the bloom, not by the fertiliser or by the algae', why: 'Which is why the delay is weeks, and why the fish kill can occur after the visible bloom has gone.' }
+                ],
+                answer: 'Nutrient enrichment, algal bloom, mass die-off, decomposition, oxygen depletion — the fish suffocate',
+                answerWords: true,
+                check: 'The delay is the diagnostic feature: a toxic spill kills fish within hours, while eutrophication kills them weeks later and often after the water has cleared ✓. And the remedy follows from the mechanism — cutting phosphorus input works, as the removal of phosphates from detergents demonstrated on lakes across the continent.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'eco-atmospheric-nitrogen-available',
+                wrong: 'Assuming plants can use the nitrogen in the air',
+                right: 'They cannot touch N₂ — the triple bond has to be broken by fixation first.',
+                why: 'Seventy-eight per cent of the atmosphere is a striking figure and it makes a nitrogen shortage sound impossible. Abundance and availability are different properties, and this is the clearest case in the course where a resource is everywhere and entirely out of reach.'
+              },
+              {
+                id: 'eco-nitrogen-steps-reordered',
+                wrong: 'Putting nitrification before fixation, or treating the steps as interchangeable',
+                right: 'Fixation makes ammonium from N₂; nitrification then converts ammonium to nitrate. Each step needs the product of the last.',
+                why: 'The names are similar and both involve bacteria, so the order is easy to swap. Nitrification cannot start without ammonium to work on, and getting the sequence wrong makes it impossible to say where a disrupted soil community breaks the cycle.'
+              },
+              {
+                id: 'eco-fish-killed-by-algae',
+                wrong: 'Saying the algal bloom itself kills the fish',
+                right: 'Decomposition of the dead bloom strips the oxygen, and the fish suffocate.',
+                why: 'The bloom is the visible event and the obvious culprit, and some blooms genuinely are toxic. The usual mechanism is oxygen depletion, which is why the fish kill arrives weeks later — a delay that makes no sense if the algae were the direct cause.'
+              },
+              {
+                id: 'eco-phosphorus-like-nitrogen',
+                wrong: 'Treating the phosphorus cycle as a slower version of the nitrogen cycle',
+                right: 'Phosphorus has no gas phase at all, so there is no atmospheric pool and no return from the deep ocean.',
+                why: 'Both are nutrients, both limit growth and both appear on the same fertiliser bag. The absence of a gas phase is a difference in kind: nitrogen lost from a field can be replaced from the air by fixation, and phosphorus lost downstream cannot be replaced at all.'
+              }
+            ]
+          }
+        ],
+        practice: [
+
+          { id: 'r1', kind: 'numeric', lesson: 'c1',
+            prompt: 'A pool holds 800 Pg of carbon and loses 100 Pg per year. Find the residence time, in years.',
+            answer: 8, verify: { expr: '800/100' },
+            hint: 'T = S/F.',
+            solution: ['T = pool / flux out', '= 800/100', '= 8 years'] },
+
+          { id: 'r2', kind: 'numeric', lesson: 'c1',
+            prompt: 'A soil pool holds 1500 Pg of carbon and loses 60 Pg per year. Find the residence time, in years.',
+            answer: 25, verify: { expr: '1500/60' },
+            hint: 'The same formula.',
+            solution: ['T = 1500/60', '= 25 years', 'Short enough that land-use change alters the pool within decades'] },
+
+          { id: 'r3', kind: 'numeric', lesson: 'c1',
+            prompt: 'The atmosphere holds 13,000 km³ of water and 505,000 km³ falls as precipitation each year. Find the residence time in days, to one decimal place.',
+            answer: 9.4, tol: 0.09, verify: { expr: '13000/505000*365', dp: 1 },
+            hint: 'Compute the time in years first, then convert.',
+            solution: ['T = 13,000/505,000 = 0.02574 years', '× 365 days/year', '= 9.4 days'] },
+
+          { id: 'r4', kind: 'numeric', lesson: 'c1',
+            prompt: 'A lake holds 4.5 × 10⁶ m³ of water and its outflow is 3.0 × 10⁵ m³ per year. Find the residence time, in years.',
+            answer: 15, verify: { expr: '45*10**5/(3*10**5)' },
+            hint: 'Pool over flux, as always.',
+            solution: ['T = 4.5 × 10⁶ / 3.0 × 10⁵', '= 15 years',
+              'Which is why a pollutant entering this lake takes decades to flush out'] },
+
+          { id: 'r5', kind: 'mc', lesson: 'c1',
+            prompt: 'Which pair correctly names a pool and a flux?',
+            options: [
+              { t: 'Pool: carbon in soil. Flux: 60 Pg of carbon per year leaving the soil', ok: true },
+              { t: 'Pool: 60 Pg per year. Flux: 1500 Pg of carbon' },
+              { t: 'Both are amounts of carbon measured at one moment' },
+              { t: 'Both are rates of movement between places' }
+            ],
+            hint: 'Which one carries a "per year"?',
+            solution: ['A pool is an amount — a mass sitting somewhere',
+              'A flux is a rate — a mass per unit time',
+              'Residence time, in years, is the pool divided by the flux'] },
+
+          { id: 'r6', kind: 'mc', lesson: 'c1',
+            prompt: 'Which is a sedimentary cycle?',
+            options: [
+              { t: 'Phosphorus', ok: true },
+              { t: 'Carbon' },
+              { t: 'Nitrogen' },
+              { t: 'Water' }
+            ],
+            hint: 'Which element has no significant gas phase?',
+            solution: ['Phosphorus moves through rock, soil and water with no atmospheric pool',
+              'So it is slow, local and easily depleted',
+              'Carbon, nitrogen and water all have major atmospheric pools'] },
+
+          { id: 'r7', kind: 'spot', lesson: 'c1',
+            prompt: 'A student computes a residence time. One line is wrong.',
+            steps: [
+              { t: 'The pool holds 800 Pg of carbon', bad: false },
+              { t: 'The flux out is 100 Pg per year', bad: false },
+              { t: 'Residence time = flux / pool = 100/800 = 0.125', bad: true },
+              { t: 'The answer should be a time, in years', bad: false }
+            ],
+            why: 'The formula is T = S/F, with the pool on top: 800/100 = 8 years. Dividing the other way gives 0.125 per year, which is a rate rather than a time — and the fourth line says exactly what the answer should be, which is the quickest way to catch the inversion. The units settle it on their own: mass divided by mass-per-year gives years.',
+            hint: 'What units should the answer have?',
+            solution: ['T = S/F = 800/100', '= 8 years',
+              'Mass ÷ (mass per year) = years, which is the check'] },
+
+          { id: 'r8', kind: 'mc', lesson: 'c2',
+            prompt: 'Which process moves carbon from the atmosphere into living tissue?',
+            options: [
+              { t: 'Photosynthesis', ok: true },
+              { t: 'Respiration' },
+              { t: 'Decomposition' },
+              { t: 'Combustion' }
+            ],
+            hint: 'Which direction does each one run?',
+            solution: ['Photosynthesis fixes CO₂ into sugars',
+              'Respiration, decomposition and combustion all return CO₂ to the air',
+              'It is the only significant entry route'] },
+
+          { id: 'r9', kind: 'mc', lesson: 'c2',
+            prompt: 'What has human activity principally changed in the carbon cycle?',
+            options: [
+              { t: 'A flux — moving carbon from the slowest pool into the fastest, far faster than it returns', ok: true },
+              { t: 'It created a new pool of carbon that did not exist before' },
+              { t: 'It created new carbon atoms' },
+              { t: 'It stopped photosynthesis from occurring' }
+            ],
+            hint: 'The pools are all ancient. What is new?',
+            solution: ['Fossil fuel carbon was already in the cycle, in the slowest pool',
+              'Burning it returns it to the atmosphere in centuries rather than millions of years',
+              'It is the rate that changed, not the inventory'] },
+
+          { id: 'r10', kind: 'mc', lesson: 'c2',
+            prompt: 'Which holds more carbon?',
+            options: [
+              { t: 'Soil, which holds more than all living vegetation', ok: true },
+              { t: 'Living vegetation' },
+              { t: 'The atmosphere holds more than either' },
+              { t: 'They are about equal' }
+            ],
+            hint: 'The visible pool is not the largest one.',
+            solution: ['Soil organic matter exceeds the carbon in all standing vegetation',
+              'Which is why ploughing and draining release carbon no tree count records',
+              'And why soil management is a real option — its residence time is only about 25 years'] },
+
+          { id: 'r11', kind: 'mc', lesson: 'c2',
+            prompt: 'Why is the ocean’s absorption of CO₂ not simply good news?',
+            options: [
+              { t: 'Dissolved CO₂ forms carbonic acid, so uptake and acidification are the same process', ok: true },
+              { t: 'The ocean releases it again immediately' },
+              { t: 'The ocean cannot absorb CO₂ at all' },
+              { t: 'It has no effect on atmospheric concentrations' }
+            ],
+            hint: 'What happens chemically when CO₂ dissolves?',
+            solution: ['Uptake genuinely does slow atmospheric accumulation',
+              'But the dissolved gas forms carbonic acid and lowers the pH',
+              'Organisms that build carbonate shells are affected by exactly the amount taken up'] },
+
+          { id: 'r12', kind: 'mc', lesson: 'c3',
+            prompt: 'Why is nitrogen a limiting nutrient when the atmosphere is 78% nitrogen?',
+            options: [
+              { t: 'N₂ has a triple bond that almost nothing can break, so the gas is unavailable to plants', ok: true },
+              { t: 'The nitrogen in the air is too high above the soil to reach roots' },
+              { t: 'Plants can use atmospheric nitrogen, but only slowly' },
+              { t: 'Nitrogen is only limiting in aquatic systems' }
+            ],
+            hint: 'Abundance and availability are different properties.',
+            solution: ['The triple bond in N₂ is one of the strongest in nature',
+              'Only nitrogen-fixing bacteria, lightning and industry convert it',
+              'So a field can sit under an ocean of nitrogen and still be nitrogen-poor'] },
+
+          { id: 'r13', kind: 'mc', lesson: 'c3',
+            prompt: 'Which process converts ammonium to nitrate?',
+            options: [
+              { t: 'Nitrification', ok: true },
+              { t: 'Nitrogen fixation' },
+              { t: 'Denitrification' },
+              { t: 'Ammonification' }
+            ],
+            hint: 'Each step needs the product of the one before.',
+            solution: ['Fixation makes ammonium from N₂',
+              'Nitrification then converts ammonium to nitrite and on to nitrate',
+              'Denitrification returns nitrate to N₂ gas, closing the cycle'] },
+
+          { id: 'r14', kind: 'mc', lesson: 'c3',
+            prompt: 'In eutrophication, what actually kills the fish?',
+            options: [
+              { t: 'Oxygen depletion, as decomposers break down the dead algal bloom', ok: true },
+              { t: 'The fertiliser poisons them directly' },
+              { t: 'The algae eat the fish' },
+              { t: 'The algae block sunlight, and the fish starve of light' }
+            ],
+            hint: 'Why is the fish kill weeks after the runoff?',
+            solution: ['The nutrient relieves the limit and algae bloom',
+              'The bloom dies and aerobic decomposition consumes the dissolved oxygen',
+              'The fish suffocate — which is why the delay is weeks rather than hours'] },
+
+          { id: 'r15', kind: 'mc', lesson: 'c3',
+            prompt: 'Why can phosphorus lost downstream not be replaced the way lost nitrogen can?',
+            options: [
+              { t: 'Phosphorus has no gas phase, so there is no atmospheric pool to fix it back from', ok: true },
+              { t: 'Phosphorus is a heavier element' },
+              { t: 'No organism can take up phosphorus' },
+              { t: 'Phosphorus is not a nutrient plants need' }
+            ],
+            hint: 'What does nitrogen have that phosphorus lacks?',
+            solution: ['Nitrogen lost from a field can be refixed from the air by bacteria',
+              'Phosphorus reaching deep sediment returns only through geological uplift',
+              'Which is why it is the limiting nutrient in most fresh water'] },
+
+          { id: 'r16', kind: 'spot', lesson: 'c3',
+            prompt: 'A student describes the nitrogen cycle. One line is wrong.',
+            steps: [
+              { t: 'Nitrogen-fixing bacteria convert N₂ to ammonium', bad: false },
+              { t: 'Nitrifying bacteria convert ammonium to nitrate', bad: false },
+              { t: 'Plants take up N₂ directly from the air through their leaves', bad: true },
+              { t: 'Denitrifying bacteria return nitrate to N₂ gas' },
+              { t: 'Every step except assimilation is carried out by bacteria', bad: false }
+            ],
+            why: 'Plants cannot use N₂ at all — the triple bond makes it inert, which is the whole reason fixation exists as a step and the whole reason nitrogen limits growth under an atmosphere that is 78% nitrogen. Plants assimilate ammonium or nitrate from the soil through their roots, using the products of the two bacterial steps above.',
+            hint: 'What has to happen to N₂ before anything can use it?',
+            solution: ['Plants assimilate ammonium or nitrate from the soil, through their roots',
+              'N₂ must be fixed first, by bacteria, lightning or industry',
+              'Which is why legumes with root-nodule bacteria enrich a soil and other crops do not'] },
+
+          { id: 'r17', kind: 'order', lesson: 'c3',
+            prompt: 'Put the steps of the nitrogen cycle in order, starting from atmospheric N₂.',
+            steps: [
+              'Fixation converts N₂ to ammonium',
+              'Nitrification converts ammonium to nitrate',
+              'Assimilation builds nitrate into plant tissue',
+              'Ammonification returns nitrogen from dead material to ammonium',
+              'Denitrification returns nitrate to N₂ gas'
+            ],
+            hint: 'Each step works on the product of the one before it.',
+            solution: ['Nothing can happen until N₂ is fixed',
+              'Nitrate is the form plants take up most readily',
+              'And the cycle closes only when denitrifiers return nitrogen to the air'] },
+
+          { id: 'r18', kind: 'order', lesson: 'c3',
+            prompt: 'Put the stages of eutrophication in order.',
+            steps: [
+              'Nutrient-rich runoff enters the water',
+              'Algae bloom, released from the nutrient that was limiting them',
+              'The bloom dies and sinks',
+              'Decomposers consume the dead algae and strip the dissolved oxygen',
+              'Fish and other aerobic organisms suffocate'
+            ],
+            hint: 'The damage is done by decomposition, not by the algae.',
+            solution: ['The limiting nutrient is relieved, so growth follows immediately',
+              'The bloom is short-lived and the dead material is enormous',
+              'Aerobic decomposition is what removes the oxygen, weeks after the runoff'] }
+        ]
+      }
+    ]
+  };
+
+  root.Courses.register(ECOL);
 
 })(typeof window !== 'undefined' ? window : globalThis);
 
@@ -31706,7 +33128,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.67', date: '18 September 2026', year: 2026 };
+  const BUILD = { v: '2.68', date: '18 September 2026', year: 2026 };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonandy242', ['gmail', 'com'].join('.')].join('@');
   /* The one sentence that says what this is. It appears under the wordmark, and build.js uses
@@ -31719,6 +33141,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      because the person who needs it is the one who just watched the app refresh itself and wants to
      know what moved. Trim the tail when it gets past a dozen; nobody reads further back than that. */
   const WHATS_NEW = [
+    ['2.68', '<b>A new subject gets its first course: BIOL-ERSC 2260H, Introductory Ecology, under the green chip.</b> Biology is the thirteenth subject to be built out, and the course follows its lecture schedule week by week. The first three units ship now. <b>What ecology is</b> comes first, including the distinction the subject is most often accused of blurring &mdash; ecology predicts what will happen, environmentalism is a position about what ought to be done &mdash; then the levels of organisation, which decide what would even count as an answer to a question. The <b>niche</b> is taught as a role rather than an address, with the fundamental and realised versions separated by the one observation that makes the difference testable: remove the competitor and the species spreads back. <b>Food webs</b> follow, with the ten per cent rule, the reason chains run only four or five levels deep, trophic cascades, and a keystone species defined by what its removal does rather than by how common it is. Unit two is <b>energy and diversity</b>: NPP = GPP &minus; R and why using the wrong one overstates everything above it; trophic efficiency computed from data rather than assumed; the contrast the rest of the course rests on &mdash; energy flows through and leaves as heat, matter cycles and is reused; then richness against evenness, with Simpson&rsquo;s index worked through on two plots that have identical species counts and differ fivefold. It closes on disturbance and succession, and the intermediate disturbance hypothesis, whose two ends fail for opposite reasons. Unit three is <b>nutrient cycling</b>: pools, fluxes and the residence time T = S/F that says which pools respond in a decade and which in a million years; the carbon cycle, where what human activity changed is a flux and not a pool; and the nitrogen cycle, where 78% of the atmosphere is nitrogen and almost none of it is available. Nine lessons, eighteen worked examples, 53 practice questions and 36 named misconceptions. Six more units follow.'],
     ['2.67', '<b>CHEM 1000H is complete: chapter 11 lands, and every chapter on the schedule is now built.</b> <b>Intermolecular forces</b> are the forces BETWEEN molecules rather than within them, and the chapter opens by insisting on the difference &mdash; boiling water separates molecules without breaking a single O&ndash;H bond, which is why steam is still water and why the two energies differ by a factor of ten. <b>Dispersion forces</b> act in everything and grow with the electron count, which is the whole reason fluorine is a gas and iodine a solid; they also depend on SHAPE, so two molecules of identical formula boil 26 degrees apart. <b>Dipole&ndash;dipole</b> forces then separate substances of equal mass, and <b>hydrogen bonding</b> is taught with its strict test &mdash; an H bonded directly to N, O or F, and nothing looser. <b>Predicting a boiling point</b> is set out as an ordered comparison, with the standing caution that a much heavier nonpolar molecule can still beat a light hydrogen-bonded one, and the same forces then explain surface tension, viscosity and why mercury and water curve opposite ways in the same glass tube. The chapter closes on <b>water</b>, whose anomalies all come from one fact: two O&ndash;H bonds and two lone pairs, so four hydrogen bonds per molecule. That is the 160 degrees its boiling point sits above its group trend, the specific heat that makes coastal climates mild, the heat of vaporisation that makes sweating work, and the open hexagonal lattice that makes ice float and lets a lake freeze from the top down. Three lessons, six worked examples, 18 practice questions and 12 named misconceptions. The course now stands at 7 chapters, 29 lessons, 58 worked examples and 156 practice questions.'],
     ['2.66', '<b>CHEM 1000H chapters 9 and 10: the bond, in three models.</b> <b>Lewis theory</b> first &mdash; dots for valence electrons, ionic bonding and the lattice energy that depends on charge far more than on size, then <b>electronegativity</b> and the difference (not the value) that sorts a bond into nonpolar, polar or ionic. The six-step procedure for <b>drawing a Lewis structure</b> is set out with the electron count as a fixed budget, so a double bond is made by moving a lone pair rather than inventing a pair, and the final count is the only proof the structure is right. <b>Formal charge</b> then decides between resonance structures, with the sum rule as the check, and the chapter closes on <b>bond energies</b>: broken minus formed, which estimates the enthalpy of methane combustion at &minus;802 kJ without a single measurement. Chapter 10 is about <b>shape</b>, which Lewis theory cannot give. <b>VSEPR</b> counts electron domains &mdash; a double bond counts once &mdash; and the five geometries follow from putting points on a sphere; lone pairs then take positions without holding atoms, which is the whole difference between the electron geometry and the molecular shape, and why water is bent and CO&sub2; is not. <b>Polarity</b> is treated as the two-part test it is: polar bonds AND a shape that fails to cancel them, with CH&sub3;Cl against CH&sub4; as the case where only the outer atoms differ. Then <b>valence bond theory</b> &mdash; hybridisation read straight off the domain count, sigma against pi, and why a double bond cannot rotate &mdash; and <b>molecular orbital theory</b>, which gives bond order, explains why He&sub2; does not exist, and gets oxygen&rsquo;s paramagnetism right where the Lewis structure gets it flatly wrong. Eleven lessons, twenty-two worked examples, 47 practice questions and 36 named misconceptions. Chapter 11 completes the course.'],
     ['2.65', '<b>CHEM 1000H chapters 7 and 8: where the periodic table comes from.</b> <b>The quantum-mechanical model</b> starts with light &mdash; wavelength against frequency, the photon energy that depends on colour and not on brightness, and the conversion to kJ/mol that shows why a 254 nm lamp sterilises and a sodium street lamp is harmless. Then the <b>line spectrum</b> that forced quantisation: sharp lines mean sharp energies, the hydrogen levels crowd as 1/n&sup2;, and the n = 3 &rarr; 2 transition is computed all the way to the 656 nm red line a discharge tube actually shows. <b>Matter waves</b> follow &mdash; an electron&rsquo;s wavelength is three times the size of its own atom, a baseball&rsquo;s is nineteen powers of ten below a proton, and the uncertainty principle is stated as a property of matter rather than a limit of the apparatus, which is what rules out orbits and replaces them with probability maps. The chapter closes with the <b>four quantum numbers</b>, their allowed values, and the counting that gives n&sup2; orbitals and 2n&sup2; electrons per shell. Chapter 8 cashes it in: <b>electron configurations</b> under the aufbau order (4s before 3d, and why), the Pauli principle and Hund&rsquo;s rule with the orbital diagrams that make unpaired electrons visible; configurations read straight off the table by block, with chromium and copper as the two exceptions worth knowing; <b>effective nuclear charge</b>, which explains the one trend that feels wrong &mdash; more electrons, smaller atom; and then <b>ions</b>, removed from the highest shell first so that Fe&sup2;&#8314; is 3d&#8310; and not 4s&sup2; 3d&#8308;, <b>ionisation energy</b> with both of its dips and the jump that counts the valence electrons, and <b>electron affinity</b> and metallic character. Nine lessons, eighteen worked examples, 48 practice questions and 32 named misconceptions. Chapters 9, 10 and 11 remain.'],
