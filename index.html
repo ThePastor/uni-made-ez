@@ -12441,7 +12441,778 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     ]
   };
 
+
+  /* =============================== PHYS 1000H =============================== */
+  /* A first mechanics course for students arriving without school physics, following the section
+     order of the open text it is set from (Urone & Hinrichs, "College Physics", OpenStax) over the
+     first eight chapters. It sits beside the Mechanics course in this file rather than replacing it:
+     Mechanics is cut to the four ideas the subject leans on, while this one follows a real outline
+     week by week and therefore also covers the parts a course actually spends time on and a summary
+     leaves out — significant figures, approximation, drag, elasticity, fictitious frames, Kepler.
+     Built so far: chapters 1 and 2. */
+  const FOUND = {
+    subject: PHYS,
+    id: 'phys-1000h', inst: 'trent',
+    code: 'PHYS 1000H',
+    title: 'Foundations of Physics',
+    blurb: 'Mechanics from the beginning, for someone who has not done physics before: what a measurement is worth before it is used, how motion in a straight line is described and predicted, then vectors and two dimensions, the laws that say why motion changes, and finally energy and momentum — the two quantities that survive a collision no one can solve force by force.',
+    level: 'Foundation',
+    exam: 'Follows the course schedule: chapter 1 sections 1.1–1.4, chapter 2 in full, chapter 3 sections 3.1–3.5, chapter 4 sections 4.1–4.7, chapter 5 sections 5.1–5.3, chapter 6 sections 6.1–6.6, chapter 7 sections 7.1–7.7 and chapter 8 sections 8.1–8.5. A midterm falls after chapter 6 and the final is cumulative. Built so far: chapters 1 and 2.',
+    text: 'Urone & Hinrichs, College Physics (OpenStax, free online)',
+    legalNote: 'Study material for a university course. It follows the chapter and section order of the set text so that a lesson here matches the section you would open alongside it, but every explanation, example and question is written from scratch — nothing is copied from the book or from any past paper. Answers are recomputed by a computer algebra system before the page ships; where a figure is rounded, the question says to how many places, and g is taken as 9.80 m/s² unless a question says otherwise.',
+    gaps: [
+      'Still to be built, in schedule order: chapter 3 two-dimensional kinematics and vectors, chapter 4 the laws of motion, chapter 5 friction, drag and elasticity, chapter 6 circular motion and gravitation, chapter 7 work and energy, and chapter 8 linear momentum and collisions',
+      'Not on the schedule for this course, so not built for it: rotational dynamics, statics and torque, fluids, thermodynamics, waves and everything after chapter 8 of the set text',
+      'The course assumes school algebra and trigonometry — quadratics, two equations in two unknowns, and sine, cosine and tangent on a right triangle — and teaches none of it; the Precalculus course here covers that ground'
+    ],
+    units: [
+
+      /* ============================ CHAPTER 1 ============================ */
+      {
+        id: 'measured', n: 1,
+        title: 'Measurement, units and how much a number is worth',
+        blurb: 'Before any physics is done: what the units are, how to change them without turning a calculation upside down, how many digits a measurement actually supports, and how to get an answer that is roughly right in one line.',
+        read: 'Chapter 1',
+        objectives: [
+          'Name the SI base units for length, mass and time, and read the common prefixes as powers of ten',
+          'Convert units by multiplying by a fraction equal to 1, and check the direction by seeing which unit cancels',
+          'Tell accuracy from precision, count significant figures, and round a calculated result to the digits the data support',
+          'Carry significant figures correctly through a multiplication and through an addition, which follow different rules',
+          'Make an order-of-magnitude estimate and say what it is good for'
+        ],
+        lessons: [
+          {
+            id: 'a1', title: 'Physical quantities, units and conversion', src: 'Section 1.2',
+            idea: `A physical quantity is a number <b>and</b> a unit, and the unit is not decoration: 5 means nothing, 5 metres is a length and 5 seconds is a time. Almost every mark lost in a first physics course that is not an algebra slip is a unit that was dropped, mixed or converted the wrong way.<br><br>Physics runs on the <b>SI system</b>, which fixes a base unit for each fundamental quantity: the <b>metre</b> (m) for length, the <b>kilogram</b> (kg) for mass, the <b>second</b> (s) for time. Everything else in this course is built from those three — a speed is m/s, an acceleration m/s², a force kg·m/s², which is given the name newton.<br><br>Sizes in physics run from the nuclear to the galactic, so SI uses <b>prefixes</b>, each a power of ten:<br><br><b>n</b> nano 10<sup>−9</sup> · <b>μ</b> micro 10<sup>−6</sup> · <b>m</b> milli 10<sup>−3</sup> · <b>c</b> centi 10<sup>−2</sup> · <b>k</b> kilo 10<sup>3</sup> · <b>M</b> mega 10<sup>6</sup> · <b>G</b> giga 10<sup>9</sup><br><br>Reading the prefix as its power of ten, rather than remembering a rule about which way to move a decimal point, is what makes conversions reliable.<br><br><b>Converting units</b> is one idea, applied as often as needed: <b>multiply by a fraction that equals 1</b>. Since 1 km = 1000 m, both 1000 m/1 km and 1 km/1000 m are equal to 1, and multiplying by 1 changes nothing but the wording. Choose the one whose <b>unwanted unit cancels</b>:<br><br>85 km/h × (1000 m / 1 km) × (1 h / 3600 s) = 23.6 m/s<br><br>The km cancels against the km, the h against the h, and m/s is left. That cancellation is the check — if the unit you wanted to lose is still there at the end, the fraction was used upside down, and the answer is out by a factor of the conversion squared.<br><br>A unit raised to a power converts to the same power. 1 m = 100 cm, so 1 m² = (100 cm)² = 10,000 cm², not 100 cm². Squaring the whole bracket, number and unit together, is what stops that.`,
+            figure: {
+              kind: 'numberline', x: [-9, 9],
+              points: [{ x: -9, label: 'nano' }, { x: -6, label: 'micro' }, { x: -3, label: 'milli' }, { x: -2, label: 'centi' }, { x: 0, label: 'the base unit' }, { x: 3, label: 'kilo' }, { x: 6, label: 'mega' }, { x: 9, label: 'giga' }],
+              caption: 'The prefixes laid out as what they are: powers of ten either side of the base unit. Read across rather than memorising decimal-point rules, and a conversion becomes an exponent you can check — from milli to kilo is six steps right, so a factor of 10⁶.'
+            },
+            rules: [
+              { name: 'The three base units used here', expr: 'length in m, mass in kg, time in s', words: true, note: 'Every other unit in this course is built from these three. A speed is m/s, an acceleration m/s².' },
+              { name: 'Converting units', expr: 'value * (wanted unit / unwanted unit) = value in the wanted unit', words: true, note: 'The fraction equals 1, so nothing changes but the wording. Pick the orientation that cancels the unit you do not want.' },
+              { name: 'km/h to m/s', expr: 'v_ms = v_kmh * 1000 / 3600', note: 'Or divide by 3.6. Multiplying by 3.6 instead is the standard slip, and gives an answer about 13 times too large.' },
+              { name: 'A unit to a power', expr: '1 m^2 = (100 cm)^2 = 10000 cm^2', note: 'Square the number and the unit together. 100 cm² is out by a factor of 100.' }
+            ],
+            examples: [
+              {
+                prompt: 'A car travels at 108 km/h. Express this in metres per second.',
+                approach: 'Two conversions in one line: kilometres to metres on top, hours to seconds underneath. Write each as a fraction equal to 1, oriented so the unit you are getting rid of appears on the opposite side of the bar from where it started, and let the cancelling do the checking. Only when the units read m/s do the numbers get multiplied.',
+                steps: [
+                  { do: 'Write the quantity with its units as a fraction: 108 km/h', why: 'Seeing the km on top and the h underneath is what tells you which way each conversion fraction has to point.' },
+                  { do: 'Kilometres to metres: multiply by (1000 m / 1 km)', why: 'The km on top cancels against the km underneath in the fraction, leaving metres on top. That cancellation is the whole check.' },
+                  { do: 'Hours to seconds: multiply by (1 h / 3600 s)', why: 'The h underneath the original cancels against the h on top of this fraction, leaving s underneath.' },
+                  { do: 'Now the units read m/s, so multiply the numbers: 108 × 1000 / 3600', why: 'Never multiply before the units are right — an answer in the wrong unit is not a rounding problem, it is a wrong answer.' },
+                  { do: '108000/3600 = 30', why: 'Dividing by 3.6 gives the same thing, which is the shortcut worth remembering for this particular pair of units.' },
+                  { do: 'v = 30 m/s', why: 'A sanity check: 30 m/s is about the speed of a car on a motorway, and 108 km/h is too. A number near 390 or near 2.3 would have failed that test instantly.' }
+                ],
+                answer: '30 m/s', answerWords: true,
+                check: 'Convert back: 30 m/s × 3600 s/h = 108,000 m/h, and ÷ 1000 gives 108 km/h ✓. And the size is right — 1 m/s is 3.6 km/h, so any speed in m/s is a much smaller number than the same speed in km/h.'
+              },
+              {
+                prompt: 'A rectangular plate measures 2.50 m by 0.400 m. Find its area in square centimetres.',
+                approach: 'Two routes reach the same place: convert both lengths to centimetres and multiply, or find the area in square metres and convert once with a SQUARED conversion factor. Do it the first way and check it the second, because the squared factor is exactly where this question is usually lost — the answer differs by a factor of a hundred if the square is forgotten.',
+                steps: [
+                  { do: 'Convert each length: 2.50 m × (100 cm / 1 m) = 250 cm', why: 'One factor of 1, oriented so the metres cancel.' },
+                  { do: '0.400 m × (100 cm / 1 m) = 40.0 cm', why: 'The same factor on the second side.' },
+                  { do: 'Area = 250 cm × 40.0 cm = 10,000 cm²', why: 'Multiply the lengths; the units multiply too, cm × cm = cm².' },
+                  { do: 'The other route: area = 2.50 m × 0.400 m = 1.00 m²', why: 'Worth doing as a check, and it is the route the question is really testing.' },
+                  { do: 'Convert with the SQUARED factor: 1 m² = (100 cm)² = 10,000 cm²', why: 'Square the number and the unit together. Using 100 instead of 10,000 here is the standard error and lands a hundredfold short.' },
+                  { do: 'So 1.00 m² = 10,000 cm², agreeing with the first route', why: 'Two independent routes to the same figure is as close to certainty as arithmetic gets.' }
+                ],
+                answer: '10,000 cm², which is 1.00 m²', answerWords: true,
+                check: 'Picture it: a square metre is a hundred centimetres by a hundred centimetres, so ten thousand square centimetres tile it — the factor is the square of the length factor, always. The same logic makes 1 m³ a million cm³.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'p1k-conversion-upside-down',
+                wrong: 'Multiplying by 3.6 to turn km/h into m/s',
+                right: 'Divide by 3.6 — or multiply by 1000/3600 and let the units cancel.',
+                why: 'The two conversions pull in opposite directions and it is easy to apply both the same way. The units settle it without any memory: write the fractions out, and if km or h is still standing at the end of the line, the fraction was upside down. A 108 km/h car at "389 m/s" would be faster than sound.'
+              },
+              {
+                id: 'p1k-squared-unit-not-squared',
+                wrong: 'Converting 1 m² to 100 cm²',
+                right: 'Square the whole conversion: 1 m² = (100 cm)² = 10,000 cm².',
+                why: 'The conversion factor applies to each of the two lengths that make the area, so it applies twice. Writing the factor in brackets with its own square, rather than remembering a rule, makes it automatic — and the same reasoning gives 10⁶ for a cubic metre in cubic centimetres.'
+              },
+              {
+                id: 'p1k-units-dropped-mid-calculation',
+                wrong: 'Working with bare numbers and putting a unit on the final answer',
+                right: 'Carry the units through every line, and read the units of the result.',
+                why: 'The units are a free check on the physics, not decoration: if a calculation meant to produce a speed ends in m/s² something has gone wrong several lines earlier, and carrying them is how you find out. Dropping them means a wrong formula and a right formula look identical on the page.'
+              },
+              {
+                id: 'p1k-prefix-direction',
+                wrong: 'Treating 2.5 km as 2.5 × 10⁻³ m because "kilo is a small prefix on the page"',
+                right: 'Read the prefix as its power of ten: kilo is 10³, so 2.5 km = 2,500 m.',
+                why: 'Prefix errors are not small errors — they are factors of a thousand or a million, and they survive every later step of the question. Reading k as 10³ and m as 10⁻³ off the scale, rather than recalling which way a decimal point moves, is what makes it reliable under exam pressure.'
+              }
+            ]
+          },
+
+          {
+            id: 'a2', title: 'Accuracy, precision and significant figures', src: 'Section 1.3',
+            idea: `Every measurement is uncertain, and pretending otherwise is the most common way a physics answer becomes dishonest.<br><br><b>Accuracy</b> is how close a measurement is to the true value. <b>Precision</b> is how close repeated measurements are to each other. They are independent: a scale reading 2 kg heavy every time is precise and inaccurate, and a scale scattering wildly around the right value is accurate on average and imprecise. A measurement can be either, both or neither, and a question asking which of two instruments is "better" is usually asking you to say which of the two you mean.<br><br><b>Significant figures</b> are how precision is carried in writing. The rules for counting them:<br><br>• Every non-zero digit is significant.<br>• Zeros <b>between</b> non-zero digits are significant: 40.5 has three.<br>• Leading zeros are <b>not</b>: 0.0032 has two, because they only place the decimal point.<br>• Trailing zeros after a decimal point <b>are</b>: 2.50 has three, and that final zero is a claim about how well it was measured.<br>• Trailing zeros in a whole number are ambiguous — 1300 might be two, three or four — which is why scientific notation, 1.30 × 10³, is the honest way to write it.<br><br>Two different rules govern calculation, and using the wrong one is a standing source of lost marks:<br><br><b>Multiplying or dividing</b>: the result carries as many significant FIGURES as the least precise input. 2.50 × 0.400 has three in each, so the answer keeps three.<br><br><b>Adding or subtracting</b>: the result carries as many DECIMAL PLACES as the input with the fewest. 12.34 + 1.2 = 13.5, not 13.54, because the 1.2 knows nothing about hundredths.<br><br>Two working habits follow. <b>Round once, at the end</b> — rounding at every step accumulates an error the rules were designed to prevent. And an exact number, like the 2 in the formula for a circle's diameter or a count of 12 people, has <b>infinite</b> significant figures and never limits the answer.`,
+            figure: {
+              kind: 'graph', x: [0, 10], y: [0, 10],
+              points: [{ x: 2, y: 7.8 }, { x: 2.3, y: 8.1 }, { x: 1.8, y: 8.2 }, { x: 2.1, y: 7.9, label: 'precise, not accurate' }, { x: 7, y: 5 }, { x: 8.5, y: 6.6 }, { x: 6, y: 3.2 }, { x: 8.2, y: 3.4, label: 'accurate, not precise' }, { x: 7.4, y: 4.9, open: true }],
+              caption: 'Two sets of four measurements. The cluster on the left agrees with itself beautifully and sits nowhere near the true value; the scatter on the right straddles the true value (the open circle) and agrees with nothing. Precision is the tightness of the cluster, accuracy is where the cluster sits, and no single number reports both.'
+            },
+            rules: [
+              { name: 'Accuracy against precision', expr: 'Accuracy is closeness to the true value; precision is closeness to each other', words: true, note: 'Independent of one another. An instrument can be precise and consistently wrong.' },
+              { name: 'Multiplying or dividing', expr: 'Keep as many significant figures as the least precise input', words: true, note: '2.50 × 0.400: three and three, so three in the answer.' },
+              { name: 'Adding or subtracting', expr: 'Keep as many decimal places as the input with the fewest', words: true, note: '12.34 + 1.2 = 13.5. A different rule from multiplication, and the two are routinely swapped.' },
+              { name: 'Percentage uncertainty', expr: 'percent uncertainty = (uncertainty / measured value) * 100', note: 'Turns an absolute uncertainty into one that can be compared across measurements of different sizes.' },
+              { name: 'Round once', expr: 'Carry extra digits through the working and round only the final answer', words: true, note: 'Rounding at every step builds up exactly the error the rules exist to control.' }
+            ],
+            examples: [
+              {
+                prompt: 'A rectangular field is measured as 24.62 m by 8.3 m. Give its area, and its perimeter, to the correct number of significant figures.',
+                approach: 'One question, two rules. The area is a product, so it takes the figure count of the weaker measurement; the perimeter is a sum, so it takes the decimal places of the coarsest one. Work both out in full first and round each at the end, and say which rule you applied to each — that is what the question is actually testing.',
+                steps: [
+                  { do: 'Count the significant figures: 24.62 has four, 8.3 has two', why: 'Every digit here is non-zero, so counting is direct. The 8.3 is the weaker measurement and will limit the product.' },
+                  { do: 'Area in full: 24.62 × 8.3 = 204.346 m²', why: 'Do the arithmetic without rounding first. Rounding now and again later is how the rules get broken.' },
+                  { do: 'Multiplication rule: keep two significant figures, so the area is 200 m², better written 2.0 × 10² m²', why: 'The least precise input had two, so the answer can claim two. Writing 2.0 × 10² makes the two figures explicit, where plain 200 looks like it might be three.' },
+                  { do: 'Perimeter in full: 2(24.62) + 2(8.3) = 49.24 + 16.6 = 65.84 m', why: 'A different calculation, and so a different rule: this is addition.' },
+                  { do: 'Addition rule: 8.3 has one decimal place, so the perimeter keeps one: 65.8 m', why: 'Decimal places, not significant figures. The answer has three significant figures even though one input had only two, and that is correct — the rules genuinely differ.' },
+                  { do: 'Area 2.0 × 10² m², perimeter 65.8 m', why: 'Two answers with different precision from the same two measurements, which is the point of the question.' }
+                ],
+                answer: 'Area 2.0 × 10² m² and perimeter 65.8 m', answerWords: true,
+                check: 'Test the sensitivity: if the 8.3 were really anywhere from 8.25 to 8.35, the area runs from 203 to 206 m² — so the third figure is already unreliable and two is the honest claim. The perimeter over that same range runs from 65.7 to 65.9 m, so one decimal place is exactly right.'
+              },
+              {
+                prompt: 'A stopwatch reading is 4.22 s with an uncertainty of 0.05 s. Find the percentage uncertainty, to two significant figures.',
+                approach: 'A percentage uncertainty puts the doubt on a scale that can be compared with any other measurement, whatever its units. Divide the uncertainty by the measured value and multiply by a hundred. Then read the result: it tells you how many digits of the measurement are worth writing down.',
+                steps: [
+                  { do: 'Identify the two numbers: the measurement 4.22 s, the uncertainty 0.05 s', why: 'The uncertainty is an absolute one, in the same units as the measurement — which is why it can be divided out.' },
+                  { do: 'Percentage uncertainty = (0.05/4.22) × 100', why: 'The fraction of the measurement the doubt represents, expressed per hundred.' },
+                  { do: '0.05/4.22 = 0.011848…', why: 'Keep the extra digits until the end. The units cancel, seconds over seconds, so the result is a pure number as it must be.' },
+                  { do: '× 100 = 1.1848…%', why: 'A percentage is the fraction times a hundred.' },
+                  { do: 'To two significant figures, 1.2%', why: 'The uncertainty itself was given to one figure, so quoting the percentage to four would be a claim the data do not support.' },
+                  { do: 'Reading it: the time is good to about one part in a hundred, so 4.22 s is worth its three figures and a fourth would be fiction', why: 'That is what a percentage uncertainty is for — it says how far into the digits the measurement is believable.' }
+                ],
+                answer: '1.2%', answerWords: true,
+                check: 'Work back: 1.2% of 4.22 s is 0.0506 s, which recovers the stated 0.05 s ✓. And compare it with a different measurement — 0.05 s of doubt in a 0.40 s reading would be 13%, hopeless, while the same doubt in a 40 s reading is 0.13%. The absolute uncertainty alone cannot say that.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'p1k-sigfig-rules-swapped',
+                wrong: 'Applying the significant-figure rule to an addition: 12.34 + 1.2 = 13.54',
+                right: 'Addition keeps DECIMAL PLACES: 12.34 + 1.2 = 13.5.',
+                why: 'The two rules are genuinely different because the two operations spread uncertainty differently — in a sum, the input that is vague about tenths makes the total vague about tenths, however many figures the other one has. Deciding which operation you are doing before choosing the rule is the whole defence, and it is why an addition can legitimately end with more significant figures than either input.'
+              },
+              {
+                id: 'p1k-accuracy-precision-confused',
+                wrong: 'Calling an instrument accurate because it gives the same reading every time',
+                right: 'That is precision. Accuracy is closeness to the true value, and a consistently miscalibrated instrument has one without the other.',
+                why: 'A scale reading 2 kg heavy every single time is as precise as an instrument can be and useless as a measure of mass. The distinction matters in the laboratory because the two faults have different cures: precision is improved by a better instrument or more care, accuracy by calibration against a known standard.'
+              },
+              {
+                id: 'p1k-rounding-every-step',
+                wrong: 'Rounding to the final number of significant figures after each intermediate step',
+                right: 'Carry the extra digits through and round once, at the end.',
+                why: 'Each rounding introduces an error of its own, and over four or five steps those errors accumulate into exactly the fictitious precision the rules were written to prevent. The stated figure count is a statement about the ANSWER, not an instruction to degrade the working, which is why a calculator should be left holding the full value between steps.'
+              },
+              {
+                id: 'p1k-exact-numbers-counted',
+                wrong: 'Limiting an answer to one significant figure because the formula contains a 2',
+                right: 'Exact numbers — a counted quantity, or a 2 in a definition — have infinite significant figures and never limit the result.',
+                why: 'The significant-figure rules describe how well something was MEASURED, and a defined constant was not measured at all. Treating the 2 in "twice the radius" as one significant figure would reduce every diameter in the course to a single digit, which is plainly absurd and is a useful test of whether a number is exact or measured.'
+              }
+            ]
+          },
+
+          {
+            id: 'a3', title: 'Approximation and order of magnitude', src: 'Section 1.4',
+            idea: `An <b>order-of-magnitude estimate</b> answers a question to the nearest power of ten, in one line, from numbers you already know. It is not a lesser form of physics — it is the check that tells you whether the careful calculation you are about to do, or have just done, is even in the right universe.<br><br>The method is three steps. <b>Round every quantity to one significant figure</b>, or to the nearest power of ten. <b>Combine them with the relationship you would have used anyway.</b> <b>Report the power of ten</b>, not a precise-looking number — an estimate that comes out as "3.47 × 10⁴" is pretending to a precision it cannot have, and should be reported as "about 10⁴".<br><br>Two habits make estimates trustworthy. Build unfamiliar quantities out of familiar ones: nobody knows the mass of the air in a lecture theatre, but the room is roughly 10 m × 10 m × 3 m and air is roughly 1 kg per cubic metre, so the answer is a few hundred kilograms — and being within a factor of two or three is a success. And check the ANSWER against something known: a calculated human walking speed of 100 m/s is wrong no matter how tidy the algebra was.<br><br>Estimation is also how an examiner's trap is spotted. A projectile question whose algebra yields a 40-second flight time for a thrown ball, or an energy question giving a joule count larger than a power station's output, has an error in it somewhere, and noticing takes a second. In a course where most of the marks are for a method, the estimate is what tells you the method has been applied to the right numbers.<br><br>The arithmetic of powers of ten is worth having automatic: <b>10<sup>a</sup> × 10<sup>b</sup> = 10<sup>a+b</sup></b> and <b>10<sup>a</sup> / 10<sup>b</sup> = 10<sup>a−b</sup></b>. Most order-of-magnitude work is adding and subtracting small integers.`,
+            figure: {
+              kind: 'numberline', x: [-3, 9],
+              points: [{ x: -3, label: 'a raindrop' }, { x: 0, label: 'a litre of water' }, { x: 2, label: 'a person' }, { x: 3, label: 'a car' }, { x: 6, label: 'a blue whale' }, { x: 8, label: 'a loaded ship' }],
+              caption: 'Masses as powers of ten in kilograms. An estimate that lands one step away from the truth on a scale like this is a success; one that lands three steps away is telling you a factor of a thousand went missing, which is almost always a unit prefix or a squared conversion.'
+            },
+            rules: [
+              { name: 'The method', expr: 'Round each quantity to one figure, combine, and report the power of ten', words: true, note: 'An estimate quoted to four figures is not an estimate.' },
+              { name: 'Powers of ten', expr: '10^a * 10^b = 10^(a + b)', note: 'And 10^a / 10^b = 10^(a − b). Most estimating is adding small integers.' },
+              { name: 'Build from the familiar', expr: 'Make an unknown quantity out of quantities you do know', words: true, note: 'A room is about 10 m × 10 m × 3 m; air is about 1 kg per cubic metre. That is enough for the mass of the air in it.' },
+              { name: 'What counts as success', expr: 'Within a factor of about ten is a good estimate', words: true, note: 'The point is to catch an error of a thousandfold, not to compete with the exact calculation.' }
+            ],
+            examples: [
+              {
+                prompt: 'Estimate the number of heartbeats in an 80-year lifetime, and give the answer as a power of ten.',
+                approach: 'Chain the units together and let them cancel, exactly as in a conversion: beats per minute, minutes per hour, hours per day, days per year, years per life. Round every figure to something memorable before multiplying, and report the answer as an order of magnitude rather than a spuriously exact count.',
+                steps: [
+                  { do: 'Heart rate: about 70 beats per minute, call it 10² beats per minute', why: 'Rounding 70 to 100 costs a factor of 1.4, which is nothing on a scale of powers of ten and makes the arithmetic instant.' },
+                  { do: 'Minutes in a year: 60 × 24 × 365 ≈ 5 × 10⁵', why: 'Build it from numbers you know rather than recalling it. 60 × 24 = 1440 ≈ 10³, times 365 ≈ 4 × 10², gives about 5 × 10⁵.' },
+                  { do: 'Beats in a year: 10² × 5 × 10⁵ = 5 × 10⁷', why: 'Multiply the rounded figures and add the exponents. The units cancel: beats per minute times minutes per year leaves beats per year.' },
+                  { do: 'Over 80 years: 5 × 10⁷ × 80 = 4 × 10⁹', why: '80 is close to 10², so this could also be read straight off as about 10⁹–10¹⁰.' },
+                  { do: 'Report it as an order of magnitude: about 10⁹ beats, a few billion', why: 'Quoting 4,204,800,000 would be inventing eight digits of precision from a heart rate rounded to the nearest hundred.' },
+                  { do: 'Sanity check with the real rate: at 70 rather than 100 the figure is about 3 × 10⁹, the same power of ten', why: 'An estimate that survives a 40% change in one of its inputs is doing its job — the conclusion is the exponent, not the mantissa.' }
+                ],
+                answer: 'About 10⁹ beats — a few billion in a lifetime', answerWords: true,
+                check: 'Cross-check a different way: about 10⁵ beats a day (70 × 1440 ≈ 10⁵), times about 3 × 10⁴ days in 80 years, gives 3 × 10⁹ ✓. Two independent routes landing on the same power of ten is what makes an estimate trustworthy.'
+              },
+              {
+                prompt: 'A student calculates that a dropped ball takes 45 s to fall from a second-floor window. Estimate the correct time and say what has probably gone wrong.',
+                approach: 'Do not check the algebra first — check the answer against the world. A fall from a couple of storeys takes about a second, so a 45-second result is wrong by more than an order of magnitude, and the size of the discrepancy points straight at the kind of error. Estimate the true time, compare, and name the likely cause.',
+                steps: [
+                  { do: 'Estimate the height: a second-floor window is about 6 m', why: 'Two storeys at roughly 3 m each. Precision is not needed and would not help.' },
+                  { do: 'A free fall covers h = ½gt², so t = √(2h/g)', why: 'The relationship comes from the next chapter, but the estimate only needs its shape.' },
+                  { do: 'With h = 6 m and g ≈ 10 m/s²: t = √(12/10) = √1.2 ≈ 1.1 s', why: 'Rounding g from 9.80 to 10 changes the answer by 1%, which is irrelevant at this level of precision.' },
+                  { do: 'So the true answer is about 1 s, and 45 s is out by a factor of about 40', why: 'Naming the factor is the diagnostic step: a factor near 40 is not a rounding slip, it is a structural error.' },
+                  { do: 'A factor of 40 suggests g was taken as something like 9.8 cm/s², or the height was read in centimetres and the metres left in', why: 'Most errors of this size are a unit prefix or a conversion applied the wrong way, not an algebra mistake.' },
+                  { do: 'The estimate cost one line and located the error; checking the algebra first could have cost ten minutes', why: 'That is the case for estimating: it is cheaper than the thing it checks.' }
+                ],
+                answer: 'About 1 s — the 45 s answer is out by a factor of roughly 40, almost certainly a unit or prefix error', answerWords: true,
+                check: 'Anchor it in experience: a dropped object clearly does not hang in the air for most of a minute, and a second is what a drop from a first-floor window looks like. That comparison with the world, not with the working, is the part of the check that cannot be fooled by a tidy-looking calculation.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'p1k-estimate-quoted-precisely',
+                wrong: 'Reporting an order-of-magnitude estimate as 4,204,800,000 beats',
+                right: 'Report the power of ten: about 10⁹ beats.',
+                why: 'Every input was rounded to one figure, so nine digits of output are fabricated — the calculator produced them, the physics did not. Reporting the exponent is not vagueness but honesty about what the method can deliver, and it is what makes the estimate comparable with the careful calculation it is meant to check.'
+              },
+              {
+                id: 'p1k-no-sanity-check',
+                wrong: 'Accepting a calculated answer because the algebra was done carefully',
+                right: 'Compare the answer with something you already know before writing it down.',
+                why: 'Careful algebra applied to a mis-converted number produces a careful wrong answer, and nothing inside the calculation can detect it. A walking speed of 100 m/s or a one-minute fall from a window is caught in a second by comparison with the world, which is why the check belongs at the end of every question rather than only the ones that feel uncertain.'
+              },
+              {
+                id: 'p1k-estimate-needs-exact-inputs',
+                wrong: 'Refusing to estimate because the exact height of the room, or the exact heart rate, is unknown',
+                right: 'Round to one figure and proceed — that is the method, not a compromise in it.',
+                why: 'The conclusion of an order-of-magnitude estimate is an exponent, and an exponent survives a 40% error in any of its inputs. Waiting for exact data means never making the check at all, which costs far more than the factor of two the rounding might introduce.'
+              }
+            ]
+          }
+        ],
+        practice: [
+          { id: 'f1', kind: 'numeric', lesson: 'a1',
+            prompt: 'Convert 90 km/h to metres per second.',
+            answer: 25, verify: { expr: 'Rational(90*1000, 3600)' },
+            hint: 'Multiply by 1000/3600, or divide by 3.6.',
+            solution: ['90 km/h × (1000 m / 1 km) = 90,000 m/h', '× (1 h / 3600 s) = 90,000/3600', '= 25 m/s'] },
+
+          { id: 'f2', kind: 'numeric', lesson: 'a1',
+            prompt: 'A length is 4.5 km. Express it in metres.',
+            answer: 4500, verify: { expr: 'Rational(45, 10)*1000' },
+            hint: 'Kilo is 10³.',
+            solution: ['1 km = 10³ m', '4.5 × 1000', '= 4500 m'] },
+
+          { id: 'f3', kind: 'numeric', lesson: 'a1',
+            prompt: 'Express 2.4 m² in square centimetres.',
+            answer: 24000, verify: { expr: 'Rational(24, 10)*100**2' },
+            hint: 'The conversion factor is squared along with the unit.',
+            solution: ['1 m = 100 cm, so 1 m² = (100 cm)² = 10,000 cm²', '2.4 × 10,000', '= 24,000 cm²'] },
+
+          { id: 'f4', kind: 'numeric', lesson: 'a1',
+            prompt: 'A time is 250 ms. Express it in seconds.',
+            answer: 0.25, verify: { expr: 'Rational(250, 1000)' },
+            hint: 'Milli is 10⁻³.',
+            solution: ['1 ms = 10⁻³ s', '250 × 0.001', '= 0.25 s'] },
+
+          { id: 'f5', kind: 'numeric', lesson: 'a1',
+            prompt: 'A car covers 1.8 km in 75 s. Find its average speed in m/s.',
+            answer: 24, verify: { expr: 'Rational(18, 10)*1000/75' },
+            hint: 'Convert to metres first, then divide by the time in seconds.',
+            solution: ['1.8 km = 1800 m', '1800/75', '= 24 m/s'] },
+
+          { id: 'f6', kind: 'mc', lesson: 'a1',
+            prompt: 'A student converts 72 km/h and gets 259 m/s. What has gone wrong?',
+            options: [
+              { t: 'Both conversions were applied the same way round, multiplying by 3600 instead of dividing', ok: true },
+              { t: 'Nothing — 259 m/s is the correct conversion of 72 km/h' },
+              { t: 'The kilometres were not converted to metres' },
+              { t: 'The answer should be in km/s, not m/s' }
+            ],
+            hint: 'Compare 259 m/s with the speed of sound, about 340 m/s.',
+            solution: ['72 km/h should be 72/3.6 = 20 m/s', '259 is about 13 times too large, and 13 ≈ 3600/1000 × 3.6', 'The hours-to-seconds fraction was used upside down', 'Writing the units out and cancelling catches it immediately'] },
+
+          { id: 'f7', kind: 'numeric', lesson: 'a2',
+            prompt: 'How many significant figures does 0.004070 have?',
+            answer: 4, verify: { expr: 'Rational(4)' },
+            hint: 'Leading zeros do not count; trailing zeros after a decimal point do.',
+            solution: ['The leading zeros only place the decimal point: not significant', 'The 4, the 0 between digits, the 7 and the final 0 all count', 'Four significant figures'] },
+
+          { id: 'f8', kind: 'numeric', lesson: 'a2',
+            prompt: 'Compute 3.24 × 1.7 and give the answer to the correct number of significant figures.',
+            answer: 5.5, tol: 0.005, verify: { expr: 'Rational(324, 100)*Rational(17, 10)', dp: 1 },
+            hint: 'Multiplication keeps the figure count of the weaker input.',
+            solution: ['3.24 × 1.7 = 5.508', '1.7 has two significant figures, the fewest', 'Round to two: 5.5'] },
+
+          { id: 'f9', kind: 'numeric', lesson: 'a2',
+            prompt: 'Compute 8.71 + 0.3 and give the answer to the correct precision.',
+            answer: 9, tol: 0.005, verify: { expr: 'Rational(871, 100) + Rational(3, 10)', dp: 1 },
+            hint: 'Addition keeps decimal places, not significant figures.',
+            solution: ['8.71 + 0.3 = 9.01', '0.3 has one decimal place, the fewest', 'Round to one decimal place: 9.0'] },
+
+          { id: 'f10', kind: 'numeric', lesson: 'a2',
+            prompt: 'A mass of 2.40 kg is measured with an uncertainty of 0.03 kg. Find the percentage uncertainty, to two significant figures.',
+            answer: 1.3, tol: 0.005, verify: { expr: 'Rational(3, 100)/Rational(240, 100)*100', dp: 1 },
+            hint: 'Divide the uncertainty by the measurement and multiply by 100.',
+            solution: ['0.03/2.40 = 0.0125', '× 100 = 1.25%', 'To two significant figures, 1.3%'] },
+
+          { id: 'f11', kind: 'mc', lesson: 'a2',
+            prompt: 'A balance reads 5.032 g every time a 5.000 g standard is placed on it. What is true of the balance?',
+            options: [
+              { t: 'It is precise but not accurate, and the cure is calibration rather than more careful use', ok: true },
+              { t: 'It is accurate but not precise, because the reading is close to 5 g' },
+              { t: 'It is both accurate and precise, since it never varies' },
+              { t: 'Neither can be judged without knowing the mass being weighed' }
+            ],
+            hint: 'Which of the two is about closeness to the TRUE value?',
+            solution: ['Repeating the same reading exactly is precision', 'Being 0.032 g away from the known standard every time is an accuracy fault', 'Precise and inaccurate', 'A consistent offset is corrected by calibration'] },
+
+          { id: 'f12', kind: 'spot', lesson: 'a2',
+            prompt: 'Add 14.7 m and 0.28 m, giving the answer to the correct precision.',
+            steps: [
+              { t: 'The sum is 14.7 + 0.28 = 14.98 m' },
+              { t: '0.28 has two significant figures, the fewest, so round to two: 15 m', bad: true },
+              { t: 'This is an addition, so the rule is decimal places: 14.7 has one, the fewest' },
+              { t: 'Round to one decimal place: 15.0 m' }
+            ],
+            why: 'The significant-figure rule belongs to multiplication and division; addition and subtraction keep decimal places instead. Applying the wrong rule here throws away a digit the data fully support, and in a longer calculation that lost digit propagates into every step after it.',
+            hint: 'Which operation is this, and which rule goes with it?',
+            solution: ['Addition keeps decimal places', '14.7 has one decimal place', '14.98 rounds to 15.0 m'] },
+
+          { id: 'f13', kind: 'numeric', lesson: 'a3',
+            prompt: 'Estimate the number of seconds in a year, to the nearest power of ten. Give the exponent.',
+            answer: 7, verify: { expr: 'Rational(7)' },
+            hint: '60 × 60 × 24 × 365 — round as you go.',
+            solution: ['60 s × 60 min = 3600 s in an hour ≈ 4 × 10³', '× 24 h ≈ 10⁵ s in a day', '× 365 ≈ 3 × 10⁷ s in a year', 'The order of magnitude is 10⁷, so the exponent is 7'] },
+
+          { id: 'f14', kind: 'numeric', lesson: 'a3',
+            prompt: 'A room is about 10 m by 8 m by 3 m, and air has a density of about 1.2 kg per cubic metre. Estimate the mass of air in it, in kilograms.',
+            answer: 288, tol: 0.5, verify: { expr: 'Rational(12, 10)*10*8*3', dp: 0 },
+            hint: 'Volume first, then multiply by the density.',
+            solution: ['Volume = 10 × 8 × 3 = 240 m³', 'Mass = density × volume = 1.2 × 240', '= 288 kg — a few hundred kilograms, about the mass of four people'] },
+
+          { id: 'f15', kind: 'mc', lesson: 'a3',
+            prompt: 'A calculation gives the walking speed of a person as 140 m/s. What should you conclude?',
+            options: [
+              { t: 'There is an error — 140 m/s is about 500 km/h, far faster than anything a person can do', ok: true },
+              { t: 'The answer is fine if the algebra was done carefully' },
+              { t: 'The answer is fine but should be rounded to 100 m/s' },
+              { t: 'Nothing can be said without repeating the whole calculation' }
+            ],
+            hint: 'Convert it to km/h and compare with something you know.',
+            solution: ['140 m/s × 3.6 = 504 km/h', 'A person walks at about 1.4 m/s, or 5 km/h', 'The answer is out by a factor of about a hundred', 'That is a check the algebra itself cannot perform'] },
+
+          { id: 'f16', kind: 'order', lesson: 'a1',
+            prompt: 'Put the steps of a unit conversion in the order that makes the cancelling do the checking.',
+            steps: [
+              'Write the quantity with its units as a fraction',
+              'Write each conversion as a fraction equal to 1',
+              'Orient each fraction so the unwanted unit cancels',
+              'Check that the units left standing are the ones asked for',
+              'Multiply the numbers'
+            ],
+            hint: 'The numbers come last, once the units already read correctly.',
+            solution: ['Units first, arithmetic last', 'Each conversion factor is a fraction equal to 1', 'Orientation is decided by what has to cancel', 'Only when the units read correctly are the numbers multiplied'] }
+        ]
+      },
+
+      /* ============================ CHAPTER 2 ============================ */
+      {
+        id: 'straight', n: 2,
+        title: 'Motion in a straight line',
+        blurb: 'Describing motion before explaining it: where something is, how fast that is changing, how fast THAT is changing, and the four equations that predict the rest once the acceleration holds steady.',
+        read: 'Chapter 2',
+        objectives: [
+          'Distinguish distance from displacement and speed from velocity, and say why the difference is a sign',
+          'Compute average velocity and average acceleration from a change and the time it took',
+          'Choose the right one of the four constant-acceleration equations by listing what is known and what is missing',
+          'Solve free-fall problems with a stated sign convention, including motion that goes up before it comes down',
+          'Read a position–time graph and a velocity–time graph — the slope of one and the area under the other'
+        ],
+        lessons: [
+          {
+            id: 'b1', title: 'Displacement, distance, velocity and speed', src: 'Section 2.1',
+            idea: `Motion is described against a <b>coordinate system</b> you choose: an origin and a positive direction. Nothing physical depends on that choice, but every sign in the answer does, so it is written down first and not changed halfway through.<br><br><b>Displacement</b> is the change in position, <b>Δx = x<sub>f</sub> − x<sub>i</sub></b>. It has a direction, carried by its sign, and it depends only on the endpoints. <b>Distance</b> is the length of the path actually travelled, and it never decreases. Walk 3 m east and 3 m back and the displacement is zero while the distance is 6 m. On a round trip the two disagree completely, which is the case questions are built on.<br><br>The same split runs through the rates:<br><br><b>Average velocity = Δx/Δt</b>, which can be negative · <b>Average speed = distance/Δt</b>, which cannot<br><br>A runner completing a 400 m lap in 50 s has an average speed of 8 m/s and an average velocity of <b>zero</b>, because she finished where she started. That is not a trick; it is what the two words mean.<br><br><b>Instantaneous velocity</b> is the velocity at one moment — the limit of Δx/Δt as the interval shrinks to nothing. On a position–time graph it is the <b>slope of the tangent</b>; average velocity over an interval is the slope of the straight line joining the endpoints. Instantaneous <b>speed</b> is the magnitude of instantaneous velocity, so it never carries a sign.<br><br>Two conventions save trouble later. A one-dimensional vector needs no arrows: a <b>sign</b> is the whole of its direction, and −5 m/s means five metres per second in the negative direction, not a speed of minus five. And "velocity" in an exam question nearly always means instantaneous velocity unless the word "average" is there, so read for that word before choosing a formula.`,
+            figure: {
+              kind: 'graph', x: [0, 10], y: [-1, 7], xlabel: 't', ylabel: 'x',
+              fns: [{ expr: '6 - 0.2*(x - 4)**2', label: 'position against time' }],
+              points: [{ x: 1, y: 4.2, label: 'start' }, { x: 4, y: 6, label: 'turns round here' }, { x: 9, y: 1, label: 'end' }],
+              segments: [{ from: [1, 4.2], to: [9, 1], label: 'average velocity: the slope of this', dashed: true }],
+              caption: 'One trip, drawn as position against time. The object moves forward, stops at the top where the tangent is flat, and comes back past its starting point. The dashed line joining the endpoints has the slope of the AVERAGE velocity — negative, because it ends behind where it began — while the distance travelled is the whole length of the journey, up and back.'
+            },
+            rules: [
+              { name: 'Displacement', expr: 'delta x = x_f - x_i', note: 'Endpoints only. Its sign is its direction, and the path taken makes no difference to it.' },
+              { name: 'Average velocity', expr: 'v_avg = (delta x) / (delta t)', note: 'Can be negative, and is zero for any round trip.' },
+              { name: 'Average speed', expr: 'speed_avg = distance / (delta t)', note: 'Uses the path length, so it is never negative and never zero unless nothing moved.' },
+              { name: 'Instantaneous velocity', expr: 'v = lim (delta x)/(delta t) as delta t -> 0', note: 'The slope of the tangent to a position–time graph at that instant.' },
+              { name: 'Signs are directions', expr: 'In one dimension a sign carries the whole direction', words: true, note: '−5 m/s is five metres per second the other way, not a negative speed.' }
+            ],
+            examples: [
+              {
+                prompt: 'A cyclist rides 120 m east in 20 s, stops for 10 s, then rides 40 m west in 10 s. Find the total distance, the displacement, the average speed and the average velocity, taking east as positive.',
+                approach: 'Fix the sign convention first and write it down: east positive, so the westward leg is negative. Then keep two separate running totals — path length for the distance, signed change in position for the displacement — because they answer different questions. The two rates then follow, each from its own total, over the SAME total time, and the stop is part of that time.',
+                figure: {
+                  kind: 'numberline', x: [-20, 140],
+                  points: [{ x: 0, label: 'start' }, { x: 120, label: 'turns here' }, { x: 80, label: 'end' }],
+                  caption: 'The ride on a number line with east positive. The path is 120 m out and 40 m back, so the distance is 160 m; the displacement is only the gap between the first and last marks, 80 m. Everything that separates speed from velocity is in that difference.'
+                },
+                steps: [
+                  { do: 'Set the convention: east is positive, so west is negative', why: 'Written down before any arithmetic, and not changed later. Every sign in the answer depends on it.' },
+                  { do: 'Distance is the path length: 120 + 40 = 160 m', why: 'Path length ignores direction and simply adds up, so the westward leg counts as a positive 40 m.' },
+                  { do: 'Displacement: +120 m then −40 m, so Δx = 120 − 40 = +80 m', why: 'Signed change in position. The cyclist finishes 80 m east of the start, and the +80 says the direction as well as the size.' },
+                  { do: 'Total time: 20 + 10 + 10 = 40 s, including the stop', why: 'The stop is part of the elapsed time. Leaving it out is the standard slip and inflates both rates by a third.' },
+                  { do: 'Average speed = 160/40 = 4.0 m/s', why: 'Distance over total time. Positive by construction.' },
+                  { do: 'Average velocity = +80/40 = +2.0 m/s, that is 2.0 m/s east', why: 'Displacement over total time. Half the average speed here, because a quarter of the path was retraced.' }
+                ],
+                answer: 'Distance 160 m, displacement 80 m east, average speed 4.0 m/s, average velocity 2.0 m/s east', answerWords: true,
+                check: 'The average speed must be at least the magnitude of the average velocity, always — the path is never shorter than the straight line between its ends. Here 4.0 ≥ 2.0 ✓, and the two would be equal only if the cyclist never turned round or stopped.'
+              },
+              {
+                prompt: 'A runner completes one lap of a 400 m track in 64 s. Find the average speed and the average velocity.',
+                approach: 'This looks like it is missing information and is not. The distance is the lap length and the displacement is the gap between start and finish — which for a lap is zero, whatever the shape of the track. Compute each rate from its own numerator and say plainly why they differ, because the explanation is the mark.',
+                steps: [
+                  { do: 'Distance travelled: one lap, 400 m', why: 'Path length, which is what the track measures.' },
+                  { do: 'Average speed = 400/64 = 6.25 m/s', why: 'Distance over time. A realistic figure for a fast 400 m, which is a check in itself.' },
+                  { do: 'Displacement: the runner finishes at the start line, so x_f = x_i', why: 'Displacement depends only on the endpoints, and here they are the same point.' },
+                  { do: 'Δx = 0, so the average velocity = 0/64 = 0 m/s', why: 'Not a trick and not an error: over a closed path the average velocity is exactly zero.' },
+                  { do: 'Why they differ: velocity is about net change in position, speed about ground covered', why: 'The distinction is the whole content of the question, and stating it is what earns the mark.' },
+                  { do: 'Average speed 6.25 m/s, average velocity 0', why: 'Every instantaneous velocity during the run was non-zero; it is the average over the closed lap that vanishes.' }
+                ],
+                answer: 'Average speed 6.25 m/s, average velocity zero', answerWords: true,
+                check: 'Take half a lap instead: the runner is then 2r ≈ 127 m across the track from the start after about 32 s, giving an average velocity near 4 m/s while the average speed is unchanged at 6.25 m/s. The velocity depends on where you stop the clock; the speed does not.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'p1k-distance-for-displacement',
+                wrong: 'Using the total distance travelled as the displacement in a round trip',
+                right: 'Displacement is the signed gap between the endpoints, and it is zero for a closed path.',
+                why: 'The two agree only when the motion never reverses, which is exactly the case exam questions avoid. Every later formula in this chapter takes displacement, not distance, so the substitution turns a correct method into a wrong answer with no visible symptom — a lap run in 64 s is not a 6.25 m/s average velocity.'
+              },
+              {
+                id: 'p1k-stop-time-omitted',
+                wrong: 'Dividing by the time spent moving, leaving out a stated stop',
+                right: 'An average uses the TOTAL elapsed time, including any time at rest.',
+                why: 'Average velocity answers "what constant velocity would have produced the same displacement over the same interval", and standing still is part of that interval. Omitting a 10 s stop from a 40 s trip inflates both rates by a third, and the error is invisible because the arithmetic is otherwise perfect.'
+              },
+              {
+                id: 'p1k-negative-speed',
+                wrong: 'Reporting a speed of −5 m/s',
+                right: 'Speed is a magnitude and is never negative. A velocity of −5 m/s has a speed of 5 m/s.',
+                why: 'The sign is the direction, and stripping the direction is exactly what taking the magnitude means. A negative speed in an answer usually signals that a velocity was asked for and the direction was then described twice — once in the sign and once in words — or that a magnitude was taken without dropping the sign.'
+              },
+              {
+                id: 'p1k-convention-changed-midway',
+                wrong: 'Taking up as positive for the rise and down as positive for the fall',
+                right: 'Fix one convention at the start and keep it for the whole problem.',
+                why: 'Switching signs partway through makes the two halves of a motion incomparable, and the error surfaces as an impossible answer three lines later rather than where it was made. With a single convention a downward velocity simply comes out negative, which is the correct and complete description.'
+              }
+            ]
+          },
+
+          {
+            id: 'b2', title: 'Acceleration and the constant-acceleration equations', src: 'Section 2.4',
+            idea: `<b>Acceleration</b> is the rate at which velocity changes: <b>a = Δv/Δt</b>, in metres per second per second, m/s². The most useful thing to know about it is that it is not "speeding up". A car braking has an acceleration, a car turning at constant speed has an acceleration, and a ball at the top of its flight — momentarily at rest — has the full acceleration of gravity. Acceleration is about CHANGE in velocity, and velocity includes direction.<br><br>In one dimension the sign tells you which: the object speeds up when a and v have the <b>same</b> sign, and slows down when they have <b>opposite</b> signs. A negative acceleration is not "slowing down" — an object moving in the negative direction with negative acceleration is getting faster.<br><br>When the acceleration is <b>constant</b>, four equations connect the five quantities x, v<sub>0</sub>, v, a and t. Each one leaves out exactly one of them:<br><br><b>v = v<sub>0</sub> + at</b> — no displacement<br><b>x = x<sub>0</sub> + v<sub>0</sub>t + ½at²</b> — no final velocity<br><b>v² = v<sub>0</sub>² + 2aΔx</b> — no time<br><b>Δx = ½(v<sub>0</sub> + v)t</b> — no acceleration<br><br>That is the whole of one-dimensional kinematics, and choosing between them is a clerical act rather than an insight: <b>list what you are given, list what you want, and pick the equation that contains those and nothing else.</b> The one that leaves out the quantity you neither know nor want is the one to use. Students who instead pick a favourite equation and try to force it end up solving a quadratic they did not need.<br><br>Two cautions. Every one of these equations assumes the acceleration is <b>constant</b> — they say nothing about a car whose acceleration is changing, and applying them there is the deepest error available in this chapter. And the third equation, having no t in it, is the one to reach for whenever a question mentions no time at all, which is most "how fast when it gets there" questions.`,
+            figure: {
+              kind: 'graph', x: [0, 8], y: [0, 26], xlabel: 't', ylabel: 'v',
+              fns: [{ expr: '4 + 2.5*x', label: 'velocity against time, a = 2.5 m/s²' }],
+              shade: [{ from: 0, to: 6 }],
+              points: [{ x: 0, y: 4, label: 'v₀ = 4 m/s' }, { x: 6, y: 19, label: 'v = 19 m/s' }],
+              caption: 'Constant acceleration on a velocity–time graph is a straight line, and its slope is the acceleration: 15 m/s gained over 6 s is 2.5 m/s². The shaded area under the line is the displacement — a rectangle v₀t plus a triangle ½at², which is the second equation drawn rather than derived.'
+            },
+            rules: [
+              { name: 'Acceleration', expr: 'a = (delta v) / (delta t)', note: 'In m/s². It is the rate of change of VELOCITY, so a change of direction is an acceleration even at constant speed.' },
+              { name: 'No displacement', expr: 'v = v_0 + a t', note: 'Use when the question never mentions how far.' },
+              { name: 'No final velocity', expr: 'x = x_0 + v_0 t + a t^2 / 2', note: 'The workhorse for "how far in this many seconds".' },
+              { name: 'No time', expr: 'v^2 = v_0^2 + 2 a (delta x)', note: 'The one to reach for whenever the question mentions no time — it saves solving a quadratic.' },
+              { name: 'No acceleration', expr: 'delta x = (v_0 + v) t / 2', note: 'Displacement as the average of the two velocities times the time, valid only for constant acceleration.' },
+              { name: 'Speeding up or slowing down', expr: 'Same signs on a and v means faster; opposite signs means slower', words: true, note: 'A negative acceleration does not mean slowing down.' }
+            ],
+            examples: [
+              {
+                prompt: 'A car starts from rest and accelerates uniformly at 3.0 m/s² for 8.0 s. Find its final velocity and the distance it covers.',
+                approach: 'Two quantities, so two equations — but choose each one by what it leaves out rather than by habit. List the knowns first: starting from rest fixes v₀ = 0, which is the piece of information hidden in the wording. The velocity comes from the equation with no displacement in it, and the distance from the one with no final velocity, so neither answer depends on the other being right.',
+                steps: [
+                  { do: 'List what is known: v₀ = 0 (from rest), a = 3.0 m/s², t = 8.0 s', why: '"From rest" is a number, not a description — it is the most commonly missed given in the chapter.' },
+                  { do: 'For the final velocity, displacement is neither known nor wanted, so use v = v₀ + at', why: 'Pick the equation that omits the quantity you neither have nor need. That is the whole selection rule.' },
+                  { do: 'v = 0 + (3.0)(8.0) = 24 m/s', why: 'Gaining 3 m/s every second for 8 seconds. About 86 km/h, which is a plausible figure for a car after 8 s.' },
+                  { do: 'For the distance, the final velocity is not needed, so use x = v₀t + ½at²', why: 'Using an independent route means an error in the first answer cannot propagate into the second.' },
+                  { do: 'x = 0 + ½(3.0)(8.0)² = ½(3.0)(64) = 96 m', why: 'Square the time before multiplying — (8.0)² = 64, not 16. Doubling instead of squaring is the standard slip here.' },
+                  { do: 'v = 24 m/s and x = 96 m', why: 'Both from the given data alone, with no chain of dependency between them.' }
+                ],
+                answer: 'Final velocity 24 m/s and distance 96 m', answerWords: true,
+                check: 'Cross-check with the equation that has no acceleration in it: Δx = ½(v₀ + v)t = ½(0 + 24)(8.0) = 96 m ✓. A third route, v² = v₀² + 2ax, gives v = √(2 × 3.0 × 96) = √576 = 24 m/s ✓ — three of the four equations agreeing is as strong a check as this chapter offers.'
+              },
+              {
+                prompt: 'A train travelling at 30 m/s brakes uniformly and stops in 150 m. Find its acceleration, and the time it takes to stop.',
+                approach: 'No time is mentioned anywhere in the question, which points straight at the equation that has no t in it. Braking means the acceleration opposes the motion, so with the direction of travel taken as positive the answer must come out negative — and if it does not, a sign has been dropped. Once a is known, the time follows from the simplest equation of the four.',
+                figure: {
+                  kind: 'graph', x: [0, 12], y: [0, 34], xlabel: 't', ylabel: 'v',
+                  fns: [{ expr: '30 - 3*x', label: 'velocity against time', domain: [0, 10] }],
+                  shade: [{ from: 0, to: 10 }],
+                  points: [{ x: 0, y: 30, label: '30 m/s' }, { x: 10, y: 0, label: 'stopped at 10 s' }],
+                  caption: 'Braking drawn as a velocity–time line sloping down: the slope is the acceleration, −3.0 m/s², and the shaded triangle is the 150 m of track used up. Halving the stopping distance would not halve the speed — the area of a triangle goes as the square of its base, which is why v² appears in the equation this question needs.'
+                },
+                steps: [
+                  { do: 'List the knowns: v₀ = 30 m/s, v = 0 (stops), Δx = 150 m. Time is neither given nor asked for', why: '"Stops" fixes the final velocity at zero, exactly as "from rest" fixed the initial one.' },
+                  { do: 'No time anywhere, so use v² = v₀² + 2aΔx', why: 'The equation that omits t. Choosing it here avoids a quadratic entirely.' },
+                  { do: 'Substitute: 0 = 30² + 2a(150), so 0 = 900 + 300a', why: 'Take the direction of travel as positive, which makes Δx positive.' },
+                  { do: 'a = −900/300 = −3.0 m/s²', why: 'Negative, as braking must be with this convention: the acceleration opposes the velocity. A positive answer here would mean a sign was lost.' },
+                  { do: 'For the time, use v = v₀ + at: 0 = 30 + (−3.0)t', why: 'Now that a is known, the simplest equation of the four finishes the job.' },
+                  { do: 't = 30/3.0 = 10 s', why: 'Time is positive, always — a negative time means the wrong root or a sign error upstream.' }
+                ],
+                answer: 'a = −3.0 m/s² and the train stops after 10 s', answerWords: true,
+                check: 'Check the distance from the fourth equation: Δx = ½(v₀ + v)t = ½(30 + 0)(10) = 150 m ✓. And note what the squared term implies — at 60 m/s the same braking would need 600 m, four times as far for twice the speed, which is the physics behind every stopping-distance table.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'p1k-negative-a-means-slowing',
+                wrong: 'Reading a negative acceleration as "slowing down"',
+                right: 'Compare the signs: the object speeds up when a and v share a sign and slows when they differ.',
+                why: 'An object moving in the negative direction with negative acceleration is getting faster, not slower, and free fall makes this concrete — a ball thrown down has negative velocity and negative acceleration and gains speed the whole way. The sign of a alone describes a direction, and only its relation to the sign of v describes speeding up or slowing down.'
+              },
+              {
+                id: 'p1k-wrong-kinematic-equation',
+                wrong: 'Reaching for x = v₀t + ½at² when the question never mentions time',
+                right: 'List the knowns and the target, and pick the equation that leaves out the quantity you neither know nor want.',
+                why: 'Using the displacement equation without a known t forces you to solve a quadratic and then decide which root is physical, where v² = v₀² + 2aΔx answers the same question in one line. The four equations exist precisely so that one of them always omits the nuisance variable, and selecting on that basis turns the choice into a clerical step rather than a judgement.'
+              },
+              {
+                id: 'p1k-t-squared-not-squared',
+                wrong: 'Computing ½at² as ½ × a × 2t, or squaring only part of the term',
+                right: 'Square the time itself: ½(3.0)(8.0)² = ½(3.0)(64) = 96 m.',
+                why: 'The squared time is what makes distance grow so much faster than velocity under constant acceleration, and mishandling it produces an answer that is out by a large factor while looking perfectly reasonable. The check is dimensional: m/s² times s² gives metres, and any other treatment of the time leaves the units wrong.'
+              },
+              {
+                id: 'p1k-constant-a-assumed',
+                wrong: 'Using the four equations on motion whose acceleration is changing',
+                right: 'Every one of them assumes a constant acceleration, and the question has to say or imply so.',
+                why: 'Words like "uniformly", "constant" and "in free fall" are the licence to use them, and without one the equations are simply not applicable — a car whose acceleration tails off as it gains speed is not described by any of the four. This is the deepest error in the chapter because the arithmetic that follows is flawless and the answer is still meaningless.'
+              }
+            ]
+          },
+
+          {
+            id: 'b3', title: 'Falling objects and reading motion graphs', src: 'Section 2.7',
+            idea: `<b>Free fall</b> is motion under gravity alone, with air resistance neglected. Its acceleration is the same for every object regardless of mass — <b>g = 9.80 m/s²</b>, directed downward — which is why a hammer and a feather fall together in a vacuum. The mass does not appear anywhere in this section's equations, and looking for it is a sign that something has been misread.<br><br>Free fall is just constant-acceleration motion with a known a, so the four equations apply unchanged with a = ±g. The sign is a decision: <b>take up as positive and the acceleration is −9.80 m/s²</b> throughout, whether the object is rising, at the top, or falling. Writing +g on the way up and −g on the way down is the single most common wreck in this chapter, and it is unnecessary — the equations already handle the reversal through the sign of the velocity.<br><br>Three facts about a ball thrown straight up, all of which follow from that one convention:<br><br>• At the highest point the <b>velocity is zero but the acceleration is still −9.80 m/s²</b>. Nothing is momentarily weightless; if the acceleration were zero there the ball would hang.<br>• The rise and the fall take the <b>same</b> time, and the speed at any height going up equals the speed at that height coming down.<br>• Returning to the launch height, the velocity is the negative of the launch velocity — same speed, opposite direction.<br><br><b>Graphs</b> carry the same information in a form that is often quicker to read than an equation:<br><br>On a <b>position–time</b> graph, the <b>slope is the velocity</b>. Flat means at rest; steep means fast; a negative slope means moving backwards; a curve means the velocity is changing.<br><br>On a <b>velocity–time</b> graph, the <b>slope is the acceleration</b> and the <b>area under the line is the displacement</b>. Area below the axis counts as negative displacement, which is how a graph shows an object returning.<br><br>The traps are worth naming: a position–time graph crossing the axis means passing the origin, not stopping; a horizontal line on a velocity–time graph means constant velocity, not no motion; and the highest point on a velocity–time graph is the fastest moment, not the furthest point.`,
+            figure: {
+              kind: 'graph', x: [0, 4], y: [-22, 22], xlabel: 't', ylabel: 'v',
+              fns: [{ expr: '19.6 - 9.8*x', label: 'velocity of a ball thrown up at 19.6 m/s' }],
+              hlines: [{ y: 0, label: 'at the top' }],
+              points: [{ x: 2, y: 0, label: 'highest point, t = 2 s' }, { x: 4, y: -19.6, label: 'back at the start' }],
+              caption: 'A ball thrown straight up, drawn as velocity against time with up positive. The line is straight the whole way and its slope never changes — the acceleration is −9.80 m/s² at every instant, including the moment at t = 2 s when the velocity passes through zero. The symmetry of the graph about that moment is the symmetry of the flight.'
+            },
+            rules: [
+              { name: 'Free-fall acceleration', expr: 'a = -g = -9.80', note: 'With up taken as positive, and unchanged whether the object is rising, at the top or falling. Independent of mass.' },
+              { name: 'Velocity in free fall', expr: 'v = v_0 - g t', note: 'Just v = v₀ + at with a = −g.' },
+              { name: 'Height in free fall', expr: 'y = y_0 + v_0 t - g t^2 / 2', note: 'And v² = v₀² − 2g(y − y₀) when no time is mentioned.' },
+              { name: 'Slope of a position–time graph', expr: 'v = slope of x against t', words: true, note: 'Flat means at rest. Crossing the axis means passing the origin, not stopping.' },
+              { name: 'Velocity–time graph', expr: 'slope = acceleration, area underneath = displacement', words: true, note: 'Area below the axis is negative displacement, which is how a return journey shows up.' }
+            ],
+            examples: [
+              {
+                prompt: 'A ball is thrown straight up at 19.6 m/s from a hand 1.5 m above the ground. Find the time to the highest point and the greatest height above the ground, taking g = 9.80 m/s².',
+                approach: 'Take up as positive and write a = −9.80 m/s² once, for the whole flight. The key that unlocks the question is that the velocity is zero at the highest point — not the acceleration, which never changes. Time comes from the equation with no displacement in it, and the height from the one with no time, so neither leans on the other. Then remember to add the launch height, because the question asks above the GROUND.',
+                steps: [
+                  { do: 'Convention: up is positive, so a = −9.80 m/s² for the entire flight', why: 'One convention, written once. Flipping the sign at the top is the classic wreck in this question.' },
+                  { do: 'At the highest point v = 0 — the velocity, not the acceleration', why: 'This is the hidden given. The acceleration there is still −9.80 m/s², which is exactly why the ball does not hang.' },
+                  { do: 'Time: use v = v₀ − gt, so 0 = 19.6 − 9.80t', why: 'The displacement is neither known nor wanted at this stage, so this is the equation that omits it.' },
+                  { do: 't = 19.6/9.80 = 2.00 s', why: 'Two seconds up. By symmetry it will take the same 2.00 s to fall back to the hand.' },
+                  { do: 'Height risen: use v² = v₀² − 2gΔy, so 0 = 19.6² − 2(9.80)Δy', why: 'No time needed, so no chance of carrying an error in t into the height.' },
+                  { do: 'Δy = 384.16/19.6 = 19.6 m above the hand, so 19.6 + 1.5 = 21.1 m above the ground', why: 'The launch height is part of the answer the question asked for. Forgetting it is the other standard loss here.' }
+                ],
+                answer: '2.00 s to the top, and 21.1 m above the ground', answerWords: true,
+                check: 'Check the height the other way: Δy = v₀t − ½gt² = 19.6(2.00) − ½(9.80)(4.00) = 39.2 − 19.6 = 19.6 m ✓. And note the coincidence worth not over-reading — the rise in metres equals the launch speed in m/s only because g happens to be 9.8 and the numbers were chosen to be tidy.'
+              },
+              {
+                prompt: 'A stone is dropped from a bridge and hits the water 2.5 s later. Find the height of the bridge and the speed on impact, with g = 9.80 m/s².',
+                approach: 'Dropped means the initial velocity is zero, which is the given hidden in one word. Take down as positive this time — perfectly legitimate, and it keeps every number in the problem positive — then say so explicitly. The height comes from the displacement equation and the impact speed from the velocity equation, each directly from the data.',
+                steps: [
+                  { do: 'Convention: take DOWN as positive, so a = +9.80 m/s² and the displacement will come out positive', why: 'Either convention works; this one avoids a page of minus signs. What matters is stating it and keeping it.' },
+                  { do: '"Dropped" means v₀ = 0', why: 'The word is the number. A stone that is thrown down has a non-zero v₀, and the two questions differ only in that value.' },
+                  { do: 'Height: y = v₀t + ½gt² = 0 + ½(9.80)(2.5)²', why: 'Time is known and the final velocity is not needed, so this is the equation that omits it.' },
+                  { do: '(2.5)² = 6.25, so y = ½(9.80)(6.25) = 30.625, which is 31 m to two significant figures', why: 'The data carry two significant figures, so the answer does too — 30.625 m claims a precision the 2.5 s does not support.' },
+                  { do: 'Impact speed: v = v₀ + gt = 0 + (9.80)(2.5) = 24.5 m/s', why: 'Positive because down is positive here. In words: 24.5 m/s downward, about 88 km/h.' },
+                  { do: 'Height about 31 m, impact speed 24.5 m/s', why: 'Roughly a ten-storey bridge, and a speed that makes the danger obvious — both plausible, which is the last check.' }
+                ],
+                answer: 'About 31 m high, hitting the water at 24.5 m/s', answerWords: true,
+                check: 'Cross-check with the time-free equation: v² = 2gy = 2(9.80)(30.625) = 600.25, so v = 24.5 m/s ✓. And the mass of the stone never appeared anywhere, which is the signature of free fall — a pebble and a boulder dropped together would hit the water at the same moment.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'p1k-g-sign-flipped-at-top',
+                wrong: 'Using a = +g on the way up and a = −g on the way down',
+                right: 'One convention for the whole flight: with up positive, a = −9.80 m/s² at every instant.',
+                why: 'Gravity does not change direction when the ball turns round, and the equations already produce the reversal through the sign of the velocity. Flipping a partway through makes the two halves of the flight incompatible and usually yields a rise and a fall of different durations, which is the symptom to watch for.'
+              },
+              {
+                id: 'p1k-zero-a-at-the-top',
+                wrong: 'Setting a = 0 at the highest point because the ball is momentarily at rest',
+                right: 'The VELOCITY is zero there; the acceleration is still −9.80 m/s².',
+                why: 'If the acceleration really were zero at the top, the ball would stay there — nothing would start it moving again. The moment of zero velocity is exactly one instant, and it is the acceleration acting through that instant that turns the motion round, which is why "instantaneously weightless" is a description of the sensation and not of the physics.'
+              },
+              {
+                id: 'p1k-mass-in-free-fall',
+                wrong: 'Looking for the mass of the object, or expecting a heavier one to fall faster',
+                right: 'Free-fall acceleration is 9.80 m/s² regardless of mass, and no equation in this section contains m.',
+                why: 'The gravitational force on a heavier object is larger in exactly the proportion that its inertia is larger, so the two effects cancel and the acceleration is the same. A question that supplies a mass in a free-fall problem is either testing whether you know that, or is really about air resistance, which is the one thing that does break the equality.'
+              },
+              {
+                id: 'p1k-graph-crossing-axis',
+                wrong: 'Reading a position–time graph crossing the time axis as the object stopping',
+                right: 'Crossing the axis means passing the origin. The object is at rest where the graph is FLAT.',
+                why: 'The value on a position–time graph is where the object is and the slope is how fast it is going, so the crossing point is the moment it passes x = 0 — typically moving quickly. Reading position for velocity also produces the mirror error on a velocity–time graph, where a horizontal line means constant velocity rather than no motion.'
+              }
+            ]
+          }
+        ],
+        practice: [
+          { id: 'g1', kind: 'numeric', lesson: 'b1',
+            prompt: 'A walker goes 60 m north then 25 m south. Taking north as positive, find the displacement in metres.',
+            answer: 35, verify: { expr: '60 - 25' },
+            hint: 'Displacement is the signed change in position, not the path length.',
+            solution: ['North is positive, so the second leg is −25 m', '60 − 25 = 35', 'Displacement 35 m north, while the distance walked was 85 m'] },
+
+          { id: 'g2', kind: 'numeric', lesson: 'b1',
+            prompt: 'The same walker takes 100 s in total. Find the average speed in m/s, to two decimal places.',
+            answer: 0.85, tol: 0.005, verify: { expr: 'Rational(60 + 25, 100)', dp: 2 },
+            hint: 'Average speed uses the distance travelled, not the displacement.',
+            solution: ['Distance = 60 + 25 = 85 m', '85/100', '= 0.85 m/s'] },
+
+          { id: 'g3', kind: 'numeric', lesson: 'b1',
+            prompt: 'A swimmer completes a 50 m pool length and swims back, taking 80 s. Find the magnitude of the average velocity in m/s.',
+            answer: 0, verify: { expr: 'Rational(0, 80)' },
+            hint: 'Where does she finish relative to where she started?',
+            solution: ['She finishes at the starting end, so Δx = 0', '0/80 = 0', 'The average velocity is zero, while the average speed is 100/80 = 1.25 m/s'] },
+
+          { id: 'g4', kind: 'numeric', lesson: 'b2',
+            prompt: 'A car goes from 12 m/s to 30 m/s in 6.0 s. Find its acceleration in m/s².',
+            answer: 3, verify: { expr: 'Rational(30 - 12, 6)' },
+            hint: 'a = Δv/Δt.',
+            solution: ['Δv = 30 − 12 = 18 m/s', 'Δt = 6.0 s', 'a = 18/6.0 = 3.0 m/s²'] },
+
+          { id: 'g5', kind: 'numeric', lesson: 'b2',
+            prompt: 'An object starts from rest and accelerates at 4.0 m/s² for 5.0 s. Find the distance covered, in metres.',
+            answer: 50, verify: { expr: 'Rational(1, 2)*4*5**2' },
+            hint: 'x = v₀t + ½at², and v₀ = 0.',
+            solution: ['v₀ = 0 because it starts from rest', 'x = ½(4.0)(5.0)²= ½(4.0)(25)', '= 50 m'] },
+
+          { id: 'g6', kind: 'numeric', lesson: 'b2',
+            prompt: 'A cyclist at 8.0 m/s accelerates at 1.5 m/s² over 20 m. Find the final speed in m/s, to one decimal place.',
+            answer: 11.1, tol: 0.05, verify: { expr: 'sqrt(8**2 + 2*Rational(15, 10)*20)', dp: 1 },
+            hint: 'No time is mentioned — use v² = v₀² + 2aΔx.',
+            solution: ['v² = 8.0² + 2(1.5)(20) = 64 + 60 = 124', 'v = √124 = 11.135…', 'To one decimal place, 11.1 m/s'] },
+
+          { id: 'g7', kind: 'numeric', lesson: 'b2',
+            prompt: 'A car braking at −5.0 m/s² stops from 25 m/s. Find the stopping distance in metres.',
+            answer: 62.5, verify: { expr: 'Rational(0 - 25**2, 2*(-5))' },
+            hint: 'Set v = 0 in v² = v₀² + 2aΔx.',
+            solution: ['0 = 25² + 2(−5.0)Δx', '0 = 625 − 10Δx', 'Δx = 625/10 = 62.5 m'] },
+
+          { id: 'g8', kind: 'numeric', lesson: 'b2',
+            prompt: 'How long does that car take to stop, in seconds?',
+            answer: 5, verify: { expr: 'Rational(0 - 25, -5)' },
+            hint: 'v = v₀ + at with v = 0.',
+            solution: ['0 = 25 + (−5.0)t', '5.0t = 25', 't = 5.0 s'] },
+
+          { id: 'g9', kind: 'numeric', lesson: 'b3',
+            prompt: 'A stone is dropped and falls for 3.0 s. Find the distance fallen in metres, with g = 9.80 m/s², to one decimal place.',
+            answer: 44.1, tol: 0.05, verify: { expr: 'Rational(1, 2)*Rational(98, 10)*3**2', dp: 1 },
+            hint: 'Dropped means v₀ = 0.',
+            solution: ['y = ½gt² = ½(9.80)(3.0)²', '= ½(9.80)(9.0)', '= 44.1 m'] },
+
+          { id: 'g10', kind: 'numeric', lesson: 'b3',
+            prompt: 'Find the speed of that stone after 3.0 s, in m/s, to one decimal place.',
+            answer: 29.4, tol: 0.05, verify: { expr: 'Rational(98, 10)*3', dp: 1 },
+            hint: 'v = gt when it starts from rest.',
+            solution: ['v = 0 + (9.80)(3.0)', '= 29.4 m/s', 'Downward, about 106 km/h'] },
+
+          { id: 'g11', kind: 'numeric', lesson: 'b3',
+            prompt: 'A ball is thrown straight up at 14.7 m/s. Find the time to the highest point, in seconds, to one decimal place.',
+            answer: 1.5, tol: 0.005, verify: { expr: 'Rational(147, 10)/Rational(98, 10)', dp: 1 },
+            hint: 'At the top the velocity is zero — not the acceleration.',
+            solution: ['0 = 14.7 − 9.80t', '9.80t = 14.7', 't = 1.5 s'] },
+
+          { id: 'g12', kind: 'numeric', lesson: 'b3',
+            prompt: 'How high above the launch point does that ball rise, in metres, to two decimal places?',
+            answer: 11.03, tol: 0.05, verify: { expr: 'Rational(147, 10)**2/(2*Rational(98, 10))', dp: 2 },
+            hint: 'v² = v₀² − 2gΔy with v = 0.',
+            solution: ['0 = 14.7² − 2(9.80)Δy', '216.09 = 19.6Δy', 'Δy = 11.025, so 11.03 m to two decimal places'] },
+
+          { id: 'g13', kind: 'mc', lesson: 'b3',
+            prompt: 'A ball thrown straight up is momentarily at rest at the top of its flight. What is its acceleration there?',
+            options: [
+              { t: '9.80 m/s² downward — the same as at every other instant of the flight', ok: true },
+              { t: 'Zero, because the ball is momentarily at rest' },
+              { t: 'Zero going up and 9.80 m/s² coming down' },
+              { t: 'It depends on how hard the ball was thrown' }
+            ],
+            hint: 'If the acceleration were zero there, what would the ball do next?',
+            solution: ['Gravity acts throughout the flight, unchanged', 'The velocity passes through zero; the acceleration does not', 'If a were zero at the top the ball would stay there', 'a = −9.80 m/s² with up positive, at every instant'] },
+
+          { id: 'g14', kind: 'mc', lesson: 'b3',
+            prompt: 'On a position–time graph, the line crosses the time axis. What is happening at that moment?',
+            options: [
+              { t: 'The object is passing the origin — and it may be moving fast while doing so', ok: true },
+              { t: 'The object has stopped' },
+              { t: 'The object reverses direction' },
+              { t: 'The acceleration is zero' }
+            ],
+            hint: 'What does the VALUE on a position–time graph represent?',
+            solution: ['The value is the position, so a zero value is the origin', 'The object is at rest only where the graph is flat', 'Direction reverses at a maximum or minimum, not at a crossing', 'Slope is velocity, value is position'] },
+
+          { id: 'g15', kind: 'spot', lesson: 'b2',
+            prompt: 'A car at 20 m/s brakes at −4.0 m/s². How far does it travel before stopping?',
+            steps: [
+              { t: 'Stopping means v = 0, and no time is given, so use v² = v₀² + 2aΔx' },
+              { t: '0 = 20² + 2(4.0)Δx, so Δx = −400/8.0 = −50 m', bad: true },
+              { t: 'The acceleration is negative: 0 = 20² + 2(−4.0)Δx' },
+              { t: 'Δx = 400/8.0 = 50 m' }
+            ],
+            why: 'The sign of the acceleration was dropped on substitution, which turns a deceleration into an acceleration and produces a negative distance — an impossible answer for a car travelling forwards. A negative displacement here is the symptom to look for, because it says the vehicle finished behind where it started while moving forwards the whole time.',
+            hint: 'One step substitutes the acceleration without its sign.',
+            solution: ['Braking gives a = −4.0 m/s² with the direction of travel positive', '0 = 400 − 8.0Δx', 'Δx = 50 m'] },
+
+          { id: 'g16', kind: 'order', lesson: 'b2',
+            prompt: 'Put the steps for choosing and using a constant-acceleration equation in order.',
+            steps: [
+              'Write down the sign convention',
+              'List what is given, including any hidden value such as "from rest"',
+              'List the quantity the question asks for',
+              'Choose the equation that omits the quantity you neither know nor want',
+              'Substitute with signs, solve, and check the answer is physically possible'
+            ],
+            hint: 'The equation is chosen by what it leaves out, and that cannot be decided before the lists exist.',
+            solution: ['Convention first, so every sign after it is consistent', 'Then the knowns and the target', 'The equation is chosen by elimination, not by habit', 'Substitute last, and sanity-check the result'] },
+
+          { id: 'g17', kind: 'mc', lesson: 'b2',
+            prompt: 'An object has a velocity of −8 m/s and an acceleration of −2 m/s². What is it doing?',
+            options: [
+              { t: 'Speeding up, because the velocity and the acceleration have the same sign', ok: true },
+              { t: 'Slowing down, because the acceleration is negative' },
+              { t: 'Moving at a constant speed in the negative direction' },
+              { t: 'Reversing direction immediately' }
+            ],
+            hint: 'Compare the two signs rather than reading the acceleration alone.',
+            solution: ['Same signs on a and v means the speed increases', 'It is moving in the negative direction and getting faster', 'After 1 s the velocity is −10 m/s', 'A negative acceleration does not mean slowing down'] },
+
+          { id: 'g18', kind: 'numeric', lesson: 'b1',
+            prompt: 'A bus travels 900 m in 75 s, stops for 45 s, then travels 300 m in 30 s, all in the same direction. Find its average velocity over the whole trip, in m/s.',
+            answer: 8, verify: { expr: 'Rational(900 + 300, 75 + 45 + 30)' },
+            hint: 'The stop counts in the total time.',
+            solution: ['Displacement = 900 + 300 = 1200 m, all one direction', 'Total time = 75 + 45 + 30 = 150 s', '1200/150 = 8.0 m/s'] }
+        ]
+      }
+
+    ]
+  };
+
   root.Courses.register(MECH);
+  root.Courses.register(FOUND);
 
 })(typeof window !== 'undefined' ? window : globalThis);
 
@@ -24106,12 +24877,30 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 
   /* ---------- number line ---------- */
   function numberline(spec) {
-    // Two rows are available above the line: a label that would collide with one already placed is
-    // lifted to the upper row rather than printed through it. Box plots and quartile figures put
-    // labels close together by their nature, so this is the ordinary case, not the exception.
-    const W = 440, H = 82, L = 24, R = 24, Y = 50, CH = 6.75;
-    const rows = [[], []];
+    /* Labels above the line are placed in rows: one that would collide with a label already placed
+       is lifted to the next row up, and as many rows are used as the figure needs — the drawing then
+       grows to fit them rather than printing two labels through each other. A label is also nudged
+       in from the edge so a name on the first or last point cannot run outside the frame. Both cases
+       are ordinary here: a quartile figure crowds its labels, and a scale of powers of ten labels
+       its own ends. */
+    const W = 440, L = 24, R = 24, CH = 6.75, ROW = 15;
     const [x0, x1] = spec.x; const sx = x => L + (x - x0) / (x1 - x0) * (W - L - R);
+
+    // pass 1: decide a row and a clamped centre for every label, growing the row list as needed
+    const rows = [[]], placed = [];
+    for (const p of spec.points || []) {
+      if (!p.label) { placed.push(null); continue; }
+      const half = String(p.label).length * CH / 2 + 3;
+      const cx = Math.min(W - 2 - half, Math.max(2 + half, sx(p.x)));
+      const box = { x1: cx - half, x2: cx + half };
+      let r = rows.findIndex(row => row.every(b => box.x1 >= b.x2 || box.x2 <= b.x1));
+      if (r < 0) { rows.push([]); r = rows.length - 1; }
+      rows[r].push(box);
+      placed.push({ cx, r });
+    }
+    const used = rows.filter(r => r.length).length || 1;
+    const H = 32 + used * ROW + 20, Y = H - 32;
+
     const parts = [`<line class="fig-axis" x1="${L}" y1="${Y}" x2="${W - R}" y2="${Y}"/>`];
     const t = tickStep(x1 - x0);
     for (let x = Math.ceil(x0 / t) * t; x <= x1 + 1e-9; x += t) parts.push(`<line class="fig-axis" x1="${sx(x)}" y1="${Y - 4}" x2="${sx(x)}" y2="${Y + 4}"/><text class="fig-tick" x="${sx(x)}" y="${Y + 18}" text-anchor="middle">${fmt(x)}</text>`);
@@ -24121,19 +24910,14 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
       if (iv.from !== '-inf') parts.push(`<circle class="fig-pt${iv.closedL ? '' : ' open'}" cx="${sx(a)}" cy="${Y}" r="5"/>`);
       if (iv.to !== 'inf') parts.push(`<circle class="fig-pt${iv.closedR ? '' : ' open'}" cx="${sx(b)}" cy="${Y}" r="5"/>`);
     }
-    for (const p of spec.points || []) {
+    (spec.points || []).forEach((p, i) => {
       parts.push(`<circle class="fig-pt${p.open ? ' open' : ''}" cx="${sx(p.x)}" cy="${Y}" r="5"/>`);
-      if (p.label) {
-        const half = String(p.label).length * CH / 2 + 3, cx = sx(p.x);
-        const box = { x1: cx - half, x2: cx + half };
-        let r = rows.findIndex(row => row.every(b => box.x1 >= b.x2 || box.x2 <= b.x1));
-        if (r < 0) r = rows.length - 1;
-        rows[r].push(box);
-        parts.push(`<text class="fig-lbl" x="${cx}" y="${Y - 10 - r * 15}" text-anchor="middle">${esc(p.label)}</text>`);
-      }
-    }
+      const at = placed[i];
+      if (at) parts.push(`<text class="fig-lbl" x="${at.cx.toFixed(1)}" y="${(Y - 10 - at.r * ROW).toFixed(1)}" text-anchor="middle">${esc(p.label)}</text>`);
+    });
     return `<figure class="fig fig-line"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(spec.alt || spec.caption || 'number line')}">${parts.join('')}</svg>${spec.caption ? `<figcaption>${esc(spec.caption)}</figcaption>` : ''}</figure>`;
   }
+
 
   function render(spec) {
     if (!spec) return '';
@@ -24158,7 +24942,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.59', date: '18 September 2026', year: 2026 };
+  const BUILD = { v: '2.60', date: '18 September 2026', year: 2026 };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonandy242', ['gmail', 'com'].join('.')].join('@');
   /* The one sentence that says what this is. It appears under the wordmark, and build.js uses
@@ -24171,6 +24955,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      because the person who needs it is the one who just watched the app refresh itself and wants to
      know what moved. Trim the tail when it gets past a dozen; nobody reads further back than that. */
   const WHATS_NEW = [
+    ['2.60', '<b>A new course under the green chip: PHYS 1000H, Foundations of Physics.</b> A first mechanics course for someone arriving without school physics, following its own schedule week by week through the first eight chapters of the open text it is set from. Chapters 1 and 2 ship now. <b>Measurement</b> comes first, because it is what the rest rests on: SI units and prefixes read as powers of ten, conversion by multiplying by a fraction equal to one and letting the cancelling do the checking, accuracy against precision, the two different significant-figure rules for multiplying and for adding, and order-of-magnitude estimation as the check that catches a unit error in one line. Then <b>motion in a straight line</b>: distance against displacement and speed against velocity &mdash; a lap run in 64 seconds has an average velocity of exactly zero &mdash; acceleration, the four constant-acceleration equations chosen by what each one leaves out, free fall with one sign convention held for the whole flight, and position&ndash;time and velocity&ndash;time graphs where the slope of one and the area under the other carry the answer. Six lessons, twelve worked examples with a plan and a closing check, 34 practice questions and 23 named misconceptions. Chapters 3 to 8 follow.'],
     ['2.59', '<b>Courses now carry a coloured institution chip, and no university is named anywhere else.</b> A course written to a particular institution\u2019s outline shows a small chip beside its level &mdash; blue for one, green for the other &mdash; on its card and at the top of its page. Everywhere else the name is gone: exam scopes now say &ldquo;the course outline&rdquo;, gap lines say what is not on the outline rather than where, the set-text note names the author and not the campus, and the academic-integrity page points at <i>your</i> institution\u2019s policy rather than one in particular. Three courses carry no chip at all, which is the honest rendering of a course cut to what the subject examines generally rather than to anyone\u2019s syllabus. The build now fails if a university name reappears in any text a student reads.'],
     ['2.58', '<b>A new course: ECON 2320, Economics &amp; Business Statistics 1.</b> It is the twelfth subject to get a full course and the first statistics one, built in the order the department examines rather than the order the book prints: chapter 3 first, then probability, the distributions, sampling, interval estimation and hypothesis tests one chapter per release. Chapter 3 ships now &mdash; measures of location, measures of variability, and covariance and correlation &mdash; with three lessons, seven worked examples that each open with a plan and close with a check, 30 practice questions and 12 named misconceptions. The distinctions the marks actually turn on are taught rather than assumed: why a sample divides by n &minus; 1 and a population by N, why only the SIGN of a covariance can be read, why a correlation of zero rules out a straight line and nothing else, and why r is not the slope. Every number is recomputed by a computer algebra system before the page ships.'],
     ['2.57', '<b>MATH 1170 chapter 17 gets its pictures, and the course is now illustrated end to end.</b> A function of two variables will not fit on a flat page, so every figure in this chapter is a <b>slice</b> — one variable frozen, the other free — which is precisely what a partial derivative is, and so the pictures are the concept rather than a compromise. You will find the surface z = x&sup2; + 3y&sup2; cut both ways at once, a cubic slice whose ordinary slope is f<sub>x</sub>(2, 1) = 10, a joint cost curve with the other product pinned at 30 units, a production function flattening into diminishing returns, two upward-sloping demand lines that are the whole competitive-versus-complementary test, a slice drawn above its own first and second derivatives, the two opposite parabolas that explain what a saddle point is, and &mdash; for Lagrange multipliers &mdash; the constraint line touching the circle of equal values at exactly one point. Every worked example in the chapter now opens with <b>How to approach it</b>, works line by line, and closes with a <b>Check</b>. That completes chapters 10, 11, 12, 13 and 17: 76 figures, every one checked in a real browser for labels that overlap or run off the edge.'],
