@@ -17156,7 +17156,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      file rather than replacing it: that one is cut to four ideas the subject leans on, while this
      one follows a real schedule chapter by chapter. Chapters 1–3 of the set text — units, significant
      figures, atoms, formulae, molar mass — are assumed and are not taught here.
-     Built so far: chapters 4, 5, 7 and 8. */
+     Built so far: chapters 4, 5, 7, 8, 9 and 10. */
   const CHEM1000 = {
     subject: CHEM,
     id: 'chem-1000h', inst: 'trent',
@@ -17164,11 +17164,11 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     title: 'General Chemistry: Structure and Properties',
     blurb: 'Chemistry from the mole upward: counting reactants and finding which one runs out first, the gas laws and what they say about molecules in motion, then the quantum picture of the atom that explains the periodic table, the models of the bond from Lewis dots to molecular orbitals, and finally the weak forces between molecules that decide whether something is a solid, a liquid or a gas.',
     level: 'Foundation',
-    exam: 'Follows the course schedule: chapter 4 stoichiometry, chapter 5 the gas laws, chapter 7 the quantum-mechanical model of the atom, chapter 8 periodic trends, chapter 9 chemical bonding I (Lewis theory), chapter 10 chemical bonding II (VSEPR, valence bond and molecular orbital theories), and chapter 11 intermolecular forces. Built so far: chapters 4, 5, 7 and 8.',
+    exam: 'Follows the course schedule: chapter 4 stoichiometry, chapter 5 the gas laws, chapter 7 the quantum-mechanical model of the atom, chapter 8 periodic trends, chapter 9 chemical bonding I (Lewis theory), chapter 10 chemical bonding II (VSEPR, valence bond and molecular orbital theories), and chapter 11 intermolecular forces. Built so far: chapters 4, 5, 7, 8, 9 and 10.',
     text: 'Tro, Fridgen & Shaw, Chemistry: A Molecular Approach, 4th Canadian edition (Pearson)',
     legalNote: 'Study material for a university course. It follows the chapter and section order of the set text so that a lesson here matches the section you would open alongside it, but every explanation, example and question is written from scratch — nothing is copied from the book or from any past paper. Answers are recomputed by a computer algebra system before the page ships; where a figure is rounded, the question says to how many places. Atomic masses are the ordinary four-figure values, and a course using three figures will differ in the last digit.',
     gaps: [
-      'Still to be built, in schedule order: chapter 9 chemical bonding I (Lewis theory), chapter 10 chemical bonding II (VSEPR, valence bond and molecular orbital theory), and chapter 11 intermolecular forces',
+      'Still to be built: chapter 11, the intermolecular forces that decide whether a substance is a solid, a liquid or a gas',
       'Assumed as background and not taught here: chapters 1 to 3 of the set text — units of measurement, significant figures, atoms and elements, compounds and chemical formulae, molar mass, and balancing equations',
       'Not on this course\'s schedule, so not built for it: thermochemistry, chemical kinetics, equilibrium, acids and bases, electrochemistry and the chapters after 11'
     ],
@@ -19287,6 +19287,1313 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             solution: ['The trends are statements about position, so position comes first',
               'A shared group or period settles it with one trend',
               'Only a diagonal pair needs the two trends weighed against each other'] }
+        ]
+      },
+
+      /* ============================ CHAPTER 9 ============================ */
+      {
+        id: 'lewis', n: 5,
+        title: 'Chemical bonding I: Lewis theory',
+        blurb: 'The simplest model of the bond that still predicts things: dots for valence electrons, a shared pair for a bond, and an octet as the target. It gets the formulas of compounds right, ranks bonds as polar or not, and turns a table of bond energies into the enthalpy of a reaction.',
+        read: 'Chapter 9',
+        objectives: [
+          'Draw Lewis symbols, and explain ionic bonding and what lattice energy depends on',
+          'Use electronegativity differences to classify a bond as nonpolar covalent, polar covalent or ionic',
+          'Draw a Lewis structure for a molecule or polyatomic ion, including multiple bonds',
+          'Assign formal charges and use them to choose between resonance structures',
+          'Estimate the enthalpy of a reaction from bond energies, and relate bond order to length and strength'
+        ],
+        lessons: [
+
+          {
+            id: 'e1', title: 'Lewis symbols, ionic bonding and lattice energy', src: 'Section 9.3',
+            idea: `A <b>Lewis symbol</b> is the element's symbol with one dot for each valence electron — so sodium has one dot, oxygen six, chlorine seven. Because the valence count is the group number, the whole of a group has the same Lewis symbol, which is the point: the dots are what react, and the core is not drawn at all.<br><br>An <b>ionic bond</b> is the transfer of those electrons from a metal to a non-metal, leaving a cation and an anion that attract each other. Sodium's one dot goes to chlorine's seven, giving Na⁺ with the neon configuration and Cl⁻ with the argon one. The formula follows from making the charges cancel: Na⁺ and Cl⁻ give NaCl, but Mg²⁺ and Cl⁻ give MgCl₂, and Al³⁺ with O²⁻ gives Al₂O₃.<br><br>What holds an ionic solid together is not a bond between one pair of ions but the whole three-dimensional lattice. The <b>lattice energy</b> is the energy released when gaseous ions come together to form one mole of the solid, and it is always negative and always large. It depends on two things, both of which come from Coulomb's law:<br><br><b>Charge</b> — the product of the two charges, and this is the strong dependence. MgO, built from 2+ and 2− ions, has a lattice energy near −3795 kJ/mol against NaCl's −769, which is why magnesium oxide melts at 2852 °C and table salt at 801 °C.<br><br><b>Size</b> — the distance between the ion centres, and this is the weaker dependence. Down the alkali chlorides from LiCl to CsCl the cation grows and the lattice energy falls steadily in magnitude.<br><br>The properties of ionic solids follow from the lattice: they are hard and high-melting because every ion is held by many neighbours, brittle because a layer forced to slide brings like charges into contact, and conducting only when molten or dissolved, because the ions must be free to move.`,
+            figure: {
+              kind: 'graph', x: [60, 180], y: [600, 900], xlabel: 'cation radius (pm)', ylabel: '|lattice energy| (kJ/mol)',
+              fns: [{ pts: [[76, 834], [102, 769], [138, 701], [152, 680], [167, 657]], label: 'MCl, M = Li to Cs' }],
+              points: [{ x: 76, y: 834, label: 'LiCl' }, { x: 102, y: 769, label: 'NaCl' }, { x: 167, y: 657, label: 'CsCl' }],
+              caption: 'Lattice energy against cation size for the alkali metal chlorides, with the same anion throughout. Larger ions cannot approach as closely, so the attraction is weaker and the lattice energy smaller in magnitude. The whole range here is under 200 kJ/mol; changing the CHARGES instead, as in MgO, moves it by thousands.'
+            },
+            rules: [
+              { name: 'Lewis symbol', expr: 'One dot per valence electron', words: true, note: 'So a whole main group shares one symbol, because valence count equals group number.' },
+              { name: 'Ionic bonding', expr: 'Metal loses, non-metal gains, and the ions attract', words: true, note: 'Both usually reach a noble-gas configuration.' },
+              { name: 'Formula from charges', expr: 'The charges must cancel overall', words: true, note: 'Mg2+ with Cl- gives MgCl2; Al3+ with O2- gives Al2O3.' },
+              { name: 'Lattice energy and charge', expr: 'E_lat is proportional to q1 q2', note: 'The strong dependence. Doubling both charges roughly quadruples it — NaCl −769, MgO −3795 kJ/mol.' },
+              { name: 'Lattice energy and size', expr: 'E_lat is proportional to 1 / r', note: 'The weaker dependence. Bigger ions cannot get as close, so the lattice energy falls in magnitude.' }
+            ],
+            examples: [
+              {
+                prompt: 'Write the formula of the compound aluminium forms with oxygen, and explain it from the Lewis symbols.',
+                approach: 'Find how many electrons each atom must lose or gain to reach a noble-gas configuration, which the group number gives directly, then combine the ions in whatever ratio makes the total charge zero. The least common multiple of the two charges is the mechanical way to get the subscripts.',
+                steps: [
+                  { do: 'Aluminium is group 3A, so three valence electrons and three dots', why: 'Valence count is the group number for a main-group element.' },
+                  { do: 'Losing all three gives Al³⁺, with the neon configuration', why: 'Losing three is cheaper than gaining five, which is what makes aluminium a metal.' },
+                  { do: 'Oxygen is group 6A, with six dots, and gains two to reach the neon configuration: O²⁻', why: 'Two short of eight, so it takes two.' },
+                  { do: 'Balance the charges: the least common multiple of 3 and 2 is 6', why: 'Six positive and six negative charges is the smallest whole-number match.' },
+                  { do: 'Two Al³⁺ give +6 and three O²⁻ give −6', why: 'Which fixes the subscripts without any guessing.' },
+                  { do: 'Formula: Al₂O₃', why: 'Neutral overall, as every ionic formula must be — the charges are not written in the formula precisely because they cancel.' }
+                ],
+                answer: 'Al₂O₃',
+                answerWords: true,
+                check: 'Count the electrons transferred: two aluminium atoms give up six in total and three oxygen atoms take up six ✓ — nothing is left over, which is the arithmetic the formula encodes. The same method gives MgCl₂ from 2+ and 1−, and CaO from 2+ and 2−, where the multiple is simply 2.'
+              },
+              {
+                prompt: 'Explain why magnesium oxide melts at 2852 °C while sodium chloride melts at 801 °C, even though the ions are of similar size.',
+                approach: 'Melting an ionic solid means overcoming the lattice energy, so the question is really about what lattice energy depends on. Two factors are available — charge and distance — so identify which one differs here and which is the stronger dependence, and the size of the difference follows.',
+                steps: [
+                  { do: 'Identify the ions: Mg²⁺ and O²⁻ against Na⁺ and Cl⁻', why: 'Charges first, since that is the stronger of the two dependences.' },
+                  { do: 'Charge product: (2)(2) = 4 for MgO against (1)(1) = 1 for NaCl', why: 'Lattice energy goes as the product of the charges, so this alone is a factor of four.' },
+                  { do: 'Ion sizes: Mg²⁺ 72 pm and O²⁻ 140 pm, against Na⁺ 102 pm and Cl⁻ 181 pm', why: 'The MgO ions are somewhat smaller, so they also approach more closely — the two effects work the same way here.' },
+                  { do: 'Lattice energies: about −3795 kJ/mol for MgO against −769 for NaCl', why: 'A factor of nearly five, consistent with the charge product plus the size advantage.' },
+                  { do: 'Melting requires breaking the lattice apart, so a lattice five times stronger needs far more thermal energy', why: 'The connection between a thermodynamic quantity and an observable property, which is the point of the question.' },
+                  { do: 'Hence 2852 °C against 801 °C', why: 'Not proportional — melting points never are — but ordered exactly as the lattice energies predict.' }
+                ],
+                answer: 'Both ions carry double the charge, so the lattice energy is about five times as large',
+                answerWords: true,
+                check: 'Test the reasoning on a case where only size changes: LiCl and CsCl have the same charges, and their lattice energies differ by only 177 kJ/mol against MgO and NaCl’s 3026 ✓. Charge dominates size, which is exactly what Coulomb’s law says when one factor is squared and the other is a reciprocal.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'c1k-ionic-formula-charges-written',
+                wrong: 'Writing the ionic formula as Al³⁺₂O²⁻₃, keeping the charges',
+                right: 'The formula is Al₂O₃ — the charges cancel, so the compound is neutral and no charge is shown.',
+                why: 'The charges did the work of deciding the subscripts, so leaving them in feels like showing the reasoning. A formula with charges in it claims the substance is charged, which no ionic compound is, and the habit causes real errors later when polyatomic ions genuinely do carry one.'
+              },
+              {
+                id: 'c1k-lattice-size-over-charge',
+                wrong: 'Ranking lattice energies by ion size when the charges differ',
+                right: 'Charge dominates: the product q₁q₂ moves the lattice energy by thousands of kJ/mol, size by hundreds.',
+                why: 'Both factors appear in the same sentence of every textbook and are easy to weigh equally. Size only decides between compounds whose charges match, as it does along the alkali chlorides — where the whole spread is smaller than a single step in charge.'
+              },
+              {
+                id: 'c1k-lattice-as-one-bond',
+                wrong: 'Picturing an ionic compound as pairs of ions bonded to each other, like molecules',
+                right: 'Every ion is surrounded by ions of opposite charge in a three-dimensional lattice; there is no NaCl molecule.',
+                why: 'The formula looks exactly like a molecular one and is often read as a unit. The lattice is what explains the high melting points, the brittleness and the conduction only when molten — none of which follows from isolated pairs.'
+              },
+              {
+                id: 'c1k-lewis-dots-include-core',
+                wrong: 'Drawing a dot for every electron in the atom',
+                right: 'Only the valence electrons are drawn — the group number for a main-group element.',
+                why: 'The symbol looks like a picture of the atom, so drawing all of it seems more complete. Core electrons take no part in bonding, and including them makes the symbols of a group differ when the whole value of the notation is that they do not.'
+              }
+            ]
+          },
+
+          {
+            id: 'e2', title: 'Electronegativity and bond polarity', src: 'Section 9.5',
+            idea: `<b>Electronegativity</b> is how strongly an atom in a bond pulls the shared electrons towards itself. On the Pauling scale fluorine is highest at 4.0, oxygen 3.5, nitrogen and chlorine 3.0, carbon 2.5, hydrogen 2.1, and the alkali metals under 1.0.<br><br>The trends are the ones from the previous chapter in another guise: electronegativity <b>rises across a period</b> as effective nuclear charge grows, and <b>falls down a group</b> as the valence shell moves further out. So the most electronegative elements are at the top right, excluding the noble gases.<br><br>What matters is the <b>difference</b> ΔEN between the two bonded atoms, and it sorts bonds into three kinds:<br><br><b>ΔEN under about 0.4</b> — <b>nonpolar covalent</b>. The electrons are shared roughly equally. Any bond between identical atoms is here by definition, with ΔEN exactly 0.<br><b>ΔEN from about 0.4 to 2.0</b> — <b>polar covalent</b>. Shared, but unequally, giving a partial negative charge δ− on the more electronegative atom and δ+ on the other.<br><b>ΔEN above about 2.0</b> — <b>ionic</b>. The transfer is effectively complete.<br><br>The boundaries are conventions rather than laws, and the underlying reality is a continuous scale — which is the honest way to hold this: there is no moment at which sharing becomes transfer.<br><br>A polar bond has a <b>dipole moment</b>, drawn as an arrow pointing towards the negative end. Note carefully that a polar BOND does not guarantee a polar MOLECULE: carbon dioxide has two strongly polar C=O bonds whose dipoles point in opposite directions and cancel exactly, so the molecule has none. That distinction needs the shapes of the next chapter, and it is worth flagging now.`,
+            figure: {
+              kind: 'graph', x: [10.5, 17.5], y: [0.5, 3.5], xlabel: 'atomic number Z', ylabel: 'electronegativity',
+              fns: [{ pts: [[11, 0.9], [12, 1.2], [13, 1.5], [14, 1.8], [15, 2.1], [16, 2.5], [17, 3.0]], label: 'period 3' }],
+              points: [{ x: 11, y: 0.9, label: 'Na' }, { x: 14, y: 1.8, label: 'Si' }, { x: 17, y: 3.0, label: 'Cl' }],
+              caption: 'Electronegativity across the third period. It rises steadily from sodium to chlorine, for the same reason the atoms shrink and their ionisation energies grow: effective nuclear charge. The Na–Cl difference of 2.1 puts that bond over the ionic boundary, which is why sodium chloride is a salt rather than a molecule.'
+            },
+            rules: [
+              { name: 'Electronegativity', expr: 'The pull an atom exerts on shared electrons', words: true, note: 'Fluorine 4.0 is the highest; caesium about 0.8 is among the lowest.' },
+              { name: 'Trends', expr: 'Rises across a period, falls down a group', words: true, note: 'The same effective-nuclear-charge story as radius and ionisation energy.' },
+              { name: 'Classifying a bond', expr: 'Delta EN = EN_1 - EN_2', note: 'Under 0.4 nonpolar covalent, 0.4 to 2.0 polar covalent, above 2.0 ionic. The boundaries are conventions.' },
+              { name: 'Which end is negative', expr: 'The more electronegative atom carries delta-minus', words: true, note: 'And the dipole arrow points towards it.' },
+              { name: 'Bond polarity is not molecular polarity', expr: 'Polar bonds can cancel by symmetry', words: true, note: 'CO2 has two strongly polar bonds and no dipole moment at all.' }
+            ],
+            examples: [
+              {
+                prompt: 'Classify the bonds in H₂, HCl and NaCl, using EN values H 2.1, Cl 3.0, Na 0.9.',
+                approach: 'Compute the difference for each bond and read it against the two boundaries, taking the larger value first so the difference is never negative. The interesting part is the last step: the three bonds span the whole range, which is what shows that the categories are conveniences on a continuous scale rather than three separate phenomena.',
+                steps: [
+                  { do: 'H₂: both atoms are hydrogen, so ΔEN = 2.1 − 2.1 = 0', why: 'Identical atoms pull equally by definition.' },
+                  { do: 'Under 0.4, so nonpolar covalent — and perfectly so', why: 'The electron pair sits midway, with no partial charges anywhere.' },
+                  { do: 'HCl: ΔEN = 3.0 − 2.1 = 0.9', why: 'Chlorine is the more electronegative, so subtract hydrogen from it.' },
+                  { do: 'Between 0.4 and 2.0, so polar covalent, with δ− on Cl and δ+ on H', why: 'Still shared, but pulled towards chlorine — which is why HCl dissolves in water and ionises there.' },
+                  { do: 'NaCl: ΔEN = 3.0 − 0.9 = 2.1', why: 'The largest of the three, and just past the boundary.' },
+                  { do: 'Above 2.0, so ionic: the electron is effectively transferred, giving Na⁺ and Cl⁻', why: 'Consistent with sodium chloride being a high-melting solid rather than a gas of molecules.' }
+                ],
+                answer: 'H₂ nonpolar covalent (0), HCl polar covalent (0.9), NaCl ionic (2.1)',
+                answerWords: true,
+                check: 'The physical properties agree with the classification: H₂ boils at −253 °C, HCl at −85 °C and NaCl at 1413 °C ✓. And note how close NaCl sits to the boundary at 2.1 — the model itself says the categories shade into one another rather than switching over.'
+              },
+              {
+                prompt: 'Rank the bonds C–H, O–H and F–H by polarity, and give the difference in each case. Use EN values C 2.5, O 3.5, F 4.0, H 2.1.',
+                approach: 'Hydrogen is common to all three, so the ranking is just the ranking of the other three electronegativities — which makes this a question about the periodic trend as much as about bonds. Compute each difference, then state which atom carries the partial negative charge, since a polarity claim is incomplete without a direction.',
+                steps: [
+                  { do: 'C–H: ΔEN = 2.5 − 2.1 = 0.4', why: 'Right on the boundary, and usually treated as essentially nonpolar — which is why hydrocarbons do not dissolve in water.' },
+                  { do: 'O–H: ΔEN = 3.5 − 2.1 = 1.4', why: 'Strongly polar covalent. This is the bond that makes water behave as it does.' },
+                  { do: 'F–H: ΔEN = 4.0 − 2.1 = 1.9', why: 'The most polar of the three, and near the top of the polar covalent range.' },
+                  { do: 'Ranking by polarity: C–H < O–H < F–H', why: 'Which is the order of C, O and F left to right across period 2 — the trend doing the work.' },
+                  { do: 'In each case hydrogen is δ+ and the other atom δ−', why: 'Hydrogen is the least electronegative of all four, so it is the positive end every time.' },
+                  { do: 'Consequence: only the O–H and F–H bonds give molecules that hydrogen-bond strongly', why: 'Which is the subject of chapter 11, and the reason water is a liquid at room temperature while methane is a gas.' }
+                ],
+                answer: 'C–H 0.4 < O–H 1.4 < F–H 1.9, with hydrogen δ+ in all three',
+                answerWords: true,
+                check: 'Boiling points bear it out: methane −161 °C, water +100 °C, hydrogen fluoride +20 °C ✓ — the two strongly polar ones are liquids and the nonpolar one is a gas. Note that HF is less polar than H₂O per bond yet boils lower, because a molecule’s behaviour depends on how many such bonds it has, not just on how polar one is.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'c1k-en-value-not-difference',
+                wrong: 'Judging a bond’s polarity from one atom’s electronegativity',
+                right: 'Only the DIFFERENCE matters. C–F is polar and F–F is not, though both contain fluorine.',
+                why: 'Fluorine is introduced as the most electronegative element, so any bond containing it feels like it must be polar. Polarity is a statement about a tug-of-war, and two equal pullers give no displacement however hard they pull.'
+              },
+              {
+                id: 'c1k-polar-bond-polar-molecule',
+                wrong: 'Concluding that a molecule is polar because its bonds are',
+                right: 'Bond dipoles are vectors and can cancel — CO₂ has two very polar bonds and no net dipole.',
+                why: 'The step from bond to molecule looks like simple addition, and nothing in Lewis theory alone flags the geometry. It is the commonest error in the whole topic, and it is why the next chapter puts shape before polarity rather than after it.'
+              },
+              {
+                id: 'c1k-en-boundaries-as-law',
+                wrong: 'Treating 0.4 and 2.0 as exact thresholds that define what a bond is',
+                right: 'They are conventions on a continuous scale — different books quote slightly different numbers.',
+                why: 'Precise-looking cut-offs invite precise-sounding claims, and a bond at ΔEN = 2.0 gets argued about as though something changes there. Nothing does: the character shades gradually from sharing to transfer, and the categories exist to make discussion possible.'
+              },
+              {
+                id: 'c1k-dipole-arrow-reversed',
+                wrong: 'Drawing the dipole arrow pointing away from the more electronegative atom',
+                right: 'The arrow points TOWARDS the negative end — towards the atom that pulls harder.',
+                why: 'Arrows in chemistry usually show movement of something outward, so pointing away from the puller feels natural. Reversed, every subsequent vector sum comes out backwards, and the molecular polarity questions of the next chapter all fail on a convention rather than on the chemistry.'
+              }
+            ]
+          },
+
+          {
+            id: 'e3', title: 'Drawing Lewis structures', src: 'Section 9.6',
+            idea: `A <b>Lewis structure</b> shows every valence electron in a molecule or polyatomic ion — as a line for each shared pair and a pair of dots for each lone pair. The procedure is mechanical, and following it in order is what makes it reliable.<br><br><b>1. Count the valence electrons available.</b> Add up the group numbers of all the atoms. For an anion, <b>add</b> one electron per negative charge; for a cation, <b>subtract</b> one per positive charge. This is the step most often skipped, and getting it wrong makes everything after it wrong.<br><br><b>2. Choose the central atom.</b> Usually the least electronegative atom that is not hydrogen — carbon in CO₂, nitrogen in NH₃, sulfur in SO₂. <b>Hydrogen is never central</b>, because it can form only one bond.<br><br><b>3. Connect the atoms with single bonds</b>, using two electrons for each.<br><br><b>4. Complete the octets of the outer atoms</b> with lone pairs — hydrogen is the exception, wanting only two electrons.<br><br><b>5. Put any electrons left over on the central atom.</b><br><br><b>6. If the central atom is short of an octet, form multiple bonds</b> by converting a lone pair from an outer atom into a shared pair. Each such move satisfies two more electrons of the central atom's octet without adding any.<br><br>The check at the end is absolute: <b>the structure must contain exactly the number of electrons counted in step 1</b> — two per line, two per dot pair. If it does not, the structure is wrong regardless of how neat it looks.<br><br>A useful pattern falls out of the octet rule for the second-period non-metals: the number of bonds an atom normally forms is <b>8 minus its group number</b>. Carbon forms four, nitrogen three, oxygen two, fluorine one. Recognising that a nitrogen atom is showing four bonds, or an oxygen one, is often the fastest way to spot a wrong structure.`,
+            figure: {
+              kind: 'graph', x: [3.5, 7.5], y: [0, 5], xlabel: 'group number', ylabel: 'bonds normally formed',
+              fns: [{ expr: '8 - x', label: 'bonds = 8 − group' }],
+              points: [
+                { x: 4, y: 4, label: 'C: 4 bonds' }, { x: 5, y: 3, label: 'N: 3' },
+                { x: 6, y: 2, label: 'O: 2' }, { x: 7, y: 1, label: 'F: 1' }
+              ],
+              caption: 'How many bonds a second-period non-metal normally forms, against its group number. Each bond supplies one electron towards the octet, so an atom needs 8 minus its valence count. This is the quickest check on a finished structure: an oxygen showing three bonds or a carbon showing three is almost always an error.'
+            },
+            rules: [
+              { name: 'Electrons available', expr: 'Sum the group numbers, then adjust for charge', words: true, note: 'Add one per negative charge, subtract one per positive. Skipping this makes everything after it wrong.' },
+              { name: 'Central atom', expr: 'The least electronegative atom, never hydrogen', words: true, note: 'Hydrogen forms one bond only, so it is always on the outside.' },
+              { name: 'Octet rule', expr: 'Eight electrons around each atom, two for hydrogen', words: true, note: 'Shared electrons count towards both atoms they join.' },
+              { name: 'When the centre is short', expr: 'Convert an outer lone pair into a shared pair', words: true, note: 'Each double bond formed this way gives the centre two more electrons without using any new ones.' },
+              { name: 'The final check', expr: 'N_drawn = N_available', note: 'Two electrons per line and two per dot pair. If the totals differ, the structure is wrong.' },
+              { name: 'Bonds expected', expr: 'N_bonds = 8 - group', note: 'Carbon four, nitrogen three, oxygen two, fluorine one — the fastest way to spot a bad structure.' }
+            ],
+            examples: [
+              {
+                prompt: 'Draw the Lewis structure of CO₂, describing it in words, and verify the electron count.',
+                approach: 'Run the six steps in order without skipping ahead to the answer. The interesting step here is the last one: after single bonds and complete outer octets the carbon is four electrons short, which forces not one double bond but two — and the electron count at the end is what confirms it.',
+                steps: [
+                  { do: 'Count: carbon is group 4A and each oxygen 6A, so 4 + 6 + 6 = 16 valence electrons, with no charge to adjust for', why: 'Sixteen electrons is eight pairs, and the finished structure must show exactly that.' },
+                  { do: 'Central atom: carbon, the less electronegative, with an oxygen on each side', why: 'Oxygen is 3.5 against carbon’s 2.5.' },
+                  { do: 'Single bonds O–C–O use 4 electrons, leaving 12', why: 'Two electrons per bond.' },
+                  { do: 'Complete the oxygens’ octets: each already has 2 from its bond and takes 6 more as three lone pairs, using all 12', why: 'Outer atoms are satisfied before the centre, which is what makes the shortfall visible.' },
+                  { do: 'Carbon now has only 4 electrons around it — four short of an octet', why: 'Nothing is left to give it, so a rearrangement is required rather than more electrons.' },
+                  { do: 'Convert one lone pair on each oxygen into a shared pair: O=C=O, each oxygen keeping two lone pairs', why: 'Two double bonds give carbon 8 electrons, and each oxygen still has 8 — two in each double bond counted twice over, plus two lone pairs.' },
+                  { do: 'Check: 2 double bonds = 8 electrons, plus 4 lone pairs on the oxygens = 8, total 16 ✓', why: 'Matching the count from step 1, which is the only proof the structure is right.' }
+                ],
+                answer: 'O=C=O, with two lone pairs on each oxygen — 16 electrons in all',
+                answerWords: true,
+                check: 'The bond-count rule agrees: carbon shows four bonds and each oxygen shows two ✓, exactly 8 minus the group number in each case. Had the structure been drawn with one double and one single bond, carbon would have only seven electrons and one oxygen would show a single bond — both visible errors.'
+              },
+              {
+                prompt: 'Draw the Lewis structure of the nitrate ion, NO₃⁻, and verify the electron count.',
+                approach: 'The same six steps, with the charge adjustment in step 1 that a polyatomic ion needs — an easy step to forget and one that changes the answer. As in carbon dioxide the centre comes up short and a double bond is needed, but here only one, which is what makes the ion a resonance case for the next lesson.',
+                steps: [
+                  { do: 'Count: nitrogen 5, three oxygens 6 each = 23, plus 1 for the single negative charge = 24', why: 'A negative charge means an extra electron the ion has taken on. Forgetting it gives an odd number, which is itself a warning.' },
+                  { do: 'Central atom: nitrogen, with three oxygens around it', why: 'Less electronegative than oxygen, and the formula puts it first.' },
+                  { do: 'Three single bonds use 6, leaving 18', why: 'Two per bond as always.' },
+                  { do: 'Complete the three oxygens: three lone pairs each uses all 18', why: 'Each oxygen now has 2 from its bond plus 6 — a full octet.' },
+                  { do: 'Nitrogen has only 6 electrons, so convert one lone pair from one oxygen into a second bond', why: 'That gives nitrogen 8. Only one double bond is needed here, unlike CO₂.' },
+                  { do: 'Result: one N=O and two N–O, with the whole ion in square brackets carrying the − charge', why: 'The charge belongs to the ion as a whole, and the brackets say so.' },
+                  { do: 'Check: 4 bonding pairs = 8 electrons, plus 8 lone pairs = 16, total 24 ✓', why: 'Matching the adjusted count, including the extra electron from the charge.' }
+                ],
+                answer: 'One N=O and two N–O bonds, eight lone pairs, the whole ion bracketed with a − charge — 24 electrons',
+                answerWords: true,
+                check: 'Nitrogen shows four bonds here rather than its usual three, which the next lesson explains with formal charge: the nitrogen carries +1 and one singly bonded oxygen carries −1, summing to the ion’s −1 ✓. Without the charge adjustment the count would have been 23, an odd number that cannot be arranged in pairs at all.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'c1k-charge-not-counted',
+                wrong: 'Counting only the group numbers for a polyatomic ion',
+                right: 'Add one electron per negative charge and subtract one per positive.',
+                why: 'The formula’s atoms are visible and the charge is a small superscript that reads as a label rather than a quantity. It changes the structure, and the give-away is an odd electron total — valence electrons in a stable species always pair up.'
+              },
+              {
+                id: 'c1k-hydrogen-central',
+                wrong: 'Putting hydrogen in the middle of a structure',
+                right: 'Hydrogen forms one bond and holds two electrons, so it is always an outer atom.',
+                why: 'It is often written first in a formula — H₂O, HCN — which suggests it is the centre. One bond means it cannot connect two other atoms, so a central hydrogen makes the rest of the structure impossible to complete.'
+              },
+              {
+                id: 'c1k-electron-total-unchecked',
+                wrong: 'Finishing a structure without adding up the electrons drawn',
+                right: 'Two per line and two per dot pair must total exactly the number counted in step 1.',
+                why: 'A wrong structure can look entirely convincing — symmetrical, with octets that seem complete — and nothing about its appearance objects. The count is the only test available and it takes a few seconds, which is why every marking scheme expects to see it.'
+              },
+              {
+                id: 'c1k-double-bond-adds-electrons',
+                wrong: 'Adding a new pair of electrons to make a double bond',
+                right: 'Convert an existing lone pair from an outer atom into a shared pair — the total does not change.',
+                why: 'Drawing a second line looks like drawing something new, so it is easy to add a pair rather than move one. The total then exceeds the count from step 1, and the outer atom that should have given up a lone pair ends up with nine or ten electrons.'
+              }
+            ]
+          },
+
+          {
+            id: 'e4', title: 'Resonance and formal charge', src: 'Section 9.7',
+            idea: `Some species cannot be drawn with one Lewis structure. Ozone, O₃, has one single and one double bond on paper — but the two bonds are measurably identical in length. The structure is not switching between the two forms; the real molecule is a single thing that neither drawing captures.<br><br><b>Resonance structures</b> are the drawings, linked by a double-headed arrow, and the actual molecule is the <b>resonance hybrid</b> — an average of them. The standard analogy is a mule: not a horse part of the time and a donkey the rest, but one animal that is neither.<br><br>When several structures are possible, <b>formal charge</b> decides which contribute most. For each atom:<br><br><b>FC = (valence electrons) − (lone pair electrons) − ½(bonding electrons)</b><br><br>or equivalently, valence electrons minus lone-pair electrons minus the number of bonds. It is a bookkeeping device that asks what each atom would have if every bond were shared perfectly evenly, and it is not a real charge.<br><br>Three rules pick the better structure:<br><br><b>1.</b> Formal charges as close to zero as possible.<br><b>2.</b> Any negative formal charge on the <b>most electronegative</b> atom.<br><b>3.</b> Avoid like charges on adjacent atoms.<br><br>And one check is absolute: <b>the formal charges must sum to the overall charge</b> — zero for a molecule, the ionic charge for an ion. If they do not, the structure or the arithmetic is wrong.<br><br>Formal charge also settles the layout of a molecule. Both H–O–C≡N and H–C≡N–O can be drawn, but the second puts a +1 on nitrogen and a −1 on carbon, which is the wrong way round for their electronegativities — so the first is the structure that matters.`,
+            figure: {
+              kind: 'numberline', x: [-3, 3],
+              points: [
+                { x: -2, label: '−2 poor' }, { x: -1, label: '−1 ok if on the more electronegative atom' },
+                { x: 0, label: '0 best' }, { x: 1, label: '+1 ok' }, { x: 2, label: '+2 poor' }
+              ],
+              caption: 'How a formal charge is read. Zero on every atom is the ideal, single charges are tolerable when they sit on the right atoms — negative on the more electronegative one — and anything beyond ±1 marks a structure that contributes little. Whatever the individual values, they must add up to the charge on the species as a whole.'
+            },
+            rules: [
+              { name: 'Formal charge', expr: 'FC = V - L - B/2', note: 'Valence electrons, minus lone-pair electrons, minus half the bonding electrons. Equivalently V − L − (number of bonds).' },
+              { name: 'The sum rule', expr: 'Sum of FC = overall charge', note: 'Zero for a molecule, the ionic charge for an ion. A failed sum means an error somewhere.' },
+              { name: 'Choosing a structure', expr: 'Formal charges nearest zero win', words: true, note: 'And a negative formal charge belongs on the more electronegative atom.' },
+              { name: 'Resonance', expr: 'The real molecule is the hybrid, not either drawing', words: true, note: 'Ozone has two identical bonds, intermediate between a single and a double.' },
+              { name: 'What formal charge is not', expr: 'Not a real charge and not an oxidation number', words: true, note: 'It assumes perfectly even sharing, which is exactly what a polar bond is not.' }
+            ],
+            examples: [
+              {
+                prompt: 'Assign formal charges to every atom in the nitrate ion structure from the previous lesson — one N=O and two N–O — and verify the sum.',
+                approach: 'Apply the formula atom by atom, counting lone-pair electrons and bonds for each rather than trying to see the answer whole. The doubly bonded oxygen and the singly bonded ones have to be treated separately, since that is exactly what differs. The sum is the check, and it must come to the ion’s charge.',
+                steps: [
+                  { do: 'Nitrogen: V = 5, no lone pairs so L = 0, and 4 bonds (one double counts as two)', why: 'The double bond contributes two bonds to the count, which is where this most often goes wrong.' },
+                  { do: 'FC(N) = 5 − 0 − 4 = +1', why: 'Nitrogen is sharing more electrons than it brought, so it is formally positive.' },
+                  { do: 'Doubly bonded oxygen: V = 6, two lone pairs so L = 4, and 2 bonds', why: 'Its octet is 4 lone-pair electrons plus 4 bonding electrons.' },
+                  { do: 'FC = 6 − 4 − 2 = 0', why: 'This oxygen is formally neutral, exactly as an oxygen with two bonds normally is.' },
+                  { do: 'Each singly bonded oxygen: V = 6, three lone pairs so L = 6, and 1 bond', why: 'One bond and six lone-pair electrons complete its octet.' },
+                  { do: 'FC = 6 − 6 − 1 = −1, for each of the two', why: 'They hold more electrons than they brought, so they are formally negative.' },
+                  { do: 'Sum: (+1) + 0 + (−1) + (−1) = −1 ✓', why: 'Which is the charge on the nitrate ion, confirming both the structure and the arithmetic.' }
+                ],
+                answer: 'N is +1, the double-bonded O is 0, each single-bonded O is −1 — summing to −1',
+                answerWords: true,
+                check: 'The negative formal charges sit on oxygen, the most electronegative atom present, which is what the selection rules want ✓. And there are three equivalent ways to place the double bond, giving three resonance structures — so in the real ion all three N–O bonds are identical, and each oxygen carries −⅔ rather than one carrying nothing and two carrying −1.'
+              },
+              {
+                prompt: 'Two structures can be written for the thiocyanate ion, SCN⁻: with carbon central, or with nitrogen central. Use formal charge to decide which is better. Take S = 6A, C = 4A, N = 5A.',
+                approach: 'Draw each candidate as a linear arrangement with two double bonds, so the two differ only in which atom sits in the middle, then compute formal charges on both. The rules are applied in order: closest to zero first, and then whether the negative charge is on the right atom.',
+                steps: [
+                  { do: 'Count the electrons: 6 + 4 + 5 = 15, plus 1 for the charge = 16', why: 'The same for either arrangement, so the count does not decide between them.' },
+                  { do: 'Candidate A, S=C=N with one lone pair on S and two on N: FC(S) = 6 − 4 − 2 = 0, FC(C) = 4 − 0 − 4 = 0, FC(N) = 5 − 4 − 2 = −1', why: 'Two zeros and a single negative charge — a promising set.' },
+                  { do: 'Sum for A: 0 + 0 + (−1) = −1 ✓, matching the ion', why: 'The check passes, so the arithmetic is sound before the comparison is made.' },
+                  { do: 'Candidate B, S=N=C with nitrogen central: FC(N) = 5 − 0 − 4 = +1, and the terminal carbon ends up at −2', why: 'Nitrogen central forces it to make four bonds, which costs it a positive formal charge.' },
+                  { do: 'Sum for B: 0 + 1 + (−2) = −1 ✓, so B is a legitimate structure — it is simply a worse one', why: 'Passing the sum check does not make a structure good; that is what the selection rules are for.' },
+                  { do: 'Compare: A has charges of 0, 0, −1 against B’s 0, +1, −2, and A puts the negative charge on nitrogen, the more electronegative of C and N', why: 'Both rules point the same way — smaller magnitudes, and the negative charge better placed.' },
+                  { do: 'So carbon is central: the ion is S=C=N⁻', why: 'Which is the observed structure, and the reason thiocyanate bonds to metals through either end.' }
+                ],
+                answer: 'Carbon central — formal charges 0, 0, −1 rather than 0, +1, −2',
+                answerWords: true,
+                check: 'The general pattern holds: the least electronegative atom of the three — carbon at 2.5, against nitrogen 3.0 and sulfur 2.5 — takes the central position, as it does in CO₂ and in nitrate ✓. Formal charge here confirms a rule of thumb rather than overturning it, which is the usual case.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'c1k-formal-charge-as-real',
+                wrong: 'Treating a formal charge as an actual charge on the atom',
+                right: 'It is bookkeeping, assuming perfectly even sharing — which polar bonds are not.',
+                why: 'It looks like a charge, is written like a charge, and sits on an atom. Reading it literally makes the nitrogen of nitrate genuinely positive, which conflicts with everything electronegativity says, and confuses it with the oxidation number, computed on the opposite assumption of complete transfer.'
+              },
+              {
+                id: 'c1k-resonance-as-flipping',
+                wrong: 'Saying the molecule alternates between its resonance structures',
+                right: 'It is one species at all times — the hybrid — and neither drawing exists on its own.',
+                why: 'The double-headed arrow looks like an equilibrium arrow and invites the idea of interconversion. The evidence rules it out: ozone’s two bonds are equal in length at every instant, not equal on average, and nitrate’s three bonds are identical.'
+              },
+              {
+                id: 'c1k-double-bond-counted-once',
+                wrong: 'Counting a double bond as one bond in the formal charge formula',
+                right: 'It is two bonds — four bonding electrons, so subtract 2, not 1.',
+                why: 'It is drawn as one connection between two atoms, and the shorthand V − L − (number of bonds) invites counting lines rather than bonds. Every formal charge on a multiply bonded atom then comes out one too high, and the sum check fails, which is at least a warning.'
+              },
+              {
+                id: 'c1k-fc-sum-unchecked',
+                wrong: 'Assigning formal charges without checking that they sum to the overall charge',
+                right: 'They must total zero for a molecule and the ionic charge for an ion.',
+                why: 'Individual values look reasonable on their own and there is nothing local to compare them with. The sum is the only global check available, and it catches a miscounted lone pair or an uncounted double bond immediately.'
+              }
+            ]
+          },
+
+          {
+            id: 'e5', title: 'Bond energies, bond lengths and reaction enthalpy', src: 'Section 9.9',
+            idea: `The <b>bond energy</b> is the energy needed to break one mole of a given bond in the gas phase. Breaking a bond always <b>costs</b> energy, so bond energies are positive; forming one always releases it. That asymmetry is the whole of this section.<br><br>Bond energy rises with <b>bond order</b> and falls with <b>bond length</b>, and the two go together: C–C is 154 pm and 348 kJ/mol, C=C is 134 pm and 614, C≡C is 120 pm and 839. Shorter means stronger, and a double bond is stronger than a single one but not twice as strong — the second shared pair adds less than the first.<br><br>The useful consequence is an estimate of a reaction's enthalpy from a table of bond energies alone:<br><br><b>ΔH<sub>rxn</sub> ≈ Σ(bonds broken) − Σ(bonds formed)</b><br><br>Breaking comes first and is positive; forming is subtracted. The sign then falls out: a reaction is <b>exothermic</b> when the bonds formed are stronger than those broken, which is the physical statement of why anything burns.<br><br>Two cautions are worth stating plainly. The values are <b>averages</b> over many compounds — the O–H bond energy of water is not exactly that of methanol — so the answer is an estimate, typically within 10% of the measured enthalpy, and not a substitute for it. And the method applies to <b>gas-phase</b> species; a condensed phase brings in the intermolecular forces of chapter 11, which this calculation knows nothing about.<br><br>Done carefully, the arithmetic is worth the effort: it explains why combustion releases so much energy (the O=O and C–H bonds broken are weaker than the C=O and O–H bonds formed) without any experimental data at all.`,
+            figure: {
+              kind: 'graph', x: [0.5, 3.5], y: [0, 900], xlabel: 'bond order', ylabel: 'bond energy (kJ/mol)',
+              fns: [{ pts: [[1, 348], [2, 614], [3, 839]], label: 'carbon–carbon bonds' }],
+              points: [
+                { x: 1, y: 348, label: 'C–C, 154 pm' }, { x: 2, y: 614, label: 'C=C, 134 pm' },
+                { x: 3, y: 839, label: 'C≡C, 120 pm' }
+              ],
+              caption: 'Bond energy against bond order for carbon–carbon bonds, with the bond length beside each point. Energy rises and length falls together, but not proportionally: the second shared pair adds 266 kJ/mol and the third only 225. A double bond is stronger than a single one and weaker than two of them, which is why alkenes react by opening the second bond rather than the first.'
+            },
+            rules: [
+              { name: 'Bond energy', expr: 'Energy to break one mole of a bond in the gas phase', words: true, note: 'Always positive. Forming the same bond releases the same amount.' },
+              { name: 'Order, length and strength', expr: 'Higher order means shorter and stronger', words: true, note: 'C–C 154 pm and 348 kJ/mol; C≡C 120 pm and 839.' },
+              { name: 'Reaction enthalpy from bonds', expr: 'Delta H = Sum(broken) - Sum(formed)', note: 'Broken first and positive; formed subtracted. The order of the two terms is where the sign is decided.' },
+              { name: 'What the sign means', expr: 'Exothermic when the bonds formed are stronger', words: true, note: 'Which is the physical reason fuels burn.' },
+              { name: 'The limits of the method', expr: 'Average values, gas phase only', words: true, note: 'Good to about 10%. It is an estimate, not a measurement.' }
+            ],
+            examples: [
+              {
+                prompt: 'Estimate ΔH for H₂(g) + Cl₂(g) → 2 HCl(g) from bond energies: H–H 436, Cl–Cl 243, H–Cl 431 kJ/mol.',
+                approach: 'List what is broken and what is formed before doing any arithmetic, because that list is the calculation. Every bond in the reactants is broken and every bond in the products is formed — and here each molecule has exactly one bond, which keeps the counting simple enough to see the structure of the method.',
+                steps: [
+                  { do: 'Bonds broken: one H–H and one Cl–Cl, since each reactant molecule is diatomic', why: 'The coefficients are both 1, so one of each.' },
+                  { do: 'Energy in: 436 + 243 = 679 kJ', why: 'Breaking costs energy, so this term is positive.' },
+                  { do: 'Bonds formed: two H–Cl bonds, because the equation makes two molecules', why: 'The coefficient of 2 must be applied — forgetting it halves the second term.' },
+                  { do: 'Energy out: 2 × 431 = 862 kJ', why: 'Forming releases energy, and this term will be subtracted.' },
+                  { do: 'ΔH = 679 − 862 = −183 kJ', why: 'Broken minus formed, in that order.' },
+                  { do: 'Negative, so the reaction is exothermic', why: 'The two bonds formed are together stronger than the two broken — which is why the reaction goes, explosively, in sunlight.' }
+                ],
+                answer: '−183 kJ, exothermic',
+                answerWords: true,
+                check: 'The measured value is −184.6 kJ, so the estimate is within 1% ✓ — unusually good, because HCl is one of the compounds the average H–Cl value was taken from. Reversing the subtraction would have given +183 kJ and predicted that hydrogen and chlorine do not react, which is contradicted by any window on a sunny day.'
+              },
+              {
+                prompt: 'Estimate ΔH for the combustion of methane, CH₄(g) + 2 O₂(g) → CO₂(g) + 2 H₂O(g), using C–H 413, O=O 498, C=O 799, O–H 463 kJ/mol.',
+                approach: 'The same method with more bookkeeping, so the counting has to be done explicitly: four C–H bonds in one methane, two O=O bonds because of the coefficient, two C=O bonds in the carbon dioxide, and four O–H bonds because each of the two water molecules has two. Writing the count beside each bond type before multiplying is what prevents the usual slips.',
+                steps: [
+                  { do: 'Bonds broken: 4 C–H (methane has four) and 2 O=O (coefficient 2)', why: 'Counting per molecule and then applying the coefficient, in that order.' },
+                  { do: 'Energy in: 4(413) + 2(498) = 1652 + 996 = 2648 kJ', why: 'The positive term.' },
+                  { do: 'Bonds formed: 2 C=O in CO₂, and 4 O–H — two in each of the two water molecules', why: 'The O–H count is where this calculation is usually lost: two per molecule, two molecules.' },
+                  { do: 'Energy out: 2(799) + 4(463) = 1598 + 1852 = 3450 kJ', why: 'The term to be subtracted.' },
+                  { do: 'ΔH = 2648 − 3450 = −802 kJ', why: 'Broken minus formed.' },
+                  { do: 'Strongly exothermic, which is what makes methane a fuel', why: 'The C=O and O–H bonds formed are much stronger than the C–H and O=O bonds broken.' }
+                ],
+                answer: '−802 kJ, strongly exothermic',
+                answerWords: true,
+                check: 'The accepted value for gaseous water is −802.3 kJ ✓. Note the equation specifies water as a gas: liquid water would release a further 44 kJ per mole of condensation, which bond energies cannot account for because it is an intermolecular effect, not a bond.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'c1k-bond-enthalpy-sign-reversed',
+                wrong: 'Computing ΔH as formed minus broken',
+                right: 'Broken minus formed. Breaking costs energy, so it is the positive term and comes first.',
+                why: 'It is the opposite order to the ΔH_f calculation of products minus reactants, and the two get crossed. The result is right in magnitude and wrong in sign, so an exothermic combustion is reported as absorbing energy — a claim any stove contradicts.'
+              },
+              {
+                id: 'c1k-coefficients-ignored',
+                wrong: 'Counting one bond of each type, ignoring the equation’s coefficients and the number per molecule',
+                right: 'Multiply by both: two water molecules have four O–H bonds in total.',
+                why: 'The bond table lists one value per bond type, which makes a single count feel complete. Every count is per mole of reaction, so a missed factor of two changes the answer by hundreds of kilojoules while leaving the working looking orderly.'
+              },
+              {
+                id: 'c1k-bond-energy-exact',
+                wrong: 'Reporting a bond-energy estimate as the reaction’s enthalpy',
+                right: 'The values are averages across many compounds, so the result is an estimate, typically within about 10%.',
+                why: 'The arithmetic produces a definite number with no visible uncertainty. A C–H bond in methane is not identical to one in ethanol, and calling the estimate a measurement invites comparisons with tabulated data that it was never going to match exactly.'
+              },
+              {
+                id: 'c1k-double-bond-twice-single',
+                wrong: 'Taking a double bond to be twice as strong as a single one',
+                right: 'C–C is 348 and C=C is 614 — stronger, but well short of double.',
+                why: 'Two shared pairs sounds like twice the bonding, and the notation reinforces it. The second pair overlaps less effectively than the first, which is why alkenes readily open their second bond in addition reactions while alkanes are unreactive — a fact that makes no sense if the two pairs were equivalent.'
+              }
+            ]
+          }
+        ],
+        practice: [
+
+          { id: 'x1', kind: 'mc', lesson: 'e1',
+            prompt: 'What is the formula of the compound formed by magnesium and nitrogen?',
+            options: [
+              { t: 'Mg₃N₂', ok: true },
+              { t: 'MgN' },
+              { t: 'Mg₂N₃' },
+              { t: 'MgN₂' }
+            ],
+            hint: 'Mg²⁺ and N³⁻, and the charges must cancel.',
+            solution: ['Magnesium is group 2A, so Mg²⁺; nitrogen is 5A, so N³⁻',
+              'The least common multiple of 2 and 3 is 6', 'Three Mg²⁺ give +6 and two N³⁻ give −6'] },
+
+          { id: 'x2', kind: 'mc', lesson: 'e1',
+            prompt: 'Which compound has the largest lattice energy in magnitude?',
+            options: [
+              { t: 'MgO', ok: true },
+              { t: 'NaCl' },
+              { t: 'KBr' },
+              { t: 'CsI' }
+            ],
+            hint: 'Charge matters far more than size.',
+            solution: ['MgO is built from 2+ and 2− ions, a charge product of 4', 'The other three are all 1+ with 1−',
+              'MgO is about −3795 kJ/mol against NaCl’s −769'] },
+
+          { id: 'x3', kind: 'numeric', lesson: 'e1',
+            prompt: 'How many valence electrons does a sulfur atom have, and therefore how many dots are in its Lewis symbol?',
+            answer: 6, verify: { expr: '6' },
+            hint: 'Sulfur is in group 6A.',
+            solution: ['The valence count is the group number for a main-group element', 'Sulfur is group 6A',
+              'Six dots, which is why it gains two electrons to give S²⁻'] },
+
+          { id: 'x4', kind: 'numeric', lesson: 'e2',
+            prompt: 'Find the electronegativity difference for the O–H bond, to one decimal place. Take O = 3.5 and H = 2.1.',
+            answer: 1.4, tol: 0.01, verify: { expr: 'Rational(35,10) - Rational(21,10)', dp: 1 },
+            hint: 'Subtract the smaller from the larger.',
+            solution: ['3.5 − 2.1', '= 1.4', 'Between 0.4 and 2.0, so polar covalent, with δ− on oxygen'] },
+
+          { id: 'x5', kind: 'numeric', lesson: 'e2',
+            prompt: 'Find the electronegativity difference for the K–F bond, to one decimal place. Take F = 4.0 and K = 0.8.',
+            answer: 3.2, tol: 0.02, verify: { expr: 'Rational(40,10) - Rational(8,10)', dp: 1 },
+            hint: 'The largest difference on the Pauling scale.',
+            solution: ['4.0 − 0.8', '= 3.2', 'Well above 2.0, so the bond is ionic — potassium fluoride is a salt'] },
+
+          { id: 'x6', kind: 'mc', lesson: 'e2',
+            prompt: 'Which bond is the most polar?',
+            options: [
+              { t: 'H–F', ok: true },
+              { t: 'H–Cl' },
+              { t: 'H–Br' },
+              { t: 'F–F' }
+            ],
+            hint: 'Compute the difference, not the largest single value.',
+            solution: ['F–F has a difference of exactly zero — identical atoms',
+              'Among the hydrogen halides the difference falls down the group as electronegativity does',
+              'H–F is 1.9, H–Cl 0.9, H–Br 0.7'] },
+
+          { id: 'x7', kind: 'mc', lesson: 'e2',
+            prompt: 'CO₂ has two strongly polar C=O bonds. Why is the molecule nonpolar?',
+            options: [
+              { t: 'The molecule is linear, so the two bond dipoles point in opposite directions and cancel', ok: true },
+              { t: 'The bonds are not really polar after all' },
+              { t: 'Carbon and oxygen have the same electronegativity' },
+              { t: 'The double bonds prevent a dipole from forming' }
+            ],
+            hint: 'Bond dipoles are vectors.',
+            solution: ['Each C=O bond has a difference of 1.0 and is genuinely polar',
+              'In a linear O=C=O the two dipoles are equal and opposite',
+              'They sum to zero, so the molecule has no net dipole moment'] },
+
+          { id: 'x8', kind: 'numeric', lesson: 'e3',
+            prompt: 'How many valence electrons must a Lewis structure of the sulfate ion, SO₄²⁻, account for? Take S as 6A and O as 6A.',
+            answer: 32, verify: { expr: '6 + 4*6 + 2' },
+            hint: 'Sum the group numbers, then adjust for the charge.',
+            solution: ['Sulfur 6 plus four oxygens at 6 each = 30', 'Add 2 for the 2− charge',
+              '= 32 electrons, which the finished structure must show exactly'] },
+
+          { id: 'x9', kind: 'numeric', lesson: 'e3',
+            prompt: 'How many valence electrons must a Lewis structure of the ammonium ion, NH₄⁺, account for?',
+            answer: 8, verify: { expr: '5 + 4*1 - 1' },
+            hint: 'Subtract for a positive charge.',
+            solution: ['Nitrogen 5 plus four hydrogens at 1 each = 9', 'Subtract 1 for the + charge',
+              '= 8 electrons — four N–H bonds and no lone pairs'] },
+
+          { id: 'x10', kind: 'numeric', lesson: 'e3',
+            prompt: 'How many bonds does a neutral nitrogen atom normally form in a Lewis structure?',
+            answer: 3, verify: { expr: '8 - 5' },
+            hint: '8 minus the group number.',
+            solution: ['Nitrogen is group 5A, so it has five valence electrons', 'It needs three more to reach eight',
+              'Three bonds, plus one lone pair'] },
+
+          { id: 'x11', kind: 'mc', lesson: 'e3',
+            prompt: 'Which atom should be central in a Lewis structure of H₂O?',
+            options: [
+              { t: 'Oxygen, because hydrogen can form only one bond', ok: true },
+              { t: 'Hydrogen, because it is written first in the formula' },
+              { t: 'Either, since the molecule is symmetrical' },
+              { t: 'Oxygen, because it is the most electronegative atom' }
+            ],
+            hint: 'What can hydrogen do?',
+            solution: ['Hydrogen holds two electrons and forms one bond, so it can never join two atoms',
+              'Oxygen forms two bonds and joins the two hydrogens',
+              'The usual rule — the least electronegative atom — has hydrogen as its standing exception'] },
+
+          { id: 'x12', kind: 'spot', lesson: 'e3',
+            prompt: 'A student draws the Lewis structure of CO₂. One line is wrong.',
+            steps: [
+              { t: 'Count: 4 + 6 + 6 = 16 valence electrons', bad: false },
+              { t: 'Carbon is central, with an oxygen on each side', bad: false },
+              { t: 'Carbon is short of an octet, so add a new pair of electrons to make a double bond', bad: true },
+              { t: 'The finished structure must show exactly 16 electrons', bad: false }
+            ],
+            why: 'A double bond is made by converting an existing lone pair on an outer atom into a shared pair, not by adding electrons that were never counted. Adding a pair takes the total to 18 and leaves the oxygen with nine electrons. The electron count in the first line is the fixed budget for the whole structure, and nothing may be spent that is not in it.',
+            hint: 'Where do the electrons in a new double bond come from?',
+            solution: ['Convert a lone pair on the oxygen into a shared pair', 'The total stays at 16',
+              'Each oxygen keeps two lone pairs and the carbon reaches eight'] },
+
+          { id: 'x13', kind: 'numeric', lesson: 'e4',
+            prompt: 'Find the formal charge on the nitrogen atom in the ammonium ion, NH₄⁺, where nitrogen has four bonds and no lone pairs.',
+            answer: 1, verify: { expr: '5 - 0 - 4' },
+            hint: 'FC = V − L − (number of bonds).',
+            solution: ['V = 5 for nitrogen, L = 0 with no lone pairs', 'Four bonds', 'FC = 5 − 0 − 4 = +1, matching the ion’s charge'] },
+
+          { id: 'x14', kind: 'numeric', lesson: 'e4',
+            prompt: 'Find the formal charge on the oxygen atom in the hydroxide ion, OH⁻, where oxygen has one bond and three lone pairs.',
+            answer: -1, verify: { expr: '6 - 6 - 1' },
+            hint: 'Three lone pairs is six electrons.',
+            solution: ['V = 6, L = 6, one bond', 'FC = 6 − 6 − 1', '= −1, which is the whole charge of the ion'] },
+
+          { id: 'x15', kind: 'numeric', lesson: 'e4',
+            prompt: 'In the ozone structure O=O–O, find the formal charge on the central oxygen, which has two bonds from the double bond, one from the single bond, and one lone pair.',
+            answer: 1, verify: { expr: '6 - 2 - 3' },
+            hint: 'The double bond counts as two bonds. One lone pair is two electrons.',
+            solution: ['V = 6, L = 2 for the single lone pair', 'Bonds: 2 from the double plus 1 from the single = 3',
+              'FC = 6 − 2 − 3 = +1'] },
+
+          { id: 'x16', kind: 'mc', lesson: 'e4',
+            prompt: 'What does it mean to say ozone is a resonance hybrid?',
+            options: [
+              { t: 'It is a single species whose two bonds are identical and intermediate between single and double', ok: true },
+              { t: 'It alternates rapidly between the two structures' },
+              { t: 'It is a mixture of two different molecules' },
+              { t: 'Half its molecules have one structure and half the other' }
+            ],
+            hint: 'What do the measured bond lengths show?',
+            solution: ['Both O–O bonds are measured to be the same length, at all times',
+              'Neither drawing has equal bonds, so neither is the molecule',
+              'The hybrid is one thing that the drawings can only approximate'] },
+
+          { id: 'x17', kind: 'numeric', lesson: 'e5',
+            prompt: 'Estimate ΔH, in kJ, for H₂ + F₂ → 2 HF using H–H 436, F–F 155 and H–F 567 kJ/mol. Give a negative number.',
+            answer: -543, verify: { expr: '(436 + 155) - 2*567' },
+            hint: 'Broken minus formed, and remember the coefficient of 2.',
+            solution: ['Broken: 436 + 155 = 591 kJ', 'Formed: 2 × 567 = 1134 kJ', 'ΔH = 591 − 1134 = −543 kJ'] },
+
+          { id: 'x18', kind: 'numeric', lesson: 'e5',
+            prompt: 'Estimate ΔH, in kJ, for N₂ + 3 H₂ → 2 NH₃ using N≡N 945, H–H 436 and N–H 391 kJ/mol. Give a negative number.',
+            answer: -93, verify: { expr: '(945 + 3*436) - 6*391' },
+            hint: 'Each ammonia molecule has three N–H bonds, and there are two of them.',
+            solution: ['Broken: 945 + 3(436) = 2253 kJ', 'Formed: 6 N–H bonds at 391 = 2346 kJ',
+              'ΔH = 2253 − 2346 = −93 kJ, close to the measured −92 kJ'] },
+
+          { id: 'x19', kind: 'mc', lesson: 'e5',
+            prompt: 'Which carbon–carbon bond is the shortest?',
+            options: [
+              { t: 'C≡C', ok: true },
+              { t: 'C=C' },
+              { t: 'C–C' },
+              { t: 'They are all the same length' }
+            ],
+            hint: 'Higher bond order means shorter and stronger.',
+            solution: ['C–C is 154 pm, C=C is 134 pm and C≡C is 120 pm',
+              'More shared pairs pull the nuclei closer together', 'And the bond energies rise in the same order'] },
+
+          { id: 'x20', kind: 'mc', lesson: 'e5',
+            prompt: 'A reaction has ΔH estimated as −650 kJ from bond energies. What does this say?',
+            options: [
+              { t: 'The bonds formed are stronger overall than those broken, so the reaction is exothermic', ok: true },
+              { t: 'The bonds broken are stronger than those formed' },
+              { t: 'Energy must be supplied for the reaction to proceed' },
+              { t: 'No bonds are broken at all' }
+            ],
+            hint: 'Broken minus formed came out negative.',
+            solution: ['A negative result means the formed term was the larger',
+              'Forming stronger bonds than were broken releases the difference',
+              'This is the physical reason a fuel burns'] },
+
+          { id: 'x21', kind: 'spot', lesson: 'e5',
+            prompt: 'A student estimates ΔH for CH₄ + 2 O₂ → CO₂ + 2 H₂O. One line is wrong.',
+            steps: [
+              { t: 'Broken: 4 C–H bonds and 2 O=O bonds', bad: false },
+              { t: 'Formed: 2 C=O bonds and 2 O–H bonds', bad: true },
+              { t: 'ΔH = (energy of bonds broken) − (energy of bonds formed)', bad: false },
+              { t: 'The answer should come out negative, since methane burns', bad: false }
+            ],
+            why: 'Each water molecule has TWO O–H bonds and the equation makes two molecules, so four O–H bonds are formed rather than two. The missing pair is worth 926 kJ, which nearly doubles the estimated enthalpy. Counting per molecule and then applying the coefficient — in that order, written down — is what stops this.',
+            hint: 'How many O–H bonds does one water molecule have?',
+            solution: ['Two per molecule, and there are two molecules', 'So four O–H bonds are formed',
+              'Giving ΔH = 2648 − 3450 = −802 kJ'] },
+
+          { id: 'x22', kind: 'order', lesson: 'e3',
+            prompt: 'Put the steps for drawing a Lewis structure in order.',
+            steps: [
+              'Count the valence electrons, adjusting for any charge',
+              'Choose the central atom and connect the others with single bonds',
+              'Complete the octets of the outer atoms with lone pairs',
+              'Put any electrons left over on the central atom',
+              'Form multiple bonds if the central atom is still short of an octet',
+              'Check that the electrons drawn equal the number counted at the start'
+            ],
+            hint: 'The budget is fixed before anything is drawn.',
+            solution: ['The count comes first because it is the budget for everything after',
+              'Outer atoms are satisfied before the centre, which is what makes a shortfall visible',
+              'Multiple bonds move electrons rather than adding them, and the final count proves it'] },
+
+          { id: 'x23', kind: 'order', lesson: 'e4',
+            prompt: 'Put the steps for choosing between two resonance structures in order.',
+            steps: [
+              'Assign a formal charge to every atom with FC = V − L − (number of bonds)',
+              'Check that the formal charges sum to the overall charge',
+              'Prefer the structure whose formal charges are closest to zero',
+              'Where charges are unavoidable, prefer the negative one on the more electronegative atom'
+            ],
+            hint: 'Verify the arithmetic before comparing.',
+            solution: ['Formal charges must be assigned before anything can be compared',
+              'The sum check catches an error before it misleads the comparison',
+              'Magnitude first, then placement'] }
+        ]
+      },
+
+      /* ============================ CHAPTER 10 ============================ */
+      {
+        id: 'shapes', n: 6,
+        title: 'Chemical bonding II: shape and the models of the bond',
+        blurb: 'A Lewis structure says which atoms are joined; it says nothing about the shape, and shape is what decides whether a molecule is polar, how it packs and what it will react with. Three models are needed: VSEPR for the geometry, valence bond theory for how the orbitals overlap, and molecular orbital theory for the cases where the other two fail.',
+        read: 'Chapter 10',
+        objectives: [
+          'Count electron domains and give the electron geometry they produce',
+          'Name the molecular shape when some domains are lone pairs, and predict the effect on bond angles',
+          'Decide whether a molecule is polar by combining bond dipoles with the shape',
+          'Assign hybridisation from the number of electron domains, and distinguish sigma from pi bonds',
+          'Use a molecular orbital diagram to find a bond order and predict magnetic behaviour'
+        ],
+        lessons: [
+
+          {
+            id: 'f1', title: 'VSEPR: electron domains and electron geometry', src: 'Section 10.2',
+            idea: `<b>VSEPR</b> — valence shell electron pair repulsion — rests on one idea: groups of electrons around a central atom repel each other and settle as far apart as they can get. Everything else follows by geometry.<br><br>What is counted is <b>electron domains</b>, sometimes called electron groups. A domain is any of the following around the central atom:<br><br>a single bond, a double bond, a triple bond — <b>each counts as ONE domain</b> — or a lone pair.<br><br>That a double bond counts once is the step to be careful with. It is one region of electron density, however many pairs are in it, and the geometry is set by where the regions are, not how much charge each holds.<br><br>The number of domains gives the <b>electron geometry</b>:<br><br><b>2 domains — linear</b>, 180°<br><b>3 domains — trigonal planar</b>, 120°<br><b>4 domains — tetrahedral</b>, 109.5°<br><b>5 domains — trigonal bipyramidal</b>, 90° and 120°<br><b>6 domains — octahedral</b>, 90°<br><br>These five are worth knowing cold, because every shape in the next lesson is one of them with some positions occupied by lone pairs rather than atoms.<br><br>The angles are not arbitrary numbers to memorise: they are what you get by placing that many points on a sphere as far apart as possible. Two points go to opposite poles, three to an equator, four to the corners of a tetrahedron — and 109.5° is simply the angle that arrangement produces.<br><br>Note that CO₂ is linear with two domains despite having four shared pairs, and that a molecule with three domains is planar because three points on a sphere define a plane. Neither fact needs anything beyond counting.`,
+            figure: {
+              kind: 'graph', x: [1.5, 6.5], y: [80, 200], xlabel: 'electron domains', ylabel: 'ideal bond angle (°)',
+              fns: [{ pts: [[2, 180], [3, 120], [4, 109.5], [5, 120], [6, 90]], label: 'ideal angles' }],
+              points: [
+                { x: 2, y: 180, label: 'linear' }, { x: 3, y: 120, label: 'trigonal planar' },
+                { x: 4, y: 109.5, label: 'tetrahedral' }, { x: 6, y: 90, label: 'octahedral' }
+              ],
+              caption: 'The ideal angle for each number of electron domains. The fall from 180° to 90° is just geometry — the more regions have to share a sphere, the closer together they must sit. Five domains is the odd case, shown at its 120° equatorial angle: a trigonal bipyramid has two different angles, 120° in the equator and 90° to the axial positions.'
+            },
+            rules: [
+              { name: 'The VSEPR idea', expr: 'Electron domains get as far apart as they can', words: true, note: 'Every geometry in the chapter is a consequence of this one sentence.' },
+              { name: 'What counts as a domain', expr: 'Any bond counts once, and each lone pair counts once', words: true, note: 'A double or triple bond is ONE domain — one region of electron density.' },
+              { name: 'Two domains', expr: 'Linear, 180 degrees', words: true, note: 'CO2 and HCN, both with multiple bonds that still count once each.' },
+              { name: 'Three domains', expr: 'Trigonal planar, 120 degrees', words: true, note: 'Three points on a sphere define a plane, so these molecules are flat.' },
+              { name: 'Four domains', expr: 'Tetrahedral, 109.5 degrees', words: true, note: 'The commonest case in organic chemistry, and not the 90 degrees a flat drawing suggests.' },
+              { name: 'Five and six domains', expr: 'Trigonal bipyramidal, then octahedral', words: true, note: 'Five has two angles, 120 in the equator and 90 to the axial positions; six is 90 throughout.' }
+            ],
+            examples: [
+              {
+                prompt: 'Give the electron geometry and bond angle of CO₂ and of CH₄, and explain why CO₂ is not bent.',
+                approach: 'Draw or recall the Lewis structure first, since the domain count comes straight from it, then count the domains around the central atom — remembering that a double bond is one domain. The geometry follows from the count alone, with no further reasoning.',
+                steps: [
+                  { do: 'CO₂ is O=C=O, so the carbon has two double bonds and no lone pairs', why: 'From the Lewis structure of the previous chapter.' },
+                  { do: 'Each double bond is ONE domain, so carbon has two domains', why: 'A domain is a region of electron density, not a count of pairs. This is the step the question is testing.' },
+                  { do: 'Two domains get furthest apart at 180°: linear', why: 'Two points on a sphere are maximally separated at opposite poles.' },
+                  { do: 'CH₄ has four single bonds and no lone pairs, so four domains', why: 'Four separate regions around the carbon.' },
+                  { do: 'Four domains give a tetrahedral geometry, 109.5°', why: 'The tetrahedron is what four points on a sphere settle into.' },
+                  { do: 'CO₂ is not bent because nothing is there to bend it — carbon has no lone pair', why: 'Water is bent because oxygen has two lone pairs taking up positions; carbon in CO₂ has none.' }
+                ],
+                answer: 'CO₂ linear at 180°; CH₄ tetrahedral at 109.5°',
+                answerWords: true,
+                check: 'The consequences are observable: CO₂ is nonpolar despite two polar bonds, which requires them to point exactly opposite ✓, and methane’s tetrahedral shape is why organic molecules are three-dimensional rather than flat. Counting each double bond twice would have given CO₂ four domains and a bent shape, and then it would have a dipole moment, which it does not.'
+              },
+              {
+                prompt: 'Give the electron geometry of PCl₅ and of SF₆, and state the bond angles in each.',
+                approach: 'Both are expanded-octet molecules, so the domain count is higher than the octet rule would allow — which is fine, because VSEPR counts regions and does not require an octet. Get the number of domains from the Lewis structure, then read off the geometry; the only subtlety is that one of these two has more than one bond angle.',
+                steps: [
+                  { do: 'PCl₅: phosphorus forms five single bonds to chlorine, with no lone pairs left', why: 'Ten electrons around phosphorus — an expanded octet, possible from period 3 onward.' },
+                  { do: 'Five domains: trigonal bipyramidal', why: 'Three positions in an equatorial plane and two axial, above and below.' },
+                  { do: 'Two different angles: 120° within the equator, 90° between an equatorial and an axial position', why: 'The five positions are not equivalent, which is what makes this geometry different from the others.' },
+                  { do: 'SF₆: sulfur forms six single bonds, again with no lone pairs', why: 'Twelve electrons around sulfur.' },
+                  { do: 'Six domains: octahedral', why: 'Six points on a sphere settle at the vertices of an octahedron.' },
+                  { do: 'All angles 90° between neighbouring positions, and every position equivalent', why: 'Unlike the trigonal bipyramid, the octahedron has no distinct axial and equatorial sites.' }
+                ],
+                answer: 'PCl₅ trigonal bipyramidal (120° and 90°); SF₆ octahedral (90°)',
+                answerWords: true,
+                check: 'The equivalence claim is testable: replacing one fluorine of SF₆ gives only one possible SF₅Cl, while replacing one chlorine of PCl₅ could in principle give two different PCl₄F molecules, axial or equatorial ✓ — and both are in fact observed, interconverting rapidly.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'c1k-double-bond-two-domains',
+                wrong: 'Counting a double bond as two electron domains',
+                right: 'It is ONE domain — one region of electron density, however many pairs are in it.',
+                why: 'The Lewis structure shows two lines, and the whole chapter is about counting, so counting both is natural. It changes CO₂ from linear to bent and therefore from nonpolar to polar, which contradicts the measured dipole moment of zero.'
+              },
+              {
+                id: 'c1k-lone-pairs-not-counted',
+                wrong: 'Counting only the bonded atoms when finding the electron geometry',
+                right: 'Lone pairs are domains too — they take up space and push the bonds around.',
+                why: 'Lone pairs are invisible in a ball-and-stick model and easy to leave out of a count of attached atoms. Water would then be linear rather than bent, and with it would go the polarity that explains almost everything water does.'
+              },
+              {
+                id: 'c1k-angles-from-flat-drawing',
+                wrong: 'Reading bond angles off a flat structural drawing — 90° for methane, say',
+                right: 'The geometry is three-dimensional: four domains give 109.5°, not 90°.',
+                why: 'Formulas are written on paper in right angles for convenience, and the drawing is mistaken for the shape. The tetrahedral angle is what makes chains zigzag and makes stereochemistry possible, none of which works on a square grid.'
+              },
+              {
+                id: 'c1k-tbp-angles-single',
+                wrong: 'Quoting one bond angle for a trigonal bipyramidal molecule',
+                right: 'It has two: 120° in the equatorial plane and 90° between equatorial and axial positions.',
+                why: 'Every other geometry in the list has a single characteristic angle, so the pattern suggests this one does too. The inequivalence of the positions is also why lone pairs go equatorial in the next lesson — a rule that makes no sense if the five sites are all the same.'
+              }
+            ]
+          },
+
+          {
+            id: 'f2', title: 'Molecular shape when lone pairs are present', src: 'Section 10.4',
+            idea: `<b>Electron geometry</b> describes where the domains are; <b>molecular shape</b> describes where the ATOMS are. When every domain is a bond the two names coincide. When some are lone pairs they do not, and the shape is the electron geometry with the lone-pair positions left empty.<br><br>From the tetrahedral electron geometry, four domains:<br><br><b>0 lone pairs — tetrahedral</b> (CH₄), 109.5°<br><b>1 lone pair — trigonal pyramidal</b> (NH₃), about 107°<br><b>2 lone pairs — bent</b> (H₂O), about 104.5°<br><br>The angles shrink as lone pairs are added, and the reason is that a <b>lone pair spreads out more than a bonding pair</b>. A bonding pair is pulled between two nuclei and held narrow; a lone pair is held by one nucleus only and fans out, pushing the bonds closer together. The order of repulsion is<br><br><b>lone–lone > lone–bonding > bonding–bonding</b><br><br>which predicts the sizes of the deviations as well as their direction — one lone pair costs about 2.5°, two cost about 5°.<br><br>From the trigonal planar geometry, three domains: no lone pairs gives trigonal planar (BF₃), one gives <b>bent</b> (SO₂) at about 119°. Note that both H₂O and SO₂ are called bent while having quite different angles, because the name describes the arrangement of atoms and not the value.<br><br>With five domains there is a further rule: <b>lone pairs go equatorial</b>, where there is more room, giving the see-saw, T-shaped and linear shapes as lone pairs are added. With six domains the lone pairs go opposite each other, giving square pyramidal and then square planar.<br><br>The practical procedure never changes: Lewis structure, count domains, electron geometry, then remove the lone-pair positions to name the shape.`,
+            figure: {
+              kind: 'graph', x: [-0.5, 2.5], y: [100, 114], xlabel: 'lone pairs on the central atom', ylabel: 'bond angle (°)',
+              fns: [{ pts: [[0, 109.5], [1, 107], [2, 104.5]], label: 'four domains' }],
+              points: [
+                { x: 0, y: 109.5, label: 'CH₄ tetrahedral' }, { x: 1, y: 107, label: 'NH₃ pyramidal' },
+                { x: 2, y: 104.5, label: 'H₂O bent' }
+              ],
+              caption: 'Bond angle against the number of lone pairs, for four electron domains. All three molecules have the same tetrahedral electron geometry, but each lone pair fans out more than a bonding pair and squeezes the remaining bonds by about two and a half degrees. The molecular shape changes name at every step while the electron geometry does not change at all.'
+            },
+            rules: [
+              { name: 'The two geometries', expr: 'Electron geometry counts domains, molecular shape counts atoms', words: true, note: 'They differ exactly when there are lone pairs on the central atom.' },
+              { name: 'Four domains', expr: 'Tetrahedral, then trigonal pyramidal, then bent', words: true, note: 'As 0, 1 and 2 lone pairs are added: CH4, NH3, H2O.' },
+              { name: 'Repulsion order', expr: 'lone-lone > lone-bonding > bonding-bonding', words: true, note: 'A lone pair is held by one nucleus and fans out; a bonding pair is pulled between two and stays narrow.' },
+              { name: 'The angles that result', expr: 'About 109.5, 107 and 104.5 degrees', words: true, note: 'Each lone pair costs roughly two and a half degrees.' },
+              { name: 'Five domains', expr: 'Lone pairs take equatorial positions', words: true, note: 'Where there is more room, giving see-saw, T-shaped and then linear.' },
+              { name: 'The procedure', expr: 'Lewis structure, domains, electron geometry, then remove the lone-pair positions', words: true, note: 'Four steps, in that order, every time.' }
+            ],
+            examples: [
+              {
+                prompt: 'Give the electron geometry, molecular shape and approximate bond angle of NH₃ and of H₂O, and explain why their angles differ.',
+                approach: 'Both have four electron domains, so their electron geometry is the same and everything interesting is in how many of those domains are lone pairs. Run the four steps for each, then compare — the comparison is the point, and it turns entirely on the repulsion order.',
+                steps: [
+                  { do: 'NH₃: nitrogen has three bonds to hydrogen and one lone pair, so four domains', why: 'Nitrogen is group 5A: three bonds and one lone pair uses all five valence electrons.' },
+                  { do: 'Four domains give a tetrahedral ELECTRON geometry, but only three positions hold atoms', why: 'The lone pair occupies the fourth corner and is not drawn as part of the shape.' },
+                  { do: 'Molecular shape: trigonal pyramidal, with an angle of about 107°', why: 'Slightly less than 109.5° because the lone pair pushes the three N–H bonds together.' },
+                  { do: 'H₂O: oxygen has two bonds and two lone pairs, again four domains and a tetrahedral electron geometry', why: 'Oxygen is group 6A: two bonds and two lone pairs.' },
+                  { do: 'Two positions hold atoms, so the shape is bent, at about 104.5°', why: 'Two lone pairs squeeze the two O–H bonds further than one did.' },
+                  { do: 'The difference — 107° against 104.5° — is the second lone pair, costing another 2.5°', why: 'Lone-pair repulsion is stronger than bonding-pair repulsion, so each one added narrows the remaining angle by about the same amount.' }
+                ],
+                answer: 'Both tetrahedral in electron geometry; NH₃ trigonal pyramidal at 107° and H₂O bent at 104.5°',
+                answerWords: true,
+                check: 'Methane completes the series at 109.5° with no lone pairs ✓, and the three angles fall in equal steps, which is what the repulsion argument predicts. Both NH₃ and H₂O are polar as a result — a symmetric shape would have cancelled the bond dipoles, and neither shape is symmetric.'
+              },
+              {
+                prompt: 'Give the molecular shape of SF₄, which has four bonds and one lone pair on the sulfur.',
+                approach: 'Five domains, so the geometry is the trigonal bipyramid with its two kinds of position — and that makes the placement of the lone pair a real decision rather than a formality. Apply the rule that lone pairs go equatorial, then justify it from the repulsion order before naming the shape.',
+                steps: [
+                  { do: 'Count: four bonding domains plus one lone pair = five domains', why: 'An expanded octet, with ten electrons around the sulfur.' },
+                  { do: 'Five domains give a trigonal bipyramidal electron geometry', why: 'Three equatorial positions and two axial.' },
+                  { do: 'The lone pair takes an equatorial position, not an axial one', why: 'The rule for five domains, and the reason follows in the next step.' },
+                  { do: 'Justification: an equatorial position has two neighbours at 90°, an axial one has three', why: 'The lone pair, which repels most strongly, takes the site with the fewest close contacts — so the total repulsion is least.' },
+                  { do: 'The four atoms occupy the two axial positions and the two remaining equatorial ones', why: 'Everything not taken by the lone pair holds an atom.' },
+                  { do: 'Shape: see-saw, with angles slightly under 120° and 90°', why: 'The name comes from its appearance, and the angles are compressed by the lone pair as always.' }
+                ],
+                answer: 'See-saw, from a trigonal bipyramidal electron geometry with one equatorial lone pair',
+                answerWords: true,
+                check: 'The series continues consistently: two lone pairs, both equatorial, gives ClF₃ its T-shape, and three gives XeF₂ a linear shape ✓ — each step removes one equatorial position. Placing the first lone pair axially instead would have predicted a trigonal pyramidal SF₄, which is not what is observed.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'c1k-electron-vs-molecular-geometry',
+                wrong: 'Calling water tetrahedral because it has four electron domains',
+                right: 'Its ELECTRON geometry is tetrahedral; its molecular SHAPE is bent, because two positions hold lone pairs.',
+                why: 'The two names describe the same molecule and only one of them is usually asked for, so they get used interchangeably. Shape is what determines polarity and packing, so calling water tetrahedral predicts a symmetric, nonpolar molecule — the opposite of everything water does.'
+              },
+              {
+                id: 'c1k-angles-exactly-ideal',
+                wrong: 'Quoting 109.5° for ammonia and water',
+                right: 'Lone pairs compress the angle: about 107° for NH₃ and 104.5° for H₂O.',
+                why: 'The ideal angle belongs to the electron geometry, which all three share, so it seems to apply throughout. The deviations are measurable and their pattern is the evidence for the repulsion order — treating the angles as identical discards the one prediction that makes lone-pair repulsion testable.'
+              },
+              {
+                id: 'c1k-lone-pair-axial',
+                wrong: 'Putting a lone pair in an axial position of a trigonal bipyramid',
+                right: 'Lone pairs go equatorial, where they have two 90° neighbours rather than three.',
+                why: 'The axial positions look less crowded on a drawing because only two of them exist. Counting the close contacts settles it, and the rule predicts the see-saw, T-shaped and linear series — every one of which is wrong if the lone pairs are placed axially.'
+              },
+              {
+                id: 'c1k-shape-named-from-formula',
+                wrong: 'Assuming molecules with the same formula type have the same shape — CO₂ and H₂O, say',
+                right: 'Both are AB₂, but CO₂ is linear and H₂O is bent, because only oxygen has lone pairs.',
+                why: 'The formula is the most visible thing about a molecule and it is natural to generalise from it. The domain count includes lone pairs, which the formula never shows, so two AB₂ molecules can differ completely — and here the difference is between a nonpolar gas and the solvent of life.'
+              }
+            ]
+          },
+
+          {
+            id: 'f3', title: 'Molecular shape and polarity', src: 'Section 10.6',
+            idea: `A molecule is <b>polar</b> if it has a net dipole moment — that is, if its bond dipoles do not cancel. Two things are needed, and both must be checked:<br><br><b>1. Are the bonds polar?</b> From the electronegativity differences of chapter 9. If every bond is nonpolar, the molecule is nonpolar and there is nothing more to do.<br><b>2. Does the shape make them cancel?</b> Bond dipoles are vectors, so identical dipoles pointing symmetrically outward add to zero.<br><br>The symmetric shapes — <b>linear, trigonal planar, tetrahedral, trigonal bipyramidal, octahedral</b>, with identical atoms at every position — cancel exactly. CO₂, BF₃, CH₄, PCl₅ and SF₆ are all nonpolar despite polar bonds.<br><br>The shapes left over when lone pairs take positions — <b>bent, trigonal pyramidal, see-saw, T-shaped, square pyramidal</b> — are asymmetric, and molecules with polar bonds in those shapes are polar. H₂O and NH₃ are the standard examples.<br><br>Symmetry can also be broken by <b>different outer atoms</b>. CH₄ is nonpolar but CH₃Cl is polar, because one of the four dipoles is now much larger than the others and nothing cancels it. The shape is still tetrahedral; what changed is that the positions are no longer equivalent.<br><br>Polarity is worth the care because it predicts behaviour: polar molecules dissolve in polar solvents, have higher boiling points than nonpolar molecules of similar mass, and align in an electric field. "Like dissolves like" is a statement about this, and it is why oil and water separate while ethanol and water mix in any proportion.`,
+            figure: {
+              kind: 'numberline', x: [0, 3.5],
+              points: [
+                { x: 0, label: 'ΔEN = 0' }, { x: 0.4, label: '0.4' }, { x: 1.4, label: 'O–H' },
+                { x: 2.0, label: '2.0' }, { x: 3.2, label: 'K–F' }
+              ],
+              caption: 'The electronegativity-difference scale that decides whether a BOND is polar, marked at the two conventional boundaries. It is only the first half of the question: a molecule made of bonds well inside the polar range can still be nonpolar overall if its shape is symmetric, which is exactly the case of carbon dioxide at ΔEN = 1.0 per bond.'
+            },
+            rules: [
+              { name: 'The two-part test', expr: 'Polar bonds, and a shape that does not cancel them', words: true, note: 'Both are needed. Either one alone decides nothing.' },
+              { name: 'Shapes that cancel', expr: 'linear, trigonal planar, tetrahedral, trigonal bipyramidal, octahedral', words: true, note: 'With identical atoms at every position. These molecules are nonpolar however polar their bonds.' },
+              { name: 'Shapes that do not', expr: 'bent, trigonal pyramidal, see-saw, T-shaped, square pyramidal', words: true, note: 'The asymmetric ones, which are what lone pairs produce.' },
+              { name: 'Different outer atoms', expr: 'Break the symmetry even in a symmetric shape', words: true, note: 'CH4 is nonpolar; CH3Cl is polar, with the same tetrahedral shape.' },
+              { name: 'Why it matters', expr: 'Like dissolves like', words: true, note: 'Polar dissolves polar; it also raises boiling points against nonpolar molecules of similar mass.' }
+            ],
+            examples: [
+              {
+                prompt: 'Decide whether CO₂ and H₂O are polar, and explain why they differ despite both being AB₂ molecules.',
+                approach: 'Run the two-part test on each in the same order — bonds first, then shape — so that the difference shows up in exactly one of the two steps. The formulas being alike is what makes the pair instructive: the answer cannot come from the formula, so it must come from the domain count.',
+                steps: [
+                  { do: 'CO₂ bonds: ΔEN = 3.5 − 2.5 = 1.0, so each C=O bond is clearly polar', why: 'Part one passes, so the shape decides.' },
+                  { do: 'CO₂ shape: carbon has two domains and no lone pairs, so the molecule is linear', why: 'From the previous lessons — a double bond counts once.' },
+                  { do: 'The two dipoles are equal and point in exactly opposite directions, so they cancel: CO₂ is nonpolar', why: 'Vector addition. Equal and opposite sums to zero.' },
+                  { do: 'H₂O bonds: ΔEN = 3.5 − 2.1 = 1.4, so each O–H bond is polar too, and more so', why: 'Part one passes here as well, which is why the shape is doing all the work.' },
+                  { do: 'H₂O shape: oxygen has four domains, two of them lone pairs, so the molecule is bent at 104.5°', why: 'The lone pairs are invisible in the formula and are the whole reason for the difference.' },
+                  { do: 'The two dipoles are at an angle, so they add to a net dipole pointing through the oxygen: H₂O is polar', why: 'Nothing cancels, and the resultant points towards the negative end.' }
+                ],
+                answer: 'CO₂ nonpolar (linear, dipoles cancel); H₂O polar (bent, they do not)',
+                answerWords: true,
+                check: 'The physical behaviour confirms it: CO₂ is a gas at room temperature and barely soluble in water, while water is a liquid boiling at 100 °C and dissolves salts ✓. The two molecules have the same number of atoms and the same kind of formula, so nothing but the lone pairs can be responsible.'
+              },
+              {
+                prompt: 'Decide whether CCl₄ and CHCl₃ are polar. Both are tetrahedral.',
+                approach: 'Here the shape is identical and the bonds are polar in both, so the whole question turns on whether the four positions are equivalent — which is a third thing to check beyond the standard two. Compare the four dipoles in each molecule and ask whether they can cancel.',
+                steps: [
+                  { do: 'CCl₄: four identical C–Cl bonds, each with ΔEN = 3.0 − 2.5 = 0.5, so each is polar', why: 'Part one passes for both molecules, as usual.' },
+                  { do: 'Tetrahedral with four identical bonds: the four dipoles point to the corners of a tetrahedron and sum to zero', why: 'The symmetry is exact, which is what cancellation requires.' },
+                  { do: 'So CCl₄ is nonpolar', why: 'Same reasoning as CO₂, in three dimensions rather than one.' },
+                  { do: 'CHCl₃: three C–Cl bonds at ΔEN 0.5 and one C–H bond at ΔEN 0.4 — and the C–H dipole points the other way', why: 'Hydrogen is LESS electronegative than carbon, so that bond’s dipole points towards the carbon while the others point away.' },
+                  { do: 'The three chlorine dipoles no longer have an equal partner to cancel against', why: 'The fourth position is different, so the symmetry is broken even though the shape is unchanged.' },
+                  { do: 'CHCl₃ is polar, with a net dipole pointing away from the hydrogen', why: 'Which is why chloroform is a useful solvent for moderately polar compounds and carbon tetrachloride is not.' }
+                ],
+                answer: 'CCl₄ nonpolar; CHCl₃ polar — the shape is the same, but the four positions are not equivalent',
+                answerWords: true,
+                check: 'Boiling points bear it out: CCl₄ boils at 77 °C and CHCl₃ at 61 °C despite CHCl₃ being much lighter (119 against 154 g/mol) ✓ — the polar molecule holds on well beyond what its mass would suggest. And the dipole moments are 0 and 1.04 D, exactly as predicted.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'c1k-polar-bonds-imply-polar',
+                wrong: 'Concluding a molecule is polar because its bonds are',
+                right: 'Check the shape too — symmetric arrangements of identical dipoles cancel exactly.',
+                why: 'Part one of the test is the easier half and gives a satisfying answer on its own, so the second half gets skipped. CO₂, BF₃, CH₄, PCl₅ and SF₆ are all nonpolar with polar bonds, and they are among the most commonly asked molecules for exactly that reason.'
+              },
+              {
+                id: 'c1k-symmetry-with-different-atoms',
+                wrong: 'Calling CH₃Cl nonpolar because it is tetrahedral',
+                right: 'Cancellation needs identical atoms at every position as well as a symmetric shape.',
+                why: 'The rule is often learned as a list of shapes, with the condition about identical outer atoms dropped. Replacing one atom leaves the geometry untouched while removing the cancellation entirely, which is why the halogenated methanes are a standard exam series.'
+              },
+              {
+                id: 'c1k-lone-pairs-ignored-in-polarity',
+                wrong: 'Judging polarity from the bonded atoms alone, ignoring lone pairs',
+                right: 'Lone pairs make the shape asymmetric, and they contribute to the dipole themselves.',
+                why: 'They are absent from the formula and from most drawings, so a molecule looks more symmetric than it is. Water and ammonia both come out nonpolar if the lone pairs are left out — a prediction contradicted by every property either substance has.'
+              },
+              {
+                id: 'c1k-dipole-magnitude-assumed',
+                wrong: 'Assuming any polar molecule is strongly polar, or that more polar bonds means more polar molecule',
+                right: 'The dipoles add as vectors, so partial cancellation is normal and the net can be small.',
+                why: 'Polarity is usually taught as a yes-or-no question, which hides that it is a magnitude. CHCl₃ has three polar bonds and a dipole moment of 1.04 D, while water has two and manages 1.85 D — because in water they are further from cancelling.'
+              }
+            ]
+          },
+
+          {
+            id: 'f4', title: 'Valence bond theory and hybridisation', src: 'Section 10.7',
+            idea: `VSEPR predicts shapes but says nothing about the orbitals. <b>Valence bond theory</b> supplies that: a bond is the <b>overlap of two half-filled atomic orbitals</b>, and the shared pair occupies the overlapping region.<br><br>A problem appears immediately. Carbon is 2s² 2p², with two unpaired electrons — so it should form two bonds at 90°, the angle between two p orbitals. It forms four, at 109.5°. The resolution is <b>hybridisation</b>: the atomic orbitals mix into new, equivalent <b>hybrid orbitals</b> pointing in the directions the bonds actually take.<br><br>The number of hybrid orbitals always equals the number of orbitals mixed, and equals the <b>number of electron domains</b> — which is what ties this lesson to VSEPR:<br><br><b>2 domains — sp</b>, linear, 180°<br><b>3 domains — sp²</b>, trigonal planar, 120°<br><b>4 domains — sp³</b>, tetrahedral, 109.5°<br><b>5 domains — sp³d</b>, trigonal bipyramidal<br><b>6 domains — sp³d²</b>, octahedral<br><br>So hybridisation is read off the domain count, not worked out from scratch. Count the domains and the label follows.<br><br>Bonds come in two kinds. A <b>sigma (σ) bond</b> overlaps head-on along the axis between the nuclei; every single bond is one. A <b>pi (π) bond</b> overlaps side-on between two unhybridised p orbitals, above and below that axis. So:<br><br><b>single bond = 1 σ; double = 1 σ + 1 π; triple = 1 σ + 2 π</b><br><br>This explains something VSEPR cannot. Rotation about a single bond is free, because head-on overlap is unchanged by turning. Rotation about a double bond is not: it would break the side-on π overlap. That restriction is why alkenes have cis and trans forms, and why the shape of a protein is fixed rather than floppy.`,
+            figure: {
+              kind: 'graph', x: [1.5, 6.5], y: [1.5, 6.5], xlabel: 'electron domains', ylabel: 'hybrid orbitals formed',
+              fns: [{ expr: 'x', label: 'hybrids = domains' }],
+              points: [
+                { x: 2, y: 2, label: 'sp' }, { x: 3, y: 3, label: 'sp²' },
+                { x: 4, y: 4, label: 'sp³' }, { x: 5, y: 5, label: 'sp³d' }, { x: 6, y: 6, label: 'sp³d²' }
+              ],
+              caption: 'Hybridisation against the number of electron domains — a line of slope one, because orbitals are conserved when they mix. Four atomic orbitals give four hybrids, never three or five. This is why hybridisation is read straight off the VSEPR count rather than derived separately, and why the geometry attached to each label is the one VSEPR already predicted.'
+            },
+            rules: [
+              { name: 'What a bond is', expr: 'The overlap of two half-filled atomic orbitals', words: true, note: 'The shared pair lives in the overlapping region.' },
+              { name: 'Hybridisation from domains', expr: 'N_hybrids = N_domains', note: 'Two gives sp, three sp2, four sp3, five sp3d, six sp3d2. Orbitals are conserved when they mix.' },
+              { name: 'Sigma bond', expr: 'Head-on overlap along the internuclear axis', words: true, note: 'Every single bond is a sigma bond, and every multiple bond contains exactly one.' },
+              { name: 'Pi bond', expr: 'Side-on overlap of unhybridised p orbitals', words: true, note: 'Above and below the axis. A double bond has one, a triple bond two.' },
+              { name: 'Counting in a multiple bond', expr: 'single 1 sigma; double 1 sigma + 1 pi; triple 1 sigma + 2 pi', words: true, note: 'The first bond between two atoms is always the sigma one.' },
+              { name: 'Rotation', expr: 'Free about a sigma bond, blocked by a pi bond', words: true, note: 'Which is why alkenes have cis and trans isomers and alkanes do not.' }
+            ],
+            examples: [
+              {
+                prompt: 'Give the hybridisation of each carbon in ethyne, H–C≡C–H, and count the sigma and pi bonds in the molecule.',
+                approach: 'Hybridisation comes from the domain count, so count domains on each carbon first rather than trying to reason about the triple bond directly. Then count the bonds by type, using the rule that the first bond between any two atoms is the sigma one and every extra bond is a pi.',
+                steps: [
+                  { do: 'Each carbon is bonded to one hydrogen and to the other carbon: two domains', why: 'The triple bond is one region of electron density, so it counts once — the same rule as VSEPR.' },
+                  { do: 'Two domains means sp hybridisation, and a linear geometry at 180°', why: 'Two hybrid orbitals from one s and one p, leaving two p orbitals unhybridised on each carbon.' },
+                  { do: 'Sigma bonds: two C–H bonds and one C–C sigma = 3 in total', why: 'Every single bond is a sigma, and the triple bond contributes exactly one.' },
+                  { do: 'Pi bonds: the triple bond contains two, from the two leftover p orbitals on each carbon overlapping side-on', why: 'One pair overlaps above and below, the other in front and behind — perpendicular to each other.' },
+                  { do: 'Total: 3 sigma and 2 pi bonds', why: 'Five bonds in all, which matches the five lines in the structural formula: H–C, C≡C counting as three, C–H.' },
+                  { do: 'The molecule is rigid and linear, and no rotation is possible about the C≡C bond', why: 'The two pi bonds would have to break, which is why ethyne is a stick rather than a hinge.' }
+                ],
+                answer: 'Both carbons sp; 3 sigma bonds and 2 pi bonds',
+                answerWords: true,
+                check: 'The bond lengths agree: C≡C is 120 pm against 154 pm for C–C ✓ — the extra pi overlap pulls the nuclei closer, exactly as the bond-order trend of chapter 9 reported. And the sp hybrid orbitals point 180° apart, which is the linear geometry VSEPR gave for two domains, arrived at from a different direction.'
+              },
+              {
+                prompt: 'Give the hybridisation of the central atom in NH₃, in BF₃ and in SF₆.',
+                approach: 'One procedure applies to all three: count the electron domains on the central atom — bonds and lone pairs alike — and read off the hybridisation. The ammonia case is the one that discriminates, because its lone pair is a domain and would be missed by counting only the attached atoms.',
+                steps: [
+                  { do: 'NH₃: three bonds plus one lone pair = four domains', why: 'The lone pair occupies a hybrid orbital just as a bonding pair does.' },
+                  { do: 'Four domains means sp³, with the four hybrids pointing tetrahedrally', why: 'One s and three p orbitals mixing to give four equivalent hybrids.' },
+                  { do: 'BF₃: three bonds and no lone pairs on boron = three domains', why: 'Boron has only three valence electrons and does not complete an octet here.' },
+                  { do: 'Three domains means sp², trigonal planar at 120°', why: 'One s and two p mix; the remaining p orbital stays empty and perpendicular to the plane.' },
+                  { do: 'SF₆: six bonds and no lone pairs = six domains', why: 'An expanded octet, available from period 3 onward.' },
+                  { do: 'Six domains means sp³d², octahedral', why: 'Six orbitals mixed gives six hybrids, pointing at the vertices of an octahedron.' }
+                ],
+                answer: 'NH₃ sp³, BF₃ sp², SF₆ sp³d²',
+                answerWords: true,
+                check: 'Each hybridisation carries the geometry VSEPR already predicted — tetrahedral, trigonal planar and octahedral ✓ — which is the consistency check that makes the two models usable together. Counting only bonded atoms would have made ammonia sp², predicting a flat molecule with no dipole moment, which is wrong on both counts.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'c1k-hybridisation-from-bonds-only',
+                wrong: 'Assigning hybridisation from the number of bonded atoms',
+                right: 'Count DOMAINS — lone pairs occupy hybrid orbitals too.',
+                why: 'Bonded atoms are what the formula shows, and for molecules without lone pairs the two counts agree, so the habit forms on the easy cases. Ammonia and water both come out one hybrid short, predicting flat molecules and losing the polarity that follows from the real shape.'
+              },
+              {
+                id: 'c1k-pi-bond-as-first',
+                wrong: 'Counting a double bond as two pi bonds, or the first bond as a pi bond',
+                right: 'The first bond between two atoms is always sigma: a double bond is 1 sigma + 1 pi.',
+                why: 'The two lines of a double bond look equivalent on paper, so there is nothing to suggest one is different in kind. Head-on overlap is stronger and forms first; getting this wrong makes every sigma and pi count in a structure wrong and misses why the two bonds of a double bond are not equal.'
+              },
+              {
+                id: 'c1k-rotation-about-double-bond',
+                wrong: 'Treating a double bond as freely rotating, like a single bond',
+                right: 'Rotation would break the side-on pi overlap, so a double bond is rigid.',
+                why: 'Both are drawn as lines between two atoms and single bonds do rotate freely, so the restriction has to be inferred from the orbital picture rather than the drawing. It is the basis of cis–trans isomerism and of the fixed shapes of biological molecules, so it is far more than a technicality.'
+              },
+              {
+                id: 'c1k-hybrid-count-not-conserved',
+                wrong: 'Producing a different number of hybrid orbitals from the number of atomic orbitals mixed',
+                right: 'Orbitals are conserved: three atomic orbitals give exactly three hybrids.',
+                why: 'The labels sp, sp² and sp³ read as ratios rather than counts, so the conservation is not visible in the notation. It is what makes hybridisation a bookkeeping exercise with a right answer rather than a free choice, and it is why the count equals the number of domains every time.'
+              }
+            ]
+          },
+
+          {
+            id: 'f5', title: 'Molecular orbital theory and bond order', src: 'Section 10.8',
+            idea: `Valence bond theory keeps the electrons on their own atoms and lets orbitals overlap. <b>Molecular orbital theory</b> abandons that: the atomic orbitals combine into <b>molecular orbitals</b> that belong to the molecule as a whole, and the electrons are then poured into those.<br><br>Two atomic orbitals always give two molecular orbitals — orbitals are conserved here too:<br><br>a <b>bonding</b> orbital, lower in energy than either original, with electron density concentrated between the nuclei<br>an <b>antibonding</b> orbital, marked with a star (σ*), higher in energy, with a node between the nuclei<br><br>Electrons fill them by the same rules as an atom: lowest first, two per orbital with opposite spins, and singly before pairing among orbitals of equal energy.<br><br>The payoff is the <b>bond order</b>:<br><br><b>BO = ½(bonding electrons − antibonding electrons)</b><br><br>A bond order of zero means no bond at all — which is why <b>He₂ does not exist</b>: its two bonding electrons are exactly cancelled by two antibonding ones. Fractional bond orders are allowed, and the model is the only one of the three that permits them.<br><br>Two predictions justify the extra machinery. <b>O₂ is paramagnetic</b> — it is attracted into a magnetic field, and liquid oxygen visibly sticks between the poles of a magnet. Its Lewis structure, O=O, shows every electron paired and predicts the opposite. The molecular orbital diagram puts the last two electrons singly into two equal-energy π* orbitals, exactly as Hund's rule requires, and predicts two unpaired electrons and a bond order of 2. And <b>the bond orders match the measured energies</b>: N₂ at 3 is 945 kJ/mol, O₂ at 2 is 498, F₂ at 1 is 159.<br><br>So the three models are a sequence, not rivals: VSEPR for shape, valence bond for the orbitals a shape needs, and molecular orbital theory where the first two give the wrong answer.`,
+            figure: {
+              kind: 'graph', x: [0.5, 3.5], y: [0, 1000], xlabel: 'bond order', ylabel: 'bond energy (kJ/mol)',
+              fns: [{ pts: [[1, 159], [2, 498], [3, 945]], label: 'period 2 diatomics' }],
+              points: [
+                { x: 1, y: 159, label: 'F₂, 142 pm' }, { x: 2, y: 498, label: 'O₂, 121 pm' },
+                { x: 3, y: 945, label: 'N₂, 110 pm' }
+              ],
+              caption: 'Bond energy against the bond order computed from molecular orbital diagrams, for the second-period diatomic molecules. The agreement is the evidence for the model: bond orders derived from counting electrons in bonding and antibonding orbitals predict both the energies and the lengths beside them. Helium, with a bond order of zero, has no point on this graph because He₂ does not exist.'
+            },
+            rules: [
+              { name: 'Molecular orbitals', expr: 'Two atomic orbitals give one bonding and one antibonding orbital', words: true, note: 'The bonding one is lower in energy; the antibonding one has a node between the nuclei.' },
+              { name: 'Filling them', expr: 'Lowest first, two per orbital, singly before pairing', words: true, note: 'The same aufbau, Pauli and Hund rules as in an atom.' },
+              { name: 'Bond order', expr: 'BO = (N_bonding - N_antibonding)/2', note: 'Fractional values are allowed, which no other model permits.' },
+              { name: 'Zero means no molecule', expr: 'BO = 0', note: 'He2 has two bonding and two antibonding electrons, so it does not exist.' },
+              { name: 'What it explains that Lewis cannot', expr: 'O2 is paramagnetic, with two unpaired electrons', words: true, note: 'The Lewis structure O=O shows every electron paired and predicts the opposite.' }
+            ],
+            examples: [
+              {
+                prompt: 'Use molecular orbital theory to find the bond order of H₂ and of He₂, and say what each result means.',
+                approach: 'Both molecules use only 1s orbitals, so each has exactly two molecular orbitals to fill and the arithmetic is short — which is what makes the pair the clearest demonstration of what bond order is for. Count the electrons, fill from the bottom, then apply the formula and read the result as a physical claim.',
+                steps: [
+                  { do: 'H₂: two 1s orbitals combine into σ1s (bonding) and σ*1s (antibonding)', why: 'Two in, two out — orbitals are conserved.' },
+                  { do: 'Two electrons to place; both go into σ1s, paired', why: 'Lowest energy first, and one orbital holds two with opposite spins.' },
+                  { do: 'BO = ½(2 − 0) = 1', why: 'Two bonding electrons and none antibonding: a single bond, as Lewis theory also says.' },
+                  { do: 'He₂: the same two molecular orbitals, but four electrons to place', why: 'Each helium brings two.' },
+                  { do: 'Two fill σ1s and the other two are forced into σ*1s', why: 'The bonding orbital is full, so the rest must go into the antibonding one.' },
+                  { do: 'BO = ½(2 − 2) = 0, so there is no bond and He₂ does not exist', why: 'The destabilisation of the antibonding pair exactly cancels the stabilisation of the bonding pair — which is why helium is a monatomic gas.' }
+                ],
+                answer: 'H₂ has bond order 1 and exists; He₂ has bond order 0 and does not',
+                answerWords: true,
+                check: 'The prediction is decisive and correct — helium is monatomic under all ordinary conditions ✓, while hydrogen is diatomic. Lewis theory can say helium already has a full shell, but it has no way to express "bond order zero" or to handle He₂⁺, which the model predicts should exist with a bond order of ½ and which is in fact observed.'
+              },
+              {
+                prompt: 'The molecular orbital diagram of O₂ places 10 electrons in bonding orbitals and 6 in antibonding orbitals, with the last two singly occupying two equal-energy π* orbitals. Find the bond order and predict the magnetic behaviour.',
+                approach: 'Apply the bond order formula to the counts given, then read the occupancy of the highest orbitals for the magnetic prediction — these are two separate questions answered from the same diagram. The comparison with the Lewis structure at the end is what the example is really for.',
+                steps: [
+                  { do: 'Bonding electrons: 10; antibonding: 6', why: 'Given by the diagram; the total of 16 is the valence electron count of two oxygen atoms.' },
+                  { do: 'BO = ½(10 − 6) = ½(4) = 2', why: 'A double bond, which agrees with the Lewis structure O=O.' },
+                  { do: 'Check against the bond energy: 498 kJ/mol, between F₂ at 159 and N₂ at 945', why: 'Exactly where a bond order of 2 should sit, between 1 and 3.' },
+                  { do: 'The last two electrons occupy two equal-energy π* orbitals singly, with parallel spins', why: 'Hund’s rule applies to molecular orbitals just as it does to atomic ones.' },
+                  { do: 'So O₂ has two unpaired electrons and is paramagnetic — attracted into a magnetic field', why: 'Unpaired electrons give the molecule a magnetic moment.' },
+                  { do: 'The Lewis structure O=O shows four lone pairs and a double bond, with every electron paired, and predicts diamagnetic', why: 'A flat contradiction, and the experiment agrees with the molecular orbital model: liquid oxygen sticks between the poles of a magnet.' }
+                ],
+                answer: 'Bond order 2, and paramagnetic with two unpaired electrons',
+                answerWords: true,
+                check: 'The two models agree on the bond order and disagree on the magnetism, and only one of them can be right about an observable ✓. This is the standard argument for molecular orbital theory: it is not a more elaborate way of getting the same answers, it is the model that gets this particular answer right.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'c1k-bond-order-not-halved',
+                wrong: 'Computing bond order as bonding minus antibonding, without the factor of a half',
+                right: 'BO = ½(bonding − antibonding). H₂ has two bonding electrons and a bond order of 1, not 2.',
+                why: 'The subtraction is the memorable part of the formula and the halving looks like a detail. It doubles every bond order, giving N₂ a sextuple bond and making the agreement with the measured bond energies disappear — which was the whole reason for computing it.'
+              },
+              {
+                id: 'c1k-antibonding-as-empty',
+                wrong: 'Ignoring antibonding orbitals on the assumption that electrons will not occupy them',
+                right: 'They fill when the bonding orbitals are full, and they subtract from the bond order.',
+                why: 'The name suggests something that does not happen, and in H₂ the antibonding orbital is indeed empty. Filling it is exactly what stops He₂ existing, and the model has no predictive power at all if the antibonding electrons are not counted.'
+              },
+              {
+                id: 'c1k-mo-only-for-diatomics',
+                wrong: 'Treating molecular orbital theory as an alternative to VSEPR for predicting shapes',
+                right: 'It gives bond orders and magnetic behaviour; VSEPR gives shapes. They answer different questions.',
+                why: 'All three models are introduced in the same chapter as accounts of bonding, which invites picking one. A molecular orbital diagram for a small diatomic says nothing about a bond angle, and VSEPR cannot explain why oxygen is paramagnetic — the models are used together.'
+              },
+              {
+                id: 'c1k-o2-lewis-trusted',
+                wrong: 'Predicting that O₂ is diamagnetic because its Lewis structure shows all electrons paired',
+                right: 'It has two unpaired electrons in π* orbitals and is paramagnetic.',
+                why: 'The Lewis structure is drawn first, is easy to draw, and looks complete. This is the textbook case of a simpler model giving a confidently wrong answer about something measurable, which is why it is asked about so often.'
+              }
+            ]
+          }
+        ],
+        practice: [
+
+          { id: 'y1', kind: 'numeric', lesson: 'f1',
+            prompt: 'How many electron domains are there around the carbon atom in CO₂?',
+            answer: 2, verify: { expr: '2' },
+            hint: 'A double bond counts once.',
+            solution: ['Two double bonds, one to each oxygen', 'Each is a single region of electron density',
+              'Two domains, giving a linear molecule'] },
+
+          { id: 'y2', kind: 'numeric', lesson: 'f1',
+            prompt: 'How many electron domains are there around the nitrogen atom in NH₃?',
+            answer: 4, verify: { expr: '3 + 1' },
+            hint: 'Count lone pairs as well as bonds.',
+            solution: ['Three N–H bonds', 'Plus one lone pair on the nitrogen',
+              'Four domains, so a tetrahedral electron geometry'] },
+
+          { id: 'y3', kind: 'mc', lesson: 'f1',
+            prompt: 'What is the ideal bond angle for four electron domains?',
+            options: [
+              { t: '109.5°', ok: true },
+              { t: '90°' },
+              { t: '120°' },
+              { t: '180°' }
+            ],
+            hint: 'Four points as far apart as possible on a sphere.',
+            solution: ['Four domains give a tetrahedral geometry', '109.5° is the angle that arrangement produces',
+              '90° is what a flat drawing suggests and is wrong'] },
+
+          { id: 'y4', kind: 'mc', lesson: 'f1',
+            prompt: 'Which electron geometry has TWO different bond angles?',
+            options: [
+              { t: 'Trigonal bipyramidal', ok: true },
+              { t: 'Tetrahedral' },
+              { t: 'Octahedral' },
+              { t: 'Trigonal planar' }
+            ],
+            hint: 'Which one has two kinds of position?',
+            solution: ['Its positions are of two kinds, equatorial and axial',
+              '120° within the equatorial plane and 90° from equatorial to axial',
+              'In an octahedron every position is equivalent, so there is one angle'] },
+
+          { id: 'y5', kind: 'mc', lesson: 'f2',
+            prompt: 'What is the molecular shape of H₂O?',
+            options: [
+              { t: 'Bent, from a tetrahedral electron geometry', ok: true },
+              { t: 'Tetrahedral' },
+              { t: 'Linear' },
+              { t: 'Trigonal pyramidal' }
+            ],
+            hint: 'Shape counts atoms; geometry counts domains.',
+            solution: ['Four domains give a tetrahedral electron geometry',
+              'Two of the four positions hold lone pairs, not atoms', 'The three atoms form a bent shape at about 104.5°'] },
+
+          { id: 'y6', kind: 'numeric', lesson: 'f2',
+            prompt: 'By how many degrees is the H–O–H angle in water smaller than the ideal tetrahedral angle? Take the water angle as 104.5° and give the answer to one decimal place.',
+            answer: 5, tol: 0.05, verify: { expr: 'Rational(1095,10) - Rational(1045,10)', dp: 1 },
+            hint: '109.5 − 104.5.',
+            solution: ['109.5 − 104.5', '= 5.0°', 'About 2.5° for each of the two lone pairs'] },
+
+          { id: 'y7', kind: 'mc', lesson: 'f2',
+            prompt: 'Why is the bond angle in NH₃ smaller than in CH₄?',
+            options: [
+              { t: 'The lone pair on nitrogen spreads out more than a bonding pair and pushes the bonds together', ok: true },
+              { t: 'Nitrogen is smaller than carbon' },
+              { t: 'Ammonia has fewer electron domains' },
+              { t: 'N–H bonds are shorter than C–H bonds' }
+            ],
+            hint: 'Both have four electron domains.',
+            solution: ['A bonding pair is held between two nuclei and stays narrow',
+              'A lone pair is held by one nucleus and fans out',
+              'So it squeezes the three N–H bonds from 109.5° to about 107°'] },
+
+          { id: 'y8', kind: 'mc', lesson: 'f2',
+            prompt: 'In a trigonal bipyramidal electron geometry, where does a lone pair go?',
+            options: [
+              { t: 'Equatorial, where it has two neighbours at 90° rather than three', ok: true },
+              { t: 'Axial, where there is more space along the axis' },
+              { t: 'Either — the positions are equivalent' },
+              { t: 'It does not occupy a position at all' }
+            ],
+            hint: 'Count the 90° contacts at each kind of position.',
+            solution: ['An equatorial position has two neighbours at 90°; an axial one has three',
+              'The lone pair repels most strongly, so it takes the less crowded site',
+              'This gives the see-saw, T-shaped and linear series'] },
+
+          { id: 'y9', kind: 'spot', lesson: 'f2',
+            prompt: 'A student describes the shape of NH₃. One line is wrong.',
+            steps: [
+              { t: 'Nitrogen has three bonds and one lone pair, so four domains', bad: false },
+              { t: 'Four domains give a tetrahedral electron geometry', bad: false },
+              { t: 'So the molecular shape is tetrahedral', bad: true },
+              { t: 'The bond angle is about 107°, slightly less than 109.5°', bad: false }
+            ],
+            why: 'The molecular shape counts only the positions holding atoms, and one of the four holds a lone pair — so the shape is trigonal pyramidal, not tetrahedral. The electron geometry is indeed tetrahedral, which is what makes the two easy to conflate, and the fourth line already implies the distinction by quoting a compressed angle.',
+            hint: 'What is the difference between electron geometry and molecular shape?',
+            solution: ['Electron geometry: tetrahedral, counting all four domains',
+              'Molecular shape: trigonal pyramidal, counting the three atoms',
+              'The lone pair is present but not part of the shape'] },
+
+          { id: 'y10', kind: 'mc', lesson: 'f3',
+            prompt: 'Which molecule is nonpolar?',
+            options: [
+              { t: 'CCl₄', ok: true },
+              { t: 'H₂O' },
+              { t: 'NH₃' },
+              { t: 'CHCl₃' }
+            ],
+            hint: 'Symmetric shape AND identical outer atoms.',
+            solution: ['CCl₄ is tetrahedral with four identical polar bonds, which cancel exactly',
+              'H₂O and NH₃ are asymmetric because of lone pairs',
+              'CHCl₃ is tetrahedral but its four positions are not identical'] },
+
+          { id: 'y11', kind: 'mc', lesson: 'f3',
+            prompt: 'Which pair of molecules shows that shape matters more than bond polarity?',
+            options: [
+              { t: 'CO₂ and H₂O — both have polar bonds, but only water is polar', ok: true },
+              { t: 'H₂ and Cl₂ — neither has polar bonds' },
+              { t: 'NaCl and KBr — both are ionic' },
+              { t: 'CH₄ and SiH₄ — both are tetrahedral' }
+            ],
+            hint: 'Look for two molecules whose bonds are alike and whose answers differ.',
+            solution: ['Both CO₂ and H₂O have strongly polar bonds',
+              'CO₂ is linear so they cancel; H₂O is bent so they do not',
+              'The formulas are both AB₂, so only the shape can be responsible'] },
+
+          { id: 'y12', kind: 'mc', lesson: 'f3',
+            prompt: 'Why is CH₃Cl polar when CH₄ is not?',
+            options: [
+              { t: 'The four outer positions are no longer identical, so the bond dipoles cannot cancel', ok: true },
+              { t: 'CH₃Cl is not tetrahedral' },
+              { t: 'C–H bonds are nonpolar and C–Cl bonds are polar, which is the only difference' },
+              { t: 'Chlorine adds a lone pair to the carbon' }
+            ],
+            hint: 'Cancellation needs identical atoms as well as a symmetric shape.',
+            solution: ['Both molecules are tetrahedral', 'In CH₄ four identical dipoles cancel exactly',
+              'Replacing one hydrogen leaves three C–Cl dipoles with nothing to cancel against'] },
+
+          { id: 'y13', kind: 'numeric', lesson: 'f4',
+            prompt: 'How many hybrid orbitals does an sp³ hybridised atom have?',
+            answer: 4, verify: { expr: '1 + 3' },
+            hint: 'Orbitals are conserved when they mix.',
+            solution: ['One s orbital plus three p orbitals', 'Four in, four out', 'Four hybrids, pointing tetrahedrally'] },
+
+          { id: 'y14', kind: 'mc', lesson: 'f4',
+            prompt: 'What is the hybridisation of the carbon atoms in ethene, H₂C=CH₂?',
+            options: [
+              { t: 'sp², because each carbon has three electron domains', ok: true },
+              { t: 'sp³, because carbon always forms four bonds' },
+              { t: 'sp, because of the double bond' },
+              { t: 'sp³d, because there are five other atoms' }
+            ],
+            hint: 'Count domains: the double bond is one.',
+            solution: ['Each carbon is bonded to two hydrogens and to the other carbon',
+              'The double bond is one domain, so three domains in all',
+              'Three domains means sp², trigonal planar at 120°'] },
+
+          { id: 'y15', kind: 'numeric', lesson: 'f4',
+            prompt: 'How many pi bonds are there in a triple bond?',
+            answer: 2, verify: { expr: '3 - 1' },
+            hint: 'The first bond between two atoms is always the sigma one.',
+            solution: ['A triple bond is three bonds in total', 'One of them is a sigma bond, formed by head-on overlap',
+              'The remaining two are pi bonds, from side-on p overlap'] },
+
+          { id: 'y16', kind: 'numeric', lesson: 'f4',
+            prompt: 'How many sigma bonds are there in ethene, H₂C=CH₂?',
+            answer: 5, verify: { expr: '4 + 1' },
+            hint: 'Four C–H bonds, and one sigma in the C=C.',
+            solution: ['Each of the four C–H bonds is a sigma bond',
+              'The C=C double bond contains one sigma and one pi', 'So five sigma bonds and one pi bond'] },
+
+          { id: 'y17', kind: 'mc', lesson: 'f4',
+            prompt: 'Why can a molecule not rotate freely about a double bond?',
+            options: [
+              { t: 'Rotation would break the side-on overlap of the pi bond', ok: true },
+              { t: 'Double bonds are too short to rotate' },
+              { t: 'The sigma bond prevents rotation' },
+              { t: 'Both atoms are sp³ hybridised' }
+            ],
+            hint: 'Which kind of overlap depends on the orientation?',
+            solution: ['Head-on sigma overlap is unchanged by rotation, so single bonds turn freely',
+              'Side-on pi overlap is destroyed by a twist',
+              'This is why alkenes have cis and trans forms'] },
+
+          { id: 'y18', kind: 'numeric', lesson: 'f5',
+            prompt: 'Find the bond order of H₂, which has 2 bonding and 0 antibonding electrons.',
+            answer: 1, verify: { expr: '(2 - 0)/2' },
+            hint: 'BO = ½(bonding − antibonding).',
+            solution: ['½(2 − 0)', '= 1', 'A single bond, agreeing with the Lewis structure'] },
+
+          { id: 'y19', kind: 'numeric', lesson: 'f5',
+            prompt: 'Find the bond order of N₂, which has 10 bonding and 4 antibonding electrons.',
+            answer: 3, verify: { expr: '(10 - 4)/2' },
+            hint: 'The same formula.',
+            solution: ['½(10 − 4)', '= 3', 'A triple bond — and at 945 kJ/mol the strongest of the period-2 diatomics'] },
+
+          { id: 'y20', kind: 'numeric', lesson: 'f5',
+            prompt: 'Find the bond order of He₂, which would have 2 bonding and 2 antibonding electrons.',
+            answer: 0, verify: { expr: '(2 - 2)/2' },
+            hint: 'What does a bond order of zero mean?',
+            solution: ['½(2 − 2)', '= 0', 'No bond at all, which is why helium is a monatomic gas'] },
+
+          { id: 'y21', kind: 'mc', lesson: 'f5',
+            prompt: 'What does molecular orbital theory explain about O₂ that its Lewis structure gets wrong?',
+            options: [
+              { t: 'That it is paramagnetic, with two unpaired electrons in π* orbitals', ok: true },
+              { t: 'That its bond order is 2' },
+              { t: 'That it is a gas at room temperature' },
+              { t: 'That it contains two oxygen atoms' }
+            ],
+            hint: 'Which prediction is contradicted by experiment?',
+            solution: ['The Lewis structure O=O shows every electron paired, predicting diamagnetic',
+              'The molecular orbital diagram puts two electrons singly into equal-energy π* orbitals',
+              'Liquid oxygen is attracted into a magnetic field, so the second model is right'] },
+
+          { id: 'y22', kind: 'spot', lesson: 'f5',
+            prompt: 'A student computes the bond order of O₂ from 10 bonding and 6 antibonding electrons. One line is wrong.',
+            steps: [
+              { t: 'Bonding electrons: 10; antibonding: 6', bad: false },
+              { t: 'Subtract: 10 − 6 = 4', bad: false },
+              { t: 'So the bond order is 4', bad: true },
+              { t: 'The bond energy of 498 kJ/mol should fit the answer', bad: false }
+            ],
+            why: 'The formula is BO = ½(bonding − antibonding), so the difference of 4 must be halved, giving a bond order of 2. A bond order of 4 would predict a bond stronger than nitrogen’s triple bond, whereas oxygen’s 498 kJ/mol sits well below nitrogen’s 945 — which the fourth line invites checking and which settles it.',
+            hint: 'What is missing from the formula?',
+            solution: ['BO = ½(10 − 6)', '= 2, a double bond',
+              'Consistent with 498 kJ/mol, between F₂ at 159 and N₂ at 945'] },
+
+          { id: 'y23', kind: 'order', lesson: 'f2',
+            prompt: 'Put the steps for predicting a molecular shape in order.',
+            steps: [
+              'Draw the Lewis structure',
+              'Count the electron domains around the central atom, bonds and lone pairs alike',
+              'Name the electron geometry from that count',
+              'Remove the positions held by lone pairs and name the molecular shape',
+              'Adjust the bond angle downward for each lone pair'
+            ],
+            hint: 'The lone pairs cannot be counted until they are drawn.',
+            solution: ['The Lewis structure is what reveals the lone pairs',
+              'The domain count gives the electron geometry, which is never skipped',
+              'The shape is that geometry with the lone-pair positions left empty'] },
+
+          { id: 'y24', kind: 'order', lesson: 'f3',
+            prompt: 'Put the steps for deciding whether a molecule is polar in order.',
+            steps: [
+              'Check whether the individual bonds are polar, from the electronegativity differences',
+              'Determine the molecular shape',
+              'Check whether all the outer atoms are identical',
+              'Add the bond dipoles as vectors and see whether they cancel'
+            ],
+            hint: 'If no bond is polar, nothing else matters.',
+            solution: ['Nonpolar bonds settle the question at once',
+              'Shape and identical outer atoms are both needed for cancellation',
+              'The vector sum is the actual test, and the earlier steps decide what goes into it'] }
         ]
       }
     ]
@@ -29937,7 +31244,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.65', date: '18 September 2026', year: 2026 };
+  const BUILD = { v: '2.66', date: '18 September 2026', year: 2026 };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonandy242', ['gmail', 'com'].join('.')].join('@');
   /* The one sentence that says what this is. It appears under the wordmark, and build.js uses
@@ -29950,6 +31257,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      because the person who needs it is the one who just watched the app refresh itself and wants to
      know what moved. Trim the tail when it gets past a dozen; nobody reads further back than that. */
   const WHATS_NEW = [
+    ['2.66', '<b>CHEM 1000H chapters 9 and 10: the bond, in three models.</b> <b>Lewis theory</b> first &mdash; dots for valence electrons, ionic bonding and the lattice energy that depends on charge far more than on size, then <b>electronegativity</b> and the difference (not the value) that sorts a bond into nonpolar, polar or ionic. The six-step procedure for <b>drawing a Lewis structure</b> is set out with the electron count as a fixed budget, so a double bond is made by moving a lone pair rather than inventing a pair, and the final count is the only proof the structure is right. <b>Formal charge</b> then decides between resonance structures, with the sum rule as the check, and the chapter closes on <b>bond energies</b>: broken minus formed, which estimates the enthalpy of methane combustion at &minus;802 kJ without a single measurement. Chapter 10 is about <b>shape</b>, which Lewis theory cannot give. <b>VSEPR</b> counts electron domains &mdash; a double bond counts once &mdash; and the five geometries follow from putting points on a sphere; lone pairs then take positions without holding atoms, which is the whole difference between the electron geometry and the molecular shape, and why water is bent and CO&sub2; is not. <b>Polarity</b> is treated as the two-part test it is: polar bonds AND a shape that fails to cancel them, with CH&sub3;Cl against CH&sub4; as the case where only the outer atoms differ. Then <b>valence bond theory</b> &mdash; hybridisation read straight off the domain count, sigma against pi, and why a double bond cannot rotate &mdash; and <b>molecular orbital theory</b>, which gives bond order, explains why He&sub2; does not exist, and gets oxygen&rsquo;s paramagnetism right where the Lewis structure gets it flatly wrong. Eleven lessons, twenty-two worked examples, 47 practice questions and 36 named misconceptions. Chapter 11 completes the course.'],
     ['2.65', '<b>CHEM 1000H chapters 7 and 8: where the periodic table comes from.</b> <b>The quantum-mechanical model</b> starts with light &mdash; wavelength against frequency, the photon energy that depends on colour and not on brightness, and the conversion to kJ/mol that shows why a 254 nm lamp sterilises and a sodium street lamp is harmless. Then the <b>line spectrum</b> that forced quantisation: sharp lines mean sharp energies, the hydrogen levels crowd as 1/n&sup2;, and the n = 3 &rarr; 2 transition is computed all the way to the 656 nm red line a discharge tube actually shows. <b>Matter waves</b> follow &mdash; an electron&rsquo;s wavelength is three times the size of its own atom, a baseball&rsquo;s is nineteen powers of ten below a proton, and the uncertainty principle is stated as a property of matter rather than a limit of the apparatus, which is what rules out orbits and replaces them with probability maps. The chapter closes with the <b>four quantum numbers</b>, their allowed values, and the counting that gives n&sup2; orbitals and 2n&sup2; electrons per shell. Chapter 8 cashes it in: <b>electron configurations</b> under the aufbau order (4s before 3d, and why), the Pauli principle and Hund&rsquo;s rule with the orbital diagrams that make unpaired electrons visible; configurations read straight off the table by block, with chromium and copper as the two exceptions worth knowing; <b>effective nuclear charge</b>, which explains the one trend that feels wrong &mdash; more electrons, smaller atom; and then <b>ions</b>, removed from the highest shell first so that Fe&sup2;&#8314; is 3d&#8310; and not 4s&sup2; 3d&#8308;, <b>ionisation energy</b> with both of its dips and the jump that counts the valence electrons, and <b>electron affinity</b> and metallic character. Nine lessons, eighteen worked examples, 48 practice questions and 32 named misconceptions. Chapters 9, 10 and 11 remain.'],
     ['2.64', '<b>A second course under the green chip: CHEM 1000H, General Chemistry.</b> It follows its own schedule chapter by chapter, and the first two chapters ship now. <b>Reaction stoichiometry</b> is the bookkeeping that makes chemistry quantitative: mass to moles to mole ratio to moles to mass, always through the balanced equation, because coefficients are a ratio of particles and never of grams. Then the <b>limiting reactant</b>, found by asking what each reactant alone could make and taking the smaller answer &mdash; not by looking for whichever there is less of &mdash; with theoretical yield, which is calculated, against actual yield, which is measured, and the percent yield between them. <b>Solution stoichiometry</b> closes the chapter: molarity as moles per litre of solution, the millilitres that have to become litres before anything else happens, and dilution as the one calculation where the moles of solute do not change. Chapter 5 is the <b>gas laws</b>: pressure units and the kelvin scale that every gas calculation silently assumes, Boyle, Charles and the combined law for a change of conditions, then PV = nRT used forwards and backwards for a molar mass or a density, partial pressures and mole fractions, gas stoichiometry, and finally the <b>kinetic molecular theory</b> &mdash; why temperature is molecular kinetic energy, why a light molecule moves faster at the same temperature, effusion, and the two assumptions a real gas breaks when it is cold or squeezed. Seven lessons, fourteen worked examples, 43 practice questions and 28 named misconceptions. Chapters 7 to 11 follow.'],
     ['2.63', '<b>PHYS 1000H is complete: chapters 7 and 8 land, and every chapter on the schedule is now built.</b> <b>Work and energy</b> is a second route through mechanics that needs neither forces nor time: the cosine that makes a normal force do no work at all, the v&sup2; in kinetic energy that is why braking distance grows so steeply, the work&ndash;energy theorem, potential energy with a reference level you choose, and why a ball down a curved ramp and a ball down a straight one arrive at the same speed &mdash; then friction, which breaks that and turns the difference into heat over the distance actually travelled. <b>Power</b> closes the chapter: the same work done faster, and why doubling a car&rsquo;s cruising speed needs eight times the engine. <b>Momentum</b> finishes the course: impulse as force times time, why a crumple zone cannot reduce the momentum that must be removed and can only stretch the seconds it takes, conservation from the third law, and collisions &mdash; elastic, where a lighter target legitimately leaves faster than the projectile arrived, and perfectly inelastic, which loses more energy than any other and is exactly what a car is designed to do. Seven more lessons, fourteen worked examples, 42 more practice questions. The course now stands at 28 lessons, 56 worked examples and 160 practice questions across all eight chapters.'],
