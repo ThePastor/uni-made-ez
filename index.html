@@ -12449,7 +12449,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      Mechanics is cut to the four ideas the subject leans on, while this one follows a real outline
      week by week and therefore also covers the parts a course actually spends time on and a summary
      leaves out — significant figures, approximation, drag, elasticity, fictitious frames, Kepler.
-     Built so far: chapters 1 to 4. */
+     Built so far: chapters 1 to 6. */
   const FOUND = {
     subject: PHYS,
     id: 'phys-1000h', inst: 'trent',
@@ -12457,11 +12457,11 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     title: 'Foundations of Physics',
     blurb: 'Mechanics from the beginning, for someone who has not done physics before: what a measurement is worth before it is used, how motion in a straight line is described and predicted, then vectors and two dimensions, the laws that say why motion changes, and finally energy and momentum — the two quantities that survive a collision no one can solve force by force.',
     level: 'Foundation',
-    exam: 'Follows the course schedule: chapter 1 sections 1.1–1.4, chapter 2 in full, chapter 3 sections 3.1–3.5, chapter 4 sections 4.1–4.7, chapter 5 sections 5.1–5.3, chapter 6 sections 6.1–6.6, chapter 7 sections 7.1–7.7 and chapter 8 sections 8.1–8.5. A midterm falls after chapter 6 and the final is cumulative. Built so far: chapters 1 to 4.',
+    exam: 'Follows the course schedule: chapter 1 sections 1.1–1.4, chapter 2 in full, chapter 3 sections 3.1–3.5, chapter 4 sections 4.1–4.7, chapter 5 sections 5.1–5.3, chapter 6 sections 6.1–6.6, chapter 7 sections 7.1–7.7 and chapter 8 sections 8.1–8.5. A midterm falls after chapter 6 and the final is cumulative. Built so far: chapters 1 to 6.',
     text: 'Urone & Hinrichs, College Physics (OpenStax, free online)',
     legalNote: 'Study material for a university course. It follows the chapter and section order of the set text so that a lesson here matches the section you would open alongside it, but every explanation, example and question is written from scratch — nothing is copied from the book or from any past paper. Answers are recomputed by a computer algebra system before the page ships; where a figure is rounded, the question says to how many places, and g is taken as 9.80 m/s² unless a question says otherwise.',
     gaps: [
-      'Still to be built, in schedule order: chapter 5 friction, drag and elasticity, chapter 6 circular motion and gravitation, chapter 7 work and energy, and chapter 8 linear momentum and collisions',
+      'Still to be built, in schedule order: chapter 7 work and energy, and chapter 8 linear momentum and collisions',
       'Not on the schedule for this course, so not built for it: rotational dynamics, statics and torque, fluids, thermodynamics, waves and everything after chapter 8 of the set text',
       'The course assumes school algebra and trigonometry — quadratics, two equations in two unknowns, and sine, cosine and tangent on a right triangle — and teaches none of it; the Precalculus course here covers that ground'
     ],
@@ -14246,6 +14246,932 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             ],
             hint: 'The net force has to exist before it can be divided by anything.',
             solution: ['All the forces first, or the net force is wrong', 'Vector sum, not a sum of magnitudes', 'a = ΣF/m', 'The direction comes from the net force, not from the motion'] }
+        ]
+      }
+,
+
+      /* ============================ CHAPTER 5 ============================ */
+      {
+        id: 'contact', n: 5,
+        title: 'Friction, drag and the stretching of solids',
+        blurb: 'The forces that surfaces and fluids exert on things moving through them, why a falling body stops speeding up, and how much a real material gives when you pull on it.',
+        read: 'Chapter 5',
+        objectives: [
+          'Tell static friction from kinetic friction, and treat the static case as an inequality rather than an equation',
+          'Compute a friction force from the normal force, and see why the contact area does not appear',
+          'Explain why drag grows with the square of the speed, and find a terminal velocity',
+          'Compute stress, strain and a deformation from Young\'s modulus',
+          'Say which of these forces depends on speed, which on area, and which on neither'
+        ],
+        lessons: [
+          {
+            id: 'e1', title: 'Friction', src: 'Section 5.1',
+            idea: `<b>Friction</b> is the force a surface exerts parallel to itself, opposing relative motion or the tendency towards it. It comes in two kinds, and confusing them is the chapter's main hazard.<br><br><b>Static friction</b> acts when the surfaces are not sliding. Its size is <b>whatever is needed to prevent sliding</b>, up to a maximum:<br><br><b>f<sub>s</sub> ≤ μ<sub>s</sub>N</b><br><br>The inequality is the point. Push a heavy crate with 40 N and it does not move: static friction is exactly 40 N, not μ<sub>s</sub>N. Only at the instant it is about to slip is friction at its maximum, and only then is the expression an equation.<br><br><b>Kinetic friction</b> acts once the surfaces are sliding, and it is an equation:<br><br><b>f<sub>k</sub> = μ<sub>k</sub>N</b><br><br>It does not depend on speed, and <b>μ<sub>k</sub> is almost always smaller than μ<sub>s</sub></b> — which is why a heavy box lurches forward once it finally gives, and why anti-lock brakes are worth having: a rolling tyre grips by static friction and a skidding one by the weaker kinetic friction.<br><br>Both depend on the <b>normal force</b>, not on the weight and not on the contact area. Doubling the area of contact does not double the friction, because the same weight is then spread over twice the area and presses half as hard at each point — the two effects cancel. Press down on a sliding book, though, and the friction rises immediately, because the normal force rose.<br><br>The coefficients μ<sub>s</sub> and μ<sub>k</sub> are dimensionless numbers describing a PAIR of surfaces, typically between about 0.1 and 1. A coefficient is never a property of one material alone.<br><br>On a slope, the normal force is <b>N = mg cos θ</b> rather than mg, so friction weakens as the slope steepens while the driving component mg sin θ grows. The angle at which an object just begins to slide therefore satisfies <b>tan θ = μ<sub>s</sub></b> — a neat way to measure a coefficient with nothing but a plank and a protractor, and the mass cancels out entirely.`,
+            figure: {
+              kind: 'graph', x: [0, 10], y: [0, 6], xlabel: 'applied force', ylabel: 'friction',
+              fns: [{ expr: 'x', label: 'static: friction matches the push', domain: [0, 5] }, { expr: '4', label: 'kinetic: fixed at μ_k N', domain: [5, 10] }],
+              points: [{ x: 5, y: 5, label: 'it slips here' }],
+              caption: 'Friction against the force applied to a stationary block. Up to the breakaway point static friction matches whatever is pushing, exactly — the line is a 45° diagonal, not a constant. Once it slips, friction drops to the smaller kinetic value and stays there, which is the lurch you feel when a heavy box finally gives.'
+            },
+            rules: [
+              { name: 'Static friction', expr: 'f_s <= mu_s N', note: 'An INEQUALITY. Static friction takes whatever value prevents sliding, and only reaches μ_s N at the point of slipping.' },
+              { name: 'Kinetic friction', expr: 'f_k = mu_k N', note: 'An equation, once sliding has started. Independent of speed.' },
+              { name: 'Which is bigger', expr: 'mu_k < mu_s', note: 'Almost always. It is why a box lurches when it breaks away, and why a skidding tyre grips less than a rolling one.' },
+              { name: 'Not the contact area', expr: 'Friction depends on the normal force, not on how much surface is touching', words: true, note: 'Spreading the same weight over more area presses less hard at each point, and the two effects cancel.' },
+              { name: 'The angle of slipping', expr: 'tan(theta) = mu_s', note: 'The slope at which an object just begins to slide. The mass cancels, so any object of that material slips at the same angle.' }
+            ],
+            examples: [
+              {
+                prompt: 'A 20 kg crate sits on a level floor with μ_s = 0.50 and μ_k = 0.35. A horizontal force of 80 N is applied. Does it move, and if so what is its acceleration? Take g = 9.80 m/s².',
+                approach: 'Two questions in sequence, and the second only arises if the first is answered yes. Compare the applied force with the MAXIMUM static friction: below it nothing happens and friction simply matches the push; above it the crate slides and the smaller kinetic friction takes over. The normal force has to be found first, since both frictions depend on it.',
+                steps: [
+                  { do: 'Normal force: the floor is level and nothing else acts vertically, so N = mg = 20 × 9.80 = 196 N', why: 'Derived from ΣF_y = 0, not assumed. If the force were applied at an angle this line would change.' },
+                  { do: 'Maximum static friction: f_s,max = μ_s N = 0.50 × 196 = 98 N', why: 'The most the surfaces can resist before giving way. This is the number the applied force is tested against.' },
+                  { do: 'The applied force is 80 N, which is less than 98 N, so the crate does NOT move', why: 'Below the threshold nothing slides, and static friction takes exactly the value needed: 80 N, not 98 N.' },
+                  { do: 'Now raise the applied force to 120 N: this exceeds 98 N, so the crate slips', why: 'Past the maximum, static friction cannot hold and sliding begins.' },
+                  { do: 'Once sliding, kinetic friction takes over: f_k = μ_k N = 0.35 × 196 = 68.6 N', why: 'A different and smaller coefficient. Continuing to use 98 N here is the standard error.' },
+                  { do: 'ΣF = 120 − 68.6 = 51.4 N, so a = 51.4/20 = 2.57 m/s²', why: 'The net force, then the second law. The crate accelerates once it breaks away.' }
+                ],
+                answer: 'At 80 N it does not move and friction is exactly 80 N; at 120 N it slides and accelerates at 2.57 m/s²', answerWords: true,
+                check: 'Check the lurch: the instant before slipping, friction is 98 N and the net force is 22 N; the instant after, friction drops to 68.6 N and the net force jumps to 51.4 N. Nothing about the push changed, yet the net force more than doubled — which is exactly the sudden give a heavy box makes.'
+              },
+              {
+                prompt: 'A block is placed on a plank and the plank is slowly tilted. It begins to slide when the plank reaches 27°. Find the coefficient of static friction, to two decimal places.',
+                approach: 'Set up the free-body diagram on tilted axes, with x along the slope, so the weight is the only force needing resolution. At the instant of slipping the block is still in equilibrium and static friction is at its maximum, which gives two equations. Divide one by the other and everything cancels — including the mass, which is why the experiment works with any block.',
+                figure: {
+                  kind: 'graph', x: [-1, 6], y: [-1, 4],
+                  segments: [
+                    { from: [0, 0], to: [5, 2.55], label: 'the plank at 27°' },
+                    { from: [2.5, 1.27], to: [2.5, -0.4], label: 'weight mg' },
+                    { from: [2.5, 1.27], to: [1.9, 2.45], label: 'N, perpendicular' },
+                    { from: [2.5, 1.27], to: [1.3, 0.66], label: 'friction, up the slope' }
+                  ],
+                  caption: 'At the moment of slipping the block is still in equilibrium: friction acts up the slope at its maximum value, the normal force is perpendicular to the surface, and the weight points straight down regardless of the tilt. Dividing the along-slope equation by the perpendicular one leaves tan θ = μ, with the mass gone.'
+                },
+                steps: [
+                  { do: 'Choose axes along and perpendicular to the slope, so only the weight needs resolving', why: 'On the tilted axes the acceleration is zero in both directions, and the normal force and friction each lie along one axis.' },
+                  { do: 'Perpendicular: N = mg cos θ', why: 'Only the perpendicular part of the weight presses into the plank — cosine INTO the slope.' },
+                  { do: 'Along the slope, at the point of slipping: f_s,max = mg sin θ', why: 'Still in equilibrium at that instant, so friction exactly balances the component pulling the block down — sine ALONG the slope.' },
+                  { do: 'At the maximum, f_s,max = μ_s N = μ_s mg cos θ', why: 'This is the one moment when the inequality becomes an equation.' },
+                  { do: 'Equate and divide: μ_s mg cos θ = mg sin θ, so μ_s = tan θ', why: 'The mass and g cancel completely, which is why the result holds for any block of that material.' },
+                  { do: 'μ_s = tan 27° = 0.51', why: 'A dimensionless number describing this pair of surfaces — wood on wood, roughly.' }
+                ],
+                answer: 'μ_s = 0.51', answerWords: true,
+                check: 'The mass really does not matter: a 1 kg block and a 50 kg block on the same plank slip at the same angle, because both the driving force and the friction scale with the mass. And the result is in the expected range — most everyday coefficients sit between about 0.1 and 1.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'p1k-static-friction-as-equation',
+                wrong: 'Setting f_s = μ_s N for a stationary object regardless of what is pushing it',
+                right: 'Static friction is an inequality: it equals whatever opposes the push, up to μ_s N.',
+                why: 'An 80 N push on a crate whose maximum static friction is 98 N meets exactly 80 N of friction, not 98 N — otherwise the crate would accelerate backwards, which it plainly does not. Using the maximum as though it were the actual value breaks every equilibrium problem in the section, and the symptom is a net force pointing the wrong way.'
+              },
+              {
+                id: 'p1k-kinetic-coefficient-after-slipping',
+                wrong: 'Continuing to use μ_s once the object is sliding',
+                right: 'Switch to μ_k, which is smaller, the moment sliding begins.',
+                why: 'The two coefficients describe different physical situations — surfaces bonded at rest against surfaces skidding over each other — and the drop between them is what makes a heavy box lurch. Keeping the static value understates the acceleration substantially, by 40% in the worked example.'
+              },
+              {
+                id: 'p1k-friction-depends-on-area',
+                wrong: 'Expecting wider tyres or a larger contact face to give more friction',
+                right: 'Friction depends on the normal force, not on the contact area.',
+                why: 'The same weight spread over twice the area presses half as hard at each point, and the two effects cancel exactly in this model. The intuition comes from real tyres, where deformation and adhesion complicate matters beyond this chapter — but in every problem here, changing which face of a block is down changes nothing.'
+              },
+              {
+                id: 'p1k-friction-from-weight-on-slope',
+                wrong: 'Using f = μmg on a slope',
+                right: 'Friction takes the NORMAL force, and on a slope N = mg cos θ, which is smaller.',
+                why: 'At 27° the normal force is 89% of the weight and at 60° only half of it, so using mg overstates the friction badly just as the slope gets steep enough to matter. It also destroys the tan θ = μ result, which depends on the cosine appearing in the normal force and the sine in the driving force.'
+              }
+            ]
+          },
+
+          {
+            id: 'e2', title: 'Drag and terminal velocity', src: 'Section 5.2',
+            idea: `A body moving through air or water meets a <b>drag force</b> opposing its motion. Unlike friction between solids, drag depends strongly on <b>speed</b>, and for anything moving at ordinary speeds through air it goes as the <b>square</b> of it:<br><br><b>F<sub>D</sub> = ½ C ρ A v²</b><br><br>where ρ is the fluid's density, A the cross-sectional area presented to the flow, and C the <b>drag coefficient</b>, a dimensionless number that encodes the shape — about 0.5 for a sphere, near 1.0 for a person falling spread-eagled, and as low as 0.3 for a car.<br><br>The <b>v²</b> is the fact worth carrying. Doubling the speed <b>quadruples</b> the drag, which is why fuel consumption climbs so steeply above about 80 km/h and why a cyclist works far harder for the last few km/h than the first. It also means drag is negligible at low speed and dominant at high speed, so a problem can often ignore it early in a fall and never later.<br><br><b>Terminal velocity</b> is where that leads. A falling object accelerates, drag grows with v², and at some speed drag exactly balances the weight. The net force is then zero and, by the first law, the object continues at that constant speed. Setting <b>½CρAv² = mg</b> and solving:<br><br><b>v<sub>t</sub> = √(2mg / (ρCA))</b><br><br>Read that formula rather than memorising it. Heavier falls faster; larger area falls slower; denser fluid slows everything. It is why a parachute works — opening one multiplies A by a large factor and divides the terminal velocity by the square root of it — and why a mouse survives a fall that kills a horse: mass grows as the cube of size while area grows as the square, so small animals have low terminal velocities.<br><br>At terminal velocity the acceleration is <b>zero</b>, not g. The object is in equilibrium while moving fast, which is the first law again in an unfamiliar costume — and it is the single most misread situation in the chapter.`,
+            figure: {
+              kind: 'graph', x: [0, 14], y: [0, 60], xlabel: 't', ylabel: 'v',
+              fns: [{ expr: '55*(1 - exp(-x/3))', label: 'falling with drag' }, { expr: '9.8*x', label: 'free fall, no drag', dashed: true, domain: [0, 5.6] }],
+              hlines: [{ y: 55, label: 'terminal velocity' }],
+              caption: 'A falling body with drag against the same body in a vacuum. The two agree at first, while the speed is low enough that drag hardly matters; then drag catches up, the curve bends over, and the speed levels off where drag equals the weight. On the flat part the acceleration is zero — the object is falling fast and in equilibrium.'
+            },
+            rules: [
+              { name: 'Drag at ordinary speeds', expr: 'F_D = C rho A v^2 / 2', note: 'ρ is the fluid density, A the frontal area, C the shape-dependent drag coefficient.' },
+              { name: 'The square law', expr: 'Doubling the speed quadruples the drag', words: true, note: 'Which is why fuel use climbs so steeply with motorway speed.' },
+              { name: 'At terminal velocity', expr: 'C rho A v^2 / 2 = m g', note: 'Drag has grown to equal the weight, so the net force is zero.' },
+              { name: 'Terminal velocity', expr: 'v_t = sqrt(2 m g / (rho C A))', note: 'Heavier falls faster, bigger area falls slower. Read the formula rather than memorising it.' },
+              { name: 'The acceleration there', expr: 'a = 0 at terminal velocity, not g', words: true, note: 'Constant velocity is equilibrium even at 55 m/s.' }
+            ],
+            examples: [
+              {
+                prompt: 'A 75 kg skydiver falls spread-eagled with a frontal area of 0.70 m², drag coefficient 1.0, in air of density 1.2 kg/m³. Find the terminal velocity, to one decimal place, with g = 9.80 m/s².',
+                approach: 'Terminal velocity is defined by an equilibrium, so start from ΣF = 0 rather than from the formula: the drag force has grown until it equals the weight. Write that equation, rearrange for v, and only then substitute. Doing it this way makes the formula a result rather than something to recall, and it makes the next part of the question — what happens when the parachute opens — a one-line change.',
+                steps: [
+                  { do: 'At terminal velocity the speed is constant, so ΣF = 0', why: 'The first law. Falling at 55 m/s with no acceleration is still equilibrium.' },
+                  { do: 'The two forces are the weight down and the drag up, so ½CρAv² = mg', why: 'Drag has grown with the speed until it matches the weight exactly.' },
+                  { do: 'Weight: mg = 75 × 9.80 = 735 N', why: 'The number drag has to reach.' },
+                  { do: 'Rearrange: v² = 2mg/(ρCA) = 2(735)/(1.2 × 1.0 × 0.70)', why: 'Solve symbolically before substituting, so the structure stays visible.' },
+                  { do: 'v² = 1470/0.84 = 1750', why: 'The denominator is the whole of the shape-and-fluid side of the problem.' },
+                  { do: 'v_t = √1750 = 41.8 m/s, about 150 km/h', why: 'A realistic figure for a spread-eagled skydiver, which is the sanity check.' }
+                ],
+                answer: 'About 41.8 m/s, roughly 150 km/h', answerWords: true,
+                check: 'Open a parachute with 30 m² of area and C = 1.5: v_t = √(1470/(1.2 × 1.5 × 30)) = √(1470/54) = 5.2 m/s, about the speed of jumping off a chair ✓. The area went up by a factor of 43 and the speed fell by a factor of 8 — the square root, exactly as the formula says.'
+              },
+              {
+                prompt: 'A car experiences 320 N of air drag at 60 km/h. Estimate the drag at 120 km/h, and say what that implies for the power needed.',
+                approach: 'Nothing about the car needs to be known, because everything except the speed is the same in both cases — so work with the ratio rather than the individual forces. Drag goes as v², so doubling the speed multiplies it by four. Power is a further step: power is force times speed, so it carries an extra factor of the speed and grows as the cube.',
+                steps: [
+                  { do: 'Drag goes as v², and C, ρ and A are unchanged for the same car', why: 'Everything but the speed cancels in a ratio, so no other data are needed.' },
+                  { do: 'The speed doubles, so the ratio of drags is (120/60)² = 2² = 4', why: 'The square law in its most useful form.' },
+                  { do: 'F_D at 120 km/h = 4 × 320 = 1,280 N', why: 'Four times the resistance for twice the speed.' },
+                  { do: 'Power is force times speed, P = Fv', why: 'From chapter 7, and the reason the answer is worse than it first looks.' },
+                  { do: 'The force is 4 times larger and the speed 2 times larger, so the power is 8 times larger', why: 'Drag power goes as v³. The engine must work eight times as hard against the air.' },
+                  { do: 'So 1,280 N of drag, needing about eight times the power', why: 'Which is why fuel consumption climbs so sharply above about 80 km/h, and why every fuel-saving guide says the same thing.' }
+                ],
+                answer: '1,280 N — four times the drag, and about eight times the power', answerWords: true,
+                check: 'Check the power arithmetic directly: at 60 km/h (16.7 m/s) the drag power is 320 × 16.7 = 5.3 kW; at 120 km/h (33.3 m/s) it is 1,280 × 33.3 = 42.7 kW, and 42.7/5.3 = 8.0 ✓. The cube law is exact here because only the speed changed.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'p1k-terminal-velocity-still-accelerating',
+                wrong: 'Taking the acceleration at terminal velocity to be g, or anything other than zero',
+                right: 'At terminal velocity the forces balance, so a = 0 — the object is in equilibrium while moving fast.',
+                why: 'The word "terminal" describes the velocity, not a moment of stopping, and the whole point is that the motion has stopped CHANGING. Assuming continued acceleration also makes the defining equation unsolvable, since ½CρAv² = mg is precisely the statement that the net force has reached zero.'
+              },
+              {
+                id: 'p1k-drag-linear-in-speed',
+                wrong: 'Doubling the drag when the speed doubles',
+                right: 'Drag goes as v², so the drag quadruples — and the power needed goes up eightfold.',
+                why: 'The square is the entire character of air resistance and it is what makes high-speed travel expensive: a car at 120 km/h meets four times the force it met at 60. Treating drag as proportional to speed also predicts a terminal velocity proportional to the mass rather than to its square root, which gets the parachute wrong by a wide margin.'
+              },
+              {
+                id: 'p1k-drag-ignored-when-it-matters',
+                wrong: 'Using the free-fall equations of chapter 2 for a long fall through air',
+                right: 'Those equations assume no drag. After a few seconds a falling body is nowhere near g t in speed.',
+                why: 'Free fall predicts 98 m/s after ten seconds, while a real skydiver has levelled off at about 42 m/s — the two differ by more than a factor of two. The constant-acceleration equations are exact only while drag is negligible, which for a human body in air means roughly the first second.'
+              },
+              {
+                id: 'p1k-terminal-velocity-mass-linear',
+                wrong: 'Expecting a twice-as-heavy object to have twice the terminal velocity',
+                right: 'v_t goes as the SQUARE ROOT of the mass, so twice the mass gives √2 ≈ 1.4 times the speed.',
+                why: 'The mass sits under a square root because drag balances weight through a v² term, and reading the formula rather than recalling it makes that visible. The same square root is why a parachute forty times the area slows a fall by a factor of six rather than forty.'
+              }
+            ]
+          },
+
+          {
+            id: 'e3', title: 'Elasticity: stress, strain and Young\'s modulus', src: 'Section 5.3',
+            idea: `Every real object deforms under a force. For small deformations the relationship is linear — <b>Hooke's law</b> — and the deformation vanishes when the force is removed. That is what <b>elastic</b> means.<br><br>Comparing materials requires quantities that do not depend on the size of the sample, which is what stress and strain are for:<br><br><b>Stress = F/A</b>, force per unit cross-sectional area, in pascals (1 Pa = 1 N/m²)<br><b>Strain = ΔL/L<sub>0</sub></b>, the fractional change in length — a pure number with no units<br><br>Their ratio is a property of the <b>material</b> alone, the same for a wire and for a girder of the same steel:<br><br><b>Young's modulus Y = stress/strain = (F/A)/(ΔL/L<sub>0</sub>)</b><br><br>Rearranged for the deformation, which is the form most questions want:<br><br><b>ΔL = (1/Y)(F/A)L<sub>0</sub></b><br><br>Read it: the stretch is larger for a bigger force, a thinner wire and a longer starting length, and smaller for a stiffer material. The <b>original length matters</b> — a 10 m cable stretches ten times as far as a 1 m one under the same stress, which is why lift cables and bridge stays are designed around it.<br><br>Young's modulus is large for stiff materials: about 2 × 10<sup>11</sup> Pa for steel, 7 × 10<sup>10</sup> for aluminium, around 10<sup>10</sup> for bone and wood. The units are those of stress, because strain has none.<br><br>Two boundaries end the linear description. Past the <b>elastic limit</b> the material no longer returns to its original shape, and past the <b>breaking stress</b> it fails. Neither is predicted by Y, so a calculation that returns a 30% strain in steel has not found a remarkable answer; it has left the range where the formula applies.<br><br>The same framework covers compression, with the force reversed, and shear, with the force parallel to the face rather than perpendicular to it.`,
+            figure: {
+              kind: 'graph', x: [0, 10], y: [0, 10], xlabel: 'strain', ylabel: 'stress',
+              fns: [{ expr: '1.6*x', label: 'linear: stress = Y × strain', domain: [0, 5] }, { expr: '8 + 0.2*(x - 5)', label: 'past the elastic limit', domain: [5, 9] }],
+              points: [{ x: 5, y: 8, label: 'elastic limit' }, { x: 9, y: 8.8, label: 'it breaks' }],
+              caption: 'Stress against strain for a typical metal. The straight portion is where Young\'s modulus applies, and its slope IS Y — steeper means stiffer. Past the elastic limit the material keeps deforming for almost no extra stress and will not spring back, and the formula of this section says nothing about that region.'
+            },
+            rules: [
+              { name: 'Stress', expr: 'stress = F / A', note: 'In pascals, 1 Pa = 1 N/m². A is the cross-sectional area carrying the force.' },
+              { name: 'Strain', expr: 'strain = (delta L) / L_0', note: 'A fraction, with no units. 0.001 is a tenth of one per cent.' },
+              { name: 'Young’s modulus', expr: 'Y = (F / A) / ((delta L) / L_0)', note: 'A property of the material, not of the sample. Same for a wire and a girder of the same steel.' },
+              { name: 'The deformation', expr: 'delta L = F L_0 / (A Y)', note: 'Longer and thinner stretches more; stiffer stretches less. The original length matters.' },
+              { name: 'Where it stops applying', expr: 'Beyond the elastic limit the material does not return, and Y no longer describes it', words: true, note: 'A calculated strain of 30% in steel means the formula was used outside its range.' }
+            ],
+            examples: [
+              {
+                prompt: 'A steel wire 2.0 m long with a cross-sectional area of 1.0 mm² carries a 200 N load. Young\'s modulus for steel is 2.0 × 10¹¹ Pa. Find the stress, the strain and the extension.',
+                approach: 'Three quantities in a chain, each feeding the next, and one unit conversion that decides whether the answer is right: an area in square millimetres must become square metres, and the factor is 10⁻⁶, not 10⁻³. Compute the stress, divide by Y for the strain, and multiply by the original length for the extension.',
+                steps: [
+                  { do: 'Convert the area: 1.0 mm² = 1.0 × 10⁻⁶ m²', why: 'A squared unit takes the squared conversion — (10⁻³)² = 10⁻⁶, not 10⁻³. This is the step the question is really testing.' },
+                  { do: 'Stress = F/A = 200/(1.0 × 10⁻⁶) = 2.0 × 10⁸ Pa', why: 'Two hundred megapascals, a substantial but survivable stress for steel.' },
+                  { do: 'Strain = stress/Y = (2.0 × 10⁸)/(2.0 × 10¹¹)', why: 'Young\'s modulus is the ratio of the two, so the strain follows by division.' },
+                  { do: 'Strain = 1.0 × 10⁻³, that is 0.1%', why: 'A pure number. Small, as it must be for a material still behaving elastically.' },
+                  { do: 'Extension: ΔL = strain × L₀ = (1.0 × 10⁻³)(2.0)', why: 'Strain is the fractional change, so multiplying by the original length recovers the actual change.' },
+                  { do: 'ΔL = 2.0 × 10⁻³ m, which is 2.0 mm', why: 'Two millimetres on a two-metre wire — visible, and comfortably within the elastic range.' }
+                ],
+                answer: 'Stress 2.0 × 10⁸ Pa, strain 1.0 × 10⁻³, extension 2.0 mm', answerWords: true,
+                check: 'Scale-test the result: a 4.0 m wire of the same steel and thickness under the same load would stretch 4.0 mm, because ΔL is proportional to L₀ ✓. And a wire of twice the area would stretch half as much, since the stress would halve — both checks follow from reading the formula rather than recomputing.'
+              },
+              {
+                prompt: 'A lift cable 40 m long must stretch no more than 25 mm under a 12,000 N load. With Y = 2.0 × 10¹¹ Pa, find the minimum cross-sectional area required, in mm².',
+                approach: 'A design question: the deformation is given and the area is unknown, so the formula is rearranged rather than evaluated forwards. Solve ΔL = FL₀/(AY) for A, substitute in SI units throughout, and convert the answer back to square millimetres at the end — with the squared factor again, in the other direction this time.',
+                steps: [
+                  { do: 'Start from ΔL = FL₀/(AY) and solve for A: A = FL₀/(ΔL × Y)', why: 'Rearranging first keeps the substitution to one line and makes the dependencies visible — more load or more length needs more area.' },
+                  { do: 'Convert the limit: 25 mm = 25 × 10⁻³ m = 0.025 m', why: 'Every quantity in SI units before substituting, or the powers of ten go astray.' },
+                  { do: 'A = (12,000 × 40)/(0.025 × 2.0 × 10¹¹)', why: 'Numerator 480,000 N·m; denominator 5.0 × 10⁹ Pa·m.' },
+                  { do: 'A = 480,000/(5.0 × 10⁹) = 9.6 × 10⁻⁵ m²', why: 'Small in square metres, which is why cables are quoted in square millimetres.' },
+                  { do: 'Convert back: 9.6 × 10⁻⁵ m² × 10⁶ mm²/m² = 96 mm²', why: 'The squared factor again — 1 m² is 10⁶ mm², not 10³.' },
+                  { do: 'So at least 96 mm², about 11 mm across if the cable were solid and round', why: 'And that is a MINIMUM: any real design multiplies it by a safety factor of several.' }
+                ],
+                answer: 'At least 96 mm²', answerWords: true,
+                check: 'Work forwards to confirm: with A = 9.6 × 10⁻⁵ m², ΔL = (12,000 × 40)/(9.6 × 10⁻⁵ × 2.0 × 10¹¹) = 480,000/(1.92 × 10⁷) = 0.025 m = 25 mm ✓, exactly the limit. And the stress is 12,000/9.6 × 10⁻⁵ = 1.25 × 10⁸ Pa, well under steel\'s breaking stress, so the design is limited by stiffness rather than strength.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'p1k-area-conversion-not-squared',
+                wrong: 'Converting 1.0 mm² to 1.0 × 10⁻³ m²',
+                right: 'Square the conversion: 1 mm = 10⁻³ m, so 1 mm² = 10⁻⁶ m².',
+                why: 'The error is a factor of a thousand and it carries straight through to the stress, the strain and the extension, producing an answer that looks like a plausible number in the wrong units. The same trap runs in reverse at the end of a design question, where 1 m² is 10⁶ mm² and not 10³.'
+              },
+              {
+                id: 'p1k-original-length-ignored',
+                wrong: 'Treating the extension as a property of the material and load alone',
+                right: 'ΔL is proportional to the ORIGINAL length: a 4 m wire stretches twice as far as a 2 m one under the same stress.',
+                why: 'Strain is a fraction, so the actual extension depends on what it is a fraction of, and that is why long lift cables and bridge stays are designed around stiffness rather than strength. Omitting L₀ also makes the units fail — strain has none, so something with the dimension of length has to enter.'
+              },
+              {
+                id: 'p1k-stress-and-force-confused',
+                wrong: 'Quoting a stress in newtons, or comparing two materials by the force they carry',
+                right: 'Stress is force per unit AREA, in pascals, and that is what makes the comparison fair.',
+                why: 'A thick bar carries more force than a thin one of the same material without being any stronger as a material, which is exactly why stress exists as a quantity. Young\'s modulus is a ratio of stress to strain, so putting a raw force into it gives a number with no meaning and the wrong units.'
+              },
+              {
+                id: 'p1k-hookes-law-past-the-limit',
+                wrong: 'Using Y to predict the deformation at very large loads, or the breaking point',
+                right: 'The linear relationship holds only up to the elastic limit, and Y says nothing beyond it.',
+                why: 'Past that limit the material deforms permanently and then fails, neither of which the formula describes — a computed strain of 0.3 for steel is not a prediction but a sign that the calculation left its range. The stress–strain graph makes the boundary visible, and checking the strain is small is the quick test that the answer is meaningful.'
+              }
+            ]
+          }
+        ],
+        practice: [
+          { id: 'm1', kind: 'numeric', lesson: 'e1',
+            prompt: 'A 15 kg box sits on a level floor with μ_s = 0.40. Find the maximum static friction, in newtons, with g = 9.80 m/s².',
+            answer: 58.8, tol: 0.05, verify: { expr: 'Rational(4, 10)*15*Rational(98, 10)', dp: 1 },
+            hint: 'f_s,max = μ_s N, and on a level floor N = mg.',
+            solution: ['N = 15 × 9.80 = 147 N', 'f_s,max = 0.40 × 147', '= 58.8 N'] },
+
+          { id: 'm2', kind: 'numeric', lesson: 'e1',
+            prompt: 'That box is pushed with 40 N and does not move. What is the friction force on it, in newtons?',
+            answer: 40, verify: { expr: '40' },
+            hint: 'Static friction takes whatever value prevents sliding.',
+            solution: ['40 N is below the 58.8 N maximum, so the box stays put', 'In equilibrium the friction must exactly balance the push', 'Friction = 40 N, not 58.8 N'] },
+
+          { id: 'm3', kind: 'numeric', lesson: 'e1',
+            prompt: 'Once that box slides, with μ_k = 0.25, find the kinetic friction force in newtons.',
+            answer: 36.75, tol: 0.05, verify: { expr: 'Rational(25, 100)*15*Rational(98, 10)', dp: 2 },
+            hint: 'f_k = μ_k N, with the smaller coefficient.',
+            solution: ['N = 147 N as before', 'f_k = 0.25 × 147', '= 36.75 N, less than the 58.8 N it took to start it moving'] },
+
+          { id: 'm4', kind: 'numeric', lesson: 'e1',
+            prompt: 'A block just begins to slide when a plank is tilted to 32°. Find the coefficient of static friction, to two decimal places.',
+            answer: 0.62, tol: 0.005, verify: { expr: 'tan(32*pi/180)', dp: 2 },
+            hint: 'At the slipping angle, tan θ = μ_s.',
+            solution: ['μ_s = tan 32°', '= 0.6249', '= 0.62, and the mass is irrelevant'] },
+
+          { id: 'm5', kind: 'numeric', lesson: 'e1',
+            prompt: 'A 30 kg crate on a level floor is pushed with 150 N against kinetic friction of 60 N. Find its acceleration in m/s².',
+            answer: 3, verify: { expr: 'Rational(150 - 60, 30)' },
+            hint: 'Net force first, then the second law.',
+            solution: ['ΣF = 150 − 60 = 90 N', 'a = 90/30', '= 3.0 m/s²'] },
+
+          { id: 'm6', kind: 'mc', lesson: 'e1',
+            prompt: 'A brick is slid across a table on its large face, then on its small end. How does the kinetic friction compare?',
+            options: [
+              { t: 'The same, because friction depends on the normal force and not on the contact area', ok: true },
+              { t: 'Larger on the large face, because more surface is touching' },
+              { t: 'Larger on the small end, because the pressure is higher' },
+              { t: 'It depends on the speed of sliding' }
+            ],
+            hint: 'What appears in f_k = μ_k N?',
+            solution: ['The normal force is the same either way — the weight has not changed', 'Spreading it over more area presses less hard at each point', 'The two effects cancel exactly in this model', 'The friction is unchanged'] },
+
+          { id: 'm7', kind: 'numeric', lesson: 'e2',
+            prompt: 'A car meets 400 N of drag at 50 km/h. Find the drag at 100 km/h, in newtons.',
+            answer: 1600, verify: { expr: '400*(Rational(100, 50))**2' },
+            hint: 'Drag goes as the square of the speed.',
+            solution: ['The speed doubles, so the drag goes up by 2² = 4', '400 × 4', '= 1,600 N'] },
+
+          { id: 'm8', kind: 'numeric', lesson: 'e2',
+            prompt: 'Find the terminal velocity of an 80 kg object with C = 1.0, A = 0.80 m², in air of density 1.2 kg/m³, in m/s, to one decimal place. Take g = 9.80 m/s².',
+            answer: 40.4, tol: 0.05, verify: { expr: 'sqrt(2*80*Rational(98, 10)/(Rational(12, 10)*1*Rational(8, 10)))', dp: 1 },
+            hint: 'v_t = √(2mg/(ρCA)).',
+            solution: ['2mg = 2 × 80 × 9.80 = 1,568', 'ρCA = 1.2 × 1.0 × 0.80 = 0.96', 'v_t = √(1568/0.96) = √1633.3 = 40.4 m/s'] },
+
+          { id: 'm9', kind: 'mc', lesson: 'e2',
+            prompt: 'A skydiver has reached terminal velocity. What is her acceleration?',
+            options: [
+              { t: 'Zero — drag now balances the weight, so she is in equilibrium while falling fast', ok: true },
+              { t: '9.80 m/s² downward, since she is still falling' },
+              { t: 'Upward, because drag has become larger than the weight' },
+              { t: 'It cannot be determined without knowing her mass' }
+            ],
+            hint: 'What does constant velocity imply about the net force?',
+            solution: ['Terminal velocity means the speed has stopped changing', 'Constant velocity is equilibrium: ΣF = 0', 'Drag exactly equals the weight', 'The acceleration is zero, not g'] },
+
+          { id: 'm10', kind: 'numeric', lesson: 'e2',
+            prompt: 'A parachute increases the area from 0.70 m² to 28 m² with everything else unchanged. By what factor does the terminal velocity fall?',
+            answer: 6.32, tol: 0.05, verify: { expr: 'sqrt(Rational(28, 7)*10)', dp: 2 },
+            hint: 'v_t goes as 1/√A, so the factor is √(A_new/A_old).',
+            solution: ['The area grows by 28/0.70 = 40 times', 'v_t goes as the inverse square root of the area', 'The speed falls by √40 = 6.32 times'] },
+
+          { id: 'm11', kind: 'numeric', lesson: 'e3',
+            prompt: 'A wire of cross-sectional area 2.0 mm² carries 400 N. Find the stress in pascals. Give the answer as a plain number.',
+            answer: 200000000, verify: { expr: 'Rational(400, 2)*10**6' },
+            hint: '2.0 mm² = 2.0 × 10⁻⁶ m².',
+            solution: ['A = 2.0 × 10⁻⁶ m²', 'stress = 400/(2.0 × 10⁻⁶)', '= 2.0 × 10⁸ Pa'] },
+
+          { id: 'm12', kind: 'numeric', lesson: 'e3',
+            prompt: 'A 3.0 m wire stretches by 1.5 mm. Find the strain.',
+            answer: 0.0005, verify: { expr: 'Rational(15, 10000)/3' },
+            hint: 'Strain = ΔL/L₀, with both in the same units.',
+            solution: ['ΔL = 1.5 mm = 0.0015 m', 'strain = 0.0015/3.0', '= 5.0 × 10⁻⁴, a pure number'] },
+
+          { id: 'm13', kind: 'numeric', lesson: 'e3',
+            prompt: 'A steel rod with Y = 2.0 × 10¹¹ Pa is under a stress of 1.4 × 10⁸ Pa. Find the strain.',
+            answer: 0.0007, verify: { expr: 'Rational(14, 10)*10**8/(2*10**11)' },
+            hint: 'Y = stress/strain.',
+            solution: ['strain = stress/Y', '= 1.4 × 10⁸ / 2.0 × 10¹¹', '= 7.0 × 10⁻⁴'] },
+
+          { id: 'm14', kind: 'numeric', lesson: 'e3',
+            prompt: 'A 5.0 m cable of area 4.0 × 10⁻⁵ m² and Y = 2.0 × 10¹¹ Pa carries 8,000 N. Find the extension in millimetres.',
+            answer: 5, verify: { expr: '8000*5/(4*10**(-5)*2*10**11)*1000' },
+            hint: 'ΔL = FL₀/(AY), then convert to millimetres.',
+            solution: ['AY = 4.0 × 10⁻⁵ × 2.0 × 10¹¹ = 8.0 × 10⁶', 'ΔL = (8,000 × 5.0)/(8.0 × 10⁶) = 0.005 m', '= 5.0 mm'] },
+
+          { id: 'm15', kind: 'mc', lesson: 'e3',
+            prompt: 'Two wires of the same steel carry the same load. One is 1 m long and the other 4 m, both the same thickness. How do their extensions compare?',
+            options: [
+              { t: 'The 4 m wire stretches four times as far, because ΔL is proportional to the original length', ok: true },
+              { t: 'They stretch by the same amount, since the material and load are the same' },
+              { t: 'The 1 m wire stretches more, because the stress is concentrated' },
+              { t: 'The 4 m wire stretches twice as far, following a square root' }
+            ],
+            hint: 'Strain is a fraction — of what?',
+            solution: ['Same material, same thickness, same load means the same stress and the same strain', 'Strain is the FRACTIONAL change in length', 'The same fraction of four times the length is four times the extension', 'Which is why long cables are designed around stiffness'] },
+
+          { id: 'm16', kind: 'spot', lesson: 'e1',
+            prompt: 'A 10 kg box on a 20° slope has μ_k = 0.30. Find the kinetic friction force. (g = 9.80 m/s²)',
+            steps: [
+              { t: 'The weight is mg = 10 × 9.80 = 98 N' },
+              { t: 'Friction is μ_k times the weight: f = 0.30 × 98 = 29.4 N', bad: true },
+              { t: 'Friction takes the normal force, and on a slope N = mg cos 20° = 92.1 N' },
+              { t: 'f_k = 0.30 × 92.1 = 27.6 N' }
+            ],
+            why: 'Friction is proportional to the normal force, not to the weight, and on a slope only the perpendicular component mg cos θ presses into the surface. Using the full weight overstates the friction at every angle and by more as the slope steepens — at 60° it would be double the true value.',
+            hint: 'Which force does friction actually depend on?',
+            solution: ['N = mg cos 20° = 98 × 0.9397 = 92.1 N', 'f_k = μ_k N = 0.30 × 92.1', '= 27.6 N'] },
+
+          { id: 'm17', kind: 'spot', lesson: 'e2',
+            prompt: 'A falling object has reached terminal velocity. Find the net force on it.',
+            steps: [
+              { t: 'At terminal velocity the speed is constant' },
+              { t: 'It is still falling, so the net force is its weight, mg', bad: true },
+              { t: 'Constant velocity means the acceleration is zero' },
+              { t: 'So ΣF = ma = 0: the drag exactly balances the weight' }
+            ],
+            why: 'Falling and accelerating are different things, and terminal velocity is precisely the state where the falling continues but the acceleration has stopped. A net force of mg would mean the object was still speeding up, which contradicts the constant speed the question states.',
+            hint: 'What does a constant velocity say about the net force?',
+            solution: ['Constant velocity is equilibrium', 'ΣF = 0', 'Drag has grown until it equals the weight'] },
+
+          { id: 'm18', kind: 'order', lesson: 'e1',
+            prompt: 'Put the steps for deciding whether a pushed object moves in order.',
+            steps: [
+              'Find the normal force from the vertical equation',
+              'Compute the maximum static friction, μ_s N',
+              'Compare the applied force with that maximum',
+              'If it is smaller, friction equals the applied force and nothing moves',
+              'If it is larger, switch to kinetic friction and find the acceleration'
+            ],
+            hint: 'Both frictions depend on a force that has to be found first.',
+            solution: ['The normal force comes first — everything else depends on it', 'The maximum static friction is the threshold', 'The comparison decides which branch applies', 'Only in the sliding branch does μ_k appear'] },
+
+          { id: 'm19', kind: 'order', lesson: 'e3',
+            prompt: 'Put the steps for finding an extension from Young\'s modulus in order.',
+            steps: [
+              'Convert every quantity to SI units, squaring the factor for areas',
+              'Compute the stress, F/A',
+              'Divide by Y to get the strain',
+              'Multiply the strain by the original length',
+              'Check that the strain is small enough for the material to still be elastic'
+            ],
+            hint: 'The unit conversion has to come before anything is divided.',
+            solution: ['Units first, with mm² to m² as 10⁻⁶', 'Stress, then strain, then extension', 'The final check confirms the formula was used in its valid range'] },
+
+          { id: 'm20', kind: 'mc', lesson: 'e2',
+            prompt: 'Why does fuel consumption rise so sharply above about 80 km/h?',
+            options: [
+              { t: 'Drag grows as v² and the power to overcome it as v³, so the engine works eight times as hard at twice the speed', ok: true },
+              { t: 'Friction between the tyres and the road grows with speed' },
+              { t: 'The engine becomes less efficient at every speed above 80 km/h' },
+              { t: 'Air density increases with the speed of the car' }
+            ],
+            hint: 'Power is force times speed, and the force itself depends on speed.',
+            solution: ['Drag goes as v²', 'Power is drag times speed, so it goes as v³', 'Doubling the speed multiplies the power by eight', 'Rolling friction is roughly independent of speed and is not the cause'] }
+        ]
+      },
+
+      /* ============================ CHAPTER 6 ============================ */
+      {
+        id: 'circular', n: 6,
+        title: 'Circular motion and gravitation',
+        blurb: 'Going round in a circle is accelerating, even at constant speed — what that acceleration is, what supplies the force, why the passenger feels thrown outward when nothing pushed her, and the one law that holds the planets in place.',
+        read: 'Chapter 6',
+        objectives: [
+          'Work in radians, convert between revolutions and radians, and link angular to linear speed with v = rω',
+          'Compute a centripetal acceleration from the speed and the radius, and say which way it points',
+          'Identify the real force supplying the centripetal force in a given situation',
+          'Explain an apparent outward force as an effect of a rotating frame rather than a push',
+          'Use the law of gravitation to find a surface g, an orbital speed and an orbital period'
+        ],
+        lessons: [
+          {
+            id: 'f1', title: 'Angles, angular velocity and linear speed', src: 'Section 6.1',
+            idea: `Circular motion is easier in angles than in coordinates, and the natural unit for the angle is the <b>radian</b>, defined by the arc it cuts:<br><br><b>θ = s/r</b>, so <b>s = rθ</b><br><br>One radian is the angle whose arc equals the radius. A full turn is <b>2π rad = 360°</b>, so one radian is about 57.3°. Radians are what make s = rθ true with no extra constant, and every formula in this chapter assumes them — a calculator left in degree mode is the commonest silent failure here.<br><br><b>Angular velocity ω</b> is how fast the angle changes:<br><br><b>ω = Δθ/Δt</b>, in radians per second<br><br>Rotation rates are usually quoted in revolutions per minute, so the conversion is worth having automatic: <b>one rev/min = 2π/60 rad/s</b>, so multiply rpm by π/30.<br><br>The link between the angular and the linear description is one line, and it is the most used equation in the chapter:<br><br><b>v = rω</b><br><br>Every point on a rigid rotating object shares the same ω and has a different v. On a merry-go-round the outer horses share the angular velocity of the inner ones and move faster along the ground; a bicycle wheel's rim moves faster than a point near the hub. That is also why a large wheel covers more ground per turn, and why gear ratios work.<br><br>The <b>period</b> T is the time for one revolution and the <b>frequency</b> f is the number per second:<br><br><b>T = 2π/ω</b> · <b>f = 1/T</b> · <b>ω = 2πf</b><br><br>Rolling without slipping ties the rotation to the travel: one turn of a wheel of radius r advances it by one circumference, <b>2πr</b>, so the distance covered is <b>s = rθ</b> with θ the total angle turned. That single relationship converts any rolling problem into a rotation problem.`,
+            figure: {
+              kind: 'graph', x: [0, 1.2], y: [0, 14], xlabel: 'r', ylabel: 'v',
+              fns: [{ expr: '12.57*x', label: 'v = rω at 120 rpm' }],
+              points: [{ x: 0.35, y: 4.4, label: 'rim of a 0.35 m wheel' }, { x: 0.1, y: 1.26, label: 'near the hub' }],
+              caption: 'One rotating object, one angular velocity, and a linear speed that depends entirely on how far out you are. The line is straight through the origin because v = rω, so a point at the centre does not move at all while the rim travels at 4.4 m/s — the same turn, very different speeds.'
+            },
+            rules: [
+              { name: 'Angle in radians', expr: 'theta = s / r', note: 'Arc over radius. A full turn is 2π rad = 360°, and one radian is about 57.3°.' },
+              { name: 'Angular velocity', expr: 'omega = (delta theta) / (delta t)', note: 'In rad/s. Every formula in this chapter assumes radians.' },
+              { name: 'Revolutions per minute to rad/s', expr: 'omega = rpm * pi / 30', note: 'Because one revolution is 2π rad and one minute is 60 s.' },
+              { name: 'Linear from angular', expr: 'v = r omega', note: 'The most used equation here. Same ω for the whole object, different v at every radius.' },
+              { name: 'Period and frequency', expr: 'T = 2 pi / omega', note: 'And f = 1/T, ω = 2πf. The period is the time for one complete turn.' },
+              { name: 'Rolling without slipping', expr: 's = r theta', note: 'One turn advances the wheel by its circumference, 2πr.' }
+            ],
+            examples: [
+              {
+                prompt: 'A wheel of radius 0.35 m turns at 120 revolutions per minute. Find its angular velocity in rad/s, the speed of a point on the rim, and the period.',
+                approach: 'Convert to SI angular units first, because every formula that follows assumes radians per second — revolutions per minute is a human unit and does nothing in an equation. Then the rim speed is a single multiplication, and the period follows from the angular velocity. Three answers, all from the one converted number.',
+                steps: [
+                  { do: 'Convert: 120 rev/min × (2π rad/rev) × (1 min/60 s)', why: 'Two conversion factors, each equal to 1, oriented so revolutions and minutes cancel — the same cancelling discipline as chapter 1.' },
+                  { do: 'ω = 120 × 2π/60 = 4π rad/s', why: 'The shortcut is to multiply rpm by π/30, which is this calculation done once.' },
+                  { do: 'ω = 12.57 rad/s', why: 'About two turns per second, which is a sensible rate for a wheel.' },
+                  { do: 'Rim speed: v = rω = 0.35 × 12.57', why: 'The radius in metres times the angular velocity in rad/s gives metres per second — radians are dimensionless, so they simply disappear.' },
+                  { do: 'v = 4.40 m/s', why: 'A point halfway out would move at 2.20 m/s, and the centre not at all.' },
+                  { do: 'Period: T = 2π/ω = 2π/12.57 = 0.50 s', why: 'Two revolutions a second means half a second each — consistent with the 120 rpm we started from, which is the check.' }
+                ],
+                answer: 'ω = 12.57 rad/s, rim speed 4.40 m/s, period 0.50 s', answerWords: true,
+                check: 'Cross-check the period independently: 120 revolutions per minute is 2 per second, so each takes 0.50 s ✓. And the rim speed can be found another way — the circumference is 2π(0.35) = 2.20 m, covered twice a second, giving 4.40 m/s ✓.'
+              },
+              {
+                prompt: 'A bicycle wheel of radius 0.32 m rolls 100 m without slipping. Find the angle turned in radians and the number of complete revolutions, to one decimal place.',
+                approach: 'Rolling without slipping is the bridge: the distance travelled along the ground equals the arc that has passed under the wheel, so s = rθ converts one into the other directly. Find the angle in radians first, then divide by 2π to express it in revolutions — never the other way round, because the arc relationship is only true in radians.',
+                steps: [
+                  { do: 'Rolling without slipping means the ground distance equals the arc: s = rθ', why: 'No skidding, so every bit of rim that touches down has travelled exactly its own length along the road.' },
+                  { do: 'Rearrange: θ = s/r = 100/0.32', why: 'Both in metres, so the result is a pure number — radians, as the definition requires.' },
+                  { do: 'θ = 312.5 rad', why: 'A large angle, which is normal: a radian is a big unit and 100 m is many turns.' },
+                  { do: 'Convert to revolutions: one revolution is 2π rad', why: 'Dividing by 2π is the only step that involves revolutions at all.' },
+                  { do: 'revolutions = 312.5/(2π) = 312.5/6.2832', why: 'Keep the full value rather than rounding 2π to 6.3.' },
+                  { do: '= 49.7 revolutions', why: 'Just under fifty turns for a hundred metres, which matches the circumference estimate below.' }
+                ],
+                answer: '312.5 radians, which is 49.7 revolutions', answerWords: true,
+                check: 'Check by circumference: each turn covers 2π(0.32) = 2.011 m, so 100 m needs 100/2.011 = 49.7 turns ✓. A larger wheel would need fewer turns for the same distance, which is the whole reason a bigger wheel feels easier at speed.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'p1k-degrees-for-radians',
+                wrong: 'Using degrees in s = rθ or v = rω, or leaving a calculator in degree mode',
+                right: 'Every formula in this chapter assumes radians: a full turn is 2π, not 360.',
+                why: 'The arc relationship s = rθ is true with no extra constant only in radians, and using degrees inflates every answer by a factor of about 57. The error is silent because the arithmetic completes normally, so the defence is to convert to radians as the first line of any rotation problem and never to carry degrees past it.'
+              },
+              {
+                id: 'p1k-rpm-used-directly',
+                wrong: 'Putting revolutions per minute straight into v = rω',
+                right: 'Convert first: multiply rpm by π/30 to get rad/s.',
+                why: 'Revolutions per minute mixes a non-SI angle with a non-SI time, and the combined error is a factor of about 9.55 — large enough to be obvious in a final answer and easy to miss in the middle of a longer question. The conversion is two factors of 1 and takes one line.'
+              },
+              {
+                id: 'p1k-same-linear-speed-everywhere',
+                wrong: 'Assuming every point on a rotating object moves at the same speed',
+                right: 'They share ω, not v: v = rω, so the rim moves fastest and the centre not at all.',
+                why: 'A rigid object turns as a whole, which fixes the ANGULAR velocity, and the linear speed then grows in proportion to the distance from the axis. Missing this makes every gear, pulley and merry-go-round question unanswerable, since those problems are entirely about what stays the same and what does not.'
+              },
+              {
+                id: 'p1k-radius-and-diameter',
+                wrong: 'Using the diameter in v = rω or s = rθ',
+                right: 'These formulas take the RADIUS. A wheel described as "70 cm across" has r = 0.35 m.',
+                why: 'The factor of two goes straight into the answer and is invisible afterwards, and questions often state a diameter precisely because it is the more natural way to describe a wheel. Reading the question for which of the two has been given, and writing r down explicitly, is what prevents it.'
+              }
+            ]
+          },
+
+          {
+            id: 'f2', title: 'Centripetal acceleration and centripetal force', src: 'Section 6.2',
+            idea: `An object going round a circle at constant speed is <b>accelerating</b>. Its speed is not changing, but its <b>direction</b> is, and acceleration is the rate of change of velocity — which includes direction. Section 3.2 showed this concretely: a car turning from east to north at 20 m/s has a velocity change of 28 m/s.<br><br>That acceleration points <b>towards the centre</b> of the circle, which is what <b>centripetal</b> means, and its size is:<br><br><b>a<sub>c</sub> = v²/r = rω²</b><br><br>Read the first form. The acceleration grows with the <b>square</b> of the speed, so taking a bend twice as fast needs four times the acceleration, and it grows as the radius shrinks, so a tight bend is harder than a sweeping one at the same speed.<br><br>By the second law, that acceleration requires a force pointing the same way:<br><br><b>F<sub>c</sub> = ma<sub>c</sub> = mv²/r</b><br><br>Here is the part that matters most. <b>The centripetal force is not a new kind of force.</b> It is a job description — the label for whatever real force happens to be pointing at the centre. Identifying that real force is the first step of every problem:<br><br>• A car on a level bend: <b>friction</b> between tyres and road.<br>• A ball on a string: the <b>tension</b> in the string.<br>• The Moon around the Earth: <b>gravity</b>.<br>• A rider at the top of a loop: <b>gravity plus the normal force</b> from the track.<br><br>Writing "centripetal force" as an extra arrow on a free-body diagram, alongside the tension or the friction that is actually supplying it, double-counts it. The diagram shows real forces; the sum of those pointing at the centre equals mv²/r.<br><br>Two standard results. On a level bend the maximum safe speed comes from friction: <b>μ<sub>s</sub>mg = mv²/r</b>, so <b>v<sub>max</sub> = √(μ<sub>s</sub>gr)</b>, and the mass cancels — a loaded lorry and an empty car slide at the same speed. At the top of a vertical loop the minimum speed to stay in contact is where the normal force falls to zero and gravity alone does the job: <b>mg = mv²/r</b>, giving <b>v<sub>min</sub> = √(gr)</b>.`,
+            figure: {
+              kind: 'graph', x: [0, 40], y: [0, 45], xlabel: 'v', ylabel: 'a_c',
+              fns: [{ expr: 'x**2/40', label: 'a_c on a 40 m bend' }, { expr: 'x**2/120', label: 'a_c on a 120 m bend', dashed: true }],
+              points: [{ x: 15, y: 5.63, label: '15 m/s on the tight bend' }, { x: 30, y: 22.5, label: 'twice as fast: four times the acceleration' }],
+              caption: 'Centripetal acceleration against speed for two bends. Both curves are parabolas, because a_c goes as v² — doubling the speed quadruples the demand. The sweeping 120 m bend sits well below the tight 40 m one at every speed, which is why motorway curves are gentle and why a tight bend needs a much lower limit.'
+            },
+            rules: [
+              { name: 'Centripetal acceleration', expr: 'a_c = v^2 / r', note: 'Directed towards the centre. Equivalently rω², which is the form to use when the rotation rate is given.' },
+              { name: 'Centripetal force', expr: 'F_c = m v^2 / r', note: 'The NET inward force. Not a new force — a job done by friction, tension, gravity or a normal force.' },
+              { name: 'It is a job, not a force', expr: 'Identify which real force points at the centre before writing anything', words: true, note: 'Adding "centripetal force" as an extra arrow on a free-body diagram double-counts it.' },
+              { name: 'Maximum speed on a level bend', expr: 'v_max = sqrt(mu_s g r)', note: 'From μ_s m g = m v²/r. The mass cancels, so a lorry and a car slide at the same speed.' },
+              { name: 'Minimum speed at the top of a loop', expr: 'v_min = sqrt(g r)', note: 'Where the normal force reaches zero and gravity alone supplies the centripetal force.' }
+            ],
+            examples: [
+              {
+                prompt: 'A 1,200 kg car takes a level bend of radius 40 m at 15 m/s. Find the centripetal acceleration and the force required, and say whether tyres with μ_s = 0.70 can supply it. Take g = 9.80 m/s².',
+                approach: 'Three steps in order: what acceleration the geometry demands, what force that needs, and whether the available force can deliver it. The last step is the physics — the friction is the supply and mv²/r is the demand, and comparing them is what answers the question a driver actually cares about.',
+                steps: [
+                  { do: 'Centripetal acceleration: a_c = v²/r = 15²/40 = 225/40', why: 'Fixed by the speed and the radius alone — nothing about the car enters yet.' },
+                  { do: 'a_c = 5.63 m/s², directed towards the centre of the bend', why: 'Just over half of g, which is a firm but ordinary corner.' },
+                  { do: 'Force required: F_c = ma_c = 1,200 × 5.63 = 6,750 N', why: 'The second law. This is the DEMAND — the inward force the turn requires.' },
+                  { do: 'The force is supplied by friction between the tyres and the road', why: 'Naming the real force is the step that is skipped. On a level bend there is nothing else pointing at the centre.' },
+                  { do: 'Maximum available friction: μ_s mg = 0.70 × 1,200 × 9.80 = 8,232 N', why: 'The SUPPLY. Static friction, because the tyres are rolling rather than skidding.' },
+                  { do: '8,232 N is greater than 6,750 N, so the car makes the turn', why: 'With about 18% in hand. The maximum safe speed here is √(0.70 × 9.80 × 40) = 16.6 m/s.' }
+                ],
+                answer: 'a_c = 5.63 m/s² needing 6,750 N; the tyres can supply 8,232 N, so the car holds the bend', answerWords: true,
+                check: 'Note the mass cancels in the safe-speed calculation: √(μ_s g r) contains no m, so a fully loaded car slides at exactly the same 16.6 m/s ✓. And the v² dependence bites hard — at 20 m/s the demand would be 12,000 N, half as much again as the tyres can give.'
+              },
+              {
+                prompt: 'A roller-coaster car goes round a vertical loop of radius 8.0 m. Find the minimum speed at the top for the car to stay on the track, and the force the track exerts at the top if it is travelling at 12 m/s. The car\'s mass is 500 kg and g = 9.80 m/s².',
+                approach: 'At the top of a loop both the weight and the normal force point downward — towards the centre — so together they supply the centripetal force. The minimum speed is the case where the track contributes nothing, N = 0, and gravity alone is just enough. For the second part, put the actual speed into the same equation and solve for N instead.',
+                figure: {
+                  kind: 'graph', x: [-10, 10], y: [-10, 10],
+                  fns: [{ expr: 'sqrt(64 - x**2)', label: 'the loop, r = 8.0 m' }, { expr: '-sqrt(64 - x**2)', c: 0 }],
+                  segments: [{ from: [0, 8], to: [0, 5.5], label: 'weight and normal force, both down' }],
+                  points: [{ x: 0, y: 8, label: 'the top' }],
+                  caption: 'At the top of the loop the centre of the circle is BELOW the car, so both the weight and the track\'s push point the same way — downward, and inward. That is why a loop can be completed at all: gravity is helping rather than fighting, and at the minimum speed it is doing the whole job by itself.'
+                },
+                steps: [
+                  { do: 'At the top, the centre of the circle is directly below the car', why: 'So "towards the centre" means downward, which is what makes this case different from a level bend.' },
+                  { do: 'Both the weight mg and the normal force N point downward, so N + mg = mv²/r', why: 'The net inward force is the sum, not the difference — the track pushes down on the car from above.' },
+                  { do: 'Minimum speed: the track can only push, never pull, so the limit is N = 0', why: 'Below that speed the car would need the track to hold it up on the inside, which it cannot do.' },
+                  { do: 'With N = 0: mg = mv²/r, so v_min = √(gr) = √(9.80 × 8.0) = √78.4 = 8.85 m/s', why: 'The mass cancels — a heavy car and a light one need exactly the same minimum speed.' },
+                  { do: 'At 12 m/s: N = mv²/r − mg = 500(144)/8.0 − 500(9.80)', why: 'Rearranged for the unknown. The required centripetal force is 9,000 N and gravity supplies 4,900 N of it.' },
+                  { do: 'N = 9,000 − 4,900 = 4,100 N', why: 'The track supplies the rest. Positive, as it must be — a negative N would mean the car had fallen away from the track.' }
+                ],
+                answer: 'Minimum speed 8.85 m/s; at 12 m/s the track pushes with 4,100 N', answerWords: true,
+                check: 'Test the limit: putting v = 8.85 m/s into the second calculation gives N = 500(78.4)/8.0 − 4,900 = 4,900 − 4,900 = 0 ✓, exactly the condition that defined it. And the riders feel 4,100/500 = 8.2 m/s² of push from the seat at 12 m/s, which is why a loop feels heavy rather than weightless at speed.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'p1k-centripetal-as-extra-force',
+                wrong: 'Drawing a centripetal force on a free-body diagram alongside the tension or friction',
+                right: 'The centripetal force IS that tension or friction. It is a job description, not an additional force.',
+                why: 'Adding it as a separate arrow counts the same physical force twice and typically doubles the answer. The correct procedure is to draw only real forces, then set the sum of their inward components equal to mv²/r — which also forces you to identify what is actually supplying the turn.'
+              },
+              {
+                id: 'p1k-centrifugal-force-invented',
+                wrong: 'Putting an outward "centrifugal force" on the diagram of an object going round a bend',
+                right: 'In the ground frame there is no outward force. The net force points INWARD, or the object would not turn.',
+                why: 'Nothing pushes a cornering passenger outward — the car turns inward underneath them while they continue straight, which is the first law. An outward arrow on the diagram cancels the inward one and predicts no acceleration at all, which contradicts the very motion being described.'
+              },
+              {
+                id: 'p1k-ac-linear-in-speed',
+                wrong: 'Expecting twice the speed to need twice the centripetal force',
+                right: 'a_c goes as v², so twice the speed needs FOUR times the force.',
+                why: 'This is why a bend taken comfortably at 15 m/s is lethal at 30 m/s: the demand rises from 6,750 N to 27,000 N while the tyres can still supply only about 8,200 N. Treating the relationship as linear makes every safe-speed calculation wrong in the dangerous direction.'
+              },
+              {
+                id: 'p1k-loop-top-forces-subtracted',
+                wrong: 'Writing N − mg = mv²/r at the top of a vertical loop',
+                right: 'At the top both forces point downward, towards the centre: N + mg = mv²/r.',
+                why: 'The sign depends entirely on where the centre of the circle is relative to the object, and at the top it is below. Subtracting gives a minimum speed that is far too high and can produce a negative normal force at speeds where the car is comfortably on the track — sketching the circle and marking the centre settles it every time.'
+              }
+            ]
+          },
+
+          {
+            id: 'f3', title: 'Fictitious forces and rotating frames', src: 'Section 6.4',
+            idea: `A passenger in a car turning left feels pressed against the right-hand door. Nothing is pushing her that way. What is happening is the <b>first law</b>: she continues in a straight line while the car turns underneath her, and the door arrives to meet her. The door then pushes her <b>inward</b>, which is the real force that makes her turn too.<br><br>An <b>inertial frame</b> is one that is not accelerating, and Newton's laws hold in it. A frame that is accelerating — a braking bus, a turning car, a spinning roundabout — is <b>non-inertial</b>, and in it objects appear to accelerate with no force acting. To keep F = ma usable inside such a frame, an observer invents a <b>fictitious force</b>: the <b>centrifugal force</b> in a rotating frame, and the backward shove felt when a bus accelerates.<br><br>These forces are a bookkeeping device, not an interaction. The test is decisive: <b>a fictitious force has no third-law partner</b>, because there is no second object exerting it. Every real force does.<br><br>Both descriptions are correct within their own frame, and knowing which you are using is the whole skill:<br><br>• <b>Ground frame</b> (inertial): the net force on the passenger points inward, supplied by the door. There is no outward force at all.<br>• <b>Car frame</b> (rotating): the passenger is stationary, so the inward door force must be balanced by an outward centrifugal force. It is invented precisely to make the sum come out zero.<br><br>Physics problems in this course are solved in the <b>ground frame</b>, where no invented forces are needed. That is why "centrifugal force" should not appear on a free-body diagram here.<br><br>A related effect is the <b>Coriolis</b> deflection: in a rotating frame an object moving in a straight line appears to curve. It is why large weather systems circulate in opposite directions in the two hemispheres, and it too vanishes when the motion is described from outside the rotating frame.<br><br>Quantitatively, a hanging object in an accelerating frame settles at an angle that reveals the acceleration: <b>tan θ = a/g</b>, which turns an air freshener into an accelerometer.`,
+            figure: {
+              kind: 'graph', x: [-3, 3], y: [-3, 1.5],
+              segments: [
+                { from: [0, 0], to: [0, -2.2], label: 'weight, mg' },
+                { from: [0, 0], to: [-1.1, 0.9], label: 'tension, along the string' },
+                { from: [0, 0], to: [-1.1, 0], label: 'net force: inward, ma' }
+              ],
+              points: [{ x: 0, y: 0, label: 'the hanging mass' }],
+              caption: 'A mass hanging in a car going round a bend, seen from the ground. Only two real forces act — the weight and the tension — and they do not balance: their sum points inward and is exactly what makes the mass turn with the car. The tilt angle satisfies tan θ = a/g, so the string measures the acceleration.'
+            },
+            rules: [
+              { name: 'Inertial frame', expr: 'A frame that is not accelerating, where Newton’s laws hold as written', words: true, note: 'The ground is close enough to inertial for everything in this course.' },
+              { name: 'Fictitious force', expr: 'An apparent force introduced to make F = ma work inside an accelerating frame', words: true, note: 'Centrifugal force is the rotating-frame example.' },
+              { name: 'The test', expr: 'A fictitious force has no third-law partner', words: true, note: 'No second object exerts it, so nothing pushes back. Every real force has a partner.' },
+              { name: 'Which frame to work in', expr: 'Solve in the ground frame and no invented force is needed', words: true, note: 'Which is why centrifugal force does not belong on a free-body diagram here.' },
+              { name: 'A hanging accelerometer', expr: 'tan(theta) = a / g', note: 'The angle a suspended object hangs at in a frame accelerating at a.' }
+            ],
+            examples: [
+              {
+                prompt: 'A small mass hangs from the ceiling of a car that is rounding a bend of radius 80 m at 20 m/s. Find the angle the string makes with the vertical, to one decimal place, with g = 9.80 m/s².',
+                approach: 'Work in the ground frame, where only two real forces act on the mass — its weight and the string tension — and they are not in balance, because the mass is accelerating towards the centre of the bend. Write the second law horizontally and the equilibrium condition vertically, then divide the two equations so the tension and the mass both cancel.',
+                steps: [
+                  { do: 'Centripetal acceleration: a_c = v²/r = 20²/80 = 400/80 = 5.0 m/s², towards the centre', why: 'The mass moves in the same circle as the car, so it needs the same acceleration.' },
+                  { do: 'Two real forces: the weight mg down, and the tension T along the string. No outward force exists in this frame', why: 'The string is tilted precisely because the net force must point inward — an outward force would leave nothing to turn the mass.' },
+                  { do: 'Horizontally: T sin θ = ma_c, with θ measured from the vertical', why: 'The horizontal component of the tension is the entire centripetal force.' },
+                  { do: 'Vertically: T cos θ = mg, since the mass does not rise or fall', why: 'No vertical acceleration, so the vertical component of the tension balances the weight exactly.' },
+                  { do: 'Divide: tan θ = a_c/g = 5.0/9.80 = 0.5102', why: 'Both T and m cancel, so the angle depends only on the acceleration and g — which is what makes it a usable accelerometer.' },
+                  { do: 'θ = tan⁻¹(0.5102) = 27.0° from the vertical, tilted OUTWARD from the bend', why: 'It hangs away from the centre because the mass lags behind the turn — but the force on it still points inward.' }
+                ],
+                answer: '27.0° from the vertical', answerWords: true,
+                check: 'Test the limits: with the car going straight, a_c = 0 and tan θ = 0, so the string hangs vertically ✓. And an acceleration equal to g would give 45°, which is the usable range of the effect — the tilt is small for gentle driving and obvious in a hard corner.'
+              },
+              {
+                prompt: 'A passenger in a car turning sharply left slides against the right-hand door and says she was "thrown outward by centrifugal force". Describe what actually happens, and identify the real force acting on her.',
+                approach: 'Answer in the ground frame, where Newton\'s laws hold as written, and account for what she feels rather than dismissing it. Follow her motion instant by instant: what she was doing before the turn, what the car did, and what the door then had to do. Then apply the third-law test to show why the outward force cannot be real.',
+                steps: [
+                  { do: 'Before the turn, she moves in a straight line with the car', why: 'Both are travelling straight ahead at the same velocity.' },
+                  { do: 'The car turns left, because friction on the tyres pushes it inward. Nothing yet pushes her', why: 'The force acts on the car, and she is not attached to it — this is the moment the two part company.' },
+                  { do: 'By the first law she continues straight, so the right-hand door moves sideways towards her', why: 'She is not thrown anywhere. The car moves under her, and the gap closes from the car\'s side.' },
+                  { do: 'On contact, the door pushes her INWARD, towards the centre of the turn', why: 'That is the real force, and it is what makes her follow the bend instead of continuing straight.' },
+                  { do: 'The third-law test: the supposed outward force has no partner — no object exerts it', why: 'Every real force is one half of a pair between two objects. The door\'s push has a partner (her push on the door); the centrifugal force has none.' },
+                  { do: 'In the car\'s rotating frame she is stationary, so an outward force must be invented to balance the door', why: 'That invented force is the centrifugal force. It is correct bookkeeping inside that frame and absent from the ground frame — and the ground frame is where these problems are solved.' }
+                ],
+                answer: 'She continues straight while the car turns into her; the only real force is the door pushing her inward. The outward feeling is the first law seen from inside a rotating frame', answerWords: true,
+                check: 'The sensation is real and worth accounting for: pressure against her right side is exactly what the door\'s inward push feels like, in the same way that a lift floor pushing up feels like heaviness. What the analysis rejects is not the sensation but the explanation — and the third-law test is what separates the two.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'p1k-centrifugal-on-free-body',
+                wrong: 'Adding an outward force to the free-body diagram of a cornering car or a whirling ball',
+                right: 'In the ground frame there is no outward force. The net force points inward and equals mv²/r.',
+                why: 'The outward arrow cancels the inward one and predicts straight-line motion, contradicting the turn being analysed. Every problem in this course is set in the ground frame, so the rule is simple: draw only forces some identifiable object exerts, and no object exerts the centrifugal force.'
+              },
+              {
+                id: 'p1k-thrown-outward',
+                wrong: 'Describing a passenger as being thrown outward in a turn',
+                right: 'She continues straight by the first law while the car turns into her.',
+                why: 'The description matters because it determines which force gets written down: "thrown outward" invites an outward arrow that does not exist, while "continues straight until the door arrives" leads straight to the door\'s inward push. The same reasoning explains why a passenger lurches forward when a bus brakes — she does not, the bus slows underneath her.'
+              },
+              {
+                id: 'p1k-fictitious-force-has-partner',
+                wrong: 'Treating the centrifugal force as real because the effect is clearly felt',
+                right: 'Apply the third-law test: a real force has a partner exerted by some other object, and this one has none.',
+                why: 'The sensation is genuine, but sensations report contact forces on the body — here the door pushing inward — rather than the cause of the motion. Asking "what object exerts this, and what does it push back on?" is a mechanical test that separates real forces from bookkeeping devices in every case.'
+              },
+              {
+                id: 'p1k-frames-mixed',
+                wrong: 'Using the inward centripetal force and an outward centrifugal force in the same equation',
+                right: 'Pick one frame and stay in it. The two descriptions are alternatives, not additions.',
+                why: 'Mixing frames double-counts the same physics and typically produces a net force of zero for an object that is plainly accelerating. The ground frame needs no invented forces at all, which is why it is the one used throughout this course — and stating which frame you are in is what keeps the two from blending.'
+              }
+            ]
+          },
+
+          {
+            id: 'f4', title: 'Universal gravitation, satellites and Kepler\'s laws', src: 'Section 6.5',
+            idea: `Newton's <b>law of universal gravitation</b>: every two masses attract each other with a force<br><br><b>F = G m<sub>1</sub>m<sub>2</sub> / r²</b>, with <b>G = 6.67 × 10<sup>−11</sup> N·m²/kg²</b><br><br>The <b>r</b> is the distance between the <b>centres</b>, not the surfaces — for anything on or near the Earth that means about 6,370 km, not the height above the ground. The force is an <b>inverse square</b>: at twice the distance it is a quarter, at ten times a hundredth. And it is universal: the same law describes an apple, the Moon and a galaxy, which was the genuinely radical claim.<br><br>Setting the gravitational force equal to mg gives the surface gravity of any body:<br><br><b>g = GM/R²</b><br><br>The small mass cancels, which is chapter 2's result recovered: everything falls at the same rate, and that rate depends only on the planet. It also explains why g is about 1.6 m/s² on the Moon — much less mass, somewhat less radius.<br><br>A <b>satellite</b> in a circular orbit is in free fall: gravity supplies exactly the centripetal force and nothing else acts. Setting the two equal,<br><br><b>GMm/r² = mv²/r</b>, giving <b>v = √(GM/r)</b><br><br>The satellite's own mass cancels again — a bolt and a space station share an orbit at the same speed. Lower orbits are <b>faster</b>, which is counterintuitive until you notice that r is in the denominator.<br><br>The period follows from v = 2πr/T:<br><br><b>T = 2π√(r³/(GM))</b>, so <b>T² = 4π²r³/(GM)</b><br><br>which is <b>Kepler's third law</b>: the square of the period is proportional to the cube of the orbital radius. Kepler found it from Tycho Brahe's observations decades before anyone knew why; Newton derived it in a line from the inverse square. Kepler's other two laws — orbits are ellipses with the Sun at one focus, and a planet sweeps equal areas in equal times — describe the same motion without circular idealisation.<br><br>Finally, <b>weightlessness in orbit is not the absence of gravity</b>. At 400 km up, g is still about 8.7 m/s². Astronauts float because they and their station are falling together — free fall, exactly as in chapter 2, but moving sideways fast enough to keep missing the ground.`,
+            figure: {
+              kind: 'graph', x: [1, 6], y: [0, 11], xlabel: 'r (Earth radii)', ylabel: 'g (m/s²)',
+              fns: [{ expr: '9.8/x**2', label: 'g = GM/r², the inverse square' }],
+              points: [{ x: 1, y: 9.8, label: 'surface: 9.8' }, { x: 2, y: 2.45, label: 'twice as far: a quarter' }, { x: 3, y: 1.09, label: 'three times: a ninth' }],
+              caption: 'Gravitational field strength against distance from the Earth\'s centre, in Earth radii. The fall is steep and never reaches zero — at the height of the space station, barely 6% further out than the surface, g is still about 8.7 m/s². Astronauts float because they are falling, not because gravity has gone.'
+            },
+            rules: [
+              { name: 'Universal gravitation', expr: 'F = G m_1 m_2 / r^2', note: 'G = 6.67 × 10⁻¹¹ N·m²/kg², and r is between CENTRES, not surfaces.' },
+              { name: 'Surface gravity', expr: 'g = G M / R^2', note: 'The falling object’s mass cancels — which is why everything falls at the same rate.' },
+              { name: 'Orbital speed', expr: 'v = sqrt(G M / r)', note: 'From gravity supplying the centripetal force. Lower orbits are faster, and the satellite’s mass cancels.' },
+              { name: 'Orbital period', expr: 'T = 2 pi sqrt(r^3 / (G M))', note: 'From v = 2πr/T. Squaring gives Kepler’s third law.' },
+              { name: 'Kepler’s third law', expr: 'T^2 = 4 pi^2 r^3 / (G M)', note: 'The square of the period goes as the cube of the radius — found from observation, then derived from the inverse square.' },
+              { name: 'Weightlessness', expr: 'Free fall, not the absence of gravity', words: true, note: 'At 400 km, g is still about 8.7 m/s². The station and everything in it fall together.' }
+            ],
+            examples: [
+              {
+                prompt: 'The Earth has mass 5.97 × 10²⁴ kg and radius 6.37 × 10⁶ m. Find the surface gravitational field strength, to two decimal places, with G = 6.67 × 10⁻¹¹ N·m²/kg².',
+                approach: 'Set the gravitational force on a mass m equal to mg and cancel the m — that cancellation is the physics, and it is why the answer describes the planet rather than the object. Then substitute, handling the powers of ten separately from the digits so the exponent arithmetic stays visible and checkable.',
+                steps: [
+                  { do: 'For a mass m at the surface: GMm/R² = mg, so g = GM/R²', why: 'The small mass cancels, which is exactly why every object at the surface accelerates at the same rate.' },
+                  { do: 'Numerator: GM = (6.67 × 10⁻¹¹)(5.97 × 10²⁴)', why: 'Multiply the digits and add the exponents: 6.67 × 5.97 = 39.82, and −11 + 24 = 13.' },
+                  { do: 'GM = 39.82 × 10¹³ = 3.982 × 10¹⁴', why: 'Tidied into standard form, which makes the next division straightforward.' },
+                  { do: 'Denominator: R² = (6.37 × 10⁶)² = 40.58 × 10¹² = 4.058 × 10¹³', why: 'Square the digits and double the exponent. Forgetting to square the power of ten is the standard slip here.' },
+                  { do: 'g = (3.982 × 10¹⁴)/(4.058 × 10¹³) = 9.81', why: 'Divide the digits and subtract the exponents: 14 − 13 = 1, so 0.981 × 10¹.' },
+                  { do: 'g = 9.81 m/s²', why: 'The familiar number, derived rather than quoted — and the units work out, since N·m²/kg² times kg over m² is N/kg, which is m/s².' }
+                ],
+                answer: 'g = 9.81 m/s²', answerWords: true,
+                check: 'Try the Moon with M = 7.35 × 10²² kg and R = 1.74 × 10⁶ m: g = (6.67 × 10⁻¹¹)(7.35 × 10²²)/(1.74 × 10⁶)² = 4.90 × 10¹²/3.03 × 10¹² = 1.62 m/s² ✓, the accepted figure. The same formula, two very different worlds.'
+              },
+              {
+                prompt: 'A satellite orbits the Earth in a circle of radius 7.00 × 10⁶ m from the centre. Find its orbital speed and its period, using GM = 3.98 × 10¹⁴ for the Earth.',
+                approach: 'The whole of orbital mechanics at this level comes from one substitution: gravity is the centripetal force, so GMm/r² = mv²/r. Cancel the satellite\'s mass and one factor of r, solve for v, and then get the period from the circumference divided by that speed. Note that the satellite\'s own mass never appears in either answer.',
+                steps: [
+                  { do: 'Gravity supplies the centripetal force: GMm/r² = mv²/r', why: 'Nothing else acts on a satellite. This single equation is the source of every orbital result.' },
+                  { do: 'Cancel m and one r: v² = GM/r', why: 'The satellite\'s mass is gone, so a bolt and a space station orbit side by side at the same speed.' },
+                  { do: 'v = √(3.98 × 10¹⁴/7.00 × 10⁶) = √(5.686 × 10⁷)', why: 'Divide the digits and subtract the exponents. Keeping the result in standard form makes the square root easy.' },
+                  { do: 'v = 7.54 × 10³ m/s, about 7.5 km/s', why: 'Roughly 27,000 km/h, which is the figure quoted for low Earth orbit — a good sanity check.' },
+                  { do: 'Period: the satellite covers 2πr each orbit, so T = 2πr/v = 2π(7.00 × 10⁶)/(7.54 × 10³)', why: 'Distance over speed, exactly as in chapter 2.' },
+                  { do: 'T = 4.399 × 10⁷/7.54 × 10³ = 5,833 s, about 97 minutes', why: 'Which matches the real figure for a low orbit — the space station comes round about sixteen times a day.' }
+                ],
+                answer: 'About 7.54 km/s, with a period of 5,833 s — roughly 97 minutes', answerWords: true,
+                check: 'Kepler\'s third law offers an independent route: T = 2π√(r³/GM) = 2π√(3.43 × 10²⁰/3.98 × 10¹⁴) = 2π√(8.62 × 10⁵) = 2π(928) = 5,832 s ✓. And a higher orbit is slower — at geostationary radius, 4.22 × 10⁷ m, the same formulas give 3.07 km/s and 24 hours.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'p1k-r-measured-from-surface',
+                wrong: 'Using the height above the ground as r in the law of gravitation',
+                right: 'r is measured between CENTRES: for a satellite 400 km up, r = 6,370 + 400 = 6,770 km.',
+                why: 'Using 400 km instead of 6,770 km overstates the force by a factor of nearly 300, since the distance is squared. The mistake is encouraged by the way orbital altitudes are quoted, so converting an altitude to a centre distance should be an explicit first line in any orbital calculation.'
+              },
+              {
+                id: 'p1k-no-gravity-in-orbit',
+                wrong: 'Explaining an astronaut\'s floating by saying there is no gravity in orbit',
+                right: 'Gravity at 400 km is about 8.7 m/s², nearly as strong as at the surface. They float because they are in free fall.',
+                why: 'If gravity really were absent the station would travel in a straight line and leave the Earth entirely — it is gravity that curves the path into an orbit. The correct picture is chapter 2\'s free fall with enough sideways speed to keep missing the ground, and it is what makes "weightlessness" a statement about the normal force rather than about gravity.'
+              },
+              {
+                id: 'p1k-inverse-not-inverse-square',
+                wrong: 'Halving the gravitational force when the distance doubles',
+                right: 'It is an inverse SQUARE: twice the distance gives a quarter of the force.',
+                why: 'The square is what makes gravity fall away so quickly and what produces Kepler\'s third law, so treating it as a simple inverse gets both the field strength and the orbital period wrong. The check is the graph: at three Earth radii the field is a ninth of its surface value, not a third.'
+              },
+              {
+                id: 'p1k-higher-orbit-faster',
+                wrong: 'Expecting a satellite in a higher orbit to move faster',
+                right: 'v = √(GM/r), so a higher orbit is SLOWER — and takes longer both for being slower and for being longer.',
+                why: 'The r in the denominator is easy to overlook when intuition says more energy means more speed, and the resolution is that a higher orbit has more total energy while having less kinetic energy. The contrast makes it concrete: low orbit is 7.5 km/s with a 97-minute period, geostationary is 3.1 km/s with a 24-hour one.'
+              }
+            ]
+          }
+        ],
+        practice: [
+          { id: 'n1', kind: 'numeric', lesson: 'f1',
+            prompt: 'Convert 300 revolutions per minute to rad/s, to two decimal places.',
+            answer: 31.42, tol: 0.05, verify: { expr: '300*pi/30', dp: 2 },
+            hint: 'Multiply rpm by π/30.',
+            solution: ['ω = 300 × 2π/60', '= 10π', '= 31.42 rad/s'] },
+
+          { id: 'n2', kind: 'numeric', lesson: 'f1',
+            prompt: 'A disc of radius 0.25 m spins at 40 rad/s. Find the speed of a point on its rim, in m/s.',
+            answer: 10, verify: { expr: 'Rational(25, 100)*40' },
+            hint: 'v = rω.',
+            solution: ['v = 0.25 × 40', '= 10 m/s', 'A point halfway out would move at 5 m/s'] },
+
+          { id: 'n3', kind: 'numeric', lesson: 'f1',
+            prompt: 'A wheel of radius 0.40 m rolls 60 m without slipping. Find the angle turned, in radians.',
+            answer: 150, verify: { expr: 'Rational(60, Rational(4, 10))' },
+            hint: 's = rθ.',
+            solution: ['θ = s/r = 60/0.40', '= 150 rad', 'Which is 150/(2π) = 23.9 revolutions'] },
+
+          { id: 'n4', kind: 'numeric', lesson: 'f1',
+            prompt: 'Find the period of an object rotating at 8.0 rad/s, in seconds, to three decimal places.',
+            answer: 0.785, tol: 0.002, verify: { expr: '2*pi/8', dp: 3 },
+            hint: 'T = 2π/ω.',
+            solution: ['T = 2π/8.0', '= 0.7854', '= 0.785 s'] },
+
+          { id: 'n5', kind: 'numeric', lesson: 'f2',
+            prompt: 'A car takes a bend of radius 50 m at 20 m/s. Find the centripetal acceleration, in m/s².',
+            answer: 8, verify: { expr: 'Rational(20**2, 50)' },
+            hint: 'a_c = v²/r.',
+            solution: ['a_c = 20²/50 = 400/50', '= 8.0 m/s²', 'Directed towards the centre of the bend'] },
+
+          { id: 'n6', kind: 'numeric', lesson: 'f2',
+            prompt: 'Find the centripetal force needed for a 900 kg car in that turn, in newtons.',
+            answer: 7200, verify: { expr: '900*Rational(20**2, 50)' },
+            hint: 'F_c = ma_c.',
+            solution: ['F_c = 900 × 8.0', '= 7,200 N', 'Supplied by friction between the tyres and the road'] },
+
+          { id: 'n7', kind: 'numeric', lesson: 'f2',
+            prompt: 'Find the maximum speed for a level bend of radius 60 m with μ_s = 0.80, in m/s, to one decimal place. Take g = 9.80 m/s².',
+            answer: 21.7, tol: 0.05, verify: { expr: 'sqrt(Rational(8, 10)*Rational(98, 10)*60)', dp: 1 },
+            hint: 'v_max = √(μ_s g r).',
+            solution: ['μ_s g r = 0.80 × 9.80 × 60 = 470.4', 'v = √470.4', '= 21.7 m/s, and the mass does not matter'] },
+
+          { id: 'n8', kind: 'numeric', lesson: 'f2',
+            prompt: 'Find the minimum speed at the top of a vertical loop of radius 12 m, in m/s, to one decimal place.',
+            answer: 10.8, tol: 0.05, verify: { expr: 'sqrt(Rational(98, 10)*12)', dp: 1 },
+            hint: 'At the minimum the normal force is zero: v = √(gr).',
+            solution: ['With N = 0, gravity alone supplies the centripetal force: mg = mv²/r', 'v = √(9.80 × 12) = √117.6', '= 10.8 m/s'] },
+
+          { id: 'n9', kind: 'mc', lesson: 'f2',
+            prompt: 'A ball is whirled on a string in a horizontal circle. What supplies the centripetal force?',
+            options: [
+              { t: 'The tension in the string, which is the real force pointing at the centre', ok: true },
+              { t: 'A separate centripetal force, additional to the tension' },
+              { t: 'The centrifugal force, pushing outward' },
+              { t: 'Gravity, which acts towards the centre of the circle' }
+            ],
+            hint: 'Which real force points at the centre?',
+            solution: ['Centripetal force is a job description, not a new force', 'Here the string tension does that job', 'Adding a separate centripetal arrow would double-count it', 'Gravity acts downward, not towards the centre of a horizontal circle'] },
+
+          { id: 'n10', kind: 'mc', lesson: 'f2',
+            prompt: 'A bend can just be taken at 15 m/s. What happens at 30 m/s?',
+            options: [
+              { t: 'The force needed quadruples, so the tyres cannot supply it and the car slides', ok: true },
+              { t: 'The force needed doubles, which is usually still within the tyres\' limit' },
+              { t: 'Nothing changes, because the mass has not changed' },
+              { t: 'The force needed halves, because the car spends less time in the bend' }
+            ],
+            hint: 'a_c goes as v².',
+            solution: ['a_c = v²/r, so doubling v multiplies the demand by four', 'The friction available is unchanged', 'Demand exceeds supply, and the car leaves the bend', 'Which is why speed limits fall sharply on tight curves'] },
+
+          { id: 'n11', kind: 'numeric', lesson: 'f3',
+            prompt: 'A mass hangs in a vehicle accelerating at 3.5 m/s². Find the angle of the string from the vertical, in degrees, to one decimal place. Take g = 9.80 m/s².',
+            answer: 19.7, tol: 0.05, verify: { expr: 'atan(Rational(35, 10)/Rational(98, 10))*180/pi', dp: 1 },
+            hint: 'tan θ = a/g.',
+            solution: ['tan θ = 3.5/9.80 = 0.35714', 'θ = tan⁻¹(0.35714)', '= 19.7° from the vertical'] },
+
+          { id: 'n12', kind: 'mc', lesson: 'f3',
+            prompt: 'Why is the centrifugal force called fictitious?',
+            options: [
+              { t: 'No object exerts it, so it has no third-law partner — it exists only as bookkeeping inside a rotating frame', ok: true },
+              { t: 'Because the effect it describes is imaginary and nothing is really felt' },
+              { t: 'Because it is too small to measure in everyday situations' },
+              { t: 'Because it acts only on objects that are not moving' }
+            ],
+            hint: 'What does every real force have that this one does not?',
+            solution: ['Every real force is one half of a third-law pair between two objects', 'Nothing exerts the centrifugal force, so there is no partner', 'The sensation is real — it is the door pushing inward', 'In the ground frame the force is not needed at all'] },
+
+          { id: 'n13', kind: 'mc', lesson: 'f3',
+            prompt: 'A passenger slides toward the right-hand door as a car turns left. What really happens?',
+            options: [
+              { t: 'She continues straight by the first law while the car turns; the door then pushes her inward', ok: true },
+              { t: 'A centrifugal force throws her to the right' },
+              { t: 'The car pushes her outward through the seat' },
+              { t: 'Gravity acts sideways during the turn' }
+            ],
+            hint: 'What was she doing before the car turned, and what changed?',
+            solution: ['Before the turn she moves straight ahead with the car', 'Friction turns the CAR; nothing yet acts on her', 'She continues straight, so the door comes to meet her', 'The door\'s push is inward, and it is what turns her too'] },
+
+          { id: 'n14', kind: 'numeric', lesson: 'f4',
+            prompt: 'A planet has mass 4.0 × 10²⁴ kg and radius 5.0 × 10⁶ m. Find its surface gravity in m/s², to two decimal places, with G = 6.67 × 10⁻¹¹.',
+            answer: 10.67, tol: 0.05, verify: { expr: 'Rational(667, 100)*10**(-11)*4*10**24/(5*10**6)**2', dp: 2 },
+            hint: 'g = GM/R².',
+            solution: ['GM = 6.67 × 10⁻¹¹ × 4.0 × 10²⁴ = 2.668 × 10¹⁴', 'R² = (5.0 × 10⁶)² = 2.5 × 10¹³', 'g = 2.668 × 10¹⁴/2.5 × 10¹³ = 10.67 m/s²'] },
+
+          { id: 'n15', kind: 'numeric', lesson: 'f4',
+            prompt: 'Find the orbital speed at r = 1.0 × 10⁷ m from the Earth\'s centre, in m/s, to the nearest whole number. Use GM = 3.98 × 10¹⁴.',
+            answer: 6309, tol: 5, verify: { expr: 'sqrt(Rational(398, 100)*10**14/10**7)', dp: 0 },
+            hint: 'v = √(GM/r).',
+            solution: ['GM/r = 3.98 × 10¹⁴/1.0 × 10⁷ = 3.98 × 10⁷', 'v = √(3.98 × 10⁷)', '= 6,309 m/s, about 6.3 km/s'] },
+
+          { id: 'n16', kind: 'mc', lesson: 'f4',
+            prompt: 'A satellite moves to an orbit twice as far from the Earth\'s centre. What happens to its speed?',
+            options: [
+              { t: 'It falls by a factor of √2, because v = √(GM/r)', ok: true },
+              { t: 'It doubles, because it has further to travel' },
+              { t: 'It halves, in proportion to the radius' },
+              { t: 'It is unchanged, because the satellite\'s mass has not changed' }
+            ],
+            hint: 'Where does r sit in the orbital speed formula?',
+            solution: ['v = √(GM/r), so r is in the denominator under a root', 'Doubling r divides v by √2', 'Higher orbits are slower, and also longer', 'The period therefore grows by 2√2, which is Kepler\'s third law'] },
+
+          { id: 'n17', kind: 'mc', lesson: 'f4',
+            prompt: 'Why do astronauts float inside a space station 400 km above the Earth?',
+            options: [
+              { t: 'They and the station are in free fall together — gravity there is still about 8.7 m/s²', ok: true },
+              { t: 'There is no gravity at that altitude' },
+              { t: 'The station\'s speed cancels the Earth\'s gravity' },
+              { t: 'They are beyond the Earth\'s atmosphere, and gravity needs air to act' }
+            ],
+            hint: 'How far is 400 km compared with the Earth\'s 6,370 km radius?',
+            solution: ['400 km raises r by only about 6%, so g falls only from 9.8 to about 8.7', 'Gravity is what curves the orbit — without it the station would fly off straight', 'Everything in the station falls at the same rate', 'Floating is free fall, not the absence of gravity'] },
+
+          { id: 'n18', kind: 'spot', lesson: 'f4',
+            prompt: 'A satellite orbits 600 km above the Earth\'s surface, whose radius is 6,370 km. Find r for use in the gravitation formula.',
+            steps: [
+              { t: 'The formula needs the distance between centres' },
+              { t: 'The satellite is 600 km up, so r = 600 km = 6.0 × 10⁵ m', bad: true },
+              { t: 'The centre-to-centre distance is the Earth\'s radius plus the altitude' },
+              { t: 'r = 6,370 + 600 = 6,970 km = 6.97 × 10⁶ m' }
+            ],
+            why: 'The r in the law of gravitation is measured from the centre of the Earth, not from its surface, and the difference here is more than a factor of ten. Since the force depends on r², using the altitude alone would overstate it by a factor of about 135 — an error large enough to make an orbital speed come out faster than light.',
+            hint: 'Distance between what and what?',
+            solution: ['r is centre to centre', 'r = Earth radius + altitude', '= 6,970 km = 6.97 × 10⁶ m'] },
+
+          { id: 'n19', kind: 'spot', lesson: 'f2',
+            prompt: 'A 0.20 kg ball on a 0.50 m string is whirled in a horizontal circle at 4.0 m/s. Find the tension.',
+            steps: [
+              { t: 'The string tension supplies the centripetal force' },
+              { t: 'F_c = mv/r = 0.20 × 4.0/0.50 = 1.6 N', bad: true },
+              { t: 'The centripetal force is mv²/r, with the speed squared' },
+              { t: 'T = 0.20 × 16/0.50 = 6.4 N' }
+            ],
+            why: 'The speed is squared in the centripetal force, and dropping the square understates the tension by a factor equal to the speed itself — here by four. The v² is also what makes fast rotation so demanding on a string or a joint, so losing it removes the main physical content of the formula.',
+            hint: 'Check the power of v in the centripetal force.',
+            solution: ['F_c = mv²/r', '= 0.20 × 4.0²/0.50 = 0.20 × 16/0.50', '= 6.4 N'] },
+
+          { id: 'n20', kind: 'order', lesson: 'f2',
+            prompt: 'Put the steps of a circular-motion problem in order.',
+            steps: [
+              'Draw the object and mark the centre of the circle',
+              'Draw only the real forces acting on it',
+              'Identify which of them point towards the centre',
+              'Set the sum of those inward components equal to mv²/r',
+              'Solve, and check the answer against the v² dependence'
+            ],
+            hint: 'The centre has to be located before "inward" means anything.',
+            solution: ['Marking the centre is what defines the inward direction', 'Only real forces are drawn — no centripetal or centrifugal arrows', 'Their inward components are summed', 'That sum equals mv²/r, which is the second law for circular motion'] },
+
+          { id: 'n21', kind: 'order', lesson: 'f4',
+            prompt: 'Put the derivation of orbital speed in order.',
+            steps: [
+              'Note that gravity is the only force on the satellite',
+              'Set the gravitational force equal to the centripetal force: GMm/r² = mv²/r',
+              'Cancel the satellite\'s mass',
+              'Cancel one factor of r',
+              'Take the square root to get v = √(GM/r)'
+            ],
+            hint: 'Nothing can be equated until it is established what forces act.',
+            solution: ['One force only, which is what makes orbit simple', 'Gravity does the centripetal job', 'The satellite\'s mass cancels — a bolt and a station orbit together', 'What is left is v² = GM/r'] },
+
+          { id: 'n22', kind: 'numeric', lesson: 'f1',
+            prompt: 'A merry-go-round turns at 0.60 rad/s. Find the speed of a rider 3.0 m from the centre, in m/s.',
+            answer: 1.8, verify: { expr: 'Rational(6, 10)*3' },
+            hint: 'v = rω.',
+            solution: ['v = 3.0 × 0.60', '= 1.8 m/s', 'A rider 1.5 m out would move at 0.90 m/s — same ω, half the speed'] }
         ]
       }
 
@@ -25805,19 +26731,24 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
         parts.push(`<text class="fig-lbl" x="${best.x.toFixed(1)}" y="${best.y.toFixed(1)}" text-anchor="${best.anchor}">${esc(L.text)}</text>`);
       }
     }
-    /* grid + ticks — drawn first, and their boxes reserved so no label can land on a number */
+    /* grid + ticks — drawn first, and their boxes reserved so no label can land on a number. The
+       y-axis numbers go down first and the x-axis ones defer to them: on a window that runs equally
+       far negative in both directions the bottom-left x number would otherwise print through the
+       y number beside it. The grid line is always drawn; only the numeral is dropped. */
     const tx = tickStep(x1 - x0), ty = tickStep(y1 - y0);
-    for (let x = Math.ceil(x0 / tx) * tx; x <= x1 + 1e-9; x += tx) {
-      if (Math.abs(x) < 1e-9) continue;
-      parts.push(`<line class="fig-grid" x1="${sx(x)}" y1="${PAD.t}" x2="${sx(x)}" y2="${H - PAD.b}"/>`);
-      parts.push(`<text class="fig-tick" x="${sx(x)}" y="${H - PAD.b + 14}" text-anchor="middle">${fmt(x)}</text>`);
-      placed.push(boxOf(fmt(x), sx(x), H - PAD.b + 14, 'middle'));
-    }
     for (let y = Math.ceil(y0 / ty) * ty; y <= y1 + 1e-9; y += ty) {
       if (Math.abs(y) < 1e-9) continue;
       parts.push(`<line class="fig-grid" x1="${PAD.l}" y1="${sy(y)}" x2="${W - PAD.r}" y2="${sy(y)}"/>`);
       parts.push(`<text class="fig-tick" x="${PAD.l - 6}" y="${sy(y) + 4}" text-anchor="end">${fmt(y)}</text>`);
       placed.push(boxOf(fmt(y), PAD.l - 6, sy(y) + 4, 'end'));
+    }
+    for (let x = Math.ceil(x0 / tx) * tx; x <= x1 + 1e-9; x += tx) {
+      if (Math.abs(x) < 1e-9) continue;
+      parts.push(`<line class="fig-grid" x1="${sx(x)}" y1="${PAD.t}" x2="${sx(x)}" y2="${H - PAD.b}"/>`);
+      const box = boxOf(fmt(x), sx(x), H - PAD.b + 14, 'middle');
+      if (placed.some(p => hit(box, p))) continue;
+      parts.push(`<text class="fig-tick" x="${sx(x)}" y="${H - PAD.b + 14}" text-anchor="middle">${fmt(x)}</text>`);
+      placed.push(box);
     }
     // axes: through the origin when it is in view, else along the edges
     const ax0 = inY(0) ? sy(0) : (y0 > 0 ? H - PAD.b : PAD.t);
@@ -25983,7 +26914,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.61', date: '18 September 2026', year: 2026 };
+  const BUILD = { v: '2.62', date: '18 September 2026', year: 2026 };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonandy242', ['gmail', 'com'].join('.')].join('@');
   /* The one sentence that says what this is. It appears under the wordmark, and build.js uses
@@ -25996,6 +26927,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      because the person who needs it is the one who just watched the app refresh itself and wants to
      know what moved. Trim the tail when it gets past a dozen; nobody reads further back than that. */
   const WHATS_NEW = [
+    ['2.62', '<b>PHYS 1000H chapters 5 and 6: the forces surfaces and fluids exert, and going round in a circle.</b> <b>Friction</b> is taught as the inequality it is &mdash; push a crate with 80 N and static friction is exactly 80 N, not its maximum &mdash; with the drop to the smaller kinetic coefficient that makes a heavy box lurch when it finally gives, and the tilted plank that measures a coefficient with nothing but a protractor. <b>Drag</b> grows with the square of the speed, which is why a car meets four times the air resistance at twice the speed and the engine works eight times as hard, and why a falling body levels off at a terminal velocity where its acceleration is zero rather than g. <b>Elasticity</b> closes the chapter with stress, strain and Young&rsquo;s modulus, and the squared area conversion that decides whether the answer is right. Chapter 6 is <b>circular motion</b>: radians and v = r&omega;, centripetal acceleration going as v&sup2; so that a bend taken twice as fast needs four times the grip, the insistence that centripetal force is a job done by a real force rather than a force of its own, why the passenger pressed against the door was never pushed outward, and Newton&rsquo;s law of gravitation &mdash; surface gravity, orbital speed, Kepler&rsquo;s third law, and why an astronaut floats where gravity is still 8.7 m/s&sup2;. Seven more lessons, fourteen worked examples, 42 more practice questions. Chapters 7 and 8 complete the course.'],
     ['2.61', '<b>PHYS 1000H chapters 3 and 4: two dimensions, and the laws that say why motion changes.</b> <b>Vectors</b> first &mdash; added head to tail, where 3 km east and 4 km north make 5 km and not 7, then by components, which is the method that scales to any number of forces. A car rounding a bend at constant speed turns out to have changed its velocity by 28 m/s, which is the whole reason circular motion needs a force. Then <b>projectiles</b>, resting on one idea: the horizontal and vertical motions are independent, so a ball fired from a table and a ball dropped from it hit the floor together, and every question is solved by taking the time from the vertical motion and handing it to the horizontal one. <b>Relative velocity</b> closes the chapter with the river crossing that has two different right answers depending on which question was asked. Chapter 4 is <b>Newton&rsquo;s three laws</b>: why no force is needed to keep going, why &Sigma;F = ma takes the NET force and not the one you were given, why a third-law pair can never cancel (the two halves act on different objects), and the free-body diagram that turns any of it into an equation &mdash; with the normal force derived every time rather than assumed to be mg, because in a lift it is not. Eight more lessons, sixteen worked examples, 42 more practice questions. Chapters 5 to 8 follow.'],
     ['2.60', '<b>A new course under the green chip: PHYS 1000H, Foundations of Physics.</b> A first mechanics course for someone arriving without school physics, following its own schedule week by week through the first eight chapters of the open text it is set from. Chapters 1 and 2 ship now. <b>Measurement</b> comes first, because it is what the rest rests on: SI units and prefixes read as powers of ten, conversion by multiplying by a fraction equal to one and letting the cancelling do the checking, accuracy against precision, the two different significant-figure rules for multiplying and for adding, and order-of-magnitude estimation as the check that catches a unit error in one line. Then <b>motion in a straight line</b>: distance against displacement and speed against velocity &mdash; a lap run in 64 seconds has an average velocity of exactly zero &mdash; acceleration, the four constant-acceleration equations chosen by what each one leaves out, free fall with one sign convention held for the whole flight, and position&ndash;time and velocity&ndash;time graphs where the slope of one and the area under the other carry the answer. Six lessons, twelve worked examples with a plan and a closing check, 34 practice questions and 23 named misconceptions. Chapters 3 to 8 follow.'],
     ['2.59', '<b>Courses now carry a coloured institution chip, and no university is named anywhere else.</b> A course written to a particular institution\u2019s outline shows a small chip beside its level &mdash; blue for one, green for the other &mdash; on its card and at the top of its page. Everywhere else the name is gone: exam scopes now say &ldquo;the course outline&rdquo;, gap lines say what is not on the outline rather than where, the set-text note names the author and not the campus, and the academic-integrity page points at <i>your</i> institution\u2019s policy rather than one in particular. Three courses carry no chip at all, which is the honest rendering of a course cut to what the subject examines generally rather than to anyone\u2019s syllabus. The build now fails if a university name reappears in any text a student reads.'],
