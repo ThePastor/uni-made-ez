@@ -17156,7 +17156,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      file rather than replacing it: that one is cut to four ideas the subject leans on, while this
      one follows a real schedule chapter by chapter. Chapters 1–3 of the set text — units, significant
      figures, atoms, formulae, molar mass — are assumed and are not taught here.
-     Built so far: chapters 4, 5, 7, 8, 9 and 10. */
+     Every chapter on the schedule is now built. */
   const CHEM1000 = {
     subject: CHEM,
     id: 'chem-1000h', inst: 'trent',
@@ -17164,11 +17164,10 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     title: 'General Chemistry: Structure and Properties',
     blurb: 'Chemistry from the mole upward: counting reactants and finding which one runs out first, the gas laws and what they say about molecules in motion, then the quantum picture of the atom that explains the periodic table, the models of the bond from Lewis dots to molecular orbitals, and finally the weak forces between molecules that decide whether something is a solid, a liquid or a gas.',
     level: 'Foundation',
-    exam: 'Follows the course schedule: chapter 4 stoichiometry, chapter 5 the gas laws, chapter 7 the quantum-mechanical model of the atom, chapter 8 periodic trends, chapter 9 chemical bonding I (Lewis theory), chapter 10 chemical bonding II (VSEPR, valence bond and molecular orbital theories), and chapter 11 intermolecular forces. Built so far: chapters 4, 5, 7, 8, 9 and 10.',
+    exam: 'Follows the course schedule: chapter 4 stoichiometry, chapter 5 the gas laws, chapter 7 the quantum-mechanical model of the atom, chapter 8 periodic trends, chapter 9 chemical bonding I (Lewis theory), chapter 10 chemical bonding II (VSEPR, valence bond and molecular orbital theories), and chapter 11 intermolecular forces. Every chapter on the schedule is built.',
     text: 'Tro, Fridgen & Shaw, Chemistry: A Molecular Approach, 4th Canadian edition (Pearson)',
     legalNote: 'Study material for a university course. It follows the chapter and section order of the set text so that a lesson here matches the section you would open alongside it, but every explanation, example and question is written from scratch — nothing is copied from the book or from any past paper. Answers are recomputed by a computer algebra system before the page ships; where a figure is rounded, the question says to how many places. Atomic masses are the ordinary four-figure values, and a course using three figures will differ in the last digit.',
     gaps: [
-      'Still to be built: chapter 11, the intermolecular forces that decide whether a substance is a solid, a liquid or a gas',
       'Assumed as background and not taught here: chapters 1 to 3 of the set text — units of measurement, significant figures, atoms and elements, compounds and chemical formulae, molar mass, and balancing equations',
       'Not on this course\'s schedule, so not built for it: thermochemistry, chemical kinetics, equilibrium, acids and bases, electrochemistry and the chapters after 11'
     ],
@@ -20594,6 +20593,469 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             solution: ['Nonpolar bonds settle the question at once',
               'Shape and identical outer atoms are both needed for cancellation',
               'The vector sum is the actual test, and the earlier steps decide what goes into it'] }
+        ]
+      },
+
+      /* ============================ CHAPTER 11 ============================ */
+      {
+        id: 'imf', n: 7,
+        title: 'Intermolecular forces, liquids and solids',
+        blurb: 'The forces BETWEEN molecules rather than within them. They are far weaker than bonds and they decide almost everything you can observe about a substance without reacting it: whether it is a solid, a liquid or a gas, what it boils at, what it dissolves in, and why water behaves unlike anything else.',
+        read: 'Chapter 11',
+        objectives: [
+          'Distinguish an intermolecular force from a chemical bond, and rank the three kinds by strength',
+          'Identify which forces act in a given substance, from its structure and polarity',
+          'Predict relative boiling points and melting points from intermolecular forces and molar mass',
+          'Explain surface tension, viscosity and capillary action in terms of those forces',
+          'Explain why water is anomalous — its high boiling point, its high heat capacity, and ice floating'
+        ],
+        lessons: [
+
+          {
+            id: 'g1', title: 'The three intermolecular forces', src: 'Section 11.3',
+            idea: `A bond holds atoms together <b>within</b> a molecule. An <b>intermolecular force</b> holds separate molecules to one another, and it is far weaker — tens of kilojoules per mole against hundreds. That difference is what boiling means: boiling water separates the molecules from each other without breaking a single O–H bond, which is why steam is still water.<br><br>Three forces matter, and every one of them is ultimately electrostatic.<br><br><b>Dispersion forces</b> (also called London forces) act between <b>all</b> molecules, polar or not. Electrons move, so at any instant a molecule has a momentary uneven distribution — an instantaneous dipole — which induces one in its neighbour. They are the weakest per contact but they grow with the number of electrons, so a large molecule can have very strong dispersion forces in total. This is why the halogens go from gaseous fluorine to solid iodine, with nothing else changing.<br><br>Dispersion also depends on <b>shape</b>: a long thin molecule has more surface in contact than a compact one of the same mass, so n-pentane boils at 36 °C and neopentane, with the same formula, at 10 °C.<br><br><b>Dipole–dipole forces</b> act between <b>polar</b> molecules, whose permanent partial charges align positive to negative. They are stronger than dispersion for molecules of similar size, and they are the reason acetone is a liquid while butane, of similar mass, is a gas.<br><br><b>Hydrogen bonding</b> is a particularly strong dipole–dipole attraction, and it has a strict requirement: <b>an H atom bonded directly to N, O or F</b>, attracted to a lone pair on an N, O or F of another molecule. Nothing else counts — the H–Cl bond is polar but chlorine is too large and its charge too diffuse. Hydrogen bonds run 10 to 40 kJ/mol, several times a typical dipole–dipole force but still far below a covalent bond.<br><br>The ranking, for molecules of comparable size, is <b>hydrogen bonding &gt; dipole–dipole &gt; dispersion</b> — with the standing caution that a much larger nonpolar molecule can beat a small polar one on dispersion alone.`,
+            figure: {
+              kind: 'graph', x: [10, 140], y: [-250, 220], xlabel: 'molar mass (g/mol)', ylabel: 'boiling point (°C)',
+              fns: [
+                { pts: [[20, -188], [36.5, -85], [80.9, -67], [128, -35]], label: 'HF, HCl, HBr, HI' },
+                { pts: [[16, -161], [30, -89], [44, -42], [58, -0.5], [72, 36]], label: 'alkanes', dashed: true, c: 1 }
+              ],
+              caption: 'Boiling point against molar mass for two series. The alkanes rise steadily — nonpolar, so dispersion alone, growing with size. The hydrogen halides do the same from HCl onward, but HF sits far above the line its mass would predict: hydrogen bonding, worth about 100 °C here, and the anomaly that gives the effect away.'
+            },
+            rules: [
+              { name: 'Bonds against intermolecular forces', expr: 'Bonds are hundreds of kJ/mol; intermolecular forces are tens', words: true, note: 'Boiling separates molecules; it does not break bonds. Steam is still water.' },
+              { name: 'Dispersion forces', expr: 'Present in everything, and grow with the number of electrons', words: true, note: 'Also with an elongated shape, which puts more surface in contact.' },
+              { name: 'Dipole-dipole forces', expr: 'Between polar molecules only', words: true, note: 'Permanent partial charges aligning positive to negative.' },
+              { name: 'Hydrogen bonding', expr: 'H bonded to N, O or F, attracted to a lone pair on N, O or F', words: true, note: 'Nothing else qualifies. 10 to 40 kJ/mol — strong for an intermolecular force, weak for a bond.' },
+              { name: 'The ranking', expr: 'hydrogen bonding > dipole-dipole > dispersion', words: true, note: 'For molecules of comparable size. A much larger nonpolar molecule can still win on dispersion.' }
+            ],
+            examples: [
+              {
+                prompt: 'Identify the intermolecular forces present in CH₄, in CH₃Cl and in CH₃OH.',
+                approach: 'Work through the three forces in a fixed order for each substance — dispersion first because it is always present, then polarity for dipole–dipole, then the strict N/O/F test for hydrogen bonding. Naming the strongest one at the end is what the question is usually asking for, but the weaker ones do not disappear.',
+                steps: [
+                  { do: 'CH₄: tetrahedral with four identical C–H bonds, so nonpolar', why: 'Symmetric shape and identical outer atoms — the cancellation of chapter 10.' },
+                  { do: 'So dispersion forces only, and weak ones: just ten electrons', why: 'Which is why methane boils at −161 °C and is a gas everywhere on Earth.' },
+                  { do: 'CH₃Cl: tetrahedral but with one position different, so polar', why: 'The C–Cl dipole has nothing to cancel against.' },
+                  { do: 'Dispersion plus dipole–dipole. No H is bonded to N, O or F, so no hydrogen bonding', why: 'The hydrogens are all on carbon. This is the test that has to be applied literally.' },
+                  { do: 'CH₃OH: polar, and its O–H hydrogen is bonded directly to oxygen', why: 'Which is exactly the hydrogen-bonding requirement.' },
+                  { do: 'All three: dispersion, dipole–dipole and hydrogen bonding — the strongest set of the three substances', why: 'And the boiling points follow: −161 °C, −24 °C and +65 °C.' }
+                ],
+                answer: 'CH₄ dispersion only; CH₃Cl dispersion and dipole–dipole; CH₃OH all three including hydrogen bonding',
+                answerWords: true,
+                check: 'The masses run the other way for one pair, which is the useful control: CH₃Cl is 50.5 g/mol and CH₃OH only 32.0, yet methanol boils 89 °C higher ✓. Mass alone cannot explain that, and hydrogen bonding is the only difference between them.'
+              },
+              {
+                prompt: 'n-Pentane and neopentane have the same formula, C₅H₁₂, and boil at 36 °C and 10 °C. Explain the difference.',
+                approach: 'Identical formula means identical mass and identical electron count, so dispersion strength cannot be argued from size — which forces the answer to be about shape. Establish first that no other force is in play, then compare the contact area the two shapes allow.',
+                steps: [
+                  { do: 'Both are hydrocarbons: C–H bonds with ΔEN 0.4 and symmetric arrangements, so both are nonpolar', why: 'No dipole–dipole force and no hydrogen bonding in either — dispersion is the only force acting.' },
+                  { do: 'Both have 72 g/mol and the same number of electrons', why: 'So the usual size argument for dispersion strength gives no difference at all.' },
+                  { do: 'n-Pentane is a straight chain; neopentane is a central carbon with four methyl groups, nearly spherical', why: 'Same atoms, different arrangement — this is the only thing left that can differ.' },
+                  { do: 'A long chain can lie alongside its neighbour along its whole length; a sphere touches at a point', why: 'Dispersion acts between surfaces in contact, so more contact means more total attraction.' },
+                  { do: 'So n-pentane has the stronger dispersion forces despite the identical mass', why: 'The shape effect, which is why this pair is the standard demonstration of it.' },
+                  { do: 'It therefore takes more energy to separate, and boils 26 °C higher', why: 'Boiling point is a direct measure of the force holding the liquid together.' }
+                ],
+                answer: 'Shape: the straight chain has far more surface contact than the near-spherical isomer, so its dispersion forces are stronger',
+                answerWords: true,
+                check: 'The trend continues through the isomers: isopentane, which is branched but not spherical, boils at 28 °C — between the two ✓. Molar mass explains nothing here, and any argument based on it predicts identical boiling points.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'c1k-boiling-breaks-bonds',
+                wrong: 'Saying that boiling water breaks O–H bonds',
+                right: 'It separates molecules from each other. The bonds are untouched, which is why steam is still H₂O.',
+                why: 'Both are described as things being pulled apart, and the energy involved is large enough to feel significant. The two differ by an order of magnitude — about 41 kJ/mol to vaporise water against 463 to break one O–H bond — and confusing them makes every boiling-point argument in the chapter incoherent.'
+              },
+              {
+                id: 'c1k-hydrogen-bond-loose-test',
+                wrong: 'Claiming hydrogen bonding wherever a molecule contains hydrogen, or wherever it is polar',
+                right: 'The H must be bonded DIRECTLY to N, O or F. CH₃OH hydrogen-bonds; CH₃Cl does not.',
+                why: 'The name mentions only hydrogen, which invites a much looser test than the definition allows. Applied loosely it predicts hydrogen bonding in almost every organic molecule, and the boiling-point anomalies that make the concept useful stop being anomalous.'
+              },
+              {
+                id: 'c1k-dispersion-dismissed',
+                wrong: 'Treating dispersion forces as negligible because they are the weakest kind',
+                right: 'They are present in everything and grow with size — iodine is a solid with dispersion forces alone.',
+                why: 'Weakest per contact is heard as unimportant, and the ranking is usually taught before the size dependence. A large nonpolar molecule can be held far more strongly than a small polar one, which is why the ranking only holds for molecules of comparable size.'
+              },
+              {
+                id: 'c1k-hydrogen-bond-as-bond',
+                wrong: 'Treating a hydrogen bond as a chemical bond',
+                right: 'It is an intermolecular attraction of 10 to 40 kJ/mol — strong for its class, but well under a tenth of a covalent bond.',
+                why: 'The word bond is doing the damage, and it is by far the strongest force in this chapter. Reading it as a bond means expecting hydrogen-bonded molecules to be chemically joined, when in liquid water the partners change billions of times a second.'
+              }
+            ]
+          },
+
+          {
+            id: 'g2', title: 'Predicting boiling points and the properties of liquids', src: 'Section 11.4',
+            idea: `Boiling point is the most direct measure of intermolecular forces there is: it is the temperature at which molecules have enough energy to escape one another. Stronger forces, higher boiling point — and the same argument explains melting point, viscosity and surface tension.<br><br>To compare two substances, work through this in order:<br><br><b>1.</b> If one hydrogen-bonds and the other does not, and their masses are similar, the hydrogen-bonded one boils higher. Usually decisive.<br><b>2.</b> If neither hydrogen-bonds, the polar one boils higher than the nonpolar one of similar mass.<br><b>3.</b> If the forces are of the same kind, the larger molar mass boils higher — more electrons, stronger dispersion.<br><b>4.</b> If mass and forces both match, the more elongated shape boils higher.<br><br>The caution is step 3 overtaking step 1: a nonpolar molecule of much larger mass can beat a small hydrogen-bonded one. Water boils at 100 °C and hexane, nonpolar but 4.8 times heavier, boils at 69 °C — close enough to show it is a real contest.<br><br>Three liquid properties follow from the same forces:<br><br><b>Surface tension</b> — a molecule at the surface has neighbours only below and to the sides, so it is pulled inward. The liquid minimises its surface area, which is why drops are spherical and why a needle can float on water.<br><br><b>Viscosity</b> — resistance to flow, which rises with stronger intermolecular forces and with longer molecules that tangle. Glycerol, with three OH groups per molecule, is about a thousand times more viscous than water.<br><br><b>Capillary action</b> — liquid climbing a narrow tube, from a contest between <b>adhesive</b> forces to the tube and <b>cohesive</b> forces within the liquid. Water wets glass and climbs with a concave meniscus; mercury, whose cohesion is far stronger, is depressed and its meniscus is convex.<br><br>All three rise and fall together, because all three come from the same attraction.`,
+            figure: {
+              kind: 'graph', x: [0, 5], y: [-120, 120], xlabel: 'period of the central atom', ylabel: 'boiling point (°C)',
+              fns: [
+                { pts: [[2, 100], [3, -60], [4, -41], [5, -2]], label: 'H₂O, H₂S, H₂Se, H₂Te' },
+                { pts: [[2, -161], [3, -112], [4, -88], [5, -52]], label: 'CH₄, SiH₄, GeH₄, SnH₄', dashed: true, c: 1 }
+              ],
+              caption: 'Two hydride series down their groups. The carbon group rises smoothly with mass, which is dispersion behaving as expected. The oxygen group does the same from H₂S onward — but water, the lightest of its series, boils 160 °C above where the trend puts it. Extrapolating the other three predicts about −60 °C for water, so hydrogen bonding is worth roughly 160 degrees.'
+            },
+            rules: [
+              { name: 'What boiling point measures', expr: 'The energy needed to separate the molecules', words: true, note: 'Stronger intermolecular forces, higher boiling point. The same argument gives melting point.' },
+              { name: 'The comparison order', expr: 'Hydrogen bonding, then polarity, then mass, then shape', words: true, note: 'Applied in that order, for molecules of comparable size.' },
+              { name: 'When mass wins', expr: 'A much heavier nonpolar molecule can outrank a light hydrogen-bonded one', words: true, note: 'Hexane at 69 C against water at 100 C is the contest in miniature.' },
+              { name: 'Surface tension', expr: 'The surface is pulled inward, minimising area', words: true, note: 'Which is why drops are spherical and a needle can float.' },
+              { name: 'Viscosity', expr: 'Resistance to flow, rising with stronger forces and longer molecules', words: true, note: 'Glycerol has three OH groups and is about a thousand times more viscous than water.' },
+              { name: 'Capillary action', expr: 'Adhesion to the tube against cohesion within the liquid', words: true, note: 'Water climbs glass with a concave meniscus; mercury is depressed with a convex one.' }
+            ],
+            examples: [
+              {
+                prompt: 'Rank butane (C₄H₁₀, 58 g/mol), acetone (C₃H₆O, 58 g/mol) and propan-1-ol (C₃H₈O, 60 g/mol) by boiling point, lowest first, and justify the order.',
+                approach: 'The three masses are almost identical, which is deliberate: it removes dispersion from the comparison and leaves the kind of force as the only variable. So identify which forces act in each, then apply the ranking — this is the clean case the comparison order was written for.',
+                steps: [
+                  { do: 'Butane: a hydrocarbon, nonpolar, so dispersion forces only', why: 'No polar bonds worth the name and a symmetric enough chain.' },
+                  { do: 'Acetone: a C=O group makes it distinctly polar, but its hydrogens are all on carbon', why: 'Dipole–dipole forces, and no hydrogen bonding — the H-to-N/O/F test fails.' },
+                  { do: 'Propan-1-ol: polar, and its O–H hydrogen is bonded directly to oxygen', why: 'Hydrogen bonding, plus dipole–dipole and dispersion.' },
+                  { do: 'The masses are within 2 g/mol of each other, so dispersion is effectively equal in all three', why: 'Which is what makes this a test of the force types alone.' },
+                  { do: 'Apply the ranking: dispersion only < dipole–dipole < hydrogen bonding', why: 'Each step up is a stronger attraction to overcome.' },
+                  { do: 'Order: butane < acetone < propan-1-ol, measured at −0.5 °C, 56 °C and 97 °C', why: 'Nearly a hundred degrees across three substances of the same mass — the forces are doing all of it.' }
+                ],
+                answer: 'Butane (−0.5 °C) < acetone (56 °C) < propan-1-ol (97 °C)',
+                answerWords: true,
+                check: 'Each step is worth roughly the strength difference expected: about 56 degrees for adding a permanent dipole and another 41 for adding hydrogen bonding ✓. With the masses held equal there is nothing else to appeal to, which is why textbook comparisons pick isomers and near-isomers whenever they can.'
+              },
+              {
+                prompt: 'Water boils at 100 °C. Extrapolating from H₂S (−60 °C), H₂Se (−41 °C) and H₂Te (−2 °C), where would water boil without hydrogen bonding, and what does the difference show?',
+                approach: 'Use the three heavier hydrides to establish what the group trend is, then run it backwards to the lightest member and compare with reality. The gap between the extrapolation and the measurement is the quantity being asked for — this is how the strength of hydrogen bonding was established in the first place.',
+                steps: [
+                  { do: 'The three heavier hydrides rise with molar mass: −60, −41, −2 °C going down the group', why: 'All are polar but none hydrogen-bonds, so dispersion is the variable and it grows with electron count.' },
+                  { do: 'Extrapolating that trend back to the lightest and smallest member gives roughly −60 to −80 °C', why: 'Water is lighter than H₂S, so it should boil below it — the trend gives no reason to expect otherwise.' },
+                  { do: 'Water actually boils at +100 °C', why: 'About 160 degrees above the prediction, which is not a small discrepancy to be explained by measurement error.' },
+                  { do: 'The difference is hydrogen bonding, which none of the other three has', why: 'Sulfur, selenium and tellurium are too large and too weakly electronegative to qualify.' },
+                  { do: 'Each water molecule can form up to four hydrogen bonds — two through its H atoms and two through its lone pairs', why: 'The count matters: HF is more polar per bond but has only one H, so it manages far less.' },
+                  { do: 'So hydrogen bonding is worth about 160 °C of boiling point here', why: 'Which is why water is a liquid on Earth at all — and the reason the anomaly is worth the attention it gets.' }
+                ],
+                answer: 'About −60 to −80 °C — so hydrogen bonding raises water’s boiling point by roughly 160 °C',
+                answerWords: true,
+                check: 'The same extrapolation works for the other two hydrogen-bonding hydrides: NH₃ and HF both sit above their group trends, by about 100 and 90 degrees ✓ — less than water because each forms fewer hydrogen bonds per molecule. Three independent anomalies with one explanation is what makes the argument convincing.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'c1k-mass-alone-for-boiling',
+                wrong: 'Ranking boiling points by molar mass alone',
+                right: 'Force type comes first: acetone and butane have the same mass and boil 56 degrees apart.',
+                why: 'Mass is the one number always available from the formula, so it is the easiest thing to compare. It only decides between substances whose forces are of the same kind, which is the third step of the comparison rather than the first.'
+              },
+              {
+                id: 'c1k-hydrogen-bonding-always-wins',
+                wrong: 'Assuming the hydrogen-bonded substance always boils higher, whatever the sizes',
+                right: 'A much heavier nonpolar molecule can win on dispersion — decane boils at 174 °C, well above water.',
+                why: 'The ranking is usually stated without the qualifier about comparable size, so it gets applied as an absolute. Dispersion accumulates with every electron, and a molecule ten times heavier has a great deal of it.'
+              },
+              {
+                id: 'c1k-surface-tension-as-skin',
+                wrong: 'Describing surface tension as a skin or film on top of the liquid',
+                right: 'It is the inward pull on surface molecules, which have neighbours below but not above.',
+                why: 'A floating needle looks exactly as though something is holding it up, and the image is hard to dislodge. It predicts a layer with its own properties — thickness, a material that could be punctured — where the real explanation is an asymmetry of attraction that any molecule at the surface experiences.'
+              },
+              {
+                id: 'c1k-adhesion-cohesion-confused',
+                wrong: 'Explaining capillary action with one force rather than the contest between two',
+                right: 'Adhesion to the tube against cohesion within the liquid — which is why water climbs glass and mercury is pushed down.',
+                why: 'Water climbing is the example everyone meets first, and it is easy to describe it as attraction to the tube full stop. Mercury in the same tube does the opposite, and no single-force account can produce two opposite behaviours from one setup.'
+              }
+            ]
+          },
+
+          {
+            id: 'g3', title: 'Water, and why it is anomalous', src: 'Section 11.6',
+            idea: `Water is the most abundant liquid on the planet and it behaves unlike any comparable substance. Every anomaly traces to the same structure: a bent molecule, two O–H bonds and two lone pairs, so <b>each water molecule can form up to four hydrogen bonds</b> — two by donating its hydrogens, two by accepting at its lone pairs. No other small molecule manages four.<br><br><b>The high boiling point</b> — 100 °C against the −60 °C or so its group trend predicts, as the previous lesson established.<br><br><b>The high specific heat capacity</b> — 4.18 J/(g·°C), among the highest of any liquid. Heating water means partly breaking hydrogen bonds rather than simply speeding molecules up, so a great deal of energy produces a small temperature rise. This is why coastal climates are milder than inland ones, and why the body regulates its temperature as well as it does.<br><br><b>The high heat of vaporisation</b> — 40.7 kJ/mol, which is why sweating cools so effectively: every gram that evaporates removes 2.26 kJ.<br><br><b>Ice floats.</b> This is the genuinely rare one — nearly every substance is denser as a solid. In ice, each molecule is locked into four hydrogen bonds at fixed angles, and that arrangement is an open hexagonal lattice with space inside it. Liquid water, whose hydrogen bonds are constantly breaking and reforming, packs more closely. So ice is about 9% less dense than water and floats, lakes freeze from the top down, and aquatic life survives the winter.<br><br><b>It dissolves ionic and polar substances well</b> — "like dissolves like". Its partial charges surround and separate ions, each Na⁺ wrapped in water molecules pointing their oxygens inward and each Cl⁻ wrapped with hydrogens inward. Nonpolar substances such as oils cannot compete with water's hydrogen bonding for a place in the structure, so they separate out.<br><br>None of this is unrelated coincidence. One molecular shape, four hydrogen bonds, and every property in the list follows.`,
+            figure: {
+              kind: 'graph', x: [-15, 15], y: [0.915, 1.005], xlabel: 'temperature (°C)', ylabel: 'density (g/cm³)',
+              fns: [{ pts: [[-10, 0.918], [-0.1, 0.917], [0, 0.9998], [4, 1.0000], [10, 0.9997], [15, 0.9991]], label: 'water and ice' }],
+              points: [
+                { x: -5, y: 0.918, label: 'ice' }, { x: 4, y: 1.0, label: 'water is densest at 4 °C' }
+              ],
+              caption: 'The density of water either side of freezing. The jump at 0 °C is the anomaly: freezing makes water about 9% LESS dense, because the four hydrogen bonds per molecule lock into an open hexagonal lattice with space inside. Liquid water is densest at 4 °C rather than at its freezing point, which is why a lake freezes from the top down.'
+            },
+            rules: [
+              { name: 'Why water is special', expr: 'Two O-H bonds and two lone pairs, so up to four hydrogen bonds', words: true, note: 'No other small molecule manages four, which is the source of every anomaly below.' },
+              { name: 'Specific heat capacity', expr: 'c = 4.18', note: 'Joules per gram per degree — among the highest of any liquid, because heating partly breaks hydrogen bonds.' },
+              { name: 'Heat of vaporisation', expr: 'Delta H_vap = 40.7', note: 'Kilojoules per mole, or 2.26 kJ per gram. This is why evaporation cools so effectively.' },
+              { name: 'Ice floats', expr: 'The solid is about 9 per cent less dense than the liquid', words: true, note: 'An open hexagonal lattice with space inside it. Almost no other substance does this.' },
+              { name: 'Densest at four degrees', expr: 'Not at the freezing point', words: true, note: 'Which is why a lake freezes from the top down and life survives beneath the ice.' },
+              { name: 'What it dissolves', expr: 'Like dissolves like', words: true, note: 'Ionic and polar substances are surrounded by its partial charges; nonpolar ones cannot compete for a place in the structure.' }
+            ],
+            examples: [
+              {
+                prompt: 'Calculate the energy needed to raise the temperature of 250.0 g of water from 20.0 °C to 100.0 °C, and then to vaporise all of it. Take c = 4.18 J/(g·°C) and ΔH_vap = 2260 J/g.',
+                approach: 'Two separate processes with two separate equations, and they must not be combined: heating uses q = mcΔT, and the phase change uses the heat of vaporisation with no temperature term at all, because boiling happens at constant temperature. Compute each, then compare them — the comparison is the point of the question.',
+                steps: [
+                  { do: 'Heating: ΔT = 100.0 − 20.0 = 80.0 °C', why: 'A difference, so it is the same number in kelvin — no conversion is needed here.' },
+                  { do: 'q₁ = mcΔT = (250.0)(4.18)(80.0) = 83,600 J = 83.6 kJ', why: 'The energy to bring the water to its boiling point, with nothing yet evaporated.' },
+                  { do: 'Vaporising: q₂ = m × ΔH_vap = (250.0)(2260)', why: 'No ΔT term — the temperature stays at 100 °C throughout the boiling.' },
+                  { do: 'q₂ = 565,000 J = 565 kJ', why: 'Nearly seven times the energy of the whole 80-degree heating.' },
+                  { do: 'Total: 83.6 + 565 = 649 kJ', why: 'The two stages added, since both had to happen.' },
+                  { do: 'Note the ratio: separating the molecules costs far more than heating them 80 degrees', why: 'Because vaporising breaks the hydrogen bonds outright, while heating only loosens them.' }
+                ],
+                answer: '83.6 kJ to heat and 565 kJ to vaporise — 649 kJ in total',
+                answerWords: true,
+                check: 'The ratio is what makes sweating work: evaporating a single gram removes 2.26 kJ, as much as cooling 27 g of water by 20 °C ✓. And using a ΔT in the vaporisation step would have been a category error — the temperature does not change while a substance boils.'
+              },
+              {
+                prompt: 'Explain why ice floats, and why that matters for a lake in winter.',
+                approach: 'Density is mass over volume, so with the same molecules on both sides the question is entirely about how closely they pack. Compare the arrangement in the solid with the arrangement in the liquid, then follow the consequence through to what happens in a lake as the temperature falls.',
+                steps: [
+                  { do: 'In liquid water the hydrogen bonds constantly break and reform, so molecules can slip into gaps', why: 'A disordered arrangement can pack more closely than an ordered one, which is the reverse of the usual situation.' },
+                  { do: 'In ice each molecule holds four hydrogen bonds at fixed angles, set by the tetrahedral arrangement around the oxygen', why: 'The angles come from the two bonds and two lone pairs — the shape of chapter 10 deciding the structure of a solid.' },
+                  { do: 'Those fixed angles produce an open hexagonal lattice with empty space inside it', why: 'The molecules are held apart by the geometry, not packed together by it.' },
+                  { do: 'So ice is about 9% less dense than liquid water and floats', why: 'Same molecules, more volume, less density. Almost every other substance contracts on freezing.' },
+                  { do: 'In a lake the ice forms at the surface and stays there, insulating the water below', why: 'If ice sank, each layer would fall and the lake would freeze solid from the bottom up.' },
+                  { do: 'And liquid water is densest at 4 °C, so the coldest water is at the top and the bottom stays near 4 °C', why: 'Which is why fish survive the winter — a detail that follows from the same open structure beginning to form before freezing.' }
+                ],
+                answer: 'Four hydrogen bonds at fixed angles make an open lattice, so ice is 9% less dense — it floats and insulates the water below',
+                answerWords: true,
+                check: 'The lesson figure shows both effects at once: the density drops sharply at 0 °C and peaks at 4 °C rather than at the freezing point ✓. Compare carbon dioxide, which has no hydrogen bonding at all and whose solid sinks in its own liquid, like nearly every other substance.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'c1k-vaporisation-with-delta-t',
+                wrong: 'Using q = mcΔT for the boiling step',
+                right: 'A phase change happens at constant temperature: q = m × ΔH_vap, with no ΔT.',
+                why: 'The heating equation is the one just used and the numbers are all to hand, so it carries over automatically. The temperature does not rise while water boils — all the energy goes into separating molecules — so a ΔT term has nothing to refer to.'
+              },
+              {
+                id: 'c1k-ice-floats-as-air',
+                wrong: 'Explaining floating ice by trapped air bubbles',
+                right: 'It is the open hexagonal lattice the four hydrogen bonds force, which leaves space between molecules.',
+                why: 'Ice often does contain visible bubbles, so the explanation is right in front of you and looks sufficient. Bubble-free ice floats just as well, and the 9% figure is a property of the crystal structure that can be measured on a single perfect crystal.'
+              },
+              {
+                id: 'c1k-water-properties-unrelated',
+                wrong: 'Learning water’s anomalies as a list of separate facts',
+                right: 'One cause: two O–H bonds and two lone pairs, giving up to four hydrogen bonds per molecule.',
+                why: 'They are usually presented as a list, and each is memorable on its own. Held as a list they are five things to remember and nothing to reason with; held as one cause, any of them can be reconstructed, and so can the reason ammonia and HF are less extreme.'
+              },
+              {
+                id: 'c1k-like-dissolves-like-unexplained',
+                wrong: 'Quoting "like dissolves like" as the explanation rather than as the summary of one',
+                right: 'A solvent dissolves what it can interact with as strongly as it interacts with itself.',
+                why: 'The phrase is short and sounds complete, so it gets used where a mechanism is wanted. Oil and water separate because water’s hydrogen bonding is strong enough that oil molecules cannot buy a place in the structure — and that account also predicts what happens with ethanol, which the slogan alone does not.'
+              }
+            ]
+          }
+        ],
+        practice: [
+
+          { id: 'z1', kind: 'mc', lesson: 'g1',
+            prompt: 'Which intermolecular force acts in ALL substances?',
+            options: [
+              { t: 'Dispersion forces', ok: true },
+              { t: 'Dipole–dipole forces' },
+              { t: 'Hydrogen bonding' },
+              { t: 'Ionic attraction' }
+            ],
+            hint: 'Which one does not require polarity?',
+            solution: ['Electrons move, so every molecule has instantaneous dipoles',
+              'Dipole–dipole needs a permanent dipole and hydrogen bonding needs H on N, O or F',
+              'Dispersion needs nothing at all, so it is always present'] },
+
+          { id: 'z2', kind: 'mc', lesson: 'g1',
+            prompt: 'Which substance can hydrogen-bond with itself?',
+            options: [
+              { t: 'CH₃OH', ok: true },
+              { t: 'CH₃Cl' },
+              { t: 'CH₃OCH₃' },
+              { t: 'CH₄' }
+            ],
+            hint: 'The H must be bonded directly to N, O or F.',
+            solution: ['Methanol has an O–H bond, so it can donate a hydrogen bond',
+              'Dimethyl ether has oxygen but no O–H, so it can only accept one',
+              'Chloromethane and methane have neither'] },
+
+          { id: 'z3', kind: 'mc', lesson: 'g1',
+            prompt: 'Why does iodine exist as a solid at room temperature while fluorine is a gas?',
+            options: [
+              { t: 'Iodine has far more electrons, so its dispersion forces are much stronger', ok: true },
+              { t: 'Iodine molecules are polar and fluorine molecules are not' },
+              { t: 'Iodine hydrogen-bonds' },
+              { t: 'Iodine has stronger covalent bonds' }
+            ],
+            hint: 'Both are nonpolar diatomic molecules.',
+            solution: ['Neither is polar, so dispersion is the only force acting in both',
+              'Dispersion grows with the number of electrons',
+              'I₂ has 106 electrons against F₂’s 18 — enough to make it a solid'] },
+
+          { id: 'z4', kind: 'spot', lesson: 'g1',
+            prompt: 'A student explains why water boils at 100 °C. One line is wrong.',
+            steps: [
+              { t: 'Water molecules are held to each other by hydrogen bonds', bad: false },
+              { t: 'Boiling requires enough energy to overcome those attractions', bad: false },
+              { t: 'So boiling water breaks the O–H bonds within each molecule', bad: true },
+              { t: 'Steam and liquid water are both H₂O', bad: false }
+            ],
+            why: 'Boiling separates molecules from one another; it leaves every O–H bond intact, which is why steam is still water — as the fourth line says. The energies differ by an order of magnitude: about 41 kJ/mol to vaporise water against 463 kJ/mol to break a single O–H bond. Confusing the two makes every boiling-point argument in the chapter incoherent.',
+            hint: 'What is steam made of?',
+            solution: ['Intermolecular forces are overcome, not bonds',
+              'Vaporising water costs about 41 kJ/mol; breaking an O–H bond costs 463',
+              'The molecules survive intact, which is what the fourth line states'] },
+
+          { id: 'z5', kind: 'mc', lesson: 'g2',
+            prompt: 'Which of these has the highest boiling point?',
+            options: [
+              { t: 'CH₃CH₂OH', ok: true },
+              { t: 'CH₃CH₂CH₃' },
+              { t: 'CH₃OCH₃' },
+              { t: 'CH₃CHO' }
+            ],
+            hint: 'All four have similar molar masses. Which hydrogen-bonds?',
+            solution: ['Ethanol has an O–H bond and hydrogen-bonds; the others do not',
+              'Propane is nonpolar; dimethyl ether and acetaldehyde are polar but cannot donate a hydrogen bond',
+              'Ethanol boils at 78 °C against propane’s −42 °C'] },
+
+          { id: 'z6', kind: 'mc', lesson: 'g2',
+            prompt: 'Butane and acetone both have a molar mass of 58 g/mol, but acetone boils 56 °C higher. Why?',
+            options: [
+              { t: 'Acetone is polar, so it has dipole–dipole forces as well as dispersion', ok: true },
+              { t: 'Acetone has a larger molar mass' },
+              { t: 'Acetone hydrogen-bonds with itself' },
+              { t: 'Butane has stronger covalent bonds' }
+            ],
+            hint: 'The masses are equal, so dispersion cannot be the difference.',
+            solution: ['Equal mass means equal dispersion, so the force type must differ',
+              'The C=O group makes acetone polar; butane is a nonpolar hydrocarbon',
+              'Acetone has no O–H, so it does not hydrogen-bond'] },
+
+          { id: 'z7', kind: 'numeric', lesson: 'g2',
+            prompt: 'From the trend in H₂S (−60 °C), H₂Se (−41 °C) and H₂Te (−2 °C), water would be expected to boil near −60 °C. By how many degrees does its actual boiling point of 100 °C exceed that?',
+            answer: 160, verify: { expr: '100 - (-60)' },
+            hint: 'Actual minus predicted.',
+            solution: ['100 − (−60)', '= 160 °C', 'Which is roughly what hydrogen bonding is worth in water'] },
+
+          { id: 'z8', kind: 'mc', lesson: 'g2',
+            prompt: 'Why is glycerol far more viscous than water?',
+            options: [
+              { t: 'It has three OH groups per molecule, so far more hydrogen bonding, and it is a longer molecule', ok: true },
+              { t: 'It is nonpolar' },
+              { t: 'Its covalent bonds are stronger' },
+              { t: 'It has a lower molar mass' }
+            ],
+            hint: 'Viscosity rises with intermolecular forces and with molecular length.',
+            solution: ['Three OH groups means three hydrogen-bonding sites per molecule',
+              'Longer molecules also tangle with one another',
+              'Both effects make it harder for the liquid to flow'] },
+
+          { id: 'z9', kind: 'mc', lesson: 'g2',
+            prompt: 'Why does mercury form a convex meniscus in a glass tube while water forms a concave one?',
+            options: [
+              { t: 'Mercury’s cohesive forces are stronger than its adhesion to glass; for water it is the other way round', ok: true },
+              { t: 'Mercury is denser than water' },
+              { t: 'Mercury is a metal and cannot wet anything' },
+              { t: 'Water has a lower surface tension' }
+            ],
+            hint: 'Capillary behaviour is a contest between two forces.',
+            solution: ['Adhesion is attraction to the tube; cohesion is attraction within the liquid',
+              'Water adheres to glass more strongly than it coheres, so it climbs and curves up',
+              'Mercury coheres far more strongly, so it pulls away from the glass'] },
+
+          { id: 'z10', kind: 'numeric', lesson: 'g3',
+            prompt: 'How much energy, in kJ, is needed to raise 100.0 g of water from 25.0 °C to 75.0 °C? Take c = 4.18 J/(g·°C). Give the answer to one decimal place.',
+            answer: 20.9, tol: 0.1, verify: { expr: '100*4.18*50/1000', dp: 1 },
+            hint: 'q = mcΔT, then convert joules to kilojoules.',
+            solution: ['ΔT = 75.0 − 25.0 = 50.0 °C', 'q = (100.0)(4.18)(50.0) = 20,900 J', '= 20.9 kJ'] },
+
+          { id: 'z11', kind: 'numeric', lesson: 'g3',
+            prompt: 'How much energy, in kJ, is needed to vaporise 50.0 g of water already at 100 °C? Take ΔH_vap = 2260 J/g.',
+            answer: 113, tol: 1, verify: { expr: '50*2260/1000', dp: 0 },
+            hint: 'No ΔT — boiling happens at constant temperature.',
+            solution: ['q = m × ΔH_vap = 50.0 × 2260', '= 113,000 J', '= 113 kJ'] },
+
+          { id: 'z12', kind: 'numeric', lesson: 'g3',
+            prompt: 'How many hydrogen bonds can one water molecule form at most?',
+            answer: 4, verify: { expr: '2 + 2' },
+            hint: 'Two O–H bonds to donate, and two lone pairs to accept at.',
+            solution: ['Two hydrogens, each able to donate a hydrogen bond',
+              'Two lone pairs on the oxygen, each able to accept one', 'Four in all — more than any other small molecule'] },
+
+          { id: 'z13', kind: 'mc', lesson: 'g3',
+            prompt: 'Why does ice float on water?',
+            options: [
+              { t: 'Its hydrogen bonds lock into an open hexagonal lattice with space inside it', ok: true },
+              { t: 'It contains trapped air bubbles' },
+              { t: 'Its molecules are lighter than those of liquid water' },
+              { t: 'Solids are always less dense than liquids' }
+            ],
+            hint: 'Same molecules, so the question is about packing.',
+            solution: ['Four hydrogen bonds at fixed angles hold the molecules apart',
+              'Liquid water’s bonds break and reform, so molecules can slip into gaps',
+              'Ice is about 9% less dense — and nearly every other substance is denser as a solid'] },
+
+          { id: 'z14', kind: 'mc', lesson: 'g3',
+            prompt: 'Why is water’s specific heat capacity so high?',
+            options: [
+              { t: 'Much of the energy added goes into partly breaking hydrogen bonds rather than raising the speed of the molecules', ok: true },
+              { t: 'Water molecules are unusually heavy' },
+              { t: 'Water has strong covalent bonds' },
+              { t: 'Water is a good conductor of heat' }
+            ],
+            hint: 'What has to happen before the molecules can move faster?',
+            solution: ['Temperature measures the average kinetic energy of the molecules',
+              'Energy diverted into loosening hydrogen bonds does not raise it',
+              'So a large input produces a small rise — which is why coastal climates are mild'] },
+
+          { id: 'z15', kind: 'spot', lesson: 'g3',
+            prompt: 'A student computes the energy to heat 200 g of water from 80 °C to 100 °C and then boil it. One line is wrong.',
+            steps: [
+              { t: 'Heating: q = mcΔT = 200 × 4.18 × 20 = 16,720 J', bad: false },
+              { t: 'Boiling: q = mcΔT with ΔT taken as 100 °C', bad: true },
+              { t: 'The two energies must be added together', bad: false },
+              { t: 'The boiling step should be much larger than the heating step', bad: false }
+            ],
+            why: 'A phase change happens at constant temperature, so there is no ΔT to use: the boiling step is q = m × ΔH_vap = 200 × 2260 = 452,000 J. The equation for heating is the one just used and carries over automatically, which is why this is the standard error — and the fourth line, which is correct, gives the check, since 452 kJ is indeed far more than 16.7 kJ.',
+            hint: 'What happens to the temperature while water boils?',
+            solution: ['It stays at 100 °C throughout, so ΔT is zero and the heating equation does not apply',
+              'q = m × ΔH_vap = 200 × 2260 = 452,000 J', 'Total: 16.7 + 452 = 469 kJ'] },
+
+          { id: 'z16', kind: 'mc', lesson: 'g1',
+            prompt: 'n-Pentane boils at 36 °C and neopentane, with the same formula C₅H₁₂, at 10 °C. What explains the difference?',
+            options: [
+              { t: 'The straight chain has more surface in contact with its neighbours, so stronger dispersion forces', ok: true },
+              { t: 'n-Pentane is polar and neopentane is not' },
+              { t: 'n-Pentane has a larger molar mass' },
+              { t: 'Neopentane hydrogen-bonds' }
+            ],
+            hint: 'Identical formula, so identical mass and electron count.',
+            solution: ['Both are nonpolar hydrocarbons with dispersion forces only',
+              'The masses are identical, so size cannot be the difference',
+              'A long chain lies alongside its neighbour; a near-spherical molecule touches at a point'] },
+
+          { id: 'z17', kind: 'order', lesson: 'g2',
+            prompt: 'Put the steps for comparing the boiling points of two substances in order.',
+            steps: [
+              'Decide whether either substance can hydrogen-bond, using the H-on-N/O/F test',
+              'If neither can, decide which is polar',
+              'If the forces are of the same kind, compare molar masses',
+              'If mass and forces both match, compare molecular shapes'
+            ],
+            hint: 'Strongest effect first.',
+            solution: ['Hydrogen bonding is usually decisive for molecules of similar size',
+              'Polarity separates substances whose dispersion is comparable',
+              'Mass and then shape settle what is left'] },
+
+          { id: 'z18', kind: 'order', lesson: 'g1',
+            prompt: 'Put these in order of increasing strength.',
+            steps: [
+              'Dispersion forces between two small nonpolar molecules',
+              'Dipole–dipole forces between two small polar molecules',
+              'A hydrogen bond',
+              'A covalent bond'
+            ],
+            hint: 'The last one is in a different class entirely.',
+            solution: ['Dispersion is a few kJ/mol for a small molecule, dipole–dipole rather more',
+              'A hydrogen bond is 10 to 40 kJ/mol',
+              'A covalent bond is hundreds — an order of magnitude above all three'] }
         ]
       }
     ]
@@ -31244,7 +31706,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.66', date: '18 September 2026', year: 2026 };
+  const BUILD = { v: '2.67', date: '18 September 2026', year: 2026 };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonandy242', ['gmail', 'com'].join('.')].join('@');
   /* The one sentence that says what this is. It appears under the wordmark, and build.js uses
@@ -31257,6 +31719,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      because the person who needs it is the one who just watched the app refresh itself and wants to
      know what moved. Trim the tail when it gets past a dozen; nobody reads further back than that. */
   const WHATS_NEW = [
+    ['2.67', '<b>CHEM 1000H is complete: chapter 11 lands, and every chapter on the schedule is now built.</b> <b>Intermolecular forces</b> are the forces BETWEEN molecules rather than within them, and the chapter opens by insisting on the difference &mdash; boiling water separates molecules without breaking a single O&ndash;H bond, which is why steam is still water and why the two energies differ by a factor of ten. <b>Dispersion forces</b> act in everything and grow with the electron count, which is the whole reason fluorine is a gas and iodine a solid; they also depend on SHAPE, so two molecules of identical formula boil 26 degrees apart. <b>Dipole&ndash;dipole</b> forces then separate substances of equal mass, and <b>hydrogen bonding</b> is taught with its strict test &mdash; an H bonded directly to N, O or F, and nothing looser. <b>Predicting a boiling point</b> is set out as an ordered comparison, with the standing caution that a much heavier nonpolar molecule can still beat a light hydrogen-bonded one, and the same forces then explain surface tension, viscosity and why mercury and water curve opposite ways in the same glass tube. The chapter closes on <b>water</b>, whose anomalies all come from one fact: two O&ndash;H bonds and two lone pairs, so four hydrogen bonds per molecule. That is the 160 degrees its boiling point sits above its group trend, the specific heat that makes coastal climates mild, the heat of vaporisation that makes sweating work, and the open hexagonal lattice that makes ice float and lets a lake freeze from the top down. Three lessons, six worked examples, 18 practice questions and 12 named misconceptions. The course now stands at 7 chapters, 29 lessons, 58 worked examples and 156 practice questions.'],
     ['2.66', '<b>CHEM 1000H chapters 9 and 10: the bond, in three models.</b> <b>Lewis theory</b> first &mdash; dots for valence electrons, ionic bonding and the lattice energy that depends on charge far more than on size, then <b>electronegativity</b> and the difference (not the value) that sorts a bond into nonpolar, polar or ionic. The six-step procedure for <b>drawing a Lewis structure</b> is set out with the electron count as a fixed budget, so a double bond is made by moving a lone pair rather than inventing a pair, and the final count is the only proof the structure is right. <b>Formal charge</b> then decides between resonance structures, with the sum rule as the check, and the chapter closes on <b>bond energies</b>: broken minus formed, which estimates the enthalpy of methane combustion at &minus;802 kJ without a single measurement. Chapter 10 is about <b>shape</b>, which Lewis theory cannot give. <b>VSEPR</b> counts electron domains &mdash; a double bond counts once &mdash; and the five geometries follow from putting points on a sphere; lone pairs then take positions without holding atoms, which is the whole difference between the electron geometry and the molecular shape, and why water is bent and CO&sub2; is not. <b>Polarity</b> is treated as the two-part test it is: polar bonds AND a shape that fails to cancel them, with CH&sub3;Cl against CH&sub4; as the case where only the outer atoms differ. Then <b>valence bond theory</b> &mdash; hybridisation read straight off the domain count, sigma against pi, and why a double bond cannot rotate &mdash; and <b>molecular orbital theory</b>, which gives bond order, explains why He&sub2; does not exist, and gets oxygen&rsquo;s paramagnetism right where the Lewis structure gets it flatly wrong. Eleven lessons, twenty-two worked examples, 47 practice questions and 36 named misconceptions. Chapter 11 completes the course.'],
     ['2.65', '<b>CHEM 1000H chapters 7 and 8: where the periodic table comes from.</b> <b>The quantum-mechanical model</b> starts with light &mdash; wavelength against frequency, the photon energy that depends on colour and not on brightness, and the conversion to kJ/mol that shows why a 254 nm lamp sterilises and a sodium street lamp is harmless. Then the <b>line spectrum</b> that forced quantisation: sharp lines mean sharp energies, the hydrogen levels crowd as 1/n&sup2;, and the n = 3 &rarr; 2 transition is computed all the way to the 656 nm red line a discharge tube actually shows. <b>Matter waves</b> follow &mdash; an electron&rsquo;s wavelength is three times the size of its own atom, a baseball&rsquo;s is nineteen powers of ten below a proton, and the uncertainty principle is stated as a property of matter rather than a limit of the apparatus, which is what rules out orbits and replaces them with probability maps. The chapter closes with the <b>four quantum numbers</b>, their allowed values, and the counting that gives n&sup2; orbitals and 2n&sup2; electrons per shell. Chapter 8 cashes it in: <b>electron configurations</b> under the aufbau order (4s before 3d, and why), the Pauli principle and Hund&rsquo;s rule with the orbital diagrams that make unpaired electrons visible; configurations read straight off the table by block, with chromium and copper as the two exceptions worth knowing; <b>effective nuclear charge</b>, which explains the one trend that feels wrong &mdash; more electrons, smaller atom; and then <b>ions</b>, removed from the highest shell first so that Fe&sup2;&#8314; is 3d&#8310; and not 4s&sup2; 3d&#8308;, <b>ionisation energy</b> with both of its dips and the jump that counts the valence electrons, and <b>electron affinity</b> and metallic character. Nine lessons, eighteen worked examples, 48 practice questions and 32 named misconceptions. Chapters 9, 10 and 11 remain.'],
     ['2.64', '<b>A second course under the green chip: CHEM 1000H, General Chemistry.</b> It follows its own schedule chapter by chapter, and the first two chapters ship now. <b>Reaction stoichiometry</b> is the bookkeeping that makes chemistry quantitative: mass to moles to mole ratio to moles to mass, always through the balanced equation, because coefficients are a ratio of particles and never of grams. Then the <b>limiting reactant</b>, found by asking what each reactant alone could make and taking the smaller answer &mdash; not by looking for whichever there is less of &mdash; with theoretical yield, which is calculated, against actual yield, which is measured, and the percent yield between them. <b>Solution stoichiometry</b> closes the chapter: molarity as moles per litre of solution, the millilitres that have to become litres before anything else happens, and dilution as the one calculation where the moles of solute do not change. Chapter 5 is the <b>gas laws</b>: pressure units and the kelvin scale that every gas calculation silently assumes, Boyle, Charles and the combined law for a change of conditions, then PV = nRT used forwards and backwards for a molar mass or a density, partial pressures and mole fractions, gas stoichiometry, and finally the <b>kinetic molecular theory</b> &mdash; why temperature is molecular kinetic energy, why a light molecule moves faster at the same temperature, effusion, and the two assumptions a real gas breaks when it is cold or squeezed. Seven lessons, fourteen worked examples, 43 practice questions and 28 named misconceptions. Chapters 7 to 11 follow.'],
