@@ -17156,7 +17156,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      file rather than replacing it: that one is cut to four ideas the subject leans on, while this
      one follows a real schedule chapter by chapter. Chapters 1–3 of the set text — units, significant
      figures, atoms, formulae, molar mass — are assumed and are not taught here.
-     Built so far: chapters 4 and 5. */
+     Built so far: chapters 4, 5, 7 and 8. */
   const CHEM1000 = {
     subject: CHEM,
     id: 'chem-1000h', inst: 'trent',
@@ -17164,11 +17164,11 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     title: 'General Chemistry: Structure and Properties',
     blurb: 'Chemistry from the mole upward: counting reactants and finding which one runs out first, the gas laws and what they say about molecules in motion, then the quantum picture of the atom that explains the periodic table, the models of the bond from Lewis dots to molecular orbitals, and finally the weak forces between molecules that decide whether something is a solid, a liquid or a gas.',
     level: 'Foundation',
-    exam: 'Follows the course schedule: chapter 4 stoichiometry, chapter 5 the gas laws, chapter 7 the quantum-mechanical model of the atom, chapter 8 periodic trends, chapter 9 chemical bonding I (Lewis theory), chapter 10 chemical bonding II (VSEPR, valence bond and molecular orbital theories), and chapter 11 intermolecular forces. Built so far: chapters 4 and 5.',
+    exam: 'Follows the course schedule: chapter 4 stoichiometry, chapter 5 the gas laws, chapter 7 the quantum-mechanical model of the atom, chapter 8 periodic trends, chapter 9 chemical bonding I (Lewis theory), chapter 10 chemical bonding II (VSEPR, valence bond and molecular orbital theories), and chapter 11 intermolecular forces. Built so far: chapters 4, 5, 7 and 8.',
     text: 'Tro, Fridgen & Shaw, Chemistry: A Molecular Approach, 4th Canadian edition (Pearson)',
     legalNote: 'Study material for a university course. It follows the chapter and section order of the set text so that a lesson here matches the section you would open alongside it, but every explanation, example and question is written from scratch — nothing is copied from the book or from any past paper. Answers are recomputed by a computer algebra system before the page ships; where a figure is rounded, the question says to how many places. Atomic masses are the ordinary four-figure values, and a course using three figures will differ in the last digit.',
     gaps: [
-      'Still to be built, in schedule order: chapter 7 the quantum-mechanical model of the atom, chapter 8 periodic trends, chapter 9 chemical bonding I, chapter 10 chemical bonding II, and chapter 11 intermolecular forces',
+      'Still to be built, in schedule order: chapter 9 chemical bonding I (Lewis theory), chapter 10 chemical bonding II (VSEPR, valence bond and molecular orbital theory), and chapter 11 intermolecular forces',
       'Assumed as background and not taught here: chapters 1 to 3 of the set text — units of measurement, significant figures, atoms and elements, compounds and chemical formulae, molar mass, and balancing equations',
       'Not on this course\'s schedule, so not built for it: thermochemistry, chemical kinetics, equilibrium, acids and bases, electrochemistry and the chapters after 11'
     ],
@@ -18062,6 +18062,1231 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             ],
             hint: 'The gas step comes last, after the chemistry.',
             solution: ['Balance, then mass or volume to moles', 'The mole ratio is the chemistry', 'Only then does the gas law convert moles to a volume', 'The 22.41 L/mol shortcut is for STP alone'] }
+        ]
+      },
+
+      /* ============================ CHAPTER 7 ============================ */
+      {
+        id: 'quantum', n: 3,
+        title: 'The quantum-mechanical model of the atom',
+        blurb: 'Where the periodic table comes from. Light turns out to arrive in packets whose energy depends only on the colour; atoms turn out to emit only certain colours; and putting those two facts together forces the conclusion that an electron in an atom can hold only certain energies — which is the whole reason chemistry has periods and groups at all.',
+        read: 'Chapter 7',
+        objectives: [
+          'Convert between wavelength, frequency and photon energy, and scale a photon energy up to a mole',
+          'Explain what a line spectrum shows, and compute the wavelength emitted in a transition between hydrogen levels',
+          'Use the de Broglie relation, and say why matter waves matter for an electron and not for a baseball',
+          'State the four quantum numbers, their allowed values, and what each one fixes',
+          'Count the orbitals and electrons a shell or subshell can hold, and describe the shape of an s, p or d orbital'
+        ],
+        lessons: [
+
+          {
+            id: 'c1', title: 'Light, energy and the electromagnetic spectrum', src: 'Section 7.2',
+            idea: `Light is a wave, and two numbers describe it. The <b>wavelength λ</b> is the distance between one crest and the next, and the <b>frequency ν</b> is how many crests pass a point each second, measured in hertz (s⁻¹). They are not independent: every electromagnetic wave travels at the same speed <b>c = 3.00 × 10⁸ m/s</b> in a vacuum, so<br><br><b>c = λν</b><br><br>and the two are inversely proportional. Long wavelength means low frequency; short wavelength means high frequency. That single fact carries most of the arithmetic in this section.<br><br>The quantum step is that light also arrives in indivisible packets called <b>photons</b>, and the energy of one photon depends on the frequency alone:<br><br><b>E = hν = hc/λ</b>&nbsp;&nbsp;with&nbsp;&nbsp;<b>h = 6.626 × 10⁻³⁴ J·s</b><br><br>Note carefully what is <i>not</i> in that equation: the brightness. A dim ultraviolet lamp delivers fewer photons than a bright red one, but every one of its photons carries more energy, and it is the energy per photon that decides whether a chemical bond breaks. This is why ultraviolet light causes sunburn and infrared light — of which the sun sends far more — only warms you.<br><br>A single photon energy is a tiny number, around 10⁻¹⁹ J, which is hard to compare with anything chemical. Multiplying by <b>Avogadro's number, 6.022 × 10²³</b>, gives the energy of a mole of photons, in joules per mole, and dividing by 1000 puts it in kJ/mol — the same units as a bond energy, which is exactly why the conversion is worth doing.<br><br>Arranged by wavelength, the <b>electromagnetic spectrum</b> runs from gamma rays (shortest, most energetic) through X-rays, ultraviolet, the narrow visible band from about 400 nm (violet) to 700 nm (red), then infrared, microwaves and radio waves (longest, least energetic). The visible region is a sliver of the whole range, and within it violet photons carry roughly 1.75 times the energy of red ones.`,
+            figure: {
+              kind: 'numberline', x: [-12, 3],
+              points: [
+                { x: -11, label: 'gamma' }, { x: -9, label: 'X-ray' }, { x: -7.5, label: 'UV' },
+                { x: -6.3, label: 'visible' }, { x: -4.5, label: 'infrared' },
+                { x: -2, label: 'microwave' }, { x: 1.5, label: 'radio' }
+              ],
+              caption: 'The electromagnetic spectrum, marked by the power of ten of the wavelength in metres. Each step to the right is a factor of ten longer and therefore a factor of ten less energetic per photon. The visible band sits near 10⁻⁶·³ m, which is 500 nm, and is narrow enough on this scale to be a single mark — everything chemistry calls colour lives inside it.'
+            },
+            rules: [
+              { name: 'Wave relation', expr: 'c = lambda nu', note: 'With c = 3.00 × 10⁸ m/s. Wavelength and frequency are inversely proportional, always.' },
+              { name: 'Photon energy', expr: 'E = h nu', note: 'h = 6.626 × 10⁻³⁴ J·s. The energy of one photon, fixed by frequency alone.' },
+              { name: 'Photon energy from wavelength', expr: 'E = h c / lambda', note: 'The form to use when a colour is quoted, which it usually is. Wavelength must be in metres.' },
+              { name: 'Per mole of photons', expr: 'E_mol = E N_A', note: 'Multiply by 6.022 × 10²³ to compare a photon with a bond energy. Divide by 1000 for kJ/mol.' },
+              { name: 'What brightness does not change', expr: 'Intensity changes how many photons, never the energy of one', words: true, note: 'This is why a bright red lamp cannot do what a dim ultraviolet one does.' }
+            ],
+            examples: [
+              {
+                prompt: 'Sodium street lamps emit at 589 nm. Find the frequency of that light, and the energy of one photon, each to three significant figures.',
+                approach: 'Two conversions in sequence, and the first one is where the marks are lost: a wavelength in nanometres has to become metres before it goes anywhere near c or h, because both constants are in SI units. Then ν = c/λ, and E = hν. The second part could equally be done in one step as E = hc/λ, and doing it both ways is a free check.',
+                steps: [
+                  { do: 'Convert: 589 nm = 589 × 10⁻⁹ m = 5.89 × 10⁻⁷ m', why: 'A nanometre is 10⁻⁹ m. Leaving the wavelength in nanometres makes the frequency wrong by a factor of a billion, and the absurd answer is the clue.' },
+                  { do: 'Rearrange c = λν for the unknown: ν = c/λ', why: 'Solve symbolically first so the substitution is one line.' },
+                  { do: 'ν = (3.00 × 10⁸)/(5.89 × 10⁻⁷) = 5.09 × 10¹⁴ s⁻¹', why: 'Dividing by a small number gives a large one. Visible light is always around 10¹⁴ Hz, which is the sanity check.' },
+                  { do: 'Photon energy: E = hν = (6.626 × 10⁻³⁴)(5.09 × 10¹⁴)', why: 'Now that the frequency is known, the photon energy is one multiplication.' },
+                  { do: 'E = 3.37 × 10⁻¹⁹ J', why: 'Visible photons are always a few times 10⁻¹⁹ J — worth remembering as a check on the exponent.' }
+                ],
+                answer: 'ν = 5.09 × 10¹⁴ s⁻¹ and E = 3.37 × 10⁻¹⁹ J',
+                answerWords: true,
+                check: 'The one-step route must agree: E = hc/λ = (6.626 × 10⁻³⁴)(3.00 × 10⁸)/(5.89 × 10⁻⁷) = 3.37 × 10⁻¹⁹ J ✓. And the exponents behave: −34 + 14 = −20, then the leading digits 6.6 × 5.1 = 34 carries one back, giving −19.'
+              },
+              {
+                prompt: 'A germicidal lamp emits ultraviolet light at 254 nm. Find the energy of one mole of those photons, in kJ/mol, to three significant figures.',
+                approach: 'A photon energy on its own says little, so the useful question is how it compares with a chemical bond, which needs the answer in kJ per mole. Compute the energy of one photon from E = hc/λ, multiply by Avogadro’s number to get joules per mole, then divide by 1000. The last comparison is the point of the question.',
+                steps: [
+                  { do: 'Convert: 254 nm = 2.54 × 10⁻⁷ m', why: 'Metres before anything else, as always.' },
+                  { do: 'One photon: E = hc/λ = (6.626 × 10⁻³⁴)(3.00 × 10⁸)/(2.54 × 10⁻⁷)', why: 'The single-step form, since a wavelength was given rather than a frequency.' },
+                  { do: 'E = 7.83 × 10⁻¹⁹ J per photon', why: 'Larger than the sodium lamp’s 3.37 × 10⁻¹⁹ J, as it must be — a shorter wavelength carries more energy.' },
+                  { do: 'Per mole: (7.83 × 10⁻¹⁹)(6.022 × 10²³) = 4.71 × 10⁵ J/mol', why: 'Avogadro’s number converts a per-particle quantity into a per-mole one, exactly as it does for mass.' },
+                  { do: 'In kilojoules: 4.71 × 10⁵ J/mol ÷ 1000 = 471 kJ/mol', why: 'Now it is in the units bond energies are quoted in, which is what makes the number mean something.' },
+                  { do: 'Compare: a C–C bond is about 348 kJ/mol and an O–H bond about 463 kJ/mol', why: 'So these photons carry enough to break either — which is precisely why the lamp sterilises, and why it must never be looked at.' }
+                ],
+                answer: '471 kJ/mol, enough to break a typical covalent bond',
+                answerWords: true,
+                check: 'Scale from the first example instead of recomputing: 589/254 = 2.32, and photon energy is inversely proportional to wavelength, so 3.37 × 10⁻¹⁹ × 2.32 = 7.82 × 10⁻¹⁹ J ✓. Sodium’s yellow light works out at 203 kJ/mol by the same route — below every common bond energy, which is why a street lamp is harmless.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'c1k-nanometres-not-converted',
+                wrong: 'Substituting a wavelength in nanometres into c = λν or E = hc/λ',
+                right: 'Convert to metres first: 1 nm = 10⁻⁹ m.',
+                why: 'Both c and h are quoted in SI units, so any other length unit throws the answer out by a clean power of ten and the working still looks tidy. The safeguard is a remembered scale: visible light is about 10¹⁴ Hz and a few times 10⁻¹⁹ J, so an answer of 10⁵ Hz announces the error on sight.'
+              },
+              {
+                id: 'c1k-brightness-as-energy',
+                wrong: 'Thinking a brighter light delivers more energetic photons',
+                right: 'Intensity sets how MANY photons arrive; frequency alone sets the energy of each one.',
+                why: 'Everyday language treats a strong light as a powerful one, and the equation E = hν contains no term for brightness at all. The consequence is chemical rather than semantic: a dim ultraviolet source breaks bonds that the brightest red lamp cannot touch, however long it shines.'
+              },
+              {
+                id: 'c1k-wavelength-energy-direction',
+                wrong: 'Taking a longer wavelength to mean a more energetic photon',
+                right: 'E = hc/λ, so energy is INVERSELY proportional to wavelength — short wavelength, high energy.',
+                why: 'Bigger numbers feel like more, and a wavelength is the one quantity here where that intuition is backwards. Anchoring the direction to something familiar fixes it: X-rays are short and dangerous, radio waves are long and harmless.'
+              },
+              {
+                id: 'c1k-photon-vs-mole',
+                wrong: 'Comparing a single photon energy in joules directly with a bond energy in kJ/mol',
+                right: 'Multiply by 6.022 × 10²³ and divide by 1000 first — the two are per-particle and per-mole quantities.',
+                why: 'Both are energies and both look like ordinary numbers on the page, so the mismatch is invisible until the comparison gives a nonsense factor of 10²⁶. The same Avogadro step that turns an atomic mass into a molar mass turns a photon energy into a molar one.'
+              }
+            ]
+          },
+
+          {
+            id: 'c2', title: 'Atomic spectra and the Bohr model', src: 'Section 7.3',
+            idea: `Heat a gas of hydrogen atoms and they glow — but not in every colour. Spread the light through a prism and it is a handful of sharp <b>lines</b> at fixed wavelengths, not the continuous rainbow a hot solid gives. Every element has its own set of lines, which is what makes a <b>line spectrum</b> a fingerprint, and what makes the flame tests of the previous chapters work.<br><br>Sharp lines mean sharp energies, and sharp energies mean the electron cannot hold any energy it likes. Bohr's model says the electron in a hydrogen atom occupies only levels numbered <b>n = 1, 2, 3, …</b> with energies<br><br><b>E<sub>n</sub> = −2.18 × 10⁻¹⁸ J / n²</b><br><br>Three features of that formula do all the work. It is <b>negative</b>, because a bound electron has less energy than a free one at rest — the zero of energy is the electron removed to infinity. It gets <b>less negative as n rises</b>, so higher levels are higher in energy. And the levels <b>crowd together</b> as n grows, because of the n² in the denominator: the gap from n = 1 to 2 is enormous, and the gap from 5 to 6 is small.<br><br>When an electron falls from a higher level to a lower one, the atom loses exactly the difference in energy and emits it as one photon:<br><br><b>ΔE = E<sub>final</sub> − E<sub>initial</sub></b>&nbsp;&nbsp;and&nbsp;&nbsp;<b>λ = hc/|ΔE|</b><br><br>The sign convention is worth holding onto rather than fighting. A drop to a lower level gives a <b>negative</b> ΔE, meaning the atom lost energy; the photon carries away the magnitude. Absorption is the same arithmetic run backwards, with a positive ΔE and a photon taken in.<br><br>Setting n = ∞ gives the energy needed to remove the electron altogether from the ground state — 2.18 × 10⁻¹⁸ J, or <b>1310 kJ/mol</b>, which is the ionisation energy of hydrogen and a number the next chapter uses constantly.<br><br>Bohr's picture of an electron on a circular orbit is wrong, and the next lesson says why. The <b>energy levels</b> it predicts for hydrogen are right, which is why the model is still taught: it gets one thing exactly correct, and that thing is the one chemistry needs.`,
+            figure: {
+              kind: 'graph', x: [0.5, 6.5], y: [-2.4, 0.2], xlabel: 'n', ylabel: 'energy (10⁻¹⁸ J)',
+              fns: [{ expr: '-2.18/(x*x)', label: 'E = −2.18/n²' }],
+              points: [
+                { x: 1, y: -2.18, label: 'n = 1' }, { x: 2, y: -0.545, label: 'n = 2' },
+                { x: 3, y: -0.242, label: 'n = 3' }, { x: 4, y: -0.136 }, { x: 5, y: -0.087 }, { x: 6, y: -0.061 }
+              ],
+              hlines: [{ y: 0, label: 'electron removed' }],
+              caption: 'The hydrogen energy levels. Only the marked points exist; the curve is drawn to show how they crowd. The gap from n = 1 to n = 2 is more than three quarters of the whole ionisation energy, which is why the ultraviolet Lyman lines are so much more energetic than the visible Balmer ones, and why levels above about n = 5 are nearly free.'
+            },
+            rules: [
+              { name: 'Hydrogen energy levels', expr: 'E_n = -2.18 * 10^-18 / n^2', note: 'In joules. Negative because the electron is bound; zero is the electron removed to infinity.' },
+              { name: 'Energy of a transition', expr: 'Delta E = E_final - E_initial', note: 'Negative for emission, positive for absorption. Final minus initial, in that order.' },
+              { name: 'Wavelength emitted', expr: 'lambda = h c / abs(Delta E)', note: 'The photon carries the magnitude of the change; the sign only says which direction it went.' },
+              { name: 'Ionisation from the ground state', expr: 'E_ion = 2.18 * 10^-18', note: 'Joules per atom, which is 1310 kJ/mol — the ionisation energy of hydrogen.' }
+            ],
+            examples: [
+              {
+                prompt: 'An electron in a hydrogen atom falls from n = 3 to n = 2. Find the energy of the photon emitted and its wavelength in nanometres, to three significant figures.',
+                approach: 'Compute the two level energies from the formula, subtract in the order final minus initial, then take the magnitude for the photon and convert it to a wavelength with λ = hc/E. The sign is not decoration: getting it the wrong way round gives a negative wavelength, which is the built-in alarm.',
+                steps: [
+                  { do: 'E₃ = −2.18 × 10⁻¹⁸/9 = −2.42 × 10⁻¹⁹ J', why: 'n² = 9 for the third level. Dividing a negative number by 9 makes it less negative — higher in energy.' },
+                  { do: 'E₂ = −2.18 × 10⁻¹⁸/4 = −5.45 × 10⁻¹⁹ J', why: 'n² = 4. This level is lower, which is why the electron can fall to it.' },
+                  { do: 'ΔE = E₂ − E₃ = −5.45 × 10⁻¹⁹ − (−2.42 × 10⁻¹⁹) = −3.03 × 10⁻¹⁹ J', why: 'Final minus initial. Negative, so the atom lost this much — which is exactly what the photon carries off.' },
+                  { do: 'The photon energy is the magnitude: 3.03 × 10⁻¹⁹ J', why: 'A photon cannot have negative energy; the sign belonged to the atom’s change, not the light.' },
+                  { do: 'λ = hc/E = (6.626 × 10⁻³⁴)(3.00 × 10⁸)/(3.03 × 10⁻¹⁹)', why: 'The same relation as the previous lesson, rearranged for wavelength.' },
+                  { do: 'λ = 6.56 × 10⁻⁷ m = 656 nm', why: 'Red light — the brightest line in hydrogen’s visible spectrum, and the one that gives a hydrogen discharge tube its pink colour.' }
+                ],
+                answer: '3.03 × 10⁻¹⁹ J, at 656 nm',
+                answerWords: true,
+                check: 'Both ends agree with what is known: 656 nm is in the red, near the long-wavelength edge of the visible range, and 3.03 × 10⁻¹⁹ J is slightly less than the 3.37 × 10⁻¹⁹ J of yellow sodium light — smaller energy, longer wavelength ✓.'
+              },
+              {
+                prompt: 'Find the ionisation energy of hydrogen in kJ/mol — the energy to take the electron from n = 1 to n = ∞ — to three significant figures.',
+                approach: 'Ionisation is just a transition whose final level is infinity, where the energy is zero. So the arithmetic is the same as any other transition, with E_final = 0, and the answer comes out positive because energy has to be put in. Then scale one atom up to a mole.',
+                steps: [
+                  { do: 'E₁ = −2.18 × 10⁻¹⁸/1 = −2.18 × 10⁻¹⁸ J', why: 'The ground state, the lowest level there is.' },
+                  { do: 'E_∞ = −2.18 × 10⁻¹⁸/∞² = 0', why: 'Dividing by an unbounded square gives zero. This is the definition of the energy zero: the electron free and at rest.' },
+                  { do: 'ΔE = 0 − (−2.18 × 10⁻¹⁸) = +2.18 × 10⁻¹⁸ J', why: 'Positive, because energy must be supplied to pull the electron away. Every ionisation energy is positive.' },
+                  { do: 'Per mole: (2.18 × 10⁻¹⁸)(6.022 × 10²³) = 1.31 × 10⁶ J/mol', why: 'Avogadro’s number again, turning one atom into a mole of them.' },
+                  { do: 'In kilojoules: 1310 kJ/mol', why: 'A standard reference value, and the largest ionisation energy of any element except helium — a fact the next chapter explains.' }
+                ],
+                answer: '1310 kJ/mol',
+                answerWords: true,
+                check: 'Consistency with the first example: the n = 3 → 2 photon was 3.03 × 10⁻¹⁹ J, about a seventh of the ionisation energy, which matches the figure — the level gaps high up are small fractions of the whole well depth. And the sign is right: removing an electron costs energy, so a negative answer would have been impossible.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'c1k-transition-sign-reversed',
+                wrong: 'Computing ΔE as initial minus final',
+                right: 'ΔE = E_final − E_initial, always in that order.',
+                why: 'Written the other way an emission comes out positive and looks like absorption, so the physics is reported backwards even though the magnitude is right. The reliable check is the wavelength: λ = hc/ΔE with a negative ΔE gives a negative wavelength, which cannot exist.'
+              },
+              {
+                id: 'c1k-negative-energy-as-small',
+                wrong: 'Reading a more negative level as higher in energy because the number is bigger',
+                right: 'More negative is LOWER. n = 1 at −2.18 × 10⁻¹⁸ J is the lowest level in the atom.',
+                why: 'The minus sign is easy to drop when comparing magnitudes, and then the whole ladder is upside down and emission and absorption swap. The sign is doing real work: it says the electron is bound, and zero is the state where it has escaped.'
+              },
+              {
+                id: 'c1k-levels-evenly-spaced',
+                wrong: 'Treating the hydrogen levels as a ladder with equal rungs',
+                right: 'The 1/n² makes them crowd: the 1 → 2 gap is about eight times the 2 → 3 gap.',
+                why: 'Textbook diagrams are often drawn with tidy spacing for legibility, and the equation is read past. The consequence is chemical: transitions ending at n = 1 are ultraviolet, those ending at n = 2 are visible, and nothing about that pattern makes sense if the rungs are equal.'
+              },
+              {
+                id: 'c1k-bohr-orbits-real',
+                wrong: 'Picturing the electron as a planet on a circular orbit of fixed radius',
+                right: 'The quantised ENERGIES are right; the orbits are not. The next lesson replaces them with probability clouds.',
+                why: 'The planetary image is memorable and appears on countless logos, so it survives long after the course has replaced it. Holding it makes the shapes of orbitals in the following lessons impossible to accept, and those shapes are what bonding is built on.'
+              }
+            ]
+          },
+
+          {
+            id: 'c3', title: 'The wave nature of matter and the uncertainty principle', src: 'Section 7.4',
+            idea: `If a wave can behave as a particle, de Broglie asked, can a particle behave as a wave? The answer is yes, and the wavelength of a moving object is<br><br><b>λ = h/(mv)</b><br><br>with m in kilograms and v in metres per second, giving λ in metres. The mass sits in the denominator, and that one fact settles when this matters. An electron, at 9.11 × 10⁻³¹ kg, moving at the speed it has in an atom, comes out with a wavelength of a few hundred picometres — the same size as the atom itself. A baseball comes out at around 10⁻³⁴ m, which is smaller than any length that has ever been measured. Matter waves are real for everything and observable for almost nothing.<br><br>Because an electron's wavelength is the size of an atom, it cannot be treated as a small ball inside one. The consequence is stated exactly by Heisenberg's <b>uncertainty principle</b>:<br><br><b>Δx · mΔv ≥ h/(4π)</b><br><br>The better the position is known, the worse the velocity must be, and the product cannot be made smaller than a fixed constant. This is not a statement about clumsy instruments; it is a property of the thing itself.<br><br>That is what kills Bohr's orbits. An orbit specifies a position and a velocity at every instant, and the principle forbids it. What replaces it is a <b>probability distribution</b>: a map of where the electron is likely to be found, with no path from one place to the next. An <b>orbital</b> is such a map — usually drawn as the surface enclosing a 90% chance of finding the electron.<br><br>Two habits of language follow, and marks turn on them. An electron does not travel round the nucleus on a track. And an orbital is not a place the electron sits in; it is a description of where it probably is.`,
+            figure: {
+              kind: 'graph', x: [0.5, 5], y: [0, 1600], xlabel: 'speed (10⁶ m/s)', ylabel: 'λ (pm)',
+              fns: [{ expr: '727.4/x', label: 'λ = h/(mv), electron' }],
+              points: [
+                { x: 1, y: 727.4, label: '727 pm' },
+                { x: 2.19, y: 332, label: 'ground-state speed: 332 pm' },
+                { x: 5, y: 145.5, label: '146 pm' }
+              ],
+              caption: 'The de Broglie wavelength of an electron against its speed. At the speed an electron has in the ground state of hydrogen the wavelength is 332 pm — comparable with the whole atom, whose diameter is about 106 pm. A wave the size of the object it is inside cannot be idealised as a point on a track, which is the whole argument of this lesson.'
+            },
+            rules: [
+              { name: 'The de Broglie relation', expr: 'lambda = h / (m v)', note: 'Mass in kilograms, speed in m/s, wavelength in metres. Mass is in the denominator, which is why only light particles show it.' },
+              { name: 'The uncertainty principle', expr: 'Delta x * m * Delta v >= h / (4 pi)', note: 'A property of matter, not a limit of the apparatus. Fixing one quantity precisely loosens the other.' },
+              { name: 'What an orbital is', expr: 'A map of probability, not a path and not a container', words: true, note: 'Usually drawn as the surface enclosing a 90% chance of finding the electron.' },
+              { name: 'Electron mass', expr: 'm_e = 9.11 * 10^-31', note: 'Kilograms. Keep it in kilograms — grams here is the most common single error in the section.' }
+            ],
+            examples: [
+              {
+                prompt: 'Find the de Broglie wavelength, in picometres, of an electron moving at 2.19 × 10⁶ m/s — its speed in the ground state of hydrogen. Give three significant figures.',
+                approach: 'A direct substitution into λ = h/(mv), with the whole difficulty in the units: h is in joule-seconds, which unpack as kg·m²/s, so the mass must be in kilograms and the speed in metres per second for the answer to come out in metres. Convert to picometres only at the end, and then compare the result with the size of an atom, which is the reason for asking.',
+                steps: [
+                  { do: 'List the quantities: h = 6.626 × 10⁻³⁴ J·s, m = 9.11 × 10⁻³¹ kg, v = 2.19 × 10⁶ m/s', why: 'All three already in SI units, which is what makes the substitution safe.' },
+                  { do: 'Denominator: mv = (9.11 × 10⁻³¹)(2.19 × 10⁶) = 1.995 × 10⁻²⁴ kg·m/s', why: 'This is the momentum. Computing it on its own keeps the exponents manageable.' },
+                  { do: 'λ = (6.626 × 10⁻³⁴)/(1.995 × 10⁻²⁴)', why: 'One division now that the denominator is a single number.' },
+                  { do: 'λ = 3.32 × 10⁻¹⁰ m', why: 'The exponents alone give −34 + 24 = −10, which is a good check before the digits are trusted.' },
+                  { do: 'Convert: 3.32 × 10⁻¹⁰ m × 10¹² pm/m = 332 pm', why: 'A picometre is 10⁻¹² m, so the exponent moves by twelve.' },
+                  { do: 'Compare: a hydrogen atom is about 106 pm across', why: 'The wavelength is three times the atom. This is the point — the electron cannot be pictured as a particle orbiting inside something smaller than its own wave.' }
+                ],
+                answer: '332 pm, about three times the diameter of the atom',
+                answerWords: true,
+                check: 'Read it off the lesson figure: at 2.19 on the horizontal scale the curve passes through 332 pm ✓. And the units unpack correctly — J·s/(kg·m/s) = (kg·m²/s²)(s)(s)/(kg·m) = m, so the answer is a length as it must be.'
+              },
+              {
+                prompt: 'Find the de Broglie wavelength of a 145 g baseball thrown at 40.0 m/s, and say why it has never been observed.',
+                approach: 'The same equation as the previous example, so the arithmetic holds no surprises — but the mass must first come out of grams, and the interest is entirely in the size of the answer. The comparison at the end is what the question is really asking for.',
+                steps: [
+                  { do: 'Convert the mass: 145 g = 0.145 kg', why: 'Kilograms, because h is in joule-seconds. A gram value here would make the answer wrong by a thousand — and it would still be far too small to see, which is why the error hides.' },
+                  { do: 'Momentum: mv = (0.145)(40.0) = 5.80 kg·m/s', why: 'An everyday number, unlike the electron’s 10⁻²⁴.' },
+                  { do: 'λ = (6.626 × 10⁻³⁴)/5.80', why: 'The same relation, with a denominator twenty-four powers of ten larger.' },
+                  { do: 'λ = 1.14 × 10⁻³⁴ m', why: 'Dividing by a large number gives a tiny one. The mass in the denominator is doing all of this.' },
+                  { do: 'Compare with a proton, about 10⁻¹⁵ m across', why: 'The wavelength is nineteen powers of ten smaller than a proton — the comparison has to be made against something to mean anything.' },
+                  { do: 'Conclude: no experiment can resolve a length that small, so the wave nature is undetectable', why: 'It is not absent. It is unmeasurably small, which is the precise claim and the one worth writing down.' }
+                ],
+                answer: '1.14 × 10⁻³⁴ m — far too small to detect, because the mass is in the denominator',
+                answerWords: true,
+                check: 'Scale from the electron instead of recomputing: the baseball is 1.59 × 10²⁹ times heavier and moves 5.5 × 10⁴ times slower, a net factor of 2.9 × 10²⁴ more momentum, so its wavelength is 332 pm ÷ 2.9 × 10²⁴ = 1.1 × 10⁻³⁴ m ✓.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'c1k-mass-in-grams',
+                wrong: 'Putting a mass in grams into λ = h/(mv)',
+                right: 'Kilograms, because h is in J·s and a joule contains a kilogram.',
+                why: 'Chemistry works in grams almost everywhere else, so the habit carries over without a thought, and the answer is wrong by exactly a thousand while still looking plausibly tiny. Unpacking J·s once — kg·m²/s — makes the requirement obvious rather than arbitrary.'
+              },
+              {
+                id: 'c1k-uncertainty-as-instrument',
+                wrong: 'Explaining the uncertainty principle as a limitation of measuring equipment',
+                right: 'It is a property of matter itself; a perfect instrument would not escape it.',
+                why: 'The usual story about a photon disturbing the electron it measures makes the principle sound like an engineering problem awaiting a better microscope. It is not: the electron simply does not possess a sharp position and a sharp velocity at once, which is why orbits are impossible rather than merely unmeasurable.'
+              },
+              {
+                id: 'c1k-orbital-as-container',
+                wrong: 'Describing an orbital as the region the electron is confined to, or a path it follows',
+                right: 'An orbital is a probability map — usually the surface enclosing a 90% chance of finding the electron.',
+                why: 'The word sounds like orbit and the drawings look like solid shells, so a container is the natural reading. It makes the 90% boundary inexplicable, and it quietly restores the planetary picture the principle has just ruled out.'
+              },
+              {
+                id: 'c1k-matter-waves-only-electrons',
+                wrong: 'Saying only subatomic particles have a wavelength',
+                right: 'Everything moving has one; for anything macroscopic it is too small to detect.',
+                why: 'The distinction is quantitative, not categorical, and the equation contains no threshold mass. Putting the baseball through the same formula is what shows the difference is one of scale — nineteen powers of ten below a proton — rather than a different law for big things.'
+              }
+            ]
+          },
+
+          {
+            id: 'c4', title: 'Quantum numbers and the shapes of orbitals', src: 'Section 7.5',
+            idea: `Solving the quantum-mechanical equation for an atom produces orbitals labelled by three numbers, and a fourth is needed for the electron itself.<br><br><b>n, the principal quantum number</b> — 1, 2, 3, … It fixes the energy and roughly the size. Larger n means a larger, higher-energy orbital, and the shell is often still called the K, L, M shell.<br><br><b>l, the angular momentum quantum number</b> — any integer from 0 to n − 1. It fixes the shape, and is written as a letter: <b>l = 0 is s, 1 is p, 2 is d, 3 is f</b>. Note the ceiling: the first shell has only l = 0, so there is no such thing as a 1p orbital, and the second shell has no 2d.<br><br><b>m<sub>l</sub>, the magnetic quantum number</b> — any integer from −l to +l, which is <b>2l + 1 values</b>. It fixes the orientation in space. So an s subshell has one orbital, a p subshell three, a d subshell five, an f subshell seven.<br><br><b>m<sub>s</sub>, the spin quantum number</b> — either +½ or −½, and nothing else. It belongs to the electron rather than the orbital, and it is why an orbital holds two electrons and not one or three.<br><br>Counting follows immediately. A shell n contains <b>n² orbitals</b> and therefore holds <b>2n² electrons</b>: 2 in the first shell, 8 in the second, 18 in the third.<br><br>The <b>shapes</b> are what bonding will need. An <b>s</b> orbital is spherical. A <b>p</b> orbital is two lobes either side of the nucleus along an axis, with a <b>node</b> — a surface of zero probability — passing through the nucleus itself. There are three of them, along x, y and z. A <b>d</b> orbital has four lobes in most of its five forms. The number of nodes rises with n: an orbital has n − 1 nodes in total, l of them angular and the rest spherical, which is why a 2s orbital has a shell of zero probability inside it and a 1s does not.`,
+            figure: {
+              kind: 'graph', x: [0, 12], y: [0, 0.6], xlabel: 'distance from nucleus (units of a₀)', ylabel: 'radial probability',
+              fns: [
+                { expr: '4*x**2*exp(-2*x)', label: '1s' },
+                { expr: '0.125*x**2*(2-x)**2*exp(-x)', label: '2s', dashed: true, c: 1 }
+              ],
+              caption: 'How likely the electron is to be found at each distance, for the 1s and 2s orbitals. The 2s curve touches zero at x = 2 — a spherical node, a shell where the electron is never found — and has its main peak further out, which is why the second shell is larger. The 1s curve has no node at all, matching the rule that an orbital has n − 1 of them.'
+            },
+            rules: [
+              { name: 'Principal quantum number', expr: 'n is 1, 2, 3 and upward', words: true, note: 'Fixes the energy and roughly the size of the orbital.' },
+              { name: 'Angular momentum quantum number', expr: 'l = 0 to n - 1', note: 'Fixes the shape. l = 0 is s, 1 is p, 2 is d, 3 is f. The ceiling of n − 1 is why there is no 1p orbital.' },
+              { name: 'Magnetic quantum number', expr: 'm_l = -l to +l', note: 'Fixes the orientation, and there are 2l + 1 of them: one s orbital, three p, five d, seven f.' },
+              { name: 'Spin quantum number', expr: 'm_s is either +1/2 or -1/2', words: true, note: 'Belongs to the electron, not the orbital, and takes no other value. It is why an orbital holds exactly two electrons.' },
+              { name: 'Orbitals in a shell', expr: 'N_orb = n^2', note: 'One in the first shell, four in the second, nine in the third.' },
+              { name: 'Electrons in a shell', expr: 'N_e = 2 n^2', note: 'Two per orbital. This is the source of the 2, 8, 18 that the periodic table’s shape comes from.' },
+              { name: 'Nodes', expr: 'N_nodes = n - 1', note: 'Of which l are angular (through the nucleus) and the rest spherical.' }
+            ],
+            examples: [
+              {
+                prompt: 'For the shell n = 3, list the subshells, give the number of orbitals in each, and find the total number of electrons the shell can hold.',
+                approach: 'Work strictly down the chain of rules rather than recalling the answer: n fixes which values of l are allowed, each l gives 2l + 1 orbitals, and each orbital holds two electrons. Then check the total against 2n², which is the shortcut the long route justifies.',
+                steps: [
+                  { do: 'Allowed l values: 0 to n − 1 = 0, 1, 2', why: 'The ceiling is n − 1, so the third shell reaches d but no further — there is no 3f.' },
+                  { do: 'Name them: l = 0 is 3s, l = 1 is 3p, l = 2 is 3d', why: 'The number is n and the letter comes from l. This is the whole notation.' },
+                  { do: 'Orbitals: 2l + 1 gives 1 for 3s, 3 for 3p, 5 for 3d', why: 'From the m_l values: one for l = 0, the three of −1, 0, +1 for l = 1, and five for l = 2.' },
+                  { do: 'Total orbitals: 1 + 3 + 5 = 9', why: 'Which is n² = 3² = 9, as the rule says.' },
+                  { do: 'Electrons: 9 orbitals × 2 = 18', why: 'Two per orbital, because m_s takes exactly two values.' },
+                  { do: 'Check against 2n²: 2(9) = 18 ✓', why: 'The shortcut and the long route agree, which is what makes the shortcut safe to use later.' }
+                ],
+                answer: '3s (1 orbital), 3p (3), 3d (5) — 9 orbitals holding 18 electrons',
+                answerWords: true,
+                check: 'The periodic table agrees: the fourth period, which fills 4s, 3d and 4p, is eighteen elements long, and the eighteen electrons of a full third shell are exactly why. If the count had come out at 8, the transition metals would have nowhere to go.'
+              },
+              {
+                prompt: 'Decide whether each set (n, l, m_l) is allowed: (a) (2, 1, −1), (b) (1, 1, 0), (c) (3, 2, 3), (d) (4, 0, 0).',
+                approach: 'Two constraints do all the work, and they must be checked in order because the second depends on the first: l must lie between 0 and n − 1, and only then must m_l lie between −l and +l. Naming the orbital each valid set describes is a useful final step, because a set that cannot be named is usually a set that is not allowed.',
+                steps: [
+                  { do: '(a) n = 2 allows l = 0 or 1, so l = 1 is fine; then m_l runs −1, 0, +1 and −1 is among them', why: 'Both constraints satisfied. This is one of the three 2p orbitals.' },
+                  { do: '(b) n = 1 allows only l = 0, so l = 1 is impossible', why: 'The ceiling is n − 1 = 0. This is the set that names a 1p orbital, and there is no such thing.' },
+                  { do: '(c) n = 3 allows l = 2, so far so good', why: 'The first constraint passes, which is exactly why this one has to be checked twice.' },
+                  { do: '(c) continued: l = 2 allows m_l from −2 to +2, and 3 is outside that range', why: 'Not allowed. A 3d subshell has five orbitals, not seven.' },
+                  { do: '(d) n = 4 allows l = 0; l = 0 allows only m_l = 0', why: 'Both fine. This is the 4s orbital, the only one in its subshell.' },
+                  { do: 'Verdict: (a) and (d) are allowed; (b) and (c) are not', why: 'Each rejection names which rule failed, which is what the marks are for.' }
+                ],
+                answer: '(a) allowed, 2p; (b) not allowed; (c) not allowed; (d) allowed, 4s',
+                answerWords: true,
+                check: 'Read the rejections back as chemistry: (b) would need a p orbital in the first shell, but the first period has only two elements, which is one s orbital’s worth; (c) would need a sixth d orbital, but the d block is ten elements wide, which is five orbitals of two ✓.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'c1k-l-exceeds-n',
+                wrong: 'Writing a 1p or 2d orbital',
+                right: 'l runs only from 0 to n − 1, so the first shell has s alone and the second has s and p alone.',
+                why: 'The notation makes every combination look writable, and nothing in the symbols themselves objects. The consequence is visible in the table: the first period is two elements long because the first shell holds one orbital, and a 1p subshell would make it eight.'
+              },
+              {
+                id: 'c1k-ml-range-ignored',
+                wrong: 'Allowing an m_l value outside −l to +l',
+                right: 'There are exactly 2l + 1 orientations: one s, three p, five d, seven f.',
+                why: 'The first constraint passes and attention moves on, so the second is checked loosely or not at all. It is the constraint that sets the width of each block of the periodic table, so getting it wrong makes the d block ten wide for no reason anyone can state.'
+              },
+              {
+                id: 'c1k-spin-as-rotation',
+                wrong: 'Taking spin to mean the electron is physically rotating, or allowing values other than ±½',
+                right: 'It is an intrinsic property with exactly two values. That is why an orbital holds two electrons.',
+                why: 'The name invites the picture, and the picture predicts a whole range of possible spin rates. Two values and only two is the fact that the whole structure of electron configurations rests on, so the pairing rule of the next chapter has no basis without it.'
+              },
+              {
+                id: 'c1k-shell-capacity-guessed',
+                wrong: 'Recalling shell capacities as a memorised list without knowing where 2, 8, 18 come from',
+                right: 'n² orbitals, two electrons each — so 2n².',
+                why: 'The memorised list breaks down at the fourth shell, where 4s fills before 3d and the periods stop matching the shells. Deriving the capacity from the quantum numbers keeps the counting right when the filling order stops being obvious, which is the next chapter’s whole subject.'
+              }
+            ]
+          }
+        ],
+        practice: [
+
+          { id: 'v1', kind: 'numeric', lesson: 'c1',
+            prompt: 'Green light has a wavelength of 525 nm. Find its frequency, in units of 10¹⁴ s⁻¹, to two decimal places.',
+            answer: 5.71, tol: 0.03, verify: { expr: '(3*10**8/(525*10**-9))/10**14', dp: 2 },
+            hint: 'ν = c/λ, and the wavelength must be in metres first.',
+            solution: ['λ = 525 × 10⁻⁹ m', 'ν = 3.00 × 10⁸/5.25 × 10⁻⁷', '= 5.71 × 10¹⁴ s⁻¹'] },
+
+          { id: 'v2', kind: 'numeric', lesson: 'c1',
+            prompt: 'Find the energy of one photon of 525 nm light, in units of 10⁻¹⁹ J, to two decimal places.',
+            answer: 3.79, tol: 0.03, verify: { expr: '(6.626*10**-34*3*10**8/(525*10**-9))/10**-19', dp: 2 },
+            hint: 'E = hc/λ.',
+            solution: ['E = (6.626 × 10⁻³⁴)(3.00 × 10⁸)/(5.25 × 10⁻⁷)', '= 3.79 × 10⁻¹⁹ J', 'Between the yellow and violet values, as green should be'] },
+
+          { id: 'v3', kind: 'numeric', lesson: 'c1',
+            prompt: 'A photon has a frequency of 8.50 × 10¹⁴ s⁻¹. Find its wavelength in nanometres, to the nearest nanometre.',
+            answer: 353, tol: 2, verify: { expr: '(3*10**8/(8.5*10**14))*10**9', dp: 0 },
+            hint: 'λ = c/ν, then convert metres to nanometres.',
+            solution: ['λ = 3.00 × 10⁸/8.50 × 10¹⁴ = 3.53 × 10⁻⁷ m', '× 10⁹ nm/m', '= 353 nm, in the ultraviolet'] },
+
+          { id: 'v4', kind: 'numeric', lesson: 'c1',
+            prompt: 'Find the energy of one mole of photons of 400.0 nm violet light, in kJ/mol, to the nearest kJ/mol.',
+            answer: 299, tol: 2, verify: { expr: '(6.626*10**-34*3*10**8/(400*10**-9))*6.022*10**23/1000', dp: 0 },
+            hint: 'One photon first, then multiply by Avogadro and divide by a thousand.',
+            solution: ['E = hc/λ = 4.97 × 10⁻¹⁹ J', '× 6.022 × 10²³ = 2.99 × 10⁵ J/mol', '= 299 kJ/mol'] },
+
+          { id: 'v5', kind: 'mc', lesson: 'c1',
+            prompt: 'A red lamp is made ten times brighter. What happens to the energy of each photon it emits?',
+            options: [
+              { t: 'Nothing — brightness changes the number of photons, not the energy of one', ok: true },
+              { t: 'It becomes ten times larger' },
+              { t: 'It becomes ten times smaller' },
+              { t: 'It rises, but by less than a factor of ten' }
+            ],
+            hint: 'Which quantity appears in E = hν?',
+            solution: ['Photon energy depends on frequency alone', 'Intensity is a count of photons per second', 'This is why no red lamp, however bright, can do what a dim UV lamp does'] },
+
+          { id: 'v6', kind: 'mc', lesson: 'c1',
+            prompt: 'Which of these has the longest wavelength?',
+            options: [
+              { t: 'A microwave photon', ok: true },
+              { t: 'An ultraviolet photon' },
+              { t: 'A green photon' },
+              { t: 'An X-ray photon' }
+            ],
+            hint: 'Order the spectrum by energy, then invert.',
+            solution: ['Microwaves are the least energetic of these four', 'E = hc/λ makes low energy mean long wavelength', 'The order by wavelength is X-ray < UV < green < microwave'] },
+
+          { id: 'v7', kind: 'spot', lesson: 'c1',
+            prompt: 'Find the photon energy of light at 650 nm. Which step is wrong?',
+            steps: [
+              { t: 'E = hc/λ is the right relation to use', bad: false },
+              { t: 'λ = 650 nm, so substitute λ = 650 into it', bad: true },
+              { t: 'h = 6.626 × 10⁻³⁴ J·s and c = 3.00 × 10⁸ m/s', bad: false },
+              { t: 'Report the answer in joules', bad: false }
+            ],
+            why: 'The wavelength must be converted to metres first: 650 nm = 6.50 × 10⁻⁷ m. Substituting 650 makes the answer wrong by a factor of 10⁹, giving about 3 × 10⁻²⁸ J — far too small for visible light, which always lands near a few times 10⁻¹⁹ J. Both constants are in SI units, and that is what forces the conversion.',
+            hint: 'What units do h and c assume?',
+            solution: ['650 nm = 6.50 × 10⁻⁷ m', 'E = (6.626 × 10⁻³⁴)(3.00 × 10⁸)/(6.50 × 10⁻⁷)', '= 3.06 × 10⁻¹⁹ J'] },
+
+          { id: 'v8', kind: 'numeric', lesson: 'c2',
+            prompt: 'Find the energy of the n = 2 level of hydrogen, in units of 10⁻¹⁹ J, to two decimal places. Give the answer as a negative number.',
+            answer: -5.45, tol: 0.03, verify: { expr: '(-2.18*10**-18/4)/10**-19', dp: 2 },
+            hint: 'E_n = −2.18 × 10⁻¹⁸/n².',
+            solution: ['n² = 4', 'E₂ = −2.18 × 10⁻¹⁸/4', '= −5.45 × 10⁻¹⁹ J'] },
+
+          { id: 'v9', kind: 'numeric', lesson: 'c2',
+            prompt: 'An electron falls from n = 4 to n = 2 in a hydrogen atom. Find the energy of the photon emitted, in units of 10⁻¹⁹ J, to two decimal places.',
+            answer: 4.09, tol: 0.03, verify: { expr: 'abs(-2.18*10**-18/4 + 2.18*10**-18/16)/10**-19', dp: 2 },
+            hint: 'Take the magnitude of E_final − E_initial.',
+            solution: ['E₄ = −1.36 × 10⁻¹⁹ J and E₂ = −5.45 × 10⁻¹⁹ J', 'ΔE = −5.45 − (−1.36) = −4.09 × 10⁻¹⁹ J', 'The photon carries 4.09 × 10⁻¹⁹ J'] },
+
+          { id: 'v10', kind: 'numeric', lesson: 'c2',
+            prompt: 'Find the wavelength, in nanometres, of the photon emitted in the n = 4 to n = 2 transition, to the nearest nanometre.',
+            answer: 486, tol: 4, verify: { expr: '(6.626*10**-34*3*10**8/(2.18*10**-18*(1/4 - 1/16)))*10**9', dp: 0 },
+            hint: 'λ = hc/|ΔE|, using the energy from the previous question.',
+            solution: ['|ΔE| = 4.09 × 10⁻¹⁹ J', 'λ = (6.626 × 10⁻³⁴)(3.00 × 10⁸)/(4.09 × 10⁻¹⁹)', '= 4.86 × 10⁻⁷ m = 486 nm, blue-green'] },
+
+          { id: 'v11', kind: 'mc', lesson: 'c2',
+            prompt: 'Why does a hydrogen discharge tube give sharp lines rather than a continuous rainbow?',
+            options: [
+              { t: 'Because the electron can hold only certain energies, so only certain differences exist', ok: true },
+              { t: 'Because the glass of the tube absorbs the other colours' },
+              { t: 'Because hydrogen atoms are too small to emit most wavelengths' },
+              { t: 'Because the gas is at low pressure' }
+            ],
+            hint: 'A sharp line is a single photon energy.',
+            solution: ['Each line is one transition between two quantised levels',
+              'A continuous spectrum would require a continuous range of level differences',
+              'This is the observation that forced quantisation in the first place'] },
+
+          { id: 'v12', kind: 'mc', lesson: 'c2',
+            prompt: 'Which transition in hydrogen emits the MOST energetic photon?',
+            options: [
+              { t: 'n = 2 → n = 1', ok: true },
+              { t: 'n = 3 → n = 2' },
+              { t: 'n = 4 → n = 3' },
+              { t: 'n = 6 → n = 5' }
+            ],
+            hint: 'Where are the level gaps largest?',
+            solution: ['The 1/n² spacing crowds the levels as n rises', 'The 1 → 2 gap is by far the largest in the atom',
+              'Transitions ending at n = 1 are ultraviolet; those ending at n = 2 are visible'] },
+
+          { id: 'v13', kind: 'spot', lesson: 'c2',
+            prompt: 'Find the wavelength emitted when an electron falls from n = 3 to n = 1. Which step is wrong?',
+            steps: [
+              { t: 'E₃ = −2.18 × 10⁻¹⁸/9 and E₁ = −2.18 × 10⁻¹⁸ J', bad: false },
+              { t: 'ΔE = E₃ − E₁ = +1.94 × 10⁻¹⁸ J', bad: true },
+              { t: 'The photon carries a magnitude of 1.94 × 10⁻¹⁸ J', bad: false },
+              { t: 'λ = hc/|ΔE| = 102 nm, in the ultraviolet', bad: false }
+            ],
+            why: 'ΔE is final minus initial, so it is E₁ − E₃ = −1.94 × 10⁻¹⁸ J. The magnitude is right, but the positive sign reports absorption when the atom is emitting, and a drop to a lower level must always give a negative ΔE. The check is the wavelength: dividing by a negative ΔE would give a negative length.',
+            hint: 'Which order does ΔE take?',
+            solution: ['ΔE = E_final − E_initial = E₁ − E₃', '= −1.94 × 10⁻¹⁸ J, negative because the atom lost energy', 'The photon carries the magnitude, giving 102 nm'] },
+
+          { id: 'v14', kind: 'numeric', lesson: 'c3',
+            prompt: 'Find the de Broglie wavelength, in picometres, of an electron moving at 1.50 × 10⁶ m/s, to the nearest picometre. Take m = 9.11 × 10⁻³¹ kg.',
+            answer: 485, tol: 4, verify: { expr: '(6.626*10**-34/(9.11*10**-31*1.5*10**6))*10**12', dp: 0 },
+            hint: 'λ = h/(mv), then convert metres to picometres.',
+            solution: ['mv = (9.11 × 10⁻³¹)(1.50 × 10⁶) = 1.367 × 10⁻²⁴', 'λ = 6.626 × 10⁻³⁴/1.367 × 10⁻²⁴ = 4.85 × 10⁻¹⁰ m', '= 485 pm'] },
+
+          { id: 'v15', kind: 'numeric', lesson: 'c3',
+            prompt: 'Find the de Broglie wavelength of a 0.0200 kg bullet travelling at 500.0 m/s, in units of 10⁻³⁵ m, to two decimal places.',
+            answer: 6.63, tol: 0.05, verify: { expr: '(6.626*10**-34/(0.02*500))/10**-35', dp: 2 },
+            hint: 'The same formula. The mass is already in kilograms.',
+            solution: ['mv = 0.0200 × 500.0 = 10.0 kg·m/s', 'λ = 6.626 × 10⁻³⁴/10.0', '= 6.63 × 10⁻³⁵ m, far too small to detect'] },
+
+          { id: 'v16', kind: 'mc', lesson: 'c3',
+            prompt: 'Why is the wave nature of a baseball never observed?',
+            options: [
+              { t: 'Its mass is so large that the wavelength is far smaller than anything measurable', ok: true },
+              { t: 'Macroscopic objects genuinely have no wavelength' },
+              { t: 'Its speed is too low for a wave to form' },
+              { t: 'Air molecules absorb the wave' }
+            ],
+            hint: 'Where does the mass sit in λ = h/(mv)?',
+            solution: ['Mass is in the denominator, so a large mass gives a tiny wavelength',
+              'A baseball comes out near 10⁻³⁴ m, nineteen powers of ten below a proton',
+              'The difference from an electron is one of scale, not of law'] },
+
+          { id: 'v17', kind: 'mc', lesson: 'c3',
+            prompt: 'What does the uncertainty principle rule out?',
+            options: [
+              { t: 'Knowing an electron’s position and velocity precisely at the same time, which is what an orbit requires', ok: true },
+              { t: 'Measuring an electron’s position at all' },
+              { t: 'Electrons having any definite energy' },
+              { t: 'The existence of orbitals' }
+            ],
+            hint: 'It constrains a product, not either quantity alone.',
+            solution: ['Either quantity alone can be known as precisely as you like', 'It is their product that has a floor',
+              'A Bohr orbit specifies both at every instant, which is why it cannot be right'] },
+
+          { id: 'v18', kind: 'numeric', lesson: 'c4',
+            prompt: 'How many orbitals are there in the shell n = 4?',
+            answer: 16, verify: { expr: '4**2' },
+            hint: 'n² orbitals in a shell.',
+            solution: ['4² = 16', 'Made up of one 4s, three 4p, five 4d and seven 4f', '1 + 3 + 5 + 7 = 16 ✓'] },
+
+          { id: 'v19', kind: 'numeric', lesson: 'c4',
+            prompt: 'How many electrons can the shell n = 4 hold in total?',
+            answer: 32, verify: { expr: '2*4**2' },
+            hint: '2n², since each orbital takes two electrons.',
+            solution: ['16 orbitals × 2 electrons each', '= 32', 'Which is 2n² = 2(16)'] },
+
+          { id: 'v20', kind: 'numeric', lesson: 'c4',
+            prompt: 'How many orbitals are there in an f subshell?',
+            answer: 7, verify: { expr: '2*3 + 1' },
+            hint: '2l + 1, and f means l = 3.',
+            solution: ['f corresponds to l = 3', '2l + 1 = 2(3) + 1 = 7', 'Which is why the f block is fourteen elements wide'] },
+
+          { id: 'v21', kind: 'mc', lesson: 'c4',
+            prompt: 'Which set of quantum numbers (n, l, m_l) is NOT allowed?',
+            options: [
+              { t: '(2, 2, 0)', ok: true },
+              { t: '(3, 1, −1)' },
+              { t: '(4, 3, 2)' },
+              { t: '(1, 0, 0)' }
+            ],
+            hint: 'Check l against n − 1 first.',
+            solution: ['n = 2 allows only l = 0 or 1', 'l = 2 would be a 2d orbital, which does not exist',
+              'The other three describe 3p, 4f and 1s orbitals'] },
+
+          { id: 'v22', kind: 'mc', lesson: 'c4',
+            prompt: 'How many nodes does a 3s orbital have?',
+            options: [
+              { t: 'Two, both spherical', ok: true },
+              { t: 'None' },
+              { t: 'Three, all spherical' },
+              { t: 'One angular and one spherical' }
+            ],
+            hint: 'n − 1 nodes in total, of which l are angular.',
+            solution: ['n − 1 = 2 nodes altogether', 'l = 0 for an s orbital, so none of them is angular',
+              'Both are therefore spherical shells of zero probability'] },
+
+          { id: 'v23', kind: 'order', lesson: 'c2',
+            prompt: 'Put the steps for finding the wavelength emitted in a hydrogen transition in order.',
+            steps: [
+              'Compute the energy of each level from E_n = −2.18 × 10⁻¹⁸/n²',
+              'Subtract as final minus initial to get ΔE',
+              'Take the magnitude, since a photon energy cannot be negative',
+              'Convert to a wavelength with λ = hc/|ΔE|'
+            ],
+            hint: 'The sign is settled before the magnitude is taken.',
+            solution: ['Both levels first, because ΔE is a difference', 'Final minus initial fixes the direction',
+              'Only then is the magnitude handed to the photon'] },
+
+          { id: 'v24', kind: 'order', lesson: 'c4',
+            prompt: 'Put the steps for checking whether a set of quantum numbers is allowed in order.',
+            steps: [
+              'Check that n is a positive integer',
+              'Check that l lies between 0 and n − 1',
+              'Check that m_l lies between −l and +l',
+              'Name the orbital the set describes'
+            ],
+            hint: 'Each constraint depends on the one before it.',
+            solution: ['n comes first because it sets the ceiling on l',
+              'l must be settled before the range of m_l is even known',
+              'A set that cannot be named as an orbital is usually one that failed a rule'] }
+        ]
+      },
+
+      /* ============================ CHAPTER 8 ============================ */
+      {
+        id: 'periodic', n: 4,
+        title: 'Periodic properties of the elements',
+        blurb: 'The payoff from the previous chapter. Fill the orbitals in energy order and the periodic table falls out of the arithmetic — its blocks, its widths, and the trends in size and in how tightly the outermost electron is held, which between them explain most of the reactivity in the rest of the course.',
+        read: 'Chapter 8',
+        objectives: [
+          'Write a ground-state electron configuration and an orbital diagram, applying the aufbau principle, the Pauli exclusion principle and Hund\'s rule',
+          'Read a configuration straight off the periodic table, and use the noble-gas shorthand',
+          'Count valence electrons, and explain what effective nuclear charge is and why it rises across a period',
+          'Predict and explain the trends in atomic radius, ionic radius and ionisation energy',
+          'Write the configuration of an ion, removing electrons from the highest n first'
+        ],
+        lessons: [
+
+          {
+            id: 'd1', title: 'Electron configurations and the rules that fill them', src: 'Section 8.3',
+            idea: `An <b>electron configuration</b> says which orbitals the electrons of an atom occupy in the ground state — the arrangement of lowest total energy. Three rules decide it, and every one of them is asked about.<br><br><b>The aufbau principle.</b> Electrons enter the lowest-energy orbital available. In a multi-electron atom the energy depends on <b>both</b> n and l, not on n alone, and the order is<br><br><b>1s 2s 2p 3s 3p 4s 3d 4p 5s 4d 5p 6s 4f 5d 6p</b><br><br>The 4s before 3d is the first place this bites, and it is not a curiosity — it is why the fourth period starts with potassium and calcium before the transition metals appear.<br><br><b>The Pauli exclusion principle.</b> No two electrons in an atom may have all four quantum numbers the same. Since an orbital fixes n, l and m<sub>l</sub>, the two electrons in it must differ in m<sub>s</sub> — so <b>an orbital holds at most two electrons, and they must be paired with opposite spins</b>.<br><br><b>Hund's rule.</b> Within a subshell of equal-energy orbitals, electrons occupy separate orbitals with parallel spins before any orbital is doubled up. Nitrogen's three 2p electrons go one into each of the three 2p orbitals, not two into one. The reason is repulsion: two electrons in the same small orbital repel more than two in different ones.<br><br>The <b>orbital diagram</b> shows this explicitly, with a box per orbital and an arrow per electron — up for one spin, down for the other. A configuration such as 2p³ hides whether the electrons are paired; the diagram does not, and questions about <b>unpaired electrons</b> are asking for the diagram.<br><br>Writing a configuration is then mechanical: count the electrons — equal to the atomic number for a neutral atom — and pour them into the orbital order, respecting the capacities s 2, p 6, d 10, f 14. Silicon, Z = 14: 1s² 2s² 2p⁶ 3s² 3p², and the superscripts must sum to 14.`,
+            figure: {
+              kind: 'graph', x: [0.5, 8.5], y: [0, 5], xlabel: 'filling order →', ylabel: 'relative energy',
+              fns: [{ pts: [[1, 0.2], [2, 1.4], [3, 1.9], [4, 2.6], [5, 3.0], [6, 3.4], [7, 3.6], [8, 4.1]], label: 'rising energy' }],
+              points: [
+                { x: 1, y: 0.2, label: '1s' }, { x: 2, y: 1.4, label: '2s' }, { x: 3, y: 1.9, label: '2p' },
+                { x: 4, y: 2.6, label: '3s' }, { x: 5, y: 3.0, label: '3p' }, { x: 6, y: 3.4, label: '4s' },
+                { x: 7, y: 3.6, label: '3d' }, { x: 8, y: 4.1, label: '4p' }
+              ],
+              caption: 'The order the orbitals fill, by energy. The only surprise is the sixth and seventh marks: 4s sits just below 3d, so it fills first even though its principal quantum number is larger. In a multi-electron atom the energy depends on l as well as n, and that single inversion is what puts the transition metals where they are.'
+            },
+            rules: [
+              { name: 'Aufbau order', expr: '1s 2s 2p 3s 3p 4s 3d 4p 5s 4d 5p', words: true, note: 'Lowest energy first. Note 4s before 3d — energy depends on n and l together, not on n alone.' },
+              { name: 'Pauli exclusion principle', expr: 'No two electrons share all four quantum numbers', words: true, note: 'So an orbital holds two electrons at most, and they must have opposite spins.' },
+              { name: 'Hund’s rule', expr: 'Singly occupy equal-energy orbitals first, with parallel spins', words: true, note: 'Doubling up costs repulsion energy, so it is postponed until every orbital of the subshell has one.' },
+              { name: 'Subshell capacities', expr: 's 2, p 6, d 10, f 14', words: true, note: 'Two electrons per orbital, and 2l + 1 orbitals per subshell.' },
+              { name: 'Electrons to place', expr: 'N_e = Z', note: 'For a neutral atom. The superscripts in the configuration must add up to it — the standard self-check.' }
+            ],
+            examples: [
+              {
+                prompt: 'Write the ground-state electron configuration of sulfur (Z = 16), draw its 3p orbital diagram in words, and say how many unpaired electrons it has.',
+                approach: 'Count the electrons first, then fill the orbitals in the aufbau order until they run out, checking the superscripts against the count at the end. The unpaired-electron question is not answered by the configuration itself — it needs Hund’s rule applied to the partly filled subshell, which is the last step and the one carrying the marks.',
+                steps: [
+                  { do: 'Sulfur is Z = 16, so a neutral atom has 16 electrons to place', why: 'Atomic number is the proton count, and a neutral atom matches it with electrons.' },
+                  { do: 'Fill in order: 1s² (2), 2s² (4), 2p⁶ (10), 3s² (12), leaving 4', why: 'Running the total alongside makes the stopping point obvious and prevents overfilling.' },
+                  { do: 'The next subshell is 3p, which holds 6 — put the remaining 4 in: 3p⁴', why: 'A subshell need not be full. The four electrons stop where the count stops.' },
+                  { do: 'Configuration: 1s² 2s² 2p⁶ 3s² 3p⁴, and 2 + 2 + 6 + 2 + 4 = 16 ✓', why: 'The superscript sum is the check that catches a miscount immediately.' },
+                  { do: 'Apply Hund’s rule to 3p⁴: three orbitals, so the first three electrons go in singly, and the fourth must pair with one of them', why: 'Separate orbitals first, then doubling up — and only the fourth electron has no empty orbital left.' },
+                  { do: 'That leaves one paired orbital and two singly occupied ones: 2 unpaired electrons', why: 'The diagram answers the question and the configuration alone could not — 3p⁴ says nothing about pairing.' }
+                ],
+                answer: '1s² 2s² 2p⁶ 3s² 3p⁴, with 2 unpaired electrons',
+                answerWords: true,
+                check: 'The position on the table agrees: sulfur is in group 6A of the third period, so its outer shell is 3s² 3p⁴ — six valence electrons, matching the group number ✓. And oxygen, directly above it, has 2p⁴ and the same two unpaired electrons, which is why both are paramagnetic.'
+              },
+              {
+                prompt: 'Write the ground-state configuration of iron (Z = 26) in full and in noble-gas shorthand.',
+                approach: 'The same procedure, but far enough along the order that the 4s-before-3d inversion matters — which is exactly why this element is asked. Fill to argon, then 4s, then put what is left into 3d. The shorthand is a compression of the result, not a different calculation.',
+                steps: [
+                  { do: 'Iron is Z = 26, so 26 electrons', why: 'Neutral atom again.' },
+                  { do: 'Through argon: 1s² 2s² 2p⁶ 3s² 3p⁶ accounts for 18', why: 'Argon closes the third period, which is what makes it the shorthand core.' },
+                  { do: 'Next in the aufbau order is 4s, not 3d: 4s² takes the count to 20', why: 'The inversion. Following n alone would give 3d here and the wrong answer for every fourth-period element.' },
+                  { do: 'The remaining 6 go into 3d, which holds 10: 3d⁶', why: 'Partly filled, which is characteristic of the transition metals and the source of their coloured compounds.' },
+                  { do: 'Full: 1s² 2s² 2p⁶ 3s² 3p⁶ 4s² 3d⁶, summing to 2+2+6+2+6+2+6 = 26 ✓', why: 'The superscript check again.' },
+                  { do: 'Shorthand: [Ar] 4s² 3d⁶', why: 'The bracketed noble gas stands for its whole configuration, leaving only the electrons that do chemistry on display.' }
+                ],
+                answer: '1s² 2s² 2p⁶ 3s² 3p⁶ 4s² 3d⁶, or [Ar] 4s² 3d⁶',
+                answerWords: true,
+                check: 'Count from the table instead: iron is the sixth element of the fourth period’s d block, and the two elements before the block are potassium and calcium filling 4s — so 4s² and 3d⁶ ✓. Applying Hund’s rule to 3d⁶ gives four unpaired electrons, which is why iron is strongly magnetic.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'c1k-3d-before-4s',
+                wrong: 'Filling 3d before 4s because 3 is less than 4',
+                right: 'The aufbau order is 4s then 3d — in a multi-electron atom the energy depends on n and l together.',
+                why: 'Ordering by principal quantum number alone is the obvious reading and it works for the first eighteen elements, so the habit is well established by the time it fails. It fails for every element from potassium onward, and it makes the shape of the fourth period inexplicable.'
+              },
+              {
+                id: 'c1k-hund-ignored',
+                wrong: 'Pairing electrons in the first orbital of a subshell before the others are used',
+                right: 'One electron into each equal-energy orbital first, spins parallel; pair only when there is no empty orbital left.',
+                why: 'Filling left to right feels orderly, and the written configuration looks identical either way — 2p³ is 2p³. The difference shows up in the count of unpaired electrons and hence in magnetic behaviour, which is precisely what such questions test.'
+              },
+              {
+                id: 'c1k-superscripts-unchecked',
+                wrong: 'Writing a configuration without checking that the superscripts add to Z',
+                right: 'Sum them every time: for sulfur 2 + 2 + 6 + 2 + 4 = 16.',
+                why: 'A configuration looks plausible whether or not the arithmetic works, and an overfilled or underfilled subshell is invisible on the page. The sum takes three seconds and catches nearly every slip in the process, including a capacity misremembered.'
+              },
+              {
+                id: 'c1k-pauli-as-three-electrons',
+                wrong: 'Placing three electrons in one orbital, or two with the same spin',
+                right: 'Two per orbital, and they must be opposite in spin.',
+                why: 'The capacities are usually memorised as s 2, p 6, d 10 without the reason, so nothing objects when an extra arrow is drawn. Those capacities are consequences of the exclusion principle rather than separate facts, and knowing that makes them impossible to misremember.'
+              }
+            ]
+          },
+
+          {
+            id: 'd2', title: 'Configurations from the periodic table, and valence electrons', src: 'Section 8.4',
+            idea: `The periodic table is a map of the filling order, which is why a configuration can be read off it instead of derived. Its <b>blocks</b> are the subshell being filled:<br><br><b>s block</b> — groups 1A and 2A, plus helium<br><b>p block</b> — groups 3A to 8A, six columns wide<br><b>d block</b> — the transition metals, ten columns wide<br><b>f block</b> — the two rows set below, fourteen columns wide<br><br>The widths are not arbitrary: they are 2, 6, 10 and 14, the capacities of s, p, d and f. The <b>period number</b> gives n for the s and p blocks; the d block of period n is <b>(n − 1)d</b> and the f block is <b>(n − 2)f</b>, which is the 4s-before-3d inversion showing up as a shape on the page.<br><br>To read a configuration: start at hydrogen, sweep left to right along each period to the element, and write down the subshell each region belongs to. Bromine, in period 4 group 7A, comes out as [Ar] 4s² 3d¹⁰ 4p⁵ — and the count works because five elements into the p block means p⁵.<br><br>The <b>valence electrons</b> are the ones in the outermost shell — the highest n — and they are what chemistry is made of. For a main-group element the count is the <b>group number</b>: 1A has one, 5A has five, 7A has seven. Everything below is <b>core</b>, held tightly and unavailable.<br><br>For a transition metal the d electrons are in a shell below the outermost one, but the <b>ns and (n − 1)d electrons are close in energy</b>, which is why these elements show several oxidation states rather than one.<br><br>Two <b>exceptions</b> are worth knowing because they are examined: chromium is [Ar] 4s¹ 3d⁵ and copper is [Ar] 4s¹ 3d¹⁰, not the 4s² forms the rules predict. A half-filled or filled d subshell is slightly more stable than the strict order allows, and one 4s electron moves across to reach it.`,
+            figure: {
+              kind: 'graph', x: [0.5, 8.5], y: [0, 8.5], xlabel: 'main group (1A → 8A)', ylabel: 'valence electrons',
+              fns: [{ expr: 'x', label: 'valence electrons = group number' }],
+              points: [
+                { x: 1, y: 1, label: 'Na' }, { x: 2, y: 2 }, { x: 4, y: 4, label: 'Si' },
+                { x: 6, y: 6, label: 'S' }, { x: 7, y: 7, label: 'Cl' }, { x: 8, y: 8, label: 'Ar' }
+              ],
+              caption: 'For a main-group element the number of valence electrons equals the group number — which is why the whole of group 7A behaves alike and why the table is arranged in columns at all. The line is exact for groups 1A to 8A; the transition metals sit outside it, because their d electrons are close enough in energy to join in and the simple count breaks down.'
+            },
+            rules: [
+              { name: 'Blocks and their widths', expr: 's 2, p 6, d 10, f 14 columns', words: true, note: 'The width of each block is the capacity of the subshell it fills. Nothing about the table’s shape is arbitrary.' },
+              { name: 'Which shell a block fills', expr: 'period n fills ns and np, but (n - 1)d and (n - 2)f', words: true, note: 'The offsets are the 4s-before-3d inversion, drawn as a shape.' },
+              { name: 'Valence electrons', expr: 'N_val = group number', note: 'For a main-group element. These are the electrons in the highest n, and they are the ones that react.' },
+              { name: 'Noble-gas shorthand', expr: 'Replace the core with the previous noble gas in brackets', words: true, note: 'It leaves only the electrons that do chemistry visible.' },
+              { name: 'The two common exceptions', expr: 'Cr is 4s1 3d5 and Cu is 4s1 3d10', note: 'A half-filled or filled d subshell is worth borrowing an s electron for.' }
+            ],
+            examples: [
+              {
+                prompt: 'Using the periodic table, write the configuration of bromine (Z = 35) in noble-gas shorthand, and say how many valence electrons it has.',
+                approach: 'Rather than filling 35 electrons one subshell at a time, locate the element and read the blocks crossed on the way to it. Bromine is in period 4, so the core is the noble gas that closes period 3, and then the fourth period is crossed block by block. The valence count comes from the group, and the two answers must agree.',
+                steps: [
+                  { do: 'Locate bromine: period 4, group 7A, in the p block', why: 'Position is the whole method here — the blocks crossed are the subshells filled.' },
+                  { do: 'Core: argon closes period 3, so start from [Ar], which is 18 electrons', why: 'The shorthand saves rewriting the first three periods.' },
+                  { do: 'Crossing period 4: first the s block, two elements wide, giving 4s²', why: 'Period number n = 4 for the s block, and its width is the capacity of an s subshell.' },
+                  { do: 'Then the d block, ten wide, giving 3d¹⁰ — note the n − 1', why: 'The d block of period 4 fills the third shell. This is the inversion appearing as the table’s layout.' },
+                  { do: 'Then into the p block: group 7A is the fifth p column, so 4p⁵', why: 'Groups 3A to 8A are p¹ to p⁶, so 7A is p⁵. Counting columns from the left edge of the block is the reliable way.' },
+                  { do: '[Ar] 4s² 3d¹⁰ 4p⁵; total 18 + 2 + 10 + 5 = 35 ✓, and the valence shell is n = 4 with 2 + 5 = 7 electrons', why: 'Seven valence electrons, matching group 7A — the two routes agree, which is the check.' }
+                ],
+                answer: '[Ar] 4s² 3d¹⁰ 4p⁵, with 7 valence electrons',
+                answerWords: true,
+                check: 'The chemistry follows: seven valence electrons means one short of a full shell, so bromine gains a single electron to give Br⁻ — which is exactly what every halogen does, and why they share a column. The 3d¹⁰ electrons are not valence: they are in the third shell, below the outermost.'
+              },
+              {
+                prompt: 'Predict the configuration of chromium (Z = 24) from the aufbau order, state the actual one, and explain the difference.',
+                approach: 'Do the prediction honestly first, because the exception is only meaningful against it. Then state the observed configuration and give the reason — a half-filled subshell is worth a small energy price elsewhere. The count of unpaired electrons at the end shows why the difference is measurable rather than a matter of bookkeeping.',
+                steps: [
+                  { do: 'Chromium is Z = 24, in period 4, the fourth element of the d block', why: 'Position first, as in the previous example.' },
+                  { do: 'Strict aufbau prediction: [Ar] 4s² 3d⁴', why: '18 + 2 + 4 = 24. This is what the rules as stated give.' },
+                  { do: 'The observed configuration is [Ar] 4s¹ 3d⁵', why: 'One 4s electron has moved into 3d. The total is still 24, so nothing is lost or invented.' },
+                  { do: 'Reason: 3d⁵ is half filled, with one electron in each of the five d orbitals', why: 'By Hund’s rule that arrangement minimises repulsion, and the gain outweighs the cost of emptying half the 4s.' },
+                  { do: 'The 4s and 3d energies are very close, which is what makes the trade possible', why: 'If the gap were large no amount of exchange stability would pay for the move — the inversion is narrow, not decisive.' },
+                  { do: 'Consequence: six unpaired electrons rather than four', why: 'Five in 3d and one in 4s, all parallel. This is measurable magnetically, which is how the configuration is known at all.' }
+                ],
+                answer: 'Predicted [Ar] 4s² 3d⁴; actual [Ar] 4s¹ 3d⁵, for a half-filled d subshell',
+                answerWords: true,
+                check: 'Copper follows the same logic one step further along: predicted [Ar] 4s² 3d⁹, actual [Ar] 4s¹ 3d¹⁰, this time for a FULL d subshell ✓. Both keep the electron count right — only the distribution changes, which is why the exceptions are safe to remember as a pair.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'c1k-d-electrons-as-valence',
+                wrong: 'Counting the 3d¹⁰ electrons of bromine among its valence electrons',
+                right: 'Valence electrons are those in the highest n — for bromine, the seven in n = 4.',
+                why: 'They appear late in the written configuration, which makes them look outermost, and the shorthand puts them right beside the 4p electrons. Counting them gives seventeen valence electrons and destroys the correspondence with the group number that makes the table useful.'
+              },
+              {
+                id: 'c1k-block-offset-forgotten',
+                wrong: 'Writing the d block of period 4 as 4d',
+                right: 'The d block of period n fills (n − 1)d, and the f block (n − 2)f.',
+                why: 'Every other block matches the period number, so the offset looks like an error rather than a rule. It is the same 4s-before-3d inversion seen from above, and getting it wrong shifts ten elements into a shell that is not filling yet.'
+              },
+              {
+                id: 'c1k-exceptions-generalised',
+                wrong: 'Assuming every d-block element borrows an s electron for a neater d subshell',
+                right: 'Only the half-filled and filled cases are worth it — chromium and copper in the fourth period.',
+                why: 'Once the reason is understood it seems to apply everywhere, and a rule stated as "d subshells like to be tidy" over-predicts wildly. The gain is specific to d⁵ and d¹⁰ and the s–d gap is narrow only at those points; everywhere else the strict order holds.'
+              },
+              {
+                id: 'c1k-group-number-for-metals',
+                wrong: 'Using the group number as the valence count for a transition metal',
+                right: 'It works for main-group elements. For transition metals the ns and (n − 1)d electrons are close in energy and several can react.',
+                why: 'The rule is learned as a property of the table rather than of the outermost shell, so it is applied straight across. It is why iron shows both +2 and +3 while sodium shows only +1, and treating the d electrons as core makes that impossible to explain.'
+              }
+            ]
+          },
+
+          {
+            id: 'd3', title: 'Effective nuclear charge and atomic radius', src: 'Section 8.6',
+            idea: `An outer electron does not feel the full pull of the nucleus, because the electrons between it and the nucleus push back. What it feels is the <b>effective nuclear charge</b>:<br><br><b>Z<sub>eff</sub> ≈ Z − S</b><br><br>with Z the number of protons and S the screening by the core electrons, roughly equal to their number. Sodium has Z = 11 and ten core electrons, so its valence electron feels about +1. Chlorine has Z = 17 and the same ten core electrons, so its valence electrons feel about +7.<br><br>That comparison is the engine of the whole chapter. <b>Across a period</b>, protons are added one at a time while the new electrons all go into the <b>same</b> shell and screen each other poorly — so Z<sub>eff</sub> rises steadily from left to right. <b>Down a group</b>, each step adds a whole new shell and a matching set of core electrons, so Z<sub>eff</sub> stays roughly constant while n grows.<br><br><b>Atomic radius</b> follows directly:<br><br><b>Across a period, radius decreases</b> — the same shell is pulled in harder as Z<sub>eff</sub> rises. This is the one that feels wrong: more electrons, smaller atom.<br><br><b>Down a group, radius increases</b> — a new shell is further out, and the pull on it has not changed.<br><br>So the largest atoms are at the bottom left of the table and the smallest at the top right, and radius is measured in picometres: about 186 pm for sodium, 99 pm for chlorine, 37 pm for hydrogen.<br><br>The trend is not perfectly smooth. Across the d block the radius barely changes, because the electrons being added go into an inner shell where they screen the outer ones well — which is why the transition metals are all of a similar size and alloy with one another so readily.`,
+            figure: {
+              kind: 'graph', x: [10, 19], y: [0, 200], xlabel: 'atomic number Z', ylabel: 'atomic radius (pm)',
+              fns: [{ pts: [[11, 186], [12, 160], [13, 143], [14, 118], [15, 110], [16, 103], [17, 99], [18, 97], [19, 227]], label: 'period 3, then K' }],
+              points: [{ x: 11, y: 186, label: 'Na' }, { x: 17, y: 99, label: 'Cl' }, { x: 19, y: 227, label: 'K' }],
+              caption: 'Atomic radius across the third period, with potassium beyond it. The steady fall from sodium to argon is effective nuclear charge rising while the shell stays the same — eight more protons pulling the third shell in by nearly half. The jump at potassium is the fourth shell opening: one new shell undoes the whole period’s contraction and more.'
+            },
+            rules: [
+              { name: 'Effective nuclear charge', expr: 'Z_eff = Z - S', note: 'S is the screening by core electrons, roughly their number. This is the pull an outer electron actually feels.' },
+              { name: 'Across a period', expr: 'Z_eff rises, so the radius falls', words: true, note: 'Protons are added while the new electrons share the same shell and screen each other poorly.' },
+              { name: 'Down a group', expr: 'n rises while Z_eff is about constant, so the radius grows', words: true, note: 'Each step adds a whole shell and a matching set of core electrons.' },
+              { name: 'Where the extremes are', expr: 'Largest at the bottom left, smallest at the top right', words: true, note: 'Two trends at right angles, and every size comparison is read off them.' },
+              { name: 'Across the d block', expr: 'The radius barely changes', words: true, note: 'The added electrons go into an inner shell and screen well, which is why transition metals alloy so freely.' }
+            ],
+            examples: [
+              {
+                prompt: 'Estimate the effective nuclear charge felt by a valence electron in sodium (Z = 11) and in chlorine (Z = 17), and use the answers to say which atom is larger.',
+                approach: 'Both elements are in period 3, so both have the same ten core electrons — which is what makes the comparison clean. Subtract the core count from the proton count for each, then read the size off the result, since a larger effective pull on the same shell means a smaller atom.',
+                steps: [
+                  { do: 'Sodium: 1s² 2s² 2p⁶ 3s¹, so ten core electrons and one valence electron', why: 'The core is everything below the highest n, which here is the neon configuration.' },
+                  { do: 'Z_eff for sodium ≈ 11 − 10 = +1', why: 'Eleven protons, ten electrons in the way. The valence electron is held about as if by a single proton.' },
+                  { do: 'Chlorine: 1s² 2s² 2p⁶ 3s² 3p⁵, so the same ten core electrons and seven valence electrons', why: 'The extra electrons went into the third shell, not the core — this is the key observation.' },
+                  { do: 'Z_eff for chlorine ≈ 17 − 10 = +7', why: 'Six more protons and no more screening, because valence electrons screen each other poorly.' },
+                  { do: 'Same shell, sevenfold pull: chlorine’s third shell is drawn in far harder', why: 'The n = 3 shell is doing the same job in both atoms, so the difference is all in the pull.' },
+                  { do: 'Sodium is the larger atom — 186 pm against 99 pm', why: 'Nearly twice the radius, despite having six FEWER electrons, which is the point the question is making.' }
+                ],
+                answer: 'Sodium about +1, chlorine about +7 — so sodium is much the larger',
+                answerWords: true,
+                check: 'The trend is consistent along the whole period on the lesson figure: the radius falls at every step from sodium to argon, and Z_eff rises by one at each of those steps ✓. The naive expectation — more electrons, bigger atom — gets the order backwards for every pair in the period.'
+              },
+              {
+                prompt: 'Arrange Mg, Ca, Si and S in order of increasing atomic radius, and justify the order from the two trends.',
+                approach: 'Sort the elements by position before thinking about size at all: which period, which group. Then apply the two trends in the right order — the group trend down a column is the stronger effect because it adds a whole shell, so settle that first, and use the period trend to rank the elements that share a period.',
+                steps: [
+                  { do: 'Positions: Mg is period 3 group 2A, Si period 3 group 4A, S period 3 group 6A, Ca period 4 group 2A', why: 'Three elements share a period and one sits below Mg, which is the structure of the answer.' },
+                  { do: 'Within period 3, the radius falls from left to right: Mg > Si > S', why: 'Z_eff rises across the period while the shell stays n = 3.' },
+                  { do: 'Ca is directly below Mg, one period further down', why: 'Same group, so the same valence configuration, one shell further out.' },
+                  { do: 'Adding a shell outweighs anything happening within a period, so Ca is the largest of the four', why: 'The n = 4 shell is genuinely further from the nucleus, and Z_eff for both is about +2.' },
+                  { do: 'Increasing order: S < Si < Mg < Ca', why: 'The three period-3 elements in reverse order of group number, then calcium above them all.' },
+                  { do: 'Values confirm it: S 103 pm, Si 118 pm, Mg 160 pm, Ca 197 pm', why: 'The spacing is uneven but the order is exactly as predicted.' }
+                ],
+                answer: 'S < Si < Mg < Ca',
+                answerWords: true,
+                check: 'Both trends point the same way for the extremes, which is the easy case: sulfur is furthest right and highest, calcium furthest left and lowest, so they must be the smallest and the largest ✓. Only a pair that sits diagonally — up and to the right against down and to the left — needs data rather than reasoning.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'c1k-more-electrons-bigger-atom',
+                wrong: 'Expecting the atom to grow across a period because electrons are being added',
+                right: 'It shrinks: the added electrons join the SAME shell while the proton count rises, so the pull increases.',
+                why: 'More of something usually means more room, and the picture of electrons as occupying space supports it. The resolution is that space is set by how hard the outer shell is held, not by how many electrons are in it — and that is the single idea the whole chapter rests on.'
+              },
+              {
+                id: 'c1k-valence-screens-like-core',
+                wrong: 'Counting all the other electrons when estimating S',
+                right: 'Core electrons screen well; electrons in the same shell screen each other poorly, so S is about the core count.',
+                why: 'Screening sounds like a property of any electron in the way, and the approximation Z − S invites totalling everything. Counting the valence electrons would give chlorine a Z_eff of about +1, the same as sodium, and then nothing about the period trend could be explained.'
+              },
+              {
+                id: 'c1k-trends-ranked-wrongly',
+                wrong: 'Letting the across-period trend outrank the down-group trend when comparing diagonally placed elements',
+                right: 'Adding a whole shell is the larger effect, so the group trend usually wins.',
+                why: 'The two trends are often given equal billing as a pair of arrows, with nothing said about which is stronger. The consequence is a confident wrong order for pairs like Mg and Si compared with Ca, where the extra shell settles the matter on its own.'
+              },
+              {
+                id: 'c1k-d-block-radius-trend',
+                wrong: 'Expecting a steep contraction across the transition metals, as in a main-group period',
+                right: 'The radius is nearly flat across the d block, because the added d electrons are in an inner shell and screen well.',
+                why: 'The period trend is learned as a general rule about moving right, so it gets applied to a block where the electrons are not going into the outer shell at all. The flatness has a visible consequence — transition metals substitute for one another in alloys precisely because they are so similar in size.'
+              }
+            ]
+          },
+
+          {
+            id: 'd4', title: 'Ions, ionic radii and ionisation energy', src: 'Section 8.7',
+            idea: `Writing the configuration of an <b>ion</b> takes one extra rule, and it is the one most often got wrong. Electrons are added to the lowest available orbital, as usual; but they are <b>removed from the highest n first</b>, not from the last orbital filled. For a transition metal these differ: iron fills 4s before 3d, but Fe²⁺ is [Ar] 3d⁶, not [Ar] 4s² 3d⁴. The 4s electrons are further out and go first.<br><br>Main-group ions are simpler, and they aim for a noble-gas configuration: Na⁺ is [Ne], Cl⁻ is [Ar], Mg²⁺ is [Ne]. Ions with the same configuration are called <b>isoelectronic</b>, and within such a set the one with the most protons is the smallest — same electrons, stronger pull.<br><br><b>Ionic radius</b> follows two reliable rules:<br><br>A <b>cation is smaller</b> than its parent atom, often dramatically — Na is 186 pm and Na⁺ is 102 pm, because the whole outer shell has gone and the remaining electrons feel the same nuclear charge.<br><br>An <b>anion is larger</b> — Cl is 99 pm and Cl⁻ is 181 pm, because the added electron increases repulsion in a shell whose nuclear charge has not changed.<br><br><b>Ionisation energy</b> (IE) is the energy to remove one electron from a gaseous atom, and it is always positive. Its trends are the mirror image of atomic radius: <b>IE rises across a period</b> as Z<sub>eff</sub> rises, and <b>falls down a group</b> as the outer electron gets further away. So the hardest electron to remove belongs to the small atoms at the top right — helium at 2372 kJ/mol — and the easiest to those at the bottom left.<br><br>Two <b>dips</b> interrupt the rise across a period, and both are examined. From group 2A to 3A the new electron starts a p subshell, which is higher in energy than the filled s — so boron is easier to ionise than beryllium. From 5A to 6A the new electron is the first to pair up in a p orbital, and the repulsion of sharing makes it easier to remove — so oxygen is easier to ionise than nitrogen.<br><br><b>Successive</b> ionisation energies always rise, because each electron is pulled from an increasingly positive ion. The informative feature is the <b>jump</b>: magnesium's first two come off at 738 and 1450 kJ/mol, and the third at 7730 — because it has to come out of the core. The position of the jump counts the valence electrons.`,
+            figure: {
+              kind: 'graph', x: [2, 11], y: [0, 2200], xlabel: 'atomic number Z', ylabel: 'first ionisation energy (kJ/mol)',
+              fns: [{ pts: [[3, 520], [4, 899], [5, 801], [6, 1086], [7, 1402], [8, 1314], [9, 1681], [10, 2081]], label: 'period 2' }],
+              points: [
+                { x: 3, y: 520, label: 'Li' }, { x: 5, y: 801, label: 'B: the 2A→3A dip' },
+                { x: 8, y: 1314, label: 'O: the 5A→6A dip' }, { x: 10, y: 2081, label: 'Ne' }
+              ],
+              caption: 'First ionisation energy across the second period. The rise from lithium to neon is effective nuclear charge; the two downward steps are the exceptions worth knowing. Boron dips because its outermost electron starts a higher-energy 2p subshell, and oxygen dips because its fourth 2p electron is the first forced to share an orbital.'
+            },
+            rules: [
+              { name: 'Removing electrons from an ion', expr: 'Take them from the highest n first', words: true, note: 'Not from the last orbital filled. Fe is 4s2 3d6 but Fe2+ is 3d6.' },
+              { name: 'Cation size', expr: 'r_cation < r_atom', note: 'Often an outer shell is lost entirely: Na 186 pm becomes Na⁺ 102 pm.' },
+              { name: 'Anion size', expr: 'r_anion > r_atom', note: 'Added repulsion in a shell whose nuclear charge has not changed: Cl 99 pm becomes Cl⁻ 181 pm.' },
+              { name: 'Isoelectronic series', expr: 'Same electrons, so more protons means smaller', words: true, note: 'O²⁻, F⁻, Na⁺ and Mg²⁺ all have the neon configuration and fall in size in that order.' },
+              { name: 'Ionisation energy trends', expr: 'IE rises across a period and falls down a group', words: true, note: 'The mirror image of atomic radius. Highest at the top right, lowest at the bottom left.' },
+              { name: 'The two dips', expr: '2A to 3A, and 5A to 6A', words: true, note: 'A new subshell starting, and the first pairing in a p orbital.' },
+              { name: 'The jump in successive IEs', expr: 'A large jump marks the core', words: true, note: 'Its position counts the valence electrons: magnesium jumps after the second.' }
+            ],
+            examples: [
+              {
+                prompt: 'Write the ground-state configurations of Fe²⁺ and Fe³⁺, given that iron is [Ar] 4s² 3d⁶.',
+                approach: 'Start from the neutral atom, then remove the right number of electrons from the highest principal quantum number first — which for iron means 4s before 3d, the reverse of the order they filled in. Do the 2+ ion first and take the 3+ from it, so the sequence of removals is explicit.',
+                steps: [
+                  { do: 'Neutral iron: [Ar] 4s² 3d⁶, 26 electrons in all', why: 'The starting point, from the previous lesson.' },
+                  { do: 'Fe²⁺ needs two removed; the highest n present is 4, so both come from 4s', why: 'Removal goes by distance from the nucleus, not by the order of filling. This is the rule the question is testing.' },
+                  { do: 'Fe²⁺ = [Ar] 3d⁶, with 24 electrons', why: 'The 3d electrons are untouched. Writing [Ar] 4s² 3d⁴ here is the standard error.' },
+                  { do: 'Fe³⁺ removes one more, and 4s is now empty, so it comes from 3d', why: 'Only when the higher shell is exhausted does the next one down give up an electron.' },
+                  { do: 'Fe³⁺ = [Ar] 3d⁵, with 23 electrons', why: 'Half filled — five orbitals with one electron each.' },
+                  { do: 'Note why Fe³⁺ is common: 3d⁵ is the half-filled arrangement favoured for the same reason chromium borrows an s electron', why: 'It explains why iron rusts to the 3+ state rather than stopping at 2+, which is the chemistry behind the bookkeeping.' }
+                ],
+                answer: 'Fe²⁺ = [Ar] 3d⁶ and Fe³⁺ = [Ar] 3d⁵',
+                answerWords: true,
+                check: 'Count the electrons rather than trusting the shorthand: [Ar] is 18, so [Ar] 3d⁶ is 24 = 26 − 2 ✓ and [Ar] 3d⁵ is 23 = 26 − 3 ✓. Both ions are coloured and paramagnetic, which requires unpaired d electrons — and both configurations have them.'
+              },
+              {
+                prompt: 'The first four ionisation energies of an element are 578, 1817, 2745 and 11,577 kJ/mol. How many valence electrons does it have, and which group is it in?',
+                approach: 'Do not read the absolute values — read the gaps between them. Successive ionisation energies always rise, so the question is where the rise stops being gradual and becomes a jump, because that is the point at which the core is broken into. Counting the removals before the jump gives the valence count, and the group follows.',
+                steps: [
+                  { do: 'Differences between consecutive values: 1239, 928, then 8832', why: 'Looking at the steps rather than the values is the whole technique.' },
+                  { do: 'The first three rise gradually, as any successive series does', why: 'Each electron leaves a more positive ion behind, so some rise is expected and means nothing on its own.' },
+                  { do: 'The fourth is more than four times the third — a jump, not a step', why: 'A factor of that size cannot come from the extra charge alone.' },
+                  { do: 'So three electrons come off comparatively easily and the fourth comes from the core', why: 'The core is the closed shell below, held far more tightly.' },
+                  { do: 'Three valence electrons, so group 3A', why: 'For a main-group element the valence count is the group number.' },
+                  { do: 'The values match aluminium: 578, 1817, 2745, 11,577 kJ/mol', why: 'Al³⁺ is the only ion aluminium forms — which is exactly what the jump after the third predicts.' }
+                ],
+                answer: 'Three valence electrons, so group 3A — the pattern of aluminium',
+                answerWords: true,
+                check: 'Run the test on magnesium as a control: 738, 1450, 7730 — the jump comes after the second, giving two valence electrons and group 2A, and Mg²⁺ is indeed the only magnesium ion ✓. The technique identifies the group without knowing the element, which is why it is asked this way.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'c1k-ion-removes-last-filled',
+                wrong: 'Taking Fe²⁺ to be [Ar] 4s² 3d⁴ because 3d filled last',
+                right: 'Electrons are removed from the highest n first, so the 4s electrons go before any 3d.',
+                why: 'Filling and emptying feel like they should be mirror images, and for main-group elements they are, so the discrepancy only appears in the d block. It matters because the magnetic and spectroscopic properties of transition-metal ions follow from the d count, and the wrong configuration predicts the wrong number of unpaired electrons.'
+              },
+              {
+                id: 'c1k-anion-smaller',
+                wrong: 'Expecting an anion to be about the size of its parent atom, or smaller',
+                right: 'An anion is markedly larger — Cl⁻ is 181 pm against chlorine’s 99 pm.',
+                why: 'One extra electron sounds like a small change beside seventeen protons, so the near-doubling is a surprise. The cause is repulsion in an outer shell whose nuclear charge has not risen at all, and the same reasoning run backwards is why a cation is so much smaller.'
+              },
+              {
+                id: 'c1k-ie-trend-no-exceptions',
+                wrong: 'Reporting a smooth rise in ionisation energy across a period',
+                right: 'Two dips interrupt it: 2A to 3A, where a p subshell starts, and 5A to 6A, where a p orbital first pairs.',
+                why: 'The overall trend is strong enough that the exceptions look like noise, and a diagram drawn from memory smooths them away. Both are asked about precisely because each one demonstrates a rule from the previous lesson — subshell energies, and Hund’s rule — doing measurable work.'
+              },
+              {
+                id: 'c1k-successive-ie-values-read',
+                wrong: 'Judging the valence count from the size of the ionisation energies rather than the gaps',
+                right: 'Look for the JUMP. Its position counts the valence electrons.',
+                why: 'Successive values always rise, so any of them can be made to look large beside the first, and a threshold picked by eye will land anywhere. The jump is a factor of four or more rather than a steady increase, and it is the only feature that marks the boundary of the core.'
+              }
+            ]
+          },
+
+          {
+            id: 'd5', title: 'Electron affinity and metallic character', src: 'Section 8.8',
+            idea: `<b>Electron affinity</b> (EA) is the energy change when a gaseous atom gains an electron. Unlike ionisation energy it is usually <b>negative</b>, because most atoms release energy when they take an electron — chlorine's is −349 kJ/mol, the most negative of any element. The sign convention causes half the errors in this section: <b>more negative means a stronger attraction for the extra electron</b>, so "high electron affinity" in ordinary speech means a large negative number.<br><br>The trend across a period is towards more negative values, for the same reason as ionisation energy: a rising effective nuclear charge pulls harder on anything nearby. Down a group the change is small and irregular, because the incoming electron is further out but also less crowded.<br><br>The exceptions are informative rather than nuisances. The <b>noble gases</b> have positive electron affinities — energy must be supplied to force an electron onto a full shell, which would have to start a new one. <b>Group 2A</b> is close to zero for the same reason in miniature: the s subshell is full and the electron would have to begin a p subshell. And <b>nitrogen</b> is near zero while carbon is clearly negative, because nitrogen's half-filled 2p³ would have to accept a paired electron.<br><br><b>Metallic character</b> — the tendency to lose electrons rather than gain them — pulls all of this together. It <b>decreases across a period</b> as ionisation energy rises, and <b>increases down a group</b> as it falls. So the most metallic elements are at the bottom left, the least metallic at the top right, and the boundary runs as a staircase through the metalloids.<br><br>Four trends, all read from the same two facts — effective nuclear charge rising across a period, and distance rising down a group. Atomic radius falls to the right; ionisation energy rises to the right; electron affinity becomes more negative to the right; metallic character falls to the right. Learning them as one picture rather than four lists is what makes them usable under exam conditions.`,
+            figure: {
+              kind: 'graph', x: [2, 11], y: [-400, 100], xlabel: 'atomic number Z', ylabel: 'electron affinity (kJ/mol)',
+              fns: [{ pts: [[3, -60], [4, 0], [5, -27], [6, -122], [7, 0], [8, -141], [9, -328], [10, 0]], label: 'period 2' }],
+              points: [
+                { x: 4, y: 0, label: 'Be: full s' }, { x: 7, y: 0, label: 'N: half-filled p' },
+                { x: 9, y: -328, label: 'F' }, { x: 10, y: 0, label: 'Ne: full shell' }
+              ],
+              hlines: [{ y: 0, label: 'no energy released' }],
+              caption: 'Electron affinity across the second period. The general drift is downward — more negative, a stronger pull on an added electron — but three elements sit at zero, and each for a reason from the previous lessons: beryllium has a full s subshell, nitrogen a half-filled p, and neon a full shell. Fluorine, with neither obstacle and the highest effective nuclear charge available, is the extreme.'
+            },
+            rules: [
+              { name: 'Electron affinity', expr: 'The energy change on gaining an electron', words: true, note: 'Usually negative, because energy is released. Chlorine is the most negative at −349 kJ/mol.' },
+              { name: 'Reading the sign', expr: 'More negative means a stronger attraction', words: true, note: 'The commonest error in the section is reading a larger number as a stronger pull.' },
+              { name: 'Across a period', expr: 'EA becomes more negative', words: true, note: 'Rising effective nuclear charge again — the same cause as the radius and ionisation trends.' },
+              { name: 'Where it fails', expr: 'Noble gases, group 2A and nitrogen', words: true, note: 'A full shell, a full s subshell, and a half-filled p subshell each refuse the extra electron.' },
+              { name: 'Metallic character', expr: 'Falls across a period and rises down a group', words: true, note: 'Most metallic at the bottom left, least at the top right, with the metalloids on the staircase between.' }
+            ],
+            examples: [
+              {
+                prompt: 'Explain why the electron affinity of nitrogen (about 0 kJ/mol) is far less negative than that of carbon (−122 kJ/mol), even though nitrogen has the larger effective nuclear charge.',
+                approach: 'The trend predicts the opposite, so the answer has to be a reason that outweighs it — which means going to the configurations rather than the periodic position. Write out where the incoming electron actually goes in each atom, and the difference appears immediately.',
+                steps: [
+                  { do: 'Carbon is 1s² 2s² 2p², so by Hund’s rule two of the three 2p orbitals hold one electron each and one is empty', why: 'Equal-energy orbitals are singly occupied first.' },
+                  { do: 'An electron added to carbon goes into that empty 2p orbital', why: 'No orbital has to be shared, so the only change is one more electron feeling the nuclear pull — and energy is released.' },
+                  { do: 'Nitrogen is 1s² 2s² 2p³, so all three 2p orbitals hold exactly one electron', why: 'The half-filled subshell, the arrangement Hund’s rule produces.' },
+                  { do: 'An electron added to nitrogen must pair up in an orbital that is already occupied', why: 'There is no empty 2p orbital left. This is the whole of the answer.' },
+                  { do: 'Two electrons in one small orbital repel strongly, and that repulsion cancels most of the energy released', why: 'The same repulsion that makes Hund’s rule true in the first place.' },
+                  { do: 'So nitrogen releases almost nothing, while carbon releases 122 kJ/mol', why: 'The configuration beats the trend — which is why the exception is worth knowing rather than memorising as an oddity.' }
+                ],
+                answer: 'Nitrogen’s half-filled 2p³ forces the new electron to pair, and the repulsion cancels the energy released',
+                answerWords: true,
+                check: 'The same reasoning predicts the group 2A near-zero values: beryllium’s 2s is full, so an added electron would have to start the higher-energy 2p subshell ✓. And oxygen, one step past nitrogen, returns to a clearly negative −141 kJ/mol, because by then pairing is unavoidable anyway and the rising nuclear charge takes over again.'
+              },
+              {
+                prompt: 'Arrange K, Ca, Br and Kr in order of increasing metallic character, and give the reasoning.',
+                approach: 'Metallic character is the willingness to lose an electron, so it tracks ionisation energy inversely — low IE, strongly metallic. All four are in the same period, which means only the across-period trend is needed, and the order is then just their positions read from right to left.',
+                steps: [
+                  { do: 'All four are in period 4: K in 1A, Ca in 2A, Br in 7A, Kr in 8A', why: 'Same period, so the down-group trend plays no part and one trend settles everything.' },
+                  { do: 'Effective nuclear charge rises from left to right across the period', why: 'The fact all four trends come from.' },
+                  { do: 'So ionisation energy rises from K to Kr — potassium 419 kJ/mol, krypton 1351 kJ/mol', why: 'The harder the outer electron is held, the more energy it takes to remove.' },
+                  { do: 'Metallic character is the ease of LOSING an electron, so it runs the other way', why: 'This inversion is where the order is usually dropped.' },
+                  { do: 'Increasing metallic character: Kr < Br < Ca < K', why: 'Right to left, which is the reverse of the ionisation order.' },
+                  { do: 'Consistent with what they are: krypton is an unreactive gas and potassium is a metal soft enough to cut and reactive enough to burn in water', why: 'The extremes of the order are two substances that could hardly be less alike.' }
+                ],
+                answer: 'Kr < Br < Ca < K',
+                answerWords: true,
+                check: 'Cross-check with a second trend: metallic character should also rise down a group, so caesium — below potassium — must be more metallic still, and it is the most reactive metal of the period-1A group ✓. Both trends point to the bottom left, which is where the alkali metals are.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'c1k-ea-sign-misread',
+                wrong: 'Reading a less negative electron affinity as a stronger attraction because the number is larger',
+                right: 'More negative means more energy released, so a stronger pull. Chlorine at −349 beats iodine at −295.',
+                why: 'Ranking by size alone is automatic, and the minus sign is easy to set aside while comparing. It reverses every comparison in the section, and because ionisation energies are positive the two quantities have to be read by opposite conventions — which is exactly why this is examined.'
+              },
+              {
+                id: 'c1k-ea-and-ie-confused',
+                wrong: 'Treating electron affinity and ionisation energy as the same trend under two names',
+                right: 'IE is energy to REMOVE an electron and is always positive; EA is the change on GAINING one and is usually negative.',
+                why: 'Both rise in strength to the right, so their trends look interchangeable on a summary page. They describe opposite processes, and the exceptions differ — the 2A and 5A dips belong to ionisation energy, while the zero values at 2A, 5A and 8A belong to electron affinity.'
+              },
+              {
+                id: 'c1k-metallic-follows-ie',
+                wrong: 'Saying metallic character rises across a period because ionisation energy does',
+                right: 'It falls. Metallic character is the ease of LOSING an electron, so it runs opposite to ionisation energy.',
+                why: 'Trends are often memorised as arrows without the physical meaning attached, and then any two get lined up the same way. The check is a single example: sodium and chlorine are in the same period, and only one of them is a metal.'
+              },
+              {
+                id: 'c1k-noble-gas-ea-negative',
+                wrong: 'Expecting the noble gases to have the most negative electron affinities, since they are furthest right',
+                right: 'Theirs are positive — energy must be supplied, because the added electron would have to start a new shell.',
+                why: 'The across-period trend is applied to its last column without asking where the electron would go. Following the configuration through is what makes the exception obvious, and it is the same reasoning that explains the near-zero values at group 2A and at nitrogen.'
+              }
+            ]
+          }
+        ],
+        practice: [
+
+          { id: 'w1', kind: 'mc', lesson: 'd1',
+            prompt: 'Which orbital fills first?',
+            options: [
+              { t: '4s, because in a multi-electron atom its energy is slightly below 3d', ok: true },
+              { t: '3d, because its principal quantum number is smaller' },
+              { t: 'They fill at the same time' },
+              { t: '3d, because d orbitals are always lower than s orbitals' }
+            ],
+            hint: 'Energy depends on n and l together.',
+            solution: ['The aufbau order is … 3p 4s 3d 4p …',
+              'Ordering by n alone works for the first eighteen elements and then fails',
+              'This inversion is why the fourth period opens with K and Ca'] },
+
+          { id: 'w2', kind: 'numeric', lesson: 'd1',
+            prompt: 'How many electrons does a neutral phosphorus atom (Z = 15) have to place in its orbitals?',
+            answer: 15, verify: { expr: '15' },
+            hint: 'A neutral atom has as many electrons as protons.',
+            solution: ['Z = 15 means fifteen protons', 'A neutral atom matches them with fifteen electrons',
+              'Giving 1s² 2s² 2p⁶ 3s² 3p³, whose superscripts sum to 15'] },
+
+          { id: 'w3', kind: 'numeric', lesson: 'd1',
+            prompt: 'How many unpaired electrons does a ground-state phosphorus atom have?',
+            answer: 3, verify: { expr: '3' },
+            hint: 'Apply Hund’s rule to the 3p subshell.',
+            solution: ['Phosphorus ends in 3p³', 'Three p orbitals, three electrons — one each, spins parallel',
+              'So all three are unpaired'] },
+
+          { id: 'w4', kind: 'numeric', lesson: 'd1',
+            prompt: 'How many unpaired electrons does a ground-state oxygen atom (Z = 8) have?',
+            answer: 2, verify: { expr: '2' },
+            hint: 'Oxygen ends in 2p⁴, and there are three 2p orbitals.',
+            solution: ['The first three 2p electrons go singly into the three orbitals',
+              'The fourth must pair with one of them', 'That leaves two singly occupied orbitals — two unpaired electrons'] },
+
+          { id: 'w5', kind: 'mc', lesson: 'd1',
+            prompt: 'Which is the ground-state configuration of calcium (Z = 20)?',
+            options: [
+              { t: '1s² 2s² 2p⁶ 3s² 3p⁶ 4s²', ok: true },
+              { t: '1s² 2s² 2p⁶ 3s² 3p⁶ 3d²' },
+              { t: '1s² 2s² 2p⁶ 3s² 3p⁸' },
+              { t: '1s² 2s² 2p⁶ 3s² 3p⁶ 4p²' }
+            ],
+            hint: 'Which subshell comes after 3p in the aufbau order?',
+            solution: ['4s fills before 3d', 'A p subshell holds six at most, so 3p⁸ is impossible',
+              'The superscripts of the right answer sum to 20'] },
+
+          { id: 'w6', kind: 'spot', lesson: 'd1',
+            prompt: 'A student writes the configuration of nitrogen (Z = 7). One line is wrong.',
+            steps: [
+              { t: '1s² takes two electrons, leaving five', bad: false },
+              { t: '2s² takes two more, leaving three', bad: false },
+              { t: 'The three remaining go into one 2p orbital together', bad: true },
+              { t: 'The configuration is 1s² 2s² 2p³', bad: false }
+            ],
+            why: 'An orbital holds at most two electrons, by the Pauli exclusion principle, and even two would be wrong here: Hund’s rule puts one electron into each of the three 2p orbitals with parallel spins before any pairing happens. The written configuration 2p³ is right either way, which is exactly why the orbital diagram is asked for — it is the only place the error shows.',
+            hint: 'How many electrons fit in one orbital?',
+            solution: ['Two at most, and with opposite spins', 'Hund’s rule spreads the three across the three 2p orbitals', 'So nitrogen has three unpaired electrons'] },
+
+          { id: 'w7', kind: 'mc', lesson: 'd2',
+            prompt: 'How many valence electrons does a selenium atom (period 4, group 6A) have?',
+            options: [
+              { t: 'Six', ok: true },
+              { t: 'Sixteen' },
+              { t: 'Four' },
+              { t: 'Two' }
+            ],
+            hint: 'For a main-group element the count is the group number.',
+            solution: ['Group 6A means six valence electrons', 'They are the 4s² 4p⁴ electrons, in the highest shell',
+              'The 3d¹⁰ electrons are in an inner shell and are not valence'] },
+
+          { id: 'w8', kind: 'mc', lesson: 'd2',
+            prompt: 'Which is the shorthand configuration of chromium (Z = 24)?',
+            options: [
+              { t: '[Ar] 4s¹ 3d⁵', ok: true },
+              { t: '[Ar] 4s² 3d⁴' },
+              { t: '[Ar] 3d⁶' },
+              { t: '[Ne] 4s² 3d⁴' }
+            ],
+            hint: 'One of the two exceptions worth remembering.',
+            solution: ['Strict aufbau predicts 4s² 3d⁴', 'The observed configuration borrows an s electron for a half-filled 3d⁵',
+              'Copper does the same thing for a full 3d¹⁰'] },
+
+          { id: 'w9', kind: 'numeric', lesson: 'd2',
+            prompt: 'How many elements wide is the d block?',
+            answer: 10, verify: { expr: '2*(2*2 + 1)' },
+            hint: 'Five orbitals, two electrons each.',
+            solution: ['d means l = 2, so 2l + 1 = 5 orbitals', 'Each holds two electrons',
+              'So ten elements, which is the width of the transition series'] },
+
+          { id: 'w10', kind: 'numeric', lesson: 'd2',
+            prompt: 'How many elements wide is the f block?',
+            answer: 14, verify: { expr: '2*(2*3 + 1)' },
+            hint: 'f means l = 3.',
+            solution: ['2l + 1 = 7 orbitals', '× 2 electrons each', '= 14, the width of the lanthanides and actinides'] },
+
+          { id: 'w11', kind: 'mc', lesson: 'd3',
+            prompt: 'Which atom is larger, sodium or chlorine?',
+            options: [
+              { t: 'Sodium, because chlorine’s valence shell feels a much larger effective nuclear charge', ok: true },
+              { t: 'Chlorine, because it has more electrons' },
+              { t: 'Chlorine, because it has more protons' },
+              { t: 'They are about the same, being in the same period' }
+            ],
+            hint: 'Both have ten core electrons. Compare Z − S.',
+            solution: ['Z_eff is about +1 for sodium and +7 for chlorine',
+              'The same third shell is pulled in much harder in chlorine', 'Sodium is 186 pm against chlorine’s 99 pm'] },
+
+          { id: 'w12', kind: 'numeric', lesson: 'd3',
+            prompt: 'Estimate the effective nuclear charge felt by a valence electron of silicon (Z = 14), taking S as the number of core electrons.',
+            answer: 4, verify: { expr: '14 - 10' },
+            hint: 'Silicon is 1s² 2s² 2p⁶ 3s² 3p². How many electrons are in the core?',
+            solution: ['The core is the neon configuration: ten electrons', 'Z_eff ≈ 14 − 10', '= +4, matching its group number'] },
+
+          { id: 'w13', kind: 'mc', lesson: 'd3',
+            prompt: 'Why does the atomic radius decrease across a period?',
+            options: [
+              { t: 'Protons are added while the new electrons stay in the same shell and screen each other poorly', ok: true },
+              { t: 'Electrons are removed as you move right' },
+              { t: 'The number of shells decreases' },
+              { t: 'The electrons move faster and take up less room' }
+            ],
+            hint: 'What changes and what stays the same across a period?',
+            solution: ['The shell number n is constant across a period', 'The proton count rises, so Z_eff rises',
+              'The same shell is pulled in harder, so the atom shrinks'] },
+
+          { id: 'w14', kind: 'mc', lesson: 'd3',
+            prompt: 'Which of these is the largest atom?',
+            options: [
+              { t: 'K', ok: true },
+              { t: 'Na' },
+              { t: 'Cl' },
+              { t: 'F' }
+            ],
+            hint: 'Largest at the bottom left of the table.',
+            solution: ['K is furthest down and furthest left of the four', 'It has a fourth shell that none of the others has',
+              'Radii: K 227, Na 186, Cl 99, F 72 pm'] },
+
+          { id: 'w15', kind: 'mc', lesson: 'd4',
+            prompt: 'What is the ground-state configuration of Fe²⁺, given that iron is [Ar] 4s² 3d⁶?',
+            options: [
+              { t: '[Ar] 3d⁶', ok: true },
+              { t: '[Ar] 4s² 3d⁴' },
+              { t: '[Ar] 4s¹ 3d⁵' },
+              { t: '[Ar] 4s² 3d⁶' }
+            ],
+            hint: 'Electrons leave from the highest n first.',
+            solution: ['The highest principal quantum number present is 4', 'Both removed electrons come from 4s',
+              'The 3d⁶ is untouched'] },
+
+          { id: 'w16', kind: 'mc', lesson: 'd4',
+            prompt: 'Which is larger, Cl or Cl⁻?',
+            options: [
+              { t: 'Cl⁻, because the added electron increases repulsion with no extra nuclear charge', ok: true },
+              { t: 'Cl, because it has fewer electrons repelling each other' },
+              { t: 'They are the same size — one electron changes little' },
+              { t: 'Cl, because the negative charge pulls the shell in' }
+            ],
+            hint: 'The proton count does not change when an ion forms.',
+            solution: ['Seventeen protons must now hold eighteen electrons', 'The extra repulsion expands the outer shell',
+              'Cl is 99 pm and Cl⁻ is 181 pm — nearly double'] },
+
+          { id: 'w17', kind: 'numeric', lesson: 'd4',
+            prompt: 'An element has successive ionisation energies of 496, 4562, 6910 and 9543 kJ/mol. How many valence electrons does it have?',
+            answer: 1, verify: { expr: '1' },
+            hint: 'Find the jump, not the largest value.',
+            solution: ['The step from the first to the second is more than nine times',
+              'So only one electron comes off before the core is reached', 'One valence electron — group 1A, and these are sodium’s values'] },
+
+          { id: 'w18', kind: 'mc', lesson: 'd4',
+            prompt: 'Which has the smallest radius: O²⁻, F⁻, Na⁺ or Mg²⁺?',
+            options: [
+              { t: 'Mg²⁺, because all four have ten electrons and it has the most protons', ok: true },
+              { t: 'O²⁻, because oxygen is the smallest atom of the four' },
+              { t: 'F⁻, because fluorine has the highest electronegativity' },
+              { t: 'Na⁺, because it has lost a whole shell' }
+            ],
+            hint: 'They are isoelectronic. What is left to compare?',
+            solution: ['All four have the neon configuration — ten electrons each',
+              'With the electron count fixed, more protons means a stronger pull',
+              'Mg²⁺ has twelve protons, the most of the four'] },
+
+          { id: 'w19', kind: 'mc', lesson: 'd4',
+            prompt: 'Why is the first ionisation energy of oxygen slightly LOWER than that of nitrogen?',
+            options: [
+              { t: 'Oxygen’s fourth 2p electron is paired in an orbital, and the repulsion makes it easier to remove', ok: true },
+              { t: 'Oxygen has a smaller effective nuclear charge' },
+              { t: 'Oxygen is larger than nitrogen' },
+              { t: 'Nitrogen has more protons' }
+            ],
+            hint: 'Compare the 2p subshells.',
+            solution: ['Nitrogen is 2p³ — three orbitals, one electron each', 'Oxygen is 2p⁴, so one orbital holds a pair',
+              'The paired electron is pushed by its partner and leaves more readily'] },
+
+          { id: 'w20', kind: 'mc', lesson: 'd5',
+            prompt: 'Which statement about electron affinity is correct?',
+            options: [
+              { t: 'A more negative value means a stronger attraction for the added electron', ok: true },
+              { t: 'A larger positive value means a stronger attraction' },
+              { t: 'Electron affinity is always positive' },
+              { t: 'It measures the energy needed to remove an electron' }
+            ],
+            hint: 'Energy released is reported as a negative change.',
+            solution: ['Most atoms release energy on gaining an electron, so EA is usually negative',
+              'Chlorine’s −349 kJ/mol is the most negative of any element',
+              'Removing an electron is ionisation energy, a different quantity'] },
+
+          { id: 'w21', kind: 'mc', lesson: 'd5',
+            prompt: 'Which element is the most metallic?',
+            options: [
+              { t: 'K', ok: true },
+              { t: 'Ca' },
+              { t: 'Br' },
+              { t: 'Kr' }
+            ],
+            hint: 'Metallic character is the ease of losing an electron.',
+            solution: ['Metallic character rises to the left and down', 'K is furthest left of the four, all of which are in period 4',
+              'It also has the lowest ionisation energy of them, at 419 kJ/mol'] },
+
+          { id: 'w22', kind: 'spot', lesson: 'd5',
+            prompt: 'A student compares trends across period 3. One line is wrong.',
+            steps: [
+              { t: 'Effective nuclear charge rises from sodium to argon', bad: false },
+              { t: 'So the atomic radius falls from left to right', bad: false },
+              { t: 'So the ionisation energy rises from left to right', bad: false },
+              { t: 'So the metallic character also rises from left to right', bad: true }
+            ],
+            why: 'Metallic character is the willingness to LOSE an electron, so it runs opposite to ionisation energy: it falls from left to right, which is why sodium is a metal and chlorine is not. The first three lines are correct and share one cause, and it is tempting to line the fourth trend up the same way — but the check is a single pair of elements from the same period.',
+            hint: 'Is a metal easy or hard to take an electron from?',
+            solution: ['High ionisation energy means the electron is held tightly',
+              'Metallic character is the ease of losing one, so it runs the other way',
+              'It falls from left to right and rises down a group'] },
+
+          { id: 'w23', kind: 'order', lesson: 'd1',
+            prompt: 'Put the steps for writing a ground-state electron configuration in order.',
+            steps: [
+              'Take the number of electrons from the atomic number',
+              'Fill the orbitals in the aufbau order, lowest energy first',
+              'Respect the capacities — s 2, p 6, d 10, f 14',
+              'Check that the superscripts add up to the electron count',
+              'Apply Hund’s rule to any partly filled subshell if unpaired electrons are asked for'
+            ],
+            hint: 'The count comes first, and the check comes before any diagram.',
+            solution: ['Nothing can be placed until the number of electrons is known',
+              'The order and the capacities govern the filling',
+              'The superscript sum catches almost every slip, and the orbital diagram is only needed for pairing questions'] },
+
+          { id: 'w24', kind: 'order', lesson: 'd3',
+            prompt: 'Put the steps for comparing the sizes of two atoms in order.',
+            steps: [
+              'Locate both elements by period and group',
+              'If they share a group, the one further down is larger',
+              'If they share a period, the one further left is larger',
+              'If they are diagonal, note that adding a shell usually outweighs the period trend'
+            ],
+            hint: 'Position before reasoning.',
+            solution: ['The trends are statements about position, so position comes first',
+              'A shared group or period settles it with one trend',
+              'Only a diagonal pair needs the two trends weighed against each other'] }
         ]
       }
     ]
@@ -28712,7 +29937,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.64', date: '18 September 2026', year: 2026 };
+  const BUILD = { v: '2.65', date: '18 September 2026', year: 2026 };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonandy242', ['gmail', 'com'].join('.')].join('@');
   /* The one sentence that says what this is. It appears under the wordmark, and build.js uses
@@ -28725,6 +29950,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      because the person who needs it is the one who just watched the app refresh itself and wants to
      know what moved. Trim the tail when it gets past a dozen; nobody reads further back than that. */
   const WHATS_NEW = [
+    ['2.65', '<b>CHEM 1000H chapters 7 and 8: where the periodic table comes from.</b> <b>The quantum-mechanical model</b> starts with light &mdash; wavelength against frequency, the photon energy that depends on colour and not on brightness, and the conversion to kJ/mol that shows why a 254 nm lamp sterilises and a sodium street lamp is harmless. Then the <b>line spectrum</b> that forced quantisation: sharp lines mean sharp energies, the hydrogen levels crowd as 1/n&sup2;, and the n = 3 &rarr; 2 transition is computed all the way to the 656 nm red line a discharge tube actually shows. <b>Matter waves</b> follow &mdash; an electron&rsquo;s wavelength is three times the size of its own atom, a baseball&rsquo;s is nineteen powers of ten below a proton, and the uncertainty principle is stated as a property of matter rather than a limit of the apparatus, which is what rules out orbits and replaces them with probability maps. The chapter closes with the <b>four quantum numbers</b>, their allowed values, and the counting that gives n&sup2; orbitals and 2n&sup2; electrons per shell. Chapter 8 cashes it in: <b>electron configurations</b> under the aufbau order (4s before 3d, and why), the Pauli principle and Hund&rsquo;s rule with the orbital diagrams that make unpaired electrons visible; configurations read straight off the table by block, with chromium and copper as the two exceptions worth knowing; <b>effective nuclear charge</b>, which explains the one trend that feels wrong &mdash; more electrons, smaller atom; and then <b>ions</b>, removed from the highest shell first so that Fe&sup2;&#8314; is 3d&#8310; and not 4s&sup2; 3d&#8308;, <b>ionisation energy</b> with both of its dips and the jump that counts the valence electrons, and <b>electron affinity</b> and metallic character. Nine lessons, eighteen worked examples, 48 practice questions and 32 named misconceptions. Chapters 9, 10 and 11 remain.'],
     ['2.64', '<b>A second course under the green chip: CHEM 1000H, General Chemistry.</b> It follows its own schedule chapter by chapter, and the first two chapters ship now. <b>Reaction stoichiometry</b> is the bookkeeping that makes chemistry quantitative: mass to moles to mole ratio to moles to mass, always through the balanced equation, because coefficients are a ratio of particles and never of grams. Then the <b>limiting reactant</b>, found by asking what each reactant alone could make and taking the smaller answer &mdash; not by looking for whichever there is less of &mdash; with theoretical yield, which is calculated, against actual yield, which is measured, and the percent yield between them. <b>Solution stoichiometry</b> closes the chapter: molarity as moles per litre of solution, the millilitres that have to become litres before anything else happens, and dilution as the one calculation where the moles of solute do not change. Chapter 5 is the <b>gas laws</b>: pressure units and the kelvin scale that every gas calculation silently assumes, Boyle, Charles and the combined law for a change of conditions, then PV = nRT used forwards and backwards for a molar mass or a density, partial pressures and mole fractions, gas stoichiometry, and finally the <b>kinetic molecular theory</b> &mdash; why temperature is molecular kinetic energy, why a light molecule moves faster at the same temperature, effusion, and the two assumptions a real gas breaks when it is cold or squeezed. Seven lessons, fourteen worked examples, 43 practice questions and 28 named misconceptions. Chapters 7 to 11 follow.'],
     ['2.63', '<b>PHYS 1000H is complete: chapters 7 and 8 land, and every chapter on the schedule is now built.</b> <b>Work and energy</b> is a second route through mechanics that needs neither forces nor time: the cosine that makes a normal force do no work at all, the v&sup2; in kinetic energy that is why braking distance grows so steeply, the work&ndash;energy theorem, potential energy with a reference level you choose, and why a ball down a curved ramp and a ball down a straight one arrive at the same speed &mdash; then friction, which breaks that and turns the difference into heat over the distance actually travelled. <b>Power</b> closes the chapter: the same work done faster, and why doubling a car&rsquo;s cruising speed needs eight times the engine. <b>Momentum</b> finishes the course: impulse as force times time, why a crumple zone cannot reduce the momentum that must be removed and can only stretch the seconds it takes, conservation from the third law, and collisions &mdash; elastic, where a lighter target legitimately leaves faster than the projectile arrived, and perfectly inelastic, which loses more energy than any other and is exactly what a car is designed to do. Seven more lessons, fourteen worked examples, 42 more practice questions. The course now stands at 28 lessons, 56 worked examples and 160 practice questions across all eight chapters.'],
     ['2.62', '<b>PHYS 1000H chapters 5 and 6: the forces surfaces and fluids exert, and going round in a circle.</b> <b>Friction</b> is taught as the inequality it is &mdash; push a crate with 80 N and static friction is exactly 80 N, not its maximum &mdash; with the drop to the smaller kinetic coefficient that makes a heavy box lurch when it finally gives, and the tilted plank that measures a coefficient with nothing but a protractor. <b>Drag</b> grows with the square of the speed, which is why a car meets four times the air resistance at twice the speed and the engine works eight times as hard, and why a falling body levels off at a terminal velocity where its acceleration is zero rather than g. <b>Elasticity</b> closes the chapter with stress, strain and Young&rsquo;s modulus, and the squared area conversion that decides whether the answer is right. Chapter 6 is <b>circular motion</b>: radians and v = r&omega;, centripetal acceleration going as v&sup2; so that a bend taken twice as fast needs four times the grip, the insistence that centripetal force is a job done by a real force rather than a force of its own, why the passenger pressed against the door was never pushed outward, and Newton&rsquo;s law of gravitation &mdash; surface gravity, orbital speed, Kepler&rsquo;s third law, and why an astronaut floats where gravity is still 8.7 m/s&sup2;. Seven more lessons, fourteen worked examples, 42 more practice questions. Chapters 7 and 8 complete the course.'],
