@@ -17147,7 +17147,928 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     ]
   };
 
+
+  /* =============================== CHEM 1000H =============================== */
+  /* A first university chemistry course, following the schedule of the outline it is set from:
+     chapter 4 stoichiometry, chapter 5 gases, chapter 7 the quantum-mechanical atom, chapter 8
+     periodic trends, chapter 9 Lewis theory, chapter 10 VSEPR, valence bond and molecular orbital
+     theory, chapter 11 intermolecular forces. It sits beside the General Chemistry course in this
+     file rather than replacing it: that one is cut to four ideas the subject leans on, while this
+     one follows a real schedule chapter by chapter. Chapters 1–3 of the set text — units, significant
+     figures, atoms, formulae, molar mass — are assumed and are not taught here.
+     Built so far: chapters 4 and 5. */
+  const CHEM1000 = {
+    subject: CHEM,
+    id: 'chem-1000h', inst: 'trent',
+    code: 'CHEM 1000H',
+    title: 'General Chemistry: Structure and Properties',
+    blurb: 'Chemistry from the mole upward: counting reactants and finding which one runs out first, the gas laws and what they say about molecules in motion, then the quantum picture of the atom that explains the periodic table, the models of the bond from Lewis dots to molecular orbitals, and finally the weak forces between molecules that decide whether something is a solid, a liquid or a gas.',
+    level: 'Foundation',
+    exam: 'Follows the course schedule: chapter 4 stoichiometry, chapter 5 the gas laws, chapter 7 the quantum-mechanical model of the atom, chapter 8 periodic trends, chapter 9 chemical bonding I (Lewis theory), chapter 10 chemical bonding II (VSEPR, valence bond and molecular orbital theories), and chapter 11 intermolecular forces. Built so far: chapters 4 and 5.',
+    text: 'Tro, Fridgen & Shaw, Chemistry: A Molecular Approach, 4th Canadian edition (Pearson)',
+    legalNote: 'Study material for a university course. It follows the chapter and section order of the set text so that a lesson here matches the section you would open alongside it, but every explanation, example and question is written from scratch — nothing is copied from the book or from any past paper. Answers are recomputed by a computer algebra system before the page ships; where a figure is rounded, the question says to how many places. Atomic masses are the ordinary four-figure values, and a course using three figures will differ in the last digit.',
+    gaps: [
+      'Still to be built, in schedule order: chapter 7 the quantum-mechanical model of the atom, chapter 8 periodic trends, chapter 9 chemical bonding I, chapter 10 chemical bonding II, and chapter 11 intermolecular forces',
+      'Assumed as background and not taught here: chapters 1 to 3 of the set text — units of measurement, significant figures, atoms and elements, compounds and chemical formulae, molar mass, and balancing equations',
+      'Not on this course\'s schedule, so not built for it: thermochemistry, chemical kinetics, equilibrium, acids and bases, electrochemistry and the chapters after 11'
+    ],
+    units: [
+
+      /* ============================ CHAPTER 4 ============================ */
+      {
+        id: 'stoich', n: 1,
+        title: 'Reaction stoichiometry',
+        blurb: 'The bookkeeping that makes chemistry quantitative: how much product a given mass of reactant can make, which reactant runs out first, how much of the possible yield was actually obtained, and the same arithmetic done in solution.',
+        read: 'Chapter 4',
+        objectives: [
+          'Convert between mass and moles, and use a balanced equation\'s coefficients as a mole ratio',
+          'Carry out a mass-to-mass calculation through moles in both directions',
+          'Identify the limiting reactant by comparing available moles with required moles',
+          'Compute a theoretical yield and a percent yield, and say which is measured and which is calculated',
+          'Use molarity for solution stoichiometry and for dilution'
+        ],
+        lessons: [
+          {
+            id: 'a1', title: 'The mole ratio and mass-to-mass calculations', src: 'Section 4.2',
+            idea: `A balanced equation is a recipe in <b>molecules</b>, not in grams. The coefficients say how many particles of each substance take part, so they are a <b>mole ratio</b> and nothing else:<br><br><b>2 Al + 3 Cl<sub>2</sub> → 2 AlCl<sub>3</sub></b><br><br>reads "two moles of aluminium react with three moles of chlorine to give two moles of aluminium chloride". It emphatically does <b>not</b> say two grams with three grams, and treating coefficients as masses is the single largest source of wrong answers in this chapter.<br><br>That is why every stoichiometry calculation has the same shape, whatever the question:<br><br><b>mass of A → moles of A → moles of B → mass of B</b><br><br>The first and last steps use <b>molar mass</b>, in grams per mole. The middle step — the only genuinely chemical one — uses the coefficients:<br><br><b>moles of B = moles of A × (coefficient of B / coefficient of A)</b><br><br>Getting that fraction the right way up is the second most common error, and there is a test that settles it in one second: <b>the substance you are going TO belongs on top</b>. Alternatively, sanity-check the size — going from 2 Al to 3 Cl<sub>2</sub> must give MORE moles, so the ratio must be greater than one.<br><br>Two conditions have to hold before any of this is valid. The equation must be <b>balanced</b>, because unbalanced coefficients are not a mole ratio of anything. And the molar masses must come from the correct <b>formulas</b> — AlCl<sub>3</sub> is 133.33 g/mol, not the 62.43 you get by forgetting that the subscript 3 multiplies the chlorine.<br><br>A useful discipline: write the units on every line and let them cancel, exactly as in a physics conversion. Grams over grams per mole gives moles; moles times grams per mole gives grams. A calculation whose units do not end in the quantity asked for has gone wrong somewhere earlier, and the units say so before the number does.`,
+            figure: {
+              kind: 'graph', x: [0, 10], y: [0, 16], xlabel: 'moles of Al', ylabel: 'moles',
+              fns: [{ expr: 'x*1.5', label: 'Cl₂ needed: 3/2 as many' }, { expr: 'x', label: 'AlCl₃ made: 1 for 1', dashed: true }],
+              points: [{ x: 4, y: 6, label: '4 mol Al needs 6 mol Cl₂' }],
+              caption: 'The mole ratio drawn as two straight lines through the origin, with slopes taken straight from the coefficients of 2 Al + 3 Cl₂ → 2 AlCl₃. Chlorine is needed at 3/2 the rate of aluminium and the product appears one for one — the ratios are fixed by the equation and hold at every scale, which is why one calculation serves for any amount.'
+            },
+            rules: [
+              { name: 'Coefficients are a mole ratio', expr: 'Two moles of Al react with three moles of Cl2', words: true, note: 'Never a mass ratio. This is the single most common misreading of a balanced equation.' },
+              { name: 'Mass to moles', expr: 'n = m / M', note: 'Grams divided by grams per mole. The units cancel to leave moles.' },
+              { name: 'Moles to mass', expr: 'm = n M', note: 'The same relationship the other way, and the last step of most calculations.' },
+              { name: 'The mole ratio step', expr: 'n_B = n_A * (coefficient of B) / (coefficient of A)', note: 'The substance you are going TO goes on top. Check the size: more product per reactant means a ratio above one.' },
+              { name: 'The shape of every calculation', expr: 'mass of A, moles of A, moles of B, mass of B', words: true, note: 'Only the middle step is chemistry; the outer two are molar masses.' }
+            ],
+            examples: [
+              {
+                prompt: 'For 2 Al + 3 Cl₂ → 2 AlCl₃, find the mass of AlCl₃ produced from 5.40 g of aluminium with chlorine in excess. Use Al 26.98 and Cl 35.45 g/mol, and give the answer to one decimal place.',
+                approach: 'Follow the four-step chain and resist the temptation to shortcut it: mass to moles with the molar mass of aluminium, moles to moles with the coefficients, moles to mass with the molar mass of the product. Build the molar mass of AlCl₃ carefully, because the subscript multiplies the chlorine. "Chlorine in excess" is the phrase that says aluminium is the limiting reactant, so no comparison is needed.',
+                steps: [
+                  { do: 'Moles of Al: n = m/M = 5.40/26.98', why: 'Grams over grams per mole leaves moles. The units are the check.' },
+                  { do: 'n(Al) = 0.2001 mol', why: 'About a fifth of a mole, which is roughly 1.2 × 10²³ atoms.' },
+                  { do: 'Mole ratio: the coefficients are 2 Al to 2 AlCl₃, so n(AlCl₃) = n(Al) × 2/2 = 0.2001 mol', why: 'One for one here. Writing the ratio out anyway keeps the habit for the cases where it is not.' },
+                  { do: 'Molar mass of AlCl₃: 26.98 + 3(35.45) = 26.98 + 106.35 = 133.33 g/mol', why: 'The subscript 3 multiplies the chlorine. Using 26.98 + 35.45 = 62.43 is the standard slip and halves the answer.' },
+                  { do: 'Mass: m = nM = 0.2001 × 133.33', why: 'Moles times grams per mole gives grams, which is what the question asked for.' },
+                  { do: 'm = 26.7 g of AlCl₃', why: 'Heavier than the 5.40 g of aluminium, as it must be — the chlorine that joined it has mass too.' }
+                ],
+                answer: '26.7 g of AlCl₃', answerWords: true,
+                check: 'Conservation of mass confirms it: the chlorine consumed is 0.3002 mol × 70.90 = 21.3 g, and 5.40 + 21.3 = 26.7 g ✓ — exactly the mass of product. Nothing is created or destroyed, so the masses must balance, and that is a free check on every stoichiometry answer.'
+              },
+              {
+                prompt: 'For the same reaction, find the mass of chlorine gas required to react completely with 5.40 g of aluminium. Cl₂ is 70.90 g/mol; give the answer to one decimal place.',
+                approach: 'The same chain with a different mole ratio, and this time the ratio is not one — so it is worth stating which way up it goes before using it. Going from aluminium to chlorine, the chlorine coefficient is on top, and since 3 is larger than 2 the answer in moles must be larger than the aluminium. That size check is the quickest guard against inverting the fraction.',
+                steps: [
+                  { do: 'Moles of Al: 5.40/26.98 = 0.2001 mol', why: 'The same first step as before — the mass given has not changed.' },
+                  { do: 'Mole ratio: 3 Cl₂ to 2 Al, and we are going TO chlorine, so the 3 is on top', why: 'n(Cl₂) = n(Al) × 3/2. The substance being calculated goes in the numerator.' },
+                  { do: 'Size check: 3/2 is greater than 1, so there must be MORE moles of Cl₂ than of Al', why: 'Inverting the ratio would give 0.133 mol, fewer than the aluminium, which the equation forbids.' },
+                  { do: 'n(Cl₂) = 0.2001 × 1.5 = 0.3002 mol', why: 'Half as many again, exactly as the coefficients require.' },
+                  { do: 'Mass: m = 0.3002 × 70.90', why: 'Cl₂ is a diatomic molecule, so its molar mass is twice 35.45, not 35.45.' },
+                  { do: 'm = 21.3 g of Cl₂', why: 'About four times the mass of the aluminium, because chlorine is both heavier per mole and needed in greater amount.' }
+                ],
+                answer: '21.3 g of Cl₂', answerWords: true,
+                check: 'This is the same 21.3 g that the mass balance in the previous example predicted ✓ — two independent routes agreeing. And the diatomic molar mass matters: using 35.45 instead of 70.90 would halve the answer to 10.6 g, and the mass balance would then fail visibly.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'c1k-coefficients-as-masses',
+                wrong: 'Reading 2 Al + 3 Cl₂ → 2 AlCl₃ as two grams of aluminium reacting with three grams of chlorine',
+                right: 'Coefficients are a MOLE ratio: two moles with three moles.',
+                why: 'Moles of different substances have wildly different masses — a mole of aluminium is 26.98 g and a mole of chlorine gas 70.90 g — so a mass ratio read off the coefficients is wrong by whatever factor those molar masses differ by. Converting to moles first is not a formality; it is the only step that makes the coefficients mean anything.'
+              },
+              {
+                id: 'c1k-mole-ratio-inverted',
+                wrong: 'Multiplying by 2/3 when going from aluminium to chlorine',
+                right: 'The substance you are calculating goes on top: n(Cl₂) = n(Al) × 3/2.',
+                why: 'The two versions differ by a factor of 2.25, which is large enough to be obvious and easy to commit under time pressure. The size check settles it instantly — three coefficients of chlorine against two of aluminium means more chlorine in moles, so the ratio must exceed one.'
+              },
+              {
+                id: 'c1k-subscript-ignored-in-molar-mass',
+                wrong: 'Computing the molar mass of AlCl₃ as 26.98 + 35.45',
+                right: 'The subscript multiplies: 26.98 + 3(35.45) = 133.33 g/mol.',
+                why: 'The error halves or worse the molar mass and therefore the final answer, and it is invisible because the result is still a plausible number of grams. Writing the molar mass out as a sum with the multipliers shown, rather than adding atomic masses from memory, is what prevents it — and the same care applies to Cl₂, whose molar mass is 70.90 and not 35.45.'
+              },
+              {
+                id: 'c1k-unbalanced-equation-used',
+                wrong: 'Taking mole ratios from an equation that has not been balanced',
+                right: 'Balance first. Coefficients are a mole ratio only when the equation balances.',
+                why: 'An unbalanced equation asserts that atoms appear or vanish, so its coefficients describe no real process and the ratios read from them are arbitrary. It is also the one error the mass-balance check cannot catch, because the check assumes the equation is right — so balancing is the first line of the solution, not an afterthought.'
+              }
+            ]
+          },
+
+          {
+            id: 'a2', title: 'Limiting reactant, theoretical and percent yield', src: 'Section 4.3',
+            idea: `Real reactions rarely start with exactly the right proportions. One reactant runs out first, the reaction stops, and the rest of the other is left over. The one that runs out is the <b>limiting reactant</b>, and it alone determines how much product can form.<br><br>The comparison has to be made in <b>moles</b>, never in grams — a gram of hydrogen contains far more particles than a gram of nitrogen. There are two equivalent routes, and picking one and sticking to it is worth more than knowing both:<br><br><b>Route 1 (product method).</b> Work out how much product each reactant would give if it were used up completely. The <b>smaller</b> answer is the real one, and that reactant is limiting.<br><br><b>Route 2 (comparison method).</b> Take one reactant, compute how much of the other it would need, and compare with what is there. If there is not enough of the second, the second is limiting.<br><br>The <b>theoretical yield</b> is the mass of product calculated from the limiting reactant — the most that could possibly form. The <b>actual yield</b> is what a real experiment produces, and it is always less, for reasons that have nothing to do with the arithmetic: the reaction may not go to completion, some product is lost in transfer and purification, and side reactions consume reactants.<br><br>The <b>percent yield</b> compares the two:<br><br><b>percent yield = (actual yield / theoretical yield) × 100%</b><br><br>Both masses must be of the <b>same substance</b> for the comparison to mean anything. A percent yield above 100% is not a triumph; it is a signal that the product was wet, impure, or weighed with something else still in it — the calculation cannot produce more than the theoretical maximum, so a figure above it is evidence of an error in the experiment.<br><br>The excess reactant is worth tracking too: <b>excess left = amount supplied − amount consumed</b>, where the amount consumed comes from the limiting reactant through the mole ratio.`,
+            figure: {
+              kind: 'graph', x: [0, 3], y: [0, 3], xlabel: 'moles of H₂ supplied', ylabel: 'moles of NH₃ possible',
+              fns: [{ expr: '2*x/3', label: 'limited by H₂', domain: [0, 3] }, { expr: '2', label: 'limited by 1 mol N₂' }],
+              points: [{ x: 3, y: 2, label: 'exactly balanced at 3 mol H₂' }, { x: 1.98, y: 1.32, label: 'H₂ limits here' }],
+              caption: 'How much ammonia one mole of nitrogen can make, against the hydrogen supplied. Below three moles of hydrogen the sloping line governs and hydrogen is limiting; above it the flat line takes over and the nitrogen runs out instead. Whichever line is LOWER is the real yield, which is the product method drawn rather than described.'
+            },
+            rules: [
+              { name: 'Compare in moles', expr: 'Never compare masses to find the limiting reactant', words: true, note: 'A gram of hydrogen holds far more particles than a gram of nitrogen.' },
+              { name: 'The product method', expr: 'Compute the product each reactant alone would give; the smaller answer is the real one', words: true, note: 'And that reactant is the limiting one.' },
+              { name: 'Theoretical yield', expr: 'The mass of product calculated from the limiting reactant', words: true, note: 'The most that could possibly form. Calculated, never measured.' },
+              { name: 'Percent yield', expr: 'percent = (actual / theoretical) * 100', note: 'Both masses of the same substance. Above 100% means an impure or wet product, not a better reaction.' },
+              { name: 'Excess remaining', expr: 'excess = supplied - consumed', note: 'The amount consumed comes from the limiting reactant through the mole ratio.' }
+            ],
+            examples: [
+              {
+                prompt: 'N₂ + 3 H₂ → 2 NH₃. A reaction starts with 28.0 g of N₂ and 4.00 g of H₂. Find the limiting reactant and the theoretical yield of ammonia. Use N₂ 28.02, H₂ 2.016 and NH₃ 17.03 g/mol; give the answer to one decimal place.',
+                approach: 'Convert both masses to moles first, because that is the only basis on which they can be compared. Then use the product method: work out what each reactant alone could produce and take the smaller figure. The masses here are deliberately close to a 1:2 ratio, which is exactly the situation where an eyeball judgement fails and the arithmetic has to be done.',
+                steps: [
+                  { do: 'Moles of N₂: 28.0/28.02 = 0.9993 mol', why: 'Almost exactly one mole, which makes the comparison easy to follow.' },
+                  { do: 'Moles of H₂: 4.00/2.016 = 1.9841 mol', why: 'Far more moles than nitrogen despite being far less mass — which is precisely why the comparison must be in moles.' },
+                  { do: 'If N₂ ran out: n(NH₃) = 0.9993 × 2/1 = 1.9986 mol', why: 'Two ammonia per nitrogen, from the coefficients.' },
+                  { do: 'If H₂ ran out: n(NH₃) = 1.9841 × 2/3 = 1.3227 mol', why: 'Two ammonia per three hydrogen. A smaller answer, so this is the real one.' },
+                  { do: 'Hydrogen is limiting, and the theoretical yield is 1.3227 mol of NH₃', why: 'The smaller of the two possible yields is what actually happens; the nitrogen cannot react with hydrogen that is not there.' },
+                  { do: 'Mass: 1.3227 × 17.03 = 22.5 g of NH₃', why: 'The most this mixture could give. Had the comparison been made in grams, nitrogen would have looked limiting and the answer would have been 34.0 g.' }
+                ],
+                answer: 'Hydrogen is limiting, and the theoretical yield is 22.5 g of NH₃', answerWords: true,
+                check: 'Check by the comparison method: 0.9993 mol of N₂ would need 3 × 0.9993 = 2.998 mol of H₂, and only 1.984 mol is available — so hydrogen runs out first ✓. The nitrogen left over is 0.9993 − 1.9841/3 = 0.3379 mol, which is 9.5 g of unreacted N₂.'
+              },
+              {
+                prompt: 'That reaction is carried out and 19.4 g of ammonia is collected. Find the percent yield, to one decimal place.',
+                approach: 'Two numbers and one division, but the reasoning matters more than the arithmetic: the theoretical yield is calculated and the actual yield is weighed, and the percentage compares the second with the first. Both must be masses of the same substance, and the answer must come out at or below 100% — anything higher is a statement about the experiment rather than the chemistry.',
+                steps: [
+                  { do: 'Theoretical yield, from the limiting reactant: 22.5 g of NH₃', why: 'Calculated in the previous example. It is the maximum, not a prediction of what a laboratory will get.' },
+                  { do: 'Actual yield, from the balance: 19.4 g of NH₃', why: 'Measured, not calculated. The two numbers come from completely different places, which is the point of the comparison.' },
+                  { do: 'Both figures are masses of ammonia', why: 'Comparing a mass of product with a mass of reactant would be meaningless, and is a real error when a question supplies several masses.' },
+                  { do: 'percent yield = (19.4/22.5) × 100', why: 'Actual over theoretical. Putting them the other way up gives 116%, which is impossible and therefore self-flagging.' },
+                  { do: '= 0.8622 × 100 = 86.2%', why: 'A good yield for a real preparation.' },
+                  { do: 'The missing 13.8% went to incomplete reaction, transfer losses and side reactions', why: 'None of which the stoichiometry can predict — it only ever gives the ceiling.' }
+                ],
+                answer: '86.2%', answerWords: true,
+                check: 'Work backwards: 86.2% of 22.5 g is 19.4 g ✓. And note what a yield above 100% would mean — not a better reaction, but a product that is still wet or contaminated, since the calculation already gives the absolute maximum the reactants can supply.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'c1k-limiting-by-mass',
+                wrong: 'Deciding the limiting reactant by seeing which mass is smaller',
+                right: 'Convert both to moles and compare there — 4.00 g of H₂ is twice as many moles as 28.0 g of N₂.',
+                why: 'Molar masses differ by more than an order of magnitude between light and heavy substances, so the smaller mass is routinely the larger amount. In the worked example the mass comparison names nitrogen as limiting and gives 34.0 g instead of 22.5 g — a 50% error produced by a step that felt like common sense.'
+              },
+              {
+                id: 'c1k-percent-yield-inverted',
+                wrong: 'Computing theoretical over actual',
+                right: 'Percent yield is ACTUAL over theoretical, times 100.',
+                why: 'The inverted version gives a figure above 100% whenever the reaction went reasonably well, which is a useful alarm — a percent yield can never legitimately exceed 100 because the theoretical yield is the maximum the reactants can supply. Reading the answer for plausibility catches this every time.'
+              },
+              {
+                id: 'c1k-theoretical-yield-from-excess',
+                wrong: 'Calculating the theoretical yield from the reactant present in excess',
+                right: 'Only the limiting reactant determines the yield; the rest of the other is left over.',
+                why: 'The excess reactant has nothing to react with once the limiting one is consumed, so it contributes no additional product however much of it there is. Identifying the limiting reactant before computing anything is the whole reason that step exists, and skipping it makes the yield too large by exactly the ratio of the two possible yields.'
+              },
+              {
+                id: 'c1k-yield-above-hundred-accepted',
+                wrong: 'Reporting a percent yield of 105% as a successful experiment',
+                right: 'It is evidence of error: wet product, impurity, or a mis-weighed sample.',
+                why: 'The theoretical yield is an upper bound derived from conservation of atoms, so exceeding it would require matter to have been created. The usual physical explanation is solvent still present in the product, which is why a preparation is dried to constant mass before it is weighed.'
+              }
+            ]
+          },
+
+          {
+            id: 'a3', title: 'Solution concentration and solution stoichiometry', src: 'Section 4.4',
+            idea: `Most reactions are run in solution, where amounts are measured by <b>volume</b> rather than mass. The bridge between the two is <b>molarity</b>:<br><br><b>M = moles of solute / litres of solution</b>, in mol/L<br><br>A 0.150 M solution contains 0.150 mol in every litre. Two rearrangements do most of the work:<br><br><b>n = MV</b> — moles from a concentration and a volume<br><b>V = n/M</b> — the volume needed to supply a given amount<br><br>The <b>V is the volume of SOLUTION</b>, not the volume of solvent added. Dissolving 2.19 g of sodium chloride and then topping up to the 250.0 mL mark is not the same as adding 250.0 mL of water to it, because the solid takes up room; only the first gives a 0.150 M solution. It is also why volumes must be in <b>litres</b> before being multiplied by a molarity — millilitres give an answer a thousand times too large, and the units make it obvious.<br><br>With that, solution stoichiometry is the same four-step chain as before, with one step replaced:<br><br><b>volume × molarity → moles of A → moles of B → whatever is asked for</b><br><br><b>Dilution</b> adds solvent to an existing solution. The amount of solute does not change, only the volume it is spread through, so the moles before equal the moles after:<br><br><b>M<sub>1</sub>V<sub>1</sub> = M<sub>2</sub>V<sub>2</sub></b><br><br>Both volumes may be in the same convenient unit here, since the units cancel — this is the one place millilitres are safe. Read the relationship rather than memorising it: adding solvent lowers the concentration in exact proportion to the increase in volume, so a tenfold dilution divides the molarity by ten.<br><br>One caution about dissociation. A 0.10 M solution of NaCl is 0.10 M in sodium ions and 0.10 M in chloride ions, but a 0.10 M solution of CaCl<sub>2</sub> is 0.10 M in calcium and <b>0.20 M</b> in chloride, because each formula unit supplies two chloride ions. Questions about ion concentration are testing that subscript.`,
+            figure: {
+              kind: 'graph', x: [0, 500], y: [0, 7], xlabel: 'final volume (mL)', ylabel: 'molarity',
+              fns: [{ expr: '150/x', label: 'diluting 25.0 mL of 6.00 M HCl' }],
+              points: [{ x: 25, y: 6, label: 'start: 6.00 M' }, { x: 500, y: 0.3, label: 'diluted to 0.300 M' }],
+              caption: 'Molarity against final volume as a fixed amount of solute is diluted. The curve is a reciprocal because the moles are fixed and only the volume changes — twenty times the volume gives a twentieth of the concentration. That fixed quantity of solute is exactly what M₁V₁ = M₂V₂ asserts.'
+            },
+            rules: [
+              { name: 'Molarity', expr: 'M = n / V', note: 'Moles of solute per LITRE of solution — not per litre of solvent added.' },
+              { name: 'Moles from a solution', expr: 'n = M V', note: 'V in litres. Using millilitres gives an answer a thousand times too large.' },
+              { name: 'Volume needed', expr: 'V = n / M', note: 'The volume of a given solution that supplies the moles you want.' },
+              { name: 'Dilution', expr: 'M_1 V_1 = M_2 V_2', note: 'The moles of solute do not change; only the volume does. Either volume unit works, since they cancel.' },
+              { name: 'Ions from dissociation', expr: 'A 0.10 M CaCl2 solution is 0.20 M in chloride', words: true, note: 'The subscript multiplies the ion concentration. NaCl gives 0.10 M in each ion.' }
+            ],
+            examples: [
+              {
+                prompt: 'Find the mass of sodium chloride needed to prepare 250.0 mL of a 0.150 M solution. NaCl is 58.44 g/mol; give the answer to two decimal places.',
+                approach: 'Two steps, with the unit conversion between them being the one that decides the answer. Convert the volume to litres, multiply by the molarity to get moles, and multiply by the molar mass to get grams. Then say how the solution is actually made, because the phrase "to the mark" is the physical content of the definition of molarity.',
+                steps: [
+                  { do: 'Convert the volume: 250.0 mL = 0.2500 L', why: 'Molarity is moles per LITRE, so millilitres cannot be multiplied by it directly. This is the step that most often goes wrong.' },
+                  { do: 'Moles needed: n = MV = 0.150 × 0.2500', why: 'Moles per litre times litres gives moles — the units cancel cleanly, which is the check.' },
+                  { do: 'n = 0.03750 mol', why: 'A small amount, as expected for a dilute solution in a quarter of a litre.' },
+                  { do: 'Mass: m = nM = 0.03750 × 58.44', why: 'Moles times grams per mole gives grams.' },
+                  { do: 'm = 2.19 g of NaCl', why: 'Weighed out on a balance to two decimal places, which the figure conveniently matches.' },
+                  { do: 'Method: dissolve the 2.19 g in some water, then add water up TO the 250.0 mL mark', why: 'Not 250.0 mL of water added to the solid — the salt occupies volume of its own, so that would give a slightly more dilute solution.' }
+                ],
+                answer: '2.19 g of NaCl, made up to 250.0 mL', answerWords: true,
+                check: 'Work backwards: 2.19/58.44 = 0.03747 mol in 0.2500 L gives 0.1499 M ✓. And the millilitre trap is worth seeing — using 250.0 rather than 0.2500 would give 37.5 mol and 2,192 g of salt, which is a bucketful and obviously absurd.'
+              },
+              {
+                prompt: 'A 25.0 mL sample of 6.00 M hydrochloric acid is diluted to a final volume of 500.0 mL. Find the concentration of the diluted solution, to three decimal places.',
+                approach: 'Dilution changes the volume and not the amount of solute, which is the whole content of M₁V₁ = M₂V₂. Identify which numbers are the "before" pair and which the "after", rearrange for the unknown, and note that the volumes can stay in millilitres here because they appear on both sides and cancel. Finish by reading the answer as a ratio, which is the quickest check.',
+                steps: [
+                  { do: 'Identify: M₁ = 6.00 M and V₁ = 25.0 mL before; V₂ = 500.0 mL after, with M₂ unknown', why: 'Labelling the four quantities first prevents the concentrated and dilute figures being swapped.' },
+                  { do: 'The moles of HCl do not change — only water was added', why: 'That invariance is the reason the relationship holds, and it is worth stating rather than just using.' },
+                  { do: 'M₁V₁ = M₂V₂, so M₂ = M₁V₁/V₂ = (6.00 × 25.0)/500.0', why: 'The volumes appear on both sides, so millilitres cancel and no conversion is needed here.' },
+                  { do: 'M₂ = 150/500.0', why: '150 is the moles times a thousand — the millilitre units carried through consistently.' },
+                  { do: 'M₂ = 0.300 M', why: 'A twentyfold dilution: 500.0/25.0 = 20, and 6.00/20 = 0.300.' },
+                  { do: 'Reading it: the volume grew twenty times, so the concentration fell twenty times', why: 'That proportionality is the formula in words, and it makes the answer checkable without redoing the arithmetic.' }
+                ],
+                answer: '0.300 M', answerWords: true,
+                check: 'Count the moles both ways: before, 6.00 × 0.0250 = 0.150 mol; after, 0.300 × 0.5000 = 0.150 mol ✓ — unchanged, which is exactly what dilution means. Note also that this solution is 0.300 M in H⁺ and 0.300 M in Cl⁻, since HCl supplies one of each.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'c1k-millilitres-in-molarity',
+                wrong: 'Multiplying a molarity by a volume in millilitres',
+                right: 'Molarity is moles per LITRE: convert first, so 250.0 mL becomes 0.2500 L.',
+                why: 'The error is a factor of a thousand, which usually produces an answer so absurd that it is caught — but not always, and in a multi-step question the absurdity can be buried. Carrying the units through each line makes it impossible, since mol/L times mL does not simplify to moles.'
+              },
+              {
+                id: 'c1k-solvent-volume-for-solution',
+                wrong: 'Adding 250.0 mL of water to the solid to make 250.0 mL of solution',
+                right: 'Molarity uses the volume of the SOLUTION: dissolve, then make up to the mark.',
+                why: 'The dissolved solute occupies volume of its own, so adding a measured volume of solvent gives a total volume larger than intended and a concentration lower than intended. It is also why volumetric flasks have a single etched line rather than graduations — the mark is the definition.'
+              },
+              {
+                id: 'c1k-dilution-concentrations-swapped',
+                wrong: 'Putting the dilute concentration on the left of M₁V₁ = M₂V₂ and the concentrated one on the right',
+                right: 'Subscript 1 is before dilution and subscript 2 is after, consistently on both sides.',
+                why: 'Swapping them inverts the ratio and turns a twentyfold dilution into a twentyfold concentration, giving 120 M rather than 0.300 M. Labelling all four quantities before substituting takes a line and removes the ambiguity, and the sanity check is that the answer must be smaller than the starting concentration.'
+              },
+              {
+                id: 'c1k-ion-concentration-subscript',
+                wrong: 'Saying a 0.10 M solution of CaCl₂ is 0.10 M in chloride',
+                right: 'Each formula unit supplies two chloride ions, so the chloride concentration is 0.20 M.',
+                why: 'The subscript multiplies the ion concentration exactly as it multiplies the molar mass, and questions about ionic strength, precipitation or conductivity turn on it. The calcium concentration really is 0.10 M, so the two ions in the same solution have different concentrations — which is the point the question is usually making.'
+              }
+            ]
+          }
+        ],
+        practice: [
+          { id: 't1', kind: 'numeric', lesson: 'a1',
+            prompt: 'How many moles are there in 36.0 g of carbon, with a molar mass of 12.01 g/mol? Give the answer to three decimal places.',
+            answer: 2.998, tol: 0.002, verify: { expr: 'Rational(36, 1)/Rational(1201, 100)', dp: 3 },
+            hint: 'n = m/M.',
+            solution: ['n = 36.0/12.01', '= 2.99750…', '= 2.998 mol to three decimal places'] },
+
+          { id: 't2', kind: 'numeric', lesson: 'a1',
+            prompt: 'Find the molar mass of CaCl₂, in g/mol, using Ca 40.08 and Cl 35.45. Give the answer to two decimal places.',
+            answer: 110.98, tol: 0.05, verify: { expr: 'Rational(4008, 100) + 2*Rational(3545, 100)', dp: 2 },
+            hint: 'The subscript multiplies the chlorine.',
+            solution: ['40.08 + 2(35.45)', '= 40.08 + 70.90', '= 110.98 g/mol'] },
+
+          { id: 't3', kind: 'numeric', lesson: 'a1',
+            prompt: 'For 2 H₂ + O₂ → 2 H₂O, how many moles of water come from 5.00 mol of hydrogen with oxygen in excess?',
+            answer: 5, verify: { expr: '5*Rational(2, 2)' },
+            hint: 'The coefficients give the mole ratio.',
+            solution: ['2 H₂ gives 2 H₂O, so the ratio is 2/2 = 1', 'n(H₂O) = 5.00 × 1', '= 5.00 mol'] },
+
+          { id: 't4', kind: 'numeric', lesson: 'a1',
+            prompt: 'For that reaction, how many moles of oxygen are needed for 5.00 mol of hydrogen?',
+            answer: 2.5, verify: { expr: '5*Rational(1, 2)' },
+            hint: 'One O₂ for every two H₂.',
+            solution: ['The ratio is 1 O₂ to 2 H₂', 'n(O₂) = 5.00 × 1/2', '= 2.50 mol'] },
+
+          { id: 't5', kind: 'numeric', lesson: 'a1',
+            prompt: 'For C + O₂ → CO₂, find the mass of CO₂ from 24.02 g of carbon, using C 12.01 and CO₂ 44.01 g/mol. Give the answer to one decimal place.',
+            answer: 88, tol: 0.05, verify: { expr: 'Rational(2402, 100)/Rational(1201, 100)*Rational(4401, 100)', dp: 1 },
+            hint: 'Mass to moles, one-for-one ratio, moles to mass.',
+            solution: ['n(C) = 24.02/12.01 = 2.000 mol', 'n(CO₂) = 2.000 mol, one for one', 'm = 2.000 × 44.01 = 88.0 g'] },
+
+          { id: 't6', kind: 'mc', lesson: 'a1',
+            prompt: 'What does the equation 2 Al + 3 Cl₂ → 2 AlCl₃ actually state?',
+            options: [
+              { t: 'Two moles of aluminium react with three moles of chlorine gas', ok: true },
+              { t: 'Two grams of aluminium react with three grams of chlorine gas' },
+              { t: 'Two litres of aluminium react with three litres of chlorine gas' },
+              { t: 'Aluminium and chlorine react in a 2:3 ratio by mass' }
+            ],
+            hint: 'What do coefficients count?',
+            solution: ['Coefficients count particles, and therefore moles', 'A mole of Al is 26.98 g and a mole of Cl₂ is 70.90 g', 'The mass ratio is nothing like 2:3', 'Converting to moles is what makes the coefficients usable'] },
+
+          { id: 't7', kind: 'numeric', lesson: 'a2',
+            prompt: 'A reaction needs reactants in a 1:2 mole ratio. You have 3.00 mol of the first and 5.00 mol of the second. How many moles of the second would be needed to use all of the first?',
+            answer: 6, verify: { expr: '3*2' },
+            hint: 'Twice as much of the second as of the first.',
+            solution: ['3.00 mol of the first needs 2 × 3.00 = 6.00 mol of the second', 'Only 5.00 mol is available', 'So the second reactant is limiting'] },
+
+          { id: 't8', kind: 'numeric', lesson: 'a2',
+            prompt: 'For N₂ + 3 H₂ → 2 NH₃ with 2.00 mol N₂ and 3.00 mol H₂, find the maximum moles of ammonia.',
+            answer: 2, verify: { expr: '3*Rational(2, 3)' },
+            hint: 'Work out what each reactant alone could give and take the smaller.',
+            solution: ['From N₂: 2.00 × 2 = 4.00 mol NH₃', 'From H₂: 3.00 × 2/3 = 2.00 mol NH₃', 'The smaller governs: 2.00 mol, and hydrogen is limiting'] },
+
+          { id: 't9', kind: 'numeric', lesson: 'a2',
+            prompt: 'A reaction has a theoretical yield of 45.0 g and produces 38.7 g. Find the percent yield, to one decimal place.',
+            answer: 86, tol: 0.05, verify: { expr: 'Rational(387, 10)/45*100', dp: 1 },
+            hint: 'Actual over theoretical, times 100.',
+            solution: ['38.7/45.0 = 0.8600', '× 100', '= 86.0%'] },
+
+          { id: 't10', kind: 'numeric', lesson: 'a2',
+            prompt: 'A preparation has a theoretical yield of 12.0 g and a percent yield of 75.0%. Find the actual mass obtained, in grams.',
+            answer: 9, verify: { expr: 'Rational(75, 100)*12' },
+            hint: 'Read the percent-yield formula backwards.',
+            solution: ['actual = (percent/100) × theoretical', '= 0.750 × 12.0', '= 9.00 g'] },
+
+          { id: 't11', kind: 'mc', lesson: 'a2',
+            prompt: 'A student computes a percent yield of 108%. What is the most likely explanation?',
+            options: [
+              { t: 'The product was not fully dried, or was impure — the theoretical yield cannot be exceeded', ok: true },
+              { t: 'The reaction was unusually efficient' },
+              { t: 'The limiting reactant was identified correctly and the reaction went to completion twice' },
+              { t: 'Percent yields above 100% are normal for gas-phase reactions' }
+            ],
+            hint: 'What does the theoretical yield represent?',
+            solution: ['The theoretical yield is the maximum the reactants can supply', 'Exceeding it would require matter to be created', 'The usual cause is solvent still in the product', 'Which is why a product is dried to constant mass before weighing'] },
+
+          { id: 't12', kind: 'numeric', lesson: 'a3',
+            prompt: 'Find the number of moles of solute in 500.0 mL of 0.250 M solution.',
+            answer: 0.125, verify: { expr: 'Rational(250, 1000)*Rational(5000, 10000)' },
+            hint: 'n = MV, with V in litres.',
+            solution: ['V = 500.0 mL = 0.5000 L', 'n = 0.250 × 0.5000', '= 0.125 mol'] },
+
+          { id: 't13', kind: 'numeric', lesson: 'a3',
+            prompt: 'Find the molarity of a solution containing 0.400 mol of solute in 2.00 L.',
+            answer: 0.2, verify: { expr: 'Rational(4, 10)/2' },
+            hint: 'M = n/V.',
+            solution: ['M = 0.400/2.00', '= 0.200 mol/L', 'That is 0.200 M'] },
+
+          { id: 't14', kind: 'numeric', lesson: 'a3',
+            prompt: 'A 50.0 mL sample of 2.00 M solution is diluted to 400.0 mL. Find the new molarity, to three decimal places.',
+            answer: 0.25, tol: 0.002, verify: { expr: '2*Rational(50, 400)', dp: 3 },
+            hint: 'M₁V₁ = M₂V₂, and the volume units cancel.',
+            solution: ['M₂ = M₁V₁/V₂ = (2.00 × 50.0)/400.0', '= 100/400.0', '= 0.250 M — an eightfold dilution'] },
+
+          { id: 't15', kind: 'numeric', lesson: 'a3',
+            prompt: 'What volume of 0.500 M solution supplies 0.0750 mol of solute? Give the answer in litres.',
+            answer: 0.15, verify: { expr: 'Rational(75, 1000)/Rational(5, 10)' },
+            hint: 'V = n/M.',
+            solution: ['V = 0.0750/0.500', '= 0.150 L', 'That is 150 mL'] },
+
+          { id: 't16', kind: 'numeric', lesson: 'a3',
+            prompt: 'Find the chloride ion concentration in a 0.200 M solution of CaCl₂, in mol/L.',
+            answer: 0.4, verify: { expr: '2*Rational(2, 10)' },
+            hint: 'How many chloride ions does each formula unit supply?',
+            solution: ['Each CaCl₂ gives two Cl⁻ ions', '[Cl⁻] = 2 × 0.200', '= 0.400 M, while the calcium is 0.200 M'] },
+
+          { id: 't17', kind: 'spot', lesson: 'a1',
+            prompt: 'For 2 Al + 3 Cl₂ → 2 AlCl₃, find the moles of Cl₂ needed for 0.400 mol of Al.',
+            steps: [
+              { t: 'The coefficients give a mole ratio of 3 Cl₂ to 2 Al' },
+              { t: 'Going from Al to Cl₂, multiply by 2/3: 0.400 × 2/3 = 0.267 mol', bad: true },
+              { t: 'The substance being calculated goes on top, so multiply by 3/2' },
+              { t: '0.400 × 3/2 = 0.600 mol of Cl₂' }
+            ],
+            why: 'The mole ratio was inverted. Since the equation needs three chlorines for every two aluminiums, the chlorine figure must be LARGER than the aluminium figure — and 0.267 is smaller, which flags the error without any recalculation.',
+            hint: 'Should the answer be more moles or fewer than 0.400?',
+            solution: ['Going to Cl₂, the 3 goes on top', '0.400 × 3/2', '= 0.600 mol'] },
+
+          { id: 't18', kind: 'spot', lesson: 'a3',
+            prompt: 'Find the moles of solute in 250.0 mL of 0.400 M solution.',
+            steps: [
+              { t: 'The relationship is n = MV' },
+              { t: 'n = 0.400 × 250.0 = 100 mol', bad: true },
+              { t: 'Molarity is moles per litre, so the volume must be in litres: 0.2500 L' },
+              { t: 'n = 0.400 × 0.2500 = 0.100 mol' }
+            ],
+            why: 'A molarity is moles per LITRE, so multiplying it by a volume in millilitres overstates the answer by a factor of a thousand. Here it claims 100 moles of solute in a quarter of a litre, which would be several kilograms of most substances — the units catch it before the chemistry does.',
+            hint: 'What unit of volume does molarity assume?',
+            solution: ['250.0 mL = 0.2500 L', 'n = 0.400 × 0.2500', '= 0.100 mol'] },
+
+          { id: 't19', kind: 'order', lesson: 'a1',
+            prompt: 'Put the steps of a mass-to-mass stoichiometry calculation in order.',
+            steps: [
+              'Balance the equation',
+              'Convert the given mass to moles with its molar mass',
+              'Apply the mole ratio from the coefficients',
+              'Convert the moles of product to a mass with its molar mass',
+              'Check the masses against conservation of mass'
+            ],
+            hint: 'Coefficients are only a mole ratio once the equation balances.',
+            solution: ['Balancing comes first, or the ratio means nothing', 'Mass to moles, then the ratio, then moles to mass', 'The mass balance is a free check at the end'] },
+
+          { id: 't20', kind: 'order', lesson: 'a2',
+            prompt: 'Put the steps for a limiting-reactant problem in order.',
+            steps: [
+              'Convert both reactant masses to moles',
+              'Compute the product each reactant alone could give',
+              'Take the smaller figure — that reactant is limiting',
+              'Convert the moles of product to a theoretical yield in grams',
+              'Divide the actual yield by the theoretical yield for the percent yield'
+            ],
+            hint: 'The comparison only means something in moles.',
+            solution: ['Both to moles first, because masses cannot be compared directly', 'Each reactant\'s possible yield, then the smaller', 'The theoretical yield follows from the limiting reactant alone'] }
+        ]
+      },
+
+      /* ============================ CHAPTER 5 ============================ */
+      {
+        id: 'gases', n: 2,
+        title: 'The gas laws',
+        blurb: 'Four measurable quantities — pressure, volume, temperature and amount — tied together by one equation, and the picture of molecules in motion that explains why the equation looks the way it does.',
+        read: 'Chapter 5',
+        objectives: [
+          'Convert between the common pressure units and always work temperature in kelvin',
+          'Apply Boyle\'s, Charles\'s and the combined gas law to a change of conditions',
+          'Use the ideal gas law to find any one of P, V, n or T, and to find a molar mass or a density',
+          'Use partial pressures and mole fractions, and do stoichiometry with a gas volume',
+          'State what kinetic molecular theory assumes, and say where a real gas departs from it'
+        ],
+        lessons: [
+          {
+            id: 'b1', title: 'Pressure and the simple gas laws', src: 'Section 5.2',
+            idea: `<b>Pressure</b> is force per unit area, and a gas exerts it because its molecules are constantly striking the walls. The units are many and the conversions are worth having automatic:<br><br><b>1 atm = 101.325 kPa = 760 mmHg = 760 torr = 1.01325 bar</b><br><br>One rule governs every calculation in this chapter, and breaking it is the standard way to lose the marks:<br><br><b>Temperature must be in kelvin.</b> <b>K = °C + 273.15</b><br><br>The gas laws are proportionalities, and a proportionality needs a scale with a true zero. Celsius does not have one — 20 °C is not twice as hot as 10 °C in any physical sense — so doubling a Celsius temperature does not double anything. In kelvin it does, because 0 K is the point where molecular motion stops.<br><br>Three relationships were found experimentally, each holding two quantities fixed:<br><br><b>Boyle's law</b>: at fixed T and n, <b>P<sub>1</sub>V<sub>1</sub> = P<sub>2</sub>V<sub>2</sub></b>. Pressure and volume are inversely proportional — squeeze a gas into half the space and the pressure doubles.<br><br><b>Charles's law</b>: at fixed P and n, <b>V<sub>1</sub>/T<sub>1</sub> = V<sub>2</sub>/T<sub>2</sub></b>. Volume and absolute temperature are directly proportional. Extrapolating the line to zero volume is where absolute zero was first identified, which is the clearest argument for the kelvin scale there is.<br><br><b>Avogadro's law</b>: at fixed P and T, <b>V<sub>1</sub>/n<sub>1</sub> = V<sub>2</sub>/n<sub>2</sub></b>. Equal volumes of any gases at the same conditions contain equal numbers of molecules, whatever they are made of.<br><br>The three combine into the <b>combined gas law</b>, which covers any change where the amount is fixed:<br><br><b>P<sub>1</sub>V<sub>1</sub>/T<sub>1</sub> = P<sub>2</sub>V<sub>2</sub>/T<sub>2</sub></b><br><br>Read it rather than memorising three separate laws: anything held constant simply cancels from both sides. The units of P and V need only be the <b>same on both sides</b>, since they cancel — but T never gets that licence, because the ratio of two Celsius temperatures is not the ratio of anything real.`,
+            figure: {
+              kind: 'graph', x: [0.5, 6], y: [0, 5], xlabel: 'V (L)', ylabel: 'P (atm)',
+              fns: [{ expr: '2.5/x', label: 'Boyle: P × V is constant' }],
+              points: [{ x: 1, y: 2.5, label: '1 L at 2.5 atm' }, { x: 2.5, y: 1, label: '2.5 L at 1 atm' }, { x: 5, y: 0.5, label: '5 L at 0.5 atm' }],
+              caption: 'Pressure against volume at fixed temperature. The curve is a hyperbola because the product PV is constant — halving the volume doubles the pressure exactly. Every point on this curve describes the same gas at the same temperature, which is why a two-state problem needs only that the product be equal at both ends.'
+            },
+            rules: [
+              { name: 'Pressure units', expr: '1 atm = 101.325 kPa = 760 mmHg', note: 'Also 760 torr and 1.01325 bar. Any of them works, provided the same unit is used on both sides.' },
+              { name: 'Temperature must be absolute', expr: 'T_K = T_C + 273.15', note: 'Every gas law is a proportionality, and Celsius has no true zero. This is the commonest single error in the chapter.' },
+              { name: 'Boyle’s law', expr: 'P_1 V_1 = P_2 V_2', note: 'At fixed temperature and amount. Pressure and volume are inversely proportional.' },
+              { name: 'Charles’s law', expr: 'V_1 / T_1 = V_2 / T_2', note: 'At fixed pressure and amount, with T in kelvin. Extrapolating to zero volume is where absolute zero was found.' },
+              { name: 'Avogadro’s law', expr: 'V_1 / n_1 = V_2 / n_2', note: 'Equal volumes of any gases at the same P and T hold equal numbers of molecules.' },
+              { name: 'The combined gas law', expr: 'P_1 V_1 / T_1 = P_2 V_2 / T_2', note: 'Whatever is constant cancels from both sides, which is why the three laws need not be memorised separately.' }
+            ],
+            examples: [
+              {
+                prompt: 'A gas occupies 2.50 L at 1.00 atm. It is compressed at constant temperature to 0.750 L. Find the new pressure, to two decimal places.',
+                approach: 'The temperature and the amount are fixed, so the combined gas law collapses to Boyle\'s law and the calculation is a single rearrangement. Before computing, decide which way the answer must go — squeezing a gas into less space must raise the pressure — so an answer below 1.00 atm would be wrong regardless of the arithmetic.',
+                steps: [
+                  { do: 'Constant temperature and amount, so the T terms cancel: P₁V₁ = P₂V₂', why: 'Boyle\'s law is the combined gas law with everything else held fixed, rather than a separate thing to remember.' },
+                  { do: 'Predict the direction: the volume falls, so the pressure must rise', why: 'A sanity check made before the arithmetic, which is when it is most useful.' },
+                  { do: 'Rearrange: P₂ = P₁V₁/V₂ = (1.00 × 2.50)/0.750', why: 'Both volumes are in litres, so they cancel and no conversion is needed.' },
+                  { do: 'P₂ = 2.50/0.750', why: 'The volume ratio is 3.33, so the pressure ratio must be the same.' },
+                  { do: 'P₂ = 3.33 atm', why: 'Higher than 1.00 atm, as predicted.' },
+                  { do: 'Check the product: 1.00 × 2.50 = 2.50 and 3.33 × 0.750 = 2.50 ✓', why: 'PV is the constant, so it must come out the same at both ends. That equality is the law itself.' }
+                ],
+                answer: '3.33 atm', answerWords: true,
+                check: 'The ratios agree: the volume fell to 0.750/2.50 = 0.300 of its value and the pressure rose to 3.33/1.00 = 3.33 times, and 0.300 × 3.33 = 1.00 ✓. Inverse proportionality means the two ratios must multiply to one.'
+              },
+              {
+                prompt: 'A balloon holds 250.0 mL at 25.0 °C. It is warmed to 100.0 °C at constant pressure. Find the new volume, to one decimal place.',
+                approach: 'Constant pressure and amount leaves Charles\'s law, and the whole question turns on the temperature conversion. Convert both temperatures to kelvin before anything else, because the ratio of Celsius temperatures is not the ratio of anything physical. The volumes may stay in millilitres, since they cancel — the licence that temperature never gets.',
+                steps: [
+                  { do: 'Convert both temperatures: T₁ = 25.0 + 273.15 = 298.2 K and T₂ = 100.0 + 273.15 = 373.2 K', why: 'First line, before any rearranging. Using 25.0 and 100.0 directly would predict a fourfold expansion.' },
+                  { do: 'Constant pressure and amount, so V₁/T₁ = V₂/T₂', why: 'Charles\'s law, again as a special case of the combined law.' },
+                  { do: 'Predict: the temperature rises, so the volume must grow', why: 'And by a modest amount — the absolute temperature rises by only 25%.' },
+                  { do: 'Rearrange: V₂ = V₁T₂/T₁ = 250.0 × 373.2/298.2', why: 'Millilitres on both sides, so they cancel.' },
+                  { do: 'V₂ = 250.0 × 1.2515', why: 'The temperature ratio, and therefore the volume ratio.' },
+                  { do: 'V₂ = 312.9 mL', why: 'A 25% increase, matching the 25% rise in absolute temperature.' }
+                ],
+                answer: '312.9 mL', answerWords: true,
+                check: 'The Celsius trap is worth seeing: using 25.0 and 100.0 would give 250.0 × 100.0/25.0 = 1,000 mL, a fourfold expansion that no balloon performs on a warm afternoon. The kelvin ratio is only 1.25, and the modest answer is what makes physical sense.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'c1k-celsius-in-gas-law',
+                wrong: 'Using temperatures in degrees Celsius in a gas law',
+                right: 'Convert to kelvin first: K = °C + 273.15.',
+                why: 'The gas laws are proportionalities and Celsius has no true zero, so the ratio of two Celsius temperatures corresponds to nothing physical — and the error is worst for small temperatures, where the ratio is wildest. Heating from 25 °C to 100 °C really increases the absolute temperature by 25%, not by 300%, and the difference between those two answers is a factor of three.'
+              },
+              {
+                id: 'c1k-boyle-direction-wrong',
+                wrong: 'Multiplying by the volume ratio the wrong way and getting a lower pressure after compression',
+                right: 'Predict the direction first: less volume means more pressure.',
+                why: 'Both rearrangements of P₁V₁ = P₂V₂ look equally plausible on the page, so the guard is physical rather than algebraic. Deciding in advance which way the answer must go turns a 50-50 guess into a check, and the same habit works for every two-state problem in the chapter.'
+              },
+              {
+                id: 'c1k-pressure-units-mixed',
+                wrong: 'Using 1.00 atm on one side of a gas law and 101 kPa on the other',
+                right: 'Any unit will do, provided it is the SAME on both sides — they cancel.',
+                why: 'The combined gas law works with ratios, so the unit is irrelevant as long as it is consistent; mixing two of them multiplies the answer by the conversion factor. The ideal gas law of the next lesson is different, because R fixes the units, and knowing which situation you are in is what keeps the two straight.'
+              },
+              {
+                id: 'c1k-amount-assumed-constant',
+                wrong: 'Using the combined gas law when gas has been added or has escaped',
+                right: 'P₁V₁/T₁ = P₂V₂/T₂ assumes a fixed amount. If n changes, use PV = nRT at each state instead.',
+                why: 'The amount cancels from the combined law only because it is the same on both sides, so a leaking or inflating container breaks the derivation rather than merely complicating it. Reading the question for whether the gas is sealed is the check, and a container described as open to the atmosphere usually is not.'
+              }
+            ]
+          },
+
+          {
+            id: 'b2', title: 'The ideal gas law', src: 'Section 5.4',
+            idea: `The three simple laws are special cases of one relationship that holds all four quantities at once:<br><br><b>PV = nRT</b><br><br>with <b>R</b> the gas constant. It comes in two values, and choosing the wrong one is a standing source of error because both are correct — for different units:<br><br><b>R = 0.08206 L·atm/(mol·K)</b>, for P in atmospheres and V in litres<br><b>R = 8.314 J/(mol·K)</b>, for P in pascals and V in cubic metres, and for the energy work of the next lesson<br><br>Unlike the combined gas law, the ideal gas law is <b>not</b> a ratio, so the units are no longer free — they are fixed by whichever R is used. Temperature is in kelvin, as always.<br><br>Two derived results do a great deal of work. <b>Molar volume</b>: at <b>STP</b> — 0 °C and 1 atm — one mole of any ideal gas occupies<br><br><b>V = nRT/P = (1)(0.08206)(273.15)/1 = 22.41 L</b><br><br>so 22.41 L/mol converts directly between moles and volume at those conditions, and only at those conditions. Room temperature gives about 24.5 L/mol instead, so quoting 22.4 L for a gas at 25 °C is an error of nearly 10%.<br><br><b>Molar mass and density</b>: substituting n = m/M into PV = nRT and rearranging,<br><br><b>M = mRT/(PV)</b> and <b>M = dRT/P</b><br><br>which is how an unknown gas is identified from a measured mass and volume. It also says that at fixed P and T the density of a gas is proportional to its molar mass — which is why a helium balloon rises and a carbon dioxide one sinks.<br><br>The word <b>ideal</b> carries an assumption: the molecules have no volume of their own and do not attract one another. At ordinary pressures and temperatures that is good to within a per cent or two for most gases, which is why the law is used freely. It fails at <b>high pressure</b>, where the molecules' own volume is no longer negligible beside the container, and at <b>low temperature</b>, where attractions between them start to matter — the subject of the last lesson of this chapter.`,
+            figure: {
+              kind: 'graph', x: [200, 500], y: [0, 45], xlabel: 'T (K)', ylabel: 'molar volume (L)',
+              fns: [{ expr: '0.08206*x', label: 'one mole at 1 atm' }],
+              points: [{ x: 273.15, y: 22.41, label: 'STP: 22.41 L' }, { x: 298.15, y: 24.47, label: '25 °C: 24.47 L' }],
+              caption: 'The volume of one mole of an ideal gas at 1 atm, against temperature. The line is straight and would pass through the origin at 0 K, which is the physical content of the kelvin scale. Note how far apart the two marked points are: the familiar 22.4 L holds only at 0 °C, and using it at room temperature is a 9% error.'
+            },
+            rules: [
+              { name: 'The ideal gas law', expr: 'P V = n R T', note: 'All four quantities at once. Unlike the combined law this is not a ratio, so the units are fixed by R.' },
+              { name: 'The gas constant', expr: 'R = 0.08206 L atm / (mol K)', note: 'For P in atm and V in L. Use R = 8.314 J/(mol K) for pascals and cubic metres, and for energy.' },
+              { name: 'Molar volume at STP', expr: 'V_m = 22.41', note: 'Litres per mole at 0 °C and 1 atm, and only there. At 25 °C it is about 24.47 L/mol.' },
+              { name: 'Molar mass from a gas sample', expr: 'M = m R T / (P V)', note: 'From substituting n = m/M. This is how an unknown gas is identified.' },
+              { name: 'Density of a gas', expr: 'd = P M / (R T)', note: 'At fixed P and T the density is proportional to the molar mass, which is why helium rises and CO₂ sinks.' },
+              { name: 'What "ideal" assumes', expr: 'Molecules with no volume of their own and no attraction between them', words: true, note: 'Good to a per cent or two at ordinary conditions; it fails at high pressure and low temperature.' }
+            ],
+            examples: [
+              {
+                prompt: 'Find the number of moles of gas in a 4.00 L vessel at 1.50 atm and 25.0 °C, to four decimal places. Use R = 0.08206 L·atm/(mol·K).',
+                approach: 'A direct application of PV = nRT, with two preparatory steps that decide whether it works: convert the temperature to kelvin, and check that the pressure and volume units match the R being used. Atmospheres and litres go with 0.08206, so no conversion is needed there. Then rearrange for n and substitute.',
+                steps: [
+                  { do: 'Convert the temperature: T = 25.0 + 273.15 = 298.2 K', why: 'Kelvin, always. This is the line that most often gets skipped.' },
+                  { do: 'Check the units against R: atmospheres and litres match R = 0.08206 L·atm/(mol·K)', why: 'Unlike the combined gas law, the ideal gas law fixes the units through R — they do not cancel.' },
+                  { do: 'Rearrange: n = PV/(RT)', why: 'Solve symbolically first, so the substitution is a single line.' },
+                  { do: 'Numerator: PV = 1.50 × 4.00 = 6.00 L·atm', why: 'Carrying the units shows they will cancel against those in R.' },
+                  { do: 'Denominator: RT = 0.08206 × 298.2 = 24.47 L·atm/mol', why: 'Which is the molar volume at 1 atm and 25 °C — the same 24.47 L from the lesson figure.' },
+                  { do: 'n = 6.00/24.47 = 0.2452 mol', why: 'About a quarter of a mole, or 1.5 × 10²³ molecules.' }
+                ],
+                answer: '0.2452 mol', answerWords: true,
+                check: 'Sanity-check against the molar volume: at 1 atm and 25 °C a mole fills 24.47 L, so 4.00 L would hold 0.163 mol — and raising the pressure to 1.50 atm packs in half as much again, 0.245 mol ✓. Using 22.41 L/mol instead would have given 0.268 mol, a 9% error from applying an STP figure at room temperature.'
+              },
+              {
+                prompt: 'A 0.750 g sample of an unknown gas occupies 0.500 L at 1.00 atm and 25.0 °C. Find its molar mass, to one decimal place.',
+                approach: 'The ideal gas law identifies an unknown gas by giving its molar mass from quantities that can all be measured: a mass on a balance, a volume, a pressure and a temperature. Find the moles first from PV = nRT, then divide the mass by the moles — that two-step route is clearer than the combined formula and makes the error easier to spot if the number comes out absurd.',
+                steps: [
+                  { do: 'Convert: T = 25.0 + 273.15 = 298.2 K', why: 'As always, before anything else.' },
+                  { do: 'Moles: n = PV/(RT) = (1.00 × 0.500)/(0.08206 × 298.2)', why: 'The same relationship as the previous example, applied to the measured conditions.' },
+                  { do: 'n = 0.500/24.47 = 0.02044 mol', why: 'A small amount, consistent with half a litre of gas at ordinary conditions.' },
+                  { do: 'Molar mass: M = m/n = 0.750/0.02044', why: 'Grams divided by moles gives grams per mole, which is what a molar mass is.' },
+                  { do: 'M = 36.7 g/mol', why: 'Between the 32.00 of oxygen and the 39.95 of argon — chlorine gas would be 70.90, so it is not that.' },
+                  { do: 'A plausible identification: hydrogen chloride, HCl, at 36.46 g/mol', why: 'The measured value is within 1% of it, which is about the accuracy this method delivers.' }
+                ],
+                answer: '36.7 g/mol, consistent with HCl', answerWords: true,
+                check: 'Work forwards to confirm: 0.750 g of HCl is 0.750/36.46 = 0.02057 mol, which at 1.00 atm and 298.2 K occupies 0.02057 × 24.47 = 0.503 L ✓, matching the measured 0.500 L. And the density route agrees: d = 0.750/0.500 = 1.50 g/L, so M = dRT/P = 1.50 × 24.47 = 36.7 g/mol.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'c1k-wrong-gas-constant',
+                wrong: 'Using R = 8.314 with pressures in atmospheres and volumes in litres',
+                right: 'Match R to the units: 0.08206 L·atm/(mol·K) for atm and litres, 8.314 J/(mol·K) for pascals and cubic metres.',
+                why: 'Both values are correct for their own units, so neither looks wrong on the page, and the mismatch changes the answer by a factor of about a hundred. Writing R with its units attached, and checking that they cancel against P and V, is the habit that settles it before the arithmetic starts.'
+              },
+              {
+                id: 'c1k-molar-volume-away-from-stp',
+                wrong: 'Using 22.4 L/mol for a gas at room temperature',
+                right: '22.41 L/mol holds only at STP — 0 °C and 1 atm. At 25 °C it is 24.47 L/mol.',
+                why: 'The figure is quoted so often that it gets treated as a constant of nature rather than the value of nRT/P at one particular pair of conditions, and the resulting error is about 9%. Computing the molar volume from PV = nRT at the stated conditions takes one line and is never wrong.'
+              },
+              {
+                id: 'c1k-ideal-law-units-assumed-free',
+                wrong: 'Expecting the units to cancel in PV = nRT the way they do in the combined gas law',
+                right: 'The combined law is a ratio and its units cancel; the ideal gas law is not, and R fixes them.',
+                why: 'The two look similar enough that the licence carries over in a student\'s mind, but an R in litre-atmospheres simply cannot accept a pressure in kilopascals. The distinction is worth naming explicitly — a two-state problem frees the units, a single-state problem does not.'
+              },
+              {
+                id: 'c1k-ideal-assumed-everywhere',
+                wrong: 'Applying PV = nRT to a gas at very high pressure or near its condensation point',
+                right: 'The law assumes molecules with no volume and no attractions, which fails under those conditions.',
+                why: 'At high pressure the molecules\' own volume is an appreciable fraction of the container, and near condensation the attractions between them are what make the gas liquefy at all — both make the real volume differ from the ideal prediction by more than a rounding. The last lesson of the chapter treats the corrections, and recognising when they are needed is the point.'
+              }
+            ]
+          },
+
+          {
+            id: 'b3', title: 'Partial pressures and gas stoichiometry', src: 'Section 5.6',
+            idea: `Gases mix completely, and each behaves as though the others were not there. <b>Dalton's law of partial pressures</b> says the total pressure is the sum of what each gas would exert alone:<br><br><b>P<sub>total</sub> = P<sub>A</sub> + P<sub>B</sub> + P<sub>C</sub> + …</b><br><br>Each partial pressure obeys the ideal gas law with its own number of moles: <b>P<sub>A</sub> = n<sub>A</sub>RT/V</b>. Since the volume and temperature are shared, the pressures are in the same ratio as the moles, which gives the most useful form:<br><br><b>P<sub>A</sub> = X<sub>A</sub> P<sub>total</sub></b>, where <b>X<sub>A</sub> = n<sub>A</sub>/n<sub>total</sub></b> is the <b>mole fraction</b><br><br>Mole fractions are dimensionless and always sum to 1, which is a free check on any mixture problem. Dry air is about 78% N<sub>2</sub> and 21% O<sub>2</sub> by moles, so at 1.00 atm the partial pressure of oxygen is about 0.21 atm — which is the figure that matters for breathing, not the total.<br><br>A gas collected over water carries water vapour with it, so the measured total includes the <b>vapour pressure of water</b> at that temperature:<br><br><b>P<sub>gas</sub> = P<sub>total</sub> − P<sub>H₂O</sub></b><br><br>Forgetting that subtraction overstates the amount of gas collected, and by a lot in a warm laboratory.<br><br><b>Gas stoichiometry</b> joins this chapter to the last one. The chain is the same as before with a gas step bolted on either end:<br><br><b>volume of gas → moles (via PV = nRT) → mole ratio → moles → whatever is asked</b><br><br>When <b>both</b> substances are gases at the same temperature and pressure, there is a shortcut worth knowing: by Avogadro's law the volumes are in the same ratio as the moles, so the coefficients can be applied <b>directly to volumes</b> with no conversion at all. Two litres of hydrogen react with one litre of oxygen, because 2 H<sub>2</sub> + O<sub>2</sub> says so. That shortcut works only when everything involved is a gas at shared conditions.`,
+            figure: {
+              kind: 'graph', x: [0, 1], y: [0, 2.6], xlabel: 'mole fraction of N₂', ylabel: 'pressure (atm)',
+              fns: [{ expr: '2.46*x', label: 'partial pressure of N₂' }, { expr: '2.46*(1 - x)', label: 'partial pressure of O₂', dashed: true }, { expr: '2.46', label: 'total: always the same' }],
+              points: [{ x: 0.4, y: 0.985, label: '0.40 N₂: 0.985 atm' }],
+              caption: 'A two-gas mixture at fixed total pressure. Each partial pressure is its mole fraction times the total, so the two lines cross where the mixture is half and half and always sum to the flat total line. That sum is Dalton\'s law, and the fact that the fractions add to one is the check on every mixture problem.'
+            },
+            rules: [
+              { name: 'Dalton’s law', expr: 'P_total = P_A + P_B + P_C', note: 'Each gas contributes what it would exert alone in the same container.' },
+              { name: 'Mole fraction', expr: 'X_A = n_A / n_total', note: 'Dimensionless, and the fractions always sum to 1 — which is the check.' },
+              { name: 'Partial pressure from a mole fraction', expr: 'P_A = X_A P_total', note: 'The most useful form. Dry air at 1 atm has an oxygen partial pressure of about 0.21 atm.' },
+              { name: 'Gas collected over water', expr: 'P_gas = P_total - P_water', note: 'The measured total includes water vapour; forgetting to subtract it overstates the gas collected.' },
+              { name: 'Gas-to-gas stoichiometry', expr: 'At the same T and P, volumes are in the ratio of the coefficients', words: true, note: 'Two litres of H₂ with one of O₂. Only valid when every substance involved is a gas at shared conditions.' }
+            ],
+            examples: [
+              {
+                prompt: 'A 5.00 L vessel at 300.0 K contains 0.200 mol of nitrogen and 0.300 mol of oxygen. Find the total pressure and the partial pressure of nitrogen, to three decimal places. Use R = 0.08206.',
+                approach: 'Two routes reach the partial pressure and it is worth doing both, because they check each other: compute the total from the total moles and then take the nitrogen\'s share by mole fraction, or compute the nitrogen\'s pressure directly from its own moles. Start by totalling the moles, since the mixture behaves as one gas for the purpose of the total pressure.',
+                steps: [
+                  { do: 'Total moles: n = 0.200 + 0.300 = 0.500 mol', why: 'Each gas fills the whole container, so the total pressure comes from the total amount.' },
+                  { do: 'Total pressure: P = nRT/V = (0.500 × 0.08206 × 300.0)/5.00', why: 'The ideal gas law applied to the mixture as a whole.' },
+                  { do: 'P_total = 12.309/5.00 = 2.462 atm', why: 'The pressure a gauge on the vessel would read.' },
+                  { do: 'Mole fraction of nitrogen: X = 0.200/0.500 = 0.400', why: 'Dimensionless, and the oxygen\'s fraction is 0.600 — the two sum to 1 ✓.' },
+                  { do: 'Partial pressure: P_N₂ = X × P_total = 0.400 × 2.462', why: 'The share of the total that the nitrogen accounts for.' },
+                  { do: 'P_N₂ = 0.985 atm', why: 'And the oxygen contributes 1.477 atm, which with the nitrogen sums back to 2.462 atm.' }
+                ],
+                answer: 'Total 2.462 atm, with nitrogen contributing 0.985 atm', answerWords: true,
+                check: 'The direct route agrees: P_N₂ = n_N₂RT/V = (0.200 × 0.08206 × 300.0)/5.00 = 0.985 atm ✓, computed without ever finding the total. And the two partial pressures sum to 0.985 + 1.477 = 2.462 atm, which is Dalton\'s law holding exactly.'
+              },
+              {
+                prompt: 'Calcium carbonate decomposes on heating: CaCO₃ → CaO + CO₂. Find the volume of carbon dioxide produced at STP from 10.00 g of calcium carbonate. CaCO₃ is 100.09 g/mol and the molar volume at STP is 22.41 L/mol; give the answer to two decimal places.',
+                approach: 'Stoichiometry first and the gas law second — the chain from the previous unit runs to moles of carbon dioxide, and only then does the gas step convert moles to a volume. The conditions are STP, so the molar volume shortcut applies; at any other temperature it would not, and PV = nRT would have to be used instead.',
+                steps: [
+                  { do: 'Moles of CaCO₃: n = 10.00/100.09 = 0.09991 mol', why: 'Mass to moles, exactly as in chapter 4.' },
+                  { do: 'Mole ratio: one CO₂ per CaCO₃, so n(CO₂) = 0.09991 mol', why: 'Read from the balanced equation. One for one here, but the ratio is written out regardless.' },
+                  { do: 'The conditions are STP, so the molar volume is 22.41 L/mol', why: '0 °C and 1 atm. At 25 °C the figure would be 24.47 L/mol and the answer 9% larger.' },
+                  { do: 'Volume: V = n × 22.41 = 0.09991 × 22.41', why: 'Moles times litres per mole gives litres.' },
+                  { do: 'V = 2.24 L', why: 'About a tenth of a molar volume, consistent with the tenth of a mole.' },
+                  { do: 'The solid calcium oxide left behind has a volume of its own, but it is not a gas and does not enter this calculation', why: 'The molar volume shortcut applies to gases only — a common confusion when a reaction has products in two phases.' }
+                ],
+                answer: '2.24 L of CO₂ at STP', answerWords: true,
+                check: 'Cross-check with the ideal gas law: V = nRT/P = (0.09991 × 0.08206 × 273.15)/1.00 = 2.24 L ✓, which is where the 22.41 L/mol came from in the first place. And a mass balance holds: 10.00 g of CaCO₃ gives 5.61 g of CaO and 4.40 g of CO₂, totalling 10.01 g.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'c1k-partial-pressure-by-mass-fraction',
+                wrong: 'Computing a partial pressure from the mass fraction of a gas in a mixture',
+                right: 'Partial pressure follows the MOLE fraction: P_A = X_A P_total with X_A = n_A/n_total.',
+                why: 'Pressure comes from the number of molecules striking the walls, not from how heavy they are, so a light gas contributes far more pressure per gram than a heavy one. In a mixture of hydrogen and carbon dioxide the two fractions differ by a factor of 22, which is more than enough to make a mass-based answer useless.'
+              },
+              {
+                id: 'c1k-water-vapour-not-subtracted',
+                wrong: 'Taking the measured total pressure as the pressure of a gas collected over water',
+                right: 'Subtract the vapour pressure of water at that temperature: P_gas = P_total − P_H₂O.',
+                why: 'The collected gas is saturated with water vapour, which contributes its own partial pressure — about 3.2 kPa at 25 °C and more as the laboratory warms. Omitting the subtraction overstates the moles of gas collected, and the error grows with temperature just as experiments get harder to control.'
+              },
+              {
+                id: 'c1k-volume-ratio-with-a-solid',
+                wrong: 'Applying the coefficient ratio directly to volumes when one substance is a solid or a liquid',
+                right: 'The volume shortcut needs EVERY substance involved to be a gas at the same temperature and pressure.',
+                why: 'Avogadro\'s law relates volumes to moles only for gases, where a mole occupies the same volume regardless of identity — a mole of solid calcium carbonate occupies about 37 mL rather than 22.4 L. In a mixed-phase reaction the honest route is always through moles, and it is barely longer.'
+              },
+              {
+                id: 'c1k-stp-assumed',
+                wrong: 'Using 22.41 L/mol for a gas volume when the question states a temperature other than 0 °C',
+                right: 'Compute the molar volume from PV = nRT at the stated conditions, or use the law directly.',
+                why: 'STP is a defined pair of conditions, not a default, and a question that troubles to state 25 °C or 350 K is doing so precisely because the shortcut does not apply. The one-line calculation of nRT/P removes the risk entirely and costs less time than deciding whether the shortcut is safe.'
+              }
+            ]
+          },
+
+          {
+            id: 'b4', title: 'Kinetic molecular theory and real gases', src: 'Section 5.8',
+            idea: `The gas laws were found by experiment. <b>Kinetic molecular theory</b> explains them, from four assumptions about what a gas actually is:<br><br><b>1.</b> A gas is a great many particles in constant random motion.<br><b>2.</b> The particles' own volume is negligible beside the container.<br><b>3.</b> They neither attract nor repel one another.<br><b>4.</b> Collisions are perfectly elastic, and the <b>average kinetic energy is proportional to the absolute temperature</b>.<br><br>Each gas law follows. Pressure is the accumulated force of molecular impacts, so squeezing the same molecules into half the space doubles the impact rate and therefore the pressure — Boyle's law. Heating raises the average speed, so the molecules strike harder and more often, and the volume must grow to keep the pressure fixed — Charles's law.<br><br>The fourth assumption has a consequence worth stating plainly: at a given temperature <b>every gas has the same average kinetic energy</b>, whatever its molar mass. Since KE = ½mu², a heavier molecule must therefore move more slowly. The root-mean-square speed is<br><br><b>u<sub>rms</sub> = √(3RT/M)</b><br><br>with <b>R = 8.314 J/(mol·K)</b> and <b>M in kilograms per mole</b> — the kilograms are the trap, since molar masses are tabulated in grams. Nitrogen at room temperature averages about 515 m/s, faster than sound; hydrogen, fourteen times lighter, averages nearly 1,930 m/s.<br><br>The same inverse square root governs <b>effusion</b>, the escape of a gas through a small hole. <b>Graham's law</b>:<br><br><b>rate<sub>A</sub>/rate<sub>B</sub> = √(M<sub>B</sub>/M<sub>A</sub>)</b><br><br>Lighter gases effuse faster, which is how uranium isotopes were first separated and why a helium balloon deflates in days while an air-filled one lasts weeks.<br><br><b>Real gases</b> depart from the ideal picture exactly where assumptions 2 and 3 fail. At <b>high pressure</b> the molecules' own volume is no longer negligible, so the real volume is <b>larger</b> than predicted. At <b>low temperature</b> attractions between molecules pull them together and soften the impacts, so the real pressure is <b>lower</b> than predicted. The <b>van der Waals equation</b> corrects both:<br><br><b>(P + a n²/V²)(V − nb) = nRT</b><br><br>where <b>a</b> measures the attraction and <b>b</b> the molecular volume. Both corrections vanish at low pressure and high temperature, which is precisely when the ideal gas law works well.`,
+            figure: {
+              kind: 'graph', x: [0, 350], y: [0, 2200], xlabel: 'molar mass (g/mol)', ylabel: 'u_rms at 298 K (m/s)',
+              fns: [{ expr: 'sqrt(3*8.314*298/(x/1000))', label: 'u_rms = √(3RT/M)' }],
+              points: [{ x: 2, y: 1928, label: 'H₂: 1,930 m/s' }, { x: 28, y: 515, label: 'N₂: 515 m/s' }, { x: 222, y: 183, label: 'radon: 183 m/s' }],
+              caption: 'Average molecular speed against molar mass at room temperature. Every gas here has the SAME average kinetic energy — that is what a shared temperature means — so the heavier molecules must move more slowly, and the curve falls as the inverse square root of the mass. The same relationship is why lighter gases effuse faster.'
+            },
+            rules: [
+              { name: 'The assumptions', expr: 'Many particles, negligible own volume, no attractions, elastic collisions', words: true, note: 'And the average kinetic energy is proportional to the ABSOLUTE temperature.' },
+              { name: 'Same temperature, same kinetic energy', expr: 'Every gas at a given T has the same average KE, whatever its molar mass', words: true, note: 'Which is why the heavier ones must move more slowly.' },
+              { name: 'Root-mean-square speed', expr: 'u_rms = sqrt(3 R T / M)', note: 'R = 8.314 J/(mol K) and M in KILOGRAMS per mole. The gram-to-kilogram slip is the usual error.' },
+              { name: 'Graham’s law of effusion', expr: 'rate_A / rate_B = sqrt(M_B / M_A)', note: 'Lighter gases escape faster, as the inverse square root of the molar mass.' },
+              { name: 'Where real gases depart', expr: 'High pressure: molecular volume matters. Low temperature: attractions matter', words: true, note: 'Real volume larger than ideal in the first case, real pressure lower in the second.' },
+              { name: 'The van der Waals equation', expr: '(P + a n^2 / V^2)(V - n b) = n R T', note: 'a corrects for attraction, b for molecular volume. Both corrections vanish at low P and high T.' }
+            ],
+            examples: [
+              {
+                prompt: 'Find the root-mean-square speed of nitrogen molecules at 298 K, to the nearest metre per second. N₂ is 28.02 g/mol and R = 8.314 J/(mol·K).',
+                approach: 'One formula, and one unit conversion that decides whether the answer is right: the molar mass must be in kilograms per mole, because the joule in R is built from kilograms. Convert first, substitute, and then sanity-check the answer against something known — molecular speeds at room temperature are comparable with the speed of sound, which is no accident.',
+                steps: [
+                  { do: 'Convert the molar mass: 28.02 g/mol = 0.02802 kg/mol', why: 'R is in joules, and a joule is a kg·m²/s². Leaving the mass in grams gives an answer √1000 ≈ 32 times too large.' },
+                  { do: 'Numerator: 3RT = 3 × 8.314 × 298 = 7,432.7 J/mol', why: 'Three times the gas constant times the absolute temperature.' },
+                  { do: 'Divide by the molar mass: 7,432.7/0.02802 = 265,264 m²/s²', why: 'J/mol divided by kg/mol leaves J/kg, which is m²/s² — the units confirm the conversion was right.' },
+                  { do: 'u_rms = √265,264', why: 'The square root brings it back to a speed.' },
+                  { do: 'u_rms = 515 m/s', why: 'Faster than sound in air, which is about 343 m/s at this temperature.' },
+                  { do: 'That is not a coincidence: sound travels by molecular collisions, so it cannot outrun the molecules', why: 'A physical check on the answer that no arithmetic could supply.' }
+                ],
+                answer: 'About 515 m/s', answerWords: true,
+                check: 'Compare hydrogen, fourteen times lighter: u_rms = √(7,432.7/0.002016) = 1,920 m/s, which is √14 = 3.74 times faster ✓ — exactly the inverse square root the formula predicts. And the gram trap is worth seeing: leaving nitrogen in g/mol gives 16,285 m/s, faster than Earth\'s escape velocity.'
+              },
+              {
+                prompt: 'Compare the rates at which helium and nitrogen effuse through the same small hole under the same conditions. He is 4.003 and N₂ is 28.02 g/mol; give the ratio to two decimal places.',
+                approach: 'Graham\'s law is a ratio, so nothing needs converting — the grams cancel — and the only decision is which molar mass goes on top. Put the heavier gas in the numerator when you want the lighter one\'s rate to come out larger, and confirm the direction physically before trusting the number: a lighter gas escapes faster, so the ratio must exceed one.',
+                steps: [
+                  { do: 'Graham\'s law: rate_He/rate_N₂ = √(M_N₂/M_He)', why: 'The OTHER gas\'s molar mass goes on top — the rate is inversely related to the mass, so the fraction is inverted relative to the rates.' },
+                  { do: 'Predict the direction: helium is much lighter, so it must effuse faster and the ratio must be above 1', why: 'The check that settles which way up the fraction goes, made before any arithmetic.' },
+                  { do: 'Substitute: √(28.02/4.003)', why: 'Both in grams per mole, which cancel — no conversion needed in a ratio.' },
+                  { do: '28.02/4.003 = 7.000', why: 'Nitrogen is almost exactly seven times heavier per mole.' },
+                  { do: 'rate ratio = √7.000 = 2.65', why: 'Above 1, as predicted. Helium escapes 2.65 times faster than nitrogen.' },
+                  { do: 'Seven times the mass gives only 2.65 times the rate, because of the square root', why: 'Which is why isotope separation by effusion needed thousands of stages — the mass differences there are fractions of a per cent.' }
+                ],
+                answer: 'Helium effuses 2.65 times faster than nitrogen', answerWords: true,
+                check: 'Cross-check through the speeds: u_rms for helium at 298 K is √(7,432.7/0.004003) = 1,363 m/s against nitrogen\'s 515 m/s, and 1,363/515 = 2.65 ✓. Effusion rate is proportional to molecular speed, so the two routes must agree — and this is also why a helium balloon goes soft in days.'
+              }
+            ],
+            pitfalls: [
+              {
+                id: 'c1k-molar-mass-in-grams-for-speed',
+                wrong: 'Using 28.02 rather than 0.02802 in u_rms = √(3RT/M)',
+                right: 'M must be in KILOGRAMS per mole, because R = 8.314 J/(mol·K) and a joule contains kilograms.',
+                why: 'The error multiplies the speed by √1000 ≈ 32 and produces molecular speeds faster than Earth\'s escape velocity, which is the giveaway. Checking the units confirms it: J/mol divided by kg/mol gives m²/s², and dividing by g/mol gives nothing meaningful at all.'
+              },
+              {
+                id: 'c1k-heavier-molecules-more-energy',
+                wrong: 'Assuming heavier gas molecules have more kinetic energy at the same temperature',
+                right: 'At a given temperature every gas has the SAME average kinetic energy — the heavier ones simply move more slowly.',
+                why: 'Temperature is defined by that average kinetic energy, so equal temperatures mean equal energies by construction; the mass difference shows up entirely in the speed, through KE = ½mu². Getting this backwards also inverts Graham\'s law, since it is the speed difference that makes lighter gases effuse faster.'
+              },
+              {
+                id: 'c1k-grahams-law-inverted',
+                wrong: 'Writing rate_A/rate_B = √(M_A/M_B)',
+                right: 'The other gas\'s molar mass goes on top: rate_A/rate_B = √(M_B/M_A).',
+                why: 'The inverted form predicts that heavy gases escape faster, which contradicts the observation that a helium balloon deflates long before an air-filled one. Predicting the direction before substituting — lighter means faster, so the ratio for the lighter gas must exceed one — makes the orientation a check rather than a memory test.'
+              },
+              {
+                id: 'c1k-real-gas-deviation-direction',
+                wrong: 'Assuming a real gas always has a lower volume or pressure than the ideal law predicts',
+                right: 'Molecular volume makes the real volume LARGER at high pressure; attractions make the real pressure LOWER at low temperature.',
+                why: 'The two corrections pull in opposite directions and dominate under different conditions, which is exactly why the van der Waals equation needs two constants rather than one. Naming which assumption has failed — negligible volume, or no attraction — tells you the direction of the deviation without recalling any formula.'
+              }
+            ]
+          }
+        ],
+        practice: [
+          { id: 'u1', kind: 'numeric', lesson: 'b1',
+            prompt: 'Convert 45.0 °C to kelvin, to two decimal places.',
+            answer: 318.15, tol: 0.05, verify: { expr: '45 + Rational(27315, 100)', dp: 2 },
+            hint: 'K = °C + 273.15.',
+            solution: ['45.0 + 273.15', '= 318.15 K', 'Always the first line of a gas-law problem'] },
+
+          { id: 'u2', kind: 'numeric', lesson: 'b1',
+            prompt: 'A gas at 2.00 atm occupies 6.00 L. At constant temperature it is compressed to 2.00 L. Find the new pressure, in atm.',
+            answer: 6, verify: { expr: 'Rational(2*6, 2)' },
+            hint: 'P₁V₁ = P₂V₂.',
+            solution: ['P₂ = P₁V₁/V₂ = (2.00 × 6.00)/2.00', '= 6.00 atm', 'A third of the volume, so three times the pressure'] },
+
+          { id: 'u3', kind: 'numeric', lesson: 'b1',
+            prompt: 'A gas occupies 400.0 mL at 300.0 K. Find its volume at 450.0 K at constant pressure, in mL.',
+            answer: 600, verify: { expr: 'Rational(400*450, 300)' },
+            hint: 'V₁/T₁ = V₂/T₂, with T already in kelvin.',
+            solution: ['V₂ = V₁T₂/T₁ = 400.0 × 450.0/300.0', '= 600.0 mL', 'The absolute temperature rose by half, so the volume did too'] },
+
+          { id: 'u4', kind: 'numeric', lesson: 'b1',
+            prompt: 'A sealed gas at 1.20 atm and 250.0 K is warmed to 350.0 K at constant volume. Find the new pressure, in atm, to three decimal places.',
+            answer: 1.68, tol: 0.005, verify: { expr: 'Rational(12, 10)*Rational(350, 250)', dp: 3 },
+            hint: 'The combined gas law with V cancelling.',
+            solution: ['P₁/T₁ = P₂/T₂ when V is constant', 'P₂ = 1.20 × 350.0/250.0', '= 1.680 atm'] },
+
+          { id: 'u5', kind: 'numeric', lesson: 'b1',
+            prompt: 'Convert 2.50 atm to kilopascals, to one decimal place. 1 atm = 101.325 kPa.',
+            answer: 253.3, tol: 0.5, verify: { expr: 'Rational(25, 10)*Rational(101325, 1000)', dp: 1 },
+            hint: 'Multiply by 101.325.',
+            solution: ['2.50 × 101.325', '= 253.3125', '= 253.3 kPa'] },
+
+          { id: 'u6', kind: 'mc', lesson: 'b1',
+            prompt: 'Why must temperatures be converted to kelvin in the gas laws?',
+            options: [
+              { t: 'The laws are proportionalities, and only an absolute scale with a true zero makes a ratio of temperatures meaningful', ok: true },
+              { t: 'Because kelvin is the SI unit and using Celsius is merely untidy' },
+              { t: 'Because Celsius temperatures can be negative and volumes cannot' },
+              { t: 'Because the gas constant R was measured in kelvin, so the units must match' }
+            ],
+            hint: 'What would doubling a Celsius temperature mean physically?',
+            solution: ['Charles\'s law says volume is proportional to temperature', 'Proportionality needs a scale whose zero means none of the quantity', '20 °C is not twice as hot as 10 °C in any physical sense', '0 K is where molecular motion stops, which is a real zero'] },
+
+          { id: 'u7', kind: 'numeric', lesson: 'b2',
+            prompt: 'Find the moles of gas in 10.0 L at 2.00 atm and 300.0 K, to four decimal places. R = 0.08206.',
+            answer: 0.8124, tol: 0.0005, verify: { expr: '2*10/(Rational(8206, 100000)*300)', dp: 4 },
+            hint: 'n = PV/(RT).',
+            solution: ['PV = 2.00 × 10.0 = 20.0 L·atm', 'RT = 0.08206 × 300.0 = 24.618', 'n = 20.0/24.618 = 0.8124 mol'] },
+
+          { id: 'u8', kind: 'numeric', lesson: 'b2',
+            prompt: 'Find the volume of 2.00 mol of an ideal gas at 1.00 atm and 273.15 K, in litres, to two decimal places. R = 0.08206.',
+            answer: 44.83, tol: 0.05, verify: { expr: '2*Rational(8206, 100000)*Rational(27315, 100)/1', dp: 2 },
+            hint: 'V = nRT/P — or use the molar volume at STP.',
+            solution: ['These are STP conditions, so one mole occupies 22.41 L', 'V = 2.00 × 22.41', '= 44.83 L'] },
+
+          { id: 'u9', kind: 'numeric', lesson: 'b2',
+            prompt: 'A 1.25 g sample of gas occupies 1.00 L at 1.00 atm and 300.0 K. Find its molar mass in g/mol, to one decimal place. R = 0.08206.',
+            answer: 30.8, tol: 0.05, verify: { expr: 'Rational(125, 100)*Rational(8206, 100000)*300/(1*1)', dp: 1 },
+            hint: 'M = mRT/(PV).',
+            solution: ['n = PV/RT = 1.00/(0.08206 × 300.0) = 0.04062 mol', 'M = m/n = 1.25/0.04062', '= 30.8 g/mol'] },
+
+          { id: 'u10', kind: 'numeric', lesson: 'b2',
+            prompt: 'Find the molar volume of an ideal gas at 1.00 atm and 298.15 K, in litres per mole, to two decimal places. R = 0.08206.',
+            answer: 24.47, tol: 0.05, verify: { expr: 'Rational(8206, 100000)*Rational(29815, 100)/1', dp: 2 },
+            hint: 'V = RT/P for one mole.',
+            solution: ['V = (1)(0.08206)(298.15)/1.00', '= 24.466', '= 24.47 L/mol, not the 22.41 L/mol of STP'] },
+
+          { id: 'u11', kind: 'mc', lesson: 'b2',
+            prompt: 'A student uses R = 8.314 with the pressure in atmospheres and the volume in litres. What is wrong?',
+            options: [
+              { t: 'That value of R is for pascals and cubic metres; with atm and litres the value is 0.08206', ok: true },
+              { t: 'Nothing — R is a constant and its value does not depend on units' },
+              { t: 'R = 8.314 may only be used above room temperature' },
+              { t: 'The temperature should then be in Celsius to compensate' }
+            ],
+            hint: 'What units does each value of R carry?',
+            solution: ['R = 8.314 J/(mol·K) suits pascals and cubic metres', 'R = 0.08206 L·atm/(mol·K) suits atmospheres and litres', 'Both are correct for their own units', 'Writing R with its units attached prevents the mismatch'] },
+
+          { id: 'u12', kind: 'numeric', lesson: 'b3',
+            prompt: 'A mixture contains 0.400 mol of A and 0.600 mol of B. Find the mole fraction of A.',
+            answer: 0.4, verify: { expr: 'Rational(4, 10)/1' },
+            hint: 'X_A = n_A/n_total.',
+            solution: ['n_total = 0.400 + 0.600 = 1.000 mol', 'X_A = 0.400/1.000', '= 0.400, and X_B = 0.600, summing to 1'] },
+
+          { id: 'u13', kind: 'numeric', lesson: 'b3',
+            prompt: 'That mixture has a total pressure of 3.00 atm. Find the partial pressure of A, in atm.',
+            answer: 1.2, verify: { expr: 'Rational(4, 10)*3' },
+            hint: 'P_A = X_A × P_total.',
+            solution: ['P_A = 0.400 × 3.00', '= 1.20 atm', 'And B contributes 1.80 atm, summing to 3.00'] },
+
+          { id: 'u14', kind: 'numeric', lesson: 'b3',
+            prompt: 'A gas is collected over water at a total pressure of 101.3 kPa, where the vapour pressure of water is 3.2 kPa. Find the partial pressure of the gas, in kPa, to one decimal place.',
+            answer: 98.1, tol: 0.5, verify: { expr: 'Rational(1013, 10) - Rational(32, 10)', dp: 1 },
+            hint: 'Subtract the water vapour.',
+            solution: ['P_gas = P_total − P_water', '= 101.3 − 3.2', '= 98.1 kPa'] },
+
+          { id: 'u15', kind: 'numeric', lesson: 'b3',
+            prompt: 'Find the volume of CO₂ produced at STP from 5.00 g of CaCO₃ decomposing to CaO and CO₂. CaCO₃ is 100.09 g/mol; give the answer in litres to two decimal places.',
+            answer: 1.12, tol: 0.005, verify: { expr: '5/Rational(10009, 100)*Rational(2241, 100)', dp: 2 },
+            hint: 'Moles first, one-for-one ratio, then the molar volume.',
+            solution: ['n(CaCO₃) = 5.00/100.09 = 0.04996 mol', 'n(CO₂) = 0.04996 mol, one for one', 'V = 0.04996 × 22.41 = 1.12 L'] },
+
+          { id: 'u16', kind: 'mc', lesson: 'b3',
+            prompt: 'For 2 H₂ + O₂ → 2 H₂O, what volume of oxygen reacts with 6.0 L of hydrogen, both gases at the same temperature and pressure?',
+            options: [
+              { t: '3.0 L, because at the same conditions volumes are in the ratio of the coefficients', ok: true },
+              { t: '6.0 L, because the volumes must be equal' },
+              { t: '12 L, since there are two hydrogens per oxygen' },
+              { t: 'It cannot be found without the temperature and pressure' }
+            ],
+            hint: 'What does Avogadro\'s law say about equal volumes?',
+            solution: ['Equal volumes at the same T and P contain equal moles', 'So volumes are in the same ratio as the coefficients', '1 O₂ per 2 H₂ means half the volume', '6.0/2 = 3.0 L'] },
+
+          { id: 'u17', kind: 'numeric', lesson: 'b4',
+            prompt: 'Find the root-mean-square speed of oxygen molecules at 300.0 K, to the nearest metre per second. O₂ is 32.00 g/mol and R = 8.314.',
+            answer: 484, tol: 1, verify: { expr: 'sqrt(3*Rational(8314, 1000)*300/Rational(32, 1000))', dp: 0 },
+            hint: 'M must be in kilograms per mole.',
+            solution: ['M = 0.03200 kg/mol', '3RT/M = 3 × 8.314 × 300.0/0.03200 = 233,831', 'u = √233,831 = 483.6, so 484 m/s'] },
+
+          { id: 'u18', kind: 'numeric', lesson: 'b4',
+            prompt: 'Find the ratio of the effusion rate of helium (4.003 g/mol) to that of oxygen (32.00 g/mol), to two decimal places.',
+            answer: 2.83, tol: 0.02, verify: { expr: 'sqrt(Rational(32, 1)/Rational(4003, 1000))', dp: 2 },
+            hint: 'The other gas\'s molar mass goes on top.',
+            solution: ['rate_He/rate_O₂ = √(32.00/4.003)', '= √7.994', '= 2.83, so helium escapes nearly three times faster'] },
+
+          { id: 'u19', kind: 'mc', lesson: 'b4',
+            prompt: 'Two gases of different molar mass are at the same temperature. What do they have in common?',
+            options: [
+              { t: 'The same average kinetic energy — which is what a shared temperature means', ok: true },
+              { t: 'The same average molecular speed' },
+              { t: 'The same density' },
+              { t: 'Nothing, unless they are also at the same pressure' }
+            ],
+            hint: 'What is temperature a measure of?',
+            solution: ['Temperature is proportional to average kinetic energy', 'KE = ½mu², so equal energies with different masses mean different speeds', 'The heavier gas moves more slowly', 'That difference is what drives effusion'] },
+
+          { id: 'u20', kind: 'spot', lesson: 'b1',
+            prompt: 'A gas at 300.0 mL and 27.0 °C is warmed to 127.0 °C at constant pressure. Find the new volume.',
+            steps: [
+              { t: 'Constant pressure and amount, so V₁/T₁ = V₂/T₂' },
+              { t: 'V₂ = 300.0 × 127.0/27.0 = 1,411 mL', bad: true },
+              { t: 'Temperatures must be in kelvin: 300.15 K and 400.15 K' },
+              { t: 'V₂ = 300.0 × 400.15/300.15 = 400.0 mL' }
+            ],
+            why: 'The Celsius temperatures give a ratio of 4.7 where the true absolute ratio is 1.33, so the predicted volume is more than three times too large. Celsius has no true zero, so the ratio of two Celsius temperatures corresponds to nothing physical — converting to kelvin is the first line of every gas-law problem.',
+            hint: 'Which scale do the gas laws require?',
+            solution: ['T₁ = 27.0 + 273.15 = 300.15 K, T₂ = 127.0 + 273.15 = 400.15 K', 'V₂ = 300.0 × 400.15/300.15', '= 400.0 mL'] },
+
+          { id: 'u21', kind: 'spot', lesson: 'b4',
+            prompt: 'Find the root-mean-square speed of nitrogen (28.02 g/mol) at 298 K, with R = 8.314.',
+            steps: [
+              { t: 'u_rms = √(3RT/M)' },
+              { t: 'u = √(3 × 8.314 × 298/28.02) = 16.3 m/s', bad: true },
+              { t: 'R is in joules, so M must be in kilograms per mole: 0.02802 kg/mol' },
+              { t: 'u = √(7,432.7/0.02802) = √265,264 = 515 m/s' }
+            ],
+            why: 'A joule contains kilograms, so a molar mass left in grams per mole makes the answer √1000 ≈ 32 times too small. A nitrogen molecule creeping along at 16 m/s could not sustain the pressure a gas exerts, and the check is that molecular speeds at room temperature exceed the speed of sound.',
+            hint: 'What unit of mass does a joule contain?',
+            solution: ['M = 28.02 g/mol = 0.02802 kg/mol', '3RT/M = 7,432.7/0.02802 = 265,264 m²/s²', 'u = 515 m/s'] },
+
+          { id: 'u22', kind: 'order', lesson: 'b2',
+            prompt: 'Put the steps of an ideal-gas-law calculation in order.',
+            steps: [
+              'Convert the temperature to kelvin',
+              'Choose the value of R that matches the pressure and volume units',
+              'Rearrange PV = nRT for the unknown',
+              'Substitute and compute',
+              'Check the answer against the molar volume at those conditions'
+            ],
+            hint: 'The value of R cannot be chosen until the units are known.',
+            solution: ['Kelvin first, always', 'Then R, matched to the units in hand', 'Rearrange before substituting, so the structure stays visible', 'The molar volume is the quickest sanity check'] },
+
+          { id: 'u23', kind: 'order', lesson: 'b3',
+            prompt: 'Put the steps of a gas-stoichiometry calculation in order.',
+            steps: [
+              'Balance the equation',
+              'Convert the given amount to moles',
+              'Apply the mole ratio from the coefficients',
+              'Convert the moles of gas to a volume with PV = nRT at the stated conditions',
+              'Check whether the conditions were STP, where the molar volume shortcut applies'
+            ],
+            hint: 'The gas step comes last, after the chemistry.',
+            solution: ['Balance, then mass or volume to moles', 'The mole ratio is the chemistry', 'Only then does the gas law convert moles to a volume', 'The 22.41 L/mol shortcut is for STP alone'] }
+        ]
+      }
+    ]
+  };
+
   root.Courses.register(GENCHEM);
+  root.Courses.register(CHEM1000);
 
 })(typeof window !== 'undefined' ? window : globalThis);
 
@@ -27791,7 +28712,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.63', date: '18 September 2026', year: 2026 };
+  const BUILD = { v: '2.64', date: '18 September 2026', year: 2026 };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonandy242', ['gmail', 'com'].join('.')].join('@');
   /* The one sentence that says what this is. It appears under the wordmark, and build.js uses
@@ -27804,6 +28725,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      because the person who needs it is the one who just watched the app refresh itself and wants to
      know what moved. Trim the tail when it gets past a dozen; nobody reads further back than that. */
   const WHATS_NEW = [
+    ['2.64', '<b>A second course under the green chip: CHEM 1000H, General Chemistry.</b> It follows its own schedule chapter by chapter, and the first two chapters ship now. <b>Reaction stoichiometry</b> is the bookkeeping that makes chemistry quantitative: mass to moles to mole ratio to moles to mass, always through the balanced equation, because coefficients are a ratio of particles and never of grams. Then the <b>limiting reactant</b>, found by asking what each reactant alone could make and taking the smaller answer &mdash; not by looking for whichever there is less of &mdash; with theoretical yield, which is calculated, against actual yield, which is measured, and the percent yield between them. <b>Solution stoichiometry</b> closes the chapter: molarity as moles per litre of solution, the millilitres that have to become litres before anything else happens, and dilution as the one calculation where the moles of solute do not change. Chapter 5 is the <b>gas laws</b>: pressure units and the kelvin scale that every gas calculation silently assumes, Boyle, Charles and the combined law for a change of conditions, then PV = nRT used forwards and backwards for a molar mass or a density, partial pressures and mole fractions, gas stoichiometry, and finally the <b>kinetic molecular theory</b> &mdash; why temperature is molecular kinetic energy, why a light molecule moves faster at the same temperature, effusion, and the two assumptions a real gas breaks when it is cold or squeezed. Seven lessons, fourteen worked examples, 43 practice questions and 28 named misconceptions. Chapters 7 to 11 follow.'],
     ['2.63', '<b>PHYS 1000H is complete: chapters 7 and 8 land, and every chapter on the schedule is now built.</b> <b>Work and energy</b> is a second route through mechanics that needs neither forces nor time: the cosine that makes a normal force do no work at all, the v&sup2; in kinetic energy that is why braking distance grows so steeply, the work&ndash;energy theorem, potential energy with a reference level you choose, and why a ball down a curved ramp and a ball down a straight one arrive at the same speed &mdash; then friction, which breaks that and turns the difference into heat over the distance actually travelled. <b>Power</b> closes the chapter: the same work done faster, and why doubling a car&rsquo;s cruising speed needs eight times the engine. <b>Momentum</b> finishes the course: impulse as force times time, why a crumple zone cannot reduce the momentum that must be removed and can only stretch the seconds it takes, conservation from the third law, and collisions &mdash; elastic, where a lighter target legitimately leaves faster than the projectile arrived, and perfectly inelastic, which loses more energy than any other and is exactly what a car is designed to do. Seven more lessons, fourteen worked examples, 42 more practice questions. The course now stands at 28 lessons, 56 worked examples and 160 practice questions across all eight chapters.'],
     ['2.62', '<b>PHYS 1000H chapters 5 and 6: the forces surfaces and fluids exert, and going round in a circle.</b> <b>Friction</b> is taught as the inequality it is &mdash; push a crate with 80 N and static friction is exactly 80 N, not its maximum &mdash; with the drop to the smaller kinetic coefficient that makes a heavy box lurch when it finally gives, and the tilted plank that measures a coefficient with nothing but a protractor. <b>Drag</b> grows with the square of the speed, which is why a car meets four times the air resistance at twice the speed and the engine works eight times as hard, and why a falling body levels off at a terminal velocity where its acceleration is zero rather than g. <b>Elasticity</b> closes the chapter with stress, strain and Young&rsquo;s modulus, and the squared area conversion that decides whether the answer is right. Chapter 6 is <b>circular motion</b>: radians and v = r&omega;, centripetal acceleration going as v&sup2; so that a bend taken twice as fast needs four times the grip, the insistence that centripetal force is a job done by a real force rather than a force of its own, why the passenger pressed against the door was never pushed outward, and Newton&rsquo;s law of gravitation &mdash; surface gravity, orbital speed, Kepler&rsquo;s third law, and why an astronaut floats where gravity is still 8.7 m/s&sup2;. Seven more lessons, fourteen worked examples, 42 more practice questions. Chapters 7 and 8 complete the course.'],
     ['2.61', '<b>PHYS 1000H chapters 3 and 4: two dimensions, and the laws that say why motion changes.</b> <b>Vectors</b> first &mdash; added head to tail, where 3 km east and 4 km north make 5 km and not 7, then by components, which is the method that scales to any number of forces. A car rounding a bend at constant speed turns out to have changed its velocity by 28 m/s, which is the whole reason circular motion needs a force. Then <b>projectiles</b>, resting on one idea: the horizontal and vertical motions are independent, so a ball fired from a table and a ball dropped from it hit the floor together, and every question is solved by taking the time from the vertical motion and handing it to the horizontal one. <b>Relative velocity</b> closes the chapter with the river crossing that has two different right answers depending on which question was asked. Chapter 4 is <b>Newton&rsquo;s three laws</b>: why no force is needed to keep going, why &Sigma;F = ma takes the NET force and not the one you were given, why a third-law pair can never cancel (the two halves act on different objects), and the free-body diagram that turns any of it into an equation &mdash; with the normal force derived every time rather than assumed to be mg, because in a lift it is not. Eight more lessons, sixteen worked examples, 42 more practice questions. Chapters 5 to 8 follow.'],
