@@ -3,7 +3,7 @@
 **Publisher:** JohnsonXCorp, British Columbia, Canada
 **Application:** UNI Made EZ — <https://thepastor.github.io/uni-made-ez/>
 **Version this notice describes:** v2.36, 14 September 2026
-**Privacy contact:** johnsonandy242@gmail.com
+**Privacy contact:** johnsonxcorp@outlook.com
 **Applicable law:** *Personal Information Protection Act* (SBC 2003, c. 63) (British Columbia)
 
 This notice is the operative document. The same account, written to be read by a student rather

@@ -154,7 +154,7 @@ The rows this audit wrote (`POSTAUDIT1`, `POSTAUDIT1_x`, `Audit Probe`) were del
 - **Rotate the publishable key.** It has been pasted into chat transcripts. Rotating it is a one
   line edit to `github/sync.json`; nothing else reads it, and the 6pm scheduled task fetches it
   from the live site each run rather than holding a copy.
-- **A JohnsonXCorp email** to replace `johnsonandy242@gmail.com` as the published privacy contact
+- **A JohnsonXCorp email** to replace `johnsonxcorp@outlook.com` as the published privacy contact
   in four board documents.
 - Optional, for full consistency: move the sign-up write behind a `SECURITY DEFINER` function too,
   so `umez_signups` needs no grant at all. That is an app change as well as a database one, and

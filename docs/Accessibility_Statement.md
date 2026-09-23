@@ -4,7 +4,7 @@
 **Application:** UNI Made EZ — <https://thepastor.github.io/uni-made-ez/>
 **Version:** v2.27, 14 September 2026
 **Standard targeted:** WCAG 2.1 Level AA, with Level AAA contrast for body text
-**Feedback / barrier reports:** johnsonandy242@gmail.com
+**Feedback / barrier reports:** johnsonxcorp@outlook.com
 
 ## Conformance
 
@@ -85,7 +85,7 @@ build stamps, footnotes.
 Anything in this application that is unusable with a screen reader, a keyboard, a switch device, at
 high zoom, or with any other assistive technology is treated as a **defect**, not a feature request.
 
-Email **johnsonandy242@gmail.com**, or open an issue at
+Email **johnsonxcorp@outlook.com**, or open an issue at
 <https://github.com/ThePastor/uni-made-ez/issues>. Say what you were trying to do and what happened.
 Acknowledgement within 5 business days; a fix or a dated plan within 30.
 

@@ -186,4 +186,4 @@ An honest submission names its own weaknesses.
 | [`TERMS.md`](../TERMS.md) · [`LICENSE`](../LICENSE) · [`THIRD-PARTY-NOTICES.md`](../THIRD-PARTY-NOTICES.md) | Terms, licence, component notices |
 | **#/rights** in the application | The same material written for a student |
 
-*Prepared 14 September 2026 for v2.36. Contact: johnsonandy242@gmail.com*
+*Prepared 14 September 2026 for v2.36. Contact: johnsonxcorp@outlook.com*

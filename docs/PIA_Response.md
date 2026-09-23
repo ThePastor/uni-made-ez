@@ -2,7 +2,7 @@
 
 **Application:** UNI Made EZ · <https://thepastor.github.io/uni-made-ez/>
 **Vendor / publisher:** JohnsonXCorp (Anndy Johnson), British Columbia, Canada
-**Contact:** johnsonandy242@gmail.com
+**Contact:** johnsonxcorp@outlook.com
 **Version assessed:** v2.36, 14 September 2026
 **Prepared for:** Thompson Rivers University — Information Security Office and Privacy and Access
 Office, whose published PIA process is led by the Director of Information Security with input from
@@ -179,4 +179,4 @@ change that would alter section 2, 4 or 5, will complete any additional security
 questionnaire in writing, and will answer follow-up questions from the Information Security Office or
 the Privacy and Access Office.
 
-**JohnsonXCorp** · johnsonandy242@gmail.com · 14 September 2026
+**JohnsonXCorp** · johnsonxcorp@outlook.com · 14 September 2026
