@@ -2,7 +2,7 @@
 
 **Publisher:** JohnsonXCorp, British Columbia, Canada
 **Application:** UNI Made EZ — <https://thepastor.github.io/uni-made-ez/>
-**Version this notice describes:** v2.36, 14 September 2026
+**Version this notice describes:** v2.73, 11 October 2026
 **Privacy contact:** johnsonxcorp@outlook.com
 **Applicable law:** *Personal Information Protection Act* (SBC 2003, c. 63) (British Columbia)
 
@@ -20,16 +20,23 @@ running on their device. **No file, and no text taken out of a file, is ever tra
 answers, ratings, progress, notes and exam dates are held in that browser's own storage on that
 device, and nowhere else.
 
-The application transmits exactly three things, all described in full below:
+The application transmits exactly five things, all described in full below:
 
 1. an **anonymous open-counter** message, at most once an hour, so the publisher knows roughly how
    many people use the app;
 2. a **name and email address**, *only* if a student chooses to type them into an optional sign-up
-   form and press the button; and
+   form and press the button;
 3. **the name of a subject** — one or two words such as `Nursing` — *only* if a student sets a
    subject to **Other** and chooses to answer one optional question about what they are studying.
    This message carries no device id and no other field, so it cannot be linked to a visit or to a
-   person.
+   person; and
+4. **a web address**, *only* if a student chooses to add a page by pasting its address rather than
+   its text. The address goes to the site itself, or to Wikipedia's API, or — if the site refuses a
+   direct read — to a public reader service. Nothing about the student or their files goes with it;
+   and
+5. **a suggestion** — a note to the publisher — *only* if a student opens the suggestion box,
+   writes something and presses **Send it**. It carries the kind of note, the words, the app
+   version, and an email address only if the student chose to add one so they can be answered.
 
 There are no cookies, no advertising identifiers, no analytics services, no third-party scripts of
 any kind, no location, no fingerprinting, and no sale or sharing of anything with anyone.
@@ -98,13 +105,69 @@ profile is written next.
 - **Purpose:** to decide which subject profile to build next. Not used for any other purpose.
 - **What the publisher sees:** a list of subject names with a count beside each.
 
-### 2.4 What is never collected, by design
+### 2.4 A web address, if one is pasted — sent to a third party, not stored by the publisher
+
+A student may add a page to a subject by pasting its **address** instead of its text. This is the
+only part of the application that fetches anything on a student's behalf, and it happens only when
+they paste an address and press the button.
+
+| Where it goes | When | What is sent |
+|---|---|---|
+| `xx.wikipedia.org` | The address is a Wikipedia article | The article title |
+| The site itself | Any other address, tried first | The address, as an ordinary browser request with credentials omitted |
+| `r.jina.ai` | Only if that site refuses a direct read, which most do | The address alone |
+
+- **Nothing about the student goes with it**: no name, no email, not the random counter id of 2.1,
+  no other file, and nothing that has been studied. The reader service receives an address and
+  returns text.
+- **The publisher does not receive the address, and does not store it.** The request goes from the
+  student's browser to those services directly. It appears in this notice because it is a request
+  that leaves the browser, not because it collects anything.
+- **It is avoidable in one step**: pasting the *text* of a page instead of its address fetches
+  nothing at all, and the application says so at the point where an address is entered.
+- **A student's own judgement applies here in a way it does not elsewhere.** An address can itself
+  be revealing — a link into a learning-management system, or a shared document — and it is
+  disclosed to a service the student did not choose. That is why the application names the service
+  before the paste rather than after it.
+
+### 2.5 A suggestion — collected with consent, read only by the publisher
+
+From v2.73 every page has a **Suggest an idea** button. It opens a short form; nothing is sent
+while it is open, and nothing at all if it is closed. Pressing **Send it** sends exactly:
+
+| Item | What it is |
+|---|---|
+| Kind | One of: an idea, a course to add, something broken, something else. |
+| Words | Free text the student typed, 3 to 2,000 characters. |
+| Email | **Optional.** Only if the student typed one, so a reply is possible. Empty means the note is anonymous. |
+| App version | e.g. `2.73`, so a report of a fault identifies the build. |
+
+- **No device id** — not even the random counter id of 2.1 — no name, nothing from the student's
+  files, nothing they have studied. A note cannot be joined to a visit.
+- **An email, if given, is personal information** and is held under 2.2's terms: used only to
+  reply about the note, never for anything else, and deleted on request within 30 days.
+- **Free text can contain anything.** The form tells the student plainly that it is read by the
+  publisher, so they can leave out what they would not want read. The publisher does not publish,
+  quote or share notes.
+- **Who reads it:** only JohnsonXCorp, signed in to the database. The key in the page can add a note
+  through a database function and **cannot read one back** — the table has no read permission for
+  it at all. The owner's panel in the app shows counts only.
+- **Checked twice.** Length, kind and email format are checked in the page and again by the database
+  function, which also caps notes at 60 an hour across everyone so the public key cannot be used to
+  flood the table.
+- **If it cannot be sent**, the student's words stay in the form and the app offers to open their
+  own mail app with the note addressed to the privacy contact above. Nothing is retried in the
+  background.
+
+### 2.6 What is never collected, by design
 
 Course files; text extracted from them; flash cards; quiz answers; scores; study progress; notes;
 exam dates; search terms; institution; student number; course enrolment; IP address; precise or
 approximate location; browsing history; contacts; any biometric or device-identifying signal. The
-subject name in 2.3 is the only free text the application has ever transmitted, and it is stored
-with nothing beside it.
+subject name in 2.3, an address a student chooses to paste under 2.4, and a suggestion a student
+chooses to send under 2.5 are the only free text the application transmits; the first is stored with
+nothing beside it, the second is not stored by the publisher at all, and the third is read only by
+the publisher.
 
 ---
 
@@ -117,8 +180,8 @@ with nothing beside it.
   **write** a row and may **not read one back**. Two independent mechanisms enforce that, and either
   alone would be sufficient: the key holds **no SELECT privilege** on the tables at all, and
   separately those tables' **row-level security** rules return nothing to it. The publisher's own
-  statistics panel reads **counts only**, through a function with a fixed return shape — it cannot
-  return a name.
+  statistics panel reads **counts only**, through views with a fixed return shape — it cannot
+  return a name, an email or the words of a suggestion.
 - **A gap that existed and was closed.** Until 14 September 2026 only the second mechanism was in
   place on `umez_devices` and `umez_signups`: the key still held SELECT, UPDATE and DELETE
   *privileges*, and only the row rules stood between it and the data. Nothing was exposed, but one
@@ -133,6 +196,10 @@ with nothing beside it.
 - **Who can read personal information:** JohnsonXCorp, authenticated to that database. Nobody else.
 - **Sub-processor:** Supabase Inc. (database hosting). GitHub, Inc. serves the static page and
   receives ordinary web-server request logs as any web host does; it receives no application data.
+- **Not a sub-processor, but named for completeness:** Wikimedia Foundation and Jina AI
+  (`r.jina.ai`) receive a web address if, and only if, a student pastes one (2.4). They hold no
+  personal information on the publisher's behalf and process nothing for the publisher; the request
+  is made by the student's browser.
 
 ## 4. Retention
 
@@ -141,7 +208,9 @@ with nothing beside it.
 | Name and email | Until deletion is requested, and in any event when the application is retired. Deleted **within 30 days** of a request. |
 | Open-counter rows | While the application is published. They contain no personal information. |
 | Subject names (2.3) | While the application is published. They contain no personal information and hold no identifier to action a deletion request against — which is the reason the table was built without one. |
-| On-device data (files, cards, progress) | Under the individual's sole control. Deleted instantly and permanently by clearing browser site data. |
+| Suggestions (2.5) | While the application is published. A note with an email: the note and email are deleted **within 30 days** of a request, and the email may be cleared once the reply is sent. |
+| Pasted web addresses (2.4) | Not retained by the publisher at all — they are never received by it. Whatever the site or the reader service keeps is governed by that service. |
+| On-device data (files, cards, progress) | Under the individual's sole control. Deleted instantly and permanently by clearing browser site data. A file the student removes is kept for up to an hour so the removal can be undone, and is then erased at the next start. |
 
 ## 5. Rights, and how to use them
 
@@ -187,9 +256,19 @@ Every claim in section 2 is checkable without trusting this document:
 The counter was added in v2.19. Until v2.27 this application's privacy text still said that nothing
 at all left the browser, which the counter had made untrue. The sentence was corrected rather than
 kept, the history of the correction is stated in the app itself, and an automated test now fails the
-build if the absolute claim ever returns. Material changes to this notice will be recorded in the
-application's version history, which is visible in the app footer.
+build if the absolute claim ever returns.
+
+In v2.69 the address-reading path of 2.4 was added to this notice. It was not new — it has existed
+since pages could be added by address, and the application has always named the reader service at
+the point of use — but this notice had said the subject name was the only free text ever
+transmitted, and an address is free text. The count in section 1 moved from three to four. It is
+recorded here rather than quietly amended, for the same reason as the paragraph above.
+
+In v2.73 the suggestion box of 2.5 was added, and the count in section 1 moved from four to five.
+
+Material changes to this notice will be recorded in the application's version history, which is
+visible in the app footer.
 
 ---
 
-*Last reviewed: 14 September 2026 (v2.27).*
+*Last reviewed: 11 October 2026 (v2.73).*

@@ -2363,6 +2363,47 @@ main .side-prin { align-self: center; list-style: none; margin: 0 auto; padding:
 @media print { .hero .art.showcase, .prin, .hero-cta, .hero-facts, .door-promise, .eyebrow { display: none !important; } .hero.studio + .doors .door { box-shadow: none; } }
 
 
+/* ---------- the suggestion box (v2.73) ----------
+   Three ways in — a quiet link in every footer, a band on the home page, and "Ask for it" on the
+   course library — and one small form. The kinds are a radio group dressed as chips, so it is one
+   tap to say what sort of note it is and the choice is announced as a choice. */
+.foot .suggest-link { font: inherit; color: var(--inverse-ink); background: none; border: 1px solid var(--inverse-ink-2); border-radius: 999px; padding: 4px 12px; cursor: pointer; text-transform: none; letter-spacing: .02em; white-space: nowrap; }
+.foot .suggest-link:hover, .foot .suggest-link:focus-visible { background: var(--mint); color: var(--mint-ink); border-color: var(--mint); }
+.suggest-band { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px 24px; margin: 0 var(--gut) var(--band-lg); padding: var(--band) var(--gut-in); border-radius: var(--radius-lg); background: var(--inverse); color: var(--inverse-ink); box-shadow: var(--lift); }
+.suggest-band .sb-text { display: grid; gap: 4px; min-width: 0; flex: 1 1 340px; }
+.suggest-band .label { color: var(--mint); }
+.suggest-band b { font-family: var(--font-display); font-size: clamp(1.15rem, 2vw, 1.45rem); font-weight: 500; letter-spacing: -.02em; }
+.suggest-band .small { color: var(--inverse-ink-2); max-width: 62ch; line-height: 1.5; }
+.suggest-band .sb-acts { display: flex; flex-wrap: wrap; gap: 8px; }
+.suggest-band .btn { border-radius: var(--radius-sm); }
+.suggest-band .btn.primary { background: var(--mint); color: var(--mint-ink); border-color: var(--mint); }
+.suggest-band .btn.primary:hover { background: var(--inverse-ink); color: var(--inverse); border-color: var(--inverse-ink); }
+.suggest-band .btn:not(.primary) { background: transparent; color: var(--inverse-ink); border-color: var(--inverse-ink-2); }
+.suggest-band .btn:not(.primary):hover { background: var(--inverse-ink); color: var(--inverse); }
+.prin + .suggest-band { margin-top: calc(var(--band-lg) * -0.5); }
+.link-btn { font: inherit; color: var(--accent); background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
+.link-btn:hover { color: var(--ink); }
+.suggest-modal { max-width: 560px; border-radius: var(--radius-lg); gap: 16px; max-height: calc(100dvh - 40px); overflow-y: auto; }
+.suggest-modal h2 { font-size: 1.45rem; }
+.suggest-modal .input { border-radius: var(--radius-sm); }
+.suggest-modal textarea.input { resize: vertical; min-height: 120px; line-height: 1.5; }
+.sg-kinds { border: 0; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.sg-kind { position: relative; display: inline-flex; align-items: center; cursor: pointer; }
+.sg-kind input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.sg-kind span { display: inline-flex; align-items: center; padding: 7px 13px; border: 1px solid var(--line-soft); border-radius: 999px; font-size: .88rem; color: var(--ink-2); background: var(--surface); transition: background .12s, color .12s, border-color .12s; }
+.sg-kind:hover span { border-color: var(--accent); color: var(--ink); }
+.sg-kind.on span, .sg-kind input:checked + span { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.sg-kind input:focus-visible + span { outline: 2px solid var(--mint-deep); outline-offset: 2px; }
+.sg-opt { text-transform: none; letter-spacing: 0; font-family: var(--font-body); color: var(--ink-2); margin-left: 6px; }
+.sg-count { justify-self: end; text-align: right; }
+.suggest-modal .notice.warn a { color: inherit; font-weight: 600; }
+.sg-stats { margin: 6px 0 10px; }
+@media (max-width: 900px) { .foot .maker .suggest-link { order: -1; } }
+@media (max-width: 640px) { .suggest-band { margin: 0 10px var(--band-lg); } .suggest-band .sb-acts .btn { flex: 1 1 100%; justify-content: center; } }
+@media (pointer: coarse) { .foot .suggest-link, .link-btn { min-height: 44px; display: inline-flex; align-items: center; } .sg-kind span { min-height: 44px; } }
+@media print { .suggest-band, .foot .suggest-link { display: none !important; } }
+
+
 /* ==========================================================================================
    THE FLOOR — last in the file on purpose, so nothing later can quietly undercut it.
    ==========================================================================================
@@ -33311,7 +33352,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.72', date: '11 October 2026', year: 2026 };
+  const BUILD = { v: '2.73', date: '11 October 2026', year: 2026 };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonxcorp', ['outlook', 'com'].join('.')].join('@');
   /* The one sentence that says what this is. It appears under the wordmark, and build.js uses
@@ -33324,6 +33365,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      because the person who needs it is the one who just watched the app refresh itself and wants to
      know what moved. Trim the tail when it gets past a dozen; nobody reads further back than that. */
   const WHATS_NEW = [
+    ['2.73', '<b>A suggestion box.</b> Press <b>Suggest an idea</b> \u2014 at the foot of every page, or on the home page \u2014 to ask for a feature, a course, or to say something broke. Only JohnsonXCorp reads it; nothing is posted publicly. Add an email if you want a reply, or leave it empty and the note is anonymous. It sends your words and nothing else: no visit id, nothing from your files.'],
     ['2.72', '<b>A new front page.</b> The home screen now says what UNI Made EZ is in one line, shows a worked example set out the way every lesson sets one out, and puts both ways in \u2014 the courses and your own files \u2014 on buttons in the first screen. The welcome screen shows the whole course library beside the form. Nothing inside the app changed, and nothing about your files did: they still never leave your browser.'],
     ['2.71', '<b>An audit of the whole app, and the ten things it found worth fixing first.</b> The most important one you would never have seen: if this browser\u2019s storage filled up, <b>cards you wrote, your notes and your progress stopped being saved and nothing said so</b>. Now a bar appears, it offers a backup, and it goes away by itself when saving works again. Removing a file is also properly undoable at last &mdash; nothing is deleted from storage while the Undo is on screen, so a second message can no longer quietly take the first removal past recall, and an undo now survives a reload. <b>The header no longer claims &ldquo;Summary &amp; Quiz locked&rdquo;</b>, which nothing has been since v2.27; on a small phone the light/dark switch no longer sits on top of the Sign up button; and the page now shows the wordmark and a progress bar within about a second instead of a blank screen, because half a megabyte of fonts used to load in front of everything else. Four bugs behind the scenes: opening a second subject while the first was still being scanned could paint the first one\u2019s cards into the second one\u2019s page; two batches of PDFs dropped in at once could swap their figures; removing a subject left its review history behind for ever; and an undone removal could leave a file claiming pages it no longer had. On the honesty side, the two Trent science courses now say plainly that a lesson <i>starts</i> at the section it names and takes in the sections around it, the terms of use have been rewritten to list every case in which the page touches the network, and the privacy notice now includes the one that was missing &mdash; a web address you paste is passed to a reader service if the site refuses to be read directly. This release also puts back two changes that were made on the live page and lost when it was rebuilt from an older copy of the source \u2014 the contact address and the footer link are as they were, and are now in the source so they stay.'],
     ['2.70', '<b>The JohnsonXCorp mark in the footer is now a link.</b> Tap it to reach the JohnsonXCorp homepage and the other apps. Nothing else changed.'],
@@ -34250,6 +34292,38 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     return new Date(+m[1], +m[2] - 1, +m[3]).toLocaleDateString();
   }
 
+  /* ---------- the suggestion box (v2.73) ----------
+     A note from a student to the owner, and nothing else. Through a SECURITY DEFINER function for
+     the same reason as the ping and the subject name: the table has no read permission for the key
+     in this page, so a note can be written and never read back — not by this page, not by anybody
+     holding the key. Four fields go, and they are the whole of it: the kind, the words, an email
+     ONLY if the student typed one, and the app version so a bug report says which build it is about.
+     No device id, deliberately: feedback is read for what it says, and a note joined to a visit
+     history would be a record about a person rather than a suggestion. */
+  const SUGGEST_KINDS = [['idea', 'An idea'], ['course', 'A course to add'], ['bug', 'Something\u2019s broken'], ['other', 'Something else']];
+  const SUGGEST_MAX = 2000;
+  let suggestDraft = {};   // in memory only — never stored, never sent until Send is pressed
+  const emailOk = e => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e) && e.length <= 120;
+  async function sendSuggestion(kind, body, email) {
+    if (!SYNC_OK) return false;
+    const r = await syncFetch('rpc/umez_suggest', { method: 'POST', body: JSON.stringify({ p_kind: kind, p_body: body, p_email: email || null, p_ver: BUILD.v }) });
+    if (!r || !r.ok) return false;
+    const ok = await r.json().catch(() => false);
+    return ok === true;
+  }
+  // counts only, for the owner's panel — the view exposes no text and no email
+  async function loadSuggestStats() {
+    const r = await syncFetch('umez_suggestion_stats?select=*', { headers: { accept: 'application/json' } });
+    if (!r) return { err: 'no-config' };
+    if (!r.ok) return { err: 'http-' + r.status };
+    const rows = await r.json().catch(() => null);
+    return (rows && rows[0]) ? { data: rows[0] } : { err: 'empty' };
+  }
+  function suggestMailto(kind, body) {
+    const k = (SUGGEST_KINDS.find(x => x[0] === kind) || SUGGEST_KINDS[0])[1];
+    return `mailto:${OWNER_EMAIL}?subject=${encodeURIComponent('UNI Made EZ suggestion: ' + k)}&body=${encodeURIComponent(body + '\n\n(v' + BUILD.v + ')')}`;
+  }
+
   async function loadSubjectTally() {
     const r = await syncFetch('umez_subject_tally?select=*&order=students.desc', { headers: { accept: 'application/json' } });
     if (!r) return { err: 'no-config', why: syncWhy };
@@ -34484,7 +34558,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
   /* The footer carries the copyright line on every page. A notice does not create the right — that
      exists from the moment the code is written — but it removes any argument that a copier did not
      know, and it is the one place a reader is certain to see it. */
-  const foot = () => `<footer class="foot"><span>Study material is built on your device by the built-in study engine — your files never leave your browser. Check it against your course notes.</span><span class="maker"><span class="by">Built by</span><a class="jxc-home" href="https://thepastor.github.io/" target="_blank" rel="noopener" title="JohnsonXCorp — see all our apps" style="color:inherit;text-decoration:none">${makerMark()}</a><a class="rights" href="#/rights">&copy; ${BUILD.year} ${OWNER_NAME} &middot; All rights reserved</a><button type="button" class="build" data-act="whats-new" title="What changed in this version">&middot; v${BUILD.v} &middot; ${BUILD.date}</button></span></footer>`;
+  const foot = () => `<footer class="foot"><span>Study material is built on your device by the built-in study engine — your files never leave your browser. Check it against your course notes.</span><span class="maker"><button type="button" class="suggest-link" data-act="suggest">Suggest an idea</button><span class="by">Built by</span><a class="jxc-home" href="https://thepastor.github.io/" target="_blank" rel="noopener" title="JohnsonXCorp — see all our apps" style="color:inherit;text-decoration:none">${makerMark()}</a><a class="rights" href="#/rights">&copy; ${BUILD.year} ${OWNER_NAME} &middot; All rights reserved</a><button type="button" class="build" data-act="whats-new" title="What changed in this version">&middot; v${BUILD.v} &middot; ${BUILD.date}</button></span></footer>`;
   const frame = html => `<div class="frame">${html}</div>`;
 
   /* ---------- home ---------- */
@@ -34572,6 +34646,10 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
         <div><span class="k">02</span><h3>Private by design</h3><p>No uploads. Your notes, cards and answers live in this browser and nowhere else.</p></div>
         <div><span class="k">03</span><h3>Works offline</h3><p>Open it once and it keeps working on the bus, in the library, or with no signal.</p></div>
         <div><span class="k">04</span><h3>Free to use</h3><p>No account and no paywall. Install it to your home screen like an app if you want.</p></div>
+      </section>
+      <section class="suggest-band" aria-label="Suggestions">
+        <div class="sb-text"><span class="label">Help shape it</span><b>What should UNI Made EZ do next?</b><span class="small">A feature you want, a course to add, something that broke. Every note is read by ${esc(OWNER_NAME)}, and it can be anonymous.</span></div>
+        <div class="sb-acts"><button type="button" class="btn primary" data-act="suggest">Suggest an idea <span class="arr">&rarr;</span></button><button type="button" class="btn" data-act="suggest" data-kind="course">Ask for a course</button></div>
       </section>`;
     app.innerHTML = frame(`${topbar()}
     <main id="main" tabindex="-1">
@@ -34854,6 +34932,24 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
       the id that counts visits, not your files, and nothing you have studied. Paste the text of a
       page instead of its address and nothing is fetched at all. This is listed here because it is
       a request that leaves your browser, even though none of your material is in it.</p>
+      <p><b>And the suggestion box, only when you press Send.</b> The <b>Suggest an idea</b> button
+      on every page opens a short form addressed to the publisher. Nothing is sent while you type,
+      and nothing at all if you close it. When you press <b>Send it</b>, exactly this goes:</p>
+      <div class="legal-table-wrap"><table class="legal-table suggest-table">
+        <thead><tr><th>What is sent</th><th>What it actually is</th></tr></thead>
+        <tbody>
+          <tr><td>The kind of note</td><td>One of: an idea, a course to add, something broken, something else.</td></tr>
+          <tr><td>Your words</td><td>What you typed, up to 2,000 characters. Write anything you like
+            &mdash; but it is free text, so leave out anything you would not want the publisher to read.</td></tr>
+          <tr><td>An email, if you typed one</td><td>Optional, and only so a reply is possible. Leave it
+            empty and the note is anonymous.</td></tr>
+          <tr><td>The app version</td><td>For example <code>2.73</code>, so a report of something broken
+            says which build it is about.</td></tr>
+        </tbody>
+      </table></div>
+      <p>It carries <b>no device id</b>, no name, nothing from your files and nothing you have studied.
+      Only the publisher reads it, signed in to the database; the key in this page can add a note and
+      cannot read one back, including your own. Nothing is posted publicly.</p>
       <p>Clearing your site data discards the id, and your next visit is counted as a new device.
       That is a real weakness in the count, and it is the price of a counter that does not follow
       you. The count is deliberately the less accurate of the two options.</p>
@@ -34862,7 +34958,9 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 
     ['personal', 'Your name and email', `
       <p>The only personal information this app can ever hold about you is a name and an email
-      address, and only if you type them into the sign-up form yourself and press the button.</p>
+      address, and only if you type them into the sign-up form yourself and press the button &mdash;
+      or an email address alone, if you choose to add one to a note in the suggestion box so it can
+      be answered. Both are optional, and both are covered by everything below.</p>
       <p>The subject name described in the previous section is the app's only other free-text field,
       and it is deliberately not personal information: it is stored with no device id, no name and
       no email beside it, so there is nothing in that table to connect to a person. If you type
@@ -35004,8 +35102,9 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
         <li><b>No student work, course file, grade or submission ever reaches the publisher</b> —
           the app is architecturally incapable of sending them, and that is checked by test.</li>
         <li><b>The only personal information the publisher can hold</b> is a name and email a
-          student chooses to give, entirely optionally, with nothing withheld if they decline. It is
-          stored in Canada.</li>
+          student chooses to give at sign-up, or an email added to a suggestion so it can be
+          answered &mdash; entirely optionally, with nothing withheld if they decline. It is stored in
+          Canada.</li>
         <li><b>There are no advertisements, no trackers and no sale of data</b>, and the app is free
           of charge to students.</li>
         <li><b>The material is a study companion, not a source.</b> The accuracy and academic
@@ -35463,6 +35562,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
         ${groups}
         <div class="cell">
           <p class="small muted">Working from your own textbook or notes instead? Add them to a subject on the home page &mdash; the study engine will pull the definitions, formulas and worked steps out of them.</p>
+          <p class="small muted">Your course is not here? <button type="button" class="link-btn" data-act="suggest" data-kind="course">Ask for it</button> &mdash; the most-asked-for courses get written next.</p>
         </div>
       </main>${foot()}`);
     syncModal();
@@ -36181,6 +36281,25 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
           ${t.rows.length > top.length ? `<p class="small muted">Showing the ${top.length} most asked for of ${t.rows.length}.</p>` : ''}
           <p class="small muted">Free text, filtered to something shaped like the name of a subject before it is stored, and never tied to a device, a name or an email. A daily list also arrives at 6pm.</p></div>`;
       };
+      /* The suggestion box, as numbers. The notes themselves are read in the Supabase dashboard —
+         the view this reads has counts and nothing else, so no student's words or email can ever be
+         fetched by the key in this page. */
+      const suggestBox = () => {
+        const g = m.suggest;
+        if (!g) return '';
+        if (g.err === 'http-404') return `<div class="detail-block"><span class="label">Suggestion box</span>
+          <p class="small muted">Not installed in this database yet. Run the SQL in <code>docs/Counter_Suggestions.sql.md</code>. Until then, the form offers students their own mail app instead, so nothing is lost.</p></div>`;
+        if (g.err || !g.data) return '';
+        const x = g.data;
+        return `<div class="detail-block"><span class="label">Suggestion box</span>
+          <div class="stat-grid sg-stats">
+            <div class="stat"><span class="label">Unread</span><strong>${n(x.unread)}</strong><span class="muted small">${n(x.last_7d)} this week</span></div>
+            <div class="stat"><span class="label">Ideas</span><strong>${n(x.ideas)}</strong><span class="muted small">features asked for</span></div>
+            <div class="stat"><span class="label">Courses</span><strong>${n(x.courses)}</strong><span class="muted small">to add</span></div>
+            <div class="stat"><span class="label">Broken</span><strong>${n(x.bugs)}</strong><span class="muted small">${n(x.other)} other</span></div>
+          </div>
+          <p class="small muted">Read them in the Supabase dashboard &rarr; Table Editor &rarr; <code>umez_suggestions</code>, and set <code>status</code> as you go. They never appear here, because the key in this page cannot read them.</p></div>`;
+      };
       const body = () => m.err ? `${m.err === 'no-config' ? setup()
           : m.err === 'empty' ? '<div class="notice">The counter is configured and the key works, but the view returned no rows. The tables may not be installed in this database yet — re-run the setup SQL.</div>'
           : `<div class="notice">The database answered <b>${esc(m.err.replace('http-', 'HTTP '))}</b>. <b>401</b> means the key is wrong or row-level security is refusing it; <b>404</b> means the tables live in a different project.</div>`}`
@@ -36194,6 +36313,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             <div class="stat"><span class="label">Times opened</span><strong>${n(d.opens_total)}</strong><span class="muted small">across every device</span></div>
             <div class="stat"><span class="label">Subjects created</span><strong>${n(d.subjects_total)}</strong><span class="muted small">courses people are studying</span></div>
           </div>
+          ${suggestBox()}
           ${tally()}
           <p class="small muted">A device is one browser on one machine, counted by a random id it keeps to itself — the same person on a laptop and a phone counts twice, and clearing site data starts a new one. Nobody's files, cards, answers or progress are sent anywhere; this panel can only read totals, never names or email addresses. Those you read in the Supabase dashboard, or in the daily email.</p>`;
       return `<div class="modal-bg" data-act="close-modal"><div class="modal wide info" role="dialog" aria-modal="true" aria-label="Usage figures">
@@ -36202,6 +36322,33 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
         <div class="modal-body">${m.loading ? `<div class="loading"><div class="spinner"></div><div>Counting…</div></div>` : body()}</div>
         <div class="modal-foot"><button type="button" class="btn sm" data-act="stats">Refresh</button><span class="spacer" style="flex:1"></span><button class="btn sm primary" data-act="close-modal">Close</button></div>
       </div></div>`;
+    }
+    if (m.type === 'suggest') {
+      if (m.sent) return `<div class="modal-bg" data-act="close-modal"><div class="modal suggest-modal" role="dialog" aria-modal="true" aria-labelledby="sg-h">
+        <span class="label">Sent</span><h2 id="sg-h">Thank you &mdash; it’s in the box</h2>
+        <p>${esc(OWNER_NAME)} reads every one.${m.email ? ' You left an email, so you may get a reply.' : ' You left no email, so it arrived anonymously.'}</p>
+        <div class="btn-row" style="justify-content:flex-end"><button type="button" class="btn" data-act="suggest">Send another</button><button type="button" class="btn primary" data-act="close-modal">Done</button></div>
+      </div></div>`;
+      const kind = m.kind || 'idea';
+      return `<div class="modal-bg" data-act="close-modal"><form class="modal suggest-modal" data-form="suggest" novalidate aria-labelledby="sg-h">
+        <div class="row between"><span class="label">Suggestion box</span><button type="button" class="btn ghost icon" data-act="close-modal" aria-label="Close">${I.x}</button></div>
+        <h2 id="sg-h">Tell us what would make it better</h2>
+        <fieldset class="sg-kinds"><legend class="sr-only">What kind of note is this?</legend>
+          ${SUGGEST_KINDS.map(([id, lab]) => `<label class="sg-kind${kind === id ? ' on' : ''}"><input type="radio" name="kind" value="${id}"${kind === id ? ' checked' : ''}><span>${lab}</span></label>`).join('')}
+        </fieldset>
+        <div class="field"><label for="sg-body">${SG_LABEL[kind] || SG_LABEL.idea}</label>
+          <textarea class="input" id="sg-body" name="body" rows="5" maxlength="${SUGGEST_MAX}" required autofocus placeholder="${esc(SG_HINT[kind] || '')}">${esc(m.body || '')}</textarea>
+          <span class="small muted sg-count" aria-live="polite">${(m.body || '').length} / ${SUGGEST_MAX}</span></div>
+        <div class="field"><label for="sg-email">Email <span class="sg-opt">optional &middot; only if you want a reply</span></label>
+          <input class="input" id="sg-email" name="email" type="email" maxlength="120" autocomplete="email" placeholder="you@example.com" value="${esc(m.email || '')}"></div>
+        ${m.err ? `<div class="err-text" role="alert">${m.err}</div>` : ''}
+        ${m.failed ? `<div class="notice warn">It could not be sent just now. Your words are still here &mdash; <a href="${esc(suggestMailto(kind, m.body || ''))}">send it by email instead</a>, or try again in a minute.</div>` : ''}
+        <p class="small muted">Only ${esc(OWNER_NAME)} reads these &mdash; nothing is posted publicly. What is sent: the kind, your words, your email if you typed one, and the app version. Not your name, not the id that counts visits, and nothing from your files. <a href="#/rights">What the app sends, in full</a>.</p>
+        <div class="btn-row" style="justify-content:flex-end">
+          <button type="button" class="btn ghost" data-act="close-modal">Cancel</button>
+          <button type="submit" class="btn primary"${m.busy ? ' disabled' : ''}>${m.busy ? 'Sending…' : 'Send it'} <span class="arr">&rarr;</span></button>
+        </div>
+      </form></div>`;
     }
     if (m.type === 'install') {
       const steps = IS_IOS
@@ -39701,11 +39848,17 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
         state.modal = { type: 'stats', loading: true }; syncModal();
         /* Both reads, together, and neither blocks the other: the tally table may not be installed
            in a given database, and the figures are still worth showing when it is not. */
-        Promise.all([loadStats(), loadSubjectTally()]).then(([res, tal]) => {
+        Promise.all([loadStats(), loadSubjectTally(), loadSuggestStats()]).then(([res, tal, sug]) => {
           if (!state.modal || state.modal.type !== 'stats') return;
-          state.modal = { type: 'stats', ...res, tally: tal }; syncModal();
+          state.modal = { type: 'stats', ...res, tally: tal, suggest: sug }; syncModal();
         });
         break;
+      }
+      case 'suggest': {
+        // the draft outlives the window: closing it by accident, or tapping outside it, keeps the words
+        const d = suggestDraft;
+        state.modal = { type: 'suggest', kind: el.dataset.kind || d.kind || 'idea', body: d.body || '', email: d.email || '' };
+        syncModal(); break;
       }
       case 'install': doInstall(); break;
       case 'display': state.modal = { type: 'display' }; syncModal(); break;
@@ -40107,6 +40260,26 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     const q = f.value.trim().toLowerCase();
     document.querySelectorAll('#overlay .modal-list > *').forEach(el => { el.hidden = q && !el.textContent.toLowerCase().includes(q); });
   });
+  /* The suggestion box keeps its words in state as they are typed, so switching the kind, a failed
+     send or closing the window by accident never throws a student's paragraph away. The kind is
+     changed in place rather than by re-rendering, so a keyboard user arrowing through the four
+     options keeps their focus on them. */
+  const SG_LABEL = { idea: 'Your suggestion', course: 'Which course, and where is it taught?', bug: 'What happened, and on which page?', other: 'Your suggestion' };
+  const SG_HINT = { idea: 'e.g. A timer for practice questions', course: 'e.g. ECON 2330 Statistics 2 \u2014 the set text is \u2026', bug: 'e.g. On the quiz, the Next button\u2026', other: 'Anything you would like to say' };
+  document.addEventListener('input', e => {
+    const m = state.modal; if (!m || m.type !== 'suggest') return;
+    const t = e.target;
+    if (t.id === 'sg-body') { m.body = suggestDraft.body = t.value; const c = document.querySelector('.sg-count'); if (c) c.textContent = `${t.value.length} / ${SUGGEST_MAX}`; }
+    else if (t.id === 'sg-email') m.email = suggestDraft.email = t.value;
+  });
+  document.addEventListener('change', e => {
+    const m = state.modal; const t = e.target;
+    if (!m || m.type !== 'suggest' || t.name !== 'kind') return;
+    m.kind = suggestDraft.kind = t.value;
+    document.querySelectorAll('.sg-kind').forEach(l => l.classList.toggle('on', l.querySelector('input').checked));
+    const lab = document.querySelector('label[for="sg-body"]'); if (lab) lab.textContent = SG_LABEL[m.kind] || SG_LABEL.idea;
+    const ta = document.getElementById('sg-body'); if (ta) ta.placeholder = SG_HINT[m.kind] || '';
+  });
   let lecSaveT = null;
   document.addEventListener('input', e => {
     const el = e.target;
@@ -40190,6 +40363,24 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
          verdict, and the wording is saved either way. Refusing to save a copy would make the
          feature a hurdle, which is exactly what it must not be. */
       toast(rec ? (rec.echo ? 'Saved — though that is close to the material\u2019s own wording. The gain comes from saying it differently.' : 'Saved in your words.') : 'Left as it was.');
+      return;
+    }
+    if (form.dataset.form === 'suggest') {
+      const m = state.modal; if (!m || m.type !== 'suggest' || m.busy) return;
+      const kind = SUGGEST_KINDS.some(k => k[0] === data.kind) ? data.kind : 'idea';
+      const body = String(data.body || '').trim().slice(0, SUGGEST_MAX);
+      const email = String(data.email || '').trim();
+      Object.assign(m, { kind, body, email, err: '', failed: false });
+      if (body.length < 3) { m.err = 'Write a few words first.'; syncModal(); return; }
+      if (email && !emailOk(email)) { m.err = 'That email doesn\u2019t look right. Fix it, or leave it empty to send anonymously.'; syncModal(); return; }
+      if (!SYNC_OK) { m.failed = true; syncModal(); return; }
+      m.busy = true; syncModal();
+      const ok = await sendSuggestion(kind, body, email);
+      if (state.modal !== m) return;
+      m.busy = false;
+      if (ok) { suggestDraft = {}; state.modal = { type: 'suggest', sent: true, email: !!email }; }
+      else m.failed = true;
+      syncModal();
       return;
     }
     if (form.dataset.form === 'subj-other') {
