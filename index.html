@@ -11806,7 +11806,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
                   { do: '3 × 10⁷ × 10² ≈ 3 × 10⁹ s', why: 'Multiply the powers of ten and keep one leading digit.' },
                   { do: 'About 10⁹ seconds — a few billion', why: 'The value of this is not the number. It is that any later calculation giving 10⁶ or 10¹² for the same thing is now visibly wrong.' }
                 ],
-                answer: 'Of order 10⁹ s (about 2.5 × 10⁹)', answerWords: true
+                answer: 'Of order 10⁹ s — a few billion (80 years × 3.15 × 10⁷ s is about 2.5 × 10⁹)', answerWords: true
               }
             ],
             pitfalls: [
@@ -15417,9 +15417,9 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             id: 'g1', title: 'Work and the work–energy theorem', src: 'Section 7.1',
             idea: `<b>Work</b> is what a force does when it moves something:<br><br><b>W = Fd cos θ</b>, in <b>joules</b> (1 J = 1 N·m)<br><br>where θ is the angle between the force and the displacement. Work is a <b>scalar</b> — it has a sign but no direction — and the cosine carries all the geometry.<br><br>Three cases follow from that cosine, and each is a standing exam question:<br><br>• Force along the motion, θ = 0: <b>W = Fd</b>, the maximum.<br>• Force perpendicular to the motion, θ = 90°: <b>W = 0</b>. A normal force does no work; neither does the tension on a ball whirled in a circle, nor gravity on a satellite in a circular orbit.<br>• Force opposing the motion, θ = 180°: <b>W = −Fd</b>, negative. Friction almost always does negative work, taking energy out.<br><br>Two situations give zero work for a different reason, and both offend intuition. Holding a heavy box still does <b>no work</b>, however tiring, because d = 0 — muscles consume energy, but no mechanical work is done on the box. And carrying that box horizontally at constant speed does no work either, because the lifting force is vertical while the motion is horizontal.<br><br><b>Kinetic energy</b> is the energy of motion:<br><br><b>KE = ½mv²</b><br><br>Note the <b>v²</b>: doubling the speed <b>quadruples</b> the kinetic energy, which is why stopping distances grow so steeply and why a crash at 100 km/h releases four times the energy of one at 50.<br><br>The two ideas meet in the <b>work–energy theorem</b>:<br><br><b>W<sub>net</sub> = ΔKE = ½mv² − ½mv<sub>0</sub>²</b><br><br>The net work done on an object equals its change in kinetic energy. This is a second complete route through mechanics: it needs no time, no acceleration and no vectors beyond a cosine, so a question that would take two equations of motion often takes one line of energy. Positive net work speeds something up; negative net work slows it down; zero net work leaves the speed unchanged, however complicated the journey.`,
             figure: {
-              kind: 'graph', x: [0, 30], y: [0, 500], xlabel: 'v', ylabel: 'KE (kJ)',
+              kind: 'graph', x: [0, 30], y: [0, 600], xlabel: 'v', ylabel: 'KE (kJ)',
               fns: [{ expr: 'x**2/2*1.2/1000*1000', label: 'KE of a 1,200 kg car' }],
-              points: [{ x: 10, y: 60, label: '10 m/s: 60 kJ' }, { x: 20, y: 240, label: '20 m/s: 240 kJ' }, { x: 30, y: 540, label: '30 m/s' }],
+              points: [{ x: 10, y: 60, label: '10 m/s: 60 kJ' }, { x: 20, y: 240, label: '20 m/s: 240 kJ' }, { x: 30, y: 540, label: '30 m/s: 540 kJ' }],
               caption: 'Kinetic energy against speed for a family car. The curve is a parabola because of the v², so doubling the speed from 10 to 20 m/s does not double the energy but quadruples it. Every joule of that has to be removed by the brakes, which is why stopping distance grows as the square of the speed and not in proportion to it.'
             },
             rules: [
@@ -19017,7 +19017,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             id: 'd3', title: 'Effective nuclear charge and atomic radius', src: 'Section 8.6',
             idea: `An outer electron does not feel the full pull of the nucleus, because the electrons between it and the nucleus push back. What it feels is the <b>effective nuclear charge</b>:<br><br><b>Z<sub>eff</sub> ≈ Z − S</b><br><br>with Z the number of protons and S the screening by the core electrons, roughly equal to their number. Sodium has Z = 11 and ten core electrons, so its valence electron feels about +1. Chlorine has Z = 17 and the same ten core electrons, so its valence electrons feel about +7.<br><br>That comparison is the engine of the whole chapter. <b>Across a period</b>, protons are added one at a time while the new electrons all go into the <b>same</b> shell and screen each other poorly — so Z<sub>eff</sub> rises steadily from left to right. <b>Down a group</b>, each step adds a whole new shell and a matching set of core electrons, so Z<sub>eff</sub> stays roughly constant while n grows.<br><br><b>Atomic radius</b> follows directly:<br><br><b>Across a period, radius decreases</b> — the same shell is pulled in harder as Z<sub>eff</sub> rises. This is the one that feels wrong: more electrons, smaller atom.<br><br><b>Down a group, radius increases</b> — a new shell is further out, and the pull on it has not changed.<br><br>So the largest atoms are at the bottom left of the table and the smallest at the top right, and radius is measured in picometres: about 186 pm for sodium, 99 pm for chlorine, 37 pm for hydrogen.<br><br>The trend is not perfectly smooth. Across the d block the radius barely changes, because the electrons being added go into an inner shell where they screen the outer ones well — which is why the transition metals are all of a similar size and alloy with one another so readily.`,
             figure: {
-              kind: 'graph', x: [10, 19], y: [0, 200], xlabel: 'atomic number Z', ylabel: 'atomic radius (pm)',
+              kind: 'graph', x: [10, 20], y: [0, 250], xlabel: 'atomic number Z', ylabel: 'atomic radius (pm)',
               fns: [{ data: true, pts: [[11, 186], [12, 160], [13, 143], [14, 118], [15, 110], [16, 103], [17, 99], [18, 97], [19, 227]], label: 'period 3, then K' }],
               points: [{ x: 11, y: 186, label: 'Na' }, { x: 17, y: 99, label: 'Cl' }, { x: 19, y: 227, label: 'K' }],
               caption: 'Atomic radius across the third period, with potassium beyond it. The steady fall from sodium to argon is effective nuclear charge rising while the shell stays the same — eight more protons pulling the third shell in by nearly half. The jump at potassium is the fourth shell opening: one new shell undoes the whole period’s contraction and more.'
@@ -20841,7 +20841,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             figure: {
               kind: 'graph', x: [10, 140], y: [-250, 220], xlabel: 'molar mass (g/mol)', ylabel: 'boiling point (°C)',
               fns: [
-                { data: true, pts: [[20, -188], [36.5, -85], [80.9, -67], [128, -35]], label: 'HF, HCl, HBr, HI' },
+                { data: true, pts: [[20, 20], [36.5, -85], [80.9, -67], [128, -35]], label: 'HF, HCl, HBr, HI' },
                 { data: true, pts: [[16, -161], [30, -89], [44, -42], [58, -0.5], [72, 36]], label: 'alkanes', dashed: true, c: 1 }
               ],
               caption: 'Boiling point against molar mass for two series. The alkanes rise steadily — nonpolar, so dispersion alone, growing with size. The hydrogen halides do the same from HCl onward, but HF sits far above the line its mass would predict: hydrogen bonding, worth about 100 °C here, and the anomaly that gives the effect away.'
@@ -20917,7 +20917,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             id: 'g2', title: 'Predicting boiling points and the properties of liquids', src: 'Section 11.4',
             idea: `Boiling point is the most direct measure of intermolecular forces there is: it is the temperature at which molecules have enough energy to escape one another. Stronger forces, higher boiling point — and the same argument explains melting point, viscosity and surface tension.<br><br>To compare two substances, work through this in order:<br><br><b>1.</b> If one hydrogen-bonds and the other does not, and their masses are similar, the hydrogen-bonded one boils higher. Usually decisive.<br><b>2.</b> If neither hydrogen-bonds, the polar one boils higher than the nonpolar one of similar mass.<br><b>3.</b> If the forces are of the same kind, the larger molar mass boils higher — more electrons, stronger dispersion.<br><b>4.</b> If mass and forces both match, the more elongated shape boils higher.<br><br>The caution is step 3 overtaking step 1: a nonpolar molecule of much larger mass can beat a small hydrogen-bonded one. Water boils at 100 °C and hexane, nonpolar but 4.8 times heavier, boils at 69 °C — close enough to show it is a real contest.<br><br>Three liquid properties follow from the same forces:<br><br><b>Surface tension</b> — a molecule at the surface has neighbours only below and to the sides, so it is pulled inward. The liquid minimises its surface area, which is why drops are spherical and why a needle can float on water.<br><br><b>Viscosity</b> — resistance to flow, which rises with stronger intermolecular forces and with longer molecules that tangle. Glycerol, with three OH groups per molecule, is about a thousand times more viscous than water.<br><br><b>Capillary action</b> — liquid climbing a narrow tube, from a contest between <b>adhesive</b> forces to the tube and <b>cohesive</b> forces within the liquid. Water wets glass and climbs with a concave meniscus; mercury, whose cohesion is far stronger, is depressed and its meniscus is convex.<br><br>All three rise and fall together, because all three come from the same attraction.`,
             figure: {
-              kind: 'graph', x: [0, 5], y: [-120, 120], xlabel: 'period of the central atom', ylabel: 'boiling point (°C)',
+              kind: 'graph', x: [0, 5], y: [-180, 120], xlabel: 'period of the central atom', ylabel: 'boiling point (°C)',
               fns: [
                 { data: true, pts: [[2, 100], [3, -60], [4, -41], [5, -2]], label: 'H₂O, H₂S, H₂Se, H₂Te' },
                 { data: true, pts: [[2, -161], [3, -112], [4, -88], [5, -52]], label: 'CH₄, SiH₄, GeH₄, SnH₄', dashed: true, c: 1 }
@@ -20927,7 +20927,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             rules: [
               { name: 'What boiling point measures', expr: 'The energy needed to separate the molecules', words: true, note: 'Stronger intermolecular forces, higher boiling point. The same argument gives melting point.' },
               { name: 'The comparison order', expr: 'Hydrogen bonding, then polarity, then mass, then shape', words: true, note: 'Applied in that order, for molecules of comparable size.' },
-              { name: 'When mass wins', expr: 'A much heavier nonpolar molecule can outrank a light hydrogen-bonded one', words: true, note: 'Hexane at 69 C against water at 100 C is the contest in miniature.' },
+              { name: 'When mass wins', expr: 'A much heavier nonpolar molecule can outrank a light hydrogen-bonded one', words: true, note: 'Hexane at 69 °C against water at 100 °C is the contest in miniature.' },
               { name: 'Surface tension', expr: 'The surface is pulled inward, minimising area', words: true, note: 'Which is why drops are spherical and a needle can float.' },
               { name: 'Viscosity', expr: 'Resistance to flow, rising with stronger forces and longer molecules', words: true, note: 'Glycerol has three OH groups and is about a thousand times more viscous than water.' },
               { name: 'Capillary action', expr: 'Adhesion to the tube against cohesion within the liquid', words: true, note: 'Water climbs glass with a concave meniscus; mercury is depressed with a convex one.' }
@@ -21808,7 +21808,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             id: 'b1', title: 'Primary productivity and energy flow', src: 'Section 19.1',
             idea: `Almost all the energy in an ecosystem enters through photosynthesis. <b>Gross primary productivity (GPP)</b> is the total amount of energy the producers fix; but plants respire too, so what is actually available to everything else is<br><br><b>NPP = GPP − R</b><br><br>where R is the energy the producers spend on their own respiration. <b>Net primary productivity</b> is the quantity that matters ecologically: it is the plant growth that herbivores can eat and that accumulates as biomass. Typical units are grams of carbon per square metre per year, or kilojoules per square metre per year.<br><br>NPP varies enormously. Tropical rainforest and estuaries are the most productive systems on Earth — warm, wet and well lit; open ocean and desert are among the least, the first because nutrients are scarce and the second because water is. The open ocean nevertheless contributes a large share of global NPP, because there is a great deal of it.<br><br>Between trophic levels, <b>trophic efficiency</b> is the percentage of one level's energy that becomes biomass at the next:<br><br><b>Efficiency = (energy at level n+1) / (energy at level n) × 100</b><br><br>It averages around 10% and ranges from about 1% to 20%. The missing energy goes three ways: most is lost as heat in respiration, some is in parts never eaten, and the rest passes to decomposers in faeces and dead bodies.<br><br>The consequence is the <b>ecological pyramid</b>. A pyramid of energy always narrows upward — it has to, because energy is lost at every step. A pyramid of biomass usually does, but can be inverted in the ocean, where a small standing crop of fast-growing phytoplankton supports a larger mass of zooplankton by being replaced constantly.<br><br>The organising contrast for the whole unit: <b>energy flows through an ecosystem and is lost as heat; matter cycles within it and is reused</b>. That is why the sun must keep shining but the nitrogen does not need topping up — and it is why the next lesson is about cycles rather than flows.`,
             figure: {
-              kind: 'graph', x: [0, 6], y: [0, 2600], xlabel: 'ecosystem type', ylabel: 'NPP (g C/m² per year)',
+              kind: 'graph', x: [0, 7], y: [0, 2600], xlabel: 'ecosystem type', ylabel: 'NPP (g dry mass/m² per year)',
               fns: [{ data: true, pts: [[1, 2200], [2, 1200], [3, 600], [4, 125], [5, 90]], label: 'net primary productivity' }],
               points: [
                 { x: 1, y: 2200, label: 'rainforest' }, { x: 2, y: 1200, label: 'temperate forest' },
@@ -22258,7 +22258,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             id: 'c1', title: 'Pools, fluxes and the water cycle', src: 'Section 20.1',
             idea: `A <b>biogeochemical cycle</b> is the path an element takes through the living and non-living parts of the Earth. Every one of them is described with the same two words.<br><br>A <b>pool</b> (or reservoir) is a place the element sits — the atmosphere, the ocean, soil, rock, living biomass. A <b>flux</b> is a rate of movement between pools, in mass per unit time. A cycle is a set of pools connected by fluxes, and almost every question about one is really a question about which pool is large, which flux is fast, or which flux has changed.<br><br>The quantity that ties them together is the <b>residence time</b>:<br><br><b>T = S / F</b><br><br>the size of the pool divided by the flux out of it. It is the average time an atom spends there. A large pool with a small outflow gives a long residence time — carbon in deep ocean sediment sits for millions of years; water vapour in the atmosphere averages about nine days.<br><br>Residence time explains why some pools respond quickly to a change and others do not, and it is the single most useful number in the unit.<br><br>Cycles divide into two kinds. A <b>gaseous cycle</b> has a major atmospheric pool — carbon, nitrogen, oxygen, water — so it redistributes globally within years and local disturbances are buffered. A <b>sedimentary cycle</b> has no significant gas phase and moves through rock, soil and water — phosphorus, sulfur, calcium — so it is slow, local, and easily depleted, because what washes into the deep ocean is effectively gone for geological time.<br><br>The <b>water cycle</b> is the simplest to trace: evaporation and transpiration move water up, condensation forms cloud, precipitation brings it down, and runoff, infiltration and groundwater flow return it to the sea. Over land, <b>transpiration by plants</b> is a large share of what goes up — which is why clearing a forest changes local rainfall, and why the water cycle is not purely a physical process.`,
             figure: {
-              kind: 'graph', x: [0, 6], y: [-1, 8], xlabel: 'pool', ylabel: 'log₁₀ residence time (years)',
+              kind: 'graph', x: [0, 6], y: [-2, 8], xlabel: 'pool', ylabel: 'log₁₀ residence time (years)',
               fns: [{ data: true, pts: [[1, -1.6], [2, 0.6], [3, 1.9], [4, 3.6], [5, 6.5]], label: 'log residence time' }],
               points: [
                 { x: 1, y: -1.6, label: 'atmospheric water: 9 days' }, { x: 3, y: 1.9, label: 'surface ocean carbon: decades' },
@@ -33161,7 +33161,12 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
           let score = i * 0.5;                                        // prefer earlier candidates
           if (box.x1 < 2 || box.x2 > W - 2 || box.y1 < 2 || box.y2 > H - 2) score += 1000;
           for (const p of placed) if (hit(box, p)) score += 200;
-          for (const pt of curvePts) if (pt.x >= box.x1 && pt.x <= box.x2 && pt.y >= box.y1 && pt.y <= box.y2) { score += 4; break; }
+          // a label across a curve is legible but ugly; across another label it is not legible at all —
+          // so a curve costs per point covered (capped), a label costs outright (v2.74: was a flat 4, which
+          // let a label sit across a line rather than move two candidates over)
+          let onCurve = 0;
+          for (const pt of curvePts) if (pt.x >= box.x1 - 2 && pt.x <= box.x2 + 2 && pt.y >= box.y1 - 2 && pt.y <= box.y2 + 2 && ++onCurve >= 6) break;
+          score += onCurve * 12;
           if (score < bestScore) { bestScore = score; best = { x, y, anchor: c.anchor, box }; }
           if (bestScore < 0.5) break;
         }
@@ -33195,8 +33200,11 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     parts.push(`<line class="fig-axis" x1="${ay0}" y1="${PAD.t}" x2="${ay0}" y2="${H - PAD.b}"/>`);
     // the axes are named: a cost curve has q across and c up, not x and y
     const xl = spec.xlabel || 'x', yl = spec.ylabel || 'y';
-    parts.push(`<text class="fig-tick" x="${W - PAD.r}" y="${ax0 - 6}" text-anchor="end">${esc(xl)}</text>`);
-    placed.push(boxOf(xl, W - PAD.r, ax0 - 6, 'end'));
+    // v2.74: when the window runs below zero the x-axis crosses the middle of the plot, and its name used
+    // to ride on that line — straight through whatever data sat there. It goes under the tick numbers then.
+    const xly = ax0 < H - PAD.b - 1 ? H - 4 : ax0 - 6;
+    parts.push(`<text class="fig-tick" x="${W - PAD.r}" y="${xly}" text-anchor="end">${esc(xl)}</text>`);
+    placed.push(boxOf(xl, W - PAD.r, xly, 'end'));
     parts.push(`<text class="fig-tick" x="${ay0 + 6}" y="${PAD.t + 10}">${esc(yl)}</text>`);
     placed.push(boxOf(yl, ay0 + 6, PAD.t + 10, 'start'));
     // shaded intervals on the x-axis
@@ -33209,10 +33217,16 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
       if (f.pts) {
         let d = '', prev = null;
         for (const [px, py] of f.pts) {
-          if (!isFinite(px) || !isFinite(py) || px < x0 || px > x1 || py < y0 || py > y1) { prev = null; continue; }
-          d += (prev === null ? 'M' : 'L') + sx(px).toFixed(1) + ' ' + sy(py).toFixed(1) + ' ';
-          curvePts.push({ x: sx(px), y: sy(py) });
-          prev = 1;
+          if (!isFinite(px) || !isFinite(py)) { prev = null; continue; }
+          // v2.74: a data point outside the window used to be dropped without a word — which is how the one
+          // value a figure existed to show (potassium's jump in radius) was missing from the picture
+          if (f.data && (px < x0 || px > x1 || py < y0 || py > y1)) throw new Error(`figure: data point (${px}, ${py}) is outside the window x ${x0}..${x1}, y ${y0}..${y1}`);
+          if (px < x0 || px > x1 || py < y0 || py > y1) { prev = null; continue; }
+          const X = sx(px), Y = sy(py);
+          d += (prev === null ? 'M' : 'L') + X.toFixed(1) + ' ' + Y.toFixed(1) + ' ';
+          if (prev) { const n = Math.ceil(Math.hypot(X - prev.X, Y - prev.Y) / 5); for (let j = 1; j < n; j++) curvePts.push({ x: prev.X + (X - prev.X) * j / n, y: prev.Y + (Y - prev.Y) * j / n }); }
+          curvePts.push({ x: X, y: Y });
+          prev = { X, Y };
         }
         parts.push(`<path class="fig-curve c${f.c !== undefined ? f.c : k % 3}${f.dashed ? ' dashed' : ''}" d="${d.trim()}"/>`);
         return;
@@ -33226,7 +33240,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
         const yc = Math.max(y0 - span, Math.min(y1 + span, y));
         if (prev !== null && Math.abs(yc - prev) > span * 0.9) prev = null;
         d += (prev === null ? 'M' : 'L') + sx(x).toFixed(1) + ' ' + sy(yc).toFixed(1) + ' ';
-        if (yc >= y0 && yc <= y1 && i % 8 === 0) curvePts.push({ x: sx(x), y: sy(yc) });
+        if (yc >= y0 && yc <= y1 && i % 2 === 0) curvePts.push({ x: sx(x), y: sy(yc) });
         prev = yc;
       }
       parts.push(`<path class="fig-curve c${f.c !== undefined ? f.c : k % 3}${f.dashed ? ' dashed' : ''}" d="${d.trim()}"/>`);
@@ -33241,6 +33255,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
       { dx: 0, dy: -r - 22, anchor: 'middle' }, { dx: 0, dy: r + 28, anchor: 'middle' }
     ]);
     for (const p of spec.points || []) {
+      if (p.x < x0 || p.x > x1 || p.y < y0 || p.y > y1) throw new Error(`figure: point (${p.x}, ${p.y}) ${p.label || ''} is outside the window x ${x0}..${x1}, y ${y0}..${y1}`);
       parts.push(`<circle class="fig-pt${p.open ? ' open' : ''}" cx="${sx(p.x)}" cy="${sy(p.y)}" r="4"/>`);
       placed.push({ x1: sx(p.x) - 6, x2: sx(p.x) + 6, y1: sy(p.y) - 6, y2: sy(p.y) + 6 });
       if (p.label) want(p.label, sx(p.x), sy(p.y), around(9, sy(p.y) > H / 2));
@@ -33352,7 +33367,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.73', date: '11 October 2026', year: 2026 };
+  const BUILD = { v: '2.74', date: '21 October 2026', year: 2026 };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonxcorp', ['outlook', 'com'].join('.')].join('@');
   /* The one sentence that says what this is. It appears under the wordmark, and build.js uses
@@ -33365,6 +33380,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      because the person who needs it is the one who just watched the app refresh itself and wants to
      know what moved. Trim the tail when it gets past a dozen; nobody reads further back than that. */
   const WHATS_NEW = [
+    ['2.74', '<b>An audit of every course page, graph and practice question.</b> The most important fix: <b>in course practice the right answer was almost always option A</b>, and ordering questions showed their steps already in order. Choices are now shuffled for every question, so practice tests what you know rather than where the answer sits. Four graphs were missing a data point that fell outside the drawing (potassium on the atomic-radius chart, methane on the hydrides chart, 30 m/s on the kinetic-energy curve and atmospheric water on the residence-time chart) and now show it; the hydrogen-halide chart had HF plotted at \u2212188 \u00b0C instead of +20 \u00b0C, which hid the very anomaly it was drawn to show. Axis names no longer sit on top of the data, and labels keep clear of the curves.'],
     ['2.73', '<b>A suggestion box.</b> Press <b>Suggest an idea</b> \u2014 at the foot of every page, or on the home page \u2014 to ask for a feature, a course, or to say something broke. Only JohnsonXCorp reads it; nothing is posted publicly. Add an email if you want a reply, or leave it empty and the note is anonymous. It sends your words and nothing else: no visit id, nothing from your files.'],
     ['2.72', '<b>A new front page.</b> The home screen now says what UNI Made EZ is in one line, shows a worked example set out the way every lesson sets one out, and puts both ways in \u2014 the courses and your own files \u2014 on buttons in the first screen. The welcome screen shows the whole course library beside the form. Nothing inside the app changed, and nothing about your files did: they still never leave your browser.'],
     ['2.71', '<b>An audit of the whole app, and the ten things it found worth fixing first.</b> The most important one you would never have seen: if this browser\u2019s storage filled up, <b>cards you wrote, your notes and your progress stopped being saved and nothing said so</b>. Now a bar appears, it offers a backup, and it goes away by itself when saving works again. Removing a file is also properly undoable at last &mdash; nothing is deleted from storage while the Undo is on screen, so a second message can no longer quietly take the first removal past recall, and an undo now survives a reload. <b>The header no longer claims &ldquo;Summary &amp; Quiz locked&rdquo;</b>, which nothing has been since v2.27; on a small phone the light/dark switch no longer sits on top of the Sign up button; and the page now shows the wordmark and a progress bar within about a second instead of a blank screen, because half a megabyte of fonts used to load in front of everything else. Four bugs behind the scenes: opening a second subject while the first was still being scanned could paint the first one\u2019s cards into the second one\u2019s page; two batches of PDFs dropped in at once could swap their figures; removing a subject left its review history behind for ever; and an undone removal could leave a file claiming pages it no longer had. On the honesty side, the two Trent science courses now say plainly that a lesson <i>starts</i> at the section it names and takes in the sections around it, the terms of use have been rewritten to list every case in which the page touches the network, and the privacy notice now includes the one that was missing &mdash; a web address you paste is passed to a reader service if the site refuses to be read directly. This release also puts back two changes that were made on the live page and lost when it was rebuilt from an older copy of the source \u2014 the contact address and the footer link are as they were, and are now in the source so they stay.'],
@@ -35280,6 +35296,22 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      as a flash card — without appearing in the subjects index, which belongs to the student. */
   const courseSid = cid => 'course:' + cid;
 
+  /* v2.74 — the order a question shows its choices in. Every course was written with the right
+     option first and the steps of an ordering question already in order, because that is the natural
+     way to write them — and the practice screen showed them exactly as written, so the answer to 277
+     of 278 multiple-choice questions was A, and every "put these back in order" question arrived in
+     order. Found by an audit, not by a student, which is the lucky way round. The data stays as
+     written (the tests and the checker read it that way); only the display is shuffled, with a seed
+     per run so the order holds still while a question is on screen and changes on "Go again". */
+  function seededOrder(seed, n, notIdentity) {
+    let h = 2166136261;
+    for (let i = 0; i < seed.length; i++) { h ^= seed.charCodeAt(i); h = Math.imul(h, 16777619); }
+    const rnd = () => { h = Math.imul(h ^ (h >>> 15), 2246822507); h = Math.imul(h ^ (h >>> 13), 3266489909); h ^= h >>> 16; return (h >>> 0) / 4294967296; };
+    const o = Array.from({ length: n }, (_, i) => i);
+    for (let i = n - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [o[i], o[j]] = [o[j], o[i]]; }
+    if (notIdentity && n > 1 && o.every((v, i) => v === i)) o.push(o.shift());
+    return o;
+  }
   function practiceState() {
     return state.practice || (state.practice = { cid: null, uid: null, i: 0, picked: null, seq: [], done: false, right: 0, wrong: 0 });
   }
@@ -35753,7 +35785,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
   function renderPractice(c, u) {
     const ps = practiceState();
     if (ps.cid !== c.id || ps.uid !== u.id) {
-      Object.assign(ps, { cid: c.id, uid: u.id, i: 0, picked: null, seq: [], done: false, right: 0, wrong: 0, marked: null, tally: {}, results: [], moves: null, ch: null });
+      Object.assign(ps, { cid: c.id, uid: u.id, i: 0, picked: null, seq: [], done: false, right: 0, wrong: 0, marked: null, tally: {}, results: [], moves: null, ch: null, nonce: Math.random().toString(36).slice(2) });
     }
     const isCh = !!ps.ch;
     const items = practiceItems(ps);
@@ -35793,19 +35825,21 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 
     const m = ps.marked;
     let body = '';
+    const shown = (n, strict) => seededOrder(`${ps.nonce || (ps.nonce = Math.random().toString(36).slice(2))}|${c.id}|${ps.i}|${item.id || ''}`, n, strict);
     if (item.kind === 'numeric') {
       body = `<form class="fill-row" data-form="pr-num">
           <input class="input" id="pr-input" name="v" inputmode="decimal" autocomplete="off" placeholder="Your answer" ${m ? 'disabled' : ''} value="${esc(ps.picked || '')}">
           <button class="btn ${m ? '' : 'primary'}" type="submit" ${m ? 'disabled' : ''}>Check</button>
         </form>`;
     } else if (item.kind === 'mc') {
-      body = `<div class="options">${item.options.map((op, oi) => {
+      body = `<div class="options">${shown(item.options.length).map((oi, pos) => {
+        const op = item.options[oi];
         const cls = m ? (op.ok ? ' correct' : (String(ps.picked) === String(oi) ? ' wrong' : '')) : '';
-        return `<button type="button" class="opt${cls}" data-act="pr-mc" data-i="${oi}" ${m ? 'disabled' : ''}><span class="key">${String.fromCharCode(65 + oi)}</span><span>${esc(op.t)}</span></button>`;
+        return `<button type="button" class="opt${cls}" data-act="pr-mc" data-i="${oi}" ${m ? 'disabled' : ''}><span class="key">${String.fromCharCode(65 + pos)}</span><span>${esc(op.t)}</span></button>`;
       }).join('')}</div>`;
     } else if (item.kind === 'order') {
       const chosen = ps.seq || [];
-      const left = item.steps.map((t, i2) => i2).filter(i2 => chosen.indexOf(i2) < 0);
+      const left = shown(item.steps.length, true).filter(i2 => chosen.indexOf(i2) < 0);
       body = `<div class="ordering">
           <ol class="ord-chosen">${chosen.length ? chosen.map(i2 => `<li>${esc(item.steps[i2])}</li>`).join('') : '<li class="empty-slot">Pick the first line</li>'}</ol>
           <div class="ord-pool">${left.map(i2 => `<button type="button" class="opt" data-act="pr-ord" data-i="${i2}" ${m ? 'disabled' : ''}>${esc(item.steps[i2])}</button>`).join('')}</div>
@@ -39841,7 +39875,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
         render(); break; }
       case 'ex-open': { (state.openEx || (state.openEx = {}))[el.dataset.k] = 1; render(); break; }
       case 'ex-close': { if (state.openEx) delete state.openEx[el.dataset.k]; render(); break; }
-      case 'pr-restart': { const ps = practiceState(); Object.assign(ps, { i: 0, picked: null, seq: [], done: false, right: 0, wrong: 0, marked: null, tally: {}, results: [], moves: null }); render(); break; }
+      case 'pr-restart': { const ps = practiceState(); Object.assign(ps, { i: 0, picked: null, seq: [], done: false, right: 0, wrong: 0, marked: null, tally: {}, results: [], moves: null, nonce: Math.random().toString(36).slice(2) }); render(); break; }
       case 'update-later': dismissUpdatePop(); toast('Left as it is. The update button in the top bar takes it whenever you are ready.'); break;
       case 'whats-new': state.modal = { type: 'whatsnew' }; syncModal(); break;
       case 'stats': {
