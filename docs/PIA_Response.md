@@ -1,7 +1,7 @@
 # Privacy Impact Assessment — Vendor Response
 
 **Application:** UNI Made EZ · <https://thepastor.github.io/uni-made-ez/>
-**Vendor / publisher:** JohnsonXCorp (Anndy Johnson), British Columbia, Canada
+**Vendor / publisher:** JohnsonX Labs (Anndy Johnson), British Columbia, Canada
 **Contact:** johnsonxcorp@outlook.com
 **Version assessed:** v2.36, 14 September 2026
 **Prepared for:** Thompson Rivers University — Information Security Office and Privacy and Access
@@ -26,7 +26,7 @@ the Privacy and Access Office.
 Precalculus and Business Law, and (b) turn their own lecture files into flash cards, a summary, a
 key-information list and quizzes, reviewed on a spaced-repetition schedule.
 
-**1.2 Who operates it.** JohnsonXCorp, a sole publisher in British Columbia. No employees, no
+**1.2 Who operates it.** JohnsonX Labs, a sole publisher in British Columbia. No employees, no
 sub-contractors with data access.
 
 **1.3 What TRU would do.** Permit instructors to mention it as an optional study aid. Nothing else.
@@ -179,4 +179,4 @@ change that would alter section 2, 4 or 5, will complete any additional security
 questionnaire in writing, and will answer follow-up questions from the Information Security Office or
 the Privacy and Access Office.
 
-**JohnsonXCorp** · johnsonxcorp@outlook.com · 14 September 2026
+**JohnsonX Labs** · johnsonxcorp@outlook.com · 14 September 2026

@@ -1,7 +1,7 @@
 # Terms of use
 
 **UNI Made EZ** — https://thepastor.github.io/uni-made-ez/
-Published by **JohnsonXCorp**. Last updated 11 October 2026 (v2.73).
+Published by **JohnsonX Labs**. Last updated 2 November 2026 (v2.77).
 
 Using the app means accepting these terms. They are short on purpose, and they
 try to describe what the app actually does rather than what a template says.
@@ -26,7 +26,7 @@ Nothing. It is offered free, as is, and may be changed or withdrawn at any time.
 
 Your files, the text pulled out of them, your cards, your ratings and your
 progress are held in your browser's own storage on the device you are using.
-They are not uploaded, not collected, and not visible to JohnsonXCorp.
+They are not uploaded, not collected, and not visible to JohnsonX Labs.
 
 The page reaches the network in the following cases, and **none of them carries
 your material**:
@@ -37,7 +37,7 @@ your material**:
 | Every time the app is opened, at most once an hour | A random id for this browser, how many times the app has been opened, how many subjects were started, whether you signed up, your device family and your time zone. No IP address is stored, and nothing about your files | The publisher's database, in Canada |
 | Only if you **sign up** | The name and email you type, when you press the button | The publisher's database, in Canada |
 | Only if you set a subject to **Other** and answer the optional question | The subject name you type, up to 40 characters, with nothing beside it — no id, no time, nothing that could link it to you | The publisher's database, in Canada |
-| Only if you press **Send it** in the suggestion box | The kind of note, your words, the app version, and an email only if you typed one. No id, nothing from your files. Read only by JohnsonXCorp | The publisher's database, in Canada |
+| Only if you press **Send it** in the suggestion box | The kind of note, your words, the app version, and an email only if you typed one. No id, nothing from your files. Read only by JohnsonX Labs | The publisher's database, in Canada |
 | Only if you paste a **web address** to read | That address only | Wikipedia's API for a Wikipedia article; otherwise the site itself, and if it refuses, the r.jina.ai reader service |
 | Only if you use the **scan reader** the first time | Nothing — it downloads the reader (~15 MB) | cdnjs, jsDelivr, tessdata.projectnaptha.com |
 | Only if you use **Dictate** | The audio of your voice, only after you say yes to the dialog | Your browser's own speech service |
@@ -68,7 +68,7 @@ added to any list you cannot leave. Ask and they are deleted, within 30 days.
 
 ## 4a. The suggestion box
 
-The **Suggest an idea** button sends a note to JohnsonXCorp and to nobody else —
+The **Suggest an idea** button sends a note to JohnsonX Labs and to nobody else —
 nothing is published. Please do not put anything in a note you would not want
 the publisher to read, and do not use it to send course material. An email is
 optional; add one only if you want a reply. Ideas you send may be used to
@@ -97,7 +97,7 @@ is promised. Anything you submit for credit is your responsibility, including
 compliance with your institution's academic-integrity rules.
 
 The app is provided **as is**, without warranty of any kind. To the extent the
-law allows, JohnsonXCorp is not liable for any loss arising from its use,
+law allows, JohnsonX Labs is not liable for any loss arising from its use,
 including lost study data.
 
 ## 6. Use your own material
@@ -114,7 +114,7 @@ makes from your material — but do not republish it, rehost it, sell it, strip
 its notices, or build another product out of it. The full terms are in
 [LICENSE](LICENSE), and they govern if the two ever disagree.
 
-"UNI Made EZ", "JohnsonXCorp" and the JohnsonXCorp wordmark identify this
+"UNI Made EZ", "JohnsonX Labs" and the JohnsonX Labs wordmark identify this
 publisher's work. Do not use them for anything else.
 
 ## 8. Third-party components

@@ -51,7 +51,7 @@ Built to WCAG 2.1 AA and tested for it. Text size (Normal / Large / Larger), a *
 
 Your course files never leave your device — reading them, building the cards and marking the quiz all happen in your browser, and the whole app is one HTML file. Subjects, progress and notes live in your browser's local storage, so they stay on the device you used and clearing site data removes them.
 
-Two things do leave, and it is better to say so than to claim a clean sweep. The app counts how many people open it, using a random id generated in your browser that is tied to nothing about you — no account, no fingerprint, no advertising network, and never anything from your files. And if you sign up to unlock Summary and Quiz, the name and email you type go to JohnsonXCorp, and are used for nothing else. Nobody, including the owner, can read your files, cards, answers or progress.
+Two things do leave, and it is better to say so than to claim a clean sweep. The app counts how many people open it, using a random id generated in your browser that is tied to nothing about you — no account, no fingerprint, no advertising network, and never anything from your files. And if you sign up to unlock Summary and Quiz, the name and email you type go to JohnsonX Labs, and are used for nothing else. Nobody, including the owner, can read your files, cards, answers or progress.
 
 **Sign-ups:** Summary and Quiz ask for a name and email once. The page then opens a pre-filled email in your own mail app for you to send — the page cannot send anything itself.
 
@@ -67,11 +67,11 @@ The footer of every page shows the build — `v2.9 · 4 September 2026` — so y
 
 ## Who made it
 
-Built by **Johnson[X]Corp**. The logo and the build stamp sit in the footer of every page.
+Built by **Johnson[X] Labs**. The logo and the build stamp sit in the footer of every page.
 
 ## Licence — this is not open source
 
-**Copyright © 2026 JohnsonXCorp. All rights reserved.**
+**Copyright © 2026 Anndy Johnson, operating as JohnsonX Labs. All rights reserved.**
 
 The repository is public so the app can be served from GitHub Pages, and so that anyone can check for themselves what the page does with their files — that verifiability is the point of a study tool that promises nothing leaves your device. It is **not** published for reuse.
 

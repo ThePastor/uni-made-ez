@@ -1,6 +1,6 @@
 # Privacy Notice — UNI Made EZ
 
-**Publisher:** JohnsonXCorp, British Columbia, Canada
+**Publisher:** JohnsonX Labs, British Columbia, Canada
 **Application:** UNI Made EZ — <https://thepastor.github.io/uni-made-ez/>
 **Version this notice describes:** v2.73, 11 October 2026
 **Privacy contact:** johnsonxcorp@outlook.com
@@ -149,7 +149,7 @@ while it is open, and nothing at all if it is closed. Pressing **Send it** sends
 - **Free text can contain anything.** The form tells the student plainly that it is read by the
   publisher, so they can leave out what they would not want read. The publisher does not publish,
   quote or share notes.
-- **Who reads it:** only JohnsonXCorp, signed in to the database. The key in the page can add a note
+- **Who reads it:** only JohnsonX Labs, signed in to the database. The key in the page can add a note
   through a database function and **cannot read one back** — the table has no read permission for
   it at all. The owner's panel in the app shows counts only.
 - **Checked twice.** Length, kind and email format are checked in the page and again by the database
@@ -193,7 +193,7 @@ the publisher.
 - **Verified, not assumed.** Tested against the live database by attempting to read, alter and
   delete the rows using the key that ships in the page, and being refused each time. A
   configuration screen saying the right thing is not evidence; a refused read is.
-- **Who can read personal information:** JohnsonXCorp, authenticated to that database. Nobody else.
+- **Who can read personal information:** JohnsonX Labs, authenticated to that database. Nobody else.
 - **Sub-processor:** Supabase Inc. (database hosting). GitHub, Inc. serves the static page and
   receives ordinary web-server request logs as any web host does; it receives no application data.
 - **Not a sub-processor, but named for completeness:** Wikimedia Foundation and Jina AI

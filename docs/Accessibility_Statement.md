@@ -1,6 +1,6 @@
 # Accessibility Statement — UNI Made EZ
 
-**Publisher:** JohnsonXCorp, British Columbia, Canada
+**Publisher:** JohnsonX Labs, British Columbia, Canada
 **Application:** UNI Made EZ — <https://thepastor.github.io/uni-made-ez/>
 **Version:** v2.27, 14 September 2026
 **Standard targeted:** WCAG 2.1 Level AA, with Level AAA contrast for body text

@@ -8,7 +8,7 @@ First published 31 August 2026 as build v1.0.
 
 Every page shows the build in its footer, bottom right:
 
-> BUILT BY  **Johnson[X]Corp**  **V1.9 · 1 SEPTEMBER 2026**
+> BUILT BY  **Johnson[X] Labs**  **V1.9 · 1 SEPTEMBER 2026**
 
 That is the way to confirm an upload actually landed. If it still shows the old
 version after uploading, it's your browser's cache — reload with `Cmd Shift R`.

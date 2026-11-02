@@ -1,7 +1,7 @@
 # UNI Made EZ — Submission to the Thompson Rivers University Board
 
 **Application:** UNI Made EZ · <https://thepastor.github.io/uni-made-ez/>
-**Publisher:** JohnsonXCorp (Anndy Johnson), British Columbia
+**Publisher:** JohnsonX Labs (Anndy Johnson), British Columbia
 **Version reviewed:** v2.36, 14 September 2026
 **Request:** that TRU permit instructors to recommend UNI Made EZ to students as an optional study
 companion.
