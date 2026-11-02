@@ -47388,11 +47388,11 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
   function status() {
     const s = LS.get();
     return { voice: !!s.voice, llm: !!s.llm, voiceReady: !!(tts || (test && test.tts)), llmReady: !!(llm || (test && test.llm)), voiceName: s.voiceName || CFG.voice.voices[0], gpu: gpuInfo, loading: !!loading,
-      voiceDevice: voiceDev || s.voiceDevice || (s.voice ? 'wasm' : null), quick: !!s.quick, slow: rtf != null && rtf > 1.05, rtf };
+      voiceDevice: voiceDev || s.voiceDevice || (s.voice ? 'wasm' : null), mode: modeOf(s),  sysVoice: s.sysVoice || null, quick: !natural(s), slow: knownRtf(s) != null && knownRtf(s) > 1.05, rtf: knownRtf(s) };
   }
 
   let voiceLoading = null;
-  let voiceDev = null, rtf = null;
+  let voiceDev = null, rtf = null, rtfN = 0;
   async function loadVoice(onProgress, want) {
     if (test && test.tts) return test.tts;
     if (tts) return tts;
@@ -47411,10 +47411,16 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
         await vCall({ type: 'load', model: CFG.voice.id, dtype: CFG.voice.dtype, device: 'wasm' }, prog);
       }
       voiceDev = used;
-      tts = { generate: (text, o) => vCall({ type: 'gen', text, voice: o.voice, epoch: o.epoch || epoch }).then(r => {
+      tts = { generate: (text, o) => vCall({ type: 'gen', text, voice: o.voice, epoch: o.epoch || wEpoch }).then(r => {
         if (r.skipped) return null;
         // how long making it took against how long it lasts: above 1, the voice cannot keep up
-        if (r.ms && r.audio && r.audio.length > 2400) { const k = r.ms / (r.audio.length / r.sr * 1000); rtf = rtf == null ? k : rtf * 0.6 + k * 0.4; }
+        if (r.ms && r.audio && r.audio.length > 2400) {
+          const k = r.ms / (r.audio.length / r.sr * 1000);
+          rtfN++;
+          // the very first run warms the model up and is slow on every device; judge from the rest
+          if (rtfN > 1 || rtf == null) rtf = rtf == null || rtfN === 2 ? k : rtf * 0.6 + k * 0.4;
+          if (rtfN > 1) { const st = LS.get(); st.rtf = Math.round(rtf * 100) / 100; st.rtfDev = voiceDev; LS.set(st); }
+        }
         return { audio: r.audio, sampling_rate: r.sr };
       }) };
       return tts;
@@ -47473,10 +47479,29 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     return freed;
   }
 
-  /* ---- speaking: the neural voice when it is installed, the browser's own voice otherwise ----
-     Text is spoken a sentence or two at a time: the first piece is short so the voice starts
-     quickly, and the next piece is made while the current one plays. Kokoro also cannot take
-     more than about 500 sound units at once, which a long paragraph exceeds. */
+  /* ---- speaking ----
+     Two voices. The NATURAL voice (Kokoro, downloaded) sounds best but is made on this device, and
+     on some computers it is made more slowly than it is spoken — then it has to stop and wait
+     between sentences, which is what students heard in v2.78–v2.80. The DEVICE voice is the one
+     built into the operating system: it starts at once and reads a whole box in one flow, pausing
+     only where the punctuation does. "Automatic" (the default) uses the natural voice only on a
+     device measured fast enough to keep up, and the device voice everywhere else.
+     The device voice is ALWAYS one stored on this device (localService): Chrome also lists online
+     voices ("Google US English"), and those send the text to Google, so they are never used. */
+  const modeOf = s => s.mode || (s.quick ? 'device' : 'auto');
+  const knownRtf = s => rtf != null ? rtf : (s.rtf != null && (!s.rtfDev || s.rtfDev === (voiceDev || s.voiceDevice || 'wasm')) ? s.rtf : null);
+  const FAST_ENOUGH = 0.75;   // made in under three-quarters of the time it takes to say
+  function natural(s) {
+    s = s || LS.get();
+    if (test && test.tts) return modeOf(s) !== 'device';
+    if (!s.voice) return false;
+    const m = modeOf(s);
+    if (m === 'device') return false;
+    if (m === 'natural') return true;
+    const k = knownRtf(s);
+    return k == null || k <= FAST_ENOUGH;
+  }
+
   function chunks(text) {
     const sents = String(text).split(/(?<=[.!?;:])\s+/);   // a full stop inside 1.1 or 3.14 is not a sentence end
     const out = []; let cur = '';
@@ -47489,70 +47514,115 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     if (cur) out.push(cur);
     return out.filter(Boolean);
   }
-  let ac = null, playing = null;
+
+  /* the device's own voices, best first */
+  function deviceVoices() {
+    try {
+      const all = (root.speechSynthesis && speechSynthesis.getVoices()) || [];
+      const local = all.filter(v => v.localService);
+      const en = local.filter(v => /^en/i.test(v.lang));
+      const rank = v => (/premium/i.test(v.name) ? 40 : /enhanced|siri|neural|natural/i.test(v.name) ? 30 : /samantha|ava|allison|daniel|karen|moira|tessa|serena|alex|evan|nathan|zoe|aaron|nicky|microsoft (aria|jenny|guy)/i.test(v.name) ? 20 : 0) + (/en[-_]us/i.test(v.lang) ? 2 : 0) + (v.default ? 1 : 0);
+      return (en.length ? en : local).slice().sort((a, b) => rank(b) - rank(a));
+    } catch (e) { return []; }
+  }
+  try { if (root.speechSynthesis) { speechSynthesis.getVoices(); speechSynthesis.addEventListener && speechSynthesis.addEventListener('voiceschanged', () => {}); } } catch (e) { /* ignore */ }
+  function deviceVoice() {
+    const vs = deviceVoices(); const want = LS.get().sysVoice;
+    return vs.find(v => v.name === want) || vs[0] || null;
+  }
+  // a whole box in one flow: every sentence is queued at once, so the voice runs straight on
+  function deviceSay(text, rate, my) {
+    return new Promise(resolve => {
+      let finished = false; const fin = () => { if (!finished) { finished = true; resolve(); } };
+      const ss = root.speechSynthesis;
+      if (!ss || !root.SpeechSynthesisUtterance) return setTimeout(fin, 400);
+      const v = deviceVoice();
+      const all = ss.getVoices ? ss.getVoices() : [];
+      if (!v && all.length) return setTimeout(fin, 400);   // only online voices here: say nothing rather than send the text away
+      // sentences, not one long utterance: Chrome can cut a single utterance off after ~15 seconds
+      const sents = String(text).split(/(?<=[.!?])\s+/).filter(x => x.trim());
+      let left = sents.length || 1;
+      const words = String(text).split(/\s+/).length;
+      for (const t of (sents.length ? sents : [String(text)])) {
+        const u = new SpeechSynthesisUtterance(t);
+        u.rate = rate || 1; if (v) { u.voice = v; u.lang = v.lang; }
+        u.onend = u.onerror = () => { if (--left <= 0) fin(); };
+        try { ss.speak(u); } catch (e) { fin(); }
+      }
+      // a browser with no voices at all never fires onend; move on after a generous reading time
+      setTimeout(fin, (all.length ? 4000 + words * 900 : 1500 + words * 450) / (rate || 1));
+      const poll = setInterval(() => { if (my !== epoch) { clearInterval(poll); fin(); } else if (finished) clearInterval(poll); }, 200);
+    });
+  }
+
+  let ac = null;
+  const sched = new Set();
   const warmed = new Map();   // chunk text → a generation already under way
+  let wEpoch = 1;   // the worker's own count: dropping its queue must not cancel what is playing
   function stopAudio() {
-    epoch++; warmed.clear();
-    try { if (vw) vw.postMessage({ type: 'epoch', epoch }); } catch (e) { /* ignore */ }
-    if (playing) { try { playing.onended = null; playing.stop(); } catch (e) { /* ignore */ } const p = playing; playing = null; if (p._done) p._done(); }
+    epoch++; wEpoch++; warmed.clear();
+    try { if (vw) vw.postMessage({ type: 'epoch', epoch: wEpoch }); } catch (e) { /* ignore */ }
+    for (const src of sched) { try { src.onended = null; src.stop(); } catch (e) { /* ignore */ } }
+    sched.clear();
     try { if (root.speechSynthesis) speechSynthesis.cancel(); } catch (e) { /* ignore */ }
   }
   function genChunk(t, text) {
     const voice = LS.get().voiceName || CFG.voice.voices[0];
     const key = voice + '|' + text;
     if (warmed.has(key)) { const p = warmed.get(key); warmed.delete(key); return p; }
-    return Promise.resolve(t.generate(text, { voice, epoch })).catch(() => null);
+    return Promise.resolve(t.generate(text, { voice, epoch: wEpoch })).catch(() => null);
   }
   function warm(t, text) {
     const c = chunks(text)[0]; if (!c) return;
     const voice = LS.get().voiceName || CFG.voice.voices[0];
     const key = voice + '|' + c;
-    if (!warmed.has(key)) warmed.set(key, Promise.resolve(t.generate(c, { voice, epoch })).catch(() => null));
+    if (!warmed.has(key)) warmed.set(key, Promise.resolve(t.generate(c, { voice, epoch: wEpoch })).catch(() => null));
   }
-  function playBuf(audio, rate) {
-    return new Promise(resolve => {
-      ac = ac || new (root.AudioContext || root.webkitAudioContext)();
-      if (ac.state === 'suspended') ac.resume().catch(() => {});
-      const buf = ac.createBuffer(1, audio.audio.length, audio.sampling_rate);
-      buf.copyToChannel(audio.audio, 0);
-      const src = ac.createBufferSource(); src.buffer = buf; src.playbackRate.value = rate || 1; src.connect(ac.destination);
-      src._done = resolve;
-      src.onended = () => { if (playing === src) playing = null; resolve(); };
-      playing = src; src.start();
-    });
+  // pieces are scheduled end to end on the audio clock, so there is no gap between them
+  function schedule(audio, rate, at) {
+    ac = ac || new (root.AudioContext || root.webkitAudioContext)();
+    if (ac.state === 'suspended') ac.resume().catch(() => {});
+    const buf = ac.createBuffer(1, audio.audio.length, audio.sampling_rate);
+    buf.copyToChannel(audio.audio, 0);
+    const src = ac.createBufferSource(); src.buffer = buf; src.playbackRate.value = rate || 1; src.connect(ac.destination);
+    const start = Math.max(ac.currentTime + 0.03, at || 0);
+    src.onended = () => sched.delete(src);
+    sched.add(src); src.start(start);
+    return start + buf.duration / (rate || 1);
   }
+  const untilClock = (end, my) => new Promise(res => { const tick = () => { if (my !== epoch || !ac || ac.currentTime >= end - 0.02) res(); else setTimeout(tick, Math.min(250, Math.max(20, (end - ac.currentTime) * 1000 - 20))); }; tick(); });
+
   async function sayOnce(text, rate, next) {
     const my = epoch;
+    const s = LS.get();
     let t = (test && test.tts) || null;
-    if (!t && LS.get().voice && !LS.get().quick) t = await loadVoice().catch(() => null);
+    if (!t && natural(s)) t = await loadVoice().catch(() => null);
     if (my !== epoch) return;
-    if (t && t.generate) {
+    if (t && t.generate && natural()) {
       const parts = chunks(text);
-      let pending = genChunk(t, parts[0]);
-      let spoke = false;
+      // every piece of the box is queued at once; the worker makes them in order while they play
+      const gens = parts.map(p => genChunk(t, p));
+      let end = 0;
       for (let i = 0; i < parts.length; i++) {
-        const audio = await pending;
+        const audio = await gens[i];
         if (my !== epoch) return;
-        // start making the next piece (or the next segment's first piece) while this one plays
-        if (i + 1 < parts.length) pending = genChunk(t, parts[i + 1]);
-        else if (next) warm(t, next);
-        if (!audio || !audio.audio) continue;
-        spoke = true;
-        await playBuf(audio, rate);
-        if (my !== epoch) return;
+        if (i === parts.length - 1 && next) warm(t, next);
+        if (audio && audio.audio) end = schedule(audio, rate, end);
+        // measured too slow to keep up (automatic mode): the device voice reads the rest of the box
+        if (i < parts.length - 1 && !natural()) {
+          stopWorkerQueue();
+          try { root.dispatchEvent(new Event('tutor:voice')); } catch (e) { /* ignore */ }
+          await untilClock(end, my); if (my !== epoch) return;
+          return deviceSay(parts.slice(i + 1).join(' '), rate, my);
+        }
       }
-      if (spoke || parts.length) return;
+      await untilClock(end, my);
+      return;
     }
-    return new Promise(resolve => {
-      const done = () => resolve();
-      if (root.speechSynthesis && root.SpeechSynthesisUtterance) {
-        const u = new SpeechSynthesisUtterance(text); u.rate = rate || 1; u.onend = u.onerror = done;
-        try { speechSynthesis.speak(u); } catch (e) { done(); }
-        // a browser with no voices installed never fires onend — move on after a reading-time estimate
-        setTimeout(done, 1500 + text.split(/\s+/).length * 450 / (rate || 1));
-      } else setTimeout(done, 400);
-    });
+    return deviceSay(text, rate, my);
   }
+  // drop the pieces still queued in the worker (the device voice is taking over)
+  function stopWorkerQueue() { wEpoch++; warmed.clear(); try { if (vw) vw.postMessage({ type: 'epoch', epoch: wEpoch }); } catch (e) { /* ignore */ } }
   /* A player over a list of segments: play, pause, back, next, stop, speed. The page listens for
      onSeg to highlight what is being read. */
   function player(segs, { onSeg, onEnd, rate } = {}) {
@@ -47594,8 +47664,10 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     return { mode: 'model', text: text.trim(), hits, check: verify(text, hits) };
   }
 
-  function setQuick(v) { const s = LS.get(); s.quick = !!v; LS.set(s); }
-  root.Tutor = { core, CFG, check, status, install, ready, remove, player, ask, say: sayOnce, stop: stopAudio, setQuick, _test: t => { test = t; if (vw) { try { vw.terminate(); } catch (e) { /* ignore */ } vw = null; tts = null; } }, _chunks: chunks };
+  function setQuick(v) { setMode(v ? 'device' : 'auto'); }
+  function setMode(m) { const s = LS.get(); s.mode = m; delete s.quick; LS.set(s); }
+  function setDeviceVoice(name) { const s = LS.get(); s.sysVoice = name; LS.set(s); }
+  root.Tutor = { core, CFG, check, status, install, ready, remove, player, ask, say: sayOnce, stop: stopAudio, setQuick, setMode, setDeviceVoice, deviceVoices: () => deviceVoices().map(v => ({ name: v.name, lang: v.lang })), _test: t => { test = t; rtf = null; rtfN = 0; if (vw) { try { vw.terminate(); } catch (e) { /* ignore */ } vw = null; tts = null; } }, _chunks: chunks };
   if (typeof module !== 'undefined' && module.exports) module.exports = root.Tutor;
 })(typeof window !== 'undefined' ? window : globalThis);
 
@@ -47608,7 +47680,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.80', date: '2 November 2026', year: 2026 };
+  const BUILD = { v: '2.81', date: '2 November 2026', year: 2026 };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonxcorp', ['outlook', 'com'].join('.')].join('@');
   /* The one sentence that says what this is. It appears under the wordmark, and build.js uses
@@ -47621,6 +47693,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      because the person who needs it is the one who just watched the app refresh itself and wants to
      know what moved. Trim the tail when it gets past a dozen; nobody reads further back than that. */
   const WHATS_NEW = [
+    ['2.81', '<b>The tutor reads each box straight through.</b> A box is now read as one passage, pausing only where its commas and full stops are. On a computer that makes the natural voice more slowly than it speaks \u2014 which caused the long waits and the stops between sentences \u2014 the tutor now reads with the computer\u2019s own built-in voice, which starts at once and never stalls; it measures this by itself. Where the natural voice keeps up, its sentences now play back to back with no gaps. You can choose on the Voice tutor page: Automatic, always the natural voice, or always the device voice, and which device voice. Only voices stored on your device are used, never online ones.'],
     ['2.80', '<b>Have one part of a lesson read aloud.</b> Every box in a lesson now has a speaker button \u2014 the explanation, In real life, the memory hook, Don\u2019t mix these up, the rules, each worked example, the common mistakes and Check yourself \u2014 so you can hear just that part, and it starts almost at once. <b>A faster voice:</b> on a device with a graphics chip the browser can use (most recent laptops), the voice now runs there, several times faster than on the processor, so it no longer pauses between sentences; if you installed it before, the Voice tutor page offers the switch (about 330 MB, once). The voice also starts waking up as soon as you open a chapter, and if a device is still too slow, the player offers the quick voice (your browser\u2019s own), which never pauses.'],
     ['2.79', '<b>The voice tutor no longer freezes the page.</b> With the voice installed, the page stopped responding after the first line of a lesson: the voice was being made on the same thread as the page, a whole paragraph at a time. It now runs in the background, speaks a sentence or two at a time and prepares the next while one plays, so it starts sooner and the page stays usable \u2014 pause, skip and scrolling all work while it talks. The answer model runs in the background the same way.'],
     ['2.78', '<b>A private voice tutor.</b> Press <b>Teach me this lesson</b> (or the whole chapter) and a tutor reads the lesson aloud in teaching order \u2014 the idea, a real-life example, the memory hook, every worked example step by step, then the check-yourself questions with a pause to think \u2014 while the page highlights what it is reading. <b>Ask the tutor</b> on any course page answers questions from that course\u2019s own text only, with links to the lessons it used, and refuses anything the course does not cover. Set it up once under <b>Voice tutor</b>: a natural voice (about 90 MB) and, on devices with WebGPU, a small answer model (about 900 MB). After that one download it runs entirely on your device, offline; your questions and the audio are never sent anywhere. Without it, your browser\u2019s own voice reads the lessons and questions are answered by quoting the course. <b>A new course: PSYC 1110 Introduction to Psychology</b> \u2014 Topics 2 to 5 (history, the science of psychology, biological foundations, learning) as 52 lessons, 233 practice questions and 149 flash cards. It brings a richer way to learn that the other courses will adopt as they are rebuilt: every lesson has an <b>In real life</b> example, a <b>memory hook</b>, the pairs students mix up under <b>Don\u2019t mix these up</b>, and <b>Check yourself</b> questions with the answer one tap away. You can <b>mark a lesson as understood</b> and see it ticked in the contents list. Each chapter\u2019s one-page sheet now carries its key points, comparison tables and <b>exam traps</b> (the myth beside the truth), and every question has a <b>Go deeper</b> note on the idea behind it and why the tempting wrong answer is wrong. <b>Every course now has three study tools</b> on its page: <b>Flash cards</b> built from its chapters (Still learning brings a card back a few cards later; Got it clears it), a <b>Mock exam</b> (choose chapters and length, timed at 75 seconds a question, flag and jump between questions, marked only when you submit, with a score per chapter and a full review), and <b>Mistakes</b> \u2014 every question you have missed anywhere, until you get it right.'],
@@ -50357,8 +50430,8 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     if (!bar) { bar = document.createElement('div'); bar.id = 'tutor-bar'; bar.setAttribute('role', 'region'); bar.setAttribute('aria-label', 'Voice tutor'); document.body.appendChild(bar); }
     const p = t.player, seg = p.segs[p.i] || {};
     const st = Tutor.status();
-    const vlab = !st.voice || st.quick ? ' &middot; quick voice' : st.voiceReady ? '' : ' &middot; starting the voice&hellip;';
-    const slow = st.voice && !st.quick && st.slow ? `<span class="tb-slow small">This device makes the natural voice more slowly than it speaks, so it pauses. <button type="button" class="link-btn" data-act="teach-quick" data-v="1">Use the quick voice</button>${st.gpu && st.gpu.webgpu && st.voiceDevice !== 'webgpu' ? ` or <a href="#/tutor">make it faster</a>` : ''}</span>` : '';
+    const vlab = st.quick ? ' &middot; device voice' : st.voiceReady ? ' &middot; natural voice' : ' &middot; starting the voice&hellip;';
+    const slow = st.voice && st.mode === 'natural' && st.slow ? `<span class="tb-slow small">This device makes the natural voice more slowly than it speaks, so it pauses. <button type="button" class="link-btn" data-act="teach-quick" data-v="1">Use the device voice</button>${st.gpu && st.gpu.webgpu && st.voiceDevice !== 'webgpu' ? ` or <a href="#/tutor">make it faster</a>` : ''}</span>` : '';
     bar.innerHTML = `<div class="tb-text"><span class="label">${esc(t.title)} &middot; ${p.i + 1} / ${p.segs.length}${vlab}</span><span class="tb-line">${esc(seg.text || '')}</span>${slow}</div>
       <div class="tb-ctl">
         <button type="button" class="btn sm" data-act="teach-ctl" data-v="back" aria-label="Back one part">&larr;</button>
@@ -50377,6 +50450,12 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
       for (const s of Tutor.core.lessonScript(c, u, u.lessons[li], `${u.n}.${li + 1}`)) if (!block || s.block === block) segs.push({ ...s, lid });
     }
     if (!segs.length) return;
+    // one box is read as one passage: its parts are joined so the voice runs straight through,
+    // pausing only at its punctuation (a check-yourself question still waits before its answer)
+    for (let i = segs.length - 1; i > 0; i--) {
+      const a = segs[i - 1], b = segs[i];
+      if (a.lid === b.lid && a.block === b.block && !a.pause) { a.text = a.text + ' ' + b.text; a.pause = b.pause; segs.splice(i, 1); }
+    }
     const l0 = u.lessons.find(l => l.id === lids[0]);
     const title = lids.length > 1 ? `${chapName(c, u)}: ${u.title}` : block ? `${l0.title} · ${/^ex\d+$/.test(block) ? `worked example ${+block.slice(2) + 1}` : BLOCK_NAME[block]}` : l0.title;
     const p = Tutor.player(segs, { onSeg: (i, seg) => { teachHighlight(seg); teachBar(); sayBtnState(); }, onEnd: () => { teachBar(); sayBtnState(); } });
@@ -50386,6 +50465,8 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     // the voice wakes up from this device's storage on first use; refresh the bar when it is ready
     if (Tutor.status().voice && !Tutor.status().voiceReady) Tutor.ready('voice').then(() => { if (state.teach && state.teach.player === p) teachBar(); });
   }
+  // the tutor switched voices in the middle of a box (the natural one could not keep up)
+  if (typeof window !== 'undefined') window.addEventListener('tutor:voice', () => { if (state.teach) teachBar(); });
   function stopTeach() { if (state.teach) { state.teach.player.stop(); state.teach = null; } teachBar(); sayBtnState(); }
   // light the speaker of the box being read, without re-rendering the page
   function sayBtnState() {
@@ -50401,6 +50482,18 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     return st.voice || st.llm ? `<span class="tutor-state on">Voice tutor installed${st.llm ? ' with answers' : ''}</span>` : `<a class="tutor-state" href="#/tutor">Set up the private voice tutor <span class="arr">&rarr;</span></a>`;
   }
 
+  function voiceChoice(st) {
+    const dv = Tutor.deviceVoices();
+    const mode = st.mode || 'auto';
+    const fast = st.rtf != null ? (st.rtf <= 0.75 ? ` On this device it keeps up (measured ${st.rtf}× the time it takes to say).` : ` On this device it is made more slowly than it is spoken (measured ${st.rtf}×), so Automatic uses the device voice.`) : '';
+    return `<div class="field"><label for="tv-mode">Reading voice</label><select class="input" id="tv-mode" data-chg="tutor-mode">
+        <option value="auto"${mode === 'auto' ? ' selected' : ''}>Automatic — the natural voice if this device keeps up, otherwise the device voice</option>
+        <option value="natural"${mode === 'natural' ? ' selected' : ''}>Always the natural voice</option>
+        <option value="device"${mode === 'device' ? ' selected' : ''}>Always the device voice (starts at once, never pauses)</option>
+      </select><p class="small muted">${esc(fast)}</p></div>
+      ${dv.length ? `<div class="field"><label for="tv-sys">Device voice</label><select class="input" id="tv-sys" data-chg="tutor-sysvoice">${dv.map(v => `<option value="${esc(v.name)}"${(st.sysVoice || dv[0].name) === v.name ? ' selected' : ''}>${esc(v.name)} (${esc(v.lang)})</option>`).join('')}</select><p class="small muted">Voices stored on this device only — online voices are never used, because they send the text away. On a Mac, more natural voices can be added in System Settings &rarr; Accessibility &rarr; Spoken Content &rarr; System voice &rarr; Manage Voices (choose an “Enhanced” or “Premium” voice).</p></div>` : ''}
+      <button type="button" class="btn sm" data-act="tutor-sample">Hear a sample</button>`;
+  }
   function renderTutorSetup() {
     const st = Tutor.status();
     const ui = state.tutorUi || (state.tutorUi = { gpu: null, busy: false, prog: {}, err: null });
@@ -50423,7 +50516,8 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
               <p class="small">Reads every lesson, worked example and check-yourself question aloud, with the page following along. Works on almost any recent laptop or phone. Without it, your browser's built-in voice is used.</p>
               ${st.voice ? `<p class="ok-line">Installed on this device${st.voiceDevice === 'webgpu' ? ', running on the graphics chip (fast)' : ', running on the processor'}.</p>
               ${g && g.webgpu && st.voiceDevice !== 'webgpu' ? `<p class="small">This device has a graphics chip the browser can use. Running the voice there makes it several times faster, so it starts sooner and does not pause between sentences.</p><button type="button" class="btn sm primary" data-act="tutor-install" data-v="voice-gpu"${ui.busy ? ' disabled' : ''}>Make the voice faster (about ${Tutor.CFG.voice.gpu.mb} MB, once)</button>` : ''}
-              <label class="check-row"><input type="checkbox" data-chg="tutor-quick"${st.quick ? ' checked' : ''}> Use the quick voice instead (your browser's own voice: instant, less natural)</label><div class="field"><label for="tv-voice">Voice</label><select class="input" id="tv-voice" data-chg="tutor-voice">${Tutor.CFG.voice.voices.map(v => `<option value="${v}"${st.voiceName === v ? ' selected' : ''}>${({ af_heart: 'Heart (US)', af_bella: 'Bella (US)', am_michael: 'Michael (US)', bf_emma: 'Emma (UK)', bm_george: 'George (UK)' })[v]}</option>`).join('')}</select></div><button type="button" class="btn sm" data-act="tutor-sample">Hear a sample</button>` : ''}
+              ${voiceChoice(st)}<div class="field"><label for="tv-voice">Voice</label><select class="input" id="tv-voice" data-chg="tutor-voice">${Tutor.CFG.voice.voices.map(v => `<option value="${v}"${st.voiceName === v ? ' selected' : ''}>${({ af_heart: 'Heart (US)', af_bella: 'Bella (US)', am_michael: 'Michael (US)', bf_emma: 'Emma (UK)', bm_george: 'George (UK)' })[v]}</option>`).join('')}</select></div>` : ''}
+              ${!st.voice ? voiceChoice(st) : ''}
               ${bar('voice', 'Downloading the voice')}
             </div>
             <div class="tpart${st.llm ? ' done' : ''}">
@@ -54661,7 +54755,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
       case 'teach-ctl': { const t = state.teach; if (!t) break; const v = el.dataset.v; if (v === 'pause') t.player.pause(); else if (v === 'play') t.player.play(); else if (v === 'back') t.player.jump(-1); else if (v === 'next') t.player.jump(1); else if (v === 'stop') { stopTeach(); break; } teachBar(); sayBtnState(); break; }
       case 'tutor-install': { tutorInstall(el.dataset.v); break; }
       case 'tutor-remove': { Tutor.remove().then(() => { toast('The tutor was removed from this device.'); if (state.tutorUi) state.tutorUi.prog = {}; render(); }); break; }
-      case 'tutor-sample': { Tutor.say('This is your study tutor. Everything I say is made on this device.', 1); break; }
+      case 'tutor-sample': { Tutor.stop(); Tutor.say('This is your study tutor. Everything I say is made on this device, and I read each part of a lesson straight through.', 1); break; }
       case 'ask-say': { const c0 = Courses.get(parseRoute().cid); const m = c0 && state.askLog && state.askLog[c0.id][+el.dataset.k]; if (m) { Tutor.stop(); Tutor.say(Tutor.core.speakable(m.text.replace(/\[\d+\]/g, '')), 1); } break; }
       case 'lesson-got': { const p = prog(courseSid(el.dataset.c)); p.understood = p.understood || {}; if (p.understood[el.dataset.l]) delete p.understood[el.dataset.l]; else p.understood[el.dataset.l] = Date.now(); saveProgress(); const y = window.scrollY; render(); window.scrollTo(0, y); break; }
       case 'jump-lesson': { const t = document.getElementById('l-' + el.dataset.l); if (t) { t.scrollIntoView({ behavior: (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) || document.documentElement.getAttribute('data-motion') === 'off' ? 'auto' : 'smooth', block: 'start' }); const h = t.querySelector('h2'); if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); } } break; }
@@ -55519,7 +55613,8 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
   document.addEventListener('change', e => {
     const t = e.target && e.target.closest && e.target.closest('[data-chg]'); if (!t) return;
     if (t.dataset.chg === 'teach-speed' && state.teach) { state.teach.player.speed(+t.value); return; }
-    if (t.dataset.chg === 'tutor-quick') { Tutor.setQuick(t.checked); return; }
+    if (t.dataset.chg === 'tutor-mode') { Tutor.setMode(t.value); if (parseRoute().name === 'tutor') renderTutorSetup(); return; }
+    if (t.dataset.chg === 'tutor-sysvoice') { Tutor.setDeviceVoice(t.value); return; }
     if (t.dataset.chg === 'tutor-voice') { try { const v = JSON.parse(localStorage.getItem('unimadeez:tutor:v1') || '{}'); v.voiceName = t.value; localStorage.setItem('unimadeez:tutor:v1', JSON.stringify(v)); } catch (e) { /* ignore */ } return; }
     if (t.dataset.chg === 'cdeck-ch' && state.cdeck) { state.cdeck.uid = t.value; state.cdeck.queue = null; state.cdeck.got = 0; state.cdeck.flipped = false; render(); }
     if (t.dataset.chg === 'mock-ch' && state.mockUi) {
