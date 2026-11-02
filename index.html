@@ -2686,6 +2686,22 @@ body:has(#tutor-bar) { padding-bottom: 120px; }
 .ask-src li.cited a { font-weight: 600; }
 .ask-a .btn { justify-self: start; }
 
+/* ===================== v2.80 — a speaker on every box of a lesson ===================== */
+.say-btn { display: inline-grid; place-items: center; width: 44px; height: 44px; flex: none; padding: 0; border: 1px solid var(--line-soft);
+  background: var(--surface); color: var(--accent); border-radius: 50%; cursor: pointer; }
+.say-btn:hover { border-color: var(--accent); background: var(--accent-soft); }
+.say-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.say-btn.on { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.rich, .pitfalls, figure.worked > figcaption { position: relative; }
+.rich > .say-btn, .pitfalls > .say-btn, figure.worked > figcaption > .say-btn { position: absolute; top: 6px; right: 6px; }
+.rich:has(> .say-btn), .pitfalls:has(> .say-btn), figure.worked > figcaption:has(> .say-btn) { padding-right: 58px; }
+.lesson-head > .say-btn { margin-left: auto; align-self: center; }
+.tb-slow { display: block; color: var(--warn); margin-top: 2px; }
+.tb-slow .link-btn { color: var(--accent); }
+.check-row { display: flex; gap: 10px; align-items: center; min-height: 44px; font-size: .9375rem; cursor: pointer; }
+.check-row input { width: 20px; height: 20px; accent-color: var(--accent); }
+.rules-say { display: flex; justify-content: flex-end; margin-bottom: -6px; }
+
 </style>
 </head>
 <body>
@@ -47160,7 +47176,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 
   const CFG = {
     llm: { id: 'Qwen2.5-1.5B-Instruct-q4f16_1-MLC', id32: 'Qwen2.5-1.5B-Instruct-q4f32_1-MLC', mb: 880, lib: 'https://cdn.jsdelivr.net/npm/@mlc-ai/web-llm@0.2.84/+esm' },
-    voice: { id: 'onnx-community/Kokoro-82M-v1.0-ONNX', dtype: 'q8', mb: 86, lib: 'https://cdn.jsdelivr.net/npm/kokoro-js@1.2.1/+esm', voices: ['af_heart', 'af_bella', 'am_michael', 'bf_emma', 'bm_george'] },
+    voice: { id: 'onnx-community/Kokoro-82M-v1.0-ONNX', dtype: 'q8', mb: 86, gpu: { dtype: 'fp32', mb: 326 }, lib: 'https://cdn.jsdelivr.net/npm/kokoro-js@1.2.1/+esm', voices: ['af_heart', 'af_bella', 'am_michael', 'bf_emma', 'bm_george'] },
     key: 'unimadeez:tutor:v1'
   };
 
@@ -47334,12 +47350,12 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
       const m = queue.shift();
       try {
         if (m.type === 'load') {
-          if (!tts) tts = await KokoroTTS.from_pretrained(m.model, { dtype: m.dtype, device: 'wasm',
+          if (!tts) tts = await KokoroTTS.from_pretrained(m.model, { dtype: m.dtype, device: m.device || 'wasm',
             progress_callback: p => { if (p && p.status === 'progress' && p.total) reply({ type: 'progress', id: m.id, loaded: p.loaded, total: p.total }); } });
           reply({ type: 'done', id: m.id });
         } else if (m.type === 'gen') {
           if (m.epoch < latest) reply({ type: 'done', id: m.id, skipped: true });
-          else { const a = await tts.generate(m.text, { voice: m.voice }); const au = new Float32Array(a.audio); reply({ type: 'done', id: m.id, audio: au, sr: a.sampling_rate }, [au.buffer]); }
+          else { const t0 = performance.now(); const a = await tts.generate(m.text, { voice: m.voice }); const au = new Float32Array(a.audio); reply({ type: 'done', id: m.id, audio: au, sr: a.sampling_rate, ms: performance.now() - t0 }, [au.buffer]); }
         }
       } catch (err) { reply({ type: 'error', id: m.id, msg: String(err && err.message || err) }); }
       busy = false; kick();
@@ -47371,17 +47387,36 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
   }
   function status() {
     const s = LS.get();
-    return { voice: !!s.voice, llm: !!s.llm, voiceReady: !!(tts || (test && test.tts)), llmReady: !!(llm || (test && test.llm)), voiceName: s.voiceName || CFG.voice.voices[0], gpu: gpuInfo, loading: !!loading };
+    return { voice: !!s.voice, llm: !!s.llm, voiceReady: !!(tts || (test && test.tts)), llmReady: !!(llm || (test && test.llm)), voiceName: s.voiceName || CFG.voice.voices[0], gpu: gpuInfo, loading: !!loading,
+      voiceDevice: voiceDev || s.voiceDevice || (s.voice ? 'wasm' : null), quick: !!s.quick, slow: rtf != null && rtf > 1.05, rtf };
   }
 
   let voiceLoading = null;
-  async function loadVoice(onProgress) {
+  let voiceDev = null, rtf = null;
+  async function loadVoice(onProgress, want) {
     if (test && test.tts) return test.tts;
     if (tts) return tts;
     if (voiceLoading) return voiceLoading;
     voiceLoading = (async () => {
-      await vCall({ type: 'load', model: CFG.voice.id, dtype: CFG.voice.dtype }, p => { if (onProgress) onProgress({ part: 'voice', loaded: p.loaded, total: p.total }); });
-      tts = { generate: (text, o) => vCall({ type: 'gen', text, voice: o.voice, epoch: o.epoch || epoch }).then(r => r.skipped ? null : { audio: r.audio, sampling_rate: r.sr }) };
+      // the graphics chip (WebGPU) makes speech several times faster than the CPU; it needs the
+      // full-precision model. A device without it, or where it fails to start, uses the CPU build.
+      const dev = want || LS.get().voiceDevice || 'wasm';
+      const prog = p => { if (onProgress) onProgress({ part: 'voice', loaded: p.loaded, total: p.total }); };
+      let used = dev;
+      try { await vCall({ type: 'load', model: CFG.voice.id, dtype: dev === 'webgpu' ? CFG.voice.gpu.dtype : CFG.voice.dtype, device: dev }, prog); }
+      catch (e) {
+        if (dev !== 'webgpu') throw e;
+        try { if (vw) vw.terminate(); } catch (e2) { /* ignore */ } vw = null; vWait.clear();
+        used = 'wasm';
+        await vCall({ type: 'load', model: CFG.voice.id, dtype: CFG.voice.dtype, device: 'wasm' }, prog);
+      }
+      voiceDev = used;
+      tts = { generate: (text, o) => vCall({ type: 'gen', text, voice: o.voice, epoch: o.epoch || epoch }).then(r => {
+        if (r.skipped) return null;
+        // how long making it took against how long it lasts: above 1, the voice cannot keep up
+        if (r.ms && r.audio && r.audio.length > 2400) { const k = r.ms / (r.audio.length / r.sr * 1000); rtf = rtf == null ? k : rtf * 0.6 + k * 0.4; }
+        return { audio: r.audio, sampling_rate: r.sr };
+      }) };
       return tts;
     })();
     try { return await voiceLoading; } finally { voiceLoading = null; }
@@ -47408,7 +47443,13 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     if (loading) return loading;
     loading = (async () => {
       const s = LS.get();
-      if (parts.voice) { await loadVoice(onProgress); s.voice = true; LS.set(s); }
+      if (parts.voice) {
+        const g = await check();
+        const want = parts.voiceDevice || (g.webgpu ? 'webgpu' : 'wasm');
+        if (tts && voiceDev !== want) { try { if (vw) vw.terminate(); } catch (e) { /* ignore */ } vw = null; vWait.clear(); tts = null; }
+        await loadVoice(onProgress, want);
+        Object.assign(s, LS.get(), { voice: true, voiceDevice: voiceDev || want }); LS.set(s);
+      }
       if (parts.llm) { await loadLLM(onProgress); s.llm = true; LS.set(s); }
       return status();
     })();
@@ -47439,7 +47480,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
   function chunks(text) {
     const sents = String(text).split(/(?<=[.!?;:])\s+/);   // a full stop inside 1.1 or 3.14 is not a sentence end
     const out = []; let cur = '';
-    const cap = () => out.length === 0 ? 120 : 260;
+    const cap = () => out.length === 0 ? 90 : 220;
     for (let s of sents) {
       s = s.trim(); if (!s) continue;
       while (s.length > 300) { const cut = s.lastIndexOf(',', 260) > 80 ? s.lastIndexOf(',', 260) + 1 : s.lastIndexOf(' ', 260) > 80 ? s.lastIndexOf(' ', 260) : 260; if (cur) { out.push(cur); cur = ''; } out.push(s.slice(0, cut).trim()); s = s.slice(cut).trim(); }
@@ -47483,7 +47524,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
   async function sayOnce(text, rate, next) {
     const my = epoch;
     let t = (test && test.tts) || null;
-    if (!t && LS.get().voice) t = await loadVoice().catch(() => null);
+    if (!t && LS.get().voice && !LS.get().quick) t = await loadVoice().catch(() => null);
     if (my !== epoch) return;
     if (t && t.generate) {
       const parts = chunks(text);
@@ -47553,7 +47594,8 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     return { mode: 'model', text: text.trim(), hits, check: verify(text, hits) };
   }
 
-  root.Tutor = { core, CFG, check, status, install, ready, remove, player, ask, say: sayOnce, stop: stopAudio, _test: t => { test = t; if (vw) { try { vw.terminate(); } catch (e) { /* ignore */ } vw = null; tts = null; } }, _chunks: chunks };
+  function setQuick(v) { const s = LS.get(); s.quick = !!v; LS.set(s); }
+  root.Tutor = { core, CFG, check, status, install, ready, remove, player, ask, say: sayOnce, stop: stopAudio, setQuick, _test: t => { test = t; if (vw) { try { vw.terminate(); } catch (e) { /* ignore */ } vw = null; tts = null; } }, _chunks: chunks };
   if (typeof module !== 'undefined' && module.exports) module.exports = root.Tutor;
 })(typeof window !== 'undefined' ? window : globalThis);
 
@@ -47566,7 +47608,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.79', date: '2 November 2026', year: 2026 };
+  const BUILD = { v: '2.80', date: '2 November 2026', year: 2026 };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonxcorp', ['outlook', 'com'].join('.')].join('@');
   /* The one sentence that says what this is. It appears under the wordmark, and build.js uses
@@ -47579,6 +47621,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      because the person who needs it is the one who just watched the app refresh itself and wants to
      know what moved. Trim the tail when it gets past a dozen; nobody reads further back than that. */
   const WHATS_NEW = [
+    ['2.80', '<b>Have one part of a lesson read aloud.</b> Every box in a lesson now has a speaker button \u2014 the explanation, In real life, the memory hook, Don\u2019t mix these up, the rules, each worked example, the common mistakes and Check yourself \u2014 so you can hear just that part, and it starts almost at once. <b>A faster voice:</b> on a device with a graphics chip the browser can use (most recent laptops), the voice now runs there, several times faster than on the processor, so it no longer pauses between sentences; if you installed it before, the Voice tutor page offers the switch (about 330 MB, once). The voice also starts waking up as soon as you open a chapter, and if a device is still too slow, the player offers the quick voice (your browser\u2019s own), which never pauses.'],
     ['2.79', '<b>The voice tutor no longer freezes the page.</b> With the voice installed, the page stopped responding after the first line of a lesson: the voice was being made on the same thread as the page, a whole paragraph at a time. It now runs in the background, speaks a sentence or two at a time and prepares the next while one plays, so it starts sooner and the page stays usable \u2014 pause, skip and scrolling all work while it talks. The answer model runs in the background the same way.'],
     ['2.78', '<b>A private voice tutor.</b> Press <b>Teach me this lesson</b> (or the whole chapter) and a tutor reads the lesson aloud in teaching order \u2014 the idea, a real-life example, the memory hook, every worked example step by step, then the check-yourself questions with a pause to think \u2014 while the page highlights what it is reading. <b>Ask the tutor</b> on any course page answers questions from that course\u2019s own text only, with links to the lessons it used, and refuses anything the course does not cover. Set it up once under <b>Voice tutor</b>: a natural voice (about 90 MB) and, on devices with WebGPU, a small answer model (about 900 MB). After that one download it runs entirely on your device, offline; your questions and the audio are never sent anywhere. Without it, your browser\u2019s own voice reads the lessons and questions are answered by quoting the course. <b>A new course: PSYC 1110 Introduction to Psychology</b> \u2014 Topics 2 to 5 (history, the science of psychology, biological foundations, learning) as 52 lessons, 233 practice questions and 149 flash cards. It brings a richer way to learn that the other courses will adopt as they are rebuilt: every lesson has an <b>In real life</b> example, a <b>memory hook</b>, the pairs students mix up under <b>Don\u2019t mix these up</b>, and <b>Check yourself</b> questions with the answer one tap away. You can <b>mark a lesson as understood</b> and see it ticked in the contents list. Each chapter\u2019s one-page sheet now carries its key points, comparison tables and <b>exam traps</b> (the myth beside the truth), and every question has a <b>Go deeper</b> note on the idea behind it and why the tempting wrong answer is wrong. <b>Every course now has three study tools</b> on its page: <b>Flash cards</b> built from its chapters (Still learning brings a card back a few cards later; Got it clears it), a <b>Mock exam</b> (choose chapters and length, timed at 75 seconds a question, flag and jump between questions, marked only when you submit, with a score per chapter and a full review), and <b>Mistakes</b> \u2014 every question you have missed anywhere, until you get it right.'],
     ['2.77', '<b>A new maker\u2019s name.</b> JohnsonXCorp is now JohnsonX Labs. In British Columbia only an incorporated company may use \u201cCorp\u201d in its name, so the name in the footer, the sign-up note and the rights pages has changed. Nothing else did.'],
@@ -49178,7 +49221,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
       fetched from cdnjs, jsDelivr and projectnaptha.com the first time you ask the app to read a
       scanned page. The <b>voice tutor</b> is fetched only when you press its download button on the
       <a href="#/tutor">Voice tutor</a> page: its program from jsDelivr and GitHub, and its model files
-      (about 90&nbsp;MB for the voice, about 900&nbsp;MB for the answer model) from Hugging Face. Those
+      (about 330&nbsp;MB for the voice on a device with a graphics chip the browser can use, about 90&nbsp;MB otherwise; about 900&nbsp;MB for the answer model) from Hugging Face. Those
       sites see what any download shows them &mdash; this device's address and browser &mdash; and
       nothing else. After that the tutor runs on this device with no connection: the lessons it reads,
       the questions you type, its answers and the audio are all made here and never sent anywhere.
@@ -49745,16 +49788,17 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      an everyday example, a memory hook, the pairs students confuse, and questions to check
      yourself with the answer one tap away. Any course can carry them; a lesson without them
      simply does not show the box. */
-  function richBlocks(l) {
+  function richBlocks(l, c, u) {
     let h = '';
-    if (l.realLife) h += `<div class="rich real"><span class="label">In real life</span><p>${esc(l.realLife)}</p></div>`;
-    if (l.hook) h += `<div class="rich hook"><span class="label">Memory hook</span><p>${esc(l.hook)}</p></div>`;
-    if (l.tell && l.tell.length) h += `<div class="rich tell"><span class="label">Don’t mix these up</span><dl>${l.tell.map(t => `<div><dt>${esc(t.a)}</dt><dd>${esc(t.b)}</dd></div>`).join('')}</dl></div>`;
+    const sb = b => sayBtn(c, u, l, b);
+    if (l.realLife) h += `<div class="rich real">${sb('real')}<span class="label">In real life</span><p>${esc(l.realLife)}</p></div>`;
+    if (l.hook) h += `<div class="rich hook">${sb('hook')}<span class="label">Memory hook</span><p>${esc(l.hook)}</p></div>`;
+    if (l.tell && l.tell.length) h += `<div class="rich tell">${sb('tell')}<span class="label">Don’t mix these up</span><dl>${l.tell.map(t => `<div><dt>${esc(t.a)}</dt><dd>${esc(t.b)}</dd></div>`).join('')}</dl></div>`;
     return h;
   }
-  function checkBlock(l) {
+  function checkBlock(l, c, u) {
     if (!l.check || !l.check.length) return '';
-    return `<div class="rich check"><span class="label">Check yourself</span>${l.check.map(q => `<details class="chk"><summary>${esc(q.q)}</summary><p>${esc(q.a)}</p></details>`).join('')}</div>`;
+    return `<div class="rich check">${sayBtn(c, u, l, 'check')}<span class="label">Check yourself</span>${l.check.map(q => `<details class="chk"><summary>${esc(q.q)}</summary><p>${esc(q.a)}</p></details>`).join('')}</div>`;
   }
   function chapterSheetExtras(u) {
     let h = '';
@@ -49948,14 +49992,14 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
   function figHtml(spec) {
     try { return window.Figures.render(spec); } catch (e) { console.error('figure', e); return ''; }
   }
-  function workedHtml(c, l, ex, num, key) {
+  function workedHtml(c, l, ex, num, key, say = '') {
     const open = state.openEx && state.openEx[key];
     const hide = open ? 0 : fadeFor(c, l, ex);
     const shown = ex.steps.length - hide;
     const lvl = LEVELS[Math.max(0, Math.min(4, skillLevel(c.id, l.id)))];
     const fig = ex.figure ? figHtml(ex.figure) : '';
     return `<figure class="worked${hide ? ' faded' : ''}">
-      <figcaption><span class="label">Worked example ${num}</span><b>${esc(ex.prompt)}</b></figcaption>
+      <figcaption>${say}<span class="label">Worked example ${num}</span><b>${esc(ex.prompt)}</b></figcaption>
       ${ex.approach ? `<p class="approach"><span class="label">How to approach it</span>${esc(ex.approach)}</p>` : ''}
       ${fig}
       <ol class="wsteps">${ex.steps.map((st, i) => i < shown
@@ -49977,6 +50021,8 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      whole chapter's rules on one page at the end, and a mixed check-up over everything. Practising
      straight after the lesson it tests, and then again mixed, is the order the evidence favours. */
   function renderUnit(c, u) {
+    // wake the installed voice while the student reads, so the first press of a speaker is quick
+    if (TUTOR_OK) { const st = Tutor.status(); if (st.voice && !st.quick && !st.voiceReady) setTimeout(() => Tutor.ready('voice'), 400); }
     const pr = unitProgress(c, u);
     const chap = chapName(c, u);
     const nEx = u.lessons.reduce((n, l) => n + l.examples.length, 0);
@@ -49992,21 +50038,21 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
       const k = lessonItems(u, l.id).length;
       return `
       <section class="lesson${c.prose ? ' prose' : ''}" id="l-${esc(l.id)}">
-        <div class="lesson-head"><span class="label">${u.n}.${li + 1}</span><h2>${esc(l.title)}</h2>${l.src ? `<span class="src-chip" title="Follows this part of the course material">${esc(l.src)}</span>` : ''}</div>
+        <div class="lesson-head"><span class="label">${u.n}.${li + 1}</span><h2>${esc(l.title)}</h2>${l.src ? `<span class="src-chip" title="Follows this part of the course material">${esc(l.src)}</span>` : ''}${sayBtn(c, u, l, 'idea')}</div>
         <div class="lesson-body">
           <p class="idea">${l.idea}</p>
           ${(l.more || []).map(x => `<p class="idea">${x}</p>`).join('')}
-          ${richBlocks(l)}
+          ${richBlocks(l, c, u)}
           ${l.figure ? figHtml(l.figure) : ''}
-          ${l.rules && l.rules.length ? `<div class="rules">${l.rules.map(rr => `<div class="rule">
+          ${l.rules && l.rules.length && TUTOR_OK ? `<div class="rules-say">${sayBtn(c, u, l, 'rules')}</div>` : ''}${l.rules && l.rules.length ? `<div class="rules">${l.rules.map(rr => `<div class="rule">
               <span class="label">${esc(rr.name)}</span>
               <div class="fx${rr.words ? ' words' : ''}">${fxHtml(rr.expr, rr.words ? 'words' : '')}</div>
               <p class="small muted">${esc(rr.note)}</p>
             </div>`).join('')}</div>` : ''}
 
-          ${l.examples.map((ex, xi) => workedHtml(c, l, ex, `${u.n}.${li + 1}.${xi + 1}`, `${l.id}-${xi}`)).join('')}
+          ${l.examples.map((ex, xi) => workedHtml(c, l, ex, `${u.n}.${li + 1}.${xi + 1}`, `${l.id}-${xi}`, sayBtn(c, u, l, 'ex' + xi, `worked example ${u.n}.${li + 1}.${xi + 1}`))).join('')}
 
-          ${l.pitfalls && l.pitfalls.length ? `<div class="pitfalls">
+          ${l.pitfalls && l.pitfalls.length ? `<div class="pitfalls">${sayBtn(c, u, l, 'pit')}
             <span class="label">Where this goes wrong</span>
             ${l.pitfalls.map(pf => `<div class="pit">
               <p class="bad"><span class="tag">Wrong</span> ${esc(pf.wrong)}</p>
@@ -50014,7 +50060,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
               <p class="small">${esc(pf.why)}</p>
             </div>`).join('')}
           </div>` : ''}
-          ${checkBlock(l)}
+          ${checkBlock(l, c, u)}
           <div class="understood-row">${TUTOR_OK ? `<button type="button" class="btn sm teach-btn" data-act="teach" data-c="${esc(c.id)}" data-u="${esc(u.id)}" data-l="${esc(l.id)}">▶ Teach me this lesson</button>` : ''}<button type="button" class="btn sm${understood(c, l.id) ? ' on' : ''}" data-act="lesson-got" data-c="${esc(c.id)}" data-l="${esc(l.id)}" aria-pressed="${understood(c, l.id) ? 'true' : 'false'}">${understood(c, l.id) ? '✓ Understood' : 'Mark as understood'}</button></div>
           ${k ? `<div class="lesson-foot">
             <div><span class="label">Try it now</span><p class="small muted">${plural(k, 'question')} on this lesson only, while it is fresh. Each one marks itself and shows the working.</p></div>
@@ -50284,6 +50330,15 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      and chapter with a player bar that follows along on the page, and "Ask the tutor" per course. */
   const TUTOR_OK = typeof window !== 'undefined' && !!window.Tutor;
   const tutorIx = {};
+  /* v2.80: a speaker button on every box of a lesson, so a student can have one part read aloud
+     (the explanation, one worked example, the check-yourself questions) instead of the whole lesson. */
+  const BLOCK_NAME = { idea: 'the explanation', real: 'In real life', hook: 'the memory hook', tell: 'Don’t mix these up', rules: 'the rules', pit: 'the common mistakes', check: 'Check yourself' };
+  const SPEAKER = '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+  function sayBtn(c, u, l, b, what) {
+    if (!TUTOR_OK || !c || !u) return '';
+    const on = state.teach && state.teach.block === b && state.teach.lid === l.id && state.teach.player.state === 'playing';
+    return `<button type="button" class="say-btn${on ? ' on' : ''}" data-act="say-block" data-c="${esc(c.id)}" data-u="${esc(u.id)}" data-l="${esc(l.id)}" data-b="${esc(b)}" aria-label="Read ${esc(what || BLOCK_NAME[b] || 'this')} aloud" title="Read aloud">${SPEAKER}</button>`;
+  }
   function tutorIndex(c) { return tutorIx[c.id] || (tutorIx[c.id] = Tutor.core.index(Tutor.core.passages(c, chapName))); }
   const BLOCK_SEL = { head: '.lesson-head', idea: 'p.idea', real: '.rich.real', hook: '.rich.hook', tell: '.rich.tell', rules: '.rules', pit: '.pitfalls', check: '.rich.check' };
   function teachHighlight(seg) {
@@ -50302,7 +50357,9 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     if (!bar) { bar = document.createElement('div'); bar.id = 'tutor-bar'; bar.setAttribute('role', 'region'); bar.setAttribute('aria-label', 'Voice tutor'); document.body.appendChild(bar); }
     const p = t.player, seg = p.segs[p.i] || {};
     const st = Tutor.status();
-    bar.innerHTML = `<div class="tb-text"><span class="label">${esc(t.title)} &middot; ${p.i + 1} / ${p.segs.length}${st.voice ? (st.voiceReady ? '' : ' &middot; starting the voice&hellip;') : ' &middot; browser voice'}</span><span class="tb-line">${esc(seg.text || '')}</span></div>
+    const vlab = !st.voice || st.quick ? ' &middot; quick voice' : st.voiceReady ? '' : ' &middot; starting the voice&hellip;';
+    const slow = st.voice && !st.quick && st.slow ? `<span class="tb-slow small">This device makes the natural voice more slowly than it speaks, so it pauses. <button type="button" class="link-btn" data-act="teach-quick" data-v="1">Use the quick voice</button>${st.gpu && st.gpu.webgpu && st.voiceDevice !== 'webgpu' ? ` or <a href="#/tutor">make it faster</a>` : ''}</span>` : '';
+    bar.innerHTML = `<div class="tb-text"><span class="label">${esc(t.title)} &middot; ${p.i + 1} / ${p.segs.length}${vlab}</span><span class="tb-line">${esc(seg.text || '')}</span>${slow}</div>
       <div class="tb-ctl">
         <button type="button" class="btn sm" data-act="teach-ctl" data-v="back" aria-label="Back one part">&larr;</button>
         <button type="button" class="btn sm primary" data-act="teach-ctl" data-v="${p.state === 'playing' ? 'pause' : 'play'}">${p.state === 'playing' ? 'Pause' : p.state === 'done' ? 'Again' : 'Play'}</button>
@@ -50311,23 +50368,33 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
         <button type="button" class="btn sm ghost" data-act="teach-ctl" data-v="stop" aria-label="Stop the tutor">Stop</button>
       </div>`;
   }
-  function startTeach(c, u, lids) {
+  function startTeach(c, u, lids, block) {
     if (!TUTOR_OK) return;
     if (state.teach) state.teach.player.stop();
     const segs = [];
     for (const lid of lids) {
       const li = u.lessons.findIndex(l => l.id === lid); if (li < 0) continue;
-      for (const s of Tutor.core.lessonScript(c, u, u.lessons[li], `${u.n}.${li + 1}`)) segs.push({ ...s, lid });
+      for (const s of Tutor.core.lessonScript(c, u, u.lessons[li], `${u.n}.${li + 1}`)) if (!block || s.block === block) segs.push({ ...s, lid });
     }
     if (!segs.length) return;
-    const title = lids.length > 1 ? `${chapName(c, u)}: ${u.title}` : u.lessons.find(l => l.id === lids[0]).title;
-    const p = Tutor.player(segs, { onSeg: (i, seg) => { teachHighlight(seg); teachBar(); }, onEnd: () => teachBar() });
-    state.teach = { cid: c.id, uid: u.id, title, player: p };
+    const l0 = u.lessons.find(l => l.id === lids[0]);
+    const title = lids.length > 1 ? `${chapName(c, u)}: ${u.title}` : block ? `${l0.title} · ${/^ex\d+$/.test(block) ? `worked example ${+block.slice(2) + 1}` : BLOCK_NAME[block]}` : l0.title;
+    const p = Tutor.player(segs, { onSeg: (i, seg) => { teachHighlight(seg); teachBar(); sayBtnState(); }, onEnd: () => { teachBar(); sayBtnState(); } });
+    state.teach = { cid: c.id, uid: u.id, title, player: p, block: block || null, lid: lids.length === 1 ? lids[0] : null };
+    sayBtnState();
     p.play(); teachBar();
     // the voice wakes up from this device's storage on first use; refresh the bar when it is ready
     if (Tutor.status().voice && !Tutor.status().voiceReady) Tutor.ready('voice').then(() => { if (state.teach && state.teach.player === p) teachBar(); });
   }
-  function stopTeach() { if (state.teach) { state.teach.player.stop(); state.teach = null; } teachBar(); }
+  function stopTeach() { if (state.teach) { state.teach.player.stop(); state.teach = null; } teachBar(); sayBtnState(); }
+  // light the speaker of the box being read, without re-rendering the page
+  function sayBtnState() {
+    const t = state.teach;
+    document.querySelectorAll('.say-btn').forEach(b => {
+      const on = !!t && t.player.state === 'playing' && t.block === b.dataset.b && t.lid === b.dataset.l;
+      b.classList.toggle('on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+  }
 
   function tutorStatusLine() {
     const st = Tutor.status();
@@ -50351,10 +50418,12 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
         <section class="cell tutor-setup">
           <div class="tutor-parts">
             <div class="tpart${st.voice ? ' done' : ''}">
-              <span class="label">1 &middot; The voice &middot; about ${Tutor.CFG.voice.mb} MB</span>
+              <span class="label">1 &middot; The voice &middot; about ${g && g.webgpu ? Tutor.CFG.voice.gpu.mb : Tutor.CFG.voice.mb} MB</span>
               <h2>A natural voice</h2>
               <p class="small">Reads every lesson, worked example and check-yourself question aloud, with the page following along. Works on almost any recent laptop or phone. Without it, your browser's built-in voice is used.</p>
-              ${st.voice ? `<p class="ok-line">Installed on this device.</p><div class="field"><label for="tv-voice">Voice</label><select class="input" id="tv-voice" data-chg="tutor-voice">${Tutor.CFG.voice.voices.map(v => `<option value="${v}"${st.voiceName === v ? ' selected' : ''}>${({ af_heart: 'Heart (US)', af_bella: 'Bella (US)', am_michael: 'Michael (US)', bf_emma: 'Emma (UK)', bm_george: 'George (UK)' })[v]}</option>`).join('')}</select></div><button type="button" class="btn sm" data-act="tutor-sample">Hear a sample</button>` : ''}
+              ${st.voice ? `<p class="ok-line">Installed on this device${st.voiceDevice === 'webgpu' ? ', running on the graphics chip (fast)' : ', running on the processor'}.</p>
+              ${g && g.webgpu && st.voiceDevice !== 'webgpu' ? `<p class="small">This device has a graphics chip the browser can use. Running the voice there makes it several times faster, so it starts sooner and does not pause between sentences.</p><button type="button" class="btn sm primary" data-act="tutor-install" data-v="voice-gpu"${ui.busy ? ' disabled' : ''}>Make the voice faster (about ${Tutor.CFG.voice.gpu.mb} MB, once)</button>` : ''}
+              <label class="check-row"><input type="checkbox" data-chg="tutor-quick"${st.quick ? ' checked' : ''}> Use the quick voice instead (your browser's own voice: instant, less natural)</label><div class="field"><label for="tv-voice">Voice</label><select class="input" id="tv-voice" data-chg="tutor-voice">${Tutor.CFG.voice.voices.map(v => `<option value="${v}"${st.voiceName === v ? ' selected' : ''}>${({ af_heart: 'Heart (US)', af_bella: 'Bella (US)', am_michael: 'Michael (US)', bf_emma: 'Emma (UK)', bm_george: 'George (UK)' })[v]}</option>`).join('')}</select></div><button type="button" class="btn sm" data-act="tutor-sample">Hear a sample</button>` : ''}
               ${bar('voice', 'Downloading the voice')}
             </div>
             <div class="tpart${st.llm ? ' done' : ''}">
@@ -50368,8 +50437,8 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
           </div>
           ${ui.err ? `<p class="notice bad">${esc(ui.err)}</p>` : ''}
           <div class="btn-row">
-            ${!st.voice || (!st.llm && g && g.webgpu) ? `<button type="button" class="btn primary" data-act="tutor-install" data-v="all"${ui.busy ? ' disabled' : ''}>${ui.busy ? 'Downloading&hellip;' : !st.voice && g && g.webgpu ? `Download the tutor (about ${fmt(Tutor.CFG.voice.mb + Tutor.CFG.llm.mb)} MB, once)` : !st.voice ? `Download the voice (about ${Tutor.CFG.voice.mb} MB, once)` : `Add answers (about ${Tutor.CFG.llm.mb} MB, once)`}</button>` : ''}
-            ${!st.voice && g && g.webgpu && !ui.busy ? `<button type="button" class="btn" data-act="tutor-install" data-v="voice">Voice only (about ${Tutor.CFG.voice.mb} MB)</button>` : ''}
+            ${!st.voice || (!st.llm && g && g.webgpu) ? `<button type="button" class="btn primary" data-act="tutor-install" data-v="all"${ui.busy ? ' disabled' : ''}>${ui.busy ? 'Downloading&hellip;' : !st.voice && g && g.webgpu ? `Download the tutor (about ${fmt((g.webgpu ? Tutor.CFG.voice.gpu.mb : Tutor.CFG.voice.mb) + Tutor.CFG.llm.mb)} MB, once)` : !st.voice ? `Download the voice (about ${g && g.webgpu ? Tutor.CFG.voice.gpu.mb : Tutor.CFG.voice.mb} MB, once)` : `Add answers (about ${Tutor.CFG.llm.mb} MB, once)`}</button>` : ''}
+            ${!st.voice && g && g.webgpu && !ui.busy ? `<button type="button" class="btn" data-act="tutor-install" data-v="voice">Voice only (about ${Tutor.CFG.voice.gpu.mb} MB)</button>` : ''}
             ${st.voice || st.llm ? `<button type="button" class="btn ghost" data-act="tutor-remove">Remove the tutor from this device</button>` : ''}
           </div>
           <div class="tutor-privacy">
@@ -50386,7 +50455,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     const ui = state.tutorUi; if (!ui || ui.busy) return;
     ui.busy = true; ui.err = null; ui.prog = {}; renderTutorSetup();
     const g = ui.gpu || await Tutor.check();
-    const parts = which === 'voice' ? { voice: true } : { voice: !Tutor.status().voice, llm: g.webgpu };
+    const parts = which === 'voice-gpu' ? { voice: true, voiceDevice: 'webgpu' } : which === 'voice' ? { voice: true } : { voice: !Tutor.status().voice, llm: g.webgpu };
     let last = 0;
     try {
       await Tutor.install(parts, p => { ui.prog[p.part] = p; const now = Date.now(); if (now - last > 400 && parseRoute().name === 'tutor') { last = now; renderTutorSetup(); } });
@@ -54580,8 +54649,16 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
       case 'drill-go': { const d = state.drill; if (!d) break; const k = +el.dataset.i; if (k >= 0 && k < d.qs.length) { d.i = k; render(); } break; }
       case 'drill-flag': { const d = state.drill; if (d) { d.flags[d.i] = !d.flags[d.i]; render(); } break; }
       case 'drill-submit': { const d = state.drill; if (!d) break; const left = d.qs.length - Object.keys(d.ans).filter(k => d.ans[k] != null && d.ans[k] !== '').length; if (d.mode === 'mock' && left && !el.dataset.sure) { el.dataset.sure = '1'; el.textContent = `${plural(left, 'question')} unanswered — submit anyway?`; break; } finishDrill(); break; }
+      case 'say-block': {
+        const t0 = state.teach;
+        if (t0 && t0.block === el.dataset.b && t0.lid === el.dataset.l && t0.player.state === 'playing') { t0.player.pause(); teachBar(); sayBtnState(); break; }
+        const c0 = Courses.get(el.dataset.c), u0 = c0 && Courses.unit(c0.id, el.dataset.u);
+        if (u0) startTeach(c0, u0, [el.dataset.l], el.dataset.b);
+        break;
+      }
+      case 'teach-quick': { Tutor.setQuick(el.dataset.v === '1'); if (state.teach) { const pl = state.teach.player; if (pl.state === 'playing') { pl.pause(); pl.play(); } } teachBar(); if (parseRoute().name === 'tutor') renderTutorSetup(); break; }
       case 'teach': { const c0 = Courses.get(el.dataset.c), u0 = c0 && Courses.unit(c0.id, el.dataset.u); if (u0) startTeach(c0, u0, el.dataset.l ? [el.dataset.l] : u0.lessons.map(l => l.id)); break; }
-      case 'teach-ctl': { const t = state.teach; if (!t) break; const v = el.dataset.v; if (v === 'pause') t.player.pause(); else if (v === 'play') t.player.play(); else if (v === 'back') t.player.jump(-1); else if (v === 'next') t.player.jump(1); else if (v === 'stop') { stopTeach(); break; } teachBar(); break; }
+      case 'teach-ctl': { const t = state.teach; if (!t) break; const v = el.dataset.v; if (v === 'pause') t.player.pause(); else if (v === 'play') t.player.play(); else if (v === 'back') t.player.jump(-1); else if (v === 'next') t.player.jump(1); else if (v === 'stop') { stopTeach(); break; } teachBar(); sayBtnState(); break; }
       case 'tutor-install': { tutorInstall(el.dataset.v); break; }
       case 'tutor-remove': { Tutor.remove().then(() => { toast('The tutor was removed from this device.'); if (state.tutorUi) state.tutorUi.prog = {}; render(); }); break; }
       case 'tutor-sample': { Tutor.say('This is your study tutor. Everything I say is made on this device.', 1); break; }
@@ -55442,6 +55519,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
   document.addEventListener('change', e => {
     const t = e.target && e.target.closest && e.target.closest('[data-chg]'); if (!t) return;
     if (t.dataset.chg === 'teach-speed' && state.teach) { state.teach.player.speed(+t.value); return; }
+    if (t.dataset.chg === 'tutor-quick') { Tutor.setQuick(t.checked); return; }
     if (t.dataset.chg === 'tutor-voice') { try { const v = JSON.parse(localStorage.getItem('unimadeez:tutor:v1') || '{}'); v.voiceName = t.value; localStorage.setItem('unimadeez:tutor:v1', JSON.stringify(v)); } catch (e) { /* ignore */ } return; }
     if (t.dataset.chg === 'cdeck-ch' && state.cdeck) { state.cdeck.uid = t.value; state.cdeck.queue = null; state.cdeck.got = 0; state.cdeck.flipped = false; render(); }
     if (t.dataset.chg === 'mock-ch' && state.mockUi) {

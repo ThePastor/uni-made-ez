@@ -2,7 +2,7 @@
 
 **Publisher:** JohnsonX Labs, British Columbia, Canada
 **Application:** UNI Made EZ — <https://thepastor.github.io/uni-made-ez/>
-**Version this notice describes:** v2.78, 2 November 2026
+**Version this notice describes:** v2.80, 2 November 2026
 **Privacy contact:** johnsonxcorp@outlook.com
 **Applicable law:** *Personal Information Protection Act* (SBC 2003, c. 63) (British Columbia)
 
@@ -183,7 +183,7 @@ the hosts see the device's IP address and browser.
 | Feature | When it is fetched | From | Size |
 |---|---|---|---|
 | Scan reader (Tesseract) | The first time a student asks the app to read a scanned page | cdnjs.cloudflare.com, cdn.jsdelivr.net, tessdata.projectnaptha.com | about 15 MB |
-| Voice tutor — voice | When the student presses the download button on the **Voice tutor** page | cdn.jsdelivr.net (kokoro-js), huggingface.co (Kokoro-82M) | about 90 MB |
+| Voice tutor — voice | When the student presses the download button on the **Voice tutor** page | cdn.jsdelivr.net (kokoro-js), huggingface.co (Kokoro-82M) | about 330 MB on a device with WebGPU (runs on the graphics chip), about 90 MB otherwise |
 | Voice tutor — answer model | The same button, on a device with WebGPU | cdn.jsdelivr.net (WebLLM), raw.githubusercontent.com (its compiled model library), huggingface.co (Qwen2.5-1.5B-Instruct) | about 900 MB |
 
 - **After the download the tutor runs on the device, offline.** The lessons it reads aloud, the
