@@ -2404,6 +2404,30 @@ main .side-prin { align-self: center; list-style: none; margin: 0 auto; padding:
 @media print { .suggest-band, .foot .suggest-link { display: none !important; } }
 
 
+/* =================================================================================================
+   THE CHAPTER PAGE (v2.76) — contents list, practise-this-lesson, the chapter on one page
+   ================================================================================================= */
+.chap-toc { margin-top: 18px; display: grid; gap: 8px; }
+.chap-toc ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); }
+.chap-toc li { background: var(--surface); }
+.toc-jump { all: unset; box-sizing: border-box; cursor: pointer; width: 100%; min-height: 44px; display: grid; grid-template-columns: 3.2em 1fr; column-gap: 10px; row-gap: 2px; align-items: baseline; padding: 10px 14px; }
+.toc-jump:hover { background: var(--accent-soft); }
+.toc-jump:focus-visible { outline: 3px solid var(--accent); outline-offset: -3px; }
+.toc-jump .n { font-family: var(--font-mono); font-size: .85rem; color: var(--accent-deep); }
+.toc-jump .t { font-weight: 600; color: var(--ink); }
+.toc-jump .m { grid-column: 2; }
+.lesson-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-top: 18px; padding: 14px 16px; border: 1px solid var(--line); border-left: 4px solid var(--accent); background: var(--surface-2); }
+.lesson-foot p { margin: 4px 0 0; max-width: 60ch; }
+.chap-sheet { display: grid; gap: 14px; border-bottom: 1px solid var(--line); }
+.chap-sheet .sheet-lesson h3 { font-size: 1rem; margin: 0 0 6px; }
+.chap-sheet dl { display: grid; gap: 1px; margin: 0; background: var(--line); border: 1px solid var(--line); }
+.chap-sheet dl > div { display: grid; grid-template-columns: minmax(120px, 30%) 1fr; gap: 12px; padding: 8px 12px; background: var(--surface); align-items: baseline; }
+.chap-sheet dt { font-size: .86rem; color: var(--ink-2); }
+.chap-sheet dd { margin: 0; min-width: 0; overflow-x: auto; }
+.chap-sheet dd.words { font-family: var(--font-body); white-space: normal; }
+.unit-row .mid > .label { font-size: .72rem; }
+@media (max-width: 560px) { .chap-sheet dl > div { grid-template-columns: 1fr; gap: 4px; } }
+
 /* ==========================================================================================
    THE FLOOR — last in the file on purpose, so nothing later can quietly undercut it.
    ==========================================================================================
@@ -8156,6 +8180,2813 @@ const tfHint = (a, id) => hintFrom(a, id, null, 'Check the statement against the
     ]
   };
 
+  /* ============================== PRECALCULUS — v2.76 REVAMP ==============================
+     Every lesson now has at least three worked examples, each with "How to approach it" and a
+     closing check, and at least six practice questions of its own. Graph lessons gained a figure.
+     The patch only adds: the original examples and questions are untouched and keep their ids. */
+  const PRECALC_PATCH ={
+    "lessons": {
+      "s11": {
+        "exPatch": [
+          {
+            "approach": "Evaluating a function means replacing every x with the input. Put the input in brackets first so powers and minus signs act on the whole number.",
+            "check": "Plug in again a different way: 3·16 = 48, 5·4 = 20, and 48 − 20 + 2 = 30."
+          },
+          {
+            "approach": "Same function, negative input. The danger is the square of a negative, so the brackets matter even more.",
+            "check": "f(−1) should be bigger than f(0) = 2 because both −5x and 3x² become positive: 10 > 2."
+          },
+          {
+            "approach": "A function needs exactly one output per input. Check each input once, then look for the pattern linking input to output.",
+            "check": "Every output equals its input squared: (−2)² = 4, (−1)² = 1, 0² = 0. The rule fits all five pairs.",
+            "answerWords": false
+          }
+        ],
+        "examples": [
+          {
+            "prompt": "g(x) = x² − 2x. Find g(a + 1) and simplify.",
+            "approach": "The input is now an expression, not a number. Treat a + 1 as a single object: wrap it in brackets wherever x appears, then expand.",
+            "steps": [
+              {
+                "do": "g(a + 1) = (a + 1)² − 2(a + 1)",
+                "why": "Every x is replaced by the whole bracket (a + 1), not just by a."
+              },
+              {
+                "do": "= a² + 2a + 1 − 2a − 2",
+                "why": "Expand (a + 1)² = a² + 2a + 1 and distribute the −2 over both terms of the bracket."
+              },
+              {
+                "do": "= a² − 1",
+                "why": "The 2a and −2a cancel; 1 − 2 = −1."
+              }
+            ],
+            "answer": "a^2 - 1",
+            "check": "Try a = 2: g(3) = 9 − 6 = 3, and a² − 1 = 4 − 1 = 3. They agree."
+          }
+        ]
+      },
+      "s12": {
+        "exPatch": [
+          {
+            "approach": "A square root needs a non-negative inside. Write that as an inequality and solve it.",
+            "check": "x = 1/2 gives √0 = 0, which is fine; x = 0 gives √(−1), which is not. The boundary is right."
+          },
+          {
+            "approach": "Again the inside of the root must be ≥ 0, but this time the inequality is quadratic, so find where 4 − x² changes sign.",
+            "check": "x = 2 and x = −2 give √0; x = 3 gives √(−5), undefined. So the domain stops at ±2."
+          },
+          {
+            "approach": "A fraction is undefined where its denominator is 0. If that same factor cancels, the graph has a hole there rather than an asymptote.",
+            "check": "At x = 3.01, (9.0601 − 9)/0.01 = 6.01, close to 6. The hole is at height 6."
+          }
+        ],
+        "examples": [
+          {
+            "prompt": "State the domain of f(x) = (x + 1)/(x² − 5x + 6) in interval notation.",
+            "approach": "Only the denominator can cause trouble. Find the x-values that make it zero and remove them from the real line.",
+            "steps": [
+              {
+                "do": "x² − 5x + 6 = 0",
+                "why": "The fraction is undefined exactly where the denominator is zero."
+              },
+              {
+                "do": "(x − 2)(x − 3) = 0, so x = 2 or x = 3",
+                "why": "Two numbers multiplying to 6 and adding to −5 are −2 and −3."
+              },
+              {
+                "do": "Domain: (−∞, 2) ∪ (2, 3) ∪ (3, ∞)",
+                "why": "Every real number except 2 and 3. Round brackets because 2 and 3 themselves are excluded."
+              }
+            ],
+            "answer": "all real x except 2 and 3",
+            "answerWords": true,
+            "check": "f(2) = 3/0 and f(3) = 4/0 are undefined; f(0) = 1/6 is fine."
+          }
+        ]
+      },
+      "s13": {
+        "exPatch": [
+          {
+            "approach": "Average rate of change is the slope of the secant line: change in output over change in input.",
+            "check": "f(4) − f(1) = 16 − 1 = 15 over 4 − 1 = 3 gives 5. The secant from (1, 1) to (4, 16) rises 15 over 3."
+          },
+          {
+            "approach": "Here the inputs are years and the outputs are people. The rate has units: people per year.",
+          "steps": [
+            { "do": "Change in population = 8000; change in time = 4 years", "why": "Average rate of change needs the change in output and the change in input." },
+            { "do": "8000 people / 4 years", "why": "Change in output over change in input." },
+            { "do": "= 2000 people per year", "why": "Carry the units. A rate without units is not an answer to a question about a city." }
+          ],
+            "check": "2,000 a year for 4 years is 8,000, the total change given."
+          },
+          {
+            "approach": "A local maximum is where the graph turns from rising to falling; a local minimum is the reverse. Read the turning points from the graph or a table of values.",
+            "check": "f(−2) = −2, f(−1) = 2, f(0) = 0: −1 is higher than both neighbours, so it is a maximum. f(1) = −2 is lower than f(0) and f(2) = 2."
+          }
+        ],
+        "figure": {
+          "kind": "graph",
+          "x": [
+            -2.5,
+            2.5
+          ],
+          "y": [
+            -3,
+            3
+          ],
+          "fns": [
+            {
+              "expr": "x**3 - 3*x",
+              "label": "f(x) = x³ − 3x"
+            }
+          ],
+          "points": [
+            {
+              "x": -1,
+              "y": 2,
+              "label": "local max (−1, 2)"
+            },
+            {
+              "x": 1,
+              "y": -2,
+              "label": "local min (1, −2)"
+            }
+          ],
+          "caption": "Rising, then falling, then rising again. The two turning points are the local extrema."
+        },
+        "examples": [
+          {
+            "prompt": "h(t) = −5t² + 20t is the height in metres of a ball after t seconds. Find the average rate of change of height from t = 1 to t = 3, and say what it means.",
+            "approach": "Compute both heights, subtract, and divide by the time elapsed. Then translate the number back into words with units.",
+            "steps": [
+              {
+                "do": "h(1) = −5 + 20 = 15 and h(3) = −45 + 60 = 15",
+                "why": "Substitute each time into the height function."
+              },
+              {
+                "do": "(h(3) − h(1))/(3 − 1) = (15 − 15)/2 = 0",
+                "why": "Average rate of change is change in height over change in time."
+              },
+              {
+                "do": "An average velocity of 0 m/s over that interval",
+                "why": "The ball went up and came back down to the same height, so on average it did not move."
+              }
+            ],
+            "answer": "0",
+            "check": "The ball peaks at t = 2 (halfway between 1 and 3), which is why the heights at t = 1 and t = 3 match."
+          }
+        ]
+      },
+      "s14": {
+        "exPatch": [
+          {
+            "approach": "A composition is evaluated inside-out: work out the inner function first, then feed that number to the outer one.",
+            "check": "The two orders give different numbers (9 and 25), which is normal: composition is not commutative."
+          },
+          {
+            "approach": "Build the formula by putting g(x) into f, then ask what inputs are allowed at every stage.",
+            "check": "x = −5 gives √0 = 0 (allowed); x = −6 gives √(−1) (not allowed)."
+          }
+        ],
+        "examples": [
+          {
+            "prompt": "Write h(x) = (3x − 1)⁴ as a composition f(g(x)) of two simpler functions.",
+            "approach": "Ask what you would do first if you were computing h by hand. That first step is the inner function g; what you do to its result is the outer function f.",
+            "steps": [
+              {
+                "do": "Inner: g(x) = 3x − 1",
+                "why": "To compute h you first work out 3x − 1."
+              },
+              {
+                "do": "Outer: f(u) = u⁴",
+                "why": "Then you raise that result to the fourth power."
+              },
+              {
+                "do": "Check: f(g(x)) = (3x − 1)⁴ = h(x)",
+                "why": "Substituting g into f must rebuild the original function exactly."
+              }
+            ],
+            "answer": "f(u) = u^4 and g(x) = 3x - 1",
+            "answerWords": true,
+            "check": "At x = 1: h(1) = 2⁴ = 16, and g(1) = 2, f(2) = 16. The decomposition agrees."
+          }
+        ]
+      },
+      "s15": {
+        "exPatch": [
+          {
+            "approach": "A horizontal shift lives inside the bracket with the opposite sign; a vertical shift lives outside with its own sign.",
+            "check": "The vertex of x² is (0, 0). Right 2 and down 3 moves it to (2, −3), and (x − 2)² − 3 is smallest at x = 2 with value −3."
+          },
+          {
+            "approach": "Read the transformations from the inside out: what happens to x first, then what multiplies the result, then what is added.",
+            "check": "The vertex of |x| at (0, 0) moves to (3, 1), and the minus sign turns the V upside down."
+          },
+          {
+            "approach": "Apply the operations one at a time, in the order given, rewriting the formula after each.",
+            "check": "At x = 4: −2/(4 − 3) = −2. Starting from 1/x at x = 1 (value 1): shift right gives x = 4, flip gives −1, stretch gives −2."
+          }
+        ],
+        "figure": {
+          "kind": "graph",
+          "x": [
+            -4,
+            6
+          ],
+          "y": [
+            -4,
+            6
+          ],
+          "fns": [
+            {
+              "expr": "x**2",
+              "label": "y = x²",
+              "dashed": true
+            },
+            {
+              "expr": "(x - 2)**2 - 3",
+              "label": "y = (x − 2)² − 3"
+            }
+          ],
+          "points": [
+            {
+              "x": 2,
+              "y": -3,
+              "label": "vertex (2, −3)"
+            }
+          ],
+          "caption": "The same parabola moved right 2 and down 3. Every point moves the same way."
+        },
+        "examples": [
+          {
+            "prompt": "g(x) = √(x + 4) − 1. Describe how it is obtained from f(x) = √x, and give its domain and starting point.",
+            "approach": "Name the inside change (horizontal) and the outside change (vertical), then move the starting point of √x, which is (0, 0).",
+            "steps": [
+              {
+                "do": "x + 4 inside: shift left 4",
+                "why": "Inside the function the sign is opposite to the direction: +4 means left."
+              },
+              {
+                "do": "− 1 outside: shift down 1",
+                "why": "Outside the function the sign means what it says."
+              },
+              {
+                "do": "Start point (0, 0) → (−4, −1); domain x ≥ −4",
+                "why": "The root needs x + 4 ≥ 0, which matches the new starting point."
+              }
+            ],
+            "answer": "left 4, down 1, starting at (-4, -1)",
+            "answerWords": true,
+            "check": "g(−4) = √0 − 1 = −1 and g(0) = 2 − 1 = 1. Both points lie on the shifted curve."
+          }
+        ]
+      },
+      "s16": {
+        "exPatch": [
+          {
+            "approach": "Write y = f(x), swap x and y, and solve for y. Then check by composing both ways.",
+            "check": "f(f⁻¹(x)) = 3·(x + 5)/3 − 5 = x. The inverse undoes f."
+          },
+          {
+            "approach": "Same method, but y appears twice after the swap. Clear the fraction, gather the y terms on one side and factor y out.",
+            "check": "f(4) = 9/1 = 9 and f⁻¹(9) = 28/7 = 4. It undoes f at a test point."
+          },
+          {
+            "approach": "A function has an inverse only if no output is repeated. Test with the horizontal line test.",
+            "check": "f(2) = f(−2) = 4, so the inverse would have to send 4 to two places at once."
+          }
+        ]
+      },
+      "s21": {
+        "exPatch": [
+          {
+            "approach": "Identify what is charged once (the intercept) and what is charged per unit (the slope), then write cost = slope·x + intercept.",
+            "check": "Two games: 3·2 + 7 = $13, which is $7 shoes plus $6 of bowling."
+          },
+          {
+            "approach": "In C(n) = mn + b, m is the cost of one more item and b is the cost of zero items. Then evaluate at the n you are asked about.",
+            "check": "C(12) = 15·12 + 50 = 230, and C(0) = 50 is the set-up fee."
+          },
+          {
+            "approach": "Point-slope form y − y₁ = m(x − x₁) uses exactly what you are given. Expand it into y = mx + b.",
+            "check": "At x = 2: −3·2 + 11 = 5, so the line passes through (2, 5)."
+          }
+        ],
+        "examples": [
+          {
+            "prompt": "A phone plan cost $45 for 2 GB of data and $60 for 5 GB. Assuming the cost is linear in data, write the cost function and find the base fee.",
+            "approach": "Two data points give the slope. Then use either point to find the intercept, which is the cost at 0 GB.",
+            "steps": [
+              {
+                "do": "m = (60 − 45)/(5 − 2) = 15/3 = 5",
+                "why": "Slope is the change in cost per extra gigabyte."
+              },
+              {
+                "do": "45 = 5(2) + b, so b = 35",
+                "why": "Substitute one known point into C = 5x + b and solve for b."
+              },
+              {
+                "do": "C(x) = 5x + 35",
+                "why": "The base fee is $35 and each gigabyte adds $5."
+              }
+            ],
+            "answer": "5x + 35",
+            "check": "C(5) = 25 + 35 = 60, which matches the second plan."
+          }
+        ]
+      },
+      "s22": {
+        "exPatch": [
+          {
+            "approach": "Get y on its own: move the x-term to the other side, then divide every term by the coefficient of y.",
+            "check": "At x = 0 the original equation gives 2y = 8, y = 4, matching the intercept."
+          },
+          {
+            "approach": "Compare slopes. Equal slopes mean parallel; slopes whose product is −1 mean perpendicular.",
+            "check": "2 × (−½) = −1, so the lines meet at a right angle."
+          },
+          {
+            "approach": "Any two points fix a line. Pick x-values that make the arithmetic clean, here x = 0 and a multiple of 4.",
+            "check": "The slope between (0, 6) and (4, 3) is −3/4, matching the equation."
+          }
+        ],
+        "figure": {
+          "kind": "graph",
+          "x": [
+            -4,
+            6
+          ],
+          "y": [
+            -3,
+            7
+          ],
+          "fns": [
+            {
+              "expr": "2*x + 3",
+              "label": "y = 2x + 3"
+            },
+            {
+              "expr": "-x/2 + 1",
+              "label": "y = −½x + 1"
+            }
+          ],
+          "caption": "Slopes 2 and −½ multiply to −1, so the two lines cross at a right angle."
+        },
+        "examples": [
+          {
+            "prompt": "Find the equation of the line through (4, 1) that is parallel to 3x − 2y = 6.",
+            "approach": "Parallel lines share a slope. Read the slope off the given line, then use point-slope with the new point.",
+            "steps": [
+              {
+                "do": "3x − 2y = 6 becomes y = (3/2)x − 3",
+                "why": "Solve for y to expose the slope: −2y = −3x + 6, divide by −2."
+              },
+              {
+                "do": "Slope m = 3/2",
+                "why": "A parallel line has the same slope."
+              },
+              {
+                "do": "y − 1 = (3/2)(x − 4), so y = (3/2)x − 5",
+                "why": "Point-slope form, then expand: (3/2)(x − 4) = (3/2)x − 6, and add 1."
+              }
+            ],
+            "answer": "(3/2)x - 5",
+            "check": "At x = 4: (3/2)(4) − 5 = 1, so the line passes through (4, 1)."
+          }
+        ]
+      },
+      "s31": {
+        "exPatch": [
+          {
+            "approach": "Rewrite the polynomial in descending powers first. The degree is the highest power; the leading coefficient is the number in front of it.",
+            "check": "Written as −2x³ + 7x² + 5, the first term is −2x³: degree 3, coefficient −2."
+          },
+          {
+            "approach": "Far from the origin only the leading term matters. Look at its degree (odd or even) and its sign.",
+            "check": "Try x = 10: −2000 + 700 + 5 is negative; x = −10: 2000 + 700 + 5 is positive. Up on the left, down on the right."
+          },
+          {
+            "approach": "Even powers give the same output for x and −x, so their graphs are symmetric about the y-axis.",
+            "check": "(−2)² = 2² = 4 but (−2)³ = −8 ≠ 8, so x³ is not even."
+          }
+        ]
+      },
+      "s32": {
+        "exPatch": [
+          {
+            "approach": "For ax² + bx + c the vertex is at x = −b/(2a). Find that x, then substitute for the y-coordinate.",
+            "check": "Completing the square: x² − 4x + 3 = (x − 2)² − 1, vertex (2, −1)."
+          },
+          {
+            "approach": "Vertex form a(x − h)² + k shows the vertex (h, k) directly. With a > 0 the parabola opens up, so k is the lowest value.",
+            "check": "The square (x + 1)² is never negative, so the smallest value is 0 + 2 = 2."
+          },
+          {
+            "approach": "Start from vertex form with the vertex filled in, then use the other point to find a.",
+            "check": "At x = 0: (0 − 2)² − 3 = 1. It passes through (0, 1)."
+          }
+        ],
+        "figure": {
+          "kind": "graph",
+          "x": [
+            -1,
+            5
+          ],
+          "y": [
+            -2,
+            5
+          ],
+          "fns": [
+            {
+              "expr": "x**2 - 4*x + 3",
+              "label": "f(x) = x² − 4x + 3"
+            }
+          ],
+          "points": [
+            {
+              "x": 2,
+              "y": -1,
+              "label": "vertex (2, −1)"
+            },
+            {
+              "x": 1,
+              "y": 0,
+              "label": "(1, 0)"
+            },
+            {
+              "x": 3,
+              "y": 0,
+              "label": "(3, 0)"
+            }
+          ],
+          "caption": "The vertex sits halfway between the two x-intercepts, on the axis of symmetry x = 2."
+        },
+        "examples": [
+          {
+            "prompt": "A ball is thrown so its height is h(t) = −4.9t² + 19.6t + 2 metres. Find its maximum height and when it occurs.",
+            "approach": "The maximum of a downward parabola is at its vertex. Use t = −b/(2a), then substitute.",
+            "steps": [
+              {
+                "do": "t = −19.6/(2·(−4.9)) = 2",
+                "why": "Vertex formula with a = −4.9, b = 19.6."
+              },
+              {
+                "do": "h(2) = −4.9(4) + 19.6(2) + 2 = −19.6 + 39.2 + 2 = 21.6",
+                "why": "Substitute t = 2 to get the height at the vertex."
+              },
+              {
+                "do": "Maximum 21.6 m at t = 2 s",
+                "why": "a < 0, so the vertex is the highest point."
+              }
+            ],
+            "answer": "21.6",
+            "check": "h(1) = 16.7 and h(3) = 16.7 are equal and lower than 21.6, consistent with a peak at t = 2."
+          }
+        ]
+      },
+      "s33": {
+        "exPatch": [
+          {
+            "approach": "The power on each factor is the multiplicity. Odd multiplicity: the graph crosses. Even multiplicity: it touches and turns back.",
+            "check": "f(1.9) and f(2.1) are both positive (the square keeps the sign), so the graph touches at 2. Near −1 the factor (x + 1) changes sign, so it crosses."
+          },
+          {
+            "approach": "Mark the zeros on a number line and test the sign of the product in each region.",
+            "check": "f(0) = −6 < 0 between the zeros; f(4) = 6 > 0 to the right. The sign pattern is +, −, +."
+          }
+        ],
+        "figure": {
+          "kind": "graph",
+          "x": [
+            -2,
+            3.5
+          ],
+          "y": [
+            -3,
+            6
+          ],
+          "fns": [
+            {
+              "expr": "(x - 2)**2*(x + 1)",
+              "label": "f(x) = (x − 2)²(x + 1)"
+            }
+          ],
+          "points": [
+            {
+              "x": -1,
+              "y": 0,
+              "label": "crosses at −1"
+            },
+            {
+              "x": 2,
+              "y": 0,
+              "label": "touches at 2"
+            }
+          ],
+          "caption": "Odd multiplicity crosses the axis; even multiplicity bounces off it."
+        },
+        "examples": [
+          {
+            "prompt": "Sketch the sign pattern of f(x) = x(x − 3)(x + 2) and state where f(x) < 0.",
+            "approach": "Three single factors give three crossing zeros. The leading term is x³, so the graph ends down-left and up-right; the sign alternates between zeros.",
+            "steps": [
+              {
+                "do": "Zeros at x = −2, 0, 3, each multiplicity 1",
+                "why": "Set each factor to zero."
+              },
+              {
+                "do": "For x < −2: negative; −2 < x < 0: positive; 0 < x < 3: negative; x > 3: positive",
+                "why": "Start from the far right (positive, since the leading coefficient is +1) and flip sign at each crossing."
+              },
+              {
+                "do": "f(x) < 0 on (−∞, −2) ∪ (0, 3)",
+                "why": "Collect the regions where the sign is negative."
+              }
+            ],
+            "answer": "x < -2 or 0 < x < 3",
+            "answerWords": true,
+            "check": "f(1) = 1·(−2)·3 = −6 < 0 and f(−3) = −3·(−6)·(−1) = −18 < 0. Both test points agree."
+          }
+        ]
+      },
+      "s34": {
+        "exPatch": [
+          {
+            "approach": "The Remainder Theorem: dividing by (x − c) leaves remainder f(c). So evaluate f(2) instead of dividing.",
+            "check": "Long division gives x³ − 4x + 3 = (x − 2)(x² + 2x) + 3. Remainder 3."
+          },
+          {
+            "approach": "Test f(1) = 0 to prove (x − 1) is a factor, divide it out synthetically, then see whether the quadratic factors further.",
+            "check": "Expand (x − 1)(x² + x − 3) = x³ + x² − 3x − x² − x + 3 = x³ − 4x + 3."
+          }
+        ],
+        "examples": [
+          {
+            "prompt": "Divide f(x) = 2x³ − 3x² + 4x − 5 by (x − 2) synthetically. Give the quotient and remainder.",
+            "approach": "Synthetic division with c = 2: bring down the first coefficient, then multiply by 2 and add, column by column.",
+            "steps": [
+              {
+                "do": "Coefficients 2, −3, 4, −5; c = 2",
+                "why": "Every power from x³ down must appear; none are missing here."
+              },
+              {
+                "do": "Bring down 2. 2·2 = 4, −3 + 4 = 1. 1·2 = 2, 4 + 2 = 6. 6·2 = 12, −5 + 12 = 7",
+                "why": "Multiply the last result by c and add it to the next coefficient."
+              },
+              {
+                "do": "Quotient 2x² + x + 6, remainder 7",
+                "why": "The last number is the remainder; the others are the quotient’s coefficients, one degree lower."
+              }
+            ],
+            "answer": "quotient 2x^2 + x + 6, remainder 7",
+            "answerWords": true,
+            "check": "f(2) = 16 − 12 + 8 − 5 = 7, matching the remainder (Remainder Theorem)."
+          }
+        ]
+      },
+      "s35": {
+        "exPatch": [
+          {
+            "approach": "Possible rational zeros are ±(factors of the constant)/(factors of the leading coefficient).",
+            "check": "f(1/2) = 2/8 + 3/4 − 4 + 3 = 0, so 1/2 is on the list and is indeed a zero."
+          },
+          {
+            "approach": "With real coefficients, complex zeros come in conjugate pairs: a + bi brings a − bi with it.",
+            "check": "Three zeros in total for degree 3: 4, 1 + 2i and 1 − 2i."
+          }
+        ],
+        "examples": [
+          {
+            "prompt": "Find all zeros of f(x) = x³ − 6x² + 11x − 6.",
+            "approach": "Try the candidates from the Rational Zero Theorem (±1, ±2, ±3, ±6). Once one zero is found, divide it out and solve the quadratic.",
+            "steps": [
+              {
+                "do": "f(1) = 1 − 6 + 11 − 6 = 0, so x = 1 is a zero",
+                "why": "Try the simplest candidate first."
+              },
+              {
+                "do": "Divide by (x − 1): x² − 5x + 6",
+                "why": "Synthetic division with c = 1 gives coefficients 1, −5, 6 and remainder 0."
+              },
+              {
+                "do": "x² − 5x + 6 = (x − 2)(x − 3), zeros 2 and 3",
+                "why": "Factor the quadratic."
+              }
+            ],
+            "answer": "x = 1, 2, 3",
+            "answerWords": true,
+            "check": "The zeros multiply to 6 and add to 6, matching −(−6) and −(−6)/1 from the coefficients."
+          }
+        ]
+      },
+      "s36": {
+        "exPatch": [
+          {
+            "approach": "Vertical asymptotes: zeros of the denominator that do not cancel. Horizontal asymptote: compare the degrees of top and bottom.",
+            "check": "At x = 100 the value is 20001/9996 ≈ 2.001, close to 2."
+          },
+          {
+            "approach": "If a factor cancels between top and bottom, the graph has a hole there, not an asymptote. Find its height from the simplified function.",
+            "check": "x + 3 at x = 3 is 6, so the hole is at (3, 6)."
+          }
+        ],
+        "figure": {
+          "kind": "graph",
+          "x": [
+            -6,
+            6
+          ],
+          "y": [
+            -8,
+            10
+          ],
+          "fns": [
+            {
+              "expr": "(2*x**2 + 1)/(x**2 - 4)",
+              "label": "f(x) = (2x² + 1)/(x² − 4)"
+            }
+          ],
+          "vlines": [
+            {
+              "x": -2,
+              "label": "x = −2"
+            },
+            {
+              "x": 2,
+              "label": "x = 2"
+            }
+          ],
+          "hlines": [
+            {
+              "y": 2,
+              "label": "y = 2"
+            }
+          ],
+          "caption": "The graph runs alongside its asymptotes but never meets the vertical ones."
+        },
+        "examples": [
+          {
+            "prompt": "Find the asymptotes of f(x) = (x² + 1)/(x − 1).",
+            "approach": "The denominator gives the vertical asymptote. The top is one degree higher than the bottom, so there is a slant asymptote: divide to find it.",
+            "steps": [
+              {
+                "do": "x − 1 = 0 at x = 1, and the top is 2 there",
+                "why": "The numerator is not zero at x = 1, so this is a vertical asymptote, not a hole."
+              },
+              {
+                "do": "(x² + 1) ÷ (x − 1) = x + 1 remainder 2",
+                "why": "Synthetic division with c = 1: coefficients 1, 0, 1 give 1, 1 and remainder 2."
+              },
+              {
+                "do": "Vertical x = 1; slant y = x + 1",
+                "why": "As x grows, 2/(x − 1) shrinks to 0, leaving y = x + 1."
+              }
+            ],
+            "answer": "x = 1 and y = x + 1",
+            "answerWords": true,
+            "check": "At x = 101: f = 10202/100 = 102.02, and x + 1 = 102. They agree to within the small remainder term."
+          }
+        ]
+      },
+      "s41": {
+        "exPatch": [
+          {
+            "approach": "Growth by r% a year multiplies by (1 + r) each year, so the model is P(t) = P₀(1 + r)^t. Write it, then substitute t.",
+            "check": "500 × 1.08 = 540, × 1.08 = 583.2, × 1.08 ≈ 629.9. Three single years give the same answer."
+          },
+          {
+            "approach": "In a·b^x the base b decides: b > 1 is growth, 0 < b < 1 is decay. Any base to the power 0 is 1, so f(0) = a.",
+            "check": "f(1) = 1.5 and f(2) = 0.75 are getting smaller, so it decays."
+          }
+        ],
+        "figure": {
+          "kind": "graph",
+          "x": [
+            -3,
+            4
+          ],
+          "y": [
+            0,
+            9
+          ],
+          "fns": [
+            {
+              "expr": "2**x",
+              "label": "y = 2ˣ"
+            },
+            {
+              "expr": "0.5**x",
+              "label": "y = (½)ˣ",
+              "dashed": true
+            }
+          ],
+          "points": [
+            {
+              "x": 0,
+              "y": 1,
+              "label": "(0, 1)"
+            }
+          ],
+          "caption": "Growth and decay are mirror images. Both pass through (0, 1) and never touch the x-axis."
+        },
+        "examples": [
+          {
+            "prompt": "A car worth $28,000 loses 15% of its value each year. Write the model and find its value after 4 years, to the nearest dollar.",
+            "approach": "Losing 15% leaves 85%, so the yearly multiplier is 0.85. Then the model is V(t) = 28000(0.85)^t.",
+            "steps": [
+              {
+                "do": "Multiplier = 1 − 0.15 = 0.85",
+                "why": "After a 15% loss, 85% of the value remains."
+              },
+              {
+                "do": "V(t) = 28000(0.85)^t",
+                "why": "Start value times the multiplier once for each year."
+              },
+              {
+                "do": "V(4) = 28000 × 0.52200625 ≈ 14616",
+                "why": "0.85⁴ = 0.52200625; multiply and round to the dollar."
+              }
+            ],
+            "answer": "14616",
+            "check": "After 4 years of 15% loss the car is worth about half (0.52), and 14,616 is just over half of 28,000."
+          }
+        ]
+      },
+      "s42": {
+        "exPatch": [
+          {
+            "approach": "log₃(81) asks: 3 to what power gives 81? Rewrite 81 as a power of 3.",
+            "check": "3⁴ = 81, so the logarithm is 4."
+          },
+          {
+            "approach": "A logarithm only accepts positive inputs, so set the inside greater than 0 and solve.",
+            "check": "x = 4 gives log(1) = 0, defined; x = 3 gives log(0), undefined."
+          }
+        ],
+        "examples": [
+          {
+            "prompt": "Rewrite each in the other form: (a) log₂(8) = 3 (b) 10^(−2) = 0.01. Then evaluate log₄(1/16).",
+            "approach": "log_b(y) = x and b^x = y say the same thing. For the last part, write 1/16 as a power of 4.",
+            "steps": [
+              {
+                "do": "(a) log₂(8) = 3 means 2³ = 8",
+                "why": "The base stays the base; the logarithm is the exponent."
+              },
+              {
+                "do": "(b) 10^(−2) = 0.01 means log(0.01) = −2",
+                "why": "log with no base written means base 10."
+              },
+              {
+                "do": "1/16 = 4^(−2), so log₄(1/16) = −2",
+                "why": "16 = 4², and a reciprocal is a negative exponent."
+              }
+            ],
+            "answer": "-2",
+            "check": "4^(−2) = 1/4² = 1/16."
+          }
+        ]
+      },
+      "s43": {
+        "exPatch": [
+          {
+            "approach": "Use the three laws in turn: products become sums, quotients become differences, powers come down in front.",
+            "check": "With x = 10, y = 10, z = 10: log(1000·10/10) = 3, and 3·1 + 1 − 1 = 3."
+          },
+          {
+            "approach": "Reverse the laws: coefficients go back up as powers first, then a difference becomes a quotient.",
+            "check": "With x = 10, y = 10: 2 − 1 = 1, and log(100/10) = log 10 = 1."
+          }
+        ],
+        "examples": [
+          {
+            "prompt": "Use the change-of-base formula to evaluate log₅(40) to four decimal places.",
+            "approach": "Calculators have log (base 10) and ln. Change of base: log_b(a) = log(a)/log(b).",
+            "steps": [
+              {
+                "do": "log₅(40) = log(40)/log(5)",
+                "why": "Change of base works with any common base; base 10 is convenient."
+              },
+              {
+                "do": "= 1.60206/0.69897",
+                "why": "Evaluate each logarithm on a calculator."
+              },
+              {
+                "do": "≈ 2.2920",
+                "why": "Divide and round to four decimal places."
+              }
+            ],
+            "answer": "2.2920",
+            "check": "5² = 25 and 5³ = 125, so log₅(40) must be between 2 and 3, and 5^2.292 ≈ 40."
+          }
+        ]
+      },
+      "s44": {
+        "exPatch": [
+          {
+            "approach": "The unknown is in the exponent. Take the logarithm of both sides so the power rule brings x down, then divide.",
+            "check": "3^2.727 ≈ 20.0, and 3² = 9 < 20 < 27 = 3³, so x must lie between 2 and 3."
+          },
+          {
+            "approach": "Combine the logs into one, rewrite as an exponential equation, solve, and then reject any solution that makes a logarithm undefined.",
+            "check": "x = 5: log 5 + log 2 = log 10 = 1. x = −2 would need log(−2), which is undefined."
+          }
+        ],
+        "examples": [
+          {
+            "prompt": "How long does it take $2,000 to double at 6% interest compounded annually? Give the answer to two decimal places.",
+            "approach": "Set the compound interest formula equal to double the principal. The principal cancels, leaving an exponential equation in t.",
+            "steps": [
+              {
+                "do": "2000(1.06)^t = 4000, so 1.06^t = 2",
+                "why": "Divide both sides by 2000."
+              },
+              {
+                "do": "t·ln(1.06) = ln 2",
+                "why": "Take natural logs; the power rule brings t down."
+              },
+              {
+                "do": "t = ln 2 / ln 1.06 ≈ 0.693147/0.058269 ≈ 11.90",
+                "why": "Divide and round."
+              }
+            ],
+            "answer": "11.90",
+            "check": "1.06^12 ≈ 2.01, just over 2, so doubling happens a little before 12 years."
+          }
+        ]
+      },
+      "s51": {
+        "exPatch": [
+          {
+            "approach": "Multiply degrees by π/180 and simplify the fraction.",
+            "check": "3π/4 × 180/π = 135. Converting back gives the starting angle."
+          },
+          {
+            "approach": "Find the quadrant, measure the angle to the nearest x-axis (the reference angle), then attach the sign that the quadrant gives sine.",
+            "check": "210° is in quadrant III, where sine is negative, and sin 30° = 1/2. So sin 210° = −1/2."
+          }
+        ],
+        "examples": [
+          {
+            "prompt": "A wheel of radius 0.4 m turns through 2.5 radians. How far does a point on its rim travel?",
+            "approach": "Arc length is radius times angle, but only when the angle is in radians — which it is here.",
+            "steps": [
+              {
+                "do": "s = rθ",
+                "why": "The definition of a radian makes arc length exactly radius × angle."
+              },
+              {
+                "do": "s = 0.4 × 2.5",
+                "why": "Substitute r = 0.4 m and θ = 2.5 rad."
+              },
+              {
+                "do": "s = 1 m",
+                "why": "Multiply. Radians have no unit, so the answer is in metres."
+              }
+            ],
+            "answer": "1",
+            "check": "A full turn (2π ≈ 6.28 rad) would be about 2.5 m of rim; 2.5 rad is about 40% of a turn, so about 1 m is right."
+          }
+        ]
+      },
+      "s52": {
+        "exPatch": [
+          {
+            "approach": "120° is 60° past 90°, in quadrant II. Use the reference angle 60° and the signs for quadrant II (cosine negative, sine positive).",
+            "check": "cos²120° + sin²120° = 1/4 + 3/4 = 1."
+          },
+          {
+            "approach": "Use sin²θ + cos²θ = 1 to find |cos θ|, then choose the sign from the quadrant.",
+            "check": "(3/5)² + (4/5)² = 9/25 + 16/25 = 1, and cosine is negative in quadrant II."
+          }
+        ],
+        "figure": {
+          "kind": "graph",
+          "x": [
+            -1.4,
+            1.4
+          ],
+          "y": [
+            -1.4,
+            1.4
+          ],
+          "fns": [
+            {
+              "expr": "sqrt(1 - x**2)",
+              "label": "unit circle",
+              "domain": [
+                -1,
+                1
+              ],
+              "c": 0
+            },
+            {
+              "expr": "-sqrt(1 - x**2)",
+              "domain": [
+                -1,
+                1
+              ],
+              "c": 0
+            }
+          ],
+          "points": [
+            {
+              "x": -0.5,
+              "y": 0.866,
+              "label": "120°: (−½, √3⁄2)"
+            },
+            {
+              "x": 0.866,
+              "y": 0.5,
+              "label": "30°: (√3⁄2, ½)"
+            }
+          ],
+          "caption": "A point on the unit circle at angle θ has coordinates (cos θ, sin θ)."
+        },
+        "examples": [
+          {
+            "prompt": "Find the exact value of tan(315°).",
+            "approach": "tan θ = sin θ / cos θ. Locate 315° on the unit circle with its reference angle, then divide.",
+            "steps": [
+              {
+                "do": "315° is in quadrant IV; reference angle 45°",
+                "why": "360° − 315° = 45°."
+              },
+              {
+                "do": "cos 315° = √2/2, sin 315° = −√2/2",
+                "why": "In quadrant IV cosine is positive and sine is negative."
+              },
+              {
+                "do": "tan 315° = (−√2/2)/(√2/2) = −1",
+                "why": "Divide sine by cosine."
+              }
+            ],
+            "answer": "-1",
+            "check": "tan 45° = 1, and tangent is negative in quadrant IV."
+          }
+        ]
+      },
+      "s53": {
+        "exPatch": [
+          {
+            "approach": "Label the sides relative to the angle: hypotenuse given, opposite wanted. SOH: sine = opposite/hypotenuse.",
+            "check": "The side opposite 30° in a right triangle is always half the hypotenuse: 10/2 = 5."
+          },
+          {
+            "approach": "The two known sides are opposite (4) and adjacent (3) to the ground angle, so use tangent, then its inverse.",
+            "check": "The hypotenuse is 5 (a 3-4-5 triangle), and cos(53.1°) ≈ 0.6 = 3/5."
+          }
+        ],
+        "examples": [
+          {
+            "prompt": "From 50 m away, the angle of elevation to the top of a building is 32°. How tall is the building, to the nearest tenth of a metre?",
+            "approach": "Draw the right triangle: ground distance is adjacent to the angle, the height is opposite. Tangent links them.",
+            "steps": [
+              {
+                "do": "tan 32° = h/50",
+                "why": "Opposite over adjacent."
+              },
+              {
+                "do": "h = 50 tan 32°",
+                "why": "Multiply both sides by 50."
+              },
+              {
+                "do": "h ≈ 50 × 0.6249 ≈ 31.2 m",
+                "why": "Evaluate with the calculator in degree mode."
+              }
+            ],
+            "answer": "31.2",
+            "check": "At 45° the height would equal 50 m; 32° is less steep, so a height under 50 m makes sense."
+          }
+        ]
+      },
+      "s54": {
+        "exPatch": [
+          {
+            "approach": "For y = A sin(Bx) + D: amplitude |A|, period 2π/B, midline y = D, range from D − |A| to D + |A|.",
+            "check": "At x = π/4: 3 sin(π/2) + 1 = 4, the maximum. The range [−2, 4] matches."
+          },
+          {
+            "approach": "Factor B out of the bracket: sin(B(x − C)). The phase shift is C, to the right if C is positive.",
+            "check": "sin(2x − π) is zero at x = π/2 (where 2x − π = 0), so the start of the cycle has moved to π/2."
+          }
+        ],
+        "figure": {
+          "kind": "graph",
+          "x": [
+            -0.5,
+            6.5
+          ],
+          "y": [
+            -2.5,
+            4.5
+          ],
+          "fns": [
+            {
+              "expr": "3*sin(2*x) + 1",
+              "label": "y = 3 sin(2x) + 1"
+            }
+          ],
+          "hlines": [
+            {
+              "y": 1,
+              "label": "midline y = 1"
+            }
+          ],
+          "caption": "Amplitude 3 above and below the midline; one full cycle every π ≈ 3.14 units."
+        },
+        "examples": [
+          {
+            "prompt": "Write a cosine function with amplitude 2, period 4π, and midline y = −1.",
+            "approach": "Use y = A cos(Bx) + D. Amplitude gives A, the period gives B through period = 2π/B, and the midline gives D.",
+            "steps": [
+              {
+                "do": "A = 2",
+                "why": "The amplitude is the distance from the midline to a peak."
+              },
+              {
+                "do": "2π/B = 4π, so B = 1/2",
+                "why": "A longer period means a smaller B."
+              },
+              {
+                "do": "y = 2cos(x/2) − 1",
+                "why": "Put A, B and D into the template."
+              }
+            ],
+            "answer": "2cos(x/2) - 1",
+            "check": "At x = 0: 2·1 − 1 = 1 (a maximum, 2 above −1). At x = 4π the cycle is back to 1."
+          }
+        ]
+      },
+      "s61": {
+        "exPatch": [
+          {
+            "approach": "Write 75° as a sum of two angles whose exact values you know (45° + 30°), then apply cos(A + B) = cos A cos B − sin A sin B.",
+            "check": "(√6 − √2)/4 ≈ (2.449 − 1.414)/4 ≈ 0.2588, and cos 75° ≈ 0.2588."
+          },
+          {
+            "approach": "Recognise 1 − cos²θ as sin²θ from the Pythagorean identity, then cancel.",
+            "check": "At θ = 30°: (1 − 3/4)/(1/2) = (1/4)/(1/2) = 1/2 = sin 30°."
+          }
+        ],
+        "examples": [
+          {
+            "prompt": "Prove that (sin θ + cos θ)² = 1 + 2 sin θ cos θ.",
+            "approach": "Start from the more complicated side, expand it, and steer it toward the other side using sin²θ + cos²θ = 1.",
+            "steps": [
+              {
+                "do": "(sin θ + cos θ)² = sin²θ + 2 sin θ cos θ + cos²θ",
+                "why": "Expand the square: (a + b)² = a² + 2ab + b²."
+              },
+              {
+                "do": "= (sin²θ + cos²θ) + 2 sin θ cos θ",
+                "why": "Group the two squares together."
+              },
+              {
+                "do": "= 1 + 2 sin θ cos θ",
+                "why": "The Pythagorean identity replaces the group by 1."
+              }
+            ],
+            "answer": "proved: both sides equal 1 + 2 sin θ cos θ",
+            "answerWords": true,
+            "check": "At θ = 45°: (√2/2 + √2/2)² = 2, and 1 + 2(1/2) = 2."
+          }
+        ]
+      },
+      "s62": {
+        "exPatch": [
+          {
+            "approach": "Find the reference angle from sin⁻¹(1/2) = 30°, then list every angle in the interval where sine is positive (quadrants I and II).",
+            "check": "sin 150° = sin 30° = 1/2; both solutions work."
+          },
+          {
+            "approach": "Isolate cos θ first, then find the reference angle and the quadrants where cosine is negative (II and III).",
+            "check": "2cos 120° + 1 = 2(−1/2) + 1 = 0."
+          }
+        ],
+        "examples": [
+          {
+            "prompt": "Solve 2sin²θ − sin θ − 1 = 0 for 0° ≤ θ < 360°.",
+            "approach": "Treat it as a quadratic in sin θ. Factor, solve for sin θ, then find the angles for each value.",
+            "steps": [
+              {
+                "do": "(2 sin θ + 1)(sin θ − 1) = 0",
+                "why": "Factor like 2u² − u − 1 = (2u + 1)(u − 1) with u = sin θ."
+              },
+              {
+                "do": "sin θ = −1/2 or sin θ = 1",
+                "why": "Set each factor to zero."
+              },
+              {
+                "do": "θ = 210°, 330° (from −1/2) and θ = 90° (from 1)",
+                "why": "Sine is negative in quadrants III and IV with reference angle 30°; sine is 1 only at 90°."
+              }
+            ],
+            "answer": "90, 210 and 330 degrees",
+            "answerWords": true,
+            "check": "θ = 210°: 2(1/4) − (−1/2) − 1 = 0. θ = 90°: 2 − 1 − 1 = 0."
+          }
+        ]
+      },
+      "s63": {
+        "exPatch": [
+          {
+            "approach": "You have a side and its opposite angle (a, A) plus another side (b), so use the law of sines to find B. Watch for the second, obtuse solution (the ambiguous case).",
+            "check": "sin B = 8 sin 30°/5 = 0.8. Both 53.1° and 126.9° have sine 0.8, and both leave room for C (A + B < 180°)."
+          },
+          {
+            "approach": "Two sides and the included angle: the law of sines has no matching pair to start from, so use the law of cosines.",
+            "check": "c ≈ 8.19 lies between the other sides 7 and 9, which fits an angle of 60° (the middle-sized angle sits opposite the middle-sized side)."
+          }
+        ],
+        "examples": [
+          {
+            "prompt": "A triangle has sides 5, 7 and 9. Find the largest angle, to one decimal place.",
+            "approach": "The largest angle is opposite the longest side. With three sides known, rearrange the law of cosines for the angle.",
+            "steps": [
+              {
+                "do": "cos C = (a² + b² − c²)/(2ab) with c = 9",
+                "why": "The angle opposite the longest side is the largest."
+              },
+              {
+                "do": "cos C = (25 + 49 − 81)/(2·5·7) = −7/70 = −0.1",
+                "why": "Substitute and simplify."
+              },
+              {
+                "do": "C = cos⁻¹(−0.1) ≈ 95.7°",
+                "why": "A negative cosine means the angle is obtuse."
+              }
+            ],
+            "answer": "95.7",
+            "check": "Since 9² = 81 > 5² + 7² = 74, the angle must be a little over 90°. 95.7° is."
+          }
+        ]
+      }
+    },
+    "units": {
+      "functions": {
+        "practice": [
+          {
+            "id": "u1x1",
+            "kind": "numeric",
+            "lesson": "s11",
+            "prompt": "g(x) = x² − 2x. Find g(−3).",
+            "answer": 15,
+            "verify": {
+              "expr": "(-3)**2 - 2*(-3)"
+            },
+            "hint": "Brackets around −3 before squaring.",
+            "solution": [
+              "g(−3) = (−3)² − 2(−3)",
+              "= 9 + 6",
+              "= 15"
+            ]
+          },
+          {
+            "id": "u1x2",
+            "kind": "numeric",
+            "lesson": "s11",
+            "prompt": "p(t) = 4t³ − t. Find p(1/2).",
+            "answer": 0,
+            "verify": {
+              "expr": "4*Rational(1,2)**3 - Rational(1,2)"
+            },
+            "hint": "(1/2)³ = 1/8.",
+            "solution": [
+              "p(1/2) = 4(1/8) − 1/2",
+              "= 1/2 − 1/2",
+              "= 0"
+            ]
+          },
+          {
+            "id": "u1x3",
+            "kind": "mc",
+            "lesson": "s11",
+            "prompt": "f(x) = x² + 1. Which is f(x + 2)?",
+            "options": [
+              {
+                "t": "x² + 4x + 5",
+                "ok": true
+              },
+              {
+                "t": "x² + 3",
+                "ok": false
+              },
+              {
+                "t": "x² + 2x + 5",
+                "ok": false
+              },
+              {
+                "t": "x² + 4x + 3",
+                "ok": false
+              }
+            ],
+            "hint": "Replace x by the whole bracket (x + 2), then expand (x + 2)².",
+            "solution": [
+              "f(x + 2) = (x + 2)² + 1",
+              "= x² + 4x + 4 + 1",
+              "= x² + 4x + 5"
+            ]
+          },
+          {
+            "id": "u1x4",
+            "kind": "mc",
+            "lesson": "s12",
+            "prompt": "What is the domain of f(x) = (x + 1)/(x² − 5x + 6)?",
+            "options": [
+              {
+                "t": "All real numbers except 2 and 3",
+                "ok": true
+              },
+              {
+                "t": "All real numbers except −1",
+                "ok": false
+              },
+              {
+                "t": "All real numbers except −2 and −3",
+                "ok": false
+              },
+              {
+                "t": "x > 3",
+                "ok": false
+              }
+            ],
+            "hint": "Factor the denominator and find where it is zero.",
+            "solution": [
+              "x² − 5x + 6 = (x − 2)(x − 3)",
+              "Zero at x = 2 and x = 3",
+              "Exclude those two values"
+            ]
+          },
+          {
+            "id": "u1x5",
+            "kind": "numeric",
+            "lesson": "s12",
+            "prompt": "f(x) = √(10 − 2x). What is the LARGEST x in its domain?",
+            "answer": 5,
+            "verify": {
+              "expr": "solve(10 - 2*x, x)[0]"
+            },
+            "hint": "Solve 10 − 2x ≥ 0.",
+            "solution": [
+              "10 − 2x ≥ 0",
+              "10 ≥ 2x",
+              "x ≤ 5"
+            ]
+          },
+          {
+            "id": "u1x6",
+            "kind": "numeric",
+            "lesson": "s13",
+            "prompt": "Find the average rate of change of f(x) = x³ from x = 0 to x = 2.",
+            "answer": 4,
+            "verify": {
+              "expr": "(2**3 - 0**3)/(2 - 0)"
+            },
+            "hint": "Change in f over change in x.",
+            "solution": [
+              "f(2) = 8, f(0) = 0",
+              "(8 − 0)/(2 − 0)",
+              "= 4"
+            ]
+          },
+          {
+            "id": "u1x7",
+            "kind": "numeric",
+            "lesson": "s13",
+            "prompt": "h(t) = −5t² + 20t. Find the average rate of change of h from t = 0 to t = 2.",
+            "answer": 10,
+            "verify": {
+              "expr": "((-5*2**2 + 20*2) - 0)/2"
+            },
+            "hint": "h(2) = −20 + 40.",
+            "solution": [
+              "h(0) = 0, h(2) = 20",
+              "(20 − 0)/(2 − 0)",
+              "= 10 m/s"
+            ]
+          },
+          {
+            "id": "u1x8",
+            "kind": "numeric",
+            "lesson": "s13",
+            "prompt": "A car’s odometer reads 12,450 km at 2 pm and 12,690 km at 5 pm. What is the average rate of change of distance, in km per hour?",
+            "answer": 80,
+            "verify": {
+              "expr": "(12690 - 12450)/(5 - 2)"
+            },
+            "hint": "Distance covered over hours elapsed.",
+            "solution": [
+              "Change in distance = 240 km",
+              "Change in time = 3 h",
+              "240/3 = 80 km/h"
+            ]
+          },
+          {
+            "id": "u1x9",
+            "kind": "mc",
+            "lesson": "s13",
+            "prompt": "On which interval is f(x) = x³ − 3x decreasing?",
+            "options": [
+              {
+                "t": "(−1, 1)",
+                "ok": true
+              },
+              {
+                "t": "(−∞, −1)",
+                "ok": false
+              },
+              {
+                "t": "(1, ∞)",
+                "ok": false
+              },
+              {
+                "t": "(−2, 2)",
+                "ok": false
+              }
+            ],
+            "hint": "The local maximum is at x = −1 and the local minimum at x = 1.",
+            "solution": [
+              "The graph rises to (−1, 2)",
+              "falls to (1, −2)",
+              "then rises again: decreasing on (−1, 1)"
+            ]
+          },
+          {
+            "id": "u1x10",
+            "kind": "numeric",
+            "lesson": "s14",
+            "prompt": "f(x) = x² − 1 and g(x) = 3x. Find f(g(2)).",
+            "answer": 35,
+            "verify": {
+              "expr": "(3*2)**2 - 1"
+            },
+            "hint": "Inside first: g(2) = 6.",
+            "solution": [
+              "g(2) = 6",
+              "f(6) = 36 − 1",
+              "= 35"
+            ]
+          },
+          {
+            "id": "u1x11",
+            "kind": "numeric",
+            "lesson": "s14",
+            "prompt": "Same f(x) = x² − 1 and g(x) = 3x. Find g(f(2)).",
+            "answer": 9,
+            "verify": {
+              "expr": "3*(2**2 - 1)"
+            },
+            "hint": "Inside first: f(2) = 3.",
+            "solution": [
+              "f(2) = 3",
+              "g(3) = 9"
+            ]
+          },
+          {
+            "id": "u1x12",
+            "kind": "mc",
+            "lesson": "s14",
+            "prompt": "h(x) = √(x² + 9). Which pair gives h = f(g(x))?",
+            "options": [
+              {
+                "t": "f(u) = √u, g(x) = x² + 9",
+                "ok": true
+              },
+              {
+                "t": "f(u) = u² + 9, g(x) = √x",
+                "ok": false
+              },
+              {
+                "t": "f(u) = √u + 9, g(x) = x²",
+                "ok": false
+              },
+              {
+                "t": "f(u) = u + 9, g(x) = √(x²)",
+                "ok": false
+              }
+            ],
+            "hint": "What do you compute first?",
+            "solution": [
+              "First compute x² + 9: that is g",
+              "Then take the square root: that is f",
+              "f(g(x)) = √(x² + 9)"
+            ]
+          },
+          {
+            "id": "u1x13",
+            "kind": "spot",
+            "lesson": "s14",
+            "prompt": "f(x) = 2x + 1, g(x) = x². A student finds f(g(3)). One line is wrong.",
+            "steps": [
+              {
+                "t": "f(g(3)) means apply g first",
+                "bad": false
+              },
+              {
+                "t": "g(3) = 6",
+                "bad": true
+              },
+              {
+                "t": "f(6) = 2·6 + 1",
+                "bad": false
+              },
+              {
+                "t": "= 13",
+                "bad": false
+              }
+            ],
+            "why": "g squares its input: g(3) = 3² = 9, not 3·2 = 6. Squaring is not doubling. With the right inner value, f(9) = 19. The later lines follow correctly from the wrong number, which is why the error survives.",
+            "hint": "What does g do to 3?",
+            "solution": [
+              "g squares its input, so g(3) = 3² = 9, not 3·2 = 6",
+              "Then f(9) = 2·9 + 1 = 19"
+            ]
+          },
+          {
+            "id": "u1x14",
+            "kind": "mc",
+            "lesson": "s15",
+            "prompt": "g(x) = (x + 5)² is the graph of x² moved how?",
+            "options": [
+              {
+                "t": "5 to the left",
+                "ok": true
+              },
+              {
+                "t": "5 to the right",
+                "ok": false
+              },
+              {
+                "t": "5 up",
+                "ok": false
+              },
+              {
+                "t": "5 down",
+                "ok": false
+              }
+            ],
+            "hint": "Which x makes the bracket zero?",
+            "solution": [
+              "The bracket is zero at x = −5",
+              "So the vertex moves from 0 to −5",
+              "That is a shift left"
+            ]
+          },
+          {
+            "id": "u1x15",
+            "kind": "mc",
+            "lesson": "s15",
+            "prompt": "Which function is |x| reflected in the x-axis and then moved up 4?",
+            "options": [
+              {
+                "t": "y = −|x| + 4",
+                "ok": true
+              },
+              {
+                "t": "y = |−x| + 4",
+                "ok": false
+              },
+              {
+                "t": "y = −|x + 4|",
+                "ok": false
+              },
+              {
+                "t": "y = |x| − 4",
+                "ok": false
+              }
+            ],
+            "hint": "A reflection in the x-axis negates the output.",
+            "solution": [
+              "Reflect: −|x|",
+              "Up 4: −|x| + 4"
+            ]
+          },
+          {
+            "id": "u1x16",
+            "kind": "numeric",
+            "lesson": "s15",
+            "prompt": "f(x) = x² is shifted right 3 and up 2. What is the y-value of the new graph at x = 5?",
+            "answer": 6,
+            "verify": {
+              "expr": "(5 - 3)**2 + 2"
+            },
+            "hint": "The new function is (x − 3)² + 2.",
+            "solution": [
+              "g(x) = (x − 3)² + 2",
+              "g(5) = 2² + 2",
+              "= 6"
+            ]
+          },
+          {
+            "id": "u1x17",
+            "kind": "numeric",
+            "lesson": "s15",
+            "prompt": "g(x) = −3|x − 1| + 4. What is the y-coordinate of the corner of the V?",
+            "answer": 4,
+            "verify": {
+              "expr": "-3*abs(1 - 1) + 4"
+            },
+            "hint": "The corner is where the absolute value is zero.",
+            "solution": [
+              "|x − 1| = 0 at x = 1",
+              "g(1) = 0 + 4",
+              "= 4"
+            ]
+          },
+          {
+            "id": "u1x18",
+            "kind": "order",
+            "lesson": "s15",
+            "prompt": "Put the steps for graphing y = 2(x − 1)² − 3 from y = x² in order.",
+            "steps": [
+              "Start with the vertex of y = x² at (0, 0)",
+              "Shift right 1",
+              "Stretch vertically by a factor of 2",
+              "Shift down 3, so the vertex is (1, −3)"
+            ],
+            "hint": "Inside the bracket first, then the multiplier, then the constant.",
+            "solution": [
+              "Horizontal change first",
+              "Then the stretch",
+              "Then the vertical shift"
+            ]
+          },
+          {
+            "id": "u1x19",
+            "kind": "numeric",
+            "lesson": "s16",
+            "prompt": "f(x) = (x − 4)/2. Find f⁻¹(3).",
+            "answer": 10,
+            "verify": {
+              "expr": "2*3 + 4"
+            },
+            "hint": "f⁻¹(x) = 2x + 4, or ask which x gives f(x) = 3.",
+            "solution": [
+              "Swap and solve: x = (y − 4)/2",
+              "y = 2x + 4",
+              "f⁻¹(3) = 10"
+            ]
+          },
+          {
+            "id": "u1x20",
+            "kind": "mc",
+            "lesson": "s16",
+            "prompt": "Which function is one-to-one on all real numbers?",
+            "options": [
+              {
+                "t": "f(x) = x³",
+                "ok": true
+              },
+              {
+                "t": "f(x) = x²",
+                "ok": false
+              },
+              {
+                "t": "f(x) = |x|",
+                "ok": false
+              },
+              {
+                "t": "f(x) = x² − 4x",
+                "ok": false
+              }
+            ],
+            "hint": "Use the horizontal line test.",
+            "solution": [
+              "x² , |x| and x² − 4x all repeat outputs",
+              "x³ never repeats an output"
+            ]
+          },
+          {
+            "id": "u1x21",
+            "kind": "numeric",
+            "lesson": "s16",
+            "prompt": "f(x) = (2x + 1)/(x − 3). Its inverse is (3x + 1)/(x − 2). Find f⁻¹(9).",
+            "answer": 4,
+            "verify": {
+              "expr": "(3*9 + 1)/(9 - 2)"
+            },
+            "hint": "Substitute 9 into the inverse.",
+            "solution": [
+              "(27 + 1)/(9 − 2)",
+              "= 28/7",
+              "= 4"
+            ]
+          }
+        ]
+      },
+      "linear": {
+        "practice": [
+          {
+            "id": "u2x1",
+            "kind": "numeric",
+            "lesson": "s21",
+            "prompt": "A plan costs $45 for 2 GB and $60 for 5 GB, and cost is linear in data. What is the cost per GB?",
+            "answer": 5,
+            "verify": {
+              "expr": "(60 - 45)/(5 - 2)"
+            },
+            "hint": "Change in cost over change in data.",
+            "solution": [
+              "(60 − 45)/(5 − 2)",
+              "= 15/3",
+              "= $5 per GB"
+            ]
+          },
+          {
+            "id": "u2x2",
+            "kind": "numeric",
+            "lesson": "s21",
+            "prompt": "For the same plan, what is the base fee at 0 GB?",
+            "answer": 35,
+            "verify": {
+              "expr": "45 - 5*2"
+            },
+            "hint": "Use C = 5x + b with the point (2, 45).",
+            "solution": [
+              "45 = 5·2 + b",
+              "b = 35"
+            ]
+          },
+          {
+            "id": "u2x3",
+            "kind": "mc",
+            "lesson": "s21",
+            "prompt": "A taxi charges $3.50 to start and $2.25 per km. Which function gives the fare for d km?",
+            "options": [
+              {
+                "t": "F(d) = 2.25d + 3.50",
+                "ok": true
+              },
+              {
+                "t": "F(d) = 3.50d + 2.25",
+                "ok": false
+              },
+              {
+                "t": "F(d) = 5.75d",
+                "ok": false
+              },
+              {
+                "t": "F(d) = 2.25(d + 3.50)",
+                "ok": false
+              }
+            ],
+            "hint": "The per-km price multiplies d; the one-off charge is added once.",
+            "solution": [
+              "Slope = rate per km = 2.25",
+              "Intercept = start fee = 3.50"
+            ]
+          },
+          {
+            "id": "u2x4",
+            "kind": "spot",
+            "lesson": "s21",
+            "prompt": "A student finds the line through (1, 2) and (3, 8). One line is wrong.",
+            "steps": [
+              {
+                "t": "m = (8 − 2)/(3 − 1) = 3",
+                "bad": false
+              },
+              {
+                "t": "y − 2 = 3(x − 1)",
+                "bad": false
+              },
+              {
+                "t": "y = 3x − 3 + 2",
+                "bad": false
+              },
+              {
+                "t": "y = 3x + 5",
+                "bad": true
+              }
+            ],
+            "why": "−3 + 2 is −1, not +5. The student added 3 and 2 instead of combining −3 and +2. The correct line is y = 3x − 1, and it passes through both points: 3(1) − 1 = 2 and 3(3) − 1 = 8.",
+            "hint": "Check the last line against the point (1, 2).",
+            "solution": [
+              "From y − 2 = 3(x − 1): y = 3x − 3 + 2",
+              "−3 + 2 = −1, so y = 3x − 1, which passes through (1, 2) and (3, 8)"
+            ]
+          },
+          {
+            "id": "u2x5",
+            "kind": "numeric",
+            "lesson": "s22",
+            "prompt": "What is the slope of the line 5x + 2y = 10?",
+            "answer": -2.5,
+            "verify": {
+              "expr": "Rational(-5, 2)"
+            },
+            "hint": "Solve for y.",
+            "solution": [
+              "2y = −5x + 10",
+              "y = −2.5x + 5",
+              "slope −2.5"
+            ]
+          },
+          {
+            "id": "u2x6",
+            "kind": "numeric",
+            "lesson": "s22",
+            "prompt": "The line through (4, 1) parallel to 3x − 2y = 6 has what y-intercept?",
+            "answer": -5,
+            "verify": {
+              "expr": "1 - Rational(3,2)*4"
+            },
+            "hint": "Slope 3/2, then b = y − mx at (4, 1).",
+            "solution": [
+              "m = 3/2",
+              "b = 1 − (3/2)(4)",
+              "= −5"
+            ]
+          },
+          {
+            "id": "u2x7",
+            "kind": "mc",
+            "lesson": "s22",
+            "prompt": "Which line is perpendicular to y = −4x + 1?",
+            "options": [
+              {
+                "t": "y = ¼x − 2",
+                "ok": true
+              },
+              {
+                "t": "y = 4x + 1",
+                "ok": false
+              },
+              {
+                "t": "y = −¼x + 3",
+                "ok": false
+              },
+              {
+                "t": "y = −4x − 1",
+                "ok": false
+              }
+            ],
+            "hint": "Negative reciprocal of −4.",
+            "solution": [
+              "−4 × ¼ = −1",
+              "So slope ¼ is perpendicular"
+            ]
+          },
+          {
+            "id": "u2x8",
+            "kind": "numeric",
+            "lesson": "s22",
+            "prompt": "Where does the line y = −(3/4)x + 6 cross the x-axis? Give the x-value.",
+            "answer": 8,
+            "verify": {
+              "expr": "solve(-Rational(3,4)*x + 6, x)[0]"
+            },
+            "hint": "Set y = 0.",
+            "solution": [
+              "0 = −(3/4)x + 6",
+              "(3/4)x = 6",
+              "x = 8"
+            ]
+          }
+        ]
+      },
+      "poly": {
+        "practice": [
+          {
+            "id": "u3x1",
+            "kind": "numeric",
+            "lesson": "s31",
+            "prompt": "What is the leading coefficient of f(x) = 4x² − 3x⁵ + x − 9?",
+            "answer": -3,
+            "verify": {
+              "expr": "-3"
+            },
+            "hint": "Find the term with the highest power.",
+            "solution": [
+              "Highest power is x⁵",
+              "Its coefficient is −3"
+            ]
+          },
+          {
+            "id": "u3x2",
+            "kind": "mc",
+            "lesson": "s31",
+            "prompt": "How does f(x) = 3x⁴ − x behave at both ends?",
+            "options": [
+              {
+                "t": "Up on both sides",
+                "ok": true
+              },
+              {
+                "t": "Down on both sides",
+                "ok": false
+              },
+              {
+                "t": "Down on the left, up on the right",
+                "ok": false
+              },
+              {
+                "t": "Up on the left, down on the right",
+                "ok": false
+              }
+            ],
+            "hint": "Even degree, positive leading coefficient.",
+            "solution": [
+              "Leading term 3x⁴",
+              "Even power: both ends the same direction",
+              "Positive: both up"
+            ]
+          },
+          {
+            "id": "u3x3",
+            "kind": "numeric",
+            "lesson": "s31",
+            "prompt": "What is the degree of f(x) = (x² + 1)(x³ − 2)?",
+            "answer": 5,
+            "verify": {
+              "expr": "2 + 3"
+            },
+            "hint": "Multiply the leading terms.",
+            "solution": [
+              "x² · x³ = x⁵",
+              "Degree 5"
+            ]
+          },
+          {
+            "id": "u3x4",
+            "kind": "numeric",
+            "lesson": "s32",
+            "prompt": "h(t) = −4.9t² + 19.6t + 2. What is the maximum height, in metres?",
+            "answer": 21.6,
+            "tol": 0.001,
+            "verify": {
+              "expr": "-Rational(49,10)*2**2 + Rational(196,10)*2 + 2"
+            },
+            "hint": "Vertex at t = −b/(2a) = 2.",
+            "solution": [
+              "t = 2",
+              "h(2) = −19.6 + 39.2 + 2",
+              "= 21.6"
+            ]
+          },
+          {
+            "id": "u3x5",
+            "kind": "mc",
+            "lesson": "s32",
+            "prompt": "What is the range of f(x) = −2(x − 1)² + 5?",
+            "options": [
+              {
+                "t": "y ≤ 5",
+                "ok": true
+              },
+              {
+                "t": "y ≥ 5",
+                "ok": false
+              },
+              {
+                "t": "y ≤ 1",
+                "ok": false
+              },
+              {
+                "t": "All real numbers",
+                "ok": false
+              }
+            ],
+            "hint": "a < 0 means it opens downward.",
+            "solution": [
+              "Vertex (1, 5)",
+              "Opens down, so 5 is the maximum",
+              "Range y ≤ 5"
+            ]
+          },
+          {
+            "id": "u3x6",
+            "kind": "numeric",
+            "lesson": "s33",
+            "prompt": "How many x-intercepts does f(x) = x(x − 3)(x + 2) have?",
+            "answer": 3,
+            "verify": {
+              "expr": "len(solve(x*(x-3)*(x+2), x))"
+            },
+            "hint": "Set each factor to zero.",
+            "solution": [
+              "x = 0, 3, −2",
+              "Three intercepts"
+            ]
+          },
+          {
+            "id": "u3x7",
+            "kind": "mc",
+            "lesson": "s33",
+            "prompt": "Where is f(x) = x(x − 3)(x + 2) negative?",
+            "options": [
+              {
+                "t": "x < −2 or 0 < x < 3",
+                "ok": true
+              },
+              {
+                "t": "−2 < x < 0 or x > 3",
+                "ok": false
+              },
+              {
+                "t": "x < 0 only",
+                "ok": false
+              },
+              {
+                "t": "−2 < x < 3",
+                "ok": false
+              }
+            ],
+            "hint": "Test one point in each region between the zeros.",
+            "solution": [
+              "f(−3) = −18 < 0",
+              "f(−1) = 4 > 0",
+              "f(1) = −6 < 0",
+              "f(4) = 24 > 0"
+            ]
+          },
+          {
+            "id": "u3x8",
+            "kind": "numeric",
+            "lesson": "s33",
+            "prompt": "f(x) = (x + 1)²(x − 4). What is f(0) (the y-intercept)?",
+            "answer": -4,
+            "verify": {
+              "expr": "(0+1)**2*(0-4)"
+            },
+            "hint": "Substitute x = 0.",
+            "solution": [
+              "(1)²(−4)",
+              "= −4"
+            ]
+          },
+          {
+            "id": "u3x9",
+            "kind": "numeric",
+            "lesson": "s34",
+            "prompt": "Divide 2x³ − 3x² + 4x − 5 by (x − 2). What is the remainder?",
+            "answer": 7,
+            "verify": {
+              "expr": "2*2**3 - 3*2**2 + 4*2 - 5"
+            },
+            "hint": "Remainder Theorem: evaluate at 2.",
+            "solution": [
+              "f(2) = 16 − 12 + 8 − 5",
+              "= 7"
+            ]
+          },
+          {
+            "id": "u3x10",
+            "kind": "mc",
+            "lesson": "s34",
+            "prompt": "Is (x + 3) a factor of f(x) = x³ + 2x² − 5x − 6?",
+            "options": [
+              {
+                "t": "Yes, because f(−3) = 0",
+                "ok": true
+              },
+              {
+                "t": "No, because f(3) ≠ 0",
+                "ok": false
+              },
+              {
+                "t": "Yes, because the constant −6 is divisible by 3",
+                "ok": false
+              },
+              {
+                "t": "No, because f(−3) = −6",
+                "ok": false
+              }
+            ],
+            "hint": "(x + 3) is a factor exactly when f(−3) = 0.",
+            "solution": [
+              "f(−3) = −27 + 18 + 15 − 6",
+              "= 0",
+              "So (x + 3) is a factor"
+            ]
+          },
+          {
+            "id": "u3x11",
+            "kind": "numeric",
+            "lesson": "s35",
+            "prompt": "f(x) = x³ − 6x² + 11x − 6 has three zeros. What is the largest?",
+            "answer": 3,
+            "verify": {
+              "expr": "Max(*solve(x**3 - 6*x**2 + 11*x - 6, x))"
+            },
+            "hint": "f(1) = 0; divide out (x − 1).",
+            "solution": [
+              "Zeros 1, 2, 3",
+              "Largest 3"
+            ]
+          },
+          {
+            "id": "u3x12",
+            "kind": "numeric",
+            "lesson": "s35",
+            "prompt": "A polynomial of degree 4 with real coefficients has zeros 3i and 2. Including 3i and 2, how many distinct non-real zeros must it have at least?",
+            "answer": 2,
+            "verify": {
+              "expr": "2"
+            },
+            "hint": "Complex zeros come with their conjugates.",
+            "solution": [
+              "3i forces −3i",
+              "Non-real zeros: 3i and −3i",
+              "At least 2"
+            ]
+          },
+          {
+            "id": "u3x13",
+            "kind": "mc",
+            "lesson": "s35",
+            "prompt": "Which number can NOT be a rational zero of f(x) = 3x³ − x + 2?",
+            "options": [
+              {
+                "t": "3",
+                "ok": true
+              },
+              {
+                "t": "2/3",
+                "ok": false
+              },
+              {
+                "t": "−1",
+                "ok": false
+              },
+              {
+                "t": "1/3",
+                "ok": false
+              }
+            ],
+            "hint": "p must divide 2 and q must divide 3.",
+            "solution": [
+              "p ∈ {±1, ±2}, q ∈ {±1, ±3}",
+              "Candidates ±1, ±2, ±1/3, ±2/3",
+              "3 is not on the list"
+            ]
+          },
+          {
+            "id": "u3x14",
+            "kind": "order",
+            "lesson": "s35",
+            "prompt": "Put the steps for finding all zeros of a cubic in order.",
+            "steps": [
+              "List the possible rational zeros ±p/q",
+              "Test candidates until f(c) = 0",
+              "Divide out (x − c) synthetically",
+              "Solve the remaining quadratic"
+            ],
+            "hint": "Candidates first, then reduce the degree.",
+            "solution": [
+              "List",
+              "Test",
+              "Divide",
+              "Solve the quadratic"
+            ]
+          },
+          {
+            "id": "u3x15",
+            "kind": "numeric",
+            "lesson": "s36",
+            "prompt": "What is the horizontal asymptote of f(x) = (6x² − 1)/(2x² + 5)? Give the y-value.",
+            "answer": 3,
+            "verify": {
+              "expr": "limit((6*x**2 - 1)/(2*x**2 + 5), x, oo)"
+            },
+            "hint": "Equal degrees: ratio of leading coefficients.",
+            "solution": [
+              "Both degree 2",
+              "6/2",
+              "= 3"
+            ]
+          },
+          {
+            "id": "u3x16",
+            "kind": "numeric",
+            "lesson": "s36",
+            "prompt": "f(x) = (x + 5)/(x − 4). Where is the vertical asymptote? Give the x-value.",
+            "answer": 4,
+            "verify": {
+              "expr": "solve(x - 4, x)[0]"
+            },
+            "hint": "Where is the denominator zero?",
+            "solution": [
+              "x − 4 = 0",
+              "x = 4",
+              "The top is 9 there, not 0"
+            ]
+          },
+          {
+            "id": "u3x17",
+            "kind": "mc",
+            "lesson": "s36",
+            "prompt": "What is the slant asymptote of f(x) = (x² + 1)/(x − 1)?",
+            "options": [
+              {
+                "t": "y = x + 1",
+                "ok": true
+              },
+              {
+                "t": "y = x − 1",
+                "ok": false
+              },
+              {
+                "t": "y = x",
+                "ok": false
+              },
+              {
+                "t": "y = 1",
+                "ok": false
+              }
+            ],
+            "hint": "Divide x² + 1 by x − 1.",
+            "solution": [
+              "Quotient x + 1, remainder 2",
+              "Slant asymptote y = x + 1"
+            ]
+          },
+          {
+            "id": "u3x18",
+            "kind": "spot",
+            "lesson": "s36",
+            "prompt": "A student analyses f(x) = (x² − 4)/(x − 2). One line is wrong.",
+            "steps": [
+              {
+                "t": "x² − 4 = (x − 2)(x + 2)",
+                "bad": false
+              },
+              {
+                "t": "The factor (x − 2) cancels",
+                "bad": false
+              },
+              {
+                "t": "So there is a vertical asymptote at x = 2",
+                "bad": true
+              },
+              {
+                "t": "The simplified function is x + 2 for x ≠ 2",
+                "bad": false
+              }
+            ],
+            "why": "A factor that cancels gives a HOLE, not an asymptote. Near x = 2 the function behaves like x + 2, which is close to 4 — it does not blow up. The graph is the line y = x + 2 with the single point (2, 4) missing.",
+            "hint": "What happens to the value of the function near x = 2?",
+            "solution": [
+              "Cancelling gives x + 2",
+              "Hole at (2, 4)",
+              "No vertical asymptote"
+            ]
+          }
+        ]
+      },
+      "explog": {
+        "practice": [
+          {
+            "id": "u4x1",
+            "kind": "numeric",
+            "lesson": "s41",
+            "prompt": "A car worth $28,000 loses 15% a year. What is it worth after 4 years, to the nearest dollar?",
+            "answer": 14616,
+            "tol": 0.5,
+            "verify": {
+              "expr": "28000*Rational(85,100)**4",
+              "dp": 0
+            },
+            "hint": "Multiplier 0.85, four times.",
+            "solution": [
+              "V = 28000(0.85)⁴",
+              "= 28000 × 0.52200625",
+              "≈ 14616"
+            ]
+          },
+          {
+            "id": "u4x2",
+            "kind": "mc",
+            "lesson": "s41",
+            "prompt": "A quantity is modelled by Q(t) = 80(1.03)^t. What does 1.03 tell you?",
+            "options": [
+              {
+                "t": "It grows by 3% per time period",
+                "ok": true
+              },
+              {
+                "t": "It grows by 103% per time period",
+                "ok": false
+              },
+              {
+                "t": "It grows by 1.03 units per time period",
+                "ok": false
+              },
+              {
+                "t": "It starts at 1.03",
+                "ok": false
+              }
+            ],
+            "hint": "1.03 = 1 + 0.03.",
+            "solution": [
+              "Multiplier 1.03 = 1 + 3%",
+              "So 3% growth each period"
+            ]
+          },
+          {
+            "id": "u4x3",
+            "kind": "numeric",
+            "lesson": "s42",
+            "prompt": "Evaluate log₄(1/16).",
+            "answer": -2,
+            "verify": {
+              "expr": "log(Rational(1,16), 4)"
+            },
+            "hint": "16 = 4².",
+            "solution": [
+              "1/16 = 4^(−2)",
+              "log₄(1/16) = −2"
+            ]
+          },
+          {
+            "id": "u4x4",
+            "kind": "numeric",
+            "lesson": "s42",
+            "prompt": "Evaluate log(0.001) (base 10).",
+            "answer": -3,
+            "verify": {
+              "expr": "log(Rational(1,1000), 10)"
+            },
+            "hint": "0.001 = 10 to what power?",
+            "solution": [
+              "0.001 = 10^(−3)",
+              "log(0.001) = −3"
+            ]
+          },
+          {
+            "id": "u4x5",
+            "kind": "mc",
+            "lesson": "s42",
+            "prompt": "Which is equivalent to ln(x) = 5?",
+            "options": [
+              {
+                "t": "x = e⁵",
+                "ok": true
+              },
+              {
+                "t": "x = 5e",
+                "ok": false
+              },
+              {
+                "t": "x = 10⁵",
+                "ok": false
+              },
+              {
+                "t": "x = ln 5",
+                "ok": false
+              }
+            ],
+            "hint": "ln is log base e.",
+            "solution": [
+              "ln x = 5 means e⁵ = x"
+            ]
+          },
+          {
+            "id": "u4x6",
+            "kind": "numeric",
+            "lesson": "s43",
+            "prompt": "Evaluate log₅(40) to four decimal places.",
+            "answer": 2.292,
+            "tol": 0.00005,
+            "verify": {
+              "expr": "log(40)/log(5)",
+              "dp": 4
+            },
+            "hint": "Change of base: log 40 / log 5.",
+            "solution": [
+              "1.60206/0.69897",
+              "≈ 2.2920"
+            ]
+          },
+          {
+            "id": "u4x7",
+            "kind": "numeric",
+            "lesson": "s43",
+            "prompt": "If log(a) = 2 and log(b) = 0.5, what is log(a²/b)?",
+            "answer": 3.5,
+            "verify": {
+              "expr": "2*2 - Rational(1,2)"
+            },
+            "hint": "log(a²/b) = 2 log a − log b.",
+            "solution": [
+              "2(2) − 0.5",
+              "= 3.5"
+            ]
+          },
+          {
+            "id": "u4x8",
+            "kind": "mc",
+            "lesson": "s43",
+            "prompt": "Condense 3 ln x + ln y − ln z.",
+            "options": [
+              {
+                "t": "ln(x³y/z)",
+                "ok": true
+              },
+              {
+                "t": "ln(3xy/z)",
+                "ok": false
+              },
+              {
+                "t": "ln(x³ + y − z)",
+                "ok": false
+              },
+              {
+                "t": "3 ln(xy/z)",
+                "ok": false
+              }
+            ],
+            "hint": "Coefficient up as a power first.",
+            "solution": [
+              "3 ln x = ln x³",
+              "ln x³ + ln y = ln(x³y)",
+              "− ln z divides: ln(x³y/z)"
+            ]
+          },
+          {
+            "id": "u4x9",
+            "kind": "numeric",
+            "lesson": "s43",
+            "prompt": "Evaluate log₂(48) − log₂(3).",
+            "answer": 4,
+            "verify": {
+              "expr": "log(48, 2) - log(3, 2)"
+            },
+            "hint": "A difference of logs is the log of a quotient.",
+            "solution": [
+              "log₂(48/3)",
+              "= log₂ 16",
+              "= 4"
+            ]
+          },
+          {
+            "id": "u4x10",
+            "kind": "numeric",
+            "lesson": "s44",
+            "prompt": "How many years for $2,000 to double at 6% compounded annually? Two decimal places.",
+            "answer": 11.9,
+            "tol": 0.005,
+            "verify": {
+              "expr": "log(2)/log(Rational(106,100))",
+              "dp": 2
+            },
+            "hint": "Solve 1.06^t = 2.",
+            "solution": [
+              "t = ln 2 / ln 1.06",
+              "≈ 11.90"
+            ]
+          },
+          {
+            "id": "u4x11",
+            "kind": "numeric",
+            "lesson": "s44",
+            "prompt": "Solve 5^(x − 1) = 125.",
+            "answer": 4,
+            "verify": {
+              "expr": "solve(5**(x - 1) - 125, x)[0]"
+            },
+            "hint": "125 = 5³.",
+            "solution": [
+              "5^(x − 1) = 5³",
+              "x − 1 = 3",
+              "x = 4"
+            ]
+          },
+          {
+            "id": "u4x12",
+            "kind": "numeric",
+            "lesson": "s44",
+            "prompt": "Solve e^(2x) = 9, to three decimal places.",
+            "answer": 1.099,
+            "tol": 0.0005,
+            "verify": {
+              "expr": "log(9)/2",
+              "dp": 3
+            },
+            "hint": "Take ln of both sides.",
+            "solution": [
+              "2x = ln 9",
+              "x = ln 9 / 2",
+              "≈ 1.099"
+            ]
+          }
+        ]
+      },
+      "trig": {
+        "practice": [
+          {
+            "id": "u5x1",
+            "kind": "numeric",
+            "lesson": "s51",
+            "prompt": "A wheel of radius 0.4 m turns through 2.5 radians. How far, in metres, does a point on the rim travel?",
+            "answer": 1,
+            "verify": {
+              "expr": "Rational(4,10)*Rational(5,2)"
+            },
+            "hint": "s = rθ.",
+            "solution": [
+              "s = 0.4 × 2.5",
+              "= 1 m"
+            ]
+          },
+          {
+            "id": "u5x2",
+            "kind": "numeric",
+            "lesson": "s52",
+            "prompt": "Find the exact value of tan(315°).",
+            "answer": -1,
+            "verify": {
+              "expr": "tan(315*pi/180)"
+            },
+            "hint": "Reference angle 45°, quadrant IV.",
+            "solution": [
+              "sin 315° = −√2/2",
+              "cos 315° = √2/2",
+              "tan = −1"
+            ]
+          },
+          {
+            "id": "u5x3",
+            "kind": "mc",
+            "lesson": "s52",
+            "prompt": "In which quadrant are both sine and cosine negative?",
+            "options": [
+              {
+                "t": "III",
+                "ok": true
+              },
+              {
+                "t": "II",
+                "ok": false
+              },
+              {
+                "t": "IV",
+                "ok": false
+              },
+              {
+                "t": "I",
+                "ok": false
+              }
+            ],
+            "hint": "On the unit circle, cosine is x and sine is y.",
+            "solution": [
+              "Both x and y negative",
+              "That is quadrant III"
+            ]
+          },
+          {
+            "id": "u5x4",
+            "kind": "numeric",
+            "lesson": "s52",
+            "prompt": "cos θ = −5/13 and θ is in quadrant III. What is sin θ? Give a decimal to 4 places.",
+            "answer": -0.9231,
+            "tol": 0.00005,
+            "verify": {
+              "expr": "-sqrt(1 - Rational(25,169))",
+              "dp": 4
+            },
+            "hint": "sin²θ = 1 − cos²θ, and sine is negative in quadrant III.",
+            "solution": [
+              "sin²θ = 1 − 25/169 = 144/169",
+              "sin θ = −12/13",
+              "≈ −0.9231"
+            ]
+          },
+          {
+            "id": "u5x5",
+            "kind": "numeric",
+            "lesson": "s52",
+            "prompt": "What is sin(300°)? Give a decimal to 4 places.",
+            "answer": -0.866,
+            "tol": 0.00005,
+            "verify": {
+              "expr": "sin(300*pi/180)",
+              "dp": 4
+            },
+            "hint": "Reference angle 60°, quadrant IV.",
+            "solution": [
+              "sin 300° = −sin 60°",
+              "= −√3/2",
+              "≈ −0.8660"
+            ]
+          },
+          {
+            "id": "u5x6",
+            "kind": "numeric",
+            "lesson": "s53",
+            "prompt": "From 50 m away the angle of elevation to the top of a building is 32°. How tall is it, to one decimal place?",
+            "answer": 31.2,
+            "tol": 0.05,
+            "verify": {
+              "expr": "50*tan(32*pi/180)",
+              "dp": 1
+            },
+            "hint": "tan 32° = h/50.",
+            "solution": [
+              "h = 50 tan 32°",
+              "≈ 31.2 m"
+            ]
+          },
+          {
+            "id": "u5x7",
+            "kind": "numeric",
+            "lesson": "s53",
+            "prompt": "A right triangle has legs 5 and 12. How long is the hypotenuse?",
+            "answer": 13,
+            "verify": {
+              "expr": "sqrt(5**2 + 12**2)"
+            },
+            "hint": "Pythagoras.",
+            "solution": [
+              "√(25 + 144)",
+              "= √169",
+              "= 13"
+            ]
+          },
+          {
+            "id": "u5x8",
+            "kind": "mc",
+            "lesson": "s53",
+            "prompt": "You know the angle and the side ADJACENT to it, and want the HYPOTENUSE. Which ratio?",
+            "options": [
+              {
+                "t": "cos",
+                "ok": true
+              },
+              {
+                "t": "sin",
+                "ok": false
+              },
+              {
+                "t": "tan",
+                "ok": false
+              },
+              {
+                "t": "None — you need the opposite side",
+                "ok": false
+              }
+            ],
+            "hint": "CAH.",
+            "solution": [
+              "cos = adjacent/hypotenuse",
+              "So hypotenuse = adjacent/cos"
+            ]
+          },
+          {
+            "id": "u5x9",
+            "kind": "numeric",
+            "lesson": "s53",
+            "prompt": "A 6 m ladder makes a 70° angle with the ground. How high up the wall does it reach, to two decimal places?",
+            "answer": 5.64,
+            "tol": 0.005,
+            "verify": {
+              "expr": "6*sin(70*pi/180)",
+              "dp": 2
+            },
+            "hint": "The height is opposite the angle; the ladder is the hypotenuse.",
+            "solution": [
+              "h = 6 sin 70°",
+              "≈ 6 × 0.9397",
+              "≈ 5.64 m"
+            ]
+          },
+          {
+            "id": "u5x10",
+            "kind": "numeric",
+            "lesson": "s54",
+            "prompt": "A cosine function has period 4π. What is B in y = cos(Bx)?",
+            "answer": 0.5,
+            "verify": {
+              "expr": "2*pi/(4*pi)"
+            },
+            "hint": "Period = 2π/B.",
+            "solution": [
+              "2π/B = 4π",
+              "B = 1/2"
+            ]
+          },
+          {
+            "id": "u5x11",
+            "kind": "numeric",
+            "lesson": "s54",
+            "prompt": "What is the maximum value of y = 2cos(x/2) − 1?",
+            "answer": 1,
+            "verify": {
+              "expr": "2*1 - 1"
+            },
+            "hint": "Cosine is at most 1.",
+            "solution": [
+              "2·1 − 1",
+              "= 1"
+            ]
+          },
+          {
+            "id": "u5x12",
+            "kind": "mc",
+            "lesson": "s54",
+            "prompt": "What is the midline of y = −4sin(3x) + 2?",
+            "options": [
+              {
+                "t": "y = 2",
+                "ok": true
+              },
+              {
+                "t": "y = −4",
+                "ok": false
+              },
+              {
+                "t": "y = 3",
+                "ok": false
+              },
+              {
+                "t": "y = 0",
+                "ok": false
+              }
+            ],
+            "hint": "The midline is the constant added outside.",
+            "solution": [
+              "D = 2",
+              "Midline y = 2"
+            ]
+          }
+        ]
+      },
+      "identities": {
+        "practice": [
+          {
+            "id": "u6x1",
+            "kind": "numeric",
+            "lesson": "s61",
+            "prompt": "Find cos(75°) to four decimal places using a sum identity.",
+            "answer": 0.2588,
+            "tol": 0.00005,
+            "verify": {
+              "expr": "(sqrt(6) - sqrt(2))/4",
+              "dp": 4
+            },
+            "hint": "75° = 45° + 30°.",
+            "solution": [
+              "cos 45° cos 30° − sin 45° sin 30°",
+              "= (√6 − √2)/4",
+              "≈ 0.2588"
+            ]
+          },
+          {
+            "id": "u6x2",
+            "kind": "mc",
+            "lesson": "s61",
+            "prompt": "Which expression equals (1 − cos²θ)/sin θ?",
+            "options": [
+              {
+                "t": "sin θ",
+                "ok": true
+              },
+              {
+                "t": "cos θ",
+                "ok": false
+              },
+              {
+                "t": "1",
+                "ok": false
+              },
+              {
+                "t": "tan θ",
+                "ok": false
+              }
+            ],
+            "hint": "Pythagorean identity.",
+            "solution": [
+              "1 − cos²θ = sin²θ",
+              "sin²θ / sin θ = sin θ"
+            ]
+          },
+          {
+            "id": "u6x3",
+            "kind": "spot",
+            "lesson": "s61",
+            "prompt": "A student expands (sin θ + cos θ)². One line is wrong.",
+            "steps": [
+              {
+                "t": "(sin θ + cos θ)²",
+                "bad": false
+              },
+              {
+                "t": "= sin²θ + cos²θ",
+                "bad": true
+              },
+              {
+                "t": "= 1",
+                "bad": false
+              }
+            ],
+            "why": "Squaring a sum does not square each term separately: (a + b)² = a² + 2ab + b². The middle term 2 sin θ cos θ was dropped, so the correct result is 1 + 2 sin θ cos θ. At θ = 45° the true value is 2, not 1.",
+            "hint": "Is (a + b)² equal to a² + b²?",
+            "solution": [
+              "(sin θ + cos θ)² = sin²θ + 2sin θ cos θ + cos²θ",
+              "= 1 + 2 sin θ cos θ"
+            ]
+          },
+          {
+            "id": "u6x4",
+            "kind": "numeric",
+            "lesson": "s62",
+            "prompt": "Solve 2sin²θ − sin θ − 1 = 0 for 0° ≤ θ < 360°. How many solutions are there?",
+            "answer": 3,
+            "verify": {
+              "expr": "3"
+            },
+            "hint": "Factor as a quadratic in sin θ.",
+            "solution": [
+              "sin θ = −1/2 gives 210°, 330°",
+              "sin θ = 1 gives 90°",
+              "Three solutions"
+            ]
+          },
+          {
+            "id": "u6x5",
+            "kind": "numeric",
+            "lesson": "s62",
+            "prompt": "Solve tan θ = 1 for 0° ≤ θ < 360°. Give the larger solution in degrees.",
+            "answer": 225,
+            "verify": {
+              "expr": "45 + 180"
+            },
+            "hint": "Tangent repeats every 180°.",
+            "solution": [
+              "θ = 45°",
+              "and 45° + 180° = 225°"
+            ]
+          },
+          {
+            "id": "u6x6",
+            "kind": "numeric",
+            "lesson": "s63",
+            "prompt": "A triangle has sides 5, 7 and 9. Find its largest angle, in degrees to one decimal place.",
+            "answer": 95.7,
+            "tol": 0.05,
+            "verify": {
+              "expr": "acos(Rational(-1,10))*180/pi",
+              "dp": 1
+            },
+            "hint": "Law of cosines, opposite the side 9.",
+            "solution": [
+              "cos C = (25 + 49 − 81)/70",
+              "= −0.1",
+              "C ≈ 95.7°"
+            ]
+          },
+          {
+            "id": "u6x7",
+            "kind": "numeric",
+            "lesson": "s63",
+            "prompt": "In a triangle A = 40°, B = 60° and a = 10. Find b to two decimal places.",
+            "answer": 13.47,
+            "tol": 0.005,
+            "verify": {
+              "expr": "10*sin(60*pi/180)/sin(40*pi/180)",
+              "dp": 2
+            },
+            "hint": "Law of sines: b/sin B = a/sin A.",
+            "solution": [
+              "b = 10 sin 60° / sin 40°",
+              "= 8.6603/0.6428",
+              "≈ 13.47"
+            ]
+          },
+          {
+            "id": "u6x8",
+            "kind": "mc",
+            "lesson": "s63",
+            "prompt": "You know all three sides of a triangle. Which tool finds an angle first?",
+            "options": [
+              {
+                "t": "The law of cosines",
+                "ok": true
+              },
+              {
+                "t": "The law of sines",
+                "ok": false
+              },
+              {
+                "t": "SOH-CAH-TOA",
+                "ok": false
+              },
+              {
+                "t": "You need at least one angle first",
+                "ok": false
+              }
+            ],
+            "hint": "The law of sines needs a side and its opposite angle.",
+            "solution": [
+              "With no angle known, no law-of-sines pair exists",
+              "The law of cosines rearranges for any angle"
+            ]
+          }
+        ]
+      }
+    }
+  };
+
   const COURSES = [PRECALC];
 
   /* Subjects appear in the order their first course was registered, which keeps Math first
@@ -8181,13 +11012,51 @@ const tfHint = (a, id) => hintFrom(a, id, null, 'Check the statement against the
     trent: { id: 'trent', label: 'Trent' }
   };
 
+  /* v2.76 — COURSE REVAMP PATCHES. Each course is revised by a patch kept beside it rather than by
+     rewriting the original object: `exPatch` adds fields (approach, check, figure) to the existing
+     worked examples by position, `examples` and `pitfalls` append to a lesson, `figure` gives a
+     lesson its picture, and `units[id].practice` appends to a chapter's question bank. A patch can
+     be registered before or after its course, so a subject file can carry the patch for a course
+     that lives in another file. Patches only ever ADD; nothing authored earlier is removed. */
+  const PATCHES = [];
+  function applyPatch(c, p) {
+    for (const u of c.units) {
+      const up = (p.units || {})[u.id];
+      if (up) {
+        if (up.practice) u.practice = (u.practice || []).concat(up.practice);
+        if (up.objectives) u.objectives = u.objectives.concat(up.objectives);
+      }
+      for (const l of u.lessons) {
+        const lp = (p.lessons || {})[l.id];
+        if (!lp) continue;
+        if (lp.exPatch) l.examples = l.examples.map((ex, i) => Object.assign({}, ex, lp.exPatch[i] || {}));
+        if (lp.examples) l.examples = l.examples.concat(lp.examples);
+        if (lp.pitfalls) l.pitfalls = (l.pitfalls || []).concat(lp.pitfalls);
+        if (lp.rules) l.rules = (l.rules || []).concat(lp.rules);
+        if (lp.figure && !l.figure) l.figure = lp.figure;
+      }
+    }
+    c.revamped = p.release || true;
+  }
+  function extend(cid, patch) {
+    const c = COURSES.find(x => x.id === cid);
+    if (c) applyPatch(c, patch); else PATCHES.push({ cid, patch });
+  }
+
   root.Courses = {
+    extend,
     all: () => COURSES,
     subjects: bySubject,
     institution: id => INSTITUTIONS[id] || null,
     institutions: () => Object.values(INSTITUTIONS),
     // a subject file adds its courses here rather than editing this one
-    register: c => { if (c && !COURSES.some(x => x.id === c.id)) COURSES.push(c); return c; },
+    register: c => {
+      if (c && !COURSES.some(x => x.id === c.id)) {
+        COURSES.push(c);
+        for (let i = PATCHES.length - 1; i >= 0; i--) if (PATCHES[i].cid === c.id) { applyPatch(c, PATCHES[i].patch); PATCHES.splice(i, 1); }
+      }
+      return c;
+    },
     get: id => COURSES.find(c => c.id === id) || null,
     unit: (cid, uid) => { const c = COURSES.find(x => x.id === cid); return c ? (c.units.find(u => u.id === uid) || null) : null; },
     items: cid => {
@@ -8207,6 +11076,7 @@ const tfHint = (a, id) => hintFrom(a, id, null, 'Check the statement against the
       }), { units: 0, lessons: 0, examples: 0, practice: 0 });
     }
   };
+  extend('precalc', Object.assign({ release: '2.76' }, PRECALC_PATCH));
 })(typeof window !== 'undefined' ? window : globalThis);
 
 if (typeof module !== 'undefined' && module.exports) module.exports = globalThis.Courses;
@@ -33848,7 +36718,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.75', date: '21 October 2026', year: 2026 };
+  const BUILD = { v: '2.76', date: '2 November 2026', year: 2026 };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonxcorp', ['outlook', 'com'].join('.')].join('@');
   /* The one sentence that says what this is. It appears under the wordmark, and build.js uses
@@ -33861,6 +36731,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      because the person who needs it is the one who just watched the app refresh itself and wants to
      know what moved. Trim the tail when it gets past a dozen; nobody reads further back than that. */
   const WHATS_NEW = [
+    ['2.76', '<b>Courses are now laid out in chapters, and Precalculus is the first to be rebuilt.</b> Every course page lists its chapters, and each chapter page opens with what it covers and a contents list you can jump around. Each lesson ends with <b>Practise this lesson</b> \u2014 a short set on that lesson alone, while it is fresh \u2014 and the chapter ends with every rule on one page and a <b>chapter check-up</b> that mixes everything. <b>Precalculus</b> now has at least three worked examples in every lesson, each with how to approach it and how to check the answer, and at least six practice questions per lesson: 82 worked examples (was 59) and 156 practice questions (was 77), every numeric answer checked by computer algebra. The other courses follow, one per release.'],
     ['2.75', '<b>Better cards, summaries, key information and quizzes from your own files.</b> Tested on real lecture slides, a study guide and worksheets, about a fifth of the cards and a quarter of the quiz used to be built from things that are not facts: exam questions, learning objectives, photo credits, ledger lines and asides. Those are now left out. <b>Questions that come with their answers</b> \u2014 a study guide\u2019s model answers, or a worksheet\u2019s answer key \u2014 become cards, and a new <b>Questions with answers</b> panel in Key information. A label used under two headings (\u201cConsistency\u201d) now says which one it means; journal entries become \u201cthe AJE journal entry\u201d cards; two-blank questions are marked in the right order; and number options are as round as the answer. Your files still never leave your browser.'],
     ['2.74', '<b>An audit of every course page, graph and practice question.</b> The most important fix: <b>in course practice the right answer was almost always option A</b>, and ordering questions showed their steps already in order. Choices are now shuffled for every question, so practice tests what you know rather than where the answer sits. Four graphs were missing a data point that fell outside the drawing (potassium on the atomic-radius chart, methane on the hydrides chart, 30 m/s on the kinetic-energy curve and atmospheric water on the residence-time chart) and now show it; the hydrogen-halide chart had HF plotted at \u2212188 \u00b0C instead of +20 \u00b0C, which hid the very anomaly it was drawn to show. Axis names no longer sit on top of the data, and labels keep clear of the curves.'],
     ['2.73', '<b>A suggestion box.</b> Press <b>Suggest an idea</b> \u2014 at the foot of every page, or on the home page \u2014 to ask for a feature, a course, or to say something broke. Only JohnsonXCorp reads it; nothing is posted publicly. Add an email if you want a reply, or leave it empty and the note is anonymous. It sends your words and nothing else: no visit id, nothing from your files.'],
@@ -34881,7 +37752,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
        Calling this one 'subject' too made #/s/<id> match the courses branch first, so opening any
        of your own subjects landed on the course library instead. v2.19 shipped with that. */
     if ((parts[0] === 'math' || parts[0] === 'courses') && parts[1] === 'in') return { name: 'coursesubject', sid: parts[2] || null, q };
-    if (parts[0] === 'math' || parts[0] === 'courses') return { name: 'math', cid: parts[1] || null, uid: parts[2] || null, mode: parts[3] || null, q };
+    if (parts[0] === 'math' || parts[0] === 'courses') return { name: 'math', cid: parts[1] || null, uid: parts[2] || null, mode: parts[3] || null, lid: parts[4] || null, q };
     if (parts[0] === 's' && parts[1]) return { name: parts[2] ? 'section' : 'subject', id: parts[1], kind: parts[2], q };
     return { name: 'home', q };
   }
@@ -35990,10 +38861,18 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     if (r.uid === 'challenge') return renderChallenge(c);
     const u = Courses.unit(c.id, r.uid);
     if (!u) return renderCourse(c);
-    if (r.mode === 'practice') return renderPractice(c, u);
+    if (r.mode === 'practice') return renderPractice(c, u, r.lid && u.lessons.some(l => l.id === r.lid) ? r.lid : null);
     return renderUnit(c, u);
   }
 
+  /* v2.76: a unit IS a chapter of the course. Where the unit follows a textbook chapter the page
+     uses that chapter's own number ("Chapter 10"), so the app and the book agree; otherwise the
+     chapters are numbered in course order. */
+  function chapName(c, u) {
+    const m = String(u.read || '').match(/^(Chapters?\s+\d+(?:\s*[–-]\s*\d+)?)\s*$/);
+    return m ? m[1].replace(/\s*[–-]\s*/, '–') : `Chapter ${u.n}`;
+  }
+  function lessonItems(u, lid) { return (u.practice || []).filter(p => p.lesson === lid); }
   function unitProgress(c, u) {
     const p = prog(courseSid(c.id));
     const items = u.practice || [];
@@ -36049,7 +38928,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
         <span class="label">${esc(c.code && c.code !== c.title ? c.code + ' \u00b7 ' + c.level : c.level)}</span>${instChip(c)}
         <h3>${esc(c.title)}</h3>
         <p>${esc(c.blurb)}</p>
-        <span class="meta"><span>${n.units} unit${n.units === 1 ? '' : 's'} &middot; ${n.practice} practice</span><span class="arr">&rarr;</span></span>
+        <span class="meta"><span>${n.units} chapter${n.units === 1 ? '' : 's'} &middot; ${n.examples} examples &middot; ${n.practice} practice</span><span class="arr">&rarr;</span></span>
         ${done ? `<span class="bar" aria-hidden="true"><i style="width:${Math.round(done / Math.max(1, n.practice) * 100)}%"></i></span>` : ''}
       </a>`;
   }
@@ -36093,6 +38972,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
       return `<a class="unit-row" href="#/courses/${esc(c.id)}/${esc(u.id)}">
         <span class="n">${u.n}</span>
         <span class="mid">
+          <span class="label">${esc(chapName(c, u))}</span>
           <b>${esc(u.title)}</b>
           <span class="small muted">${esc(u.blurb)}</span>
           <span class="chips">${u.lessons.map(l => { const lv = skillLevel(c.id, l.id); return `<span class="chip${lv ? ` lvl-${lv}` : ''}">${esc(l.title)}${lv ? ` &middot; ${esc(LEVELS[lv])}` : ''}</span>`; }).join('')}</span>
@@ -36107,7 +38987,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     app.innerHTML = frame(`${topbar(`<a href="#/">Subjects</a><span class="sep">/</span><a href="#/courses">Courses</a><span class="sep">/</span><span class="sep-sub">${esc(c.subject.name)}</span><span class="sep">/</span><strong>${esc(c.title)}</strong>`)}
       <main id="main" tabindex="-1">
         <div class="sec-hero">
-          <span class="label">${esc(c.level)} &middot; ${n.units} unit${n.units === 1 ? '' : 's'}</span>${instChip(c)}
+          <span class="label">${esc(c.level)} &middot; ${n.units} chapter${n.units === 1 ? '' : 's'}</span>${instChip(c)}
           <h1>${esc(c.title)}</h1>
           <p class="lede">${esc(c.blurb)}</p>
           <div class="sum-stats"><div><b>${n.lessons}</b><span>lessons</span></div><div><b>${n.examples}</b><span>worked examples</span></div><div><b>${n.practice}</b><span>practice questions</span></div></div>
@@ -36198,9 +39078,26 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     </figure>`;
   }
 
+  /* v2.76 — THE CHAPTER PAGE. A unit used to be one long scroll: lessons, then a single
+     "Practice this unit" button at the very bottom. It is now laid out the way a good chapter of a
+     textbook is: what the chapter covers and what you will be able to do, a contents list you can
+     jump around, each lesson with its own worked examples and its own short practice set, the
+     whole chapter's rules on one page at the end, and a mixed check-up over everything. Practising
+     straight after the lesson it tests, and then again mixed, is the order the evidence favours. */
   function renderUnit(c, u) {
     const pr = unitProgress(c, u);
-    const lessons = u.lessons.map((l, li) => `
+    const chap = chapName(c, u);
+    const nEx = u.lessons.reduce((n, l) => n + l.examples.length, 0);
+    const toc = u.lessons.map((l, li) => {
+      const lv = skillLevel(c.id, l.id), k = lessonItems(u, l.id).length;
+      return `<li><button type="button" class="toc-jump" data-act="jump-lesson" data-l="${esc(l.id)}">
+          <span class="n">${u.n}.${li + 1}</span><span class="t">${esc(l.title)}</span>
+          <span class="m small muted">${plural(l.examples.length, 'worked example')}${k ? ` &middot; ${plural(k, 'question')}` : ''}${lv ? ` &middot; <b class="lvl-${lv}">${esc(LEVELS[lv])}</b>` : ''}</span>
+        </button></li>`;
+    }).join('');
+    const lessons = u.lessons.map((l, li) => {
+      const k = lessonItems(u, l.id).length;
+      return `
       <section class="lesson${c.prose ? ' prose' : ''}" id="l-${esc(l.id)}">
         <div class="lesson-head"><span class="label">${u.n}.${li + 1}</span><h2>${esc(l.title)}</h2>${l.src ? `<span class="src-chip" title="Follows this part of the course material">${esc(l.src)}</span>` : ''}</div>
         <div class="lesson-body">
@@ -36222,31 +39119,43 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
               <p class="small">${esc(pf.why)}</p>
             </div>`).join('')}
           </div>` : ''}
+          ${k ? `<div class="lesson-foot">
+            <div><span class="label">Try it now</span><p class="small muted">${plural(k, 'question')} on this lesson only, while it is fresh. Each one marks itself and shows the working.</p></div>
+            <a class="btn primary" href="#/courses/${esc(c.id)}/${esc(u.id)}/practice/${esc(l.id)}">Practise ${u.n}.${li + 1} <span class="arr">&rarr;</span></a>
+          </div>` : ''}
         </div>
-      </section>`).join('');
+      </section>`;
+    }).join('');
+    const sheetRows = u.lessons.filter(l => l.rules && l.rules.length).map(l => `<div class="sheet-lesson">
+        <h3>${esc(l.title)}</h3>
+        <dl>${l.rules.map(rr => `<div><dt>${esc(rr.name)}</dt><dd class="fx${rr.words ? ' words' : ''}">${fxHtml(rr.expr, rr.words ? 'words' : '')}</dd></div>`).join('')}</dl>
+      </div>`).join('');
 
-    app.innerHTML = frame(`${topbar(`<a href="#/courses">${esc(c.subject.name)}</a><span class="sep">/</span><a href="#/courses/${esc(c.id)}">${esc(c.code)}</a><span class="sep">/</span><strong>Unit ${u.n}</strong>`)}
+    app.innerHTML = frame(`${topbar(`<a href="#/courses">${esc(c.subject.name)}</a><span class="sep">/</span><a href="#/courses/${esc(c.id)}">${esc(c.code)}</a><span class="sep">/</span><strong>${esc(chap)}</strong>`)}
       <div class="section-bar">
         <a class="back" href="#/courses/${esc(c.id)}" aria-label="Back to ${esc(c.title)}"><span class="back-ico">${I.back}</span><span class="back-txt">${esc(c.code)}</span></a>
-        <div class="sec-title"><h2><span class="sec-ico">${c.prose ? I.outcomes : I.formula}</span>Unit ${u.n}</h2></div>
-        <div class="tools"><a class="btn sm primary" href="#/courses/${esc(c.id)}/${esc(u.id)}/practice">Practice (${pr.total}) <span class="arr">&rarr;</span></a></div>
+        <div class="sec-title"><h2><span class="sec-ico">${c.prose ? I.outcomes : I.formula}</span>${esc(chap)}</h2></div>
+        <div class="tools"><a class="btn sm primary" href="#/courses/${esc(c.id)}/${esc(u.id)}/practice">Check-up (${pr.total}) <span class="arr">&rarr;</span></a></div>
       </div>
       <main id="main" tabindex="-1">
-        <div class="sec-hero">
+        <div class="sec-hero chap-hero">
+          <span class="label">${esc(chap)} &middot; ${plural(u.lessons.length, 'lesson')} &middot; ${plural(nEx, 'worked example')} &middot; ${plural(pr.total, 'question')}</span>
           <h1>${esc(u.title)}</h1>
           <p class="lede">${esc(u.blurb)}</p>
           ${u.read ? `<p class="course-note"><span class="label">Read alongside</span> <span>${esc(u.read)}${c.text ? ' of ' + esc(c.text) : ''}</span></p>` : ''}
-          <div class="obj"><span class="label">By the end of this unit you can</span>
+          <div class="obj"><span class="label">By the end of this chapter you can</span>
             <ul class="obj-list">${u.objectives.map(x => `<li>${esc(x)}</li>`).join('')}</ul>
           </div>
+          <nav class="chap-toc" aria-label="In this chapter"><span class="label">In this chapter</span><ol>${toc}</ol></nav>
         </div>
         ${lessons}
+        ${sheetRows ? `<section class="cell chap-sheet"><span class="label">${esc(chap)} on one page</span><p class="small muted">Every rule in the chapter, in the order it was taught. A sheet to revise from, not to learn from.</p>${sheetRows}</section>` : ''}
         <div class="cell unit-foot">
           <div>
-            <span class="label">Ready to try it</span>
-            <p class="small muted">${pr.seen ? `${pr.seen} of ${pr.total} answered so far.` : `${pr.total} questions. Each one marks itself and shows the full working either way.`}</p>
+            <span class="label">Chapter check-up</span>
+            <p class="small muted">${pr.seen ? `${pr.seen} of ${pr.total} answered so far.` : `All ${pr.total} questions from the chapter, mixed. Each one marks itself and shows the full working either way.`}</p>
           </div>
-          <a class="btn primary" href="#/courses/${esc(c.id)}/${esc(u.id)}/practice">Practice this unit <span class="arr">&rarr;</span></a>
+          <a class="btn primary" href="#/courses/${esc(c.id)}/${esc(u.id)}/practice">Start the check-up <span class="arr">&rarr;</span></a>
         </div>
       </main>${foot()}`);
     syncModal();
@@ -36267,21 +39176,24 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     return renderPractice(c, { id: 'challenge', n: 'Challenge', practice: practiceItems(ps), lessons: [] });
   }
 
-  function renderPractice(c, u) {
+  function renderPractice(c, u, lid = null) {
     const ps = practiceState();
-    if (ps.cid !== c.id || ps.uid !== u.id) {
-      Object.assign(ps, { cid: c.id, uid: u.id, i: 0, picked: null, seq: [], done: false, right: 0, wrong: 0, marked: null, tally: {}, results: [], moves: null, ch: null, nonce: Math.random().toString(36).slice(2) });
+    if (ps.cid !== c.id || ps.uid !== u.id || (!ps.ch && (ps.lid || null) !== lid)) {
+      Object.assign(ps, { cid: c.id, uid: u.id, lid, i: 0, picked: null, seq: [], done: false, right: 0, wrong: 0, marked: null, tally: {}, results: [], moves: null, ch: null, nonce: Math.random().toString(36).slice(2) });
     }
     const isCh = !!ps.ch;
     const items = practiceItems(ps);
     const item = items[ps.i];
     const backTo = isCh ? `#/courses/${esc(c.id)}` : `#/courses/${esc(c.id)}/${esc(u.id)}`;
+    const chap = isCh ? '' : chapName(c, u);
+    const lesson = !isCh && ps.lid ? u.lessons.find(l => l.id === ps.lid) : null;
+    const runName = isCh ? 'Mastery challenge' : lesson ? `Lesson practice: ${lesson.title}` : `${chap} check-up`;
     const head = `${topbar(isCh
       ? `<a href="#/courses/${esc(c.id)}">${esc(c.code)}</a><span class="sep">/</span><strong>Mastery challenge</strong>`
-      : `<a href="#/courses/${esc(c.id)}">${esc(c.code)}</a><span class="sep">/</span><a href="#/courses/${esc(c.id)}/${esc(u.id)}">Unit ${u.n}</a><span class="sep">/</span><strong>Practice</strong>`)}
+      : `<a href="#/courses/${esc(c.id)}">${esc(c.code)}</a><span class="sep">/</span><a href="#/courses/${esc(c.id)}/${esc(u.id)}">${esc(chap)}</a><span class="sep">/</span><strong>${lesson ? 'Lesson practice' : 'Check-up'}</strong>`)}
       <div class="section-bar">
-        <a class="back" href="${backTo}" aria-label="${isCh ? `Back to ${esc(c.title)}` : `Back to unit ${u.n}`}"><span class="back-ico">${I.back}</span><span class="back-txt">${isCh ? esc(c.code) : `Unit ${u.n}`}</span></a>
-        <div class="sec-title"><h2><span class="sec-ico">${I.quiz}</span>${isCh ? 'Mastery challenge' : 'Practice'}</h2></div>
+        <a class="back" href="${backTo}" aria-label="${isCh ? `Back to ${esc(c.title)}` : `Back to ${esc(chap)}`}"><span class="back-ico">${I.back}</span><span class="back-txt">${isCh ? esc(c.code) : esc(chap)}</span></a>
+        <div class="sec-title"><h2><span class="sec-ico">${I.quiz}</span>${isCh ? 'Mastery challenge' : lesson ? 'Lesson practice' : 'Chapter check-up'}</h2></div>
         <div class="tools"><span class="mono small">${Math.min(ps.i + 1, items.length)} / ${items.length}</span></div>
       </div>`;
 
@@ -36296,12 +39208,13 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
         <p class="small muted">Both right moves a skill up, both wrong moves it down, one of each leaves it alone. The next challenge opens in 12 hours &mdash; the gap is what makes it a test of memory rather than of attention.</p>` : '';
       app.innerHTML = frame(`${head}<main id="main" tabindex="-1"><div class="quiz">
         <div class="q-result">
-          <span class="label">${isCh ? 'Mastery challenge' : `Unit ${u.n} practice`}</span>
+          <span class="label">${esc(runName)}</span>
           <span class="score">${total ? Math.round(ps.right / total * 100) : 0}%<small>${ps.right} of ${total} first time</small></span>
-          ${movesHtml || '<p class="small muted">Anything you missed is scheduled to come back. The unit page has the worked examples again whenever you want them.</p>'}
+          ${movesHtml || '<p class="small muted">Anything you missed is scheduled to come back. The chapter page has the worked examples again whenever you want them.</p>'}
           <div class="btn-row">
-            <a class="btn primary" href="${backTo}">${isCh ? 'Back to the course' : 'Back to the unit'} <span class="arr">&rarr;</span></a>
+            <a class="btn primary" href="${backTo}">${isCh ? 'Back to the course' : 'Back to the chapter'} <span class="arr">&rarr;</span></a>
             ${isCh ? '' : '<button type="button" class="btn" data-act="pr-restart">Go again</button>'}
+            ${lesson && (u.practice || []).length > items.length ? `<a class="btn" href="#/courses/${esc(c.id)}/${esc(u.id)}/practice">Whole-chapter check-up <span class="arr">&rarr;</span></a>` : ''}
           </div>
         </div>
       </div></main>${foot()}`);
@@ -36365,7 +39278,8 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
   function practiceItems(ps) {
     if (ps.ch) return ps.ch.qs.map(q => q.item);
     const u = Courses.unit(ps.cid, ps.uid);
-    return (u && u.practice) || [];
+    const all = (u && u.practice) || [];
+    return ps.lid ? all.filter(p => p.lesson === ps.lid) : all;
   }
   function practiceAt(ps, i) {
     const it = practiceItems(ps)[i];
@@ -40393,6 +43307,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
       case 'keys-help': state.modal = { type: 'keys-help' }; syncModal(); break;
       case 'speak': speakFrom(el.dataset.speak, el); break;
       case 'toast-undo': { const fn = toastUndo; toastUndo = null; $('#toast')?.classList.remove('show'); if (fn) fn(); break; }
+      case 'jump-lesson': { const t = document.getElementById('l-' + el.dataset.l); if (t) { t.scrollIntoView({ behavior: (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) || document.documentElement.getAttribute('data-motion') === 'off' ? 'auto' : 'smooth', block: 'start' }); const h = t.querySelector('h2'); if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); } } break; }
       case 'to-own': { const t = document.getElementById('own-files'); if (t) { t.scrollIntoView({ behavior: (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) || document.documentElement.getAttribute('data-motion') === 'off' ? 'auto' : 'smooth', block: 'start' }); const b = t.querySelector('[data-act="new-subject"]'); if (b) b.focus({ preventScroll: true }); } break; }
       case 'storage-dismiss': { storageBar(false); break; }
       case 'disp': {
