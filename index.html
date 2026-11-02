@@ -3023,7 +3023,10 @@ const Parsers = (() => {
         for (const sp of Array.from(nd.getElementsByTagNameNS(P, 'sp'))) {
           const ph = sp.getElementsByTagNameNS(P, 'ph')[0];
           if (ph && /^(sldNum|sldImg|hdr|ftr|dt)$/i.test(ph.getAttribute('type') || '')) continue;
-          for (const p of Array.from(sp.getElementsByTagNameNS(A, 'p'))) { const s = paraText(p); if (s && !/^\d+$/.test(s)) blocks.push({ t: 'p', s }); }
+          for (const p of Array.from(sp.getElementsByTagNameNS(A, 'p'))) {
+            const s = paraText(p).replace(/^(?:speaker\s+)?notes?\s*:\s*/i, '');
+            if (s && !/^\d+$/.test(s) && !isCredit(s)) blocks.push({ t: 'p', s });
+          }
         }
       }
     }
@@ -3033,7 +3036,16 @@ const Parsers = (() => {
   // Sub-bullets are folded into their parent ("Parent: child; child") and fragments are gathered into one
   // sentence anchored on the slide title, so the engine has a real sentence to build a card from.
   const wordsOf = s => String(s || '').split(/\s+/).filter(Boolean);
-  const isFragment = s => wordsOf(s).length <= 6 && !/[.!?;]$/.test(s) && !/\b(is|are|was|were|has|have|had|can|will|does|do|means|refers|causes|includes|involves|occurs|consists|requires|produces|allows|makes|uses)\b/i.test(s) && !/[:–—-]\s/.test(s);
+  /* Publisher decks carry a photo credit on most slides ("LightField Studios/Shutterstock") and an
+     accessibility link ("Jump to Appendix 1 long image description"). Neither is course content,
+     and both were reaching the summary, the cards and the quiz — a credit line was the single most
+     common "definition" in a 66-slide OB chapter. */
+  const CREDIT_RE = /\b(?:shutterstock|getty\s*images|istock(?:photo)?|alamy|dreamstime|adobe\s*stock|depositphotos|123rf|unsplash|pexels|wikimedia(?:\s+commons)?|corbis|stockbyte|photodisc|bigstock|fotolia|blend\s+images|public\s+domain)\b|^\s*(?:©|\(c\)\s)|\bjump to appendix\b|\blong (?:image|figure) description\b/i;
+  const isCredit = s => CREDIT_RE.test(s) && wordsOf(s).length <= 14;
+  // "Nov.1 Prepaid Insurance 4,800", "DR Cash CR Revenue", "4800/12*2=800": a ledger or worked line, not a phrase
+  const isLedger = s => /\d[\d,]*(?:\.\d+)?\s*$/.test(s) && /\d{3}|\d,\d{3}/.test(s) || /\b(?:DR|CR|Dr\.|Cr\.)\s/.test(s) || /[=*/]\s*\d/.test(s);
+  const isFragment = s => wordsOf(s).length <= 6 && !/[.!?;]$/.test(s) && !/\b(is|are|was|were|has|have|had|can|will|does|do|means|refers|causes|includes|involves|occurs|consists|requires|produces|allows|makes|uses)\b/i.test(s) && !/[:–—-]\s/.test(s)
+    && !isLedger(s) && (s.match(/[A-Za-z]/g) || []).length >= 3 && !/^(?:exhibit|figure|fig\.|table|chart|source)\s*\d/i.test(s);
   const endStop = s => /[.!?]$/.test(s) ? s : s + '.';
   // slide titles that are about the deck, not the subject — no sentence is built on them
   const META_TITLE = /^(timeline|overview|summary|agenda|outline|objectives|learning (outcomes|objectives|goals)|key ?(terms|words|concepts)|questions?|thank you|thanks|references|recap|review|today|next (week|time|lecture)|introduction|contents|homework|readings?|announcements|discussion|activity|exercise|example|examples|q ?& ?a|any questions\??|the end)$/i;
@@ -3041,6 +3053,7 @@ const Parsers = (() => {
     if (META_TITLE.test(String(title || '').trim())) title = '';
     const groups = [];
     for (const b of bullets) {
+      if (isCredit(b.s)) continue;
       if (b.lvl > 0 && groups.length && !b.sub) groups[groups.length - 1].kids.push(b.s);
       else groups.push({ s: b.s, kids: [], table: !!b.table, sub: !!b.sub });
     }
@@ -3058,8 +3071,10 @@ const Parsers = (() => {
     const midCase = f => { const w = wordsOf(f); return w.length >= 2 && w.slice(1).every(x => x === x.toLowerCase()) && !/^[A-Z]{2,}/.test(w[0]) ? f[0].toLowerCase() + f.slice(1) : f; };
     if (frags.length >= 2) {
       const lead = title.replace(/[:.]$/, '');
-      const items = frags.map(f => midCase(f.replace(/[.;,]$/, '')));
-      blocks.push({ t: 'p', s: `${lead}: ${items.slice(0, -1).join(', ')}${items.length > 1 ? ' and ' : ''}${items[items.length - 1]}.` });
+      const items = frags.map(f => midCase(f.replace(/[.;,:]$/, '')));
+      // an item with a comma of its own ("achieving measured, not unmeasured, outcomes") needs semicolons between items
+      const sep = items.some(x => /,/.test(x)) ? '; ' : ', ';
+      blocks.push({ t: 'p', s: sep === '; ' ? `${lead}: ${items.join('; ')}.` : `${lead}: ${items.slice(0, -1).join(', ')}${items.length > 1 ? ' and ' : ''}${items[items.length - 1]}.` });
     } else if (frags.length === 1 && title) {
       blocks.push({ t: 'p', s: `${title.replace(/[:.]$/, '')}: ${endStop(frags[0])}` });
     }
@@ -3418,7 +3433,9 @@ e.g i.e vs ie eg fig figure figures table tables chapter chapters section sectio
   const VERB_EXTRA = ('is are was were be been being has have had do does did can could will would shall should may might must let ' +
     'means worked called used shown found required based considered developed described proposed increases decreases reduces affects ' +
     'measures moves works plays holds keeps sets puts gets goes runs drives links stops slows notes reports presents records lists ' +
-    'checks writes reads finds solves adds subtracts multiplies returns continues sketches draws').split(' ');
+    'checks writes reads finds solves adds subtracts multiplies returns continues sketches draws ' +
+    'think thinks thought want wants wanted feel feels felt believe believes believed say says said tell tells told paid pays sold sells bought buys ' +
+    'gave given took taken made makes done went gone came saw seen knew known got gotten kept became').split(' ');
   const VERBS = (() => {
     const out = new Set(VERB_EXTRA);
     for (const v of VERB_STEMS) {
@@ -3460,6 +3477,63 @@ const GENERIC = new Set('information data process system method result results s
   /* ---------- structure ---------- */
   // a sentence that trails off ("... such as:", "... including", "... the following:") is not usable on its own
   const isDangling = s => /[:：;,\-–—(]\s*$/.test(s) || /\b(such as|including|includes?|e\.g\.?|i\.e\.?|for example|for instance|as follows|the following|namely|like|are|is|of|to|and|or|with|by|from|in|on|at)\s*[:：]?\s*$/i.test(s) || wordsOf(s).length < 4;
+
+  /* ---------- what a sentence is FOR ----------
+     Measured on nine real files (three OB chapters, two accounting decks, a stats worksheet, a
+     precalculus review sheet, a study guide), a fifth of the cards and a quarter of the quiz were
+     built from sentences that are not claims at all: exam questions ("Find the domain of p(x)"),
+     learning objectives ("Describe the self-concept characteristics…"), photo credits, ledger
+     lines ("Dec.31 Utility expense 2,000"), figure captions and lecturer narration. A question
+     turned into "True or false?" has no answer, and a credit line is not a definition.
+     Each sentence is given a role here; anything with a role is kept for citing and searching but
+     never used as a fact to learn. */
+  // verbs that open an instruction and almost never open a statement
+  const STRONG_TASK = 'find|solve|sketch|simplify|evaluate|calculate|compute|determine|explain|describe|discuss|outline|justify|summari[sz]e|compare|identify|define|prove|express|estimate|specify|suppose|assume|imagine|analy[sz]e|distinguish|differentiate|classify|illustrate|demonstrate|interpret|predict|critique|examine|assess|derive|verify';
+  // verbs that are also nouns ("Factor analysis is…", "State law requires…") — an instruction only when an object follows
+  const WEAK_TASK = 'use|consider|let|read|note|see|check|think|try|make|take|keep|ask|remember|look|watch|answer|review|study|practise|practice|graph|plot|draw|label|match|complete|fill|circle|select|choose|rewrite|convert|factor|expand|integrate|rank|list|name|state|give|write|show|apply|recall|contrast|diagram|recognise|recognize|sort|group|order|arrange|combine|reduce|round';
+  const TASK_RE = new RegExp('^(?:(?:hence|then|now|also|next|finally|and|so)\\s*,?\\s+)?(?:(?:q(?:uestion)?|problem|exercise|part)\\s*\\d+[a-z]?\\s*[.:)\\-–—]?\\s*)?(?:\\(?(?:[a-h]|[ivx]{1,4}|\\d{1,2})[.)]\\s+)?(?:(?:' + STRONG_TASK + ')\\b(?!\\s+(?:of|is|are|was|were)\\b)(?![-’\'])|(?:' + WEAK_TASK + ')\\s+(?:the|a|an|this|that|these|those|your|each|all|both|how|why|what|whether|which|where|when|it|them|its|their|one|two|three|four|five|any|every|following|out|up|down|[a-z]\\s*\\(|\\d|["“]))', 'i');
+  const EXERCISE_HEAD = /^(?:(?:short|long|essay|practice|review|discussion|exam|sample|bonus)[\s-]+)?(?:answer\s+)?(?:question|exercise|problem)\s*#?\s*\d+[a-z]?\b/i;
+  const ROLE_CREDIT = /\b(?:shutterstock|getty\s*images|istock(?:photo)?|alamy|dreamstime|adobe\s*stock|depositphotos|123rf|unsplash|pexels|wikimedia(?:\s+commons)?|corbis|stockbyte|photodisc|bigstock|fotolia|blend\s+images|public\s+domain)\b|^\s*(?:©|\(c\)\s)|\bjump to appendix\b|\blong (?:image|figure) description\b|\b(?:photo|image|picture)\s+(?:credit|courtesy)\b/i;
+  const CAPTION_LEAD = /^(?:exhibit|figure|fig\.?|table|chart|diagram|graph|illustration|source)\s*\d+(?:[.\-]\d+)*[a-z]?\b/i;
+  const NARRATION = /^(?:we(?:'ll|\s+will|\s+now)?\s+(?:move on|now turn|turn to|start|begin|look at|cover|discuss|continue|finish|end)|in this (?:chapter|lecture|section|module|slide|unit|video|class)|this (?:chapter|lecture|slide|module|unit|section) (?:covers|looks|discusses|starts|begins|introduces|explores|focuses)|the (?:chapter|lecture|module) (?:starts|begins|covers|ends|finishes)|today(?:,)? we|next (?:week|class|lecture|time)|see (?:the )?(?:next|previous|following) (?:page|slide)|you can find (?:certain parts|this|more)|click (?:here|on)|refer to (?:the )?(?:slide|page|figure|appendix)|(?:this|the) (?:guide|document|handout|study guide|deck|course pack|worksheet) (?:covers|is|has|includes|begins|contains|will)|each (?:chapter|section|unit|module)(?: section)? (?:begins|starts|ends|covers|includes|has)|read the (?:concept|notes|chapter|questions)|how to use this|test yourself)/i;
+  function roleOf(s) {
+    const t = String(s || '').trim().replace(/^[✓✔☑⚠️\u{1F300}-\u{1FAFF}\s]+/u, '');
+    if (!t) return null;
+    if (ROLE_CREDIT.test(t) && wordsOf(t).length <= 16) return 'credit';
+    const unlabelled = t.replace(/^[^:]{2,60}:\s+/, '');
+    if ((CAPTION_LEAD.test(t) || CAPTION_LEAD.test(unlabelled)) && wordsOf(t).length <= 16 && !/\b(?:is|are|was|were|shows?|illustrates?)\b/.test(unlabelled)) return 'caption';
+    if (ROLE_CREDIT.test(unlabelled) && wordsOf(unlabelled).length <= 10) return 'credit';
+    if (/\?\s*$/.test(t) || /\?\s+(?:[a-h]|[ivx]{1,4})[.)]\s/.test(t)) return 'task';
+    if (EXERCISE_HEAD.test(t) || TASK_RE.test(t)) return 'task';
+    // "If the population at day 5 is 24,000, find k." — the instruction comes after the givens
+    if (/[,:;]\s*(?:then\s+)?(?:find|solve|determine|calculate|compute|evaluate|sketch|show that|prove|estimate|explain why|identify)\s+(?:the\s+|a\s+|an\s+|its\s+|\w\b|x\b|y\b|\w+\(|\$|\d)/i.test(t)) return 'task';
+    // "a) log₂(3x + 1) = 4  b) e^(3x+2) = 24" — lettered parts of an exercise
+    if (/(?:^|\s)\(?[a-h]\)\s.*\s\(?[b-h]\)\s/.test(t)) return 'task';
+    // a slide table row: "Days Outstanding — Receivable amount — Estimated uncollectible — Allowance"
+    if (/\s—\s.*\s—\s/.test(t) && t.split(/\s—\s/).every(c => wordsOf(c).length <= 6)) return 'table';
+    if (NARRATION.test(t)) return 'meta';
+    // a running title: "Team Dynamics · Communication · Power & Influence"
+    if ((t.match(/ [·•|] /g) || []).length >= 2 && !/\b(?:is|are|was|were|has|have)\b/.test(t)) return 'meta';
+    // "Consistency: Do they consistently make low quality products…?" — a question under a label
+    if (/(?:^|:\s+)(?:do|does|did|is|are|was|were|can|could|will|would|should|what|how|why|when|where|which|who)\b[^.?!]{3,}\?/i.test(t) && /^[^?]{0,60}:\s/.test(t)) return 'task';
+    // a ledger line: a label and an amount, a debit/credit pair, or bare arithmetic
+    const letters = (t.match(/[A-Za-z]/g) || []).length;
+    if ((/\b(?:DR|CR)\b.*\b(?:DR|CR)\b/.test(t) && !/^[A-Za-z][\w ]{1,30}:\s+(?:DR|Dr)\b/.test(t)) || (/(?:\d[\d,]*(?:\.\d+)?\s*[=*/×÷]\s*){2,}/.test(t) && letters < 12)) return 'ledger';
+    if (/^(?:[A-Z][a-z]{2,8}\.?\s?\d{1,2},?\s+)?[A-Za-z][A-Za-z '&/.-]{2,40}\s+\$?\d{1,3}(?:,\d{3})*(?:\.\d+)?\.?$/.test(t) && wordsOf(t).length <= 7) return 'ledger';
+    // "Attribution Rules: Attribution Theory Rules." — the body only repeats the label
+    const cm = t.match(/^([^:]{2,60}):\s+(.+)$/);
+    if (cm) {
+      const lab = new Set(wordsOf(cm[1]).map(w => lc(w)));
+      const body = wordsOf(cm[2]).map(w => lc(w)).filter(w => w.length > 2 && !STOP.has(w));
+      if (body.length && body.length <= 4 && body.every(w => lab.has(w) || /^(theory|concept|model|rules?|overview|definition|defined|summary)$/.test(w))) return 'echo';
+    }
+    return null;
+  }
+  // first- or second-person narration: "I would want people to…", "If you believed your grade…" —
+  // a fine way to teach, but not a claim that can be marked true or false
+  // the way a lecturer talks, not the way a fact is stated: "Egalitarian simply means…"
+  const SOFT = /\b(?:simply|basically|essentially|kind of|sort of|pretty much|just means|you know)\b/i;
+  const PERSONAL = /(?:^|[^\w'’])(?:I|I'm|I’m|I've|I’ve|I'd|I’d|me|[Mm]y|[Mm]ine|[Yy]ou|[Yy]ou're|[Yy]ou’re|[Yy]our|[Yy]ours)(?![\w'’])/;
   function splitSentences(text) {
     const out = [];
     const parts = text.split(/(?<=[.!?]["”’)\]]?)\s+(?=["“(\[]?[A-Z0-9])/);
@@ -3518,6 +3592,66 @@ const GENERIC = new Set('information data process system method result results s
     return out.join('\n');
   }
 
+  /* ---------- questions that come with their answers ----------
+     Study guides, worksheets and past papers ARE question-and-answer material already, and the
+     best card a student can have from one is the question on the front and the material's own
+     answer on the back. Three shapes are recognised:
+       · a question paragraph, then a paragraph that opens "Answer", "Model answer", "Solution", "A:"
+       · one line that ends in a question and then gives a short answer ("…in 5 minutes? Poisson")
+       · "Q: … A: …" on one line
+     The question itself is marked as a task (it is not a claim); the answer paragraph, once its
+     label is removed, is ordinary material and is used like any other. */
+  const QUESTION_LEAD = /^(?:(?:short|long|essay|practice|review|discussion|exam|sample|bonus)[\s-]+)?(?:answer\s+)?(?:question|q|problem|exercise)\s*#?\s*(\d+[a-z]?)\s*[.:)\-–—]?\s+/i;
+  const ANSWER_LEAD = /^(?:(?:(?:model|suggested|sample|possible|short|full|worked)\s+)?(?:answer|ans|solution|soln)\s*(?:\d+[a-z]?)?\s*[:.)\-–—]|(?:model|suggested|sample|possible|worked)\s+(?:answer|solution)\b|a\s*[:\-–—])\s*(?=\S)/i;
+  const MARKER_LEAD = /^(?:[✓✔☑•▪●➢➔→⚠️\u{1F300}-\u{1FAFF}]\s*)+/u;
+  // "For each of the cases below, specify the most appropriate discrete probability distribution."
+  const INSTR_RE = /^(?:for each of (?:the )?(?:following|cases|questions|situations|scenarios|statements|items|examples)[^,]{0,40},\s*)?((?:specify|identify|determine|state|name|choose|select|decide|classify|indicate|give)\b[^.?!:]{5,140})[.:]/i;
+  function findQA(blocks) {
+    const out = [];
+    const seen = new Set();
+    let lead = null;
+    const add = (q, ans, kind) => {
+      q = q.replace(QUESTION_LEAD, '').replace(/^\(?(?:\d{1,2}|[a-h])[.)]\s+/, '').trim();
+      ans = String(ans || '').trim();
+      if (wordsOf(q).length < 4 || !ans || wordsOf(ans).length < 1) return null;
+      const k = lc(q).replace(/\W+/g, ' ').trim();
+      if (seen.has(k)) return null;
+      seen.add(k);
+      const e = { q, a: ans, kind, id: null };
+      if (lead && kind === 'short') e.lead = lead;
+      out.push(e);
+      return e;
+    };
+    for (const b of blocks) if (!b.h) b.text = b.text.replace(MARKER_LEAD, '');
+    for (let i = 0; i < blocks.length; i++) {
+      const b = blocks[i];
+      if (b.h) { lead = null; continue; }
+      if (/^\[\[[fps]:/.test(b.text)) continue;
+      const im = !/\?/.test(b.text) && b.text.match(INSTR_RE);
+      if (im) { lead = im[1].trim().replace(/^\w/, c => c.toUpperCase()); continue; }
+      const nx = blocks[i + 1];
+      // 1. question paragraph + labelled answer paragraph
+      const isQ = QUESTION_LEAD.test(b.text) || /\?\s*$/.test(b.text);
+      if (isQ && nx && !nx.h && ANSWER_LEAD.test(nx.text)) {
+        const ansText = nx.text.replace(ANSWER_LEAD, '');
+        const e = add(b.text, ansText, 'block');
+        if (e) { b.qaQ = e; nx.text = ansText; nx.qaA = e; i++; }
+        continue;
+      }
+      // 2. "Q: … A: …" on one line
+      let m = b.text.match(/^Q\s*\d*\s*[:.)]\s*(.+?\?)\s*A\s*[:.)]\s*(.+)$/i);
+      if (m) { const e = add(m[1], m[2], 'inline'); if (e) { b.qaQ = e; b.text = m[1]; } continue; }
+      // 3. "…? Binomial" — a question, then a short answer after it
+      m = b.text.match(/^(.{20,}\?)\s+(?:(?:answer|ans)\s*[:\-–—]\s*)?([A-Za-z0-9$][^?]{0,60}?)\.?$/i);
+      if (m && wordsOf(m[2]).length <= 6 && !/\b(?:is|are|was|were|what|how|why|when|which)\b/i.test(m[2])
+        && !/^\(?(?:[a-h]|\d{1,2}|[ivx]{1,4})[.)]/i.test(m[2]) && !TASK_RE.test(m[2]) && !/(?:^|\s)\(?[a-h]\)\s/.test(m[1])) {
+        const e = add(m[1], m[2], 'short');
+        if (e) { b.qaQ = e; b.text = m[1]; }
+      }
+    }
+    return out;
+  }
+
   function analyze(text) {
     text = stripFurniture(text);
     const paragraphs = text.split(/\n\s*\n|\n(?=(?:##|[-•])\s)/).map(s => s.trim()).filter(Boolean);
@@ -3527,6 +3661,7 @@ const GENERIC = new Set('information data process system method result results s
     let sid = 0;
     // a paragraph that ends with ":" followed by list items is a lead-in — fold the items into one complete sentence
     const blocks = paragraphs.map(p => ({ h: /^##\s+/.test(p), li: /^-\s+/.test(p), text: p.replace(/^##\s+/, '').replace(/^-\s+/, '') }));
+    const qa = findQA(blocks);
     for (let i = 0; i < blocks.length; i++) {
       const b = blocks[i];
       if (b.h || b.li || !/[:：]\s*$/.test(b.text)) continue;
@@ -3536,7 +3671,7 @@ const GENERIC = new Set('information data process system method result results s
       if (items.length) b.text = b.text.replace(/[:：]\s*$/, '') + ': ' + items.join('; ') + '.';
     }
     // provenance markers written by the parsers: [[f:File name]], [[p:14]] (page), [[s:4]] (slide)
-    let curFile = null, curPage = null, curSlide = null;
+    let curFile = null, curPage = null, curSlide = null, paraNo = 0;
     for (const b of blocks) {
       const mk = !b.h && !b.li && b.text.match(/^\[\[([fps]):(.+?)\]\]$/);
       if (mk) {
@@ -3551,14 +3686,23 @@ const GENERIC = new Set('information data process system method result results s
         continue;
       }
       const isLi = b.li;
+      paraNo++;
       const ss = isLi ? [b.text] : splitSentences(b.text);
       cur.paraCount++;
       ss.forEach((raw, i) => {
-        let s = raw, ord = null;
+        let s = raw.replace(/\s*\((?:photo|image|picture|pictured|video|shown|see image)\)/gi, ''), ord = null;
         if (isLi) { const om = raw.match(/^(\d{1,3})[.)]\s+(.*)$/); if (om) { ord = +om[1]; s = om[2]; } }
-        const sent = { id: sid++, s, first: i === 0, li: isLi, ord, section: sections.length, len: s.length, words: wordsOf(s), dangling: isDangling(s), file: curFile, page: curPage, slide: curSlide };
+        // a table row arrives as "cell | cell" — searchable, never a sentence to quote
+        const role = b.qaQ ? 'task' : / \| /.test(s) ? 'table' : roleOf(s);
+        const sent = { id: sid++, s, first: i === 0, li: isLi, ord, para: paraNo, section: sections.length, len: s.length, words: wordsOf(s), dangling: !!role || isDangling(s), file: curFile, page: curPage, slide: curSlide };
+        if (role) sent.role = role;
+        if (PERSONAL.test(s)) sent.personal = true;
+        if (b.qaQ && i === 0) b.qaQ.id = sent.id;
+        if (b.qaA && i === 0) b.qaA.aid = sent.id;
+        if (b.qaA) sent.inAnswer = true;
         sentences.push(sent);
         cur.sentences.push(sent);
+        if (b.qaQ && i === 0) b.qaQ.section = sections.length;
       });
     }
     sections.push(cur);
@@ -3580,7 +3724,20 @@ const GENERIC = new Set('information data process system method result results s
     merged.length = 0; merged.push(...combined);
     merged.forEach((sec, i) => sec.sentences.forEach(s => (s.section = i)));
 
+    /* A worksheet is mostly questions, and the sentences around a question are its givens ("A
+       population of mosquitoes is growing… If the population at day 5 is 24,000: find k"). In a
+       document that is largely tasks, a paragraph that contains one is a problem, all of it. In
+       ordinary notes a rhetorical question leaves its paragraph alone. */
+    const prose = sentences.filter(x => x.role !== 'credit' && x.role !== 'caption');
+    const tasks = prose.filter(x => x.role === 'task').length;
+    if (prose.length >= 4 && tasks / prose.length >= 0.35) {
+      const probParas = new Set(sentences.filter(x => x.role === 'task').map(x => x.para));
+      for (const x of sentences) if (!x.role && probParas.has(x.para) && !x.inAnswer) { x.role = 'task'; x.dangling = true; }
+      for (const x of sentences) if (!x.role && /^\(?\d{1,2}[.)]\s/.test(x.s)) { x.role = 'task'; x.dangling = true; }
+    }
     const a = { text, sentences, sections: merged, wordCount: wordsOf(text).length };
+    a.taskShare = prose.length ? tasks / prose.length : 0;
+    a.qa = qa.filter(x => x.id != null && sentences[x.id]).map(x => ({ ...x, section: sentences[x.id].section }));
     a.terms = extractTerms(a);
     a.defs = extractDefinitions(a);
     a.acronyms = extractAcronyms(a);
@@ -3589,7 +3746,7 @@ const GENERIC = new Set('information data process system method result results s
     for (const t of a.terms) if (defSet.has(t.key)) t.score *= 1.5;
     for (const d of a.defs) {
       const key = lc(d.term);
-      if (a.terms.some(t => t.key === key)) continue;
+      if (d.generic || a.terms.some(t => t.key === key)) continue;
       const w = key.split(/\s+/);
       // a definition's subject is only a term if it reads like one — "If the p-value" is a mis-parse, not a concept
       if (w.length > 5 || key.length < 3) continue;
@@ -3629,22 +3786,39 @@ const GENERIC = new Set('information data process system method result results s
     }
     return m;
   }
+  const TERM_EDGE = /^(?:due|two|three|four|five|six|seven|eight|nine|ten|dr|cr|vs|etc|ie|eg|jan|feb|mar|apr|jun|jul|aug|sep|sept|oct|nov|dec|january|february|march|april|june|july|august|september|october|november|december|monday|tuesday|wednesday|thursday|friday|saturday|sunday|simply|just|really|actually|basically|notes?|regardless|initial)$/;
   function extractTerms(a) {
     const counts = new Map();
     const behave = wordBehaviour(a);
     const actsAsVerb = w => { const r = behave.get(w); return !!r && r.c >= 2 && r.nn === 0 && r.v / r.c >= 0.5; };
+    // an all-capitals word that also appears in ordinary lower case is emphasis ("INTERNAL = LOW"), not an acronym
+    const lowerSeen = new Set();
+    for (const sent of a.sentences) for (const w of sent.words) if (/^[a-z]/.test(w)) lowerSeen.add(w);
     const headingWords = new Set();
     for (const sec of a.sections) if (sec.title) for (const w of wordsOf(sec.title)) if (!STOP.has(lc(w))) headingWords.add(lc(w));
     for (const sent of a.sentences) {
-      const toks = sent.words;
+      // questions, credits, captions and ledger lines name things; they do not teach them
+      if (sent.role && sent.role !== 'table' && sent.role !== 'echo') continue;
+      /* A term never spans punctuation. "Job Characteristics: two additional features" was
+         producing "Job Characteristics two", and "revenue Dec.31" producing "revenue Dec" — both
+         offered as answer options. Grams are built within each comma/colon/dash-free stretch. */
+      for (const chunk of String(sent.s).split(/[,;:()[\]{}|"“”?!…]|\s[-–—]\s|[–—]|\.(?:\s|$)/)) {
+      const toks = wordsOf(chunk);
       for (let n = 1; n <= 3; n++) {
         for (let i = 0; i + n <= toks.length; i++) {
           const gram = toks.slice(i, i + n);
           const low = gram.map(lc);
           if (STOP.has(low[0]) || STOP.has(low[n - 1]) || verbLike(low[0]) || verbLike(low[n - 1])) continue;
           if (PRON.has(low[0]) || PRON.has(low[n - 1])) continue;
+          if (TERM_EDGE.test(low[0]) || TERM_EDGE.test(low[n - 1])) continue;
+          if (n > 1 && low.some(w => w === 'dr' || w === 'cr')) continue;     // "Expense CR Prepaid" is half of a journal entry
+          if (n === 1 && ADJ.has(low[0]) && !/^[A-Z]{2,}/.test(gram[0])) continue;
           if (actsAsVerb(low[n - 1]) || (n > 1 && actsAsVerb(low[0]))) continue;
           if (n > 1 && /(ed|ing)$/.test(low[n - 1]) && low[n - 1].length > 5) continue;
+          if (/\w{3,}ly$/.test(low[n - 1]) && !/^(?:family|supply|monopoly|assembly|anomaly|ally|reply|july|poly|oligopoly|duopoly)$/.test(low[n - 1])) continue;   // “caused mainly”
+          if (gram.some(w => /n['’]t$|['’](?:s|re|ve|ll|d|m)$/i.test(w))) continue;   // “don't”, “Supervisor's”
+          if (n === 3 && /^(?:and|or)$/.test(low[1])) continue;                       // “systemic and intentional”
+          if (n > 1 && /^(?:and|or|of)$/.test(low[n - 2]) && ADJ_SUFFIX.test(low[n - 1]) && !/[A-Z]/.test(gram[n - 1][0])) continue;  // “foundation of systemic”
           if (n === 3 && STOP.has(low[1]) && !/^(of|and)$/.test(low[1])) continue;
           if (n === 2 && STOP.has(low[1])) continue;
           if (low.some(w => /^\d/.test(w) || w.length < 2)) continue;
@@ -3652,6 +3826,7 @@ const GENERIC = new Set('information data process system method result results s
           if (n === 1) {
             const w = gram[0];
             const isAcr = /^[A-Z][A-Z0-9\-]{1,7}$/.test(w) && /[A-Z]{2}/.test(w);
+            if (isAcr && /^[A-Z]+$/.test(w) && (lowerSeen.has(low[0]) || STOP.has(low[0]) || ADJ.has(low[0]))) continue;
             if (!isAcr && (low[0].length < 4 || GENERIC.has(low[0]))) continue;
             if (/^[a-z]+(ing|ed|ly)$/.test(low[0]) && !isAcr) continue;
           }
@@ -3661,6 +3836,7 @@ const GENERIC = new Set('information data process system method result results s
           rec.count++;
           if (n === 1) { // verbs are followed by determiners ("provide the", "select a") or preceded by "to"
             const nxt = toks[i + 1] ? lc(toks[i + 1]) : ''; const prv = i > 0 ? lc(toks[i - 1]) : '';
+            if (nxt && !STOP.has(nxt) && /^[a-z]/.test(nxt)) rec.mod = (rec.mod || 0) + 1;
             if (/^(the|a|an|this|these|those|their|its|our|your|his|her|some|any|each|every|all|both|such|one|two)$/.test(nxt)) rec.verbish++;
             if (prv === 'to' || prv === 'can' || prv === 'will' || prv === 'may' || prv === 'should' || prv === 'must' || prv === 'would' || prv === 'could') rec.prevTo++;
           }
@@ -3670,9 +3846,14 @@ const GENERIC = new Set('information data process system method result results s
           rec.variants.set(display, (rec.variants.get(display) || 0) + (i > 0 ? 2 : 1));
         }
       }
+      }
     }
     const terms = [];
     for (const rec of counts.values()) {
+      /* "high", "social", "transformational": an adjective is a term only when the material uses it
+         as one. A word that almost always sits in front of another word is that phrase's modifier,
+         and the phrase ("transformational leadership") is the term. */
+      if (rec.n === 1 && (ADJ.has(rec.key) || /(?:al|ive|ous|ful|ic|able|ible|ary|less)$/.test(rec.key)) && (rec.mod || 0) / rec.count >= 0.6 && !(rec.mid > 0 && rec.midCap / rec.mid > 0.6)) continue;
       if (rec.n === 1 && rec.count >= 2 && (rec.verbish + rec.prevTo) / rec.count > 0.45 && (rec.mid === 0 || !/^[A-Z]/.test(bestVariant(rec)))) continue; // behaves like a verb (capitals only count as a name if seen mid-sentence)
       const inHeading = rec.key.split(' ').every(w => headingWords.has(w));
       const cap = rec.mid > 0 && rec.midCap / rec.mid > 0.6;
@@ -3737,48 +3918,157 @@ const GENERIC = new Set('information data process system method result results s
   const DASH_RE = /^([A-Z][^—–:;,.]{1,60}?)\s+[—–]\s+(.{20,})$/;
   const INV_RE = /\b(?:is|are)\s+(?:called|known\s+as|termed|referred\s+to\s+as)\s+(?:a\s+|an\s+|the\s+)?["“]?([A-Za-z][\w'’\-]*(?:\s+[\w'’\-]+){0,3}?)["”]?[.,;:]/;
 
+  /* A label is only a TERM if it reads like one. Measured on real decks and a study guide, the
+     colon/“is” patterns were also catching: conditions ("If norms are dysfunctional…"), sentence
+     openings ("Better psychological well-being with: …"), instructions ("Form smaller teams — …"),
+     generic headings ("Benefits:", "Recommendation:"), table rows, and adjectives standing in for a
+     heading ("Practical: no point studying it if…"). Each one became "What is …?" with an answer that
+     does not answer it. */
+  const LEAD_BAD = /^(?:if|when|whenever|because|although|though|while|unless|since|once|after|before|and|or|but|so|yet|in|on|at|for|from|with|by|to|of|under|over|during|without|within|between|as|like|than|whether|where|why|how|what|which|who|your|our|my|his|her|their|its|me|us|them|not|no|very|more|most|less|least|much|many|few|other|same|such|just|only|also|even|still|then|now|here|there|today|let|lets|let's|let’s)$/i;
+  const TAIL_BAD = /^(?:with|of|to|for|on|in|by|at|from|as|than|that|which|who|is|are|was|were|be|been|and|or|but|the|a|an|this|these|those|such|due|more|less|vs|etc|just|simply|really|actually|basically|also|only|even)$/i;
+  const ADJ_SUFFIX = /(?:al|ic|ive|ous|ful|able|ible|less|ish|ary|ory)$/i;
+  // headings that only mean something under their section: "Benefits", "Problems", "Recommendation"
+  const GENERIC_LABEL = /^(?:(?:key|main|major|other|some|the)\s+)?(?:benefits?|problems?|disadvantages?|advantages?|limitations?|recommendations?|conclusions?|summary|results?|outcomes?|implications?|managerial implications|success factors?|key features?|features?|characteristics?|ways to (?:increase|improve|reduce)|solutions?|answers?|notes?|tips?|examples?|initial|methods?|purpose|goals?|overview|introduction|issues?|challenges?|risks?|strengths?|weaknesses?|importance|members|process|steps?|drawbacks?|pros|cons|uses|applications?|criticisms?|evidence|findings|aje|adjusting entry|journal entry|entry|exam tip|tip|caution|warning|reminder|key point|key points|takeaways?|definition|meaning|example of|problem)$/i;
+  const NOUN_ING = /^(?:training|marketing|accounting|learning|thinking|planning|engineering|banking|building|pricing|processing|reasoning|understanding|meaning|setting|funding|being|spending|earnings?|reporting|listening|offering|branding|ranking|rating|opening|clothing|housing|feeling|feelings|beginning|ending|wedding|morning|evening|warning|painting|writing|reading|spelling|nursing|teaching|lending|timing|sampling|modelling|modeling|counselling|counseling|consulting|outsourcing|crowdsourcing|networking|mentoring|coaching|onboarding|recruiting|bargaining|lobbying|framing|priming|anchoring|bootstrapping|swimming|social loafing|loafing|storming|norming|performing|forming|adjourning|offshoring|downsizing|benchmarking|brainstorming)$/i;
+  const NUMBER_LEAD = /^(?:two|three|four|five|six|seven|eight|nine|ten|\d+)\s+/i;
+  const IMPERATIVE = /^(?:be|do|don't|don’t|never|always|use|make|take|keep|form|measure|specialize|specialise|increase|decrease|reduce|highlight|provide|clarify|manage|build|develop|create|ensure|avoid|seek|grow|move|demonstrate|establish|assign|select|state|address|introduce|encourage|focus|consider|try|set|get|give|ask|let|start|stop|apply|choose|limit|align|integrate|schedule|reward|maintain|minimize|minimise|maximize|maximise|improve|nurture|hire|compare|question|frequently|work|import|ensure|understand|study|treat|link|watch|design|combine|rotate|enlarge|enrich|share|support|show|tell|check|identify|document|review|plan|communicate|listen|follow|pick|act|offer|remove|add|separate|define|describe|explain|recognize|recognise|lead|delegate|invest|prioritize|prioritise|empower)\b/i;
+  function termShapeOk(term, a, termKeys) {
+    const tw = wordsOf(term);
+    if (!tw.length || tw.length > 6) return false;
+    if (LEAD_BAD.test(tw[0]) || TAIL_BAD.test(tw[tw.length - 1])) return false;
+    if (/\b(?:such|this|these|those|which|whose)\b/i.test(term) || (tw.length > 2 && /\bthat\b/i.test(term))) return false;
+    // "Stabilizes our self-concept" — a clause that lost its subject, not a name
+    if (tw.length > 1 && /[^su]s$/.test(tw[0]) && !CATEGORY_RE.test(term) && /^(?:our|your|their|its|his|her|the|a|an|this|these|those|that|them|it|us|people|others|one's)$/i.test(tw[1])) return false;
+    if (/['’]s\b/.test(term) && !/^[A-Z][a-z]+['’]s\s+(?:law|rule|principle|theorem|model|theory|hierarchy|test|equation|constant|effect|ratio|paradox|razor)\b/i.test(term)) return false;
+    if (/[,|]/.test(term) || (term.split('(').length !== term.split(')').length)) return false;
+    // "Human capital improves organizational effectiveness", "Clearer role perceptions when person understands"
+    if (tw.slice(1).some(w => /^(?:when|if|because|while|where|whereas|although|unless|until|whenever)$/i.test(w))) return false;
+    if (tw.length >= 3 && tw.slice(1, -1).some(w => /^[a-z]+s$/.test(w) && !/(?:ss|us|is|ics)$/.test(w) && verbLike(w))) return false;
+    if (/\w{3,}ly$/.test(tw[tw.length - 1]) && !/^(?:family|supply|monopoly|assembly|anomaly|butterfly|ally|reply|italy|july|rally|poly|bully|lily)$/i.test(tw[tw.length - 1])) return false;
+    if (tw.length === 1 && ADJ_SUFFIX.test(tw[0]) && !termKeys.has(lc(term)) && /^[A-Z][a-z]+$/.test(tw[0]) && !GENERIC_LABEL.test(term)) return false;
+    return true;
+  }
   function extractDefinitions(a) {
     const defs = [];
-    const seen = new Set();
+    const seen = new Map();          // term key -> entry (to spot the same label under another heading)
     const seenDef = new Set();
     const termKeys = new Set(a.terms.map(t => t.key));
+    const secTitle = sent => { const sec = a.sections[sent.section]; return sec && sec.title ? sec.title.replace(/^(?:chapter\s+)?\d+(?:\.\d+)*[:.]?\s+/i, '').replace(/\s*\([^)]*\)\s*$/, '').trim() || null : null; };
     const add = (term, def, sent, kind) => {
       term = term.replace(/^(the|a|an)\s+/i, '').replace(/[.,;:]+$/, '').trim();
       const tw = wordsOf(term);
       if (!tw.length || tw.length > 6) return;
       if (tw.every(w => STOP.has(lc(w)))) return;
       if (/^(this|that|these|those|it|there|here|they|we|you|he|she|one|each|such|some|many|most|all|both|another|other|its|their|our|what|which|who|where|when|why|how)$/i.test(tw[0])) return;
-      if (/^(figure|table|chapter|section|page|example|note|question|answer|step|part|slide|lecture|unit|week|source|reference)\b/i.test(term)) return;
+      if (/^(figure|table|chapter|section|page|example|note|question|answer|step|part|slide|lecture|unit|week|source|reference|exhibit|phase|factor|issue)\s*\d*\b/i.test(term) && (/\d/.test(term) || tw.length === 1)) return;
       // a learning objective reads like "Explain how X is used…" — an instruction, not a term
-      if (/^(?:describe|explain|identify|define|compare|contrast|analyse|analyze|assess|evaluate|apply|discuss|demonstrate|understand|outline|list|recognise|recognize|interpret|summarise|summarize|distinguish|classify|calculate|solve|state|name|justify|critique|examine|illustrate|relate|predict|perform|formulate|determine|differentiate|construct|develop|design)\b/i.test(term)) return;
+      if (/^(?:describe|explain|identify|define|compare|contrast|analyse|analyze|assess|evaluate|apply|discuss|demonstrate|understand|outline|list|recognise|recognize|interpret|summarise|summarize|distinguish|classify|calculate|solve|state|name|justify|critique|examine|illustrate|relate|predict|perform|formulate|determine|differentiate|construct|develop|design|diagram|find|sketch|simplify|suppose)\b/i.test(term)) return;
       if (/\d/.test(term) && !/^[A-Z][A-Za-z]*\d[A-Za-z0-9]*$/.test(term)) return;
       if (/^(roughly|approximately|about|nearly|almost|only|also|often|usually|typically|generally|sometimes|however|therefore|thus|then|here|there|today|now|finally|first|second|next|later|[a-z]+ly)$/i.test(tw[0])) return;
+      if (!termShapeOk(term, a, termKeys)) {
+        // an instruction with its reason — "Form smaller teams — contributions become visible" —
+        // is worth a card of its own, just not a "What is" one
+        if ((kind === 'colon' || kind === 'dash') && IMPERATIVE.test(term) && tw.length <= 6 && wordsOf(def).length >= 3 && !/[,|]/.test(term)) {
+          (a.advice || (a.advice = [])).push({ label: term, body: def.trim(), sent: sent.s, id: sent.id, section: secTitle(sent) });
+        }
+        return;
+      }
+      if ((kind === 'colon' || kind === 'dash') && IMPERATIVE.test(term) && !termKeys.has(lc(term))) {
+        if (wordsOf(def).length >= 3) (a.advice || (a.advice = [])).push({ label: term, body: def.trim(), sent: sent.s, id: sent.id, section: secTitle(sent) });
+        return;
+      }
+      // a model answer restates what the guide already taught; its own question card carries it
+      if (sent.inAnswer) return;
+      // "Direction is making sure you are studying the right topic" — the lecturer's analogy, not the definition
+      if (sent.personal && (kind === 'is' || kind === 'weak')) return;
       const articleStart = /^(The|A|An)\s/.test(sent.s);
       if (kind === 'is' && tw.length === 1 && (GENERIC.has(lc(term)) || (!termKeys.has(lc(term)) && articleStart))) return;
       if (kind === 'weak' && (articleStart || !termKeys.has(lc(term))) && !(tw.length > 1 && /^[A-Z]/.test(term) && termKeys.has(lc(term)))) return;
-      const key = lc(term);
-      if (seen.has(key)) return;
       def = def.trim();
       if (def.length < 20 || def.length > 850) return;
       if (/^(not|also|often|usually|then|therefore|thus|shown|given|used|found|seen|based)\b/i.test(def) && kind === 'is') return;
+      // the body only repeats the label
+      const lab = new Set(tw.map(lc));
+      const body = wordsOf(def).map(lc).filter(w => w.length > 2 && !STOP.has(w));
+      if (!body.length || body.every(w => lab.has(w) || lab.has(singular(w)))) return;
+      // "Systematic Research: Study organizations using systematic research methods" — circular
+      const tcw = Array.from(lab).filter(w => w.length >= 4 && !STOP.has(w));
+      if ((kind === 'colon' || kind === 'dash') && tcw.length && body.length < 10 && tcw.every(w => body.includes(w) || body.includes(singular(w)))) return;
+      const title = secTitle(sent);
+      // "Historical Foundations: Distinct field around the 1940s" — a slide title restated, not a term
+      if ((kind === 'colon' || kind === 'dash') && title && lc(title) === lc(term) && body.length < 6) return;
+      const entry = { term, def, sent: sent.s, id: sent.id, kind };
+      if (title) entry.sec = title;
+      // "Job characteristics" under "Remote Work Contingencies" means the job's suitability for remote work
+      if (!entry.ctx && title && tw.length <= 3 && (kind === 'colon' || kind === 'dash') && /(?:characteristics|factors|features|risks|outcomes|requirements|conditions|criteria|benefits|advantages|disadvantages|problems)$/i.test(term) && !new RegExp('\\b' + escRe(term) + '\\b', 'i').test(title)) entry.ctx = title;
+      if (title && lc(title) === lc(term)) entry.isTitle = true;
+      if (NUMBER_LEAD.test(term)) { if (!listItems(def)) return; entry.counted = true; }
+      // "Key characteristics of power: Power is a potential…" — a lead-in whose other items follow on later lines
+      else if ((kind === 'colon' || kind === 'dash') && /\b(?:characteristics|features|types|kinds|functions|components|stages|steps|elements|factors|principles|ways|strategies|methods|sources|reasons|causes|effects|phases|categories|dimensions)\b/i.test(term) && !/[;,]/.test(def) && !listItems(def)) return;
+      if (GENERIC_LABEL.test(term) || (tw.length === 1 && GENERIC.has(lc(term)))) {
+        // inside a model answer the heading is "Practice Questions" — no context at all; the question's own card covers it
+        if (!title || lc(title) === lc(term) || sent.inAnswer || /\b(?:questions?|review|practice|exercises?|summary|overview|notes?|introduction|conclusion|appendix)\b/i.test(title)) return;
+        entry.generic = true; entry.ctx = title;
+      }
+      // "Overcoming mental model limitations: Be aware…; Question…" is a how-to, not a definition
+      // "Higher member similarity — shared values build connection": a point and its explanation
+      if ((kind === 'colon' || kind === 'dash') && /^[a-z]/.test(def) && !termKeys.has(lc(term.replace(/\s*\([^)]*\)/g, ''))) && !NUMBER_LEAD.test(term)
+        && (tw.length >= 4 || /^(?:higher|lower|more|less|greater|smaller|larger|better|worse|frequent|somewhat|increased|reduced|improves?|fulfils?|fulfills?|uses?|requires?|provides?|creates?|exists?|perceive|perceives|helps?)$/i.test(tw[0]))) entry.explain = true;
+      if ((kind === 'colon' || kind === 'dash' || kind === 'table') && /^[A-Z][a-z]{3,}ing$/.test(tw[0]) && !NOUN_ING.test(tw[0]) && tw.length >= 2
+        && (IMPERATIVE.test(def) || def.split(/;\s+/).filter(x => IMPERATIVE.test(x)).length >= 2)) entry.how = true;
+      else if (/^(?:(?:an?\s+)?example(?:\s+would\s+be|\s+is|:)|for example|e\.g\.|for instance)\b/i.test(def)) entry.example = true;
+      else if (sent.inAnswer && IMPERATIVE.test(def) && (kind === 'colon' || kind === 'dash')) return;
+      const key = lc(term).replace(/(\w+)$/, w => singular(w));     // "Teams" and "team" are one idea
       const dkey = lc(def).replace(/\W+/g, ' ');
       if (seenDef.has(dkey)) return;
-      seen.add(key); seenDef.add(dkey);
-      const entry = { term, def, sent: sent.s, id: sent.id, kind };
+      if (seen.has(key)) {
+        /* "Consistency" under self-concept and "Consistency" under attribution are different ideas.
+           The second used to be thrown away; now both are kept and each says where it is from. */
+        const first = seen.get(key);
+        const t2 = title;
+        if (!t2 || !first.ctxOf || lc(t2) === lc(first.ctxOf)) return;
+        if (!entry.generic) {
+          // the same idea said twice is one card; only a genuinely different meaning earns a second
+          const w1 = new Set(contentWords(first.def)), w2 = new Set(contentWords(def));
+          let both = 0; for (const w of w2) if (w1.has(w)) both++;
+          if (both / Math.max(1, Math.min(w1.size, w2.size)) >= 0.25) return;
+        }
+        if (!first.ctx) first.ctx = first.ctxOf;
+        entry.ctx = t2;
+      }
+      entry.ctxOf = title;
+      seen.set(key, seen.get(key) || entry); seenDef.add(dkey);
       if (HEDGE_RE.test(def)) entry.hedge = true;
       if (CONTRAST_RE.test(sent.s)) entry.contrast = true;
       if (NEG_RE.test(def)) entry.neg = true;
       defs.push(entry);
     };
+    // "is" with no article is a definition only when a noun follows: "Revenue is recorded…",
+    // "Uncertainty is high", "Members are motivated by…" describe; they do not define
+    const PRED_BAD = /^(?:(?:only|not|also|often|usually|always|never|very|so|too|more|less|most|least|much|still|just|mostly|largely|highly|partly|completely|generally|typically|actually|really|simply|about|then|thus|therefore|now|here|there|being|to|in|on|at|by|for|from|with|without|of|as|like|than|that|when|where|able|likely|unlikely|high|low|important|essential|necessary|critical|key|common|rare|different|similar|same|better|worse|best|worst|easy|hard|difficult|good|bad|true|false|possible|impossible|available|responsible|due|based|made|done|paid|given|taken|seen|known|shown|held|kept|built|sold|bought|found|set|put|run|met|led|left|lost|won|told|said|sent|spent|written|driven|chosen|grown|drawn|thrown|worn|torn|born|hidden|broken|spoken|stolen|frozen|forgotten|gotten|eaten|fallen|risen|begun|sung|swum|hung|struck|stuck|shot|cut|hit|hurt|let|read|spread|shut|split|quit)\b|\w+ed\b|\w+en\b|\w+ly\b|\w{3,}est\b|\w+(?:ive|ous|ful|able|ible|ant|ent|ic|al)\b)/i;
+    const DEF_NOART = /^(?:(?:The|A|An)\s+)?[A-Z][\w'’\-]*(?:\s+[\w'’\-]+){0,4}?\s+(?:\([^)]{1,40}\)\s+)?(?:is|are|was|were)\s+(\S+)/;
     for (const sent of a.sentences) {
       const s = sent.s;
-      if (s.length > 900 || sent.dangling) continue;
+      if (s.length > 900) continue;
+      // a two-column row from a Word table: "Permanence | How long the team exists…"
+      if (sent.role === 'table') {
+        const cells = s.split(/\s+[|—]\s+/).map(x => x.trim()).filter(Boolean);
+        if (cells.length >= 2 && cells.length <= 4 && wordsOf(cells[0]).length <= 5 && wordsOf(cells[1]).length >= 5 && !/[.!?]$/.test(cells[0]) && /^[A-Z]/.test(cells[0]))
+          add(cells[0], cells[1].replace(/^[-–—:]\s*/, ''), sent, 'table');
+        continue;
+      }
+      if (sent.dangling) continue;
       let m;
-      if ((m = s.match(DEF_RE))) add(m[1], s, sent, WEAK_VERB.test(s.slice(m[1].length, m[1].length + 60)) ? 'weak' : 'is');
+      if ((m = s.match(DEF_RE))) {
+        const pm = s.match(DEF_NOART);
+        if (pm && !/^(?:a|an|the|any|one|some|defined|referred|known|described|characterized|characterised|called|termed)$/i.test(pm[1]) && PRED_BAD.test(s.slice(s.indexOf(pm[1])))) continue;
+        add(m[1], s, sent, WEAK_VERB.test(s.slice(m[1].length, m[1].length + 60)) ? 'weak' : 'is');
+      }
       else if ((m = s.match(COLON_RE)) && wordsOf(m[1]).length <= 6) add(m[1], m[2], sent, 'colon');
       else if ((m = s.match(DASH_RE)) && wordsOf(m[1]).length <= 6) add(m[1], m[2], sent, 'dash');
       else if ((m = s.match(INV_RE))) add(m[1], s, sent, 'inverse');
     }
+    for (const d of defs) delete d.ctxOf;
     return defs;
   }
 
@@ -4097,6 +4387,7 @@ const GENERIC = new Set('information data process system method result results s
     if ((sent.s.match(/\d/g) || []).length > sent.len * 0.15) w -= 0.3;
     if (/^(this|these|those|it|he|she|they|here|there)\b/i.test(sent.s)) w -= 0.15;
     if (/[?]$/.test(sent.s)) w -= 0.2;
+    if (sent.personal) w -= 0.45;
     if (sent.dangling) w -= 2;
     return w;
   }
@@ -4117,9 +4408,37 @@ const GENERIC = new Set('information data process system method result results s
     const ratio = { short: 0.06, medium: 0.14, long: 0.26 }[level] || 0.14;
     const seenTxt = new Set();
     const scored = a.sentences.map(s => ({ s, w: sentenceWeight(a, s) }));
-    const usable = scored.filter(x => { if (x.s.len < 40 || x.s.len > 340 || x.s.dangling) return false; const k = lc(x.s.s).replace(/\W+/g, ' ').trim(); if (seenTxt.has(k)) return false; seenTxt.add(k); return true; });
+    const dupS = duplicateSentences(a);
+    // a model answer repeats the guide; in a guide that has its own notes, the summary is built from the notes
+    const notes = a.sentences.filter(x => !x.inAnswer && !x.dangling).length;
+    const usable = scored.filter(x => { if (x.s.len < 40 || x.s.len > 340 || x.s.dangling || dupS.has(x.s.id) || (x.s.inAnswer && notes >= 20)) return false; if (!statementish(x.s.s) && !/^[^:]{2,60}:\s/.test(x.s.s)) return false; const k = lc(x.s.s).replace(/\W+/g, ' ').trim(); if (seenTxt.has(k)) return false; seenTxt.add(k); return true; });
     const total = Math.max(5, Math.min(120, Math.round(usable.length * ratio) || 5));
-    const brief = usable.filter(x => !x.s.li).slice().sort((x, y) => y.w - x.w).slice(0, level === 'short' ? 3 : 4).sort((x, y) => x.s.id - y.s.id).map(x => x.s);
+    /* The brief is what a student reads first, so it has to be the material's main claims, not
+       whatever sentence scored highest: one per section so it spans the material, a lecturer's
+       aside ("We are simply trying to reaffirm who we think we are") never, and a sentence that
+       names one of the material's central terms ahead of one that does not. */
+    const top = new Set(a.terms.slice(0, 8).map(t => t.key));
+    const central = x => { const low = ' ' + x.s.words.map(lc).join(' ') + ' '; for (const k of top) if (low.includes(' ' + k + ' ')) return 0.3; return 0; };
+    const aside = x => x.s.personal || /^(?:we|our|us|so|and|but|or|also|now|here|in our|as we|let'?s|remember|note|as a result|therefore|thus|hence|however|for example|for instance|this|these|that|those|they|it|he|she|many of us|some of us|important)\b/i.test(x.s.s);
+    const claim = x => statementish(x.s.s) && x.s.words.length >= 7;
+    const scen = x => /\b[A-Z][\w&]*\.?\s+(?:Co|Inc|Ltd|Corp|LLC|Company)\b|^(?:suppose|assume|imagine|consider)\b|!\s*$|\b(?:these|those)\s+(?:five|four|three|two|six|seven)\b/i.test(x.s.s);
+    let briefPool = usable.filter(x => !x.s.li && !aside(x) && claim(x) && !scen(x));
+    if (briefPool.length < 3) briefPool = usable.filter(x => !aside(x) && claim(x));
+    if (briefPool.length < 3) briefPool = usable.filter(x => !aside(x));
+    const briefN = level === 'short' ? 3 : 4;
+    const briefSecs = new Set();
+    const brief = [];
+    const defIds = new Set(a.defs.map(d => d.id));
+    const rank = x => x.w + central(x) + (defIds.has(x.s.id) ? 0.25 : 0) - (/\$\d|\b(?:19|20)\d\d\b/.test(x.s.s) ? 0.2 : 0);
+    for (const x of briefPool.slice().sort((p, q) => rank(q) - rank(p))) {
+      if (brief.length >= briefN) break;
+      if (briefSecs.has(x.s.section) && briefPool.length > briefN * 2) continue;
+      const cw = new Set(contentWords(x.s.s));
+      if (brief.some(b => { const o = contentWords(b.s.s); let n = 0; for (const w of o) if (cw.has(w)) n++; return n / Math.max(1, Math.min(o.length, cw.size)) >= 0.6; })) continue;
+      briefSecs.add(x.s.section); brief.push(x);
+    }
+    brief.sort((x, y) => x.s.id - y.s.id);
+    for (let i = 0; i < brief.length; i++) brief[i] = brief[i].s;
     const sections = [];
     const bigSections = a.sections.filter(sec => sec.sentences.length >= 2);
     const totalUsable = usable.length || 1;
@@ -4134,8 +4453,8 @@ const GENERIC = new Set('information data process system method result results s
       sections.push({ title: sec.title, sentences: pick, terms: termsIn(a, sec.sentences, 5), defs, count: sec.sentences.length, words: sec.sentences.reduce((n, x) => n + x.words.length, 0) });
     }
     const briefIds = new Set(brief.map(x => x.id));
-    const takeaways = usable.filter(x => !briefIds.has(x.s.id)).sort((x, y) => y.w - x.w).slice(0, level === 'short' ? 4 : level === 'long' ? 8 : 6).sort((x, y) => x.s.id - y.s.id).map(x => x.s);
-    const keyDefs = a.defs.slice().sort((x, y) => (a.termWeight.get(lc(y.term)) || 0) - (a.termWeight.get(lc(x.term)) || 0)).slice(0, level === 'short' ? 4 : level === 'long' ? 8 : 6);
+    const takeaways = usable.filter(x => !briefIds.has(x.s.id) && !x.s.personal && !scen(x) && !/^(?:these|those|this|it|they)\b/i.test(x.s.s)).sort((x, y) => y.w - x.w).slice(0, level === 'short' ? 4 : level === 'long' ? 8 : 6).sort((x, y) => x.s.id - y.s.id).map(x => x.s);
+    const keyDefs = a.defs.filter(d => !d.generic).sort((x, y) => (a.termWeight.get(lc(y.term)) || 0) - (a.termWeight.get(lc(x.term)) || 0)).slice(0, level === 'short' ? 4 : level === 'long' ? 8 : 6);
     const numbers = a.facts.slice(0, level === 'long' ? 8 : 5);
     const selfTest = flashcards(a, { count: level === 'long' ? 8 : 5, seed: 11 });
     const summaryWords = brief.concat(...sections.map(x => x.sentences)).reduce((n, x) => n + x.words.length, 0);
@@ -4317,7 +4636,7 @@ const GENERIC = new Set('information data process system method result results s
     const lists = [];
     for (const sec of a.sections) {
       const seenLi = new Set();
-      const items = sec.sentences.filter(x => { if (!x.li) return false; const k = lc(x.s).replace(/\W+/g, ' ').trim(); if (seenLi.has(k)) return false; seenLi.add(k); return true; });
+      const items = sec.sentences.filter(x => { if (!x.li || x.role) return false; const k = lc(x.s).replace(/\W+/g, ' ').trim(); if (seenLi.has(k)) return false; seenLi.add(k); return true; });
       if (items.length >= 2) lists.push({ title: sec.title, items: items.slice(0, 12).map(x => x.s) });
     }
     const map = a.sections.filter(s => s.title && s.sentences.length).map(sec => {
@@ -4335,6 +4654,7 @@ const GENERIC = new Set('information data process system method result results s
       symbols: extractSymbols(a),
       patterns: patternsOf(a),
       lists,
+      qa: (a.qa || []).map(x => ({ q: x.q, a: x.a, id: x.id, section: secTitle(x.id) })),
       map,
       outline: a.sections.filter(s => s.title && s.sentences.length).map(s => ({ title: s.title, n: s.sentences.length })),
       stats: { words: a.wordCount, sentences: a.sentences.length, sections: a.sections.filter(s => s.title).length }
@@ -4361,9 +4681,11 @@ const GENERIC = new Set('information data process system method result results s
     return true;
   }
   function clozeFor(a, term, excludeIds = new Set()) {
-    const re = new RegExp('(^|[^\\w-])(' + escRe(term) + ')(?![\\w-])', 'i');
+    // “LOW” is not “low”: an acronym is matched exactly as written
+    const flags = /^[A-Z][A-Z0-9]+$/.test(term) ? '' : 'i';
+    const re = new RegExp('(^|[^\\w-])(' + escRe(term) + ')(?![\\w-])', flags);
     const longer = a.terms.filter(k => k.key !== lc(term) && (' ' + k.key + ' ').includes(' ' + lc(term) + ' ')).map(k => new RegExp('\\b' + escRe(k.display) + '\\b', 'i'));
-    const twice = new RegExp('(^|[^\\w-])' + escRe(term) + '(?![\\w-])', 'gi');
+    const twice = new RegExp('(^|[^\\w-])' + escRe(term) + '(?![\\w-])', 'g' + flags);
     // the answer wearing another hat: the phrase it abbreviates, or an abbreviation of it
     const alias = [];
     const multiWord = wordsOf(term).length >= 2;
@@ -4384,10 +4706,20 @@ const GENERIC = new Set('information data process system method result results s
       }
       return seen.size;
     };
+    /* "More positive outcomes with ______ of control" (answer: internal locus) under "Locus of
+       control:" — part of a two-word answer is still printed in the sentence. And a blank before
+       "'s" is filled by grammar, not knowledge. */
+    const heads = wordsOf(term).map(lc).filter(w => w.length >= 4 && !STOP.has(w) && !GENERIC.has(w));
+    const echoes = str => {
+      const m = String(str).match(re); if (!m) return false;
+      const rest = (str.slice(0, m.index + m[1].length) + ' ' + str.slice(m.index + m[0].length)).toLowerCase();
+      if (/^['’]s\b|^\//.test(str.slice(m.index + m[0].length)) || /\/$/.test(str.slice(0, m.index + m[1].length))) return true;
+      return heads.length > 1 && heads.some(w => new RegExp('\\b' + escRe(w) + '\\b').test(rest));
+    };
     const dups = duplicateSentences(a);
-    const cands = a.sentences.filter(s => !excludeIds.has(s.id) && !s.dangling && !dups.has(s.id) && s.len >= (s.li ? 70 : 45) && s.len <= 230 && re.test(s.s) && !longer.some(L => L.test(s.s))
+    const cands = a.sentences.filter(s => !excludeIds.has(s.id) && !s.dangling && !s.personal && !dups.has(s.id) && s.len >= (s.li ? 70 : 45) && s.len <= 230 && re.test(s.s) && !longer.some(L => L.test(s.s))
       && (String(s.s).match(twice) || []).length === 1
-      && !alias.some(L => L.test(s.s)) && !givesAway(s.s)
+      && !alias.some(L => L.test(s.s)) && !givesAway(s.s) && !echoes(s.s)
       && !(PRONOUN_START.test(s.s) && !new RegExp('^\\s*' + escRe(term), 'i').test(s.s))
       && otherTerms(s) >= 2);
     if (!cands.length) return null;
@@ -4415,7 +4747,9 @@ const GENERIC = new Set('information data process system method result results s
   function listItems(def) {
     const s = String(def || '').replace(/[.]$/, '').trim();
     if (!/[,;]/.test(s) && !/\band\b/.test(s)) return null;
-    const items = (/;/.test(s) ? s.split(/;\s+/) : s.split(/,\s+|\s+and\s+/)).map(x => x.trim()).filter(Boolean);
+    const items = (/;/.test(s) ? s.split(/;\s+/) : s.split(/,\s+|\s+and\s+/)).map(x => x.trim())
+      .filter(x => x && !/^(?:etc\.?|and so on|and more|\.\.\.|…)$/i.test(x) && !ROLE_CREDIT.test(x))
+      .reduce((acc, x) => { if (/^\(.*\)$/.test(x) && acc.length) acc[acc.length - 1] += ' ' + x; else acc.push(x); return acc; }, []);
     if (items.length < 3 || items.length > 12) return null;
     if (!items.every(x => wordsOf(x).length <= 6 && !/[—:]/.test(x))) return null;
     return items;
@@ -4424,17 +4758,48 @@ const GENERIC = new Set('information data process system method result results s
     const rand = rng(seed);
     const cards = [];
     const used = new Set();
-    for (const d of a.defs) {
-      if (used.has(lc(d.term))) continue;
-      used.add(lc(d.term));
+    const lcFirst = x => /^[A-Z][a-z]/.test(x) && !/^[A-Z][a-z]+[A-Z]/.test(x) ? x[0].toLowerCase() + x.slice(1) : x;
+    for (const d0 of a.defs) {
+      // never write back into the analysis: summary() and the deck both call this, and must agree
+      const d = (d0.ctx && !d0.generic && new RegExp('\\b' + escRe(d0.term) + '\\b', 'i').test(d0.ctx)) ? { ...d0, ctx: null } : d0;
+      const ukey = lc(d.term) + '|' + lc(d.ctx || '');
+      if (used.has(ukey)) continue;
+      used.add(ukey);
+      if (!d.ctx) used.add(lc(d.term));
+      const where = d.ctx ? (d.generic ? `${d.ctx}: ` : '') : '';
       // "Causes of the revolution: financial crisis, social inequality and poor harvests" is a list to recall, not a definition
-      const items = (d.kind === 'colon' || d.kind === 'dash') ? listItems(d.def) : null;
-      if (items && (CATEGORY_RE.test(d.term) || items.length >= 4)) {
-        cards.push({ type: 'List', front: CATEGORY_RE.test(d.term) ? `Name the ${items.length} ${d.term[0].toLowerCase() + d.term.slice(1)}` : `${d.term} — name all ${items.length}`, back: items.map(x => '• ' + x).join('\n'), term: d.term, source: d.sent, sourceId: d.id });
+      const items = (d.kind === 'colon' || d.kind === 'dash' || d.kind === 'table') ? listItems(d.def) : null;
+      if (items && (CATEGORY_RE.test(d.term) || d.counted || d.generic || items.length >= 4)) {
+        const front = d.counted ? `${where}Name the ${lcFirst(d.term)}`
+          : CATEGORY_RE.test(d.term) || d.generic ? `${where}Name the ${items.length} ${lcFirst(d.term)}`
+          : `${d.term}${d.ctx && !d.generic ? `, in “${d.ctx}”` : ''} — name all ${items.length}`;
+        cards.push({ type: 'List', front, back: items.map(x => '• ' + x).join('\n'), term: d.term, source: d.sent, sourceId: d.id });
         continue;
       }
-      const plural = /[a-z]s$/.test(d.term) && !/(sis|ss|us|is|ics|ous)$/.test(d.term) && !/^[A-Z0-9\-]+$/.test(d.term);
-      cards.push({ type: 'Definition', front: `What ${plural ? 'are' : 'is'} ${d.term}?`, back: d.kind === 'is' || d.kind === 'weak' || d.kind === 'inverse' ? d.sent : d.def, term: d.term, source: d.sent, sourceId: d.id });
+      // "Effects on behaviour" is plural even though its last word is not
+      const pw = wordsOf(d.term);
+      const isPl = w => /[a-z]s$/.test(w) && !/(sis|ss|us|is|ics|ous)$/.test(w);
+      const prep = pw.findIndex((w, i) => i > 0 && /^(?:of|on|for|in|to|with|from|by|at)$/i.test(w));
+      const plural = !/^[A-Z0-9\-]+$/.test(d.term) && (isPl(d.term) || (prep > 0 && isPl(pw[prep - 1])));
+      const front = d.generic && /\bDR\b.*\bCR\b/.test(d.def) ? `${d.ctx}: the ${lcFirst(d.term)} journal entry?`
+        : d.generic ? `${d.ctx} — ${lcFirst(d.term)}?`
+        : d.how ? `${d.term}${d.ctx ? `, in “${d.ctx}”` : ''} — how?`
+        : d.example ? `Give an example of ${lcFirst(d.term)}${d.ctx ? `, in “${d.ctx}”` : ''}.`
+        : d.explain && !d.ctx ? (d.sec && lc(d.sec) !== lc(d.term) ? `${d.sec} — explain: ${lcFirst(d.term)}.` : `Explain: ${d.term}.`)
+        : `What ${plural ? 'are' : 'is'} ${d.term}${d.ctx ? `, in “${d.ctx}”` : ''}?`;
+      cards.push({ type: 'Definition', front, back: d.kind === 'is' || d.kind === 'weak' || d.kind === 'inverse' ? d.sent : d.def, term: d.term, source: d.sent, sourceId: d.id });
+    }
+    // the material's own questions, with the material's own answers
+    for (const x of (a.qa || [])) {
+      if (x.a.length > 1500) continue;
+      cards.push({ type: 'Question', front: x.lead ? `${x.lead}: ${x.q}` : x.q, back: x.a, term: x.q, source: x.q, sourceId: x.id });
+    }
+    // "Form smaller teams — individual contributions become visible": an instruction and its reason
+    for (const v of (a.advice || [])) {
+      const k = 'advice|' + lc(v.label);
+      if (used.has(k)) continue;
+      used.add(k);
+      cards.push({ type: 'Key point', front: `What does “${lcFirst(v.label)}” involve${v.section ? ` (${v.section})` : ''}?`, back: v.body, term: v.label, source: v.sent, sourceId: v.id });
     }
     for (const ac of a.acronyms) {
       if (used.has(lc(ac.acr))) continue;
@@ -4458,7 +4823,7 @@ const GENERIC = new Set('information data process system method result results s
       if (excluded.has(f.sent.id) || f.nums.length !== 1) continue;
       const n = f.nums[0];
       const idx = f.sent.s.indexOf(n);
-      if (idx < 0) continue;
+      if (idx < 0 || f.sent.s.indexOf(n, idx + n.length) >= 0) continue;   // the same figure twice gives the blank away
       excluded.add(f.sent.id);
       cards.push({ type: 'Number', front: f.sent.s.slice(0, idx) + '______' + f.sent.s.slice(idx + n.length), back: n, term: n, source: f.sent.s });
     }
@@ -4468,8 +4833,10 @@ const GENERIC = new Set('information data process system method result results s
     // one: the fuller answer, and the one that still carries the sentence it came from.
     const merged = mergeNearDuplicates(cards);
     // order: definitions first, then shuffle the rest; then trim
-    const defs = merged.cards.filter(c => c.type === 'Definition' || c.type === 'Acronym');
-    const rest = shuffle(merged.cards.filter(c => c.type !== 'Definition' && c.type !== 'Acronym'), rand);
+    const lead = c => c.type === 'Definition' || c.type === 'Acronym' || c.type === 'Question';
+    // the material's own questions lead: a study guide's model answers are the best cards it has
+    const defs = merged.cards.filter(c => c.type === 'Question').concat(merged.cards.filter(c => lead(c) && c.type !== 'Question'));
+    const rest = shuffle(merged.cards.filter(c => !lead(c)), rand);
     const all = defs.concat(rest).slice(0, count);
     const out = all.map((c, i) => ({ ...c, id: i + 1, key: cardKey(c.type, c.front) }));
     a.repeatsMerged = merged.n + duplicateSentences(a).size;
@@ -4518,7 +4885,8 @@ const GENERIC = new Set('information data process system method result results s
     const raw = m[2].replace(/,/g, '');
     const val = parseFloat(raw);
     const dec = (raw.split('.')[1] || '').length;
-    const isYear = /^\d{4}$/.test(raw) && val > 1000 && val < 2100;
+    // "2,000" and "$2000" are amounts; only a bare four-digit number can be a year
+    const isYear = /^\d{4}$/.test(m[2]) && !m[1] && !m[3].trim() && val > 1000 && val < 2100;
     const fmt = v => {
       let s = dec ? v.toFixed(dec) : String(Math.round(v));
       if (m[2].includes(',')) s = s.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
@@ -4540,6 +4908,11 @@ const GENERIC = new Set('information data process system method result results s
       if (digits.length > 1 && !dec) { const t = digits.slice(0, -2) + digits.slice(-1) + digits.slice(-2, -1); if (t !== digits) push(parseFloat(t)); }
     }
     out.delete(n);
+    /* A round answer among ragged options is a give-away: $100 beside $90, $80 and $103 picks
+       itself. When the answer is round, every option has to be about as round. */
+    const tz = x => { const d = String(x).replace(/[^\d.]/g, ''); if (d.includes('.')) return 0; const t = d.match(/0*$/)[0].length; return t === d.length ? 0 : t; };
+    const need = isYear ? 0 : tz(m[2]);
+    if (need >= 1) for (const v of Array.from(out)) if (tz(v) < need - (need >= 2 ? 1 : 0)) out.delete(v);
     // a figure that appears elsewhere in the material is a real fact, not a wrong answer
     if (a && a.facts) {
       // A figure only clashes with another when the unit matches too: 37 °C and 37 % are different
@@ -4694,7 +5067,8 @@ const GENERIC = new Set('information data process system method result results s
       // an option that contains the answer, or is contained by it, is not a choice
       if (key.includes(lcCorrect) || lcCorrect.includes(key)) return;
       // an option already printed in the question gives the answer away — or is true as well
-      if (inText(shown, display)) return;
+      if (inText(shown, display) || inText(shown, display + 's') || inText(shown, display.replace(/s$/, ''))) return;
+      if (GENERIC_LABEL.test(display)) return;
       seen.add(key);
       const w = termWhere(a, display);
       let score = 0;
@@ -4703,6 +5077,19 @@ const GENERIC = new Set('information data process system method result results s
       else { for (const f of w.files) if (home.files.has(f)) { score += 1; break; } }
       if (dcat && dcat === cat) score += 2;
       if (defined.has(key)) score += 1;
+      // a concept the material defines is swapped for another concept, not for a name or a date
+      if (defined.has(lcCorrect) && defined.has(key)) score += 2;
+      if (dcat === 'proper' && cat !== 'proper' && !defined.has(key)) score -= 2;
+      /* In a SWAP the option is written into the sentence, so it has to fit there: the same kind of
+         thing ("low achievement" never becomes "TRU achievement") and the same number ("leaders
+         inspire" never becomes "power inspire"). */
+      if (ctx && ctx.swap) {
+        const pl = x => /[a-z]s$/i.test(x) && !/(?:ss|us|is|sis|ics|ous)$/i.test(x);
+        if (pl(display) !== pl(correct)) return;
+        if (cw === 1 && wordCount(display) !== 1) return;
+        const kindOf = c => c === 'acr' || c === 'proper' ? c : 'common';
+        if (dcat && cat && kindOf(dcat) !== kindOf(cat) && !(defined.has(key) && defined.has(lcCorrect))) return;
+      }
       // a sibling from the material's own list is the best wrong answer there is
       if (sibs && sibs.has(key)) score += 4;
       // failing that, something the material defines as the same kind of thing
@@ -4714,7 +5101,7 @@ const GENERIC = new Set('information data process system method result results s
       scored.push({ display, score: score + rand() * 0.4 });
     };
     for (const t of a.terms) consider(t.display, t.cat);
-    for (const d of a.defs) consider(d.term, null);
+    for (const d of a.defs) if (!d.generic) consider(d.term, null);
     scored.sort((x, y) => y.score - x.score);
     // the also-true test reads the whole material, so it is spent only on the options that won
     const out = [];
@@ -4763,14 +5150,24 @@ const GENERIC = new Set('information data process system method result results s
     // candidate items: definitions + terms + facts
     const items = [];
     const catOf = term => a.terms.find(t => t.key === lc(term))?.cat || categorize(term, false);
-    for (const d of a.defs) items.push({ kind: 'def', term: d.term, def: d, cat: catOf(d.term) });
+    // a heading that only means something under its section ("Benefits") is not a term to be quizzed on
+    for (const d of a.defs) if (!d.generic) items.push({ kind: 'def', term: d.term, def: d, cat: catOf(d.term) });
+    for (const x of qaChoices(a)) items.push({ kind: 'qa', term: x.q, qa: x, cat: 'qa' });
     for (const ac of a.acronyms) items.push({ kind: 'acr', term: ac.acr, ac, cat: 'acr' });
     for (const t of a.terms.slice(0, 60)) if (!items.some(i => lc(i.term) === t.key) && !(t.cat === 'word' && (t.count < 3 || GENERIC.has(t.key) || a.terms.indexOf(t) > 34))) items.push({ kind: 'term', term: t.display, cat: t.cat });
     /* A discipline that has no arithmetic gets no figure questions. In Law a number is a section
        number, a date or an award; in English it is a page reference. Asking a student to fill one
        in is asking them to recall a token, which is the least useful thing this engine can do. */
     const wantNums = !(profile && profile.types && profile.types.numeric === false);
-    if (wantNums) for (const f of a.facts) for (const n of f.nums.slice(0, 3)) items.push({ kind: 'num', term: n, fact: f, cat: 'num' });
+    // a figure that appears twice in its sentence fills its own blank
+    const once = (s, n) => { const i = s.indexOf(n); return i >= 0 && s.indexOf(n, i + n.length) < 0; };
+    // "On Nov. 1, 2024, ABC Co. paid…" — the year of an invented example is not something to learn
+    const datedYear = (s, n) => /^\d{4}$/.test(n) && /\b(?:jan|feb|mar|apr|may|jun|jul|aug|sept?|oct|nov|dec)[a-z]*\.?\s+\d{1,2}\b|\b(?:january|february|march|april|june|july|august|september|october|november|december)\b/i.test(s);
+    // a figure from an invented company's worked example ("Carter Inc. received $24,000") is not a fact to learn
+    const scenario = s => /\b[A-Z][\w&]*\.?\s+(?:Co|Inc|Ltd|Corp|LLC|Company|Corporation)\b|^(?:suppose|assume|imagine|consider)\b/i.test(s);
+    // "the 1940's" is a decade; "So, if you sell something worth $100…" is an aside
+    const decade = (s, n) => new RegExp(escRe(n) + "['’]?s\\b").test(s);
+    if (wantNums) for (const f of a.facts) for (const n of f.nums.slice(0, 3)) if (once(f.sent.s, n) && !datedYear(f.sent.s, n) && !scenario(f.sent.s) && !decade(f.sent.s, n) && !f.sent.personal && !SOFT.test(f.sent.s) && !/^so\b/i.test(f.sent.s)) items.push({ kind: 'num', term: n, fact: f, cat: 'num' });
     let pool = items;
     if (only && only.size) {
       const hit = items.filter(i => { const t = lc(i.term); for (const k of only) if (t === k || t.includes(k) || k.includes(t)) return true; return false; });
@@ -5018,6 +5415,7 @@ const GENERIC = new Set('information data process system method result results s
   function levelOf(a, q) {
     if (!q) return 1;
     if (q.type === 'order' || q.type === 'odd' || q.two) return 3;
+    if (q.qa) return 2;
     if (q.type === 'tf') return 1;
     if (q.type === 'fill') return 2;
     if (q.type === 'mc') {
@@ -5127,7 +5525,34 @@ const GENERIC = new Set('information data process system method result results s
     return /\b(is|are|was|were|has|have|had|does|do|can|will|produces?|requires?|uses?|takes?|occurs?|contains?|converts?|yields?|consists?|includes?|causes?|means?|refers?|allows?|forms?|makes?|gives?|begins?|ends?|carries|carry|sets?|holds?|shows?|states?)\b/i.test(x);
   }
 
+  /* Swapping one ordinary word for another ("Characteristics of this view" → "of this social") makes
+     a sentence that is false only because it is no longer English. A swap is a fair test when the
+     swapped thing is a named concept: a phrase, a name, an acronym, or a word the material defines. */
+  const swappable = (a, it) => it.cat !== 'word' || (a.defs || []).some(d => lc(d.term) === lc(it.term));
+  /* A swapped-in word wears the case of the word it replaces — "systematic research: …" at the
+     start of the one altered option, or "Distinct field" mid-sentence, marks the false one by
+     its capitals alone. Names and acronyms keep their own. */
+  function fitCase(orig, wrong) {
+    if (/^[A-Z][A-Z0-9]+$/.test(wrong) || /^[A-Z][a-z]+(?:\s+[A-Z][a-z]+)+$/.test(wrong) && (a_isProper(wrong))) return wrong;
+    if (/^[A-Z]/.test(orig)) return wrong[0].toUpperCase() + wrong.slice(1);
+    return /^[A-Z][a-z]/.test(wrong) && !/^[A-Z][a-z]+[A-Z]/.test(wrong) ? wrong[0].toLowerCase() + wrong.slice(1) : wrong;
+  }
+  // a swap that doubles a word ("effect effect", "assertiveness, assertiveness") is false by its grammar alone
+  function brokeIt(before, after) {
+    const rep = x => { const m = String(x).toLowerCase().match(/\b(\w{3,})\b[\s,]+\1\b/g); return m ? m.length : 0; };
+    return rep(after) > rep(before);
+  }
+  // "a OB student" → "an OB student"
+  function fixArticle(text, word) {
+    const vowelSound = w => /^[A-Z]{2,}/.test(w) ? /^[AEFHILMNORSX]/.test(w) : /^[aeiou]/i.test(w) && !/^(?:uni|use|usu|eu|one)/i.test(w);
+    return String(text).replace(new RegExp('\\b(a|an|A|An)\\s+(' + escRe(word) + ')\\b'), (m, art, w) => {
+      const want = vowelSound(w) ? 'an' : 'a';
+      return (/^A/.test(art) ? want[0].toUpperCase() + want.slice(1) : want) + ' ' + w;
+    });
+  }
+  function a_isProper(x) { return /\b(?:[A-Z][a-z]+ ){0,3}(?:Inc|Co|Ltd|University|College|Company|Act|Court|Council|Bank|Institute)\b/.test(x); }
   function makeFalseOne(a, it, rand, usedSent) {
+    if (!swappable(a, it)) return null;
     const cz = clozeFor(a, it.term, usedSent);
     if (!cz) return null;
     const host = cz.sent;
@@ -5137,15 +5562,17 @@ const GENERIC = new Set('information data process system method result results s
        the false statement — which is not false, it is not a statement, and it is obviously the odd
        one out for the wrong reason. */
     if (!statementish(host.s)) return null;
-    const wrong = distractors(a, cz.answer, it.cat, rand, 1, { sentId: host.id, text: host.s })[0];
+    const wrong = distractors(a, cz.answer, it.cat, rand, 1, { sentId: host.id, text: host.s, swap: true })[0];
     if (!wrong) return null;
     const re = new RegExp('(^|[^\\w-])' + escRe(cz.answer) + '(?![\\w-])', 'i');
     if (!re.test(host.s)) return null;
-    const falsed = host.s.replace(re, (m, pre) => pre + wrong);
-    if (falsed === host.s) return null;
+    let falsed = host.s.replace(re, (m, pre) => pre + fitCase(m.slice(pre.length), wrong));
+    if (falsed === host.s || brokeIt(host.s, falsed)) return null;
+    falsed = fixArticle(falsed, fitCase(cz.answer, wrong));
     // three true statements, none of them the one being altered, none already spent
     const trues = [];
-    for (const st of a.sentences) {
+    // drawn in a shuffled order, so the same three true statements are not the filler of every question
+    for (const st of shuffle(a.sentences, rand)) {
       if (trues.length >= 3) break;
       if (st.id === host.id || st.dangling || usedSent.has(st.id)) continue;
       if (st.s.length < 40 || st.s.length > 200) continue;
@@ -5154,6 +5581,10 @@ const GENERIC = new Set('information data process system method result results s
          is plainly not the altered one. A statement has to end like one and carry a verb. */
       if (!statementish(st.s)) continue;
       if (HEDGE_RE.test(st.s)) continue;                       // "may be" is not true or false
+      // "These are the rewards for…", "If you believed your grade…": true, but not checkable on its own
+      if (st.personal || PRONOUN_START.test(st.s) || /^(?:so|and|but|also|here|now|today|next|then|again|remember|in other words|the more|for example|for instance|example|chapter \d|use|ensure|consider)\b/i.test(st.s) || SOFT.test(st.s) || st.inAnswer) continue;
+      // a true option has to be about something the material teaches, not a passing remark
+      if (!termsIn(a, [st], 1).length) continue;
       if (inText(st.s, cz.answer) || inText(st.s, wrong)) continue;   // would give the swap away
       trues.push(st);
     }
@@ -5188,6 +5619,16 @@ const GENERIC = new Set('information data process system method result results s
     if (!re.test(cz.text)) return null;
     const body = cz.text.replace(re, (m, pre) => pre + '______');
     if ((body.match(/______/g) || []).length !== 2) return null;
+    const visible = ans => wordsOf(ans).map(lc).filter(w => w.length >= 4 && !STOP.has(w)).some(w => new RegExp('\\b' + escRe(w) + '\\b', 'i').test(body));
+    if (visible(cz.answer) || visible(second)) return null;
+    /* The answers are asked for "in order", so they have to BE in sentence order. The blank made
+       first is not always the one that comes first: "Prepaid ______, an asset, are recorded when
+       expenses are ______" was marked "paid, expenses" — the right words, the wrong way round, so a
+       student typing exactly what the sentence needs was told they were wrong. */
+    const mSecond = cz.text.match(re);
+    const secondFirst = mSecond && (mSecond.index + mSecond[1].length) < cz.text.indexOf('______');
+    const said = mSecond ? mSecond[0].slice(mSecond[1].length) : second;   // as the sentence spells it
+    const pair = secondFirst ? [said, cz.answer] : [cz.answer, said];
     /* Taking a second word out can leave a sentence with nothing left to reason from, and a blank
        you cannot reason towards is not a hard question — it is a guess. The single-blank generator
        has required two other known terms to survive in the sentence since v2.2; the same floor has
@@ -5196,13 +5637,41 @@ const GENERIC = new Set('information data process system method result results s
     for (const t of a.terms) { if (left >= 2) break; if (inText(body, t.display)) left++; }
     if (left < 2) return null;
     return { type: 'fill', two: true, prompt: 'Two words are missing. Type them in order, separated by a comma.',
-      body, answer: `${cz.answer}, ${second}`, answers: [cz.answer, second],
+      body, answer: pair.join(', '), answers: pair,
       source: sent.s, sourceId: sent.id,
       hint: hintFrom(a, sent.id, cz.answer, 'Two blanks — the first comes before the second in the sentence') };
   }
 
+  /* A worksheet's short answers usually come from a small closed set — "Binomial" or "Poisson",
+     "asset" or "liability" — which is exactly what a multiple-choice question is made of: the
+     options are the answers the material itself gives to questions of the same kind. */
+  function qaChoices(a) {
+    if (a._qaChoices) return a._qaChoices;
+    const short = (a.qa || []).filter(x => wordsOf(x.a).length <= 5 && x.a.length <= 48 && !/[.!?]\s+\S/.test(x.a));
+    const norm = x => lc(x).replace(/[.\s]+$/, '').trim();
+    const pool = new Map();
+    for (const x of short) { const k = norm(x.a); if (!pool.has(k)) pool.set(k, x.a.replace(/\.$/, '').trim()); }
+    a._qaChoices = pool.size >= 2 ? short.map(x => ({ ...x, a: x.a.replace(/\.$/, '').trim(), others: Array.from(pool.entries()).filter(([k]) => k !== norm(x.a)).map(([, v]) => v) })) : [];
+    return a._qaChoices;
+  }
+
+  /* "Which term matches: High self-esteem: more persistent and logical…" answers itself. A
+     description that already uses the term's own key word, or that is the slide's title
+     restated, is not asked as "which term is this". */
+  function namesItself(d) {
+    if (d.isTitle) return true;
+    const body = ' ' + wordsOf(d.def).map(lc).join(' ') + ' ';
+    return wordsOf(d.term.replace(/\([^)]*\)/g, '')).map(lc).filter(w => w.length >= 4 && !STOP.has(w) && !GENERIC.has(w)).some(w => body.includes(' ' + w + ' ') || body.includes(' ' + singular(w) + ' '));
+  }
   function makeMC(a, it, rand, usedSent) {
+    if (it.kind === 'qa') {
+      if (usedSent.has(it.qa.id)) return null;
+      const opts = shuffle([it.qa.a].concat(shuffle(it.qa.others, rand).slice(0, 3)), rand);
+      return { type: 'mc', qa: true, prompt: it.qa.lead ? `${it.qa.lead}.` : 'Choose the answer.', body: it.qa.q, options: opts, answer: it.qa.a, source: `${it.qa.q} — ${it.qa.a}`, sourceId: it.qa.id,
+        hint: hintFrom(a, it.qa.id, null, 'Work out what kind of question this is before looking at the options') };
+    }
     if (it.kind === 'def' && (it.def.kind === 'colon' || it.def.kind === 'dash')) {
+      if (namesItself(it.def)) return null;
       const wrong = distractors(a, it.term, it.cat, rand, 3, { sentId: it.def.id, text: it.def.def });
       if (wrong.length < 3 || !shapeOk(it.term, wrong)) return null;
       const opts1 = shuffle([it.term].concat(wrong), rand);
@@ -5239,6 +5708,8 @@ const tfHint = (a, id) => hintFrom(a, id, null, 'Check the statement against the
 
   function makeTF(a, it, rand, usedSent) {
     const makeFalse = rand() < 0.5;
+    if (it.kind === 'qa') return null;
+    if (it.kind === 'def' && a.sentences[it.def.id] && a.sentences[it.def.id].personal) return null;
     if (it.kind === 'def') {
       if (usedSent.has(it.def.id)) return null;
       const sentence = it.def.kind === 'is' || it.def.kind === 'weak' || it.def.kind === 'inverse' ? it.def.sent : (/^[a-z]/.test(it.def.def) ? `${it.term} is ${it.def.def}` : `${it.term} — ${it.def.def}`);
@@ -5247,11 +5718,13 @@ const tfHint = (a, id) => hintFrom(a, id, null, 'Check the statement against the
       // swapping a term inside "X is not Y" can produce a statement that is true after all
       if (makeFalse && riskyToSwap(sentence)) return { type: 'tf', prompt: 'True or false?', body: sentence, answer: 'True', source: it.def.sent, sourceId: it.def.id, hint: tfHint(a, it.def.id) };
       if (!makeFalse) return { type: 'tf', prompt: 'True or false?', body: sentence, answer: 'True', source: it.def.sent, sourceId: it.def.id, hint: tfHint(a, it.def.id) };
-      const wrong = distractors(a, it.term, it.cat, rand, 1, { sentId: it.def.id, text: sentence })[0];
+      const wrong = distractors(a, it.term, it.cat, rand, 1, { sentId: it.def.id, text: sentence, swap: true })[0];
       if (!wrong) return null;
       const re = new RegExp('(^|[^\\w-])' + escRe(it.term) + '(?![\\w-])', 'i');
       if (!re.test(sentence)) return null;
-      const swapped = sentence.replace(re, (m, p) => p + wrong);
+      const swapped0 = sentence.replace(re, (m, p) => p + fitCase(m.slice(p.length), wrong));
+      if (brokeIt(sentence, swapped0)) return null;
+      const swapped = fixArticle(swapped0, fitCase(it.term, wrong));
       return { type: 'tf', prompt: 'True or false?', body: swapped, answer: 'False', explain: `The correct term is “${it.term}”.${selfDef(a, wrong) ? ` “${wrong}” is ${selfDef(a, wrong)}` : ''}`, source: it.def.sent, sourceId: it.def.id, hint: tfHint(a, it.def.id) };
     }
     if (it.kind === 'num') {
@@ -5265,22 +5738,30 @@ const tfHint = (a, id) => hintFrom(a, id, null, 'Check the statement against the
     }
     const cz = clozeFor(a, it.term, usedSent);
     if (!cz) return null;
-    if (HEDGE_RE.test(cz.sent.s)) return null;
+    if (HEDGE_RE.test(cz.sent.s) || SOFT.test(cz.sent.s)) return null;
+    if (makeFalse && !swappable(a, it)) return null;
     if (makeFalse && riskyToSwap(cz.sent.s)) return { type: 'tf', prompt: 'True or false?', body: cz.sent.s, answer: 'True', source: cz.sent.s, sourceId: cz.sent.id, hint: tfHint(a, cz.sent.id) };
     if (!makeFalse) return { type: 'tf', prompt: 'True or false?', body: cz.sent.s, answer: 'True', source: cz.sent.s, sourceId: cz.sent.id, hint: tfHint(a, cz.sent.id) };
-    const wrong = distractors(a, cz.answer, it.cat, rand, 1, { sentId: cz.sent.id, text: cz.sent.s })[0];
+    const wrong = distractors(a, cz.answer, it.cat, rand, 1, { sentId: cz.sent.id, text: cz.sent.s, swap: true })[0];
     if (!wrong) return null;
-    return { type: 'tf', prompt: 'True or false?', body: cz.before + wrong + cz.after, answer: 'False', explain: `It should say “${cz.answer}”.${selfDef(a, wrong) ? ` “${wrong}” is ${selfDef(a, wrong)}` : ''}`, source: cz.sent.s, sourceId: cz.sent.id, hint: tfHint(a, cz.sent.id) };
+    const tfBody = fixArticle(cz.before + fitCase(cz.answer, wrong) + cz.after, fitCase(cz.answer, wrong));
+    if (brokeIt(cz.sent.s, tfBody)) return null;
+    return { type: 'tf', prompt: 'True or false?', body: tfBody, answer: 'False', explain: `It should say “${cz.answer}”.${selfDef(a, wrong) ? ` “${wrong}” is ${selfDef(a, wrong)}` : ''}`, source: cz.sent.s, sourceId: cz.sent.id, hint: tfHint(a, cz.sent.id) };
   }
 
   function makeFill(a, it, rand, usedSent) {
+    if (it.kind === 'qa') {
+      if (usedSent.has(it.qa.id) || wordsOf(it.qa.a).length > 3) return null;
+      return { type: 'fill', qa: true, prompt: it.qa.lead ? `${it.qa.lead} — type it.` : 'Type the answer.', body: it.qa.q, answer: it.qa.a, source: `${it.qa.q} — ${it.qa.a}`, sourceId: it.qa.id,
+        hint: hintFrom(a, it.qa.id, null, 'A word or two — the same kind of answer the material gives to the questions around it') };
+    }
     if (it.kind === 'acr') return { type: 'fill', prompt: 'Type the acronym for:', body: it.ac.expansion, answer: it.ac.acr, source: it.ac.sent, sourceId: it.ac.id, hint: hintFrom(a, it.ac.id, null, `${String(it.ac.acr).length} letters`) };
     if (it.kind === 'num') {
       if (usedSent.has(it.fact.sent.id)) return null;
       const s = it.fact.sent.s, n = it.term, idx = s.indexOf(n);
       return { type: 'fill', prompt: 'Type the missing figure.', body: s.slice(0, idx) + '______' + s.slice(idx + n.length), answer: n, source: s, sourceId: it.fact.sent.id, hint: hintFrom(a, it.fact.sent.id, n) };
     }
-    if (it.kind === 'def' && (it.def.kind === 'colon' || it.def.kind === 'dash') && wordsOf(it.term).length <= 3) {
+    if (it.kind === 'def' && (it.def.kind === 'colon' || it.def.kind === 'dash') && wordsOf(it.term).length <= 3 && !namesItself(it.def)) {
       return { type: 'fill', prompt: 'Which term is being described? Type it.', body: it.def.def, answer: it.term, source: it.def.sent, sourceId: it.def.id, hint: hintFrom(a, it.def.id, it.term) };
     }
     const cz = clozeFor(a, it.term, usedSent);
@@ -33367,7 +33848,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.74', date: '21 October 2026', year: 2026 };
+  const BUILD = { v: '2.75', date: '21 October 2026', year: 2026 };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonxcorp', ['outlook', 'com'].join('.')].join('@');
   /* The one sentence that says what this is. It appears under the wordmark, and build.js uses
@@ -33380,6 +33861,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      because the person who needs it is the one who just watched the app refresh itself and wants to
      know what moved. Trim the tail when it gets past a dozen; nobody reads further back than that. */
   const WHATS_NEW = [
+    ['2.75', '<b>Better cards, summaries, key information and quizzes from your own files.</b> Tested on real lecture slides, a study guide and worksheets, about a fifth of the cards and a quarter of the quiz used to be built from things that are not facts: exam questions, learning objectives, photo credits, ledger lines and asides. Those are now left out. <b>Questions that come with their answers</b> \u2014 a study guide\u2019s model answers, or a worksheet\u2019s answer key \u2014 become cards, and a new <b>Questions with answers</b> panel in Key information. A label used under two headings (\u201cConsistency\u201d) now says which one it means; journal entries become \u201cthe AJE journal entry\u201d cards; two-blank questions are marked in the right order; and number options are as round as the answer. Your files still never leave your browser.'],
     ['2.74', '<b>An audit of every course page, graph and practice question.</b> The most important fix: <b>in course practice the right answer was almost always option A</b>, and ordering questions showed their steps already in order. Choices are now shuffled for every question, so practice tests what you know rather than where the answer sits. Four graphs were missing a data point that fell outside the drawing (potassium on the atomic-radius chart, methane on the hydrides chart, 30 m/s on the kinetic-energy curve and atmospheric water on the residence-time chart) and now show it; the hydrogen-halide chart had HF plotted at \u2212188 \u00b0C instead of +20 \u00b0C, which hid the very anomaly it was drawn to show. Axis names no longer sit on top of the data, and labels keep clear of the curves.'],
     ['2.73', '<b>A suggestion box.</b> Press <b>Suggest an idea</b> \u2014 at the foot of every page, or on the home page \u2014 to ask for a feature, a course, or to say something broke. Only JohnsonXCorp reads it; nothing is posted publicly. Add an email if you want a reply, or leave it empty and the note is anonymous. It sends your words and nothing else: no visit id, nothing from your files.'],
     ['2.72', '<b>A new front page.</b> The home screen now says what UNI Made EZ is in one line, shows a worked example set out the way every lesson sets one out, and puts both ways in \u2014 the courses and your own files \u2014 on buttons in the first screen. The welcome screen shows the whole course library beside the form. Nothing inside the app changed, and nothing about your files did: they still never leave your browser.'],
@@ -33856,7 +34338,8 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
   // a stable id for anything in Key information, so stars/notes survive a re-scan
   function itemId(kind, item) {
     switch (kind) {
-      case 'defs': return ID.def(item.term);
+      case 'defs': return ID.def(item.ctx ? `${item.term} · ${item.ctx}` : item.term);
+      case 'qa': return 'q:' + Engine.cardKey('q', item.q);
       case 'terms': return ID.term(item.key || item.display);
       case 'acronyms': return 'a:' + String(item.acr).toLowerCase();
       case 'entities': return 'e:' + String(item.name).toLowerCase();
@@ -33878,6 +34361,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
       case 'diagrams': return `${figNumber(item)}${figTitle(item) ? ' — ' + shortLab(figTitle(item), 50) : ''}`;
       case 'map': return item.title || 'Section';
       case 'lists': return item.title || (item.items || [])[0] || 'List';
+      case 'qa': return shortLab(item.q);
       case 'processes': return item.steps ? (item.title || 'Steps') : shortLab(item.sent.s);
       default: return shortLab((item.sent && item.sent.s) || '');
     }
@@ -33885,7 +34369,8 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
   // turn a Key information item into a flash card the student can keep
   function cardFromItem(kind, item) {
     switch (kind) {
-      case 'defs': return { front: `What ${/s$/i.test(item.term) ? 'are' : 'is'} ${item.term}?`, back: defText(item), term: item.term };
+      case 'defs': return { front: item.generic && item.ctx ? `${item.ctx} — ${item.term}?` : `What ${/s$/i.test(item.term) ? 'are' : 'is'} ${item.term}${item.ctx ? `, in “${item.ctx}”` : ''}?`, back: defText(item), term: item.term };
+      case 'qa': return { front: item.q, back: item.a, term: '' };
       case 'terms': { const k = state.ui && state.ui.keys; const d = k ? defFor(k, item.display) : null; const b = d ? defText(d) : bestExplanation(item.display); return b ? { front: `What is ${item.display}?`, back: b, term: item.display } : null; }
       case 'acronyms': return { front: `What does ${item.acr} stand for?`, back: item.expansion, term: item.acr };
       case 'formulas': return { front: `Write the formula for: ${shortLab(item.sent || item.expr, 90)}`, back: item.expr, term: item.expr };
@@ -37670,8 +38155,8 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
   }
 
   /* ---------- key information ---------- */
-  const KIND_META = { defs: 'Definitions', terms: 'Terms to know', acronyms: 'Acronyms', formulas: 'Formulas', processes: 'Processes & steps', causes: 'Cause & effect', comparisons: 'Comparisons & contrasts', examples: 'Examples', map: 'Section map', dates: 'Timeline', figures: 'Figures & stats', diagrams: 'Figures & diagrams', entities: 'People, places & organisations', lists: 'Lists from the material' };
-  const LIMITS = { defs: 6, terms: 40, acronyms: 6, formulas: 4, processes: 4, causes: 4, comparisons: 4, examples: 4, map: 5, dates: 6, figures: 5, diagrams: 3, entities: 14, lists: 2 };
+  const KIND_META = { defs: 'Definitions', qa: 'Questions with answers', terms: 'Terms to know', acronyms: 'Acronyms', formulas: 'Formulas', processes: 'Processes & steps', causes: 'Cause & effect', comparisons: 'Comparisons & contrasts', examples: 'Examples', map: 'Section map', dates: 'Timeline', figures: 'Figures & stats', diagrams: 'Figures & diagrams', entities: 'People, places & organisations', lists: 'Lists from the material' };
+  const LIMITS = { defs: 6, qa: 4, terms: 40, acronyms: 6, formulas: 4, processes: 4, causes: 4, comparisons: 4, examples: 4, map: 5, dates: 6, figures: 5, diagrams: 3, entities: 14, lists: 2 };
   const hlNeedles = (text, needles) => { let out = esc(text); for (const n of needles || []) { if (!n) continue; const re = new RegExp('(' + String(n).replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'i'); out = out.replace(re, '<mark>$1</mark>'); } return out; };
   const defText = d => d.kind === 'is' || d.kind === 'weak' || d.kind === 'inverse' ? d.sent : d.def;
   function keysItems(k, kind) {
@@ -37693,6 +38178,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     const rowBtn = label => `<button type="button" class="row-open" data-act="keys-item" data-kind="${kind}" data-i="${i}" aria-label="${esc(label)}"></button>`;
     switch (kind) {
       case 'defs': return `<div class="def k-row"${flat}><dt>${esc(item.term)}${confChip(confOf(item))}${item.section ? `<span class="where">${esc(item.section)}</span>` : ''}</dt><dd class="clamp">${esc(defText(item))}${rowBtn(`Open the definition of ${item.term}`)}</dd></div>`;
+      case 'qa': return `<div class="def k-row qa-row"${flat}><dt>${esc(shortLab(item.q, 150))}${item.section ? `<span class="where">${esc(item.section)}</span>` : ''}</dt><dd class="clamp">${esc(item.a)}${rowBtn(`Open the question and its answer`)}</dd></div>`;
       case 'acronyms': return `<div class="def k-row"${flat}><dt>${esc(item.acr)}${confChip(confOf(item))}</dt><dd class="clamp">${esc(item.expansion)}${rowBtn(`Open the acronym ${item.acr}`)}</dd></div>`;
       case 'formulas': return `<div class="formula k-row" ${open} aria-label="Open the formula ${esc(item.expr)}">${fxHtml(item.expr, item.kind)}</div>`;
       case 'diagrams': return `<div class="k-row figrow" ${open} aria-label="Open ${esc(figNumber(item))}${figTitle(item) ? ': ' + esc(figTitle(item)) : ''}"><img src="${item.src}" alt="" loading="lazy"><div class="figmeta"><strong>${esc(figNumber(item))}</strong><span class="clamp">${esc(figTitle(item) || 'No caption found near it')}</span><span class="cite">${esc(item.file)} · p. ${item.page}</span></div></div>`;
@@ -37811,6 +38297,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     const block = (label, html) => `<div class="detail-block"><span class="label">${label}</span>${html}</div>`;
     const ctxList = (term, skip) => { const c = ctx(term).filter(x => x !== skip); return c.length ? block('Where it appears', `<div class="fact-list">${c.map(x => `<div class="fact">${hlNeedles(x, [term])}</div>`).join('')}</div>`) : ''; };
     switch (kind) {
+      case 'qa': return { title: shortLab(item.q, 90), kicker: `Question with its answer${item.section ? ' · ' + item.section : ''}`, copy: `${item.q}\n\n${item.a}`, body: block('Question', `<p class="big">${esc(item.q)}</p>`) + block('The material’s answer', `<p>${esc(item.a)}</p>${citeTag(item.q)}`) };
       case 'defs': return { title: item.term, kicker: `Definition${item.section ? ' · ' + item.section : ''}`, copy: `${item.term} — ${defText(item)}`, body: confNote(confOf(item)) + block('Definition', `<p class="big">${hlNeedles(defText(item), [item.term])}</p>${defText(item) === item.sent ? citeTag(item.sent) : ''}`) + (defText(item) !== item.sent ? block('From the material', `<p>${esc(item.sent)}</p>${citeTag(item.sent)}`) : '') + ctxList(item.term, item.sent) };
       case 'terms': {
         const d = defFor(k, item.display);
@@ -37883,7 +38370,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     const k = state.ui.keys; if (!k) return;
     const items = keysItems(k, kind);
     const wrap = kind === 'dates' || kind === 'map' ? 'ol' : kind === 'entities' ? 'div' : 'div';
-    const cls = kind === 'dates' ? 'timeline' : kind === 'map' ? 'sec-map' : kind === 'entities' ? 'ent-list' : kind === 'diagrams' ? 'fig-list' : kind === 'defs' || kind === 'acronyms' ? 'def-list' : 'fact-list';
+    const cls = kind === 'dates' ? 'timeline' : kind === 'map' ? 'sec-map' : kind === 'entities' ? 'ent-list' : kind === 'diagrams' ? 'fig-list' : kind === 'defs' || kind === 'acronyms' || kind === 'qa' ? 'def-list' : 'fact-list';
     state.modal = { type: 'info', title: KIND_META[kind], kicker: `All ${plural(items.length, 'item')} · tap one for the full text`, filter: items.length > 8, body: `<${wrap} class="${cls} modal-list">${items.map((it, i) => keysRow(kind, it, i)).join('')}</${wrap}>` };
     syncModal();
   }
@@ -37956,7 +38443,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
   }
   /* The panels a discipline reads first, expanded into the full list so nothing is ever dropped —
      a profile reorders Key information, it does not hide half of it. */
-  const PANEL_ALL = ['defs', 'acronyms', 'formulas', 'terms', 'processes', 'causes', 'comparisons',
+  const PANEL_ALL = ['defs', 'qa', 'acronyms', 'formulas', 'terms', 'processes', 'causes', 'comparisons',
     'examples', 'diagrams', 'map', 'dates', 'figures', 'entities', 'lists'];
   function panelOrder(prof) {
     const want = (prof && prof.panels) || [];
@@ -38052,7 +38539,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
        this discipline reads first are the ones at the top left. Nothing is ever dropped: a profile
        reorders and renames, it does not hide. */
     const WRAP = {
-      defs: ['<dl class="def-list">', '</dl>'], acronyms: ['<dl class="def-list">', '</dl>'],
+      defs: ['<dl class="def-list">', '</dl>'], qa: ['<dl class="def-list">', '</dl>'], acronyms: ['<dl class="def-list">', '</dl>'],
       formulas: ['<div class="stack tight">', '</div>'], processes: ['<div class="fact-list">', '</div>'],
       causes: ['<div class="fact-list">', '</div>'], comparisons: ['<div class="fact-list">', '</div>'],
       examples: ['<div class="fact-list">', '</div>'], diagrams: ['<div class="fig-list">', '</div>'],
@@ -38380,7 +38867,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
       <button class="btn sm" data-act="print-cards" title="Print the deck as cut-out cards">Print <span class="arr">⎙</span></button>
       <button class="btn sm" data-act="copy-cards" title="Copy every card as tab-separated text (paste into Quizlet or a spreadsheet)">Copy <span class="arr">⧉</span></button>
       <button class="btn sm" data-act="export-cards" title="Save the deck as a text file Anki imports directly">Anki <span class="arr">↓</span></button>`;
-    if (!ui.pool.length) { app.innerHTML = sectionShell(s, 'cards', `${note}<div class="empty" style="margin-top:16px">Not enough structured text to make cards from. Try adding more material.</div>`, bar); return; }
+    if (!ui.pool.length) { app.innerHTML = sectionShell(s, 'cards', `${note}<div class="empty" style="margin-top:16px">Not enough structured text to make cards from. Try adding more material.${taskNote(a)}</div>`, bar); return; }
     let body;
     if (!cards.length) {
       body = `<div class="deck-done">
@@ -38587,6 +39074,13 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     return out;
   }
 
+  /* A worksheet or past paper with no answers is mostly questions, and a question is not something
+     to learn from — the engine now refuses to turn "Find the domain of p(x)" into a card. Saying why
+     the deck is thin is better than a bare "not enough text". */
+  function taskNote(a) {
+    if (!a || !(a.taskShare >= 0.35)) return '';
+    return `<p class="small muted task-note">Most of this material is questions or exercises without their answers, so there is little in it to learn from directly. Add the notes or chapter it tests &mdash; or a copy with the answers: a question that comes with its answer becomes a card.</p>`;
+  }
   function renderQuiz(s, a, ui, note) {
     /* Which question types a discipline can honestly support is a property of the discipline, not a
        preference. Law has no arithmetic and English has neither arithmetic nor an ordered process,
@@ -38618,7 +39112,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
           <button type="button" class="${ui.exam ? 'on' : ''}" data-act="q-mode" data-m="exam">Exam</button>
         </div><p class="small muted">${ui.exam ? 'Timed, one minute a question, no feedback until you submit — like the real thing.' : 'Marked as you go, with the answer and its source after each question.'}</p></div>
         <div class="field"><label>Number of questions</label><div class="seg">${counts.map(n => `<button type="button" class="${ui.count === n ? 'on' : ''}" data-act="q-count" data-n="${n}">${n}</button>`).join('')}</div>
-          <p class="small muted">Your material supports about <b>${cap.total}</b> ${plural(cap.total, 'question').replace(/^\d+\s/, '')} in total &mdash; ${cap.easy} to recognise, ${cap.medium} to produce, ${cap.hard} to discriminate. Add more files and that number goes up.</p></div>
+          <p class="small muted">Your material supports about <b>${cap.total}</b> ${plural(cap.total, 'question').replace(/^\d+\s/, '')} in total &mdash; ${cap.easy} to recognise, ${cap.medium} to produce, ${cap.hard} to discriminate. Add more files and that number goes up.</p>${cap.total < 10 ? taskNote(a) : ''}</div>
         <div class="field"><label>Difficulty</label><div class="seg">${[0, 1, 2, 3].map(l => `<button type="button" class="${ui.level === l ? 'on' : ''}" data-act="q-level" data-l="${l}">${LEVEL_NAME[l]}</button>`).join('')}</div>
           <p class="small muted">${esc(LEVEL_WHY[ui.level])}${ui.level && (ui.level === 1 ? cap.easy : ui.level === 2 ? cap.medium : cap.hard) < ui.count ? ` This material has only ${ui.level === 1 ? cap.easy : ui.level === 2 ? cap.medium : cap.hard} of those, so the rest come from the nearest level.` : ''}${suggestedLevel(s.id) === 3 && ui.level === 3 ? ' Started here because your last few quizzes were over 85%.' : ''}</p></div>
         ${ui.exam ? (() => { const bp = examBlueprint(s, a, ui.count);
