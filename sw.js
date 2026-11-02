@@ -1,8 +1,8 @@
-/* UNI Made EZ — service worker, build 2.82.
+/* UNI Made EZ — service worker, build 2.83.
    Keeps a copy of the page so it opens with no connection, and lets the browser install it
    to a home screen. The whole app is one file, so the "offline copy" really is just that file
    plus its icons; nothing here touches your subjects, which live in the browser's own storage. */
-const V = '2.82';
+const V = '2.83';
 const APP = 'umez-app-v' + V;      // the page and its icons, replaced whole on every build
 const RUNTIME = 'umez-runtime-v1'; // web fonts, kept across builds
 const TUTOR = 'umez-tutor-lib-v1'; // the voice tutor's program files, kept across builds
@@ -28,6 +28,19 @@ self.addEventListener('activate', e => {
 // the page asks for the new build to take over when you press Reload on its toast
 self.addEventListener('message', e => { if (e.data && e.data.type === 'skip-waiting') self.skipWaiting(); });
 
+/* Cross-origin isolation (v2.83). GitHub Pages cannot send these two headers, so the worker adds them
+   to the page. With them the browser lets the voice tutor's WebAssembly use several processor cores
+   instead of one, which makes the downloaded voice several times faster. "credentialless" keeps
+   everything the app loads from other sites working: those requests simply carry no cookies.
+   Nothing about what the page sends changes. */
+function isolated(res) {
+  if (!res || res.status === 0 || res.type === 'opaque' || res.type === 'opaqueredirect') return res;
+  const h = new Headers(res.headers);
+  h.set('Cross-Origin-Embedder-Policy', 'credentialless');
+  h.set('Cross-Origin-Opener-Policy', 'same-origin');
+  return new Response(res.body, { status: res.status, statusText: res.statusText, headers: h });
+}
+
 // A stalled connection is not the same as no connection. Without a deadline the worker can sit
 // waiting on a request that will never answer — and because the worker owns the response, the
 // page's load event never fires and the tab spins. Every network call it makes gets a deadline.
@@ -49,11 +62,12 @@ self.addEventListener('fetch', e => {
       try {
         const fresh = await timedFetch(req, 4000);
         if (fresh && fresh.ok) { const c = await caches.open(APP); await c.put('./index.html', fresh.clone()); }
-        return fresh;
+        return isolated(fresh);
       } catch (err) {
         const c = await caches.open(APP);
-        return (await c.match('./index.html')) || (await c.match('./')) ||
-          new Response('<h1>Offline</h1><p>Open UNI Made EZ once with a connection and it will work without one after that.</p>',
+        const hit = (await c.match('./index.html')) || (await c.match('./'));
+        if (hit) return isolated(hit);
+        return new Response('<h1>Offline</h1><p>Open UNI Made EZ once with a connection and it will work without one after that.</p>',
             { status: 503, headers: { 'content-type': 'text/html; charset=utf-8' } });
       }
     })());

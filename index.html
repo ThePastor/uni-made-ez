@@ -47348,17 +47348,24 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     let tts = null, latest = 0, busy = false;
     const queue = [];
     const reply = (m, t) => self.postMessage(m, t || []);
-    self.onmessage = e => { const m = e.data; if (m.type === 'epoch') { latest = Math.max(latest, m.epoch); return; } queue.push(m); kick(); };
+    // two lanes: what is about to be played (prio 0) always goes before reading ahead (prio 1)
+    self.onmessage = e => { const m = e.data;
+      if (m.type === 'epoch') { latest = Math.max(latest, m.epoch); return; }
+      if (m.type === 'promote') { for (const q of queue) if (q.type === 'gen' && q.text === m.text && q.voice === m.voice) q.prio = 0; return; }
+      if (m.type === 'drop-ahead') { for (let i = queue.length - 1; i >= 0; i--) if (queue[i].prio === 1) { reply({ type: 'done', id: queue[i].id, skipped: true }); queue.splice(i, 1); } return; }
+      queue.push(m); kick(); };
     function kick() { if (busy || !queue.length) return; busy = true; setTimeout(run, 0); }
+    function next() { let k = 0; for (let i = 1; i < queue.length; i++) if ((queue[i].prio || 0) < (queue[k].prio || 0)) k = i; return queue.splice(k, 1)[0]; }
     async function run() {
-      const m = queue.shift();
+      const m = next();
+      if (!m) { busy = false; return; }   // the queue was cleared while this run was waiting to start
       try {
         if (m.type === 'load') {
           if (!tts) tts = await KokoroTTS.from_pretrained(m.model, { dtype: m.dtype, device: m.device || 'wasm',
             progress_callback: p => { if (p && p.status === 'progress' && p.total) reply({ type: 'progress', id: m.id, loaded: p.loaded, total: p.total }); } });
           reply({ type: 'done', id: m.id });
         } else if (m.type === 'gen') {
-          if (m.epoch < latest) reply({ type: 'done', id: m.id, skipped: true });
+          if (!m.keep && m.epoch < latest) reply({ type: 'done', id: m.id, skipped: true });
           else { const t0 = performance.now(); const a = await tts.generate(m.text, { voice: m.voice }); const au = new Float32Array(a.audio); reply({ type: 'done', id: m.id, audio: au, sr: a.sampling_rate, ms: performance.now() - t0 }, [au.buffer]); }
         }
       } catch (err) { reply({ type: 'error', id: m.id, msg: String(err && err.message || err) }); }
@@ -47392,7 +47399,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
   function status() {
     const s = LS.get();
     return { voice: !!s.voice, llm: !!s.llm, voiceReady: !!(tts || (test && test.tts)), llmReady: !!(llm || (test && test.llm)), voiceName: s.voiceName || CFG.voice.voices[0], gpu: gpuInfo, loading: !!loading,
-      voiceDevice: voiceDev || s.voiceDevice || (s.voice ? 'wasm' : null), mode: modeOf(s),  sysVoice: s.sysVoice || null, quick: !natural(s), slow: knownRtf(s) != null && knownRtf(s) > 1.05, rtf: knownRtf(s) };
+      voiceDevice: voiceDev || s.voiceDevice || (s.voice ? 'wasm' : null), mode: modeOf(s), preparing, using,  sysVoice: s.sysVoice || null, quick: !natural(s), slow: knownRtf(s) != null && knownRtf(s) > 1.05, rtf: knownRtf(s) };
   }
 
   let voiceLoading = null;
@@ -47415,7 +47422,9 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
         await vCall({ type: 'load', model: CFG.voice.id, dtype: CFG.voice.dtype, device: 'wasm' }, prog);
       }
       voiceDev = used;
-      tts = { generate: (text, o) => vCall({ type: 'gen', text, voice: o.voice, epoch: o.epoch || wEpoch }).then(r => {
+      tts = { promote: (text, voice) => { try { voiceWorker().postMessage({ type: 'promote', text, voice }); } catch (e) { /* ignore */ } },
+        dropAhead: () => { try { if (vw) vw.postMessage({ type: 'drop-ahead' }); } catch (e) { /* ignore */ } },
+        generate: (text, o) => vCall({ type: 'gen', text, voice: o.voice, epoch: o.epoch || wEpoch, prio: o.prio || 0, keep: !!o.keep }).then(r => {
         if (r.skipped) return null;
         // how long making it took against how long it lasts: above 1, the voice cannot keep up
         if (r.ms && r.audio && r.audio.length > 2400) {
@@ -47503,7 +47512,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     if (m === 'device') return false;
     if (m === 'natural') return true;
     const k = knownRtf(s);
-    return k == null || k <= FAST_ENOUGH;
+    return k == null || k <= FAST_ENOUGH || acache.size > 0;
   }
 
   function chunks(text) {
@@ -47561,27 +47570,79 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 
   let ac = null;
   const sched = new Set();
-  const warmed = new Map();   // chunk text → a generation already under way
-  let wEpoch = 1;   // the worker's own count: dropping its queue must not cancel what is playing
+  let wEpoch = 1;   // the worker's own count, sent with what is about to be played
   function stopAudio() {
-    epoch++; wEpoch++; warmed.clear();
+    epoch++; wEpoch++;
     try { if (vw) vw.postMessage({ type: 'epoch', epoch: wEpoch }); } catch (e) { /* ignore */ }
     for (const src of sched) { try { src.onended = null; src.stop(); } catch (e) { /* ignore */ } }
     sched.clear();
     try { if (root.speechSynthesis) speechSynthesis.cancel(); } catch (e) { /* ignore */ }
+    setPreparing(false);
   }
-  function genChunk(t, text) {
-    const voice = LS.get().voiceName || CFG.voice.voices[0];
-    const key = voice + '|' + text;
-    if (warmed.has(key)) { const p = warmed.get(key); warmed.delete(key); return p; }
-    return Promise.resolve(t.generate(text, { voice, epoch: wEpoch })).catch(() => null);
+
+  /* ---- the natural voice, made ahead (v2.83) ----
+     Everything the natural voice makes is kept (up to about ten minutes of sound), and while a
+     student reads a chapter the voice works through it in the background, so pressing a speaker
+     usually plays sound that is already made: it starts at once and runs without a gap, like the
+     device voice. What is about to be played always goes to the front of the worker's queue. */
+  const acache = new Map();        // voice|text → { p, audio, done }
+  const CAP_SEC = 600;
+  let cachedSec = 0;
+  const secOf = a => a && a.audio ? a.audio.length / (a.sampling_rate || 24000) : 0;
+  const curVoice = () => LS.get().voiceName || CFG.voice.voices[0];
+  function getChunk(t, text, prio) {
+    const voice = curVoice(), key = voice + '|' + text;
+    let e = acache.get(key);
+    if (e) {
+      acache.delete(key); acache.set(key, e);                        // most recently used last
+      if (!e.done && prio === 0 && e.prio !== 0) { e.prio = 0; if (t.promote) t.promote(text, voice); }
+      return e;
+    }
+    e = { done: false, audio: null, prio };
+    e.p = Promise.resolve(t.generate(text, { voice, epoch: wEpoch, prio, keep: prio === 1 })).catch(() => null).then(a => {
+      e.done = true; e.audio = a;
+      if (!a || !a.audio) { if (acache.get(key) === e) acache.delete(key); return null; }
+      cachedSec += secOf(a);
+      for (const [k, x] of acache) { if (cachedSec <= CAP_SEC) break; if (x !== e && x.done) { cachedSec -= secOf(x.audio); acache.delete(k); } }
+      return a;
+    });
+    acache.set(key, e);
+    return e;
   }
-  function warm(t, text) {
-    const c = chunks(text)[0]; if (!c) return;
-    const voice = LS.get().voiceName || CFG.voice.voices[0];
-    const key = voice + '|' + c;
-    if (!warmed.has(key)) warmed.set(key, Promise.resolve(t.generate(c, { voice, epoch: wEpoch })).catch(() => null));
+  const EST_CPS = 14;              // the natural voice says about fourteen characters a second
+  function aheadSec() { let n = 0; for (const x of acache.values()) if (!x.done) n += (x.est || 0); return n; }
+  /* read ahead: the boxes of the chapter, in order. `fresh` starts over from these (a speaker was
+     pressed further down the page). Nothing is made ahead for the device voice. */
+  async function prefetch(texts, fresh) {
+    const s = LS.get();
+    if ((!s.voice && !(test && test.tts)) || modeOf(s) === 'device') return 0;
+    const t = (test && test.tts) || await loadVoice().catch(() => null);
+    if (!t || !t.generate) return 0;
+    if (fresh) dropAhead(t);
+    let n = 0;
+    for (const text of texts) for (const c of chunks(text)) {
+      if (cachedSec + aheadSec() > CAP_SEC * 0.8) return n;
+      const e = getChunk(t, c, 1);
+      if (!e.done && e.est == null) { e.est = c.length / EST_CPS; n++; }
+    }
+    return n;
   }
+  // forget what was waiting to be made ahead (the worker drops it too), so it can be asked for again
+  function dropAhead(t) {
+    for (const [k, x] of acache) if (!x.done && x.prio === 1) acache.delete(k);
+    try { if (t && t.dropAhead) t.dropAhead(); } catch (e) { /* ignore */ }
+  }
+  function cancelPrefetch() { dropAhead((test && test.tts) || tts); }
+  function readyShare(text) {
+    const parts = chunks(text); if (!parts.length) return 1;
+    const voice = curVoice();
+    return parts.filter(c => { const e = acache.get(voice + '|' + c); return e && e.done && e.audio; }).length / parts.length;
+  }
+
+  let preparing = false, using = null;
+  function setUsing(v) { if (using !== v) { using = v; try { root.dispatchEvent(new Event('tutor:voice')); } catch (e) { /* ignore */ } } }
+  function setPreparing(v) { if (preparing !== v) { preparing = v; try { root.dispatchEvent(new Event('tutor:voice')); } catch (e) { /* ignore */ } } }
+
   // pieces are scheduled end to end on the audio clock, so there is no gap between them
   function schedule(audio, rate, at) {
     ac = ac || new (root.AudioContext || root.webkitAudioContext)();
@@ -47595,38 +47656,55 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     return start + buf.duration / (rate || 1);
   }
   const untilClock = (end, my) => new Promise(res => { const tick = () => { if (my !== epoch || !ac || ac.currentTime >= end - 0.02) res(); else setTimeout(tick, Math.min(250, Math.max(20, (end - ac.currentTime) * 1000 - 20))); }; tick(); });
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+  /* How long to hold before starting so the box plays straight through: what is still to be made
+     must be finished before what is already made (and what it then makes) has been played. */
+  function holdNeeded(parts, entries) {
+    let i = 0, ready = 0;
+    while (i < parts.length && entries[i].done) { ready += secOf(entries[i].audio); i++; }
+    if (i === parts.length) return 0;
+    const pend = parts.slice(i).reduce((n, c) => n + c.length / EST_CPS, 0);
+    const k = knownRtf(LS.get());
+    if (k == null || k <= 0.9) return i > 0 ? 0 : 0.1;          // keeps up: only the first piece is needed
+    const need = pend * (k - 1) * 1.15 - ready;                  // seconds of sound still to have in hand
+    return need <= 0 && i > 0 ? 0 : Math.max(0.1, (need + (i > 0 ? 0 : parts[0].length / EST_CPS)) * k);
+  }
 
   async function sayOnce(text, rate, next) {
     const my = epoch;
     const s = LS.get();
+    const m = modeOf(s);
     let t = (test && test.tts) || null;
-    if (!t && natural(s)) t = await loadVoice().catch(() => null);
+    if (!t && s.voice && m !== 'device') t = await loadVoice().catch(() => null);
     if (my !== epoch) return;
-    if (t && t.generate && natural()) {
+    if (t && t.generate && m !== 'device') {
       const parts = chunks(text);
-      // every piece of the box is queued at once; the worker makes them in order while they play
-      const gens = parts.map(p => genChunk(t, p));
+      const entries = parts.map(c => getChunk(t, c, 0));
+      // the next part of the lesson is made ahead while this one plays
+      if (next) for (const c of chunks(next)) getChunk(t, c, 1);
+      // Automatic: the natural voice when it can play this box without stopping after a short
+      // wait; otherwise the device voice, which starts at once
+      if (m === 'auto' && holdNeeded(parts, entries) > 2.5) { setUsing('device'); return deviceSay(text, rate, my); }
+      setUsing('natural');
+      if (holdNeeded(parts, entries) > 0) {
+        setPreparing(true);
+        while (my === epoch && holdNeeded(parts, entries) > 0) await sleep(100);
+        setPreparing(false);
+        if (my !== epoch) return;
+      }
       let end = 0;
       for (let i = 0; i < parts.length; i++) {
-        const audio = await gens[i];
+        const audio = await entries[i].p;
         if (my !== epoch) return;
-        if (i === parts.length - 1 && next) warm(t, next);
         if (audio && audio.audio) end = schedule(audio, rate, end);
-        // measured too slow to keep up (automatic mode): the device voice reads the rest of the box
-        if (i < parts.length - 1 && !natural()) {
-          stopWorkerQueue();
-          try { root.dispatchEvent(new Event('tutor:voice')); } catch (e) { /* ignore */ }
-          await untilClock(end, my); if (my !== epoch) return;
-          return deviceSay(parts.slice(i + 1).join(' '), rate, my);
-        }
       }
       await untilClock(end, my);
       return;
     }
+    setUsing('device');
     return deviceSay(text, rate, my);
   }
-  // drop the pieces still queued in the worker (the device voice is taking over)
-  function stopWorkerQueue() { wEpoch++; warmed.clear(); try { if (vw) vw.postMessage({ type: 'epoch', epoch: wEpoch }); } catch (e) { /* ignore */ } }
   /* A player over a list of segments: play, pause, back, next, stop, speed. The page listens for
      onSeg to highlight what is being read. */
   function player(segs, { onSeg, onEnd, rate } = {}) {
@@ -47671,7 +47749,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
   function setQuick(v) { setMode(v ? 'device' : 'auto'); }
   function setMode(m) { const s = LS.get(); s.mode = m; delete s.quick; LS.set(s); }
   function setDeviceVoice(name) { const s = LS.get(); s.sysVoice = name; LS.set(s); }
-  root.Tutor = { core, CFG, check, status, install, ready, remove, player, ask, say: sayOnce, stop: stopAudio, setQuick, setMode, setDeviceVoice, deviceVoices: () => deviceVoices().map(v => ({ name: v.name, lang: v.lang })), _test: t => { test = t; rtf = null; rtfN = 0; if (vw) { try { vw.terminate(); } catch (e) { /* ignore */ } vw = null; tts = null; } }, _chunks: chunks };
+  root.Tutor = { core, CFG, check, status, prefetch, cancelPrefetch, readyShare, install, ready, remove, player, ask, say: sayOnce, stop: stopAudio, setQuick, setMode, setDeviceVoice, deviceVoices: () => deviceVoices().map(v => ({ name: v.name, lang: v.lang })), _test: t => { test = t; rtf = null; rtfN = 0; acache.clear(); cachedSec = 0; if (vw) { try { vw.terminate(); } catch (e) { /* ignore */ } vw = null; tts = null; } }, _chunks: chunks };
   if (typeof module !== 'undefined' && module.exports) module.exports = root.Tutor;
 })(typeof window !== 'undefined' ? window : globalThis);
 
@@ -47684,7 +47762,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.82', date: '2 November 2026', year: 2026 };
+  const BUILD = { v: '2.83', date: '2 November 2026', year: 2026 };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonxcorp', ['outlook', 'com'].join('.')].join('@');
   /* The one sentence that says what this is. It appears under the wordmark, and build.js uses
@@ -47697,6 +47775,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      because the person who needs it is the one who just watched the app refresh itself and wants to
      know what moved. Trim the tail when it gets past a dozen; nobody reads further back than that. */
   const WHATS_NEW = [
+    ['2.83', '<b>The downloaded voice now plays more like the device voice.</b> Three changes. It now uses several of your processor\u2019s cores instead of one, which makes it several times faster (this needs one reload after the update). While you read a chapter, it prepares that chapter\u2019s boxes in the background, so pressing a speaker usually plays sound that is already made: it starts at once and runs straight through. And when a box is not ready yet, Automatic reads it in the device voice rather than make you wait, while \u201cAlways the natural voice\u201d waits just long enough to play the box without stopping, instead of starting and then pausing.'],
     ['2.82', '<b>Change the voice while you listen.</b> The player bar, and the top of every chapter, now have a voice list: Automatic, the five natural voices (when downloaded) and every voice stored on your device. Pick one and the part being read starts again in the new voice; the choice is remembered.'],
     ['2.81', '<b>The tutor reads each box straight through.</b> A box is now read as one passage, pausing only where its commas and full stops are. On a computer that makes the natural voice more slowly than it speaks \u2014 which caused the long waits and the stops between sentences \u2014 the tutor now reads with the computer\u2019s own built-in voice, which starts at once and never stalls; it measures this by itself. Where the natural voice keeps up, its sentences now play back to back with no gaps. You can choose on the Voice tutor page: Automatic, always the natural voice, or always the device voice, and which device voice. Only voices stored on your device are used, never online ones.'],
     ['2.80', '<b>Have one part of a lesson read aloud.</b> Every box in a lesson now has a speaker button \u2014 the explanation, In real life, the memory hook, Don\u2019t mix these up, the rules, each worked example, the common mistakes and Check yourself \u2014 so you can hear just that part, and it starts almost at once. <b>A faster voice:</b> on a device with a graphics chip the browser can use (most recent laptops), the voice now runs there, several times faster than on the processor, so it no longer pauses between sentences; if you installed it before, the Voice tutor page offers the switch (about 330 MB, once). The voice also starts waking up as soon as you open a chapter, and if a device is still too slow, the player offers the quick voice (your browser\u2019s own), which never pauses.'],
@@ -48826,6 +48905,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     const r = parseRoute();
     stopSpeech();
     if (state.teach && !(r.name === 'math' && r.cid === state.teach.cid && r.uid === state.teach.uid && !r.mode)) stopTeach();
+    if (TUTOR_OK && !(r.name === 'math' && r.uid && !r.mode)) Tutor.cancelPrefetch();
     window.scrollTo({ top: 0 });
     if (r.name !== 'home' && r.name !== 'subject') state.modal = null;
     syncModal();
@@ -50100,7 +50180,8 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      straight after the lesson it tests, and then again mixed, is the order the evidence favours. */
   function renderUnit(c, u) {
     // wake the installed voice while the student reads, so the first press of a speaker is quick
-    if (TUTOR_OK) { const st = Tutor.status(); if (st.voice && !st.quick && !st.voiceReady) setTimeout(() => Tutor.ready('voice'), 400); }
+    // …and make the chapter's boxes ahead, in order, while the student reads (natural voice only)
+    if (TUTOR_OK) { const st = Tutor.status(); if (st.voice && st.mode !== 'device') setTimeout(() => { const r0 = parseRoute(); if (r0.cid === c.id && r0.uid === u.id) Tutor.prefetch(teachSegs(c, u, u.lessons.map(l => l.id)).map(x => x.text), true); }, 600); }
     const pr = unitProgress(c, u);
     const chap = chapName(c, u);
     const nEx = u.lessons.reduce((n, l) => n + l.examples.length, 0);
@@ -50435,7 +50516,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     if (!bar) { bar = document.createElement('div'); bar.id = 'tutor-bar'; bar.setAttribute('role', 'region'); bar.setAttribute('aria-label', 'Voice tutor'); document.body.appendChild(bar); }
     const p = t.player, seg = p.segs[p.i] || {};
     const st = Tutor.status();
-    const vlab = st.quick ? ' &middot; device voice' : st.voiceReady ? ' &middot; natural voice' : ' &middot; starting the voice&hellip;';
+    const vlab = st.preparing ? ' &middot; preparing the natural voice&hellip;' : st.using ? ` &middot; ${st.using} voice` : st.quick ? ' &middot; device voice' : st.voiceReady ? ' &middot; natural voice' : ' &middot; starting the voice&hellip;';
     const slow = st.voice && st.mode === 'natural' && st.slow ? `<span class="tb-slow small">This device makes the natural voice more slowly than it speaks, so it pauses. <button type="button" class="link-btn" data-act="teach-quick" data-v="1">Use the device voice</button>${st.gpu && st.gpu.webgpu && st.voiceDevice !== 'webgpu' ? ` or <a href="#/tutor">make it faster</a>` : ''}</span>` : '';
     bar.innerHTML = `<div class="tb-text"><span class="label">${esc(t.title)} &middot; ${p.i + 1} / ${p.segs.length}${vlab}</span><span class="tb-line">${esc(seg.text || '')}</span>${slow}</div>
       <div class="tb-ctl">
@@ -50447,20 +50528,31 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
         <button type="button" class="btn sm ghost" data-act="teach-ctl" data-v="stop" aria-label="Stop the tutor">Stop</button>
       </div>`;
   }
-  function startTeach(c, u, lids, block) {
-    if (!TUTOR_OK) return;
-    if (state.teach) state.teach.player.stop();
+  // the parts the tutor reads, one passage per box
+  function teachSegs(c, u, lids, block) {
     const segs = [];
     for (const lid of lids) {
       const li = u.lessons.findIndex(l => l.id === lid); if (li < 0) continue;
       for (const s of Tutor.core.lessonScript(c, u, u.lessons[li], `${u.n}.${li + 1}`)) if (!block || s.block === block) segs.push({ ...s, lid });
     }
-    if (!segs.length) return;
     // one box is read as one passage: its parts are joined so the voice runs straight through,
     // pausing only at its punctuation (a check-yourself question still waits before its answer)
     for (let i = segs.length - 1; i > 0; i--) {
       const a = segs[i - 1], b = segs[i];
       if (a.lid === b.lid && a.block === b.block && !a.pause) { a.text = a.text + ' ' + b.text; a.pause = b.pause; segs.splice(i, 1); }
+    }
+    return segs;
+  }
+  function startTeach(c, u, lids, block) {
+    if (!TUTOR_OK) return;
+    if (state.teach) state.teach.player.stop();
+    const segs = teachSegs(c, u, lids, block);
+    if (!segs.length) return;
+    // a single box: make the rest of its lesson ahead, from here on
+    if (block && lids.length === 1) {
+      const all = teachSegs(c, u, [lids[0]]);
+      const k = all.findIndex(x => x.block === block);
+      if (k >= 0) Tutor.prefetch(all.slice(k + 1).map(x => x.text).concat(teachSegs(c, u, u.lessons.map(l => l.id)).map(x => x.text)), true);
     }
     const l0 = u.lessons.find(l => l.id === lids[0]);
     const title = lids.length > 1 ? `${chapName(c, u)}: ${u.title}` : block ? `${l0.title} · ${/^ex\d+$/.test(block) ? `worked example ${+block.slice(2) + 1}` : BLOCK_NAME[block]}` : l0.title;
