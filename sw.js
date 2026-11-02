@@ -1,10 +1,11 @@
-/* UNI Made EZ — service worker, build 2.77.
+/* UNI Made EZ — service worker, build 2.78.
    Keeps a copy of the page so it opens with no connection, and lets the browser install it
    to a home screen. The whole app is one file, so the "offline copy" really is just that file
    plus its icons; nothing here touches your subjects, which live in the browser's own storage. */
-const V = '2.77';
+const V = '2.78';
 const APP = 'umez-app-v' + V;      // the page and its icons, replaced whole on every build
 const RUNTIME = 'umez-runtime-v1'; // web fonts, kept across builds
+const TUTOR = 'umez-tutor-lib-v1'; // the voice tutor's program files, kept across builds
 
 const SHELL = ['./', './index.html', './manifest.webmanifest', './sync.json', './icon-192.png', './icon-512.png', './icon-512-maskable.png', './apple-touch-icon.png'];
 
@@ -16,7 +17,10 @@ self.addEventListener('install', e => {
 self.addEventListener('activate', e => {
   e.waitUntil((async () => {
     const keys = await caches.keys();
-    await Promise.all(keys.filter(k => k !== APP && k !== RUNTIME).map(k => caches.delete(k)));
+    // only this app's own old caches: the voice tutor's model files live in caches the tutor's
+    // libraries own (webllm/*, transformers-cache) and must survive every update — they are the
+    // one-time download
+    await Promise.all(keys.filter(k => /^umez-/.test(k) && k !== APP && k !== RUNTIME && k !== TUTOR).map(k => caches.delete(k)));
     await self.clients.claim();
   })());
 });
@@ -84,6 +88,19 @@ self.addEventListener('fetch', e => {
       if (res && res.ok) { const copy = res.clone(); caches.open(APP).then(c => c.put(req, copy)); }
       return res;
     }).catch(() => hit || Response.error())));
+    return;
+  }
+
+  // The voice tutor's program files (exact versions on jsDelivr, which never change: web-llm,
+  // kokoro-js and every module they import) are kept after the first download, so the tutor starts with no connection.
+  // The model weights are cached by those libraries themselves; this covers their code and the
+  // voice files, which the voice library fetches without caching.
+  if ((url.hostname === 'huggingface.co' && /\/Kokoro-82M[^/]*\/resolve\/[^/]+\/voices\//.test(url.pathname)) ||
+      url.hostname === 'cdn.jsdelivr.net' && /^\/npm\/(@[^/]+\/)?[^/@]+@\d[^/]*\//.test(url.pathname)) {
+    e.respondWith(caches.open(TUTOR).then(c => c.match(req).then(hit => hit || fetch(req).then(res => {
+      if (res && res.ok) c.put(req, res.clone());
+      return res;
+    }))));
     return;
   }
 

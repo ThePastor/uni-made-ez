@@ -2,7 +2,7 @@
 
 **Publisher:** JohnsonX Labs, British Columbia, Canada
 **Application:** UNI Made EZ — <https://thepastor.github.io/uni-made-ez/>
-**Version this notice describes:** v2.73, 11 October 2026
+**Version this notice describes:** v2.78, 2 November 2026
 **Privacy contact:** johnsonxcorp@outlook.com
 **Applicable law:** *Personal Information Protection Act* (SBC 2003, c. 63) (British Columbia)
 
@@ -38,8 +38,12 @@ The application transmits exactly five things, all described in full below:
    writes something and presses **Send it**. It carries the kind of note, the words, the app
    version, and an email address only if the student chose to add one so they can be answered.
 
-There are no cookies, no advertising identifiers, no analytics services, no third-party scripts of
-any kind, no location, no fingerprinting, and no sale or sharing of anything with anyone.
+Separately, two optional **downloads** fetch files on request and send nothing about the student:
+the scan reader and the voice tutor (2.7).
+
+There are no cookies, no advertising identifiers, no analytics services, no third-party scripts
+other than those two downloads a student starts themselves, no location, no fingerprinting, and no
+sale or sharing of anything with anyone.
 
 ---
 
@@ -169,6 +173,29 @@ chooses to send under 2.5 are the only free text the application transmits; the 
 nothing beside it, the second is not stored by the publisher at all, and the third is read only by
 the publisher.
 
+### 2.7 Downloads a student starts — the scan reader and the voice tutor
+
+Two features need program or model files that are too large to put in the page. Each is fetched
+**only when the student starts it**, once, and kept in that browser's storage. Neither request
+carries anything about the student: no id, no name, no file, nothing studied. Like any download,
+the hosts see the device's IP address and browser.
+
+| Feature | When it is fetched | From | Size |
+|---|---|---|---|
+| Scan reader (Tesseract) | The first time a student asks the app to read a scanned page | cdnjs.cloudflare.com, cdn.jsdelivr.net, tessdata.projectnaptha.com | about 15 MB |
+| Voice tutor — voice | When the student presses the download button on the **Voice tutor** page | cdn.jsdelivr.net (kokoro-js), huggingface.co (Kokoro-82M) | about 90 MB |
+| Voice tutor — answer model | The same button, on a device with WebGPU | cdn.jsdelivr.net (WebLLM), raw.githubusercontent.com (its compiled model library), huggingface.co (Qwen2.5-1.5B-Instruct) | about 900 MB |
+
+- **After the download the tutor runs on the device, offline.** The lessons it reads aloud, the
+  questions a student types, its answers and the generated audio are all produced in the browser
+  and are never transmitted. The tutor has no microphone input, because browser speech recognition
+  sends audio to a cloud service.
+- **The tutor answers only from the course text** built into the page, cites the lessons it used,
+  and flags an answer containing a number that its sources do not contain. It is a study aid, and
+  section **Accuracy** of the in-app rights page applies to it.
+- **Removal:** the **Remove the tutor from this device** button deletes its files and the setting
+  that records it is installed; clearing site data does the same.
+
 ---
 
 ## 3. Where it is stored, and who can reach it
@@ -265,6 +292,10 @@ transmitted, and an address is free text. The count in section 1 moved from thre
 recorded here rather than quietly amended, for the same reason as the paragraph above.
 
 In v2.73 the suggestion box of 2.5 was added, and the count in section 1 moved from four to five.
+
+In v2.78 the voice tutor was added and section 2.7 written. It also brings the scan reader, which
+has fetched its files from a CDN since it was added, into this notice for the first time; section 1
+had said there were no third-party scripts of any kind, which that download already made untrue.
 
 Material changes to this notice will be recorded in the application's version history, which is
 visible in the app footer.

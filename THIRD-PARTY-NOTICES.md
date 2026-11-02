@@ -41,6 +41,23 @@ its WebAssembly core from jsDelivr and its English model from
 Licensed under the **Apache License, Version 2.0**.
 <https://github.com/naptha/tesseract.js>
 
+### The voice tutor (from v2.78) — downloaded only when the student presses its download button
+- **WebLLM** (`@mlc-ai/web-llm` 0.2.84), from jsDelivr, with its compiled model
+  library from `raw.githubusercontent.com/mlc-ai/binary-mlc-llm-libs`.
+  **Apache License 2.0**. <https://github.com/mlc-ai/web-llm>
+- **Qwen2.5-1.5B-Instruct** (MLC `q4f16_1` / `q4f32_1` builds), weights from
+  Hugging Face (`mlc-ai/Qwen2.5-1.5B-Instruct-*-MLC`). © Alibaba Cloud.
+  **Apache License 2.0**. <https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct>
+- **kokoro-js** 1.2.1, from jsDelivr. **Apache License 2.0**. It loads
+  Transformers.js (**Apache 2.0**) and ONNX Runtime Web (**MIT**).
+  <https://github.com/hexgrad/kokoro/tree/main/kokoro.js>
+- **Kokoro-82M** voice model (`onnx-community/Kokoro-82M-v1.0-ONNX`), from
+  Hugging Face. © hexgrad. **Apache License 2.0**.
+  <https://huggingface.co/hexgrad/Kokoro-82M>
+
+All of it runs on the student's own device; nothing the student types or hears
+is sent to any of these projects.
+
 ### Google Fonts — Inter, Inter Tight, JetBrains Mono, Atkinson Hyperlegible
 Loaded from `fonts.googleapis.com`. Each is licensed under the **SIL Open Font
 License 1.1**. <https://scripts.sil.org/OFL>
