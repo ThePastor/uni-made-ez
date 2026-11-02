@@ -2701,6 +2701,10 @@ body:has(#tutor-bar) { padding-bottom: 120px; }
 .check-row { display: flex; gap: 10px; align-items: center; min-height: 44px; font-size: .9375rem; cursor: pointer; }
 .check-row input { width: 20px; height: 20px; accent-color: var(--accent); }
 .rules-say { display: flex; justify-content: flex-end; margin-bottom: -6px; }
+/* v2.82: the voice list in the player and the chapter hero */
+.tb-voice select, .teach-voice select { min-height: 44px; max-width: 210px; padding: 0 8px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: inherit; font-size: .875rem; }
+.teach-voice { display: inline-flex; align-items: center; gap: 8px; }
+@media (max-width: 480px) { .tb-voice select { max-width: 150px; } }
 
 </style>
 </head>
@@ -47680,7 +47684,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.81', date: '2 November 2026', year: 2026 };
+  const BUILD = { v: '2.82', date: '2 November 2026', year: 2026 };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonxcorp', ['outlook', 'com'].join('.')].join('@');
   /* The one sentence that says what this is. It appears under the wordmark, and build.js uses
@@ -47693,6 +47697,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      because the person who needs it is the one who just watched the app refresh itself and wants to
      know what moved. Trim the tail when it gets past a dozen; nobody reads further back than that. */
   const WHATS_NEW = [
+    ['2.82', '<b>Change the voice while you listen.</b> The player bar, and the top of every chapter, now have a voice list: Automatic, the five natural voices (when downloaded) and every voice stored on your device. Pick one and the part being read starts again in the new voice; the choice is remembered.'],
     ['2.81', '<b>The tutor reads each box straight through.</b> A box is now read as one passage, pausing only where its commas and full stops are. On a computer that makes the natural voice more slowly than it speaks \u2014 which caused the long waits and the stops between sentences \u2014 the tutor now reads with the computer\u2019s own built-in voice, which starts at once and never stalls; it measures this by itself. Where the natural voice keeps up, its sentences now play back to back with no gaps. You can choose on the Voice tutor page: Automatic, always the natural voice, or always the device voice, and which device voice. Only voices stored on your device are used, never online ones.'],
     ['2.80', '<b>Have one part of a lesson read aloud.</b> Every box in a lesson now has a speaker button \u2014 the explanation, In real life, the memory hook, Don\u2019t mix these up, the rules, each worked example, the common mistakes and Check yourself \u2014 so you can hear just that part, and it starts almost at once. <b>A faster voice:</b> on a device with a graphics chip the browser can use (most recent laptops), the voice now runs there, several times faster than on the processor, so it no longer pauses between sentences; if you installed it before, the Voice tutor page offers the switch (about 330 MB, once). The voice also starts waking up as soon as you open a chapter, and if a device is still too slow, the player offers the quick voice (your browser\u2019s own), which never pauses.'],
     ['2.79', '<b>The voice tutor no longer freezes the page.</b> With the voice installed, the page stopped responding after the first line of a lesson: the voice was being made on the same thread as the page, a whole paragraph at a time. It now runs in the background, speaks a sentence or two at a time and prepares the next while one plays, so it starts sooner and the page stays usable \u2014 pause, skip and scrolling all work while it talks. The answer model runs in the background the same way.'],
@@ -50162,7 +50167,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
           ${(u.objectives || []).length ? `<div class="obj"><span class="label">By the end of this chapter you can</span>
             <ul class="obj-list">${u.objectives.map(x => `<li>${esc(x)}</li>`).join('')}</ul>
           </div>` : ''}
-          ${TUTOR_OK ? `<div class="teach-row"><button type="button" class="btn primary" data-act="teach" data-c="${esc(c.id)}" data-u="${esc(u.id)}">▶ Teach me this chapter</button>${tutorStatusLine()}</div>` : ''}
+          ${TUTOR_OK ? `<div class="teach-row"><button type="button" class="btn primary" data-act="teach" data-c="${esc(c.id)}" data-u="${esc(u.id)}">▶ Teach me this chapter</button><label class="teach-voice"><span class="small muted">Voice</span>${voiceSelect(Tutor.status())}</label>${tutorStatusLine()}</div>` : ''}
           <nav class="chap-toc" aria-label="In this chapter"><span class="label">In this chapter${nGot ? ` &middot; ${nGot} of ${u.lessons.length} understood` : ''}</span><ol>${toc}</ol></nav>
         </div>
         ${lessons}
@@ -50437,6 +50442,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
         <button type="button" class="btn sm" data-act="teach-ctl" data-v="back" aria-label="Back one part">&larr;</button>
         <button type="button" class="btn sm primary" data-act="teach-ctl" data-v="${p.state === 'playing' ? 'pause' : 'play'}">${p.state === 'playing' ? 'Pause' : p.state === 'done' ? 'Again' : 'Play'}</button>
         <button type="button" class="btn sm" data-act="teach-ctl" data-v="next" aria-label="Skip to the next part">&rarr;</button>
+        <label class="tb-voice"><span class="sr-only">Voice</span>${voiceSelect(st)}</label>
         <label class="tb-speed"><span class="sr-only">Speed</span><select data-chg="teach-speed">${[0.8, 1, 1.2, 1.5].map(v => `<option value="${v}"${p.rate === v ? ' selected' : ''}>${v}&times;</option>`).join('')}</select></label>
         <button type="button" class="btn sm ghost" data-act="teach-ctl" data-v="stop" aria-label="Stop the tutor">Stop</button>
       </div>`;
@@ -50482,6 +50488,33 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     return st.voice || st.llm ? `<span class="tutor-state on">Voice tutor installed${st.llm ? ' with answers' : ''}</span>` : `<a class="tutor-state" href="#/tutor">Set up the private voice tutor <span class="arr">&rarr;</span></a>`;
   }
 
+  /* v2.82: the voice can be changed from the player itself. One list: Automatic, the natural voices
+     (when downloaded) and the voices stored on this device. */
+  const NATURAL_NAMES = { af_heart: 'Heart (US)', af_bella: 'Bella (US)', am_michael: 'Michael (US)', bf_emma: 'Emma (UK)', bm_george: 'George (UK)' };
+  function voiceValue(st) {
+    if (st.mode === 'natural') return 'n:' + st.voiceName;
+    if (st.mode === 'device') { const dv = Tutor.deviceVoices(); return 'd:' + (st.sysVoice || (dv[0] && dv[0].name) || ''); }
+    return 'auto';
+  }
+  function voiceSelect(st, id) {
+    const cur = voiceValue(st);
+    const dv = Tutor.deviceVoices();
+    const opt = (v, label) => `<option value="${esc(v)}"${cur === v ? ' selected' : ''}>${esc(label)}</option>`;
+    return `<select${id ? ` id="${id}"` : ''} data-chg="teach-voice" aria-label="Voice">
+      ${opt('auto', 'Automatic voice')}
+      ${st.voice ? `<optgroup label="Natural voice (downloaded)">${Tutor.CFG.voice.voices.map(v => opt('n:' + v, NATURAL_NAMES[v] || v)).join('')}</optgroup>` : ''}
+      ${dv.length ? `<optgroup label="This device's voices">${dv.map(v => opt('d:' + v.name, `${v.name} (${v.lang})`)).join('')}</optgroup>` : opt('d:', "This device's voice")}
+    </select>`;
+  }
+  function applyVoice(val) {
+    if (val === 'auto') Tutor.setMode('auto');
+    else if (val.startsWith('n:')) { Tutor.setMode('natural'); try { const v = JSON.parse(localStorage.getItem('unimadeez:tutor:v1') || '{}'); v.voiceName = val.slice(2); v.mode = 'natural'; localStorage.setItem('unimadeez:tutor:v1', JSON.stringify(v)); } catch (e) { /* ignore */ } }
+    else { Tutor.setMode('device'); if (val.length > 2) Tutor.setDeviceVoice(val.slice(2)); }
+    // restart the part being read, in the new voice
+    const t = state.teach;
+    if (t && t.player.state === 'playing') { t.player.pause(); t.player.play(); }
+    teachBar();
+  }
   function voiceChoice(st) {
     const dv = Tutor.deviceVoices();
     const mode = st.mode || 'auto';
@@ -55613,6 +55646,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
   document.addEventListener('change', e => {
     const t = e.target && e.target.closest && e.target.closest('[data-chg]'); if (!t) return;
     if (t.dataset.chg === 'teach-speed' && state.teach) { state.teach.player.speed(+t.value); return; }
+    if (t.dataset.chg === 'teach-voice') { applyVoice(t.value); document.querySelectorAll('[data-chg="teach-voice"]').forEach(x => { x.value = t.value; }); if (parseRoute().name === 'tutor') renderTutorSetup(); return; }
     if (t.dataset.chg === 'tutor-mode') { Tutor.setMode(t.value); if (parseRoute().name === 'tutor') renderTutorSetup(); return; }
     if (t.dataset.chg === 'tutor-sysvoice') { Tutor.setDeviceVoice(t.value); return; }
     if (t.dataset.chg === 'tutor-voice') { try { const v = JSON.parse(localStorage.getItem('unimadeez:tutor:v1') || '{}'); v.voiceName = t.value; localStorage.setItem('unimadeez:tutor:v1', JSON.stringify(v)); } catch (e) { /* ignore */ } return; }
