@@ -2749,6 +2749,14 @@ figure.worked:has(.explain-it[open]):not(.ex-shown) li.ex-target .why::after { c
 .rsnip .btn, .r-consent .btn { min-height: 44px; }
 .rcode, .r-text, code { font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
 
+/* v2.88 — hints one step at a time */
+.hint-ladder { border: 1px dashed var(--line-soft); padding: 10px var(--pad-in); display: grid; gap: 8px; }
+.hint-ladder:not(:has(.hl-steps)) { border: 0; padding: 0; }
+.hl-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.hl-steps li p { margin: 4px 0 0; }
+.hl-more { justify-self: start; min-height: 44px; }
+.hint-note { display: block; margin-top: 4px; }
+
 </style>
 </head>
 <body>
@@ -52177,7 +52185,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.87', date: '3 November 2026', year: 2026 };
+  const BUILD = { v: '2.88', date: '3 November 2026', year: 2026 };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonxcorp', ['outlook', 'com'].join('.')].join('@');
   /* The one sentence that says what this is. It appears under the wordmark, and build.js uses
@@ -52190,6 +52198,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      because the person who needs it is the one who just watched the app refresh itself and wants to
      know what moved. Trim the tail when it gets past a dozen; nobody reads further back than that. */
   const WHATS_NEW = [
+    ['2.88', '<b>Hints one step at a time, and mixed practice.</b> Stuck on a course question? <b>Give me a hint</b> now opens one step at a time: a nudge, then the method from the lesson, then a first step (or, in multiple choice, one wrong option ruled out). You only see as much as you ask for. A right answer after two or more hints comes back sooner, like a guess. New on every course page: <b>Mixed practice</b> \u2014 15 questions from different chapters with the chapter hidden until you answer, so you practise picking the method the way an exam makes you.'],
     ['2.87', '<b>Fresh numbers every time.</b> In Calculus for Business and Economics (MATH 1170) and both ECON 2320 statistics courses, 35 of the type-the-answer questions now come back with <b>new numbers</b> each time you answer them \u2014 in practice, Mistakes, Review and mock exams \u2014 so remembering the last answer stops working and the method is what counts. Every version, with its worked solution, was computed and checked by a computer algebra system before it was added.'],
     ['2.86', '<b>Run R inside the R course.</b> Every lesson of Introductory Economic Statistics with R (ECON 2320) now has <b>Try it in R</b> boxes: the lesson\u2019s own R code, ready to edit and run, with the printed output and any plot shown underneath \u2014 histograms, ECDFs, boxplots, simulations, the bootstrap. It is real R (webR) running in your browser. The first Run asks before a one-time download of about 30 MB; after that it works offline, and your code and results never leave your device. Ctrl or \u2318 + Enter runs a box.'],
     ['2.85', '<b>Four ways to learn more from the same questions.</b> <b>Review</b>: every course question you have answered now comes back for review just before you would forget it \u2014 the course page, the home page and Today show how many are due, and a few minutes a day keeps a whole course fresh. <b>How sure are you?</b>: tap Sure or Guessing before you answer; a wrong answer you were sure of goes to the top of Mistakes, because those are the misunderstandings that cost marks, and a lucky guess comes back sooner. <b>Flag this question</b>: spotted a wrong answer or a confusing hint? One tap opens the suggestion box with the question already named. <b>Explain a step in your own words</b>: on a worked example, cover one step\u2019s reason, write your own, then compare it with the course\u2019s.'],
@@ -54348,7 +54357,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     if (!r.uid) return renderCourse(c);
     if (r.uid === 'challenge') return renderChallenge(c);
     if (r.uid === 'cards') return renderCourseCards(c);
-    if (r.uid === 'mock' || r.uid === 'mistakes' || r.uid === 'review') return renderDrill(c, r.uid);
+    if (r.uid === 'mock' || r.uid === 'mistakes' || r.uid === 'review' || r.uid === 'mixed') return renderDrill(c, r.uid);
     if (r.uid === 'ask' && TUTOR_OK) return renderAsk(c);
     const u = Courses.unit(c.id, r.uid);
     if (!u) return renderCourse(c);
@@ -54776,6 +54785,120 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     for (const u of c.units) if (!uids || uids.includes(u.id)) for (const it of (u.practice || [])) if (DRILL_KINDS.includes(it.kind)) out.push({ uid: u.id, item: it });
     return out;
   }
+  // drills marked as you go (everything but the mock exam, which is marked at the end)
+  const INSTANT = ['mistakes', 'review', 'mixed'];
+  const isInstant = m => INSTANT.includes(m);
+
+  /* v2.88 — hints that go one step at a time. One hint was either too little to get a stuck student
+     moving or so much that it gave the game away. Now a question's hints come in up to three steps,
+     each asked for separately:
+       1. a nudge — the question's own hint;
+       2. the method — the rule from the question's own lesson that does the work, chosen by how much
+          it shares with the question and its worked solution (or the lesson's main idea if it has no
+          rule list);
+       3. a first step — the first line of the worked solution when that is not already the answer;
+          for multiple choice, one wrong option ruled out; for ordering, the first line; for
+          spot-the-mistake, one line that is fine.
+     A right answer after two or more hints is scheduled like a guess, so it comes back sooner. */
+  const plainText = h => String(h || '').replace(/<br\s*\/?>/g, ' ').replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/\s+/g, ' ').trim();
+  const STOP = new Set('that this with from what which when where there their then than they them these those have each into your about would could should value values given using find answer question'.split(' '));
+  // crude stems (first six letters) so "slopes" meets "slope" and "intercepts" meets "intercept"
+  const wordsOf = t => new Set((plainText(t).toLowerCase().match(/[a-z]{4,}/g) || []).filter(w => !STOP.has(w)).map(w => w.slice(0, 6)));
+  const overlap = (a, b) => { let n = 0; for (const x of a) if (b.has(x)) n++; return n; };
+  function lessonOf(c, uid, it) { const u = c.units.find(x => x.id === uid); return u && u.lessons.find(l => l.id === it.lesson) || null; }
+  function methodHint(c, uid, it) {
+    const l = lessonOf(c, uid, it); if (!l) return null;
+    const q = wordsOf([it.prompt, it.hint, ...(it.solution || [])].join(' '));
+    let best = null, bestScore = 0;
+    (l.rules || []).forEach((r, k) => {
+      const sc = overlap(wordsOf([r.name, r.expr, r.note].join(' ')), q) - k * 0.01;   // ties go to the earlier rule
+      if (sc > bestScore) { bestScore = sc; best = r; }
+    });
+    // a rule that shares two or more words with the question is the method; otherwise the lesson's
+    // own explanation, the sentence closest to the question, is the better pointer
+    if (best && bestScore >= 2) return { label: 'The method', text: `${plainText(best.name)}: ${plainText(best.expr)}${best.note ? ' — ' + plainText(best.note) : ''}`, from: l.title };
+    const sents = plainText(l.idea).split(/(?<=[.!?])\s+/).filter(x => x.length >= 25 && x.length <= 300);
+    let bs = null, bsc = 0;
+    sents.forEach((x, k) => { const sc = overlap(wordsOf(x), q) - k * 0.01; if (sc > bsc) { bsc = sc; bs = x; } });
+    if (bs && bsc >= 2) return { label: 'Key idea', text: bs, from: l.title };
+    if (best && bestScore >= 1) return { label: 'The method', text: `${plainText(best.name)}: ${plainText(best.expr)}${best.note ? ' — ' + plainText(best.note) : ''}`, from: l.title };
+    return null;
+  }
+  function firstStepHint(it) {
+    const sol = it.solution || [];
+    if (it.kind === 'numeric') {
+      if (sol.length < 2) return null;
+      const nums = (plainText(sol[0]).replace(/,/g, '').replace(/\u2212/g, '-').match(/-?\d+(?:\.\d+)?/g) || []).map(Number);
+      const tol = Math.max(it.tol == null ? 1e-9 : it.tol, Math.abs(it.answer) * 1e-9);
+      if (nums.some(n => Math.abs(n - Number(it.answer)) <= tol)) return null;   // it would give the answer away
+      return 'First step: ' + sol[0];
+    }
+    if (it.kind === 'mc') {
+      const wrong = it.options.map((o, k) => ({ o, k })).filter(x => !x.o.ok);
+      if (wrong.length < 2) return null;
+      const pick = wrong[[...String(it.id)].reduce((a, ch) => a + ch.charCodeAt(0), 0) % wrong.length];
+      return `Rule one out: it is not “${pick.o.t}”.`;
+    }
+    if (it.kind === 'order' && it.steps && it.steps.length > 2) return `The first line is: “${it.steps[0]}”.`;
+    if (it.kind === 'spot' && it.steps && it.steps.length > 2) {
+      const fine = it.steps.map((st, k) => ({ st, k })).filter(x => !x.st.bad);
+      const pick = fine[[...String(it.id)].reduce((a, ch) => a + ch.charCodeAt(0), 0) % fine.length];
+      return pick ? `Line ${pick.k + 1} is fine — look elsewhere.` : null;
+    }
+    return null;
+  }
+  function hintSteps(c, uid, it) {
+    const out = [];
+    if (it.hint) out.push({ label: 'Nudge', text: it.hint });
+    const m = methodHint(c, uid, it);
+    // in multiple choice the method must not quote the right option outright
+    const right = it.kind === 'mc' ? plainText((it.options.find(o => o.ok) || {}).t).toLowerCase() : '';
+    if (m && plainText(m.text) !== plainText(it.hint) && !(right.length > 6 && m.text.toLowerCase().includes(right))) out.push(m);
+    const f = firstStepHint(it);
+    if (f) out.push({ label: it.kind === 'mc' ? 'Narrow it down' : it.kind === 'spot' ? 'Narrow it down' : 'Get started', text: f });
+    return out;
+  }
+  // n = how many steps are open; act = the action that opens the next one
+  function hintLadder(c, uid, it, n, act) {
+    const steps = hintSteps(c, uid, it);
+    if (!steps.length) return '';
+    const shown = steps.slice(0, n);
+    const more = n < steps.length;
+    return `<div class="hint-ladder" aria-live="polite">
+      ${shown.length ? `<ol class="hl-steps">${shown.map((h, k) => `<li><span class="label">${k + 1} · ${esc(h.label)}</span><p class="small">${esc(h.text)}${h.from ? ` <span class="muted">(from “${esc(plainText(h.from))}”)</span>` : ''}</p></li>`).join('')}</ol>` : ''}
+      ${more ? `<button type="button" class="btn sm ghost hl-more" data-act="${act}">${n ? 'Another hint' : 'Give me a hint'} <span class="muted small">${n + 1} of ${steps.length}</span></button>` : ''}
+    </div>`;
+  }
+  const hintNote = (ok, n) => ok && n >= 2 ? '<span class="small muted hint-note">You used the hints, so this one comes back sooner.</span>' : '';
+
+  /* v2.88 — mixed practice. A chapter check-up tells you which method to use before you start: it is
+     the chapter's. An exam does not. Mixed practice deals questions from several chapters with no
+     chapter shown until it is marked, so the student practises choosing the method, not just using it.
+     Chapters the student has started come first; the chapters alternate; questions not yet tried
+     come before ones already answered. */
+  const MIXED_N = 15;
+  function mixedPick(c, now = Date.now()) {
+    const p = progress[courseSid(c.id)] || {};
+    const srs = p.srs || {};
+    const started = c.units.filter(u => (u.practice || []).some(it => srs[practiceKey(c.id, u.id, it.id)]));
+    const units = started.length >= 2 ? started : c.units;
+    const piles = units.map(u => {
+      const items = (u.practice || []).filter(it => DRILL_KINDS.includes(it.kind)).map(it => ({ uid: u.id, item: it }));
+      const order = seededOrder(String(now) + u.id, items.length).map(i => items[i]);
+      const seen = q => !!srs[practiceKey(c.id, q.uid, q.item.id)];
+      return order.filter(q => !seen(q)).concat(order.filter(seen));
+    }).filter(x => x.length);
+    // the chapters take turns, in a new order each round so the order itself gives nothing away,
+    // and never the same chapter twice in a row across the join between rounds
+    const out = [];
+    for (let round = 0; out.length < MIXED_N && piles.some(pl => pl[round]); round++) {
+      const ro = seededOrder(`${now}|${round}`, piles.length).map(i => piles[i]).filter(pl => pl[round]);
+      if (out.length && ro.length > 1 && ro[0][round].uid === out[out.length - 1].uid) ro.push(ro.shift());
+      for (const pl of ro) if (out.length < MIXED_N) out.push(pl[round]);
+    }
+    return out;
+  }
+
   function missOf(c) { const p = prog(courseSid(c.id)); return p.miss || (p.miss = {}); }
   /* v2.85 — "How sure were you?" A wrong answer the student was SURE of is the most useful thing
      practice can find: a confident misconception, the kind that costs marks because it never gets
@@ -54851,6 +54974,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     if (!deck && !pool) return '';
     return `<div class="study-band">
       <a class="sb-tool" href="#/courses/${esc(c.id)}/cards"><b>Flash cards</b><span class="small muted">${plural(deck, 'card')} from every chapter</span></a>
+      <a class="sb-tool" href="#/courses/${esc(c.id)}/mixed"><b>Mixed practice</b><span class="small muted">${MIXED_N} questions across chapters, chapter hidden</span></a>
       <a class="sb-tool" href="#/courses/${esc(c.id)}/mock"><b>Mock exam</b><span class="small muted">Timed, mixed, marked at the end</span></a>
       <a class="sb-tool${miss ? '' : ' quiet'}" href="#/courses/${esc(c.id)}/mistakes"><b>Mistakes</b><span class="small muted">${miss ? `${plural(miss, 'question')} to get right` : 'Nothing to redo yet'}</span></a>
       <a class="sb-tool${due ? '' : ' quiet'}" href="#/courses/${esc(c.id)}/review"><b>Review</b><span class="small muted">${due ? `${plural(due, 'question')} due today` : 'Nothing due yet'}</span></a>
@@ -54896,6 +55020,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
   function startDrill(c, mode, opt = {}) {
     let qs;
     if (mode === 'mistakes') qs = mistakesOf(c);
+    else if (mode === 'mixed') qs = mixedPick(c);
     else if (mode === 'review') { const due = dueOf(c).slice(0, REVIEW_MAX); qs = seededOrder(String(Date.now()), due.length).map(i => due[i]); }
     else {
       const p = prog(courseSid(c.id));
@@ -54907,14 +55032,15 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     }
     qs = qs.map(q => ({ uid: q.uid, item: withVersion(q.item, nextVersion(c.id, q.uid, q.item)) }));
     const per = 75 * 1000;   // the pace of a real multiple-choice midterm: 60 questions in 75 minutes
-    state.drill = { cid: c.id, mode, qs, i: 0, ans: {}, flags: {}, conf: {}, done: false, nonce: Math.random().toString(36).slice(2),
+    state.drill = { cid: c.id, mode, qs, i: 0, ans: {}, flags: {}, conf: {}, hints: {}, done: false, nonce: Math.random().toString(36).slice(2),
       deadline: mode === 'mock' && opt.timed ? Date.now() + qs.length * per : null, shown: {} };
   }
   // instant marking (Mistakes and Review): record the answer, with the confidence the student gave
   function drillMark(d) {
     d.shown[d.i] = true;
     const q = d.qs[d.i];
-    recordAnswer(d.cid, q.uid, q.item.id, drillCorrect(q, d.ans[d.i]), d.conf[d.i]);
+    const ok = drillCorrect(q, d.ans[d.i]);
+    recordAnswer(d.cid, q.uid, q.item.id, ok, ok && (d.hints[d.i] || 0) >= 2 ? 'guess' : d.conf[d.i]);
     saveProgress();
   }
   function drillCorrect(q, a) {
@@ -54923,9 +55049,9 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
   }
   function renderDrill(c, mode) {
     const d = state.drill;
-    const title = mode === 'mock' ? 'Mock exam' : mode === 'review' ? 'Review' : 'Mistakes';
+    const title = mode === 'mock' ? 'Mock exam' : mode === 'review' ? 'Review' : mode === 'mixed' ? 'Mixed practice' : 'Mistakes';
     if (!d || d.cid !== c.id || d.mode !== mode) {
-      if (mode === 'mistakes' || mode === 'review') { startDrill(c, mode); return renderDrill(c, mode); }
+      if (isInstant(mode)) { startDrill(c, mode); return renderDrill(c, mode); }
       // the mock's set-up
       const pool = drillPool(c).length;
       const ui = state.mockUi && state.mockUi.cid === c.id ? state.mockUi : (state.mockUi = { cid: c.id, uids: c.units.map(u => u.id), n: Math.min(40, pool), timed: true });
@@ -54940,7 +55066,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
       </div></div></main>${foot()}`);
       syncModal(); return;
     }
-    if (!d.qs.length && d.mode !== 'review') {
+    if (!d.qs.length && d.mode === 'mistakes') {
       app.innerHTML = frame(`${drillHead(c, title)}<main id="main" tabindex="-1"><div class="quiz"><div class="q-result"><span class="label">Mistakes</span><h2>Nothing to redo</h2><p class="muted">Every question you have answered wrong — in practice, a check-up or a mock — waits here until you get it right.</p><div class="btn-row"><a class="btn primary" href="#/courses/${esc(c.id)}">Back to the course <span class="arr">&rarr;</span></a></div></div></div></main>${foot()}`);
       syncModal(); return;
     }
@@ -54953,7 +55079,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     }
     const q = d.qs[d.i], it = q.item, a = d.ans[d.i];
     const u = c.units.find(x => x.id === q.uid);
-    const instant = d.mode === 'mistakes' || d.mode === 'review';
+    const instant = isInstant(d.mode);
     const marked = instant && d.shown[d.i];
     let body;
     if (it.kind === 'mc') {
@@ -54967,17 +55093,18 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
       body = `<form class="fill-row" data-form="drill-num"><input class="input" id="drill-input" name="v" inputmode="decimal" autocomplete="off" value="${esc(a == null ? '' : a)}" placeholder="Type a number"${marked ? ' disabled' : ''}><button class="btn" type="submit"${marked ? ' disabled' : ''}>${instant ? 'Check' : 'Save answer'}</button></form>`;
     }
     const okNow = marked && drillCorrect(q, a);
-    const fb = marked ? `<div class="feedback ${okNow ? 'ok' : 'bad'}"><b>${d.mode === 'review' ? (okNow ? 'Right. It comes back later, spaced further out.' : 'Not this time. It comes back soon.') : (okNow ? 'Right — off the list.' : 'Not yet. It stays on the list.')}</b>${sureNote(okNow, d.conf[d.i])}<ol class="sol">${(it.solution || []).map(x => `<li>${esc(x)}</li>`).join('')}</ol>${it.deeper ? `<details class="deeper" open><summary>Go deeper</summary><p>${esc(it.deeper)}</p></details>` : ''}${flagBtn(c, q.uid, it)}</div>` : '';
+    const fb = marked ? `<div class="feedback ${okNow ? 'ok' : 'bad'}"><b>${d.mode === 'review' ? (okNow ? 'Right. It comes back later, spaced further out.' : 'Not this time. It comes back soon.') : d.mode === 'mixed' ? (okNow ? 'Right.' : 'Not this time. It is in Mistakes now.') : (okNow ? 'Right — off the list.' : 'Not yet. It stays on the list.')}</b>${d.mode === 'mixed' ? ` <span class="small">This was ${esc(chapName(c, u))} · ${esc(u.title)}.</span>` : ''}${sureNote(okNow, d.conf[d.i])}${hintNote(okNow, d.hints[d.i] || 0)}<ol class="sol">${(it.solution || []).map(x => `<li>${esc(x)}</li>`).join('')}</ol>${it.deeper ? `<details class="deeper" open><summary>Go deeper</summary><p>${esc(it.deeper)}</p></details>` : ''}${flagBtn(c, q.uid, it)}</div>` : '';
     const answered = Object.keys(d.ans).filter(k => d.ans[k] != null && d.ans[k] !== '').length;
     const left = d.deadline ? Math.max(0, d.deadline - Date.now()) : null;
     const grid = d.mode === 'mock' ? `<div class="q-grid" role="group" aria-label="Jump to a question">${d.qs.map((_, k) => `<button type="button" class="${k === d.i ? 'on' : ''}${d.ans[k] != null && d.ans[k] !== '' ? ' done' : ''}${d.flags[k] ? ' flag' : ''}" data-act="drill-go" data-i="${k}" aria-label="Question ${k + 1}${d.flags[k] ? ', flagged' : ''}${d.ans[k] != null && d.ans[k] !== '' ? ', answered' : ''}">${k + 1}</button>`).join('')}</div>` : '';
     app.innerHTML = frame(`${drillHead(c, title)}<main id="main" tabindex="-1"><div class="quiz">
       <div class="drill-bar"><span class="mono small">${d.mode === 'mock' ? `${answered} of ${d.qs.length} answered` : `${d.i + 1} of ${d.qs.length}`}</span>${left != null ? `<span class="mono small timer${left < 5 * 60000 ? ' low' : ''}" id="drill-timer">${fmtClock(left)}</span>` : ''}</div>
       <div class="q-card">
-        <div class="qnum"><span>${esc(chapName(c, u))}${d.flags[d.i] ? ' · flagged' : ''}${d.mode === 'mistakes' && sureMiss(c, q.uid, it.id) ? ' · <b class="sure-tag">you were sure</b>' : ''}${it.vk ? ' · <b class="new-nums">new numbers</b>' : ''}</span><span>Question ${d.i + 1}</span></div>
+        <div class="qnum"><span>${d.mode === 'mixed' && !marked ? 'Which method? Chapter hidden' : esc(chapName(c, u))}${d.flags[d.i] ? ' · flagged' : ''}${d.mode === 'mistakes' && sureMiss(c, q.uid, it.id) ? ' · <b class="sure-tag">you were sure</b>' : ''}${it.vk ? ' · <b class="new-nums">new numbers</b>' : ''}</span><span>Question ${d.i + 1}</span></div>
         <p class="prompt">${esc(it.prompt)}</p>
         ${instant && !marked ? confPick(d.conf[d.i], 'drill-conf') : ''}
         ${body}
+        ${instant && !marked ? hintLadder(c, q.uid, it, d.hints[d.i] || 0, 'drill-hint') : ''}
         ${fb}
         <div class="btn-row drill-nav">
           <button type="button" class="btn" data-act="drill-go" data-i="${d.i - 1}"${d.i ? '' : ' disabled'}>&larr; Back</button>
@@ -55032,9 +55159,9 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
       <div class="q-result">
         <span class="label">${esc(title)} · ${esc(c.code)}</span>
         <span class="score">${Math.round(right / rows.length * 100)}%<small>${right} of ${rows.length}</small></span>
-        ${d.mode === 'mock' ? `<table class="mock-by"><caption class="label">By chapter</caption><tbody>${by}</tbody></table>` : ''}
+        ${d.mode === 'mock' || d.mode === 'mixed' ? `<table class="mock-by"><caption class="label">By chapter</caption><tbody>${by}</tbody></table>` : ''}
         <p class="small muted">${rows.length - right ? `${plural(rows.length - right, 'question')} you missed ${rows.length - right === 1 ? 'is' : 'are'} now in Mistakes, until you get ${rows.length - right === 1 ? 'it' : 'them'} right.` : 'Nothing missed.'}</p>
-        <div class="btn-row">${d.mode === 'mock' ? '<button type="button" class="btn primary" data-act="mock-new">New mock</button>' : ''}${mistakesOf(c).length ? `<a class="btn" href="#/courses/${esc(c.id)}/mistakes" >Redo mistakes (${mistakesOf(c).length})</a>` : ''}<a class="btn" href="#/courses/${esc(c.id)}">Back to the course</a></div>
+        <div class="btn-row">${d.mode === 'mock' ? '<button type="button" class="btn primary" data-act="mock-new">New mock</button>' : d.mode === 'mixed' ? '<button type="button" class="btn primary" data-act="mixed-new">Another mixed set</button>' : ''}${mistakesOf(c).length ? `<a class="btn" href="#/courses/${esc(c.id)}/mistakes" >Redo mistakes (${mistakesOf(c).length})</a>` : ''}<a class="btn" href="#/courses/${esc(c.id)}">Back to the course</a></div>
       </div>
       <section class="mock-review"><h2>Review all ${rows.length}</h2>${review}</section>
     </div></main>${foot()}`);
@@ -55276,7 +55403,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     if (ps.cid !== c.id || ps.uid !== 'challenge' || !ps.ch) {
       const ch = buildChallenge(c);
       if (!ch) { go(`/courses/${c.id}`); return; }
-      Object.assign(ps, { cid: c.id, uid: 'challenge', ch, i: 0, picked: null, seq: [], conf: null, vers: {}, done: false, right: 0, wrong: 0, marked: null, tally: {}, results: [], moves: null });
+      Object.assign(ps, { cid: c.id, uid: 'challenge', ch, i: 0, picked: null, seq: [], conf: null, vers: {}, hintN: 0, done: false, right: 0, wrong: 0, marked: null, tally: {}, results: [], moves: null });
     }
     return renderPractice(c, { id: 'challenge', n: 'Challenge', practice: practiceItems(ps), lessons: [] });
   }
@@ -55284,7 +55411,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
   function renderPractice(c, u, lid = null) {
     const ps = practiceState();
     if (ps.cid !== c.id || ps.uid !== u.id || (!ps.ch && (ps.lid || null) !== lid)) {
-      Object.assign(ps, { cid: c.id, uid: u.id, lid, i: 0, picked: null, seq: [], conf: null, vers: {}, done: false, right: 0, wrong: 0, marked: null, tally: {}, results: [], moves: null, ch: null, nonce: Math.random().toString(36).slice(2) });
+      Object.assign(ps, { cid: c.id, uid: u.id, lid, i: 0, picked: null, seq: [], conf: null, vers: {}, hintN: 0, done: false, right: 0, wrong: 0, marked: null, tally: {}, results: [], moves: null, ch: null, nonce: Math.random().toString(36).slice(2) });
     }
     const isCh = !!ps.ch;
     const items = practiceItems(ps);
@@ -55360,7 +55487,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 
     const fb = m ? `<div class="feedback ${m.ok ? 'ok' : 'bad'}">
         <b>${m.ok ? 'Right.' : (m.why ? m.why : 'Not this time.')}</b>
-        ${sureNote(m.ok, ps.conf)}
+        ${sureNote(m.ok, ps.conf)}${hintNote(m.ok, ps.hintN || 0)}
         ${item.why && !m.ok ? `<span>${esc(item.why)}</span>` : ''}
         <ol class="sol">${(item.solution || []).map(x => `<li>${esc(x)}</li>`).join('')}</ol>
         ${item.deeper ? `<details class="deeper"${m.ok ? '' : ' open'}><summary>Go deeper</summary><p>${esc(item.deeper)}</p></details>` : ''}
@@ -55374,7 +55501,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
         <p class="prompt">${esc(item.prompt)}</p>
         ${!m ? confPick(ps.conf, 'pr-conf') : ''}
         ${body}
-        ${!m && item.hint ? `<details class="hint-box"><summary>Give me a hint</summary><p class="small">${esc(item.hint)}</p></details>` : ''}
+        ${!m ? hintLadder(c, practiceAt(ps, ps.i).uid, item, ps.hintN || 0, 'pr-hint') : ''}
         ${fb}
       </div>
     </div></main>${foot()}`);
@@ -55409,7 +55536,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     if (ok) ps.right++; else ps.wrong++;
     const at = practiceAt(ps, ps.i);
     if (at.item) {
-      recordAnswer(ps.cid, at.uid, at.item.id, ok, ps.conf);
+      recordAnswer(ps.cid, at.uid, at.item.id, ok, ok && (ps.hintN || 0) >= 2 ? 'guess' : ps.conf);
       // the per-skill tally is what the mastery level is worked out from when the run ends
       if (at.lid) {
         const t = ps.tally || (ps.tally = {});
@@ -59402,7 +59529,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
         const ok = (ps.seq || []).every((v, i2) => v === i2);
         markPractice(ok, ok ? null : 'Not that order.'); break; }
       case 'pr-next': { const ps = practiceState(); const its = practiceItems(ps);
-        ps.marked = null; ps.picked = null; ps.seq = []; ps.conf = null;
+        ps.marked = null; ps.picked = null; ps.seq = []; ps.conf = null; ps.hintN = 0;
         if (ps.i + 1 >= its.length) {
           ps.done = true;
           if (ps.ch) { if (!ps.moves) ps.moves = applyChallenge(ps.ch, ps.results || []); }
@@ -59411,7 +59538,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
         render(); break; }
       case 'ex-open': { (state.openEx || (state.openEx = {}))[el.dataset.k] = 1; render(); break; }
       case 'ex-close': { if (state.openEx) delete state.openEx[el.dataset.k]; render(); break; }
-      case 'pr-restart': { const ps = practiceState(); Object.assign(ps, { i: 0, picked: null, seq: [], conf: null, vers: {}, done: false, right: 0, wrong: 0, marked: null, tally: {}, results: [], moves: null, nonce: Math.random().toString(36).slice(2) }); render(); break; }
+      case 'pr-restart': { const ps = practiceState(); Object.assign(ps, { i: 0, picked: null, seq: [], conf: null, vers: {}, hintN: 0, done: false, right: 0, wrong: 0, marked: null, tally: {}, results: [], moves: null, nonce: Math.random().toString(36).slice(2) }); render(); break; }
       case 'update-later': dismissUpdatePop(); toast('Left as it is. The update button in the top bar takes it whenever you are ready.'); break;
       case 'whats-new': state.modal = { type: 'whatsnew' }; syncModal(); break;
       case 'stats': {
@@ -59466,7 +59593,10 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
       case 'mock-timed': { if (state.mockUi) { state.mockUi.timed = el.dataset.v === '1'; render(); } break; }
       case 'mock-start': { const c0 = Courses.get(parseRoute().cid); if (c0 && state.mockUi) { startDrill(c0, 'mock', state.mockUi); render(); } break; }
       case 'mock-new': { state.drill = null; render(); break; }
-      case 'drill-pick': { const d = state.drill; if (!d || d.done) break; const inst = d.mode === 'mistakes' || d.mode === 'review'; if (inst && d.shown[d.i]) break; d.ans[d.i] = el.dataset.i; if (inst) drillMark(d); render(); break; }
+      case 'drill-hint': { const d = state.drill; if (!d || d.done || d.shown[d.i]) break; d.hints[d.i] = (d.hints[d.i] || 0) + 1; render(); break; }
+      case 'mixed-new': { const c0 = Courses.get(parseRoute().cid); if (c0) { startDrill(c0, 'mixed'); render(); } break; }
+      case 'pr-hint': { const ps = practiceState(); if (ps.marked) break; ps.hintN = (ps.hintN || 0) + 1; render(); break; }
+      case 'drill-pick': { const d = state.drill; if (!d || d.done) break; const inst = isInstant(d.mode); if (inst && d.shown[d.i]) break; d.ans[d.i] = el.dataset.i; if (inst) drillMark(d); render(); break; }
       case 'drill-conf': { const d = state.drill; if (!d || d.shown[d.i]) break; d.conf[d.i] = d.conf[d.i] === el.dataset.v ? null : el.dataset.v; render(); break; }
       case 'pr-conf': { const ps = practiceState(); if (ps.marked) break; ps.conf = ps.conf === el.dataset.v ? null : el.dataset.v; const y = window.scrollY; render(); window.scrollTo(0, y); break; }
       case 'drill-go': { const d = state.drill; if (!d) break; const k = +el.dataset.i; if (k >= 0 && k < d.qs.length) { d.i = k; render(); } break; }
@@ -59970,11 +60100,11 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     }
     if (form.dataset.form === 'drill-num') {
       const d = state.drill; if (!d || d.done) return;
-      if (d.mode === 'mistakes' && d.shown[d.i]) return;
+      if (isInstant(d.mode) && d.shown[d.i]) return;
       const v = String(data.v || '').trim();
       if (numeric(v) === null) { toast('That is not a number I can read. Type digits only, like 12 or -3.5.'); return; }
       d.ans[d.i] = v;
-      if (d.mode === 'mistakes' || d.mode === 'review') drillMark(d);
+      if (isInstant(d.mode)) drillMark(d);
       else if (d.i + 1 < d.qs.length) d.i++;
       render(); return;
     }
@@ -60378,7 +60508,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
       if (e.key === ' ') { e.preventDefault(); state.cdeck.flipped = !state.cdeck.flipped; render(); return; }
       if (state.cdeck.flipped && (e.key === 'ArrowLeft' || e.key === 'ArrowRight') && c0) { e.preventDefault(); cdeckRate(c0, e.key === 'ArrowRight' ? 'good' : 'again'); return; }
     }
-    if (r.name === 'math' && (r.uid === 'mock' || r.uid === 'mistakes' || r.uid === 'review') && state.drill && !state.drill.done) {
+    if (r.name === 'math' && (r.uid === 'mock' || r.uid === 'mistakes' || r.uid === 'review' || r.uid === 'mixed') && state.drill && !state.drill.done) {
       const d = state.drill, k = 'abcd'.indexOf(e.key.toLowerCase()), n = '1234'.indexOf(e.key);
       const pos = k >= 0 ? k : n;
       if (pos >= 0) { const b = document.querySelectorAll('[data-act="drill-pick"]')[pos]; if (b && !b.disabled) { e.preventDefault(); b.click(); } return; }
