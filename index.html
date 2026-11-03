@@ -2816,6 +2816,29 @@ figure.worked:has(.explain-it[open]):not(.ex-shown) li.ex-target .why::after { c
 .pre-list li { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: center; border-top: 1px solid var(--line-soft); padding-top: 6px; }
 .pre-intro { margin: 0 0 10px; }
 
+/* v2.91 — glossary */
+.gl-term { font: inherit; font-weight: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: help; text-decoration: underline dotted; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+.gl-term:hover, .gl-term:focus-visible { color: var(--accent); text-decoration-style: solid; }
+.gl-pop { position: fixed; z-index: 60; background: var(--surface); color: var(--ink); border: 1px solid var(--line); box-shadow: 0 8px 28px rgba(0,0,0,.18); padding: 10px 12px 12px; display: grid; gap: 6px; }
+.gl-pop p { margin: 0; }
+.gl-pop-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.gl-pop .btn { min-height: 44px; }
+.gl-pop .btn-row { flex-wrap: wrap; }
+.gl-page { display: grid; gap: 16px; }
+.gl-tools { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.gl-tools .input { flex: 1 1 260px; min-height: 44px; }
+.gl-az { display: flex; flex-wrap: wrap; gap: 4px; }
+.gl-az a { min-width: 32px; min-height: 32px; display: inline-grid; place-items: center; border: 1px solid var(--line-soft); text-decoration: none; color: var(--ink); font-family: var(--font-mono); }
+.gl-group h2 { margin: 0 0 6px; font-size: 1.1rem; border-bottom: 1px solid var(--line); }
+.gl-group dl { margin: 0; display: grid; gap: 10px; }
+.gl-row { display: grid; grid-template-columns: minmax(140px, 220px) 1fr; gap: 4px 16px; }
+.gl-row dt { font-weight: 700; }
+.gl-row dd { margin: 0; display: grid; gap: 4px; justify-items: start; }
+.gl-row dd p { margin: 0; }
+.gl-row .btn { min-height: 36px; }
+@media (max-width: 600px) { .gl-row { grid-template-columns: 1fr; } }
+@media print { .gl-tools, .gl-az, .gl-row .btn { display: none !important; } }
+
 </style>
 </head>
 <body>
@@ -52244,7 +52267,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.90', date: '3 November 2026', year: 2026 };
+  const BUILD = { v: '2.91', date: '3 November 2026', year: 2026 };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonxcorp', ['outlook', 'com'].join('.')].join('@');
   /* The one sentence that says what this is. It appears under the wordmark, and build.js uses
@@ -52257,6 +52280,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      because the person who needs it is the one who just watched the app refresh itself and wants to
      know what moved. Trim the tail when it gets past a dozen; nobody reads further back than that. */
   const WHATS_NEW = [
+    ['2.91', '<b>A glossary for every course.</b> Each course page now has a <b>Glossary</b>: every term the course defines, A to Z, searchable, with its definition and a link to the lesson it comes from. In the lessons, those terms are underlined with dots \u2014 tap one to see its definition without losing your place. The glossary is built only from the course\u2019s own definitions and term cards, so it says exactly what the lessons say.'],
     ['2.90', '<b>A quick check at the start of every chapter.</b> Before you read a chapter, answer five questions \u2014 one from each lesson, nothing marked until the end, and \u201cI don\u2019t know\u201d is a fine answer. The chapter then labels its lessons <b>Skip \u2014 you knew it</b>, <b>Start here</b> or <b>Read this</b>, and takes you straight to where to start. A miss in the quick check is not added to Mistakes. Also: lesson numbers now match the chapter, so Chapter 11\u2019s lessons are 11.1, 11.2 and so on.'],
     ['2.89', '<b>Mastery map and printable worksheets.</b> Every course page now has a <b>Mastery map</b>: each lesson shaded and labelled by how you are doing, what you have tried and what is still wrong, with <b>your weakest three</b> at the top and a button to practise each. And every chapter can become a <b>printable worksheet</b> \u2014 all its practice questions on a clean page, with the answers and working on a separate page \u2014 to print or save as a PDF for tutorials and study groups. <b>New version</b> reshuffles it, with new numbers where a question has them.'],
     ['2.88', '<b>Hints one step at a time, and mixed practice.</b> Stuck on a course question? <b>Give me a hint</b> now opens one step at a time: a nudge, then the method from the lesson, then a first step (or, in multiple choice, one wrong option ruled out). You only see as much as you ask for. A right answer after two or more hints comes back sooner, like a guess. New on every course page: <b>Mixed practice</b> \u2014 15 questions from different chapters with the chapter hidden until you answer, so you practise picking the method the way an exam makes you.'],
@@ -54421,6 +54445,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     if (r.uid === 'mock' || r.uid === 'mistakes' || r.uid === 'review' || r.uid === 'mixed') return renderDrill(c, r.uid);
     if (r.uid === 'ask' && TUTOR_OK) return renderAsk(c);
     if (r.uid === 'map') return renderMasteryMap(c);
+    if (r.uid === 'glossary') return renderGlossary(c, r.q);
     const u = Courses.unit(c.id, r.uid);
     if (!u) return renderCourse(c);
     if (r.mode === 'worksheet') return renderWorksheet(c, u, r.q);
@@ -54711,6 +54736,140 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     syncModal();
   }
 
+  /* v2.91 — the glossary. Every course gets one, built from what the course already says:
+       · a chapter's own term cards (front = the term, back = its definition), and
+       · the sentences in the lessons that DEFINE a bold term — "A <b>liability</b> is …",
+         "<b>Ammonification</b> — …", "… is called <b>the degrees of freedom</b>" — and only those:
+         a bold word that is merely mentioned is not a definition, so it is left out.
+     Each term links to the lesson it comes from. In the lessons, a bold glossary term is tappable
+     and shows its definition in a small pop-up, so a student meeting a term again three chapters
+     later can check it without losing their place. */
+  const GLOSS = new Map();
+  const glPlain = h => String(h || '').replace(/<br\s*\/?>/g, ' ¶ ').replace(/<sub>(.*?)<\/sub>/g, '$1').replace(/<sup>(.*?)<\/sup>/g, '^$1').replace(/<(?!\/?b>)[^>]+>/g, '').replace(/&nbsp;/g, ' ').replace(/&mdash;/g, '—').replace(/&ndash;/g, '–').replace(/&amp;/g, '&').replace(/&rsquo;/g, '’').replace(/\s+/g, ' ').trim();
+  const glKey = t => String(t).toLowerCase().replace(/\s*\([^)]*\)\s*$/, '').replace(/[’']/g, "'").trim();
+  function courseGlossary(c) {
+    if (GLOSS.has(c.id)) return GLOSS.get(c.id);
+    const out = [], seen = new Set();
+    const add = (term, def, u, lid, src) => { const k = glKey(term); if (!k || seen.has(k)) return; seen.add(k); out.push({ term, def, uid: u.id, lid, key: k, src }); };
+    const lessonText = l => glPlain([l.idea, ...(l.more || [])].join(' ¶ ')).replace(/<\/?b>/g, '').toLowerCase();
+    for (const u of c.units) for (const k of (u.cards || [])) {
+      // a card whose front is a question or an instruction ("Give an ordered factor…") is not a term
+      if (!k.front || k.front.length > 60 || /[?.]$/.test(k.front) || /^(give|name|list|explain|describe|why|what|how|which|when|compare)\b/i.test(k.front)) continue;
+      const kk = glKey(k.front);
+      const l = u.lessons.find(x => lessonText(x).includes(kk)) || null;
+      add(k.front, k.back, u, l ? l.id : null, 'card');
+    }
+    for (const u of c.units) for (const l of u.lessons) {
+      const txt = glPlain([l.idea, ...(l.more || [])].join(' ¶ '));
+      for (const para of txt.split(' ¶ ')) for (const s0 of para.split(/(?<=[a-z0-9)\]”"'%][.!?])\s+/)) for (const sent of s0.split(/;\s+/)) {
+        if (!/^[A-Z“"(]/.test(sent.replace(/<\/?b>/g, ''))) continue;   // a clause that starts mid-sentence leans on the one before it
+        const re = /<b>([^<]{2,40})<\/b>/g; let m;
+        while ((m = re.exec(sent))) {
+          const t = m[1].trim();
+          if (/[=<>×÷√Σ,]|\d/.test(t) || t.split(/\s+/).length > 5 || /[.:;]$/.test(t)) continue;
+          if (/^(it|this|that|they|these|those)\b/i.test(t) || /\b(matters|counts|works|fails|holds|wins)$/i.test(t) || /\b(is|are|was|were|has|have)\b/i.test(t)) continue;   // a claim, not a term
+          const pre = sent.slice(0, m.index), after = sent.slice(m.index + m[0].length, m.index + m[0].length + 24), before = pre.slice(-24);
+          const lead = /^(?:An?|The)?$/i.test(pre.replace(/<\/?b>/g, '').trim());
+          const isDef = (lead && /^\s*(?:\([^)]*\)\s*)?(?:is|are|means|measures|describes|refers to|says)\b/.test(after))
+            // "<b>Term</b> — …" in a list is a definition only for a capitalised term; "a straight line — …" describes a shape
+            || (lead && /^[A-Z]/.test(t) && /^\s*[—–]\s/.test(after))
+            // "<b>Term</b>: …" is often a list label ("Expectations: …"), so only a law or theorem, or a definition that opens like one
+            || (lead && /^[A-Z]/.test(t) && /^\s*:\s/.test(after) && (/\b(theorem|law|rule|principle|symmetry)\b/i.test(t) || /^\s*:\s+(?:an?|the)\s/i.test(after)))
+            // "… is called <b>x</b>" — unless the sentence leans on the one before it ("Some of it…", "This…")
+            || (/\b(?:called|known as|termed)\s*(?:the\s+|an?\s+)?$/.test(before) && !/^(?:some of it|it|this|that|these|those|they)\b/i.test(sent));
+          if (!isDef) continue;
+          const d = sent.replace(/<\/?b>/g, '').trim();
+          if (d.length < 25 || d.length > 320 || /:$/.test(d)) continue;   // "… is mass times velocity:" leaves the formula behind
+          add(t, d, u, l.id, 'lesson');
+        }
+      }
+    }
+    out.sort((a, b) => a.key.localeCompare(b.key));
+    const byKey = new Map(out.map((g, i) => [g.key, i]));
+    const res = { list: out, byKey };
+    GLOSS.set(c.id, res);
+    return res;
+  }
+  // make the bold glossary terms in a lesson's HTML tappable (the first time each appears in it)
+  const glBtn = (c, i, t) => `<button type="button" class="gl-term" data-act="gl-show" data-c="${esc(c.id)}" data-i="${i}" aria-haspopup="dialog">${t}</button>`;
+  function glossLink(c, html, used, lid) {
+    const g = courseGlossary(c); if (!g.list.length) return html;
+    let out = String(html).replace(/<b>([^<]{2,40})<\/b>/g, (all, t) => {
+      const k = glKey(t); const i = g.byKey.get(k);
+      if (i == null || used.has(k)) return all;
+      used.add(k);
+      return `<b>${glBtn(c, i, t)}</b>`;
+    });
+    // a term card's term in plain text, in the lesson it belongs to (prose courses do not bold their terms)
+    for (const [i, x] of g.list.entries()) {
+      if (x.src !== 'card' || x.lid !== lid || used.has(x.key)) continue;
+      const word = x.term.replace(/\s*\([^)]*\)\s*$/, '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      if (word.length < 3) continue;
+      const re = new RegExp(`(^|>)([^<]*?)(?<![\\w-])(${word})(?![\\w-])`, 'i');
+      const m = re.exec(out);
+      if (!m) continue;
+      const before = out.slice(0, m.index + m[1].length);
+      if (before.lastIndexOf('<button') > before.lastIndexOf('</button>') || before.lastIndexOf('<a ') > before.lastIndexOf('</a>')) continue;   // never inside another link
+      used.add(x.key);
+      out = out.replace(re, (all, a, pre, t) => `${a}${pre}${glBtn(c, i, t)}`);
+    }
+    return out;
+  }
+  function glossLessonLabel(c, g) {
+    const u = c.units.find(x => x.id === g.uid); if (!u) return '';
+    const li = g.lid ? u.lessons.findIndex(l => l.id === g.lid) : -1;
+    return li >= 0 ? `${chapNo(c, u)}.${li + 1} ${u.lessons[li].title}` : `${chapName(c, u)} · ${u.title}`;
+  }
+  function closeGloss() { const p = document.querySelector('.gl-pop'); if (p) { const from = p._from; p.remove(); if (from && document.contains(from)) from.focus(); } }
+  function showGloss(btn) {
+    closeGloss();
+    const c = Courses.get(btn.dataset.c); if (!c) return;
+    const g = courseGlossary(c).list[+btn.dataset.i]; if (!g) return;
+    const pop = document.createElement('div');
+    pop.className = 'gl-pop'; pop.setAttribute('role', 'dialog'); pop.setAttribute('aria-label', g.term);
+    pop.innerHTML = `<div class="gl-pop-head"><b>${esc(g.term)}</b><button type="button" class="btn sm ghost" data-act="gl-close" aria-label="Close">✕</button></div>
+      <p class="small">${esc(g.def)}</p>
+      <div class="btn-row"><button type="button" class="btn sm" data-act="gl-go" data-c="${esc(c.id)}" data-u="${esc(g.uid)}" data-l="${esc(g.lid || '')}">${esc(glossLessonLabel(c, g))} <span class="arr">&rarr;</span></button><a class="btn sm ghost" href="#/courses/${esc(c.id)}/glossary">Glossary</a></div>`;
+    document.body.appendChild(pop);
+    pop._from = btn;
+    placeGloss(pop);
+    pop.querySelector('[data-act="gl-close"]').focus({ preventScroll: true });
+  }
+  // keep the pop-up beside its term while the page scrolls; close it once the term has gone off screen
+  function placeGloss(pop) {
+    const btn = pop._from; if (!btn || !document.contains(btn)) { closeGloss(); return; }
+    const r = btn.getBoundingClientRect();
+    if (r.bottom < 0 || r.top > innerHeight) { closeGloss(); return; }
+    const w = Math.min(340, innerWidth - 24);
+    pop.style.width = w + 'px';
+    pop.style.left = Math.max(12, Math.min(innerWidth - w - 12, r.left)) + 'px';
+    const below = r.bottom + 8, h = pop.offsetHeight;
+    pop.style.top = (below + h < innerHeight - 8 ? below : Math.max(8, r.top - h - 8)) + 'px';
+  }
+  if (typeof document !== 'undefined') {
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && document.querySelector('.gl-pop')) { e.stopPropagation(); closeGloss(); } }, true);
+    document.addEventListener('click', e => { if (document.querySelector('.gl-pop') && !e.target.closest('.gl-pop, .gl-term')) closeGloss(); }, true);
+    addEventListener('scroll', () => { const p = document.querySelector('.gl-pop'); if (p) placeGloss(p); }, { passive: true });
+    addEventListener('resize', () => { const p = document.querySelector('.gl-pop'); if (p) placeGloss(p); });
+    addEventListener('hashchange', () => closeGloss());
+  }
+  function renderGlossary(c, q) {
+    const g = courseGlossary(c).list;
+    const groups = {};
+    for (const [i, x] of g.entries()) { const L = /[a-z]/i.test(x.key[0]) ? x.key[0].toUpperCase() : '#'; (groups[L] || (groups[L] = [])).push({ x, i }); }
+    const letters = Object.keys(groups).sort();
+    app.innerHTML = frame(`${drillHead(c, 'Glossary')}<main id="main" tabindex="-1"><div class="page gl-page">
+      ${g.length ? `<div class="gl-tools"><label class="sr-only" for="gl-filter">Find a term</label><input class="input" id="gl-filter" type="search" placeholder="Find a term in ${esc(c.code)}…" autocomplete="off" value="${esc((q && q.find) || '')}"><span class="small muted" id="gl-count">${plural(g.length, 'term')}</span></div>
+      <nav class="gl-az" aria-label="Jump to a letter">${letters.map(L => `<a href="#gl-${L}" data-act="gl-az" data-l="${L}">${L}</a>`).join('')}</nav>
+      ${letters.map(L => `<section class="gl-group" id="gl-${L}"><h2>${L}</h2><dl>${groups[L].map(({ x, i }) => `<div class="gl-row" data-k="${esc(x.key)}"><dt>${esc(/^[a-z][a-z]/.test(x.term) ? x.term[0].toUpperCase() + x.term.slice(1) : x.term)}</dt><dd><p>${esc(x.def)}</p><button type="button" class="btn sm ghost" data-act="gl-go" data-c="${esc(c.id)}" data-u="${esc(x.uid)}" data-l="${esc(x.lid || '')}">${esc(glossLessonLabel(c, x))} <span class="arr">&rarr;</span></button></dd></div>`).join('')}</dl></section>`).join('')}
+      <p class="small muted">Built from the definitions in this course's own lessons and term cards.</p>`
+      : '<p class="muted">This course has no glossary terms yet.</p>'}
+    </div></main>${foot()}`);
+    syncModal();
+    const inp = document.getElementById('gl-filter');
+    if (inp) { const f = () => { const v = inp.value.trim().toLowerCase(); let n = 0; document.querySelectorAll('.gl-row').forEach(row => { const hit = !v || row.textContent.toLowerCase().includes(v); row.hidden = !hit; if (hit) n++; }); document.querySelectorAll('.gl-group').forEach(sec => { sec.hidden = !sec.querySelector('.gl-row:not([hidden])'); }); document.getElementById('gl-count').textContent = v ? `${n} of ${g.length}` : plural(g.length, 'term'); }; inp.addEventListener('input', f); if (inp.value) f(); }
+  }
+
   /* v2.90 — a quick check at the start of a chapter. Five questions, one from each lesson where the
      chapter has five, BEFORE the student reads anything. Nothing is marked while they answer (it is a
      check, not a test, and "I don't know" is a fine answer). At the end each lesson is labelled:
@@ -54952,12 +55111,13 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     }).join('');
     const lessons = u.lessons.map((l, li) => {
       const k = lessonItems(u, l.id).length;
+      const glUsed = new Set();
       return `
       <section class="lesson${c.prose ? ' prose' : ''}" id="l-${esc(l.id)}">
         <div class="lesson-head"><span class="label">${chapNo(c, u)}.${li + 1}</span><h2>${esc(l.title)}</h2>${preChip(pt[l.id])}${l.src ? `<span class="src-chip" title="Follows this part of the course material">${esc(l.src)}</span>` : ''}${sayBtn(c, u, l, 'idea')}</div>
         <div class="lesson-body">
-          <p class="idea">${l.idea}</p>
-          ${(l.more || []).map(x => `<p class="idea">${x}</p>`).join('')}
+          <p class="idea">${glossLink(c, l.idea, glUsed, l.id)}</p>
+          ${(l.more || []).map(x => `<p class="idea">${glossLink(c, x, glUsed, l.id)}</p>`).join('')}
           ${richBlocks(l, c, u)}
           ${l.figure ? figHtml(l.figure) : ''}
           ${l.rules && l.rules.length && TUTOR_OK ? `<div class="rules-say">${sayBtn(c, u, l, 'rules')}</div>` : ''}${l.rules && l.rules.length ? `<div class="rules">${l.rules.map(rr => `<div class="rule">
@@ -55245,6 +55405,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     if (!deck && !pool) return '';
     return `<div class="study-band">
       <a class="sb-tool" href="#/courses/${esc(c.id)}/cards"><b>Flash cards</b><span class="small muted">${plural(deck, 'card')} from every chapter</span></a>
+      ${courseGlossary(c).list.length ? `<a class="sb-tool" href="#/courses/${esc(c.id)}/glossary"><b>Glossary</b><span class="small muted">${plural(courseGlossary(c).list.length, 'term')}, each linked to its lesson</span></a>` : ''}
       <a class="sb-tool" href="#/courses/${esc(c.id)}/map"><b>Mastery map</b><span class="small muted">Every lesson by your results, weakest first</span></a>
       <a class="sb-tool" href="#/courses/${esc(c.id)}/mixed"><b>Mixed practice</b><span class="small muted">${MIXED_N} questions across chapters, chapter hidden</span></a>
       <a class="sb-tool" href="#/courses/${esc(c.id)}/mock"><b>Mock exam</b><span class="small muted">Timed, mixed, marked at the end</span></a>
@@ -59866,6 +60027,10 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
       case 'mock-start': { const c0 = Courses.get(parseRoute().cid); if (c0 && state.mockUi) { startDrill(c0, 'mock', state.mockUi); render(); } break; }
       case 'mock-new': { state.drill = null; render(); break; }
       case 'drill-hint': { const d = state.drill; if (!d || d.done || d.shown[d.i]) break; d.hints[d.i] = (d.hints[d.i] || 0) + 1; render(); break; }
+      case 'gl-show': { const open = document.querySelector('.gl-pop'); if (open && open._from === el) { closeGloss(); break; } showGloss(el); break; }
+      case 'gl-close': closeGloss(); break;
+      case 'gl-go': { closeGloss(); if (el.dataset.l) state.jumpTo = el.dataset.l; const h = `#/courses/${el.dataset.c}/${el.dataset.u}`; if (location.hash === h) { render(); } else go(h); break; }
+      case 'gl-az': { e.preventDefault(); const t = document.getElementById('gl-' + el.dataset.l); if (t) t.scrollIntoView({ block: 'start' }); break; }
       case 'pre-again': { state.pre = null; const h = `#/courses/${el.dataset.c}/${el.dataset.u}/pretest`; if (location.hash === h) render(); else go(h); break; }
       case 'pre-start': { state.jumpTo = el.dataset.l; go(`#/courses/${el.dataset.c}/${el.dataset.u}`); break; }
       case 'pre-pick': { const st = state.pre; if (!st || st.done) break; st.ans[st.i] = el.dataset.i; pretestAdvance(); break; }
