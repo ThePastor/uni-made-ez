@@ -2803,6 +2803,19 @@ figure.worked:has(.explain-it[open]):not(.ex-shown) li.ex-target .why::after { c
 .ws-sol { display: block; color: var(--ink-2); }
 .ws-key li { font-weight: 400; } .ws-key li b { font-weight: 700; }
 
+/* v2.90 — the chapter's quick check */
+.pre-band { display: flex; gap: 12px 20px; justify-content: space-between; align-items: center; flex-wrap: wrap; border: 1px solid var(--line); padding: 12px var(--pad-in, 14px); margin-top: 16px; background: var(--surface); }
+.pre-band p { margin: 4px 0 0; }
+.pre-band .btn { min-height: 44px; }
+.pre-tag { font-family: var(--font-mono); font-size: var(--fs-md); letter-spacing: .06em; text-transform: uppercase; padding: 1px 6px; border: 1px solid currentColor; white-space: nowrap; }
+.lesson-head .pre-tag { align-self: center; }
+.pre-skip { color: var(--ok); background: var(--ok-soft); }
+.pre-start { color: var(--accent); background: color-mix(in srgb, var(--accent) 10%, transparent); }
+.pre-read { color: var(--ink-2); }
+.pre-list { list-style: none; padding: 0; margin: 8px 0; display: grid; gap: 6px; text-align: left; }
+.pre-list li { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: center; border-top: 1px solid var(--line-soft); padding-top: 6px; }
+.pre-intro { margin: 0 0 10px; }
+
 </style>
 </head>
 <body>
@@ -52231,7 +52244,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.89', date: '3 November 2026', year: 2026 };
+  const BUILD = { v: '2.90', date: '3 November 2026', year: 2026 };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonxcorp', ['outlook', 'com'].join('.')].join('@');
   /* The one sentence that says what this is. It appears under the wordmark, and build.js uses
@@ -52244,6 +52257,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      because the person who needs it is the one who just watched the app refresh itself and wants to
      know what moved. Trim the tail when it gets past a dozen; nobody reads further back than that. */
   const WHATS_NEW = [
+    ['2.90', '<b>A quick check at the start of every chapter.</b> Before you read a chapter, answer five questions \u2014 one from each lesson, nothing marked until the end, and \u201cI don\u2019t know\u201d is a fine answer. The chapter then labels its lessons <b>Skip \u2014 you knew it</b>, <b>Start here</b> or <b>Read this</b>, and takes you straight to where to start. A miss in the quick check is not added to Mistakes. Also: lesson numbers now match the chapter, so Chapter 11\u2019s lessons are 11.1, 11.2 and so on.'],
     ['2.89', '<b>Mastery map and printable worksheets.</b> Every course page now has a <b>Mastery map</b>: each lesson shaded and labelled by how you are doing, what you have tried and what is still wrong, with <b>your weakest three</b> at the top and a button to practise each. And every chapter can become a <b>printable worksheet</b> \u2014 all its practice questions on a clean page, with the answers and working on a separate page \u2014 to print or save as a PDF for tutorials and study groups. <b>New version</b> reshuffles it, with new numbers where a question has them.'],
     ['2.88', '<b>Hints one step at a time, and mixed practice.</b> Stuck on a course question? <b>Give me a hint</b> now opens one step at a time: a nudge, then the method from the lesson, then a first step (or, in multiple choice, one wrong option ruled out). You only see as much as you ask for. A right answer after two or more hints comes back sooner, like a guess. New on every course page: <b>Mixed practice</b> \u2014 15 questions from different chapters with the chapter hidden until you answer, so you practise picking the method the way an exam makes you.'],
     ['2.87', '<b>Fresh numbers every time.</b> In Calculus for Business and Economics (MATH 1170) and both ECON 2320 statistics courses, 35 of the type-the-answer questions now come back with <b>new numbers</b> each time you answer them \u2014 in practice, Mistakes, Review and mock exams \u2014 so remembering the last answer stops working and the method is what counts. Every version, with its worked solution, was computed and checked by a computer algebra system before it was added.'],
@@ -54410,6 +54424,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     const u = Courses.unit(c.id, r.uid);
     if (!u) return renderCourse(c);
     if (r.mode === 'worksheet') return renderWorksheet(c, u, r.q);
+    if (r.mode === 'pretest') return renderPretest(c, u);
     if (r.mode === 'practice') return renderPractice(c, u, r.lid && u.lessons.some(l => l.id === r.lid) ? r.lid : null);
     return renderUnit(c, u);
   }
@@ -54421,6 +54436,10 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     const m = String(u.read || '').match(/^((?:Chapters?|Topics?|Modules?)\s+\d+(?:\s*[–-]\s*\d+)?)\s*$/);
     return m ? m[1].replace(/\s*[–-]\s*/, '–') : `Chapter ${u.n}`;
   }
+  /* v2.90 — the number in front of a lesson ("11.2") matches the chapter's own number when the
+     chapter follows one textbook chapter; it used to be the chapter's position in the course, so
+     Chapter 11's lessons were numbered 2.1, 2.2… */
+  function chapNo(c, u) { const m = chapName(c, u).match(/^(?:Chapter|Topic|Module)\s+(\d+)$/); return m ? m[1] : String(u.n); }
   // "Mark as understood" — the student's own judgement, kept beside the course's other progress
   function understood(c, lid) { const p = prog(courseSid(c.id)); return !!(p.understood && p.understood[lid]); }
   /* v2.77 — the richer lesson blocks, from the PSYC 1110 review that Anndy built for himself:
@@ -54692,6 +54711,115 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     syncModal();
   }
 
+  /* v2.90 — a quick check at the start of a chapter. Five questions, one from each lesson where the
+     chapter has five, BEFORE the student reads anything. Nothing is marked while they answer (it is a
+     check, not a test, and "I don't know" is a fine answer). At the end each lesson is labelled:
+     "Skip — you knew it" when every question on it was right, otherwise "Start here" on the first
+     one missed and "Read" on the rest. The labels show on the chapter's contents and lesson heads.
+     Answers go into the review schedule like any other, but a miss is not put in Mistakes —
+     not knowing something you have not been taught yet is not a mistake. */
+  const PRE_N = 5;
+  function pretestPick(c, u) {
+    const ls = u.lessons.map(l => ({ l, items: lessonItems(u, l.id).filter(it => DRILL_KINDS.includes(it.kind)) })).filter(x => x.items.length);
+    if (ls.length < 2) return [];
+    const out = [];
+    for (let round = 0; out.length < PRE_N && ls.some(x => x.items[round]); round++) {
+      for (const x of ls) {
+        if (out.length >= PRE_N) break;
+        const order = seededOrder(`pre|${u.id}|${x.l.id}`, x.items.length).map(i => x.items[i]);
+        if (order[round]) out.push({ uid: u.id, lid: x.l.id, item: withVersion(order[round], nextVersion(c.id, u.id, order[round])) });
+      }
+    }
+    // in the chapter's own order, so the check walks through it the way the lessons do
+    const at = lid => u.lessons.findIndex(l => l.id === lid);
+    return out.sort((a, b) => at(a.lid) - at(b.lid));
+  }
+  function pretestOf(c, u) { const p = progress[courseSid(c.id)]; return (p && p.pre && p.pre[u.id]) || null; }
+  // lid -> 'skip' | 'start' | 'read' (lessons the check did not test get nothing)
+  function pretestTags(c, u) {
+    const pre = pretestOf(c, u); if (!pre) return {};
+    const out = {}; let started = false;
+    for (const l of u.lessons) {
+      if (!(l.id in pre.res)) continue;
+      if (pre.res[l.id]) out[l.id] = 'skip';
+      else { out[l.id] = started ? 'read' : 'start'; started = true; }
+    }
+    return out;
+  }
+  const PRE_TAG = { skip: 'Skip — you knew it', start: 'Start here', read: 'Read this' };
+  const preChip = t => t ? `<b class="pre-tag pre-${t}">${esc(PRE_TAG[t])}</b>` : '';
+  function pretestBand(c, u) {
+    const qs = pretestPick(c, u); if (!qs.length) return '';
+    const pre = pretestOf(c, u), tags = pretestTags(c, u);
+    const href = `#/courses/${esc(c.id)}/${esc(u.id)}/pretest`;
+    if (!pre) return `<div class="pre-band"><div><span class="label">Quick check · ${plural(qs.length, 'question')}</span><p class="small">Know some of this already? Answer ${qs.length} questions before you read, and the chapter marks what you can skip and where to start.</p></div><a class="btn" href="${href}">Take the quick check <span class="arr">&rarr;</span></a></div>`;
+    const known = Object.values(tags).filter(t => t === 'skip').length, tested = Object.keys(tags).length;
+    const start = u.lessons.find(l => tags[l.id] === 'start');
+    return `<div class="pre-band done"><div><span class="label">Quick check</span><p class="small">You knew ${known} of the ${plural(tested, 'lesson')} it tested.${start ? ` Start with <b>${esc(start.title)}</b>.` : ' Go straight to the check-up if you like.'}</p></div>
+      <div class="btn-row">${start ? `<button type="button" class="btn primary" data-act="jump-lesson" data-l="${esc(start.id)}">Go to it <span class="arr">&darr;</span></button>` : `<a class="btn primary" href="#/courses/${esc(c.id)}/${esc(u.id)}/practice">Chapter check-up <span class="arr">&rarr;</span></a>`}<button type="button" class="btn ghost" data-act="pre-again" data-c="${esc(c.id)}" data-u="${esc(u.id)}">Take it again</button></div></div>`;
+  }
+  function renderPretest(c, u) {
+    let st = state.pre;
+    if (!st || st.cid !== c.id || st.uid !== u.id) st = state.pre = { cid: c.id, uid: u.id, qs: pretestPick(c, u), i: 0, ans: {}, done: false };
+    const chap = chapName(c, u);
+    const head = `${topbar(`<a href="#/courses/${esc(c.id)}">${esc(c.code)}</a><span class="sep">/</span><a href="#/courses/${esc(c.id)}/${esc(u.id)}">${esc(chap)}</a><span class="sep">/</span><strong>Quick check</strong>`)}
+      <div class="section-bar">
+        <a class="back" href="#/courses/${esc(c.id)}/${esc(u.id)}" aria-label="Back to ${esc(chap)}"><span class="back-ico">${I.back}</span><span class="back-txt">${esc(chap)}</span></a>
+        <div class="sec-title"><h2><span class="sec-ico">${I.quiz}</span>Quick check</h2></div>
+        <div class="tools"><span class="mono small">${Math.min(st.i + 1, st.qs.length)} / ${st.qs.length}</span></div>
+      </div>`;
+    if (!st.qs.length) { app.innerHTML = frame(`${head}<main id="main" tabindex="-1"><div class="quiz"><p class="muted">This chapter has too few questions for a quick check.</p></div></main>${foot()}`); syncModal(); return; }
+    if (st.done) {
+      const tags = pretestTags(c, u);
+      const start = u.lessons.find(l => tags[l.id] === 'start');
+      const rows = u.lessons.map((l, li) => `<li><span class="n mono">${chapNo(c, u)}.${li + 1}</span><span>${esc(l.title)}</span>${tags[l.id] ? preChip(tags[l.id]) : '<span class="small muted">not in the check</span>'}</li>`).join('');
+      const right = st.qs.filter((q, k) => drillCorrect(q, st.ans[k])).length;
+      const missed = st.qs.map((q, k) => ({ q, k })).filter(x => !drillCorrect(x.q, st.ans[x.k]));
+      app.innerHTML = frame(`${head}<main id="main" tabindex="-1"><div class="quiz">
+        <div class="q-result">
+          <span class="label">Quick check · ${esc(chap)}</span>
+          <span class="score">${right} of ${st.qs.length}<small>before reading the chapter</small></span>
+          <ol class="pre-list">${rows}</ol>
+          <p class="small muted">${start ? 'The chapter now shows these labels too. Lessons you skip still count: the check-up and review will test them later.' : 'You knew every lesson it tested. The check-up will tell you whether that holds across the whole chapter.'}</p>
+          <div class="btn-row">${start ? `<button type="button" class="btn primary" data-act="pre-start" data-c="${esc(c.id)}" data-u="${esc(u.id)}" data-l="${esc(start.id)}">Start with ${esc(start.title)} <span class="arr">&rarr;</span></button>` : `<a class="btn primary" href="#/courses/${esc(c.id)}/${esc(u.id)}/practice">Chapter check-up <span class="arr">&rarr;</span></a>`}<a class="btn" href="#/courses/${esc(c.id)}/${esc(u.id)}">Back to the chapter</a></div>
+        </div>
+        ${missed.length ? `<section class="mock-review"><h2>The ones you missed</h2>${missed.map(({ q, k }) => `<details class="rv bad"><summary>${k + 1}. ${esc(q.item.prompt)}</summary><ol class="sol">${(q.item.solution || []).map(x => `<li>${esc(x)}</li>`).join('')}</ol></details>`).join('')}</section>` : ''}
+      </div></main>${foot()}`);
+      syncModal(); return;
+    }
+    const q = st.qs[st.i], it = q.item, a = st.ans[st.i];
+    const lesson = u.lessons.find(l => l.id === q.lid);
+    let body;
+    if (it.kind === 'mc') {
+      const order = seededOrder(`pre|${st.i}|${it.id}`, it.options.length, true);
+      body = `<div class="options">${order.map((oi, pos) => `<button type="button" class="opt${String(a) === String(oi) ? ' picked' : ''}" data-act="pre-pick" data-i="${oi}"><span class="key">${String.fromCharCode(65 + pos)}</span><span>${esc(it.options[oi].t)}</span></button>`).join('')}</div>`;
+    } else body = `<form class="fill-row" data-form="pre-num"><input class="input" id="pre-input" name="v" inputmode="decimal" autocomplete="off" placeholder="Type a number" value="${esc(a == null || a === '?' ? '' : a)}"><button class="btn primary" type="submit">Next</button></form>`;
+    app.innerHTML = frame(`${head}<main id="main" tabindex="-1"><div class="quiz">
+      ${st.i === 0 ? '<p class="small muted pre-intro">Before you read: answer what you can. Nothing is marked until the end, and “I don’t know” is a good answer — it tells the chapter where to start.</p>' : ''}
+      <div class="q-card">
+        <div class="qnum"><span>${esc(lesson ? lesson.title : chap)}</span><span>Question ${st.i + 1} of ${st.qs.length}</span></div>
+        <p class="prompt">${esc(it.prompt)}</p>
+        ${body}
+        <div class="btn-row drill-nav">
+          <button type="button" class="btn" data-act="pre-go" data-i="${st.i - 1}"${st.i ? '' : ' disabled'}>&larr; Back</button>
+          <button type="button" class="btn ghost" data-act="pre-idk">I don’t know</button>
+        </div>
+      </div>
+    </div></main>${foot()}`);
+    syncModal();
+    const inp = document.getElementById('pre-input'); if (inp) inp.focus();
+  }
+  function pretestAdvance() {
+    const st = state.pre; if (!st || st.done) return;
+    if (st.i + 1 < st.qs.length) { st.i++; render(); return; }
+    // finish: label the lessons, and schedule every answer (a miss is not a Mistake here)
+    const c = Courses.get(st.cid), u = Courses.unit(st.cid, st.uid);
+    const res = {};
+    st.qs.forEach((q, k) => { const ok = drillCorrect(q, st.ans[k] === '?' ? null : st.ans[k]); res[q.lid] = (res[q.lid] !== false) && ok; schedule(courseSid(c.id), practiceKey(c.id, q.uid, q.item.id), ok ? 'good' : 'again'); const p0 = prog(courseSid(c.id)); p0.seen = p0.seen || {}; const kk = practiceKey(c.id, q.uid, q.item.id); p0.seen[kk] = (p0.seen[kk] || 0) + 1; });
+    const p = prog(courseSid(c.id)); (p.pre || (p.pre = {}))[u.id] = { at: Date.now(), res };
+    st.done = true; saveProgress(); render();
+  }
+
   /* v2.89 — printable worksheets. Any chapter's practice as a clean page to print or save as PDF,
      with the answers and working on a separate page, for tutorials, help centres and class handouts.
      Options are shuffled (the right one is not always first), and "New version" gives a different
@@ -54814,18 +54942,19 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     const chap = chapName(c, u);
     const nEx = u.lessons.reduce((n, l) => n + l.examples.length, 0);
     const nGot = u.lessons.filter(l => understood(c, l.id)).length;
+    const pt = pretestTags(c, u);
     const toc = u.lessons.map((l, li) => {
       const lv = skillLevel(c.id, l.id), k = lessonItems(u, l.id).length;
       return `<li><button type="button" class="toc-jump" data-act="jump-lesson" data-l="${esc(l.id)}">
-          <span class="n">${u.n}.${li + 1}</span><span class="t">${esc(l.title)}</span>
-          <span class="m small muted">${l.examples.length ? plural(l.examples.length, 'worked example') : plural((l.check || []).length, 'check-yourself question')}${k ? ` &middot; ${plural(k, 'question')}` : ''}${lv ? ` &middot; <b class="lvl-${lv}">${esc(LEVELS[lv])}</b>` : ''}${understood(c, l.id) ? ' &middot; <b class="got">✓ understood</b>' : ''}</span>
+          <span class="n">${chapNo(c, u)}.${li + 1}</span><span class="t">${esc(l.title)}</span>
+          <span class="m small muted">${l.examples.length ? plural(l.examples.length, 'worked example') : plural((l.check || []).length, 'check-yourself question')}${k ? ` &middot; ${plural(k, 'question')}` : ''}${lv ? ` &middot; <b class="lvl-${lv}">${esc(LEVELS[lv])}</b>` : ''}${understood(c, l.id) ? ' &middot; <b class="got">✓ understood</b>' : ''}${pt[l.id] ? ' &middot; ' + preChip(pt[l.id]) : ''}</span>
         </button></li>`;
     }).join('');
     const lessons = u.lessons.map((l, li) => {
       const k = lessonItems(u, l.id).length;
       return `
       <section class="lesson${c.prose ? ' prose' : ''}" id="l-${esc(l.id)}">
-        <div class="lesson-head"><span class="label">${u.n}.${li + 1}</span><h2>${esc(l.title)}</h2>${l.src ? `<span class="src-chip" title="Follows this part of the course material">${esc(l.src)}</span>` : ''}${sayBtn(c, u, l, 'idea')}</div>
+        <div class="lesson-head"><span class="label">${chapNo(c, u)}.${li + 1}</span><h2>${esc(l.title)}</h2>${preChip(pt[l.id])}${l.src ? `<span class="src-chip" title="Follows this part of the course material">${esc(l.src)}</span>` : ''}${sayBtn(c, u, l, 'idea')}</div>
         <div class="lesson-body">
           <p class="idea">${l.idea}</p>
           ${(l.more || []).map(x => `<p class="idea">${x}</p>`).join('')}
@@ -54837,7 +54966,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
               <p class="small muted">${esc(rr.note)}</p>
             </div>`).join('')}</div>` : ''}
 
-          ${l.examples.map((ex, xi) => workedHtml(c, l, ex, `${u.n}.${li + 1}.${xi + 1}`, `${l.id}-${xi}`, sayBtn(c, u, l, 'ex' + xi, `worked example ${u.n}.${li + 1}.${xi + 1}`))).join('')}
+          ${l.examples.map((ex, xi) => workedHtml(c, l, ex, `${chapNo(c, u)}.${li + 1}.${xi + 1}`, `${l.id}-${xi}`, sayBtn(c, u, l, 'ex' + xi, `worked example ${chapNo(c, u)}.${li + 1}.${xi + 1}`))).join('')}
           ${rBlock(l)}
 
           ${l.pitfalls && l.pitfalls.length ? `<div class="pitfalls">${sayBtn(c, u, l, 'pit')}
@@ -54852,7 +54981,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
           <div class="understood-row">${TUTOR_OK ? `<button type="button" class="btn sm teach-btn" data-act="teach" data-c="${esc(c.id)}" data-u="${esc(u.id)}" data-l="${esc(l.id)}">▶ Teach me this lesson</button>` : ''}<button type="button" class="btn sm${understood(c, l.id) ? ' on' : ''}" data-act="lesson-got" data-c="${esc(c.id)}" data-l="${esc(l.id)}" aria-pressed="${understood(c, l.id) ? 'true' : 'false'}">${understood(c, l.id) ? '✓ Understood' : 'Mark as understood'}</button></div>
           ${k ? `<div class="lesson-foot">
             <div><span class="label">Try it now</span><p class="small muted">${plural(k, 'question')} on this lesson only, while it is fresh. Each one marks itself and shows the working.</p></div>
-            <a class="btn primary" href="#/courses/${esc(c.id)}/${esc(u.id)}/practice/${esc(l.id)}">Practise ${u.n}.${li + 1} <span class="arr">&rarr;</span></a>
+            <a class="btn primary" href="#/courses/${esc(c.id)}/${esc(u.id)}/practice/${esc(l.id)}">Practise ${chapNo(c, u)}.${li + 1} <span class="arr">&rarr;</span></a>
           </div>` : ''}
         </div>
       </section>`;
@@ -54878,6 +55007,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             <ul class="obj-list">${u.objectives.map(x => `<li>${esc(x)}</li>`).join('')}</ul>
           </div>` : ''}
           ${TUTOR_OK ? `<div class="teach-row"><button type="button" class="btn primary" data-act="teach" data-c="${esc(c.id)}" data-u="${esc(u.id)}">▶ Teach me this chapter</button><label class="teach-voice"><span class="small muted">Voice</span>${voiceSelect(Tutor.status())}</label>${tutorStatusLine()}</div>` : ''}
+          ${pretestBand(c, u)}
           <nav class="chap-toc" aria-label="In this chapter"><span class="label">In this chapter${nGot ? ` &middot; ${nGot} of ${u.lessons.length} understood` : ''}</span><ol>${toc}</ol></nav>
         </div>
         ${lessons}
@@ -54891,6 +55021,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
         </div>
       </main>${foot()}`);
     syncModal();
+    if (state.jumpTo) { const lid = state.jumpTo; state.jumpTo = null; setTimeout(() => { const t = document.getElementById('l-' + lid); if (t) { t.scrollIntoView({ block: 'start' }); const h = t.querySelector('h2'); if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); } } }, 30); }
   }
 
   /* ---------- the practice runner ----------
@@ -55358,7 +55489,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     const segs = [];
     for (const lid of lids) {
       const li = u.lessons.findIndex(l => l.id === lid); if (li < 0) continue;
-      for (const s of Tutor.core.lessonScript(c, u, u.lessons[li], `${u.n}.${li + 1}`)) if (!block || s.block === block) segs.push({ ...s, lid });
+      for (const s of Tutor.core.lessonScript(c, u, u.lessons[li], `${chapNo(c, u)}.${li + 1}`)) if (!block || s.block === block) segs.push({ ...s, lid });
     }
     // one box is read as one passage: its parts are joined so the voice runs straight through,
     // pausing only at its punctuation (a check-yourself question still waits before its answer)
@@ -59735,6 +59866,11 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
       case 'mock-start': { const c0 = Courses.get(parseRoute().cid); if (c0 && state.mockUi) { startDrill(c0, 'mock', state.mockUi); render(); } break; }
       case 'mock-new': { state.drill = null; render(); break; }
       case 'drill-hint': { const d = state.drill; if (!d || d.done || d.shown[d.i]) break; d.hints[d.i] = (d.hints[d.i] || 0) + 1; render(); break; }
+      case 'pre-again': { state.pre = null; const h = `#/courses/${el.dataset.c}/${el.dataset.u}/pretest`; if (location.hash === h) render(); else go(h); break; }
+      case 'pre-start': { state.jumpTo = el.dataset.l; go(`#/courses/${el.dataset.c}/${el.dataset.u}`); break; }
+      case 'pre-pick': { const st = state.pre; if (!st || st.done) break; st.ans[st.i] = el.dataset.i; pretestAdvance(); break; }
+      case 'pre-idk': { const st = state.pre; if (!st || st.done) break; st.ans[st.i] = '?'; pretestAdvance(); break; }
+      case 'pre-go': { const st = state.pre; if (!st || st.done) break; const k = +el.dataset.i; if (k >= 0 && k < st.qs.length) { st.i = k; render(); } break; }
       case 'ws-print': { try { window.print(); } catch (e) { /* no print dialog here */ } break; }
       case 'mixed-new': { const c0 = Courses.get(parseRoute().cid); if (c0) { startDrill(c0, 'mixed'); render(); } break; }
       case 'pr-hint': { const ps = practiceState(); if (ps.marked) break; ps.hintN = (ps.hintN || 0) + 1; render(); break; }
@@ -60249,6 +60385,13 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
       if (isInstant(d.mode)) drillMark(d);
       else if (d.i + 1 < d.qs.length) d.i++;
       render(); return;
+    }
+    if (form.dataset.form === 'pre-num') {
+      const st = state.pre; if (!st || st.done) return;
+      const v = String(data.v || '').trim();
+      if (v && numeric(v) === null) { toast('That is not a number I can read. Type digits only, like 12 or -3.5, or press “I don’t know”.'); return; }
+      st.ans[st.i] = v || '?';
+      pretestAdvance(); return;
     }
     if (form.dataset.form === 'pr-num') {
       const ps = practiceState();
