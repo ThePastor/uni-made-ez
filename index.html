@@ -2727,6 +2727,27 @@ figure.worked:has(.explain-it[open]):not(.ex-shown) li.ex-target .why { font-siz
 figure.worked:has(.explain-it[open]):not(.ex-shown) li.ex-target .why::after { content: 'Covered: write your own reason below'; color: var(--ink-2); font-size: .8rem; padding: 0 6px; }
 .review-panel { border-top: 1px solid var(--line); }
 
+/* ===================== v2.86 — Try it in R ===================== */
+.rbox { margin: 18px 0; border: 1px solid var(--line); background: var(--surface); }
+.rbox-head { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: baseline; padding: 10px 14px; border-bottom: 1px solid var(--line-soft); background: var(--surface-2); }
+.rsnip { padding: 12px 14px; border-bottom: 1px solid var(--line-soft); }
+.rsnip:last-child { border-bottom: 0; }
+.rs-title { display: block; font-weight: 600; margin-bottom: 6px; }
+.rcode { width: 100%; font-family: var(--font-mono); font-size: .875rem; line-height: 1.5; padding: 10px 12px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); resize: vertical; tab-size: 2; white-space: pre; overflow-x: auto; }
+.rcode:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.rsnip .btn-row { margin-top: 8px; align-items: center; }
+.r-keys { margin-left: auto; }
+@media (pointer: coarse) { .r-keys { display: none; } }
+.rout:empty { display: none; }
+.rout { margin-top: 10px; }
+.r-text { margin: 0; padding: 10px 12px; background: var(--surface-2); border-left: 3px solid var(--accent); font-family: var(--font-mono); font-size: .85rem; white-space: pre-wrap; overflow-wrap: anywhere; max-height: 22em; overflow: auto; }
+.r-err { color: var(--bad); }
+.r-plot { display: block; max-width: 100%; height: auto; margin-top: 10px; background: #fff; border: 1px solid var(--line-soft); }
+.r-consent { border: 1px dashed var(--line); padding: 10px 12px; background: var(--surface-2); }
+.r-consent p { margin: 0 0 8px; }
+.rsnip .btn, .r-consent .btn { min-height: 44px; }
+.rcode, .r-text, code { font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+
 </style>
 </head>
 <body>
@@ -37972,6 +37993,84 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     ],
     units: [R_U1, R_U2, R_U3, R_U4, R_U5]
   };
+  /* v2.86 — "Try it in R": snippets a student can edit and run on the lesson page (src/rrun.js runs
+     them in the browser with webR). Each one uses the lesson's own numbers, so its output matches
+     the worked example; every snippet is run through R before release. Base R only. */
+  const R_CODE = {
+  r1: [
+    { title: 'Trace the script', code: 'x <- 4\ny <- x * 3 - 2\nx <- x + 1\nx\ny   # y was computed from the old x, so it stays 10' },
+    { title: 'Order of operations and missing values', code: '(2 + 3)^2 / 5 - 1\n2 + 3^2 / 5 - 1\nhours <- c(6, NA, 10, 8)\nmean(hours)\nmean(hours, na.rm = TRUE)' }
+  ],
+  r2: [
+    { title: 'Vectors and indexing', code: 'x <- c(0, 1, 3, 10, 6)\nx[2]\nx * 2\nsum(x)\nlength(x)\nx[-1]      # everything but the first\nx[x > 2]   # only the values above 2' },
+    { title: 'A matrix is filled column by column', code: 'm <- matrix(seq(2, 7), 2, 3)\nm\nm[2, 3]\nm[1, 2]\napply(m, 1, sum)   # row sums\napply(m, 2, sum)   # column sums' }
+  ],
+  r3: [
+    { title: 'Your own mean function', code: 'my_mean <- function(x) {\n  total <- sum(x)\n  return(total / length(x))\n}\nincomes <- c(30, 45, 50, 65, 110)\nmy_mean(incomes)\nmean(incomes)   # the built-in gives the same' },
+    { title: 'Loops and counting with TRUE/FALSE', code: 'total <- 0\nfor (i in 1:4) {\n  total <- total + i^2\n}\ntotal\nx <- c(3, 8, 1, 6, 2)\nsum(x > 2)      # how many are above 2\nmean(x > 2)     # what proportion are\nsum(x[x > 2])   # the total of those values' }
+  ],
+  d1: [
+    { title: 'Ordered and unordered factors', code: "grade <- factor(c('B', 'A', 'C', 'B'), levels = c('C', 'B', 'A'), ordered = TRUE)\ngrade\ngrade > 'C'          # ordered: comparisons make sense\nprovince <- factor(c('BC', 'AB', 'BC', 'ON'))\ntable(province)       # unordered: count, do not average\nclass(grade); class(province)" },
+    { title: 'A data.frame', code: "dat <- data.frame(rent = c(1200, 950, 1800), rooms = c(2, 1, 3))\ndat\ndat[, 'rent']\nmean(dat$rent)\nhead(USArrests)" }
+  ],
+  d2: [
+    { title: 'Density histogram by hand and with hist()', code: 'x <- c(1.5, 2, 3.5, 4, 7, 9)\nh <- hist(x, breaks = c(0, 5, 10), plot = FALSE)\nh$counts\nh$density                      # count / (n * width)\nh$counts / (length(x) * 5)     # the same, by hand\nhist(x, breaks = c(0, 2.5, 5, 7.5, 10), freq = FALSE, main = "Four bins", col = "lightblue")' },
+    { title: 'Proportions for discrete data', code: 'x <- c(2, 4, 2, 5, 2, 1)\ntable(x)\ntable(x) / length(x)   # the proportions p-hat(x)\nmean(x == 2)' }
+  ],
+  d3: [
+    { title: 'The ECDF', code: 'returns <- c(-6, 4, 0, 2)\nF_hat <- ecdf(returns)\nF_hat(c(-7, 0, 3, 10))\nmean(returns <= 3)        # the same idea by hand\nplot(F_hat, main = "ECDF of the returns")' },
+    { title: 'Two funds on one picture', code: 'a <- c(-5, 5, 0)\nb <- c(-15, 15, 0)\nplot(ecdf(b), col = "red", main = "Fund B (red) is more spread out")\nplot(ecdf(a), add = TRUE)\necdf(a)(5); ecdf(b)(5)' }
+  ],
+  d4: [
+    { title: 'Quantiles and the IQR', code: 'times <- c(14, 3, 9, 27, 5, 11, 4, 15, 6)\nsort(times)\nquantile(times, probs = c(0.25, 0.5, 0.75), type = 1)   # the round-up rule\nIQR(times, type = 1)\nquantile(times)   # R\'s default (type 7) can differ' },
+    { title: 'A boxplot', code: 'times <- c(14, 3, 9, 27, 5, 11, 4, 15, 6)\nboxplot(times, horizontal = TRUE, main = "Delivery times (minutes)")\nboxplot.stats(times)$out   # points drawn beyond the whiskers' }
+  ],
+  s1: [
+    { title: 'Mean and SD, dividing by n', code: 'a <- c(-6, 6, 0)\nm <- mean(a)\nv <- mean((a - m)^2)   # divide by n, as the book does\nsqrt(v)\nsd(a)                  # R divides by n - 1: a different number\nsqrt(v * 3 / 2)        # converts one into the other' },
+    { title: 'Mean and variance from proportions', code: 'x <- c(1, 2, 1, 3, 1)\np <- table(x) / length(x)\nvals <- as.numeric(names(p))\nsum(vals * p)                  # the mean\nsum((vals - mean(x))^2 * p)    # the variance, dividing by n' }
+  ],
+  s2: [
+    { title: 'Robust and non-robust statistics', code: 'x <- c(3, 8, 10, 31)\nc(mean = mean(x), median = median(x))\nx[4] <- 70   # one value becomes extreme\nc(mean = mean(x), median = median(x))' },
+    { title: 'MAD and IQR', code: 'x <- c(-50, 2, 5, 9, 9)\nmedian(x)\nmad(x, constant = 1)   # the median of |x - median|\nIQR(x, type = 1)\nsqrt(mean((x - mean(x))^2))   # the SD reacts to the -50' }
+  ],
+  s3: [
+    { title: 'A weighted mean with a missing weight', code: 'scores <- c(80, 90, 70, 85)\nweights <- c(0.30, 0.20, 0.25, NA)\nweights[4] <- 1 - sum(weights[1:3])\nweights\nsum(scores * weights)\nweighted.mean(scores, weights)' },
+    { title: 'z-scores', code: 'x <- c(1, 2, 1, 3, 1)\ns <- sqrt(mean((x - mean(x))^2))   # SD dividing by n\nz <- (x - mean(x)) / s\nz\nx[which.max(abs(z))]   # the most unusual value' }
+  ],
+  s4: [
+    { title: 'Skewness and kurtosis by hand', code: 'x <- c(1, 1, 2, 4, 7)\nz <- (x - mean(x)) / sqrt(mean((x - mean(x))^2))\nmean(z^3)   # skewness: positive means a long right tail\nmean(z^4)   # kurtosis: 3 for a Normal\nhist(x, breaks = 0:8, main = "A right-skewed batch")' },
+    { title: 'Mode and Herfindahl index', code: 'shares <- c(A = 0.5, B = 0.3, C = 0.2)\nnames(which.max(shares))   # the mode\nsum(shares^2)              # Herfindahl index' }
+  ],
+  v1: [
+    { title: 'A discrete distribution and its CDF', code: 'x <- 1:4\np <- c(0.1, 0.3, 0.4, 0.2)\nF <- cumsum(p)\nF                       # Prob(X <= x)\n1 - F[3]                # Prob(X > 3)\nF[3] - F[1]             # Prob(1 < X <= 3)' },
+    { title: 'Simulate it and compare', code: 'set.seed(1)\ndraws <- sample(1:4, 2000, prob = c(0.1, 0.3, 0.4, 0.2), replace = TRUE)\ntable(draws) / 2000   # close to the probabilities\nplot(ecdf(draws), main = "Simulated ECDF")' }
+  ],
+  v2: [
+    { title: 'Uniform probabilities with punif()', code: '# profit uniform on [-4, 6]\n1 - punif(2, min = -4, max = 6)          # Prob(X > 2)\npunif(3, -4, 6) - punif(0, -4, 6)        # Prob(0 < X <= 3)\nqunif(0.5, -4, 6)                        # the median\nqunif(0.75, -4, 6) - qunif(0.25, -4, 6)  # the IQR' },
+    { title: 'Draw from a uniform', code: 'set.seed(1)\nx <- runif(2000, min = 68, max = 78)\nmean(x > 70)   # share of flights later than advertised\nhist(x, freq = FALSE, main = "Flight times")\ncurve(dunif(x, 68, 78), add = TRUE, col = "red")' }
+  ],
+  v3: [
+    { title: 'Exponential: simulate, then check exactly', code: 'set.seed(1)\nwaits <- rexp(5000)\nmean(waits > 2)   # simulated Prob(wait > 2)\n1 - pexp(2)       # exact: e^(-2)\nhist(waits, freq = FALSE, breaks = 40, main = "Standard exponential")\ncurve(dexp(x), add = TRUE, col = "red")' },
+    { title: 'Normal probabilities', code: '1 - pnorm(65, mean = 50, sd = 10)    # Prob(score > 65)\npnorm(60, 50, 10) - pnorm(40, 50, 10) # Prob(40 < score <= 60)\ncurve(dnorm(x, 50, 10), from = 20, to = 80, main = "Normal(50, 10)")' }
+  ],
+  m1: [
+    { title: 'Every sample of size 2', code: 'pop <- c(10, 12, 14, 16)\nsamples <- combn(pop, 2)\nsamples\nmeans <- colMeans(samples)\nmeans\ntable(means) / length(means)   # the sampling distribution\nmean(means); mean(pop)          # both are 13' },
+    { title: 'Simulate a sampling distribution', code: 'set.seed(1)\nmeans <- rep(NA, 999)\nfor (b in 1:999) {\n  means[b] <- mean(rnorm(30))\n}\nhist(means, main = "999 sample means, n = 30")\nsd(means)   # close to 1 / sqrt(30)\n1 / sqrt(30)' }
+  ],
+  m2: [
+    { title: 'The ECDF closes in on the CDF', code: 'set.seed(1)\nplot(ecdf(runif(5)), main = "n = 5, 50, 500 against F(x) = x", col = "grey")\nplot(ecdf(runif(50)), add = TRUE, col = "blue")\nplot(ecdf(runif(500)), add = TRUE, col = "red")\nabline(0, 1, lwd = 2)' },
+    { title: 'The CLT with a skewed population', code: 'set.seed(1)\nmeans <- rep(NA, 999)\nfor (b in 1:999) means[b] <- mean(rexp(36, rate = 1/12))\nhist(means, main = "Means of 36 exponential waits")\nsd(means)   # about 12 / sqrt(36) = 2' }
+  ],
+  m3: [
+    { title: 'The jackknife', code: 'x <- c(3, 8, 10, 31)\njack_mean <- rep(NA, 4); jack_median <- rep(NA, 4)\nfor (i in 1:4) {\n  jack_mean[i] <- mean(x[-i])\n  jack_median[i] <- median(x[-i])\n}\njack_mean\njack_median   # varies much less: more robust' },
+    { title: 'The bootstrap', code: 'set.seed(1)\nincomes <- c(42, 51, 38, 65, 120, 47, 55, 60)\nboot_means <- rep(NA, 999)\nfor (b in 1:999) {\n  boot_means[b] <- mean(sample(incomes, replace = TRUE))\n}\nmean(incomes)\nhist(boot_means, main = "Bootstrap means")\nsd(boot_means)   # the bootstrap standard error' }
+  ],
+  m4: [
+    { title: 'Jackknife standard error', code: 'x <- c(2, 5, 8, 25)\nn <- length(x)\njm <- sapply(1:n, function(i) mean(x[-i]))\nsqrt((n - 1) / n * sum((jm - mean(jm))^2))\nsd(x) / sqrt(n)   # for the mean, the classic formula agrees' },
+    { title: 'SD versus standard error', code: 'set.seed(1)\nx <- rnorm(400, mean = 60, sd = 40)\nsd(x)              # spread of the individual values\nsd(x) / sqrt(400)  # spread of the MEAN across samples' }
+  ]
+};
+  for (const u of RSTAT.units) for (const l of u.lessons) if (R_CODE[l.id]) l.r = R_CODE[l.id];
   root.Courses.register(RSTAT);
 
 })(typeof globalThis !== 'undefined' ? globalThis : this);
@@ -49502,6 +49601,86 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 
 </script>
 <script>
+/* UNI Made EZ — "Try it in R": real R, running in the browser (v2.86)
+   Copyright © 2026 Anndy Johnson, operating as JohnsonX Labs. All rights reserved. Proprietary.
+
+   ---------------------------------------------------------------------------------------------
+   WHAT IT IS. A course written around R (ECON 2320 with R) is learned by running R. Each lesson of
+   such a course carries short snippets (`lesson.r`) that the student can edit and run on the page,
+   with the printed output and any plot shown underneath.
+
+   HOW. webR — R compiled to WebAssembly by the R Consortium's webR project (MIT licence) — is loaded
+   from its own CDN, webr.r-wasm.org, the first time a student presses Run, after they agree to a
+   one-time download of about 30 MB. The version is pinned. After that it runs on the device: the
+   code and its results are never sent anywhere, and the service worker keeps the files so it works
+   offline. Nothing is loaded for a student who never presses Run.
+
+   Every run gets a fresh "shelter" (webR's scope for R objects) so one snippet cannot leave state
+   that confuses the next, and every R error comes back as text rather than breaking the page.
+   --------------------------------------------------------------------------------------------- */
+(function (root) {
+  'use strict';
+  const CFG = { version: '0.5.7', base: 'https://webr.r-wasm.org/v0.5.7/', mb: 30, key: 'unimadeez:r:v1' };
+  const LS = { get() { try { return JSON.parse(localStorage.getItem(CFG.key) || '{}'); } catch (e) { return {}; } }, set(v) { try { localStorage.setItem(CFG.key, JSON.stringify(v)); } catch (e) { /* private mode */ } } };
+  let webR = null, loading = null, test = null;
+
+  const status = () => ({ installed: !!LS.get().installed, ready: !!webR, loading: !!loading });
+
+  async function load(onStatus) {
+    if (webR) return webR;
+    if (loading) return loading;
+    loading = (async () => {
+      if (onStatus) onStatus('Downloading R (once)…');
+      const mod = await import(/* webpackIgnore: true */ (test && test.lib) || CFG.base + 'webr.mjs');
+      const w = new mod.WebR({ baseUrl: (test && test.base) || CFG.base });
+      if (onStatus) onStatus('Starting R…');
+      await w.init();
+      webR = w;
+      const s = LS.get(); s.installed = true; s.at = Date.now(); LS.set(s);
+      return w;
+    })();
+    try { return await loading; } catch (e) { webR = null; throw e; } finally { loading = null; }
+  }
+
+  /* Run one snippet. Returns { out: [{type: 'stdout'|'stderr', text}], images: [ImageBitmap], error }. */
+  async function run(code, opt = {}) {
+    const w = await load(opt.onStatus);
+    let sh = null;
+    try {
+      sh = await new w.Shelter();
+      const res = await sh.captureR(String(code), {
+        withAutoprint: true, captureStreams: true, captureConditions: false,
+        captureGraphics: { width: opt.width || 560, height: opt.height || 380 }
+      });
+      return { out: (res.output || []).map(o => ({ type: o.type === 'stderr' ? 'stderr' : 'stdout', text: String(o.data) })), images: res.images || [], error: false };
+    } catch (e) {
+      // an R error (a typo, an unknown object) is the commonest outcome of learning R: show it plainly
+      return { out: [{ type: 'stderr', text: 'Error: ' + String(e && e.message ? e.message : e).replace(/^Error:\s*/, '') }], images: [], error: true };
+    } finally {
+      try { if (sh) await sh.purge(); } catch (e) { /* ignore */ }
+    }
+  }
+
+  // forget the download: the service worker's copies of the R files and the "installed" flag
+  async function remove() {
+    try { if (webR && webR.close) webR.close(); } catch (e) { /* ignore */ }
+    webR = null; LS.set({});
+    let n = 0;
+    try {
+      if (root.caches) for (const k of await caches.keys()) {
+        const c = await caches.open(k);
+        for (const req of await c.keys()) if (/webr\.r-wasm\.org/.test(req.url)) { await c.delete(req); n++; }
+      }
+    } catch (e) { /* ignore */ }
+    return n;
+  }
+
+  root.RRun = { CFG, status, load, run, remove, _test: t => { test = t; webR = null; } };
+  if (typeof module !== 'undefined' && module.exports) module.exports = root.RRun;
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+<script>
 /* UNI Made EZ — application
    Copyright © 2026 Anndy Johnson, operating as JohnsonX Labs. All rights reserved.
    Proprietary. Not open source: see LICENSE. Third-party components: THIRD-PARTY-NOTICES.md */
@@ -49509,7 +49688,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.85', date: '2 November 2026', year: 2026 };
+  const BUILD = { v: '2.86', date: '3 November 2026', year: 2026 };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonxcorp', ['outlook', 'com'].join('.')].join('@');
   /* The one sentence that says what this is. It appears under the wordmark, and build.js uses
@@ -49522,6 +49701,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      because the person who needs it is the one who just watched the app refresh itself and wants to
      know what moved. Trim the tail when it gets past a dozen; nobody reads further back than that. */
   const WHATS_NEW = [
+    ['2.86', '<b>Run R inside the R course.</b> Every lesson of Introductory Economic Statistics with R (ECON 2320) now has <b>Try it in R</b> boxes: the lesson\u2019s own R code, ready to edit and run, with the printed output and any plot shown underneath \u2014 histograms, ECDFs, boxplots, simulations, the bootstrap. It is real R (webR) running in your browser. The first Run asks before a one-time download of about 30 MB; after that it works offline, and your code and results never leave your device. Ctrl or \u2318 + Enter runs a box.'],
     ['2.85', '<b>Four ways to learn more from the same questions.</b> <b>Review</b>: every course question you have answered now comes back for review just before you would forget it \u2014 the course page, the home page and Today show how many are due, and a few minutes a day keeps a whole course fresh. <b>How sure are you?</b>: tap Sure or Guessing before you answer; a wrong answer you were sure of goes to the top of Mistakes, because those are the misunderstandings that cost marks, and a lucky guess comes back sooner. <b>Flag this question</b>: spotted a wrong answer or a confusing hint? One tap opens the suggestion box with the question already named. <b>Explain a step in your own words</b>: on a worked example, cover one step\u2019s reason, write your own, then compare it with the course\u2019s.'],
     ['2.84', '<b>A new statistics course: Introductory Economic Statistics with R (ECON 2320).</b> It follows the free online Rbook chapter by chapter over the first five weeks \u2014 first steps in R; data and visualization (proportions, the histogram density, the ECDF, quantiles and boxplots); summary statistics (mean and variance dividing by n, the robust median, IQR and MAD, weighted means, z-scores, skew and the Herfindahl index); and random variables (the CDF, the uniform, exponential and Normal, with R\u2019s d, p and r functions) \u2014 plus chapter 5 on sampling and resampling (sampling distributions, the Law of Large Numbers, the Central Limit Theorem, the Fundamental Theorem of Statistics, the jackknife, the bootstrap and standard errors), because the practice midterm asks about it. 18 lessons, 45 worked examples and 110 practice questions, all written from scratch with new numbers, plus flash cards, the mock exam and the voice tutor like every course.'],
     ['2.83', '<b>The downloaded voice now plays more like the device voice.</b> Three changes. It now uses several of your processor\u2019s cores instead of one, which makes it several times faster (this needs one reload after the update). While you read a chapter, it prepares that chapter\u2019s boxes in the background, so pressing a speaker usually plays sound that is already made: it starts at once and runs straight through. And when a box is not ready yet, Automatic reads it in the device voice rather than make you wait, while \u201cAlways the natural voice\u201d waits just long enough to play the box without stopping, instead of starting and then pausing.'],
@@ -51071,8 +51251,8 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
         </tbody>
       </table></div>
       <p>That is the whole of the counter. There are <b>no cookies</b>, no advertising identifier,
-      no analytics library, no third-party script unless you ask for one of the two downloads
-      described below (the scan reader and the voice tutor), no fingerprinting, no location, no
+      no analytics library, no third-party script unless you ask for one of the three downloads
+      described below (the scan reader, the voice tutor and R for the R course), no fingerprinting, no location, no
       page or click tracking, and no attempt to work out who you are. Nothing is sold, and nothing
       is shared with anybody.</p>
       <p><b>One other message exists, and only if you ask for it.</b> The app reads your files with
@@ -51124,7 +51304,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
       <p>It carries <b>no device id</b>, no name, nothing from your files and nothing you have studied.
       Only the publisher reads it, signed in to the database; the key in this page can add a note and
       cannot read one back, including your own. Nothing is posted publicly.</p>
-      <p><b>And two downloads, only if you start them.</b> Neither sends anything about you; each
+      <p><b>And three downloads, only if you start them.</b> None sends anything about you; each
       fetches files, once, and keeps them in this browser. The <b>scan reader</b> (Tesseract) is
       fetched from cdnjs, jsDelivr and projectnaptha.com the first time you ask the app to read a
       scanned page. The <b>voice tutor</b> is fetched only when you press its download button on the
@@ -51133,7 +51313,9 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
       sites see what any download shows them &mdash; this device's address and browser &mdash; and
       nothing else. After that the tutor runs on this device with no connection: the lessons it reads,
       the questions you type, its answers and the audio are all made here and never sent anywhere.
-      <b>Remove the tutor from this device</b> on that page deletes its files.</p>
+      <b>Remove the tutor from this device</b> on that page deletes its files. <b>R</b>, for the
+      "Try it in R" boxes of the R course, is fetched from webr.r-wasm.org (about 30&nbsp;MB) only
+      after you agree, the first time you press Run; your code and its output stay on this device.</p>
       <p>Clearing your site data discards the id, and your next visit is counted as a new device.
       That is a real weakness in the count, and it is the price of a counter that does not follow
       you. The count is deliberately the less accurate of the two options.</p>
@@ -51370,7 +51552,8 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     ['third', "Other people's code", `
       <p>The built page includes PDF.js (Apache&nbsp;2.0, © Mozilla Foundation), JSZip (MIT, ©
       Stuart Knightley) and four typefaces — Atkinson Hyperlegible, Inter, Inter Tight and JetBrains
-      Mono, all under the SIL Open Font Licence. Tesseract.js (Apache&nbsp;2.0) is fetched only if
+      Mono, all under the SIL Open Font Licence. webR (MIT, © Posit) and R itself (GPL&nbsp;2 or 3, ©
+      the R Core Team) are fetched only if you run R in the R course. Tesseract.js (Apache&nbsp;2.0) is fetched only if
       you ask the app to read a scanned page. The voice tutor, fetched only if you download it,
       uses WebLLM (Apache&nbsp;2.0, © MLC) running Qwen2.5-1.5B-Instruct (Apache&nbsp;2.0, © Alibaba
       Cloud), and kokoro-js (Apache&nbsp;2.0) running the Kokoro-82M voice (Apache&nbsp;2.0, © hexgrad).
@@ -51708,6 +51891,50 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     if (!l.check || !l.check.length) return '';
     return `<div class="rich check">${sayBtn(c, u, l, 'check')}<span class="label">Check yourself</span>${l.check.map(q => `<details class="chk"><summary>${esc(q.q)}</summary><p>${esc(q.a)}</p></details>`).join('')}</div>`;
   }
+  /* v2.86 — "Try it in R". Snippets a student edits and runs on the page; src/rrun.js runs them
+     with webR after a one-time download the student agrees to. Output and plots appear under the
+     code. The page is never re-rendered by a run, so what you typed stays where it is. */
+  const R_OK = typeof window !== 'undefined' && !!window.RRun;
+  function rBlock(l) {
+    if (!R_OK || !l.r || !l.r.length) return '';
+    return `<div class="rbox" data-l="${esc(l.id)}">
+      <div class="rbox-head"><span class="label">Try it in R</span><span class="small muted">Edit the code and run it. ${RRun.status().installed ? 'R is on this device.' : `The first run downloads R once (about ${RRun.CFG.mb} MB); after that it runs here, offline.`}</span></div>
+      ${l.r.map((sn, i) => `<div class="rsnip">
+        <label class="rs-title" for="rc-${esc(l.id)}-${i}">${esc(sn.title)}</label>
+        <textarea class="rcode" id="rc-${esc(l.id)}-${i}" spellcheck="false" autocapitalize="off" autocomplete="off" rows="${Math.min(12, sn.code.split('\n').length + 1)}" data-orig="${esc(sn.code)}">${esc(sn.code)}</textarea>
+        <div class="btn-row"><button type="button" class="btn sm primary" data-act="r-run">Run</button><button type="button" class="btn sm ghost" data-act="r-reset">Reset the code</button><span class="small muted r-keys">Ctrl/⌘ + Enter runs it</span></div>
+        <div class="rout" aria-live="polite"></div>
+      </div>`).join('')}
+    </div>`;
+  }
+  async function rRun(snip, agreed) {
+    const out = snip.querySelector('.rout');
+    const st = RRun.status();
+    if (!st.installed && !st.ready && !agreed) {
+      out.innerHTML = `<div class="r-consent"><p class="small">Running R needs a one-time download of about ${RRun.CFG.mb} MB: webR, real R built for the browser, from <b>webr.r-wasm.org</b>. After that it runs on this device, offline. Your code and its results are never sent anywhere.</p>
+        <div class="btn-row"><button type="button" class="btn sm primary" data-act="r-agree">Download R and run</button><button type="button" class="btn sm ghost" data-act="r-cancel">Not now</button></div></div>`;
+      return;
+    }
+    const code = snip.querySelector('textarea').value;
+    const btn = snip.querySelector('[data-act="r-run"]'); if (btn) btn.disabled = true;
+    out.innerHTML = '<p class="small muted r-status">Running…</p>';
+    try {
+      const res = await RRun.run(code, { onStatus: t => { const el = out.querySelector('.r-status'); if (el) el.textContent = t; }, width: 560, height: 380 });
+      const text = res.out.map(o => `<span class="${o.type === 'stderr' ? 'r-err' : ''}">${esc(o.text)}</span>`).join('\n');
+      out.innerHTML = `${text ? `<pre class="r-text">${text}</pre>` : res.images.length ? '' : '<p class="small muted">Ran with no printed output. Type a name on its own line to print it.</p>'}`;
+      for (const img of res.images) {
+        const cv = document.createElement('canvas'); cv.width = img.width; cv.height = img.height; cv.className = 'r-plot';
+        cv.setAttribute('role', 'img'); cv.setAttribute('aria-label', 'Plot drawn by the R code above');
+        cv.getContext('2d').drawImage(img, 0, 0); out.appendChild(cv);
+      }
+    } catch (e) {
+      out.innerHTML = `<p class="small r-err">R could not start: ${esc(e && e.message ? e.message : String(e))}. Check the connection for the first download, then press Run again.</p>`;
+    }
+    if (btn) btn.disabled = false;
+  }
+  if (typeof document !== 'undefined') document.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey) && e.target.classList && e.target.classList.contains('rcode')) { e.preventDefault(); rRun(e.target.closest('.rsnip')); }
+  });
   function chapterSheetExtras(u) {
     let h = '';
     if (u.points && u.points.length) h += `<div class="sheet-lesson"><h3>Key points</h3><ul class="sheet-points">${u.points.map(x => `<li>${esc(x)}</li>`).join('')}</ul></div>`;
@@ -51972,6 +52199,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             </div>`).join('')}</div>` : ''}
 
           ${l.examples.map((ex, xi) => workedHtml(c, l, ex, `${u.n}.${li + 1}.${xi + 1}`, `${l.id}-${xi}`, sayBtn(c, u, l, 'ex' + xi, `worked example ${u.n}.${li + 1}.${xi + 1}`))).join('')}
+          ${rBlock(l)}
 
           ${l.pitfalls && l.pitfalls.length ? `<div class="pitfalls">${sayBtn(c, u, l, 'pit')}
             <span class="label">Where this goes wrong</span>
@@ -56693,6 +56921,10 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
         state.modal = { type: 'suggest', kind: el.dataset.kind || d.kind || 'idea', body: d.body || '', email: d.email || '' };
         syncModal(); break;
       }
+      case 'r-run': { rRun(el.closest('.rsnip')); break; }
+      case 'r-agree': { rRun(el.closest('.rsnip'), true); break; }
+      case 'r-cancel': { el.closest('.rout').innerHTML = ''; break; }
+      case 'r-reset': { const sn = el.closest('.rsnip'); const ta = sn.querySelector('textarea'); ta.value = ta.dataset.orig; sn.querySelector('.rout').innerHTML = ''; break; }
       case 'explain-show': {
         const box = el.closest('.explain-it'), fig = el.closest('figure.worked');
         const li = fig && fig.querySelector('li.ex-target');

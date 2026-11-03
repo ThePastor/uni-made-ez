@@ -1,8 +1,8 @@
-/* UNI Made EZ — service worker, build 2.85.
+/* UNI Made EZ — service worker, build 2.86.
    Keeps a copy of the page so it opens with no connection, and lets the browser install it
    to a home screen. The whole app is one file, so the "offline copy" really is just that file
    plus its icons; nothing here touches your subjects, which live in the browser's own storage. */
-const V = '2.85';
+const V = '2.86';
 const APP = 'umez-app-v' + V;      // the page and its icons, replaced whole on every build
 const RUNTIME = 'umez-runtime-v1'; // web fonts, kept across builds
 const TUTOR = 'umez-tutor-lib-v1'; // the voice tutor's program files, kept across builds
@@ -108,8 +108,10 @@ self.addEventListener('fetch', e => {
   // The voice tutor's program files (exact versions on jsDelivr, which never change: web-llm,
   // kokoro-js and every module they import) are kept after the first download, so the tutor starts with no connection.
   // The model weights are cached by those libraries themselves; this covers their code and the
-  // voice files, which the voice library fetches without caching.
-  if ((url.hostname === 'huggingface.co' && /\/Kokoro-82M[^/]*\/resolve\/[^/]+\/voices\//.test(url.pathname)) ||
+  // voice files, which the voice library fetches without caching — and, from v2.86, the pinned
+  // webR release that runs the R course's code (every file under its version folder).
+  if ((url.hostname === 'webr.r-wasm.org' && /^\/v\d+\.\d+\.\d+\//.test(url.pathname)) ||
+      (url.hostname === 'huggingface.co' && /\/Kokoro-82M[^/]*\/resolve\/[^/]+\/voices\//.test(url.pathname)) ||
       url.hostname === 'cdn.jsdelivr.net' && /^\/npm\/(@[^/]+\/)?[^/@]+@\d[^/]*\//.test(url.pathname)) {
     e.respondWith(caches.open(TUTOR).then(c => c.match(req).then(hit => hit || fetch(req).then(res => {
       if (res && res.ok) c.put(req, res.clone());

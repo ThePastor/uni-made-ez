@@ -58,6 +58,13 @@ Licensed under the **Apache License, Version 2.0**.
 All of it runs on the student's own device; nothing the student types or hears
 is sent to any of these projects.
 
+### R in the R course (from v2.86) — downloaded only when the student agrees on first Run
+- **webR** 0.5.7, from `webr.r-wasm.org`. © Posit Software, PBC. **MIT License**.
+  <https://github.com/r-wasm/webr>
+- **R**, compiled to WebAssembly as part of webR. © The R Core Team. **GNU GPL
+  version 2 or 3**. <https://www.r-project.org/Licenses/> It is fetched as a
+  separate program at run time and is not part of this app's file.
+
 ### Google Fonts — Inter, Inter Tight, JetBrains Mono, Atkinson Hyperlegible
 Loaded from `fonts.googleapis.com`. Each is licensed under the **SIL Open Font
 License 1.1**. <https://scripts.sil.org/OFL>

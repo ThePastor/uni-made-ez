@@ -2,7 +2,7 @@
 
 **Publisher:** JohnsonX Labs, British Columbia, Canada
 **Application:** UNI Made EZ — <https://thepastor.github.io/uni-made-ez/>
-**Version this notice describes:** v2.80, 2 November 2026
+**Version this notice describes:** v2.86, 3 November 2026
 **Privacy contact:** johnsonxcorp@outlook.com
 **Applicable law:** *Personal Information Protection Act* (SBC 2003, c. 63) (British Columbia)
 
@@ -38,11 +38,11 @@ The application transmits exactly five things, all described in full below:
    writes something and presses **Send it**. It carries the kind of note, the words, the app
    version, and an email address only if the student chose to add one so they can be answered.
 
-Separately, two optional **downloads** fetch files on request and send nothing about the student:
-the scan reader and the voice tutor (2.7).
+Separately, three optional **downloads** fetch files on request and send nothing about the student:
+the scan reader, the voice tutor and R for the R course (2.7).
 
 There are no cookies, no advertising identifiers, no analytics services, no third-party scripts
-other than those two downloads a student starts themselves, no location, no fingerprinting, and no
+other than those three downloads a student starts themselves, no location, no fingerprinting, and no
 sale or sharing of anything with anyone.
 
 ---
@@ -173,10 +173,10 @@ chooses to send under 2.5 are the only free text the application transmits; the 
 nothing beside it, the second is not stored by the publisher at all, and the third is read only by
 the publisher.
 
-### 2.7 Downloads a student starts — the scan reader and the voice tutor
+### 2.7 Downloads a student starts — the scan reader, the voice tutor and R
 
-Two features need program or model files that are too large to put in the page. Each is fetched
-**only when the student starts it**, once, and kept in that browser's storage. Neither request
+Three features need program or model files that are too large to put in the page. Each is fetched
+**only when the student starts it**, once, and kept in that browser's storage. No request
 carries anything about the student: no id, no name, no file, nothing studied. Like any download,
 the hosts see the device's IP address and browser.
 
@@ -184,6 +184,7 @@ the hosts see the device's IP address and browser.
 |---|---|---|---|
 | Scan reader (Tesseract) | The first time a student asks the app to read a scanned page | cdnjs.cloudflare.com, cdn.jsdelivr.net, tessdata.projectnaptha.com | about 15 MB |
 | Voice tutor — voice | When the student presses the download button on the **Voice tutor** page | cdn.jsdelivr.net (kokoro-js), huggingface.co (Kokoro-82M) | about 330 MB on a device with WebGPU (runs on the graphics chip), about 90 MB otherwise |
+| R, for "Try it in R" (from v2.86) | The first time a student presses Run in the R course and agrees to the download | webr.r-wasm.org (webR, a pinned release) | about 30 MB |
 | Voice tutor — answer model | The same button, on a device with WebGPU | cdn.jsdelivr.net (WebLLM), raw.githubusercontent.com (its compiled model library), huggingface.co (Qwen2.5-1.5B-Instruct) | about 900 MB |
 
 - **After the download the tutor runs on the device, offline.** The lessons it reads aloud, the
@@ -193,6 +194,8 @@ the hosts see the device's IP address and browser.
 - **The tutor answers only from the course text** built into the page, cites the lessons it used,
   and flags an answer containing a number that its sources do not contain. It is a study aid, and
   section **Accuracy** of the in-app rights page applies to it.
+- **R runs on the device too.** The code a student types and its output are produced in the browser
+  and never transmitted.
 - **Removal:** the **Remove the tutor from this device** button deletes its files and the setting
   that records it is installed; clearing site data does the same.
 
@@ -292,6 +295,8 @@ transmitted, and an address is free text. The count in section 1 moved from thre
 recorded here rather than quietly amended, for the same reason as the paragraph above.
 
 In v2.73 the suggestion box of 2.5 was added, and the count in section 1 moved from four to five.
+
+In v2.86 R for the R course was added to section 2.7 as its third download.
 
 In v2.78 the voice tutor was added and section 2.7 written. It also brings the scan reader, which
 has fetched its files from a CDN since it was added, into this notice for the first time; section 1

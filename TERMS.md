@@ -1,7 +1,7 @@
 # Terms of use
 
 **UNI Made EZ** — https://thepastor.github.io/uni-made-ez/
-Published by **JohnsonX Labs**. Last updated 2 November 2026 (v2.80).
+Published by **JohnsonX Labs**. Last updated 3 November 2026 (v2.86).
 
 Using the app means accepting these terms. They are short on purpose, and they
 try to describe what the app actually does rather than what a template says.
@@ -42,6 +42,7 @@ your material**:
 | Only if you press **Send it** in the suggestion box | The kind of note, your words, the app version, and an email only if you typed one. No id, nothing from your files. Read only by JohnsonX Labs | The publisher's database, in Canada |
 | Only if you paste a **web address** to read | That address only | Wikipedia's API for a Wikipedia article; otherwise the site itself, and if it refuses, the r.jina.ai reader service |
 | Only if you use the **scan reader** the first time | Nothing — it downloads the reader (~15 MB) | cdnjs, jsDelivr, tessdata.projectnaptha.com |
+| Only if you press **Run** in a "Try it in R" box and agree to the download | Nothing — it downloads R (webR, ~30 MB) once; your code and its output never leave the device | webr.r-wasm.org |
 | Only if you press the download button on the **Voice tutor** page | Nothing — it downloads the voice (~330 MB with WebGPU, ~90 MB without) and, with WebGPU, the answer model (~900 MB), once. Afterwards the tutor runs offline; your questions and its answers never leave the device | jsDelivr, GitHub, Hugging Face |
 | Only if you use **Dictate** | The audio of your voice, only after you say yes to the dialog | Your browser's own speech service |
 
@@ -49,7 +50,7 @@ The first row is the whole of what happens if you only ever study. Everything
 below it is something you chose to do.
 
 There are no cookies, no advertising identifiers, no analytics service, no
-third-party script except the scan reader and voice tutor you choose to download, no location and no fingerprinting. Nothing is
+third-party script except the scan reader, voice tutor and R you choose to download, no location and no fingerprinting. Nothing is
 sold and nothing is shared with anybody. The full account, field by field, is in
 the app at **#/rights** and in the Privacy Notice.
 
