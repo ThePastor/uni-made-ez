@@ -2757,6 +2757,52 @@ figure.worked:has(.explain-it[open]):not(.ex-shown) li.ex-target .why::after { c
 .hl-more { justify-self: start; min-height: 44px; }
 .hint-note { display: block; margin-top: 4px; }
 
+/* v2.89 — mastery map */
+.mm-page { display: grid; gap: var(--gap, 16px); }
+.mm-weak { margin: 8px 0 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+.mm-weak li { display: flex; gap: 12px; justify-content: space-between; align-items: center; flex-wrap: wrap; border-top: 1px solid var(--line-soft); padding-top: 8px; }
+.mm-weak li > div { display: grid; }
+.mm-weak .btn { min-height: 44px; }
+.mm-legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: var(--fs-sm, .85rem); }
+.mm-key { display: inline-flex; align-items: center; gap: 6px; }
+.mm-key i { width: 14px; height: 14px; border: 1px solid var(--line); display: inline-block; }
+.mm-chap h3 { margin: 0 0 8px; font-size: 1rem; }
+.mm-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; }
+.mm-tile { display: grid; gap: 4px; padding: 10px; border: 1px solid var(--line); color: var(--ink); text-decoration: none; min-height: 44px; }
+.mm-tile:hover, .mm-tile:focus-visible { border-color: var(--accent); }
+.mm-lvl { font-family: var(--font-mono); font-size: var(--fs-md); letter-spacing: .08em; text-transform: uppercase; }
+.mm-wrong { color: var(--bad, #a33); font-weight: 600; }
+.lvl-0 { background: var(--paper, transparent); }
+.mm-tile.lvl-1, .mm-key.lvl-1 i { background: color-mix(in srgb, var(--accent) 8%, transparent); }
+.mm-tile.lvl-2, .mm-key.lvl-2 i { background: color-mix(in srgb, var(--accent) 20%, transparent); }
+.mm-tile.lvl-3, .mm-key.lvl-3 i { background: color-mix(in srgb, var(--accent) 36%, transparent); }
+.mm-tile.lvl-4, .mm-key.lvl-4 i { background: color-mix(in srgb, var(--accent) 55%, transparent); }
+.mm-tile.lvl-4 { border-color: var(--accent); }
+
+/* v2.89 — printable worksheets */
+.ws-sheet { display: grid; gap: 16px; }
+.ws-tools .btn { min-height: 44px; }
+.ws-head { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; align-items: end; border-bottom: 2px solid var(--ink); padding-bottom: 8px; }
+.ws-head h1 { margin: 4px 0 0; font-size: 1.3rem; }
+.ws-qs { padding-left: 1.6em; display: grid; gap: 18px; }
+.ws-q { break-inside: avoid; }
+.ws-p { margin: 0 0 6px; font-weight: 600; }
+.ws-opts, .ws-ord { list-style: none; padding: 0; margin: 0; display: grid; gap: 4px; }
+.ws-l { font-family: var(--font-mono); }
+.ws-line { margin-top: 6px; }
+.ws-work { height: 64px; }
+.ws-key { border-top: 2px solid var(--ink); padding-top: 12px; }
+.ws-key ol { padding-left: 1.6em; display: grid; gap: 6px; }
+@media print {
+  body:has(.ws-sheet) .topbar, body:has(.ws-sheet) .foot, body:has(.ws-sheet) .ws-tools, body:has(.ws-sheet) .skip, body:has(.ws-sheet) .update-pop { display: none !important; }
+  .ws-sheet { color: #000; }
+  .ws-key { break-before: page; border-top: 0; }
+  .ws-work { height: 90px; }
+}
+.ws-qs, .ws-key ol { padding-left: 2.4em; }
+.ws-sol { display: block; color: var(--ink-2); }
+.ws-key li { font-weight: 400; } .ws-key li b { font-weight: 700; }
+
 </style>
 </head>
 <body>
@@ -52185,7 +52231,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.88', date: '3 November 2026', year: 2026 };
+  const BUILD = { v: '2.89', date: '3 November 2026', year: 2026 };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonxcorp', ['outlook', 'com'].join('.')].join('@');
   /* The one sentence that says what this is. It appears under the wordmark, and build.js uses
@@ -52198,6 +52244,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      because the person who needs it is the one who just watched the app refresh itself and wants to
      know what moved. Trim the tail when it gets past a dozen; nobody reads further back than that. */
   const WHATS_NEW = [
+    ['2.89', '<b>Mastery map and printable worksheets.</b> Every course page now has a <b>Mastery map</b>: each lesson shaded and labelled by how you are doing, what you have tried and what is still wrong, with <b>your weakest three</b> at the top and a button to practise each. And every chapter can become a <b>printable worksheet</b> \u2014 all its practice questions on a clean page, with the answers and working on a separate page \u2014 to print or save as a PDF for tutorials and study groups. <b>New version</b> reshuffles it, with new numbers where a question has them.'],
     ['2.88', '<b>Hints one step at a time, and mixed practice.</b> Stuck on a course question? <b>Give me a hint</b> now opens one step at a time: a nudge, then the method from the lesson, then a first step (or, in multiple choice, one wrong option ruled out). You only see as much as you ask for. A right answer after two or more hints comes back sooner, like a guess. New on every course page: <b>Mixed practice</b> \u2014 15 questions from different chapters with the chapter hidden until you answer, so you practise picking the method the way an exam makes you.'],
     ['2.87', '<b>Fresh numbers every time.</b> In Calculus for Business and Economics (MATH 1170) and both ECON 2320 statistics courses, 35 of the type-the-answer questions now come back with <b>new numbers</b> each time you answer them \u2014 in practice, Mistakes, Review and mock exams \u2014 so remembering the last answer stops working and the method is what counts. Every version, with its worked solution, was computed and checked by a computer algebra system before it was added.'],
     ['2.86', '<b>Run R inside the R course.</b> Every lesson of Introductory Economic Statistics with R (ECON 2320) now has <b>Try it in R</b> boxes: the lesson\u2019s own R code, ready to edit and run, with the printed output and any plot shown underneath \u2014 histograms, ECDFs, boxplots, simulations, the bootstrap. It is real R (webR) running in your browser. The first Run asks before a one-time download of about 30 MB; after that it works offline, and your code and results never leave your device. Ctrl or \u2318 + Enter runs a box.'],
@@ -54359,8 +54406,10 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     if (r.uid === 'cards') return renderCourseCards(c);
     if (r.uid === 'mock' || r.uid === 'mistakes' || r.uid === 'review' || r.uid === 'mixed') return renderDrill(c, r.uid);
     if (r.uid === 'ask' && TUTOR_OK) return renderAsk(c);
+    if (r.uid === 'map') return renderMasteryMap(c);
     const u = Courses.unit(c.id, r.uid);
     if (!u) return renderCourse(c);
+    if (r.mode === 'worksheet') return renderWorksheet(c, u, r.q);
     if (r.mode === 'practice') return renderPractice(c, u, r.lid && u.lessons.some(l => l.id === r.lid) ? r.lid : null);
     return renderUnit(c, u);
   }
@@ -54598,6 +54647,97 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     </div>`;
   }
 
+  /* v2.89 — the mastery map. One page per course: every lesson, shaded by its mastery level and
+     labelled in words (never colour alone), with what the student has answered and what is still
+     wrong, and the three weakest lessons at the top with a link straight to practising each. It is
+     read from the progress and mastery records already on the device; nothing new is stored. */
+  function lessonStats(c) {
+    const p = progress[courseSid(c.id)] || {};
+    const srs = p.srs || {}, miss = p.miss || {};
+    return courseSkills(c).map(sk => {
+      const keys = sk.items.map(it => practiceKey(c.id, sk.unit.id, it.id));
+      const tried = keys.filter(k => srs[k]).length, wrong = keys.filter(k => miss[k]).length;
+      return Object.assign({}, sk, { tried, wrong, total: keys.length });
+    });
+  }
+  function weakest(stats, n = 3) {
+    return stats.filter(s => s.tried && (s.wrong || s.level <= 1))
+      .sort((a, b) => (b.wrong / b.tried) - (a.wrong / a.tried) || a.level - b.level || b.wrong - a.wrong)
+      .slice(0, n);
+  }
+  function renderMasteryMap(c) {
+    const st = lessonStats(c);
+    const weak = weakest(st);
+    const tried = st.filter(s => s.tried).length;
+    const lessonHref = s => `#/courses/${esc(c.id)}/${esc(s.unit.id)}/practice/${esc(s.lid)}`;
+    const tile = s => `<a class="mm-tile lvl-${s.level}" href="${s.total ? lessonHref(s) : `#/courses/${esc(c.id)}/${esc(s.unit.id)}`}">
+        <span class="mm-lvl">${esc(LEVELS[s.level])}</span>
+        <b>${esc(s.title)}</b>
+        <span class="small">${s.total ? `${s.tried} of ${s.total} tried${s.wrong ? ` · <span class="mm-wrong">${s.wrong} to fix</span>` : ''}` : 'No practice questions'}</span>
+      </a>`;
+    const chapters = c.units.map(u => {
+      const ss = st.filter(s => s.unit.id === u.id);
+      return `<section class="mm-chap"><h3>${esc(chapName(c, u))} · ${esc(u.title)}</h3><div class="mm-grid">${ss.map(tile).join('')}</div></section>`;
+    }).join('');
+    const weakHtml = weak.length
+      ? `<ol class="mm-weak">${weak.map(s => `<li><div><b>${esc(s.title)}</b><span class="small muted">${esc(chapName(c, s.unit))} · ${s.wrong ? `${s.wrong} of ${s.tried} answered still wrong` : `${esc(LEVELS[s.level])}`}</span></div><a class="btn sm primary" href="${lessonHref(s)}">Practise this <span class="arr">&rarr;</span></a></li>`).join('')}</ol>`
+      : `<p class="muted">${tried ? 'No weak spots in what you have answered so far. Mixed practice and the mastery challenge are the next test.' : 'Answer a few questions in any chapter and your weakest lessons will show here.'}</p>`;
+    const legend = LEVELS.map((l, k) => `<span class="mm-key lvl-${k}"><i aria-hidden="true"></i>${esc(l)}</span>`).join('');
+    app.innerHTML = frame(`${drillHead(c, 'Mastery map')}<main id="main" tabindex="-1"><div class="page mm-page">
+      <section class="cell mm-top"><span class="label">Your weakest three</span>${weakHtml}</section>
+      <div class="mm-legend" aria-label="Levels">${legend}</div>
+      ${chapters}
+      <p class="small muted">Worked out from your answers on this device. Practice raises a lesson as far as Proficient; only the mastery challenge reaches Mastered.</p>
+    </div></main>${foot()}`);
+    syncModal();
+  }
+
+  /* v2.89 — printable worksheets. Any chapter's practice as a clean page to print or save as PDF,
+     with the answers and working on a separate page, for tutorials, help centres and class handouts.
+     Options are shuffled (the right one is not always first), and "New version" gives a different
+     shuffle and, where a question has them, different numbers. Printing uses the browser's own
+     print dialog; nothing is downloaded or sent. */
+  function renderWorksheet(c, u, q) {
+    const ver = Math.max(0, parseInt((q && q.v) || '0', 10) || 0);
+    const items = (u.practice || []).map(it => it.variants && it.variants.length ? withVersion(it, ver % (it.variants.length + 1)) : it);
+    const L = k => String.fromCharCode(97 + k);
+    const qHtml = items.map((it, n) => {
+      let body = '';
+      if (it.kind === 'mc') {
+        const order = seededOrder(`ws|${ver}|${it.id}`, it.options.length, true);
+        body = `<ol class="ws-opts">${order.map((oi, k) => `<li><span class="ws-l">${L(k)})</span> ${esc(it.options[oi].t)}</li>`).join('')}</ol>`;
+      } else if (it.kind === 'numeric') body = '<div class="ws-line">Answer: ____________________</div><div class="ws-work" aria-hidden="true"></div>';
+      else if (it.kind === 'order') {
+        const order = seededOrder(`ws|${ver}|${it.id}`, it.steps.length, true);
+        body = `<p class="small">Number these lines 1–${it.steps.length} in the right order.</p><ul class="ws-ord">${order.map(i2 => `<li><span class="ws-box">___</span> ${esc(it.steps[i2])}</li>`).join('')}</ul>`;
+      } else if (it.kind === 'spot') body = `<p class="small">One line has a mistake. Circle it and correct it.</p><ol class="ws-spot">${it.steps.map(st => `<li>${esc(st.t)}</li>`).join('')}</ol>`;
+      return `<li class="ws-q"><p class="ws-p">${esc(it.prompt)}</p>${body}</li>`;
+    }).join('');
+    const keyHtml = items.map((it, n) => {
+      let a = '', rest = '';   // a: the answer itself, in bold; rest: what it says, in plain
+      if (it.kind === 'mc') { const order = seededOrder(`ws|${ver}|${it.id}`, it.options.length, true); const k = order.findIndex(oi => it.options[oi].ok); a = `${L(k)})`; rest = it.options[order[k]].t; }
+      else if (it.kind === 'numeric') a = String(it.answer).replace(/^-/, '\u2212');
+      else if (it.kind === 'order') { const order = seededOrder(`ws|${ver}|${it.id}`, it.steps.length, true); a = order.map(i2 => i2 + 1).join(', '); rest = '(top to bottom)'; }
+      else if (it.kind === 'spot') { const k = it.steps.findIndex(st => st.bad); a = `Line ${k + 1}`; rest = it.why || ''; }
+      return `<li><b>${esc(a)}</b>${rest ? ` ${esc(rest)}` : ''}${(it.solution || []).length ? `<span class="small ws-sol">${esc(it.solution.join(' · '))}</span>` : ''}</li>`;
+    }).join('');
+    const title = `${c.code} · ${chapName(c, u)} · ${u.title}`;
+    app.innerHTML = frame(`${topbar(`<a href="#/courses/${esc(c.id)}">${esc(c.code)}</a><span class="sep">/</span><a href="#/courses/${esc(c.id)}/${esc(u.id)}">${esc(chapName(c, u))}</a><span class="sep">/</span><strong>Worksheet</strong>`)}
+      <main id="main" tabindex="-1"><div class="page ws-sheet">
+        <div class="ws-tools btn-row">
+          <button type="button" class="btn primary" data-act="ws-print">Print or save as PDF</button>
+          <a class="btn" href="#/courses/${esc(c.id)}/${esc(u.id)}/worksheet?v=${ver + 1}">New version</a>
+          <a class="btn ghost" href="#/courses/${esc(c.id)}/${esc(u.id)}">Back to the chapter</a>
+          <span class="small muted">Version ${ver + 1} · ${plural(items.length, 'question')} · answers on a separate page</span>
+        </div>
+        <header class="ws-head"><div><span class="label">Worksheet · version ${ver + 1}</span><h1>${esc(title)}</h1></div><div class="ws-name">Name ______________________ &nbsp; Date ____________</div></header>
+        <ol class="ws-qs">${qHtml}</ol>
+        <section class="ws-key"><span class="label">Answer key · version ${ver + 1}</span><h2>${esc(title)}</h2><ol>${keyHtml}</ol>
+          <p class="small muted">From UNI Made EZ. Check against your course notes.</p></section>
+      </div></main>${foot()}`);
+    syncModal();
+  }
+
   /* ---------- worked examples that fade ----------
      The completion effect: a learner who has followed a few full examples learns more from
      finishing a partial one than from reading another complete one, and the evidenced direction is
@@ -54747,7 +54887,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
             <span class="label">Chapter check-up</span>
             <p class="small muted">${pr.seen ? `${pr.seen} of ${pr.total} answered so far.` : `All ${pr.total} questions from the chapter, mixed. Each one marks itself and shows the full working either way.`}</p>
           </div>
-          <a class="btn primary" href="#/courses/${esc(c.id)}/${esc(u.id)}/practice">Start the check-up <span class="arr">&rarr;</span></a>
+          <div class="btn-row"><a class="btn primary" href="#/courses/${esc(c.id)}/${esc(u.id)}/practice">Start the check-up <span class="arr">&rarr;</span></a><a class="btn" href="#/courses/${esc(c.id)}/${esc(u.id)}/worksheet">Printable worksheet</a></div>
         </div>
       </main>${foot()}`);
     syncModal();
@@ -54974,6 +55114,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
     if (!deck && !pool) return '';
     return `<div class="study-band">
       <a class="sb-tool" href="#/courses/${esc(c.id)}/cards"><b>Flash cards</b><span class="small muted">${plural(deck, 'card')} from every chapter</span></a>
+      <a class="sb-tool" href="#/courses/${esc(c.id)}/map"><b>Mastery map</b><span class="small muted">Every lesson by your results, weakest first</span></a>
       <a class="sb-tool" href="#/courses/${esc(c.id)}/mixed"><b>Mixed practice</b><span class="small muted">${MIXED_N} questions across chapters, chapter hidden</span></a>
       <a class="sb-tool" href="#/courses/${esc(c.id)}/mock"><b>Mock exam</b><span class="small muted">Timed, mixed, marked at the end</span></a>
       <a class="sb-tool${miss ? '' : ' quiet'}" href="#/courses/${esc(c.id)}/mistakes"><b>Mistakes</b><span class="small muted">${miss ? `${plural(miss, 'question')} to get right` : 'Nothing to redo yet'}</span></a>
@@ -59594,6 +59735,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
       case 'mock-start': { const c0 = Courses.get(parseRoute().cid); if (c0 && state.mockUi) { startDrill(c0, 'mock', state.mockUi); render(); } break; }
       case 'mock-new': { state.drill = null; render(); break; }
       case 'drill-hint': { const d = state.drill; if (!d || d.done || d.shown[d.i]) break; d.hints[d.i] = (d.hints[d.i] || 0) + 1; render(); break; }
+      case 'ws-print': { try { window.print(); } catch (e) { /* no print dialog here */ } break; }
       case 'mixed-new': { const c0 = Courses.get(parseRoute().cid); if (c0) { startDrill(c0, 'mixed'); render(); } break; }
       case 'pr-hint': { const ps = practiceState(); if (ps.marked) break; ps.hintN = (ps.hintN || 0) + 1; render(); break; }
       case 'drill-pick': { const d = state.drill; if (!d || d.done) break; const inst = isInstant(d.mode); if (inst && d.shown[d.i]) break; d.ans[d.i] = el.dataset.i; if (inst) drillMark(d); render(); break; }
