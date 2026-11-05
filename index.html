@@ -2839,6 +2839,12 @@ figure.worked:has(.explain-it[open]):not(.ex-shown) li.ex-target .why::after { c
 @media (max-width: 600px) { .gl-row { grid-template-columns: 1fr; } }
 @media print { .gl-tools, .gl-az, .gl-row .btn { display: none !important; } }
 
+/* v2.92 — the end of adding a file */
+.added-band { scroll-margin-top: 72px; display: flex; justify-content: space-between; align-items: center; gap: 12px 20px; flex-wrap: wrap; padding: 14px var(--pad-in, 16px); background: var(--ok-soft); color: var(--ink); border-bottom: 1px solid var(--line); }
+.added-band .label { color: var(--ok); }
+.added-band p { margin: 4px 0 0; }
+.added-band .btn { min-height: 44px; }
+
 </style>
 </head>
 <body>
@@ -3783,7 +3789,7 @@ const GENERIC = new Set('information data process system method result results s
   const CAPTION_LEAD = /^(?:exhibit|figure|fig\.?|table|chart|diagram|graph|illustration|source)\s*\d+(?:[.\-]\d+)*[a-z]?\b/i;
   const NARRATION = /^(?:we(?:'ll|\s+will|\s+now)?\s+(?:move on|now turn|turn to|start|begin|look at|cover|discuss|continue|finish|end)|in this (?:chapter|lecture|section|module|slide|unit|video|class)|this (?:chapter|lecture|slide|module|unit|section) (?:covers|looks|discusses|starts|begins|introduces|explores|focuses)|the (?:chapter|lecture|module) (?:starts|begins|covers|ends|finishes)|today(?:,)? we|next (?:week|class|lecture|time)|see (?:the )?(?:next|previous|following) (?:page|slide)|you can find (?:certain parts|this|more)|click (?:here|on)|refer to (?:the )?(?:slide|page|figure|appendix)|(?:this|the) (?:guide|document|handout|study guide|deck|course pack|worksheet) (?:covers|is|has|includes|begins|contains|will)|each (?:chapter|section|unit|module)(?: section)? (?:begins|starts|ends|covers|includes|has)|read the (?:concept|notes|chapter|questions)|how to use this|test yourself)/i;
   function roleOf(s) {
-    const t = String(s || '').trim().replace(/^[✓✔☑⚠️\u{1F300}-\u{1FAFF}\s]+/u, '');
+    const t = String(s || '').trim().replace(/^[✓✔☑⚠️\u{1F300}-\u{1FAFF}\s]+/u, '').replace(/([?!.])\s*[;,]+$/, '$1');
     if (!t) return null;
     if (ROLE_CREDIT.test(t) && wordsOf(t).length <= 16) return 'credit';
     const unlabelled = t.replace(/^[^:]{2,60}:\s+/, '');
@@ -4218,6 +4224,50 @@ const GENERIC = new Set('information data process system method result results s
   const NOUN_ING = /^(?:training|marketing|accounting|learning|thinking|planning|engineering|banking|building|pricing|processing|reasoning|understanding|meaning|setting|funding|being|spending|earnings?|reporting|listening|offering|branding|ranking|rating|opening|clothing|housing|feeling|feelings|beginning|ending|wedding|morning|evening|warning|painting|writing|reading|spelling|nursing|teaching|lending|timing|sampling|modelling|modeling|counselling|counseling|consulting|outsourcing|crowdsourcing|networking|mentoring|coaching|onboarding|recruiting|bargaining|lobbying|framing|priming|anchoring|bootstrapping|swimming|social loafing|loafing|storming|norming|performing|forming|adjourning|offshoring|downsizing|benchmarking|brainstorming)$/i;
   const NUMBER_LEAD = /^(?:two|three|four|five|six|seven|eight|nine|ten|\d+)\s+/i;
   const IMPERATIVE = /^(?:be|do|don't|don’t|never|always|use|make|take|keep|form|measure|specialize|specialise|increase|decrease|reduce|highlight|provide|clarify|manage|build|develop|create|ensure|avoid|seek|grow|move|demonstrate|establish|assign|select|state|address|introduce|encourage|focus|consider|try|set|get|give|ask|let|start|stop|apply|choose|limit|align|integrate|schedule|reward|maintain|minimize|minimise|maximize|maximise|improve|nurture|hire|compare|question|frequently|work|import|ensure|understand|study|treat|link|watch|design|combine|rotate|enlarge|enrich|share|support|show|tell|check|identify|document|review|plan|communicate|listen|follow|pick|act|offer|remove|add|separate|define|describe|explain|recognize|recognise|lead|delegate|invest|prioritize|prioritise|empower)\b/i;
+  /* v2.92 — from a tester's deck built from her own MNGT 3710 notes. Each rule below is one class of
+     bad card she found; test/fixtures/mngt-notes.txt reproduces every one of them. */
+  // a document title that is really the file's name: "W4_Part1_Cybersecurity_StudyNotes v1.1"
+  const FILE_TITLE = /_|\bv\d+(?:\.\d+)+\b|\.(?:docx?|pdf|pptx?|txt|md)$/i;
+  // a subtitle, not a definition: "Access and Gatekeeper Power", "Privacy, security, and corporate responsibility"
+  const FINITE = /\b(?:is|are|was|were|be|been|has|have|had|can|could|will|would|must|should|may|might|does|do|did|means|mean|makes?|gives?|keeps?|lets?|takes?|uses?|needs?|shows?|helps?|leads?|becomes?|stays?|goes|gets?|puts?|sets?)\b|\w{3,}(?:ed|es)\b/i;
+  function subtitleLike(def, term) {
+    const d = String(def).trim();
+    if (/[.!?;:]$/.test(d) || /\b(?:DR|CR|Dr|Cr)\b|\d|[=+×÷<>]/.test(d)) return false;   // a journal entry or a formula is content
+    const w = wordsOf(d);
+    if (!w.length || w.length > 8) return false;
+    if (FINITE.test(d)) return false;
+    // Title Case is a heading's tell: "Access and Gatekeeper Power", "From Exception to Expectation"
+    const long = w.filter(x => x.length >= 4);
+    if (long.length && long.filter(x => /^[A-Z]/.test(x)).length / long.length >= 0.6) return true;
+    // a short list with no verb: content when the label is plural ("Multiple Levels: individual, group,
+    // organizational"), a subtitle when it is one thing ("Ethical dilemma: privacy, security, and responsibility")
+    if (/,|\band\b/.test(d)) {
+      const t = String(term || '');
+      const pl = /[a-z]s$/.test(t) && !/(?:ss|us|is|sis|ics)$/.test(t);
+      return !(pl || CATEGORY_RE.test(t));
+    }
+    return false;
+  }
+  // a rating level that only means something inside its scale: "Moderate alignment", "Strong fit"
+  const SCALE_LEVEL = /^(?:strong|moderate|weak|high|low|medium|partial|full|minimal|no|limited|significant|poor|good|excellent)\s+[a-z]+$/i;
+  // single-word instructions that open a study tip: "Underline: …", "Leave: … for last"
+  const TIP_VERB = /^(?:underline|highlight|leave|skip|read|reread|re-read|write|memori[sz]e|learn|practi[sc]e|revise|note|cover|test|skim|annotate|start|finish|review|focus|remember|repeat|summari[sz]e|draw|map|list)$/i;
+  // the names in a case or exercise ("Sam Patel", "Min Lee"): a word the notes use as someone's first name
+  // a person is a name from a roll call ("Sam Patel, Min Lee, Alex Chen and Jordan Rivera"), its
+  // first name alone, or a capitalised label described as "a … who …"
+  function personName(a, term, def) {
+    if (!/^[A-Z][a-z]{1,14}(?:\s+[A-Z][a-z]{1,20})?$/.test(term)) return false;
+    if (!a._people) {
+      const set = new Set();
+      for (const x of a.sentences) {
+        const names = x.s.match(/\b[A-Z][a-z]{1,14}\s+[A-Z][a-z]{1,20}\b(?=\s*(?:,|\band\b|$|\.))/g) || [];
+        if (names.length >= 3) for (const n of names) { set.add(n); set.add(n.split(/\s+/)[0]); }
+      }
+      a._people = set;
+    }
+    if (a._people.has(term)) return true;
+    return /^(?:a|an|the)\s+(?:[\w-]+\s+){0,4}(?:who|whose)\b/i.test(String(def || '').trim());
+  }
   function termShapeOk(term, a, termKeys) {
     const tw = wordsOf(term);
     if (!tw.length || tw.length > 6) return false;
@@ -4239,9 +4289,38 @@ const GENERIC = new Set('information data process system method result results s
     const seen = new Map();          // term key -> entry (to spot the same label under another heading)
     const seenDef = new Set();
     const termKeys = new Set(a.terms.map(t => t.key));
-    const secTitle = sent => { const sec = a.sections[sent.section]; return sec && sec.title ? sec.title.replace(/^(?:chapter\s+)?\d+(?:\.\d+)*[:.]?\s+/i, '').replace(/\s*\([^)]*\)\s*$/, '').trim() || null : null; };
-    const add = (term, def, sent, kind) => {
+    const secTitle = sent => { const sec = a.sections[sent.section]; return sec && sec.title && !FILE_TITLE.test(sec.title) ? sec.title.replace(/^(?:chapter\s+)?\d+(?:\.\d+)*[:.]?\s+/i, '').replace(/\s*\([^)]*\)\s*$/, '').trim() || null : null; };
+    const inSources = sent => { const sec = a.sections[sent.section]; return !!(sec && sec.title && /^(?:sources?|references?|bibliography|works cited|further reading|readings?|citations?)\b/i.test(sec.title.trim())); };
+    const fullText = a.sentences.map(x => x.s).join(' \n ');
+    const add = (term, def, sent, kind, verb) => {
       term = term.replace(/^(the|a|an)\s+/i, '').replace(/[.,;:]+$/, '').trim();
+      // a reading list is not course content
+      if (inSources(sent) || /^(?:sources?|references?|readings?)\b/i.test(term)) return;
+      // "Definition: Shadow IT is any software…" — the label says what follows; the term is the subject
+      if ((kind === 'colon' || kind === 'dash') && /^(?:definition|meaning|defined|what it is)$/i.test(term)) {
+        const m = def.match(DEF_RE);
+        const t2 = m ? m[1] : secTitle(sent);
+        if (!t2) return;
+        return add(t2, m ? def : def, sent, 'labelled', m ? (/^\s*(?:\([^)]*\)\s*)?are\b/.test(def.slice(m[1].length + (def.indexOf(m[1]) || 0))) ? 'are' : 'is') : null);
+      }
+      // "Net Neutrality: Access and Gatekeeper Power" — a slide's subtitle
+      if ((kind === 'colon' || kind === 'dash') && subtitleLike(def, term)) return;
+      // "Shadow IT is a risk — and a symptom": a headline, not what the term means
+      { const rest = def.replace(new RegExp('^.*?\\b' + escRe(term) + '\\b\\s*(?:\\([^)]*\\)\\s*)?(?:is|are|was|were)\\s+', 'i'), '').trim();
+        if ((kind === 'is' || kind === 'weak') && /\s[—–]\s/.test(rest) && wordsOf(rest).length <= 6 && !/[.!?]$/.test(rest)) return; }
+      // "Privacy and security are both legitimate values", "The tension between them is…"
+      if ((kind === 'is' || kind === 'weak') && /\b(?:them|it|they|their|its|his|her|him)\b/.test(term)) return;   // case-sensitive: "IT" in "Shadow IT" is not "it"
+      if ((kind === 'is' || kind === 'weak') && /\s(?:and|&)\s/.test(term) && /^\s*(?:are|is)\s+(?:both|each|all|equally|either|neither|two)\b/i.test(def.slice(def.indexOf(term) + term.length))) return;
+      if (/\b(?:often|usually|always|never|sometimes|typically|rarely|generally|still)\b/i.test(term)) return;
+      // the people in a case or exercise get a "Who is" card, not a "What is" one
+      if ((kind === 'colon' || kind === 'dash') && personName(a, term, def)) {
+        if (wordsOf(def).length >= 4) (a.people || (a.people = [])).push({ name: term, body: def.trim().replace(/[;,]\s*$/, ''), sent: sent.s, id: sent.id, section: secTitle(sent) });
+        return;
+      }
+      // "The team is Sam Patel, Min Lee, Alex Chen and Jordan Rivera" — a roll call, not a definition
+      if ((def.match(/\b[A-Z][a-z]+\s+[A-Z][a-z]+\b/g) || []).length >= 2 && wordsOf(def).length <= 16 && (kind === 'is' || kind === 'weak')) return;
+      // a one-word study instruction ("Underline: every term…") is neither a term nor a useful card
+      if ((kind === 'colon' || kind === 'dash') && TIP_VERB.test(term)) return;
       const tw = wordsOf(term);
       if (!tw.length || tw.length > 6) return;
       if (tw.every(w => STOP.has(lc(w)))) return;
@@ -4283,7 +4362,9 @@ const GENERIC = new Set('information data process system method result results s
       const title = secTitle(sent);
       // "Historical Foundations: Distinct field around the 1940s" — a slide title restated, not a term
       if ((kind === 'colon' || kind === 'dash') && title && lc(title) === lc(term) && body.length < 6) return;
-      const entry = { term, def, sent: sent.s, id: sent.id, kind };
+      const entry = { term, def, sent: sent.s, id: sent.id, kind: kind === 'labelled' ? 'is' : kind };
+      { const vm = (sent.s.slice(sent.s.indexOf(term) + term.length).match(/^\s*(?:\([^)]*\)\s*)?(is|are|was|were)\b/i)); entry.verb = verb || (vm ? (/^(?:are|were)$/i.test(vm[1]) ? 'are' : 'is') : null); }
+      if (kind === 'labelled') entry.labelled = true;
       if (title) entry.sec = title;
       // "Job characteristics" under "Remote Work Contingencies" means the job's suitability for remote work
       if (!entry.ctx && title && tw.length <= 3 && (kind === 'colon' || kind === 'dash') && /(?:characteristics|factors|features|risks|outcomes|requirements|conditions|criteria|benefits|advantages|disadvantages|problems)$/i.test(term) && !new RegExp('\\b' + escRe(term) + '\\b', 'i').test(title)) entry.ctx = title;
@@ -4291,7 +4372,7 @@ const GENERIC = new Set('information data process system method result results s
       if (NUMBER_LEAD.test(term)) { if (!listItems(def)) return; entry.counted = true; }
       // "Key characteristics of power: Power is a potential…" — a lead-in whose other items follow on later lines
       else if ((kind === 'colon' || kind === 'dash') && /\b(?:characteristics|features|types|kinds|functions|components|stages|steps|elements|factors|principles|ways|strategies|methods|sources|reasons|causes|effects|phases|categories|dimensions)\b/i.test(term) && !/[;,]/.test(def) && !listItems(def)) return;
-      if (GENERIC_LABEL.test(term) || (tw.length === 1 && GENERIC.has(lc(term)))) {
+      if (GENERIC_LABEL.test(term) || (tw.length === 1 && GENERIC.has(lc(term))) || ((kind === 'colon' || kind === 'dash') && (/^(?:principle|mechanism|rationale|logic|criterion|criteria|standard|test|rule|aim|focus|idea|lesson|takeaway|trigger|signal|response|action|outcome|context|impact|risk|harm|benefit|tension|trade-?off|verdict|decision|option|options)$/i.test(term) || SCALE_LEVEL.test(term)))) {
         // inside a model answer the heading is "Practice Questions" — no context at all; the question's own card covers it
         if (!title || lc(title) === lc(term) || sent.inAnswer || /\b(?:questions?|review|practice|exercises?|summary|overview|notes?|introduction|conclusion|appendix)\b/i.test(title)) return;
         entry.generic = true; entry.ctx = title;
@@ -4311,6 +4392,12 @@ const GENERIC = new Set('information data process system method result results s
         /* "Consistency" under self-concept and "Consistency" under attribution are different ideas.
            The second used to be thrown away; now both are kept and each says where it is from. */
         const first = seen.get(key);
+        // the same term defined again, better: a labelled "Definition:" or a fuller sentence replaces a thin one
+        const thin = d => wordsOf(d.kind === 'colon' || d.kind === 'dash' ? d.def : d.sent).length < 9;
+        if ((entry.labelled || (thin(first) && !thin(entry))) && (!title || !first.ctxOf || lc(title) === lc(first.ctxOf) || entry.labelled)) {
+          const i = defs.indexOf(first);
+          if (i >= 0) { entry.ctxOf = first.ctxOf; defs[i] = entry; seen.set(key, entry); seenDef.add(dkey); if (entry.sec == null && first.sec) entry.sec = first.sec; return; }
+        }
         const t2 = title;
         if (!t2 || !first.ctxOf || lc(t2) === lc(first.ctxOf)) return;
         if (!entry.generic) {
@@ -5044,8 +5131,29 @@ const GENERIC = new Set('information data process system method result results s
     const rand = rng(seed);
     const cards = [];
     const used = new Set();
-    const lcFirst = x => /^[A-Z][a-z]/.test(x) && !/^[A-Z][a-z]+[A-Z]/.test(x) ? x[0].toLowerCase() + x.slice(1) : x;
+    // a name keeps its capital: "Sam Patel", "San Bernardino", "LifeLabs" — a word the notes capitalise
+    // in the middle of sentences, or that is followed by another capitalised word, is a proper noun
+    // (slides capitalise every word of a bullet, so one capital is not enough: a name is never written
+    // in lower case, and either recurs mid-sentence or comes as a pair — "San Bernardino", "Sam Patel")
+    const proper = new Set(a._people || []), lowerSeen = new Set(), midCaps = new Map();
+    for (const x of a.sentences) for (const w of x.words) if (/^[a-z]/.test(w)) lowerSeen.add(w);
+    const nameish = w => /^[A-Z][a-z]+$/.test(w) && !lowerSeen.has(w.toLowerCase());
+    for (const x of a.sentences) {
+      for (const m of x.s.matchAll(/(?<=[a-z,;:)]\s)([A-Z][a-z]+)\b/g)) if (nameish(m[1])) midCaps.set(m[1], (midCaps.get(m[1]) || 0) + 1);
+      for (const m of x.s.matchAll(/\b([A-Z][a-z]+)\s+([A-Z][a-z]+)\b/g)) if (m.index > 0 && nameish(m[1]) && nameish(m[2])) { proper.add(m[1]); proper.add(m[2]); }
+    }
+    for (const [w, n] of midCaps) if (n >= 2) proper.add(w);
+    const lcFirst = x => {
+      if (!/^[A-Z][a-z]/.test(x) || /^[A-Z][a-z]+[A-Z]/.test(x)) return x;
+      const w = x.split(/\s+/);
+      if (proper.has(w[0]) || (w[1] && /^[A-Z][a-z]/.test(w[1]) && proper.has(w[1]))) return x;
+      return x[0].toLowerCase() + x.slice(1);
+    };
+    // "Retaliation or hacktivism" next to "Retaliation": the combined label repeats a term that has its own card
+    const defKeys = new Set(a.defs.map(d => lc(d.term)));
+    const overlapping = d => /\s(?:or|\/)\s|\s?\/\s?/.test(d.term) && d.term.split(/\s+or\s+|\s*\/\s*/).some(part => lc(part.trim()) !== lc(d.term) && defKeys.has(lc(part.trim())));
     for (const d0 of a.defs) {
+      if (overlapping(d0)) continue;
       // never write back into the analysis: summary() and the deck both call this, and must agree
       const d = (d0.ctx && !d0.generic && new RegExp('\\b' + escRe(d0.term) + '\\b', 'i').test(d0.ctx)) ? { ...d0, ctx: null } : d0;
       const ukey = lc(d.term) + '|' + lc(d.ctx || '');
@@ -5066,14 +5174,22 @@ const GENERIC = new Set('information data process system method result results s
       const pw = wordsOf(d.term);
       const isPl = w => /[a-z]s$/.test(w) && !/(sis|ss|us|is|ics|ous)$/.test(w);
       const prep = pw.findIndex((w, i) => i > 0 && /^(?:of|on|for|in|to|with|from|by|at)$/i.test(w));
-      const plural = !/^[A-Z0-9\-]+$/.test(d.term) && (isPl(d.term) || (prep > 0 && isPl(pw[prep - 1])));
+      // the material's own verb settles it: "LifeLabs is a…" — a company, not a plural
+      const plural = d.verb ? d.verb === 'are' : !/^[A-Z0-9\-]+$/.test(d.term) && !/^[A-Z][a-z]+[A-Z]/.test(d.term) && (isPl(d.term) || (prep > 0 && isPl(pw[prep - 1])));
       const front = d.generic && /\bDR\b.*\bCR\b/.test(d.def) ? `${d.ctx}: the ${lcFirst(d.term)} journal entry?`
         : d.generic ? `${d.ctx} — ${lcFirst(d.term)}?`
         : d.how ? `${d.term}${d.ctx ? `, in “${d.ctx}”` : ''} — how?`
         : d.example ? `Give an example of ${lcFirst(d.term)}${d.ctx ? `, in “${d.ctx}”` : ''}.`
         : d.explain && !d.ctx ? (d.sec && lc(d.sec) !== lc(d.term) ? `${d.sec} — explain: ${lcFirst(d.term)}.` : `Explain: ${d.term}.`)
-        : `What ${plural ? 'are' : 'is'} ${d.term}${d.ctx ? `, in “${d.ctx}”` : ''}?`;
-      cards.push({ type: 'Definition', front, back: d.kind === 'is' || d.kind === 'weak' || d.kind === 'inverse' ? d.sent : d.def, term: d.term, source: d.sent, sourceId: d.id });
+        : `What ${plural ? 'are' : 'is'} ${(!plural && new RegExp('^(an?)\\s+' + escRe(d.term) + '\\b', 'i').test(d.sent || '') && /^[a-z]/.test(d.term)) ? d.sent.match(/^(an?)\s/i)[1].toLowerCase() + ' ' : ''}${d.term}${d.ctx ? `, in “${d.ctx}”` : ''}?`;
+      cards.push({ type: 'Definition', front, back: d.labelled ? d.def : d.kind === 'is' || d.kind === 'weak' || d.kind === 'inverse' ? d.sent : d.def, term: d.term, source: d.sent, sourceId: d.id });
+    }
+    // the people in a case study or exercise
+    for (const p of (a.people || [])) {
+      const k = 'who|' + lc(p.name);
+      if (used.has(k)) continue;
+      used.add(k);
+      cards.push({ type: 'Person', front: `Who is ${p.name}${p.section ? `, in “${p.section}”` : ''}?`, back: p.body, term: p.name, source: p.sent, sourceId: p.id });
     }
     // the material's own questions, with the material's own answers
     for (const x of (a.qa || [])) {
@@ -5093,6 +5209,7 @@ const GENERIC = new Set('information data process system method result results s
       cards.push({ type: 'Acronym', front: `What does ${ac.acr} stand for?`, back: ac.expansion, term: ac.acr, source: ac.sent, sourceId: ac.id });
     }
     const excluded = new Set(cards.map(c => c.sourceId).filter(Boolean));
+    for (const x of a.sentences) { const sec = a.sections[x.section]; if (sec && sec.title && /^(?:sources?|references?|bibliography|works cited|further reading|readings?|citations?)\b/i.test(sec.title.trim())) excluded.add(x.id); }
     for (const t of a.terms.slice(0, 30)) {
       if (cards.length >= count * 1.5) break;
       if (used.has(t.key)) continue;
@@ -5124,7 +5241,9 @@ const GENERIC = new Set('information data process system method result results s
     const defs = merged.cards.filter(c => c.type === 'Question').concat(merged.cards.filter(c => lead(c) && c.type !== 'Question'));
     const rest = shuffle(merged.cards.filter(c => !lead(c)), rand);
     const all = defs.concat(rest).slice(0, count);
-    const out = all.map((c, i) => ({ ...c, id: i + 1, key: cardKey(c.type, c.front) }));
+    // "Core question?." / "…;" / doubled spaces left over from the notes' own punctuation
+    const tidy = t => String(t).replace(/\?\s*[.;,]+(?=\s|$)/g, '?').replace(/\s+([;,])\s*$/, '').replace(/[;,]\s*$/, '').replace(/[ \t]{2,}/g, ' ').trim();
+    const out = all.map((c, i) => { const f = tidy(c.front), b = typeof c.back === 'string' ? tidy(c.back) : c.back; return { ...c, front: f, back: b, id: i + 1, key: cardKey(c.type, f) }; });
     a.repeatsMerged = merged.n + duplicateSentences(a).size;
     try { Object.defineProperty(out, 'merged', { value: a.repeatsMerged, enumerable: false }); } catch (e) { /* ignore */ }
     return out;
@@ -52267,7 +52386,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
 (() => {
   // BUILD — bump this whenever a new index.html goes up to GitHub Pages. It shows in the footer, so
   // opening the live site and reading the footer tells you which build you are actually looking at.
-  const BUILD = { v: '2.91', date: '3 November 2026', year: 2026 };
+  const BUILD = { v: '2.92', date: '5 November 2026', year: 2026 };
   // assembled at run time so the address is not a plain string in the page source (address-harvesting bots on a public site)
   const OWNER_EMAIL = ['johnsonxcorp', ['outlook', 'com'].join('.')].join('@');
   /* The one sentence that says what this is. It appears under the wordmark, and build.js uses
@@ -52280,6 +52399,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
      because the person who needs it is the one who just watched the app refresh itself and wants to
      know what moved. Trim the tail when it gets past a dozen; nobody reads further back than that. */
   const WHATS_NEW = [
+    ['2.92', '<b>Better cards from your own notes, and a clear finish when you add a file.</b> From our first tester\u2019s report on a deck built from her own study notes: subtitles are no longer used as answers (\u201cWhat is Net Neutrality?\u201d is answered with its definition, not \u201cAccess and Gatekeeper Power\u201d); a \u201cDefinition:\u201d line now makes the card for its term; one-word labels and study tips (\u201cUnderline\u201d, \u201cPrinciple\u201d) no longer become context-free cards; the people in a case study get \u201cWho is \u2026?\u201d cards; file names, reading lists and near-duplicates are left out; names keep their capitals; and \u201cWhat are LifeLabs?\u201d reads \u201cWhat is LifeLabs?\u201d. And after you add a file, a <b>Done</b> band now says it has been read, with <b>Start studying</b> right there.'],
     ['2.91', '<b>A glossary for every course.</b> Each course page now has a <b>Glossary</b>: every term the course defines, A to Z, searchable, with its definition and a link to the lesson it comes from. In the lessons, those terms are underlined with dots \u2014 tap one to see its definition without losing your place. The glossary is built only from the course\u2019s own definitions and term cards, so it says exactly what the lessons say.'],
     ['2.90', '<b>A quick check at the start of every chapter.</b> Before you read a chapter, answer five questions \u2014 one from each lesson, nothing marked until the end, and \u201cI don\u2019t know\u201d is a fine answer. The chapter then labels its lessons <b>Skip \u2014 you knew it</b>, <b>Start here</b> or <b>Read this</b>, and takes you straight to where to start. A miss in the quick check is not added to Mistakes. Also: lesson numbers now match the chapter, so Chapter 11\u2019s lessons are 11.1, 11.2 and so on.'],
     ['2.89', '<b>Mastery map and printable worksheets.</b> Every course page now has a <b>Mastery map</b>: each lesson shaded and labelled by how you are doing, what you have tried and what is still wrong, with <b>your weakest three</b> at the top and a button to practise each. And every chapter can become a <b>printable worksheet</b> \u2014 all its practice questions on a clean page, with the answers and working on a separate page \u2014 to print or save as a PDF for tutorials and study groups. <b>New version</b> reshuffles it, with new numbers where a question has them.'],
@@ -56952,6 +57072,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
         <div class="title"><span class="code"><i></i>${esc(s.code || 'Subject')}${ex ? `<b class="exam-chip${ex.days >= 0 && ex.days <= 7 ? ' soon' : ''}">${esc(ex.label)}</b>` : ''}</span><h1>${esc(s.name)}</h1></div>
         <div class="actions"><button class="btn" data-act="edit-subject">Edit subject <span class="arr">→</span></button><button class="btn" data-act="clear-progress" title="Clear every schedule, quiz result and mark, and keep every file">Start again <span class="arr">↺</span></button><button class="btn danger" data-act="delete-subject" data-id="${s.id}">Remove subject <span class="arr">×</span></button></div>
       </div>
+      ${addedBand(s)}
       <div class="subject-layout">
         <section>
           <div class="panel-head" id="p-files"><h2>Class materials</h2>${s.materials.length ? `<button class="btn sm ghost" data-act="clear-mats">Remove all files ${I.x}</button>` : `<span class="label">this session</span>`}</div>
@@ -57275,6 +57396,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
   }
 
   async function addFiles(s, files) {
+    let added = null;
     for (const f of files) {
       const ext = (f.name.split('.').pop() || '').toLowerCase();
       const m = { id: uid(), name: f.name, ext, label: Parsers.EXT_LABEL[ext] || ext.toUpperCase(), words: 0, chars: 0, include: true, addedAt: Date.now(), busy: true, progress: 0 };
@@ -57310,11 +57432,30 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
         else m.err = e && e.message ? e.message : 'Could not read this file.';
       }
       m.busy = false; delete m.progress;
+      if (!m.err) (added || (added = [])).push(m.name);
       saveIndex();
       renderIfSubject(s);
       if (needsOcr) { if (isImageExt(ext) && OCR.available()) ocrMaterial(s, m); else offerScan(s, m); }
     }
     invalidateAnalysis();
+    // v2.92 — a clear end to adding a file: a tester could not find a "next" or "done" step, because
+    // the file simply appeared in the list. Now a band at the top of the subject says it is read and
+    // where to go next.
+    if (added && added.length) {
+      state.justAdded = { sid: s.id, names: added, at: Date.now() }; renderIfSubject(s);
+      const b = document.querySelector('.added-band');
+      if (b) { const r = b.getBoundingClientRect(); if (r.top < 0 || r.bottom > innerHeight) b.scrollIntoView({ block: 'start' }); const go1 = b.querySelector('.btn.primary'); if (go1) go1.focus({ preventScroll: true }); }
+    }
+  }
+  function addedBand(s) {
+    const j = state.justAdded;
+    if (!j || j.sid !== s.id || Date.now() - j.at > 30 * 60e3) return '';
+    const busy = s.materials.filter(m => m.busy).length;
+    const what = j.names.length === 1 ? `<b>${esc(j.names[0])}</b> is read` : `<b>${j.names.length} files</b> are read`;
+    return `<div class="added-band" role="status">
+      <div><span class="label">✓ Done</span><p>${what}. Your flash cards, summary, key information and quiz are built from ${j.names.length === 1 ? 'it' : 'them'}${busy ? ` — ${plural(busy, 'more file')} still reading` : ''}.</p></div>
+      <div class="btn-row"><a class="btn primary" href="#/s/${esc(s.id)}/cards" data-act="added-go">Start studying <span class="arr">&rarr;</span></a><button type="button" class="btn" data-act="added-more">Add another file</button><button type="button" class="btn ghost" data-act="added-close">Close</button></div>
+    </div>`;
   }
   function updateMaterialRow(m) {
     const row = document.querySelector(`.mat[data-mid="${m.id}"]`);
@@ -60031,6 +60172,9 @@ if (typeof module !== 'undefined' && module.exports) module.exports = globalThis
       case 'gl-close': closeGloss(); break;
       case 'gl-go': { closeGloss(); if (el.dataset.l) state.jumpTo = el.dataset.l; const h = `#/courses/${el.dataset.c}/${el.dataset.u}`; if (location.hash === h) { render(); } else go(h); break; }
       case 'gl-az': { e.preventDefault(); const t = document.getElementById('gl-' + el.dataset.l); if (t) t.scrollIntoView({ block: 'start' }); break; }
+      case 'added-close': { state.justAdded = null; const b = document.querySelector('.added-band'); if (b) b.remove(); break; }
+      case 'added-go': { state.justAdded = null; break; }
+      case 'added-more': { state.justAdded = null; const b = document.querySelector('.added-band'); if (b) b.remove(); const inp = document.getElementById('file-input'); if (inp) inp.click(); break; }
       case 'pre-again': { state.pre = null; const h = `#/courses/${el.dataset.c}/${el.dataset.u}/pretest`; if (location.hash === h) render(); else go(h); break; }
       case 'pre-start': { state.jumpTo = el.dataset.l; go(`#/courses/${el.dataset.c}/${el.dataset.u}`); break; }
       case 'pre-pick': { const st = state.pre; if (!st || st.done) break; st.ans[st.i] = el.dataset.i; pretestAdvance(); break; }
